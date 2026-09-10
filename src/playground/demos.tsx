@@ -2,13 +2,16 @@
 import { useId, useState } from "react";
 import { Alert } from "@/ui/Alert/Alert";
 import { AlertDialog, type AlertDialogProps } from "@/ui/AlertDialog/AlertDialog";
+import { AppHeader, type AppHeaderDensity, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Button } from "@/ui/Button/Button";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
+import { Density, type DensityValue } from "@/ui/Density/Density";
 import { DropdownMenu, type DropdownMenuProps } from "@/ui/DropdownMenu/DropdownMenu";
 import { Form, type FormProps } from "@/ui/Form/Form";
 import { FormDisplay } from "@/ui/FormDisplay/FormDisplay";
 import { Input } from "@/ui/Input/Input";
 import { Modal, type ModalProps } from "@/ui/Modal/Modal";
+import { SegmentedControl } from "@/ui/SegmentedControl/SegmentedControl";
 import { Select } from "@/ui/Select/Select";
 import { Switch } from "@/ui/Switch/Switch";
 import { Textarea } from "@/ui/Textarea/Textarea";
@@ -123,6 +126,39 @@ export function ModalDemo({ content = "text", ...p }: Omit<ModalProps, "open" | 
         )}
       </Modal>
     </>
+  );
+}
+
+// Playground harness: the real AppHeader with its account menu wired to local state. Not a kit piece.
+export function AppHeaderDemo(p: AppHeaderProps) {
+  const [darkMode, setDarkMode] = useState(Boolean(p.darkMode));
+  const [density, setDensity] = useState<AppHeaderDensity>(p.density ?? "default");
+  const [navOpen, setNavOpen] = useState(Boolean(p.navOpen));
+  // onNavToggle="{toggleNav}" in props turns on the menu button; here it flips a local open flag.
+  return (
+    <AppHeader
+      {...p} darkMode={darkMode} onDarkModeChange={setDarkMode} density={density} onDensityChange={setDensity}
+      onUserSettings={() => {}} onLogout={() => {}}
+      navOpen={navOpen} onNavToggle={p.onNavToggle ? () => setNavOpen((o) => !o) : undefined}
+    />
+  );
+}
+
+// Playground harness: real kit controls with no size set, so the Density around them decides. Not a kit piece.
+export function DensityDemo({ value = "default" }: { value?: DensityValue }) {
+  return (
+    <Density value={value}>
+      <div style={{ display: "grid", gap: "var(--space-medium)", width: 360, maxWidth: "100%" }}>
+        <Input label="Company" defaultValue="Acme Inc." />
+        <Select label="Country" options={COUNTRIES} defaultValue="us" />
+        <SegmentedControl label="View" options={[{ value: "list", label: "List" }, { value: "board", label: "Board" }]} defaultValue="list" />
+        <Switch label="Email notifications" defaultChecked />
+        <div style={{ display: "flex", gap: "var(--space-xsmall)" }}>
+          <Button>Cancel</Button>
+          <Button variant="primary">Save</Button>
+        </div>
+      </div>
+    </Density>
   );
 }
 

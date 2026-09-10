@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useDensitySize } from "../Density/Density";
 import { createPortal } from "react-dom";
 import { Button, type ButtonSize, type ButtonVariant } from "../Button/Button";
 import { ButtonFilter } from "../ButtonFilter/ButtonFilter";
@@ -60,11 +61,12 @@ const enabledItems = (panel: HTMLElement | null) =>
   [...(panel?.querySelectorAll<HTMLElement>('[data-item]:not([aria-disabled="true"])') ?? [])];
 
 export function DropdownMenu({
-  label, items, trigger = "button", variant = "secondary", size = "md", icon, iconOnly = false, count = 0,
+  label, items, trigger = "button", variant = "secondary", size: ownSize, icon, iconOnly = false, count = 0,
   align = "start", disabled = false, closeOnSelect = true, open: openProp, onOpenChange, onSelect,
   multiple = false, id, text, muted = false, badge, labelledBy, describedBy,
   searchable = false, searchPlaceholder = "Search", empty = "No results.",
 }: DropdownMenuProps) {
+  const size = useDensitySize(ownSize);
   const [query, setQuery] = useState("");
   const menuId = useId();
   const textId = `${menuId}-text`;

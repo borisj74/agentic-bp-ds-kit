@@ -1,5 +1,6 @@
 "use client";
 import { useId, useState } from "react";
+import { useDensitySize } from "../Density/Density";
 import styles from "./Switch.module.css";
 
 export type SwitchSize = "sm" | "md" | "lg";
@@ -18,8 +19,9 @@ export interface SwitchProps {
 }
 
 export function Switch({
-  label, hideLabel = false, description, size = "md", checked, defaultChecked = false, onChange, disabled = false, name, id,
+  label, hideLabel = false, description, size: ownSize, checked, defaultChecked = false, onChange, disabled = false, name, id,
 }: SwitchProps) {
+  const size = useDensitySize(ownSize);
   const autoId = useId();
   const switchId = id ?? autoId;
   const descriptionId = `${switchId}-description`;

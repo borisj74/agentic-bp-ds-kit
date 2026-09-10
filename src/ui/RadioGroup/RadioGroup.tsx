@@ -1,5 +1,6 @@
 "use client";
 import { useId, useState } from "react";
+import { useDensitySize } from "../Density/Density";
 import { Badge, type BadgeTone } from "../Badge/Badge";
 import styles from "./RadioGroup.module.css";
 
@@ -31,7 +32,7 @@ export interface RadioGroupProps {
 }
 
 export function RadioGroup({
-  size = "md",
+  size: ownSize,
   orientation = "vertical",
   layout = "list",
   disabled = false,
@@ -45,6 +46,7 @@ export function RadioGroup({
   options,
   onChange,
 }: RadioGroupProps) {
+  const size = useDensitySize(ownSize);
   const uid = useId();
   const groupName = name ?? uid;
   const controlled = value !== undefined;

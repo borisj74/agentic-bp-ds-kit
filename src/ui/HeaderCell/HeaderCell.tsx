@@ -1,5 +1,6 @@
 "use client";
 import { Checkbox } from "../Checkbox/Checkbox";
+import { useDensity } from "../Density/Density";
 import { Icon } from "../Icon/Icon";
 import styles from "./HeaderCell.module.css";
 
@@ -25,9 +26,11 @@ const SORT_ICON = { none: "unfold_more", asc: "arrow_upward", desc: "arrow_downw
 const NEXT_SORT = { none: "ascending", asc: "descending", desc: "off" } as const;
 
 export function HeaderCell({
-  label, size = "md", align = "start", checkbox = false, checked, defaultChecked, indeterminate,
+  label, size: ownSize, align = "start", checkbox = false, checked, defaultChecked, indeterminate,
   onCheckedChange, sortable = false, sort = "none", onSort,
 }: HeaderCellProps) {
+  const density = useDensity();
+  const size = ownSize ?? (density === "compact" ? "sm" : "md");
   const title = label ?? "column";
   return (
     <span className={[styles.cell, styles[size], styles[align]].join(" ")}>

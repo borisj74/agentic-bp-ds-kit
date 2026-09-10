@@ -1,5 +1,6 @@
 "use client";
 import { useContext, type ButtonHTMLAttributes, type ReactNode } from "react";
+import { useDensitySize } from "../Density/Density";
 import { Icon } from "../Icon/Icon";
 import { ButtonGroupContext } from "../ButtonGroup/context";
 import styles from "./Button.module.css";
@@ -33,9 +34,10 @@ export function Button({
   onClick,
   ...rest
 }: ButtonProps) {
-  // Inside a ButtonGroup the group sets size and can disable every Button.
+  // Inside a ButtonGroup the group sets size and can disable every Button. Otherwise its own size, else Density.
   const group = useContext(ButtonGroupContext);
-  const size = group?.size ?? sizeProp ?? "md";
+  const own = useDensitySize(sizeProp);
+  const size = group?.size ?? own;
   const off = Boolean(disabled || group?.disabled);
   const iconSize = size === "sm" ? "sm" : "md";
   const cls = [

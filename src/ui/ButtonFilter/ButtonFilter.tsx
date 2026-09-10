@@ -1,5 +1,6 @@
 "use client";
 import { Count } from "../Count/Count";
+import { useDensitySize } from "../Density/Density";
 import { Icon } from "../Icon/Icon";
 import styles from "./ButtonFilter.module.css";
 
@@ -15,7 +16,8 @@ export interface ButtonFilterProps {
 }
 
 // One button: the whole control opens the dropdown. The divider and chevron part are visual only.
-export function ButtonFilter({ size = "md", open = false, disabled = false, count = 0, children, onClick }: ButtonFilterProps) {
+export function ButtonFilter({ size: ownSize, open = false, disabled = false, count = 0, children, onClick }: ButtonFilterProps) {
+  const size = useDensitySize(ownSize);
   const applied = count > 0;
   return (
     <button

@@ -4,38 +4,186 @@
   "intent": "Checkbox for multi-select and confirmations. Always has a label; the label can be visually hidden.",
   "usage": "Use Checkbox for independent yes/no choices and multi-select, like agreeing to terms or picking table rows. For one choice from several, use radio buttons. Every Checkbox has a label; set hideLabel in table rows and other slots with no visible text. Indeterminate is only for a parent that reflects mixed children. See contracts/checkbox.json for the full contract.",
   "props": {
-    "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "Box 16 / 20 / 24 px, text 12 / 14 / 16 px." },
-    "checked": { "type": "boolean", "note": "Controlled. Pair with onChange." },
-    "defaultChecked": { "type": "boolean", "default": false, "note": "Uncontrolled start value." },
-    "indeterminate": { "type": "boolean", "default": false, "note": "Shows a minus and reads as mixed, even if checked." },
-    "error": { "type": "boolean", "default": false, "note": "Red border. Show the message in a Field once Field exists." },
-    "disabled": { "type": "boolean", "default": false },
-    "hideLabel": { "type": "boolean", "default": false, "note": "Keeps the label for screen readers but hides it on screen." },
-    "label": { "type": "string", "required": true },
-    "name": { "type": "string" },
-    "id": { "type": "string", "note": "Optional. An id is generated when omitted." },
-    "onChange": { "type": "function", "note": "(checked: boolean) => void" }
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "Box 16 / 20 / 24 px, text 12 / 14 / 16 px. Without a size, a surrounding Density picks it: compact sm, default md, comfortable lg."
+    },
+    "checked": {
+      "type": "boolean",
+      "note": "Controlled. Pair with onChange."
+    },
+    "defaultChecked": {
+      "type": "boolean",
+      "default": false,
+      "note": "Uncontrolled start value."
+    },
+    "indeterminate": {
+      "type": "boolean",
+      "default": false,
+      "note": "Shows a minus and reads as mixed, even if checked."
+    },
+    "error": {
+      "type": "boolean",
+      "default": false,
+      "note": "Red border. Show the message in a Field once Field exists."
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "hideLabel": {
+      "type": "boolean",
+      "default": false,
+      "note": "Keeps the label for screen readers but hides it on screen."
+    },
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "name": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "note": "Optional. An id is generated when omitted."
+    },
+    "onChange": {
+      "type": "function",
+      "note": "(checked: boolean) => void"
+    }
   },
-  "useWhen": ["Independent yes/no choices, like enable notifications.", "Multi-select in lists and table rows.", "Confirmations that are not a submit action."],
-  "doNot": ["Do not invent a local Checkbox.", "Do not use for one choice from several.", "Do not use as a submit action. Use Button.", "Do not ship a Checkbox without a label. Use hideLabel instead.", "Do not use raw hex."],
-  "a11y": ["Native input type=checkbox with a real label.", "hideLabel keeps the label for screen readers.", "Indeterminate reads as mixed.", "error sets aria-invalid.", "Focus ring on the box for keyboard users."],
+  "useWhen": [
+    "Independent yes/no choices, like enable notifications.",
+    "Multi-select in lists and table rows.",
+    "Confirmations that are not a submit action."
+  ],
+  "doNot": [
+    "Do not invent a local Checkbox.",
+    "Do not use for one choice from several.",
+    "Do not use as a submit action. Use Button.",
+    "Do not ship a Checkbox without a label. Use hideLabel instead.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "Native input type=checkbox with a real label.",
+    "hideLabel keeps the label for screen readers.",
+    "Indeterminate reads as mixed.",
+    "error sets aria-invalid.",
+    "Focus ring on the box for keyboard users."
+  ],
   "snippet": "<Checkbox label=\"Send me product updates\" />",
   "examples": [
-    { "title": "Sizes", "usage": "md is the default. Use sm in dense tables and lg next to larger text.", "items": [
-      { "props": { "size": "sm", "label": "Send me product updates", "defaultChecked": true } },
-      { "props": { "size": "md", "label": "Send me product updates", "defaultChecked": true } },
-      { "props": { "size": "lg", "label": "Send me product updates", "defaultChecked": true } } ] },
-    { "title": "Hidden label", "usage": "For table rows and other slots with no visible text. The label is still read by screen readers.", "items": [
-      { "props": { "size": "sm", "label": "Select row", "hideLabel": true, "defaultChecked": true } },
-      { "props": { "size": "md", "label": "Select row", "hideLabel": true, "defaultChecked": true } },
-      { "props": { "size": "lg", "label": "Select row", "hideLabel": true, "defaultChecked": true } } ] },
-    { "title": "Error", "usage": "A problem on this control, like terms not accepted.", "items": [
-      { "props": { "label": "Accept terms", "error": true } },
-      { "props": { "label": "Send me product updates", "error": true, "defaultChecked": true } } ] },
-    { "title": "Disabled", "usage": "Dims the control and blocks input.", "items": [
-      { "props": { "label": "Send me product updates", "disabled": true } },
-      { "props": { "label": "Send me product updates", "disabled": true, "defaultChecked": true } } ] },
-    { "title": "Indeterminate", "usage": "Only for a parent that reflects mixed children, like Select all when some rows are picked.", "items": [
-      { "props": { "label": "Select all", "indeterminate": true } } ] }
+    {
+      "title": "Sizes",
+      "usage": "md is the default. Use sm in dense tables and lg next to larger text.",
+      "items": [
+        {
+          "props": {
+            "size": "sm",
+            "label": "Send me product updates",
+            "defaultChecked": true
+          }
+        },
+        {
+          "props": {
+            "size": "md",
+            "label": "Send me product updates",
+            "defaultChecked": true
+          }
+        },
+        {
+          "props": {
+            "size": "lg",
+            "label": "Send me product updates",
+            "defaultChecked": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Hidden label",
+      "usage": "For table rows and other slots with no visible text. The label is still read by screen readers.",
+      "items": [
+        {
+          "props": {
+            "size": "sm",
+            "label": "Select row",
+            "hideLabel": true,
+            "defaultChecked": true
+          }
+        },
+        {
+          "props": {
+            "size": "md",
+            "label": "Select row",
+            "hideLabel": true,
+            "defaultChecked": true
+          }
+        },
+        {
+          "props": {
+            "size": "lg",
+            "label": "Select row",
+            "hideLabel": true,
+            "defaultChecked": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Error",
+      "usage": "A problem on this control, like terms not accepted.",
+      "items": [
+        {
+          "props": {
+            "label": "Accept terms",
+            "error": true
+          }
+        },
+        {
+          "props": {
+            "label": "Send me product updates",
+            "error": true,
+            "defaultChecked": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Disabled",
+      "usage": "Dims the control and blocks input.",
+      "items": [
+        {
+          "props": {
+            "label": "Send me product updates",
+            "disabled": true
+          }
+        },
+        {
+          "props": {
+            "label": "Send me product updates",
+            "disabled": true,
+            "defaultChecked": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Indeterminate",
+      "usage": "Only for a parent that reflects mixed children, like Select all when some rows are picked.",
+      "items": [
+        {
+          "props": {
+            "label": "Select all",
+            "indeterminate": true
+          }
+        }
+      ]
+    }
   ]
 }

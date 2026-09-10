@@ -1,0 +1,294 @@
+{
+  "name": "AppHeader",
+  "path": "src/ui/AppHeader/AppHeader.tsx",
+  "intent": "The product's top bar: logo and environment on the start, global search in the centre, utility icons, the user and their company on the end. Not a page title.",
+  "usage": "Put one AppHeader at the top of the app shell, full width. onNavToggle adds the menu button that opens the side nav. It is one component: logo, environment, search, actions, user and company come from props, and it uses kit Logo, Badge, Button, Tooltip and Avatar inside. environment tags the instance (UAT-2, Sandbox) so people know where they are. With searchGroups, the search opens a kit Command in its place: one search box that grows down into the results (Recent items, scopes, arrow keys and Enter); otherwise it runs onSearch; searchShortcut only shows a hint. actions are icon buttons named by a Tooltip. The avatar opens an account menu with the name, User settings, Dark mode, Density & text size and Log out; each row shows only when its handler is passed. The header follows density: its bar, search and buttons shrink in compact and grow in comfortable. Under 800px it turns compact: the logo becomes the symbol and the search becomes an icon button beside the other icons. Page titles, breadcrumbs and page actions belong in the page, not here. See contracts/appheader.json for the full contract.",
+  "props": {
+    "onNavToggle": {
+      "type": "function",
+      "note": "() => void. Adds a menu (hamburger) button before the logo that opens and closes the side nav."
+    },
+    "navOpen": {
+      "type": "boolean",
+      "default": false,
+      "note": "Whether the side nav is open. Sets aria-expanded on the menu button."
+    },
+    "logo": {
+      "type": "ReactNode",
+      "note": "Defaults to the kit Logo, which drops to its symbol on narrow bars. Pass your own only for a white-label product."
+    },
+    "homeHref": {
+      "type": "string",
+      "note": "Wraps the logo in a Home link."
+    },
+    "environment": {
+      "type": "string",
+      "note": "Instance tag, like UAT-2 or Sandbox. Leave out on production."
+    },
+    "environmentTone": {
+      "enum": [
+        "success",
+        "info",
+        "warning",
+        "danger",
+        "highlight",
+        "neutral"
+      ],
+      "default": "success",
+      "note": "Solid Badge color for the environment tag. Green by default, as in Figma."
+    },
+    "search": {
+      "type": "boolean",
+      "default": true,
+      "note": "Shows the centred search trigger."
+    },
+    "searchPlaceholder": {
+      "type": "string",
+      "default": "Search"
+    },
+    "searchShortcut": {
+      "type": "string",
+      "note": "Hint on the right of the search, like Ctrl+K. Shown only; it is not a key binding yet. Hidden under 1000px."
+    },
+    "onSearch": {
+      "type": "function",
+      "note": "() => void. Runs when the search trigger is clicked and searchGroups is not passed, for example to open your own search."
+    },
+    "searchGroups": {
+      "type": "CommandGroup[]",
+      "itemShape": "{ heading?: string; items: { id; label; description?; icon?; shortcut?; disabled? }[] }",
+      "note": "Makes the search open a kit Command. From the wide field, the Command's search row lays exactly over the header field, so there is one search box that grows down into the results (Recent items, scopes, key hints). From the compact icon it opens just below the icon. Typing filters the items."
+    },
+    "onSearchSelect": {
+      "type": "function",
+      "note": "(id: string) => void. Runs on Enter or click in the dropdown; it closes first."
+    },
+    "searchScopes": {
+      "type": "CommandScope[]",
+      "itemShape": "{ value: string; label: string }",
+      "note": "Scope menu in the dropdown search row, like Products / Accounts."
+    },
+    "searchScope": {
+      "type": "string",
+      "note": "Controlled scope."
+    },
+    "onSearchScopeChange": {
+      "type": "function",
+      "note": "(scope: string) => void"
+    },
+    "actions": {
+      "type": "AppHeaderAction[]",
+      "itemShape": "{ id: string; label: string; icon: string }",
+      "note": "Utility icon buttons (36px, 20px icons), like Help, What's new and Feedback. label names the button and shows in its Tooltip. Three at most."
+    },
+    "onAction": {
+      "type": "function",
+      "note": "(id: string) => void"
+    },
+    "user": {
+      "type": "AppHeaderUser",
+      "itemShape": "{ name: string; src?: string }",
+      "note": "The signed-in person, shown as a kit Avatar (photo or initials). With any account handler below, clicking it opens the account menu."
+    },
+    "company": {
+      "type": "AppHeaderCompany",
+      "itemShape": "{ name: string; logo?: ReactNode }",
+      "note": "The customer's company, in a bordered badge on the far end. logo up to 116px wide, else the name. Hidden under 480px."
+    },
+    "onUserSettings": {
+      "type": "function",
+      "note": "() => void. Adds User settings to the account menu. The menu closes first."
+    },
+    "darkMode": {
+      "type": "boolean",
+      "default": false,
+      "note": "Controlled value of the Dark mode switch in the account menu."
+    },
+    "onDarkModeChange": {
+      "type": "function",
+      "note": "(on: boolean) => void. Adds the Dark mode switch (kit Switch). Applies at once; the menu stays open."
+    },
+    "density": {
+      "enum": [
+        "compact",
+        "default",
+        "comfortable"
+      ],
+      "note": "The Density & text size value shown in the account menu. It also sizes the header: compact = 48px bar, 32px search, small buttons; default = 56 / 40 / medium; comfortable = 64 / 48 / large. Without it, a surrounding Density decides."
+    },
+    "onDensityChange": {
+      "type": "function",
+      "note": "(density) => void. Adds Density & text size (kit SegmentedControl). The menu stays open."
+    },
+    "onLogout": {
+      "type": "function",
+      "note": "() => void. Adds Log out at the bottom, under a divider. The menu closes first."
+    }
+  },
+  "useWhen": [
+    "The top bar of the product shell, above every page."
+  ],
+  "doNot": [
+    "Do not invent TopBar, NavBar, Header, GlobalSearch, UserBadge, UserMenu or CompanyBadge.",
+    "Do not put the page title, breadcrumbs or page actions in it. They belong in the page.",
+    "Do not put more than three icon actions in it.",
+    "Do not recolor the logo. Use environmentTone for the tag, not custom colors.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A header landmark. The logo link is named Home.",
+    "The menu button is a kit Button named Navigation with aria-expanded from navOpen.",
+    "The search trigger is a button with visible text; with searchGroups it has aria-haspopup and aria-expanded, and focus moves into the dropdown search field. Escape (with an empty query) or a click outside closes it and returns focus to the trigger. The shortcut hint is hidden from screen readers.",
+    "Icon actions are kit Buttons named by their label, which also shows in a Tooltip on hover and focus.",
+    "The avatar is a button named Account: {name} that opens the account menu (aria-haspopup, aria-expanded). Focus moves into the menu; Escape closes it and returns focus to the avatar; a click outside or tabbing away closes it."
+  ],
+  "snippet": "<AppHeader\n  onNavToggle={toggleNav}\n  navOpen={navOpen}\n  environment=\"UAT-2\"\n  searchShortcut=\"Ctrl+K\"\n  onSearch={openSearch}\n  actions={actions}\n  user={{ name: \"Maya Chen\" }}\n  company={{ name: \"Acme Inc.\" }}\n  onUserSettings={openSettings}\n  darkMode={dark}\n  onDarkModeChange={setDark}\n  density={density}\n  onDensityChange={setDensity}\n  onLogout={logOut}\n/>",
+  "examples": [
+    {
+      "title": "Full header",
+      "usage": "Menu button, logo, environment, search with a Recent dropdown, three utility icons, the user and their company.",
+      "items": [
+        {
+          "props": {
+            "onNavToggle": "{toggleNav}",
+            "environment": "UAT-2",
+            "searchShortcut": "Ctrl+K",
+            "actions": [
+              {
+                "id": "help",
+                "label": "Help",
+                "icon": "help"
+              },
+              {
+                "id": "news",
+                "label": "What's new",
+                "icon": "campaign"
+              },
+              {
+                "id": "feedback",
+                "label": "Feedback",
+                "icon": "chat_info"
+              }
+            ],
+            "user": {
+              "name": "Maya Chen",
+              "src": "/faces/maya-chen.jpg"
+            },
+            "company": {
+              "name": "Acme Inc."
+            },
+            "searchScopes": [
+              {
+                "value": "products",
+                "label": "Products"
+              },
+              {
+                "value": "accounts",
+                "label": "Accounts"
+              },
+              {
+                "value": "invoices",
+                "label": "Invoices"
+              }
+            ],
+            "searchGroups": [
+              {
+                "heading": "Recent",
+                "items": [
+                  {
+                    "id": "r1",
+                    "label": "Acme Inc. — renewal quote",
+                    "icon": "description"
+                  },
+                  {
+                    "id": "r2",
+                    "label": "Premium support plan",
+                    "icon": "radio_button_unchecked"
+                  },
+                  {
+                    "id": "r3",
+                    "label": "Q3 revenue report",
+                    "icon": "bar_chart"
+                  },
+                  {
+                    "id": "r4",
+                    "label": "INV-1042",
+                    "icon": "description"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Production",
+      "usage": "No environment tag on production. Initials when there is no photo.",
+      "items": [
+        {
+          "props": {
+            "searchShortcut": "Ctrl+K",
+            "actions": [
+              {
+                "id": "help",
+                "label": "Help",
+                "icon": "help"
+              }
+            ],
+            "user": {
+              "name": "Noah Williams"
+            },
+            "company": {
+              "name": "Northwind"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "Environment tones",
+      "usage": "Pick a tone per environment so they are easy to tell apart.",
+      "items": [
+        {
+          "props": {
+            "environment": "Sandbox",
+            "environmentTone": "info",
+            "search": false
+          }
+        },
+        {
+          "props": {
+            "environment": "Staging",
+            "environmentTone": "warning",
+            "search": false
+          }
+        }
+      ]
+    },
+    {
+      "title": "Built in",
+      "usage": "Tab through it: the Home link, the search, each icon button with its Tooltip, then the avatar. Enter opens the account menu; Escape closes it.",
+      "a11y": true,
+      "items": [
+        {
+          "props": {
+            "homeHref": "#",
+            "environment": "UAT-2",
+            "actions": [
+              {
+                "id": "help",
+                "label": "Help",
+                "icon": "help"
+              }
+            ],
+            "user": {
+              "name": "Maya Chen",
+              "src": "/faces/maya-chen.jpg"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

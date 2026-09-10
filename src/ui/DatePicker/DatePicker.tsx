@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useDensitySize } from "../Density/Density";
 import { createPortal } from "react-dom";
 import { Button } from "../Button/Button";
 import { useLabelPosition } from "../Form/FormContext";
@@ -86,9 +87,10 @@ function presetRanges(today: Date) {
 }
 
 export function DatePicker({
-  label, mode = "single", hideLabel = false, labelPosition: ownLabelPosition, size = "md", placeholder, value, defaultValue, onChange,
+  label, mode = "single", hideLabel = false, labelPosition: ownLabelPosition, size: ownSize, placeholder, value, defaultValue, onChange,
   minDate, maxDate, presets = true, name, id, required = false, disabled = false, invalid = false, error, hint, help,
 }: DatePickerProps) {
+  const size = useDensitySize(ownSize);
   const labelPosition = useLabelPosition(ownLabelPosition);
   const uid = useId();
   const triggerId = id ?? `${uid}-field`;

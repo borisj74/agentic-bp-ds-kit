@@ -1215,4 +1215,15 @@
   --switch-inset: var(--ref-space-100);
   --tooltip-max-width: 256px;
   --help-popover-width: 320px;
+  --app-header-height: 56px;
+  --app-header-search-width: 450px;
+  --app-header-company-logo: 116px;
+  --app-header-gap: var(--ref-space-900);
+  --app-header-search-height: var(--ref-space-1100);
+  --app-header-menu-width: 320px;
+  --app-header-search-min: 360px;
+  --app-header-height-compact: 48px;
+  --app-header-height-comfortable: 64px;
+  --app-header-search-height-compact: 32px;
+  --app-header-search-height-comfortable: 48px;
 }

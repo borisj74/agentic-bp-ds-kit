@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { Button } from "../Button/Button";
+import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
 import { Icon } from "../Icon/Icon";
 import styles from "./Command.module.css";
 
@@ -16,6 +17,10 @@ export interface CommandGroup {
   heading?: string;
   items: CommandItem[];
 }
+export interface CommandScope {
+  value: string;
+  label: string;
+}
 export interface CommandProps {
   groups: CommandGroup[];
   label?: string;
@@ -23,20 +28,28 @@ export interface CommandProps {
   empty?: string;
   defaultQuery?: string;
   hints?: boolean;
+  scopes?: CommandScope[];
+  scope?: string;
+  defaultScope?: string;
+  onScopeChange?: (scope: string) => void;
+  autoFocus?: boolean;
   onSelect?: (id: string) => void;
 }
 
 export function Command({
   groups, label = "Search", placeholder = "Search by name, type, and more...", empty = "No matches found for this search.",
-  defaultQuery = "", hints = true, onSelect,
+  defaultQuery = "", hints = true, scopes, scope, defaultScope, onScopeChange, autoFocus = false, onSelect,
 }: CommandProps) {
   const uid = useId();
   const listId = `${uid}-list`;
+  const scopeHintId = `${uid}-scope`;
   const optionId = (id: string) => `${uid}-opt-${id}`;
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState(defaultQuery);
   const [active, setActive] = useState<string | null>(null);
+  const [innerScope, setInnerScope] = useState(defaultScope ?? scopes?.[0]?.value ?? "");
+  const currentScope = scope ?? innerScope;
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -47,6 +60,11 @@ export function Command({
   const enabled = useMemo(() => visible.flatMap((g) => g.items.filter((i) => !i.disabled).map((i) => i.id)), [visible]);
   const activeId = active && enabled.includes(active) ? active : enabled[0] ?? null;
   const count = visible.reduce((n, g) => n + g.items.length, 0);
+
+  // Opened from a trigger, like the AppHeader search: typing can start at once.
+  useEffect(() => {
+    if (autoFocus) inputRef.current?.focus();
+  }, [autoFocus]);
 
   // Keep the highlighted option in view inside the list, without scrolling the page.
   useEffect(() => {
@@ -65,6 +83,12 @@ export function Command({
   const choose = (item: CommandItem) => {
     if (!item.disabled) onSelect?.(item.id);
   };
+  // The scope menu hands focus back to its trigger first; move it to the search field after.
+  const pickScope = (value: string) => {
+    if (scope === undefined) setInnerScope(value);
+    onScopeChange?.(value);
+    setTimeout(() => inputRef.current?.focus(), 0);
+  };
 
   const onKey = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowDown") { e.preventDefault(); move(1); }
@@ -77,6 +101,8 @@ export function Command({
     // Escape clears the query first. With an empty query it bubbles, so an overlay can close.
     else if (e.key === "Escape" && query) { e.preventDefault(); e.stopPropagation(); setQuery(""); }
   };
+
+  const scopeLabel = scopes?.find((s) => s.value === currentScope)?.label ?? scopes?.[0]?.label;
 
   return (
     <div className={styles.command}>
@@ -93,6 +119,17 @@ export function Command({
             Clear search
           </Button>
         )}
+        {/* Scope narrows what the search looks through, like Products or Accounts. A kit DropdownMenu. */}
+        {scopes && scopes.length > 0 && scopeLabel && (
+          <span className={styles.scope}>
+            <span id={scopeHintId} className={styles.srOnly}>Search in</span>
+            <DropdownMenu
+              label={scopeLabel} variant="tertiary" size="sm" align="end" describedBy={scopeHintId}
+              items={scopes.map((s) => ({ id: s.value, label: s.label, selected: s.value === currentScope }))}
+              onSelect={pickScope}
+            />
+          </span>
+        )}
       </div>
       <div ref={listRef} id={listId} role="listbox" aria-label={label} className={styles.list}>
         {visible.map((g, gi) => (
@@ -107,7 +144,7 @@ export function Command({
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => choose(item)}
               >
-                {item.icon && <Icon name={item.icon} size="md" className={styles.icon} />}
+                {item.icon && <span className={styles.tile}><Icon name={item.icon} size="md" /></span>}
                 <span className={styles.text}>
                   <span className={styles.label}>{item.label}</span>
                   {item.description && <span className={styles.description}>{item.description}</span>}

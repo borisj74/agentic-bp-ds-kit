@@ -1,5 +1,6 @@
 "use client";
 import { useId, useState, type ChangeEvent } from "react";
+import { useDensitySize } from "../Density/Density";
 import { useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
@@ -40,10 +41,11 @@ export interface InputProps {
 }
 
 export function Input({
-  label, hideLabel = false, labelPosition: ownLabelPosition, size = "md", type = "text", placeholder, value, defaultValue,
+  label, hideLabel = false, labelPosition: ownLabelPosition, size: ownSize, type = "text", placeholder, value, defaultValue,
   onChange, accept, multiple = false, onFilesChange, name, id, autoComplete, required = false, disabled = false, readOnly = false,
   invalid = false, error, hint, help, prefix, suffix, iconStart, iconEnd, maxLength: maxLengthProp,
 }: InputProps) {
+  const size = useDensitySize(ownSize);
   // A file input cannot hold a typed value, so value, placeholder and the counter do not apply.
   const isFile = type === "file";
   const maxLength = isFile ? undefined : maxLengthProp;

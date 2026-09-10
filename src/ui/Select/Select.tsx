@@ -1,5 +1,6 @@
 "use client";
 import { useId, useState } from "react";
+import { useDensitySize } from "../Density/Density";
 import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
 import { useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
@@ -38,9 +39,10 @@ export interface SelectProps {
 }
 
 export function Select({
-  label, options, hideLabel = false, labelPosition: ownLabelPosition, size = "md", placeholder = "Select", value, defaultValue, onChange,
+  label, options, hideLabel = false, labelPosition: ownLabelPosition, size: ownSize, placeholder = "Select", value, defaultValue, onChange,
   multiple = false, itemCheck = "check", maxVisible, searchable = false, searchPlaceholder, name, id, required = false, disabled = false, invalid = false, error, hint, help,
 }: SelectProps) {
+  const size = useDensitySize(ownSize);
   const labelPosition = useLabelPosition(ownLabelPosition);
   const uid = useId();
   const fieldId = id ?? `${uid}-field`;

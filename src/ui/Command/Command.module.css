@@ -9,8 +9,9 @@
 
 .search {
   box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xsmall);
+  /* A 2px light brand line under the search row, as in the BP global search. */
   height: var(--control-large); padding: 0 var(--space-xsmall) 0 var(--space-small);
-  border-bottom: var(--border-width-thin) solid var(--border-brand);
+  border-bottom: var(--border-width-medium) solid var(--border-brand-subtle);
 }
 .searchIcon { color: var(--icon-neutral); }
 .input {
@@ -25,7 +26,8 @@
 
 .group { display: flex; flex-direction: column; gap: var(--space-xxxsmall); }
 .group + .group { margin-top: var(--space-xsmall); padding-top: var(--space-xsmall); border-top: var(--border-width-thin) solid var(--border-neutral-subtle); }
-.heading { padding: var(--space-xxsmall) var(--space-xsmall); font-size: var(--font-size-xsmall); font-weight: var(--font-weight-semibold); color: var(--text-neutral); }
+.heading { padding: var(--space-xxsmall) var(--space-xsmall); font-size: var(--font-size-small); font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); }
+.scope { flex: none; display: inline-flex; }
 
 /* Rows match the kit DropdownMenu item: 28px min height, 2 / 8 px padding, 14px text. */
 .item {
@@ -35,8 +37,14 @@
 }
 .active { background: var(--bg-neutral-min-hover); color: var(--text-neutral-strong); }
 .item[aria-disabled="true"] { color: var(--text-neutral-subtle); cursor: not-allowed; }
-.icon { color: var(--icon-neutral); }
-.item[aria-disabled="true"] .icon { color: var(--icon-neutral-subtle); }
+/* Leading icon in a tinted 32px tile, same as the kit DropdownMenu. */
+.tile {
+  display: flex; align-items: center; justify-content: center; flex: none;
+  width: var(--menu-item-tile); height: var(--menu-item-tile); margin-block: var(--space-xxxsmall);
+  border-radius: var(--radius-small); background: var(--bg-brand-faint); color: var(--icon-brand);
+}
+.active .tile { background: var(--bg-brand-subtle); }
+.item[aria-disabled="true"] .tile { opacity: var(--opacity-disabled); }
 .text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-xxxsmall); padding-block: var(--space-xxxsmall); }
 .label { overflow-wrap: anywhere; }
 .description { font-size: var(--font-size-xsmall); color: var(--text-neutral); overflow-wrap: anywhere; }

@@ -4,20 +4,77 @@
   "intent": "Triggers an action. One primary Button per view.",
   "usage": "Use one primary per view. Use secondary for quieter paths, tertiary for low-emphasis actions, and danger only for work that cannot be undone. Accessibility is built in: native button, focus ring, loading and disabled states, and a label for icon-only buttons. See contracts/button.json for the full contract.",
   "props": {
-    "variant": { "enum": ["primary", "secondary", "tertiary", "danger"], "default": "secondary" },
-    "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "Heights 28 / 36 / 44 (control scale). Inside a ButtonGroup the group sets size." },
-    "iconStart": { "type": "string", "note": "Icon name shown before label." },
-    "iconEnd": { "type": "string", "note": "Icon name shown after label." },
-    "iconOnly": { "type": "boolean", "default": false, "note": "Square button. Requires label for a11y; label is visually hidden." },
-    "loading": { "type": "boolean", "default": false },
-    "disabled": { "type": "boolean", "default": false },
-    "fullWidth": { "type": "boolean", "default": false },
-    "type": { "enum": ["button", "submit", "reset"], "default": "button" },
-    "children": { "type": "ReactNode", "required": true, "note": "Label text." }
+    "variant": {
+      "enum": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "danger"
+      ],
+      "default": "secondary"
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "Heights 28 / 36 / 44 (control scale). Inside a ButtonGroup the group sets size. Without a size, a surrounding Density picks it: compact sm, default md, comfortable lg."
+    },
+    "iconStart": {
+      "type": "string",
+      "note": "Icon name shown before label."
+    },
+    "iconEnd": {
+      "type": "string",
+      "note": "Icon name shown after label."
+    },
+    "iconOnly": {
+      "type": "boolean",
+      "default": false,
+      "note": "Square button. Requires label for a11y; label is visually hidden."
+    },
+    "loading": {
+      "type": "boolean",
+      "default": false
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "fullWidth": {
+      "type": "boolean",
+      "default": false
+    },
+    "type": {
+      "enum": [
+        "button",
+        "submit",
+        "reset"
+      ],
+      "default": "button"
+    },
+    "children": {
+      "type": "ReactNode",
+      "required": true,
+      "note": "Label text."
+    }
   },
-  "useWhen": ["Submit, confirm, open, create, navigate to an action."],
-  "doNot": ["Do not use for in-text navigation (use Link).", "Do not put two primary Buttons in one view.", "Do not invent extra variants."],
-  "a11y": ["Native <button>.", "Visible focus ring via --outline-brand.", "loading sets aria-busy and aria-disabled, keeps width and full color, and ignores clicks. It does not look disabled.", "iconOnly needs children as accessible label."],
+  "useWhen": [
+    "Submit, confirm, open, create, navigate to an action."
+  ],
+  "doNot": [
+    "Do not use for in-text navigation (use Link).",
+    "Do not put two primary Buttons in one view.",
+    "Do not invent extra variants."
+  ],
+  "a11y": [
+    "Native <button>.",
+    "Visible focus ring via --outline-brand.",
+    "loading sets aria-busy and aria-disabled, keeps width and full color, and ignores clicks. It does not look disabled.",
+    "iconOnly needs children as accessible label."
+  ],
   "snippet": "<Button variant=\"primary\" iconStart=\"add\">Create invoice</Button>",
   "examples": [
     {
@@ -25,55 +82,174 @@
       "a11y": true,
       "usage": "Tab to the first button to see the focus ring.",
       "items": [
-        { "caption": "Tab here to see the focus ring", "props": { "variant": "primary", "children": "Continue" } },
-        { "caption": "Icon-only uses its label", "props": { "variant": "tertiary", "iconOnly": true, "iconStart": "search", "children": "Search" } },
-        { "caption": "Loading sets aria-busy", "props": { "variant": "secondary", "loading": true, "children": "Saving" } },
-        { "caption": "Disabled", "props": { "variant": "secondary", "disabled": true, "children": "Unavailable" } }
+        {
+          "caption": "Tab here to see the focus ring",
+          "props": {
+            "variant": "primary",
+            "children": "Continue"
+          }
+        },
+        {
+          "caption": "Icon-only uses its label",
+          "props": {
+            "variant": "tertiary",
+            "iconOnly": true,
+            "iconStart": "search",
+            "children": "Search"
+          }
+        },
+        {
+          "caption": "Loading sets aria-busy",
+          "props": {
+            "variant": "secondary",
+            "loading": true,
+            "children": "Saving"
+          }
+        },
+        {
+          "caption": "Disabled",
+          "props": {
+            "variant": "secondary",
+            "disabled": true,
+            "children": "Unavailable"
+          }
+        }
       ]
     },
     {
       "title": "Primary",
       "usage": "Use one primary per view. Show sm, md and lg when hierarchy or density changes.",
       "items": [
-        { "props": { "variant": "primary", "size": "sm", "children": "Save" } },
-        { "props": { "variant": "primary", "size": "md", "children": "Continue" } },
-        { "props": { "variant": "primary", "size": "lg", "children": "Get started" } }
+        {
+          "props": {
+            "variant": "primary",
+            "size": "sm",
+            "children": "Save"
+          }
+        },
+        {
+          "props": {
+            "variant": "primary",
+            "size": "md",
+            "children": "Continue"
+          }
+        },
+        {
+          "props": {
+            "variant": "primary",
+            "size": "lg",
+            "children": "Get started"
+          }
+        }
       ]
     },
     {
       "title": "Secondary",
       "usage": "Use secondary for cancel, back, or other paths that should stay quieter than primary.",
       "items": [
-        { "props": { "variant": "secondary", "size": "sm", "children": "Back" } },
-        { "props": { "variant": "secondary", "size": "md", "children": "Cancel" } },
-        { "props": { "variant": "secondary", "size": "lg", "children": "View details" } }
+        {
+          "props": {
+            "variant": "secondary",
+            "size": "sm",
+            "children": "Back"
+          }
+        },
+        {
+          "props": {
+            "variant": "secondary",
+            "size": "md",
+            "children": "Cancel"
+          }
+        },
+        {
+          "props": {
+            "variant": "secondary",
+            "size": "lg",
+            "children": "View details"
+          }
+        }
       ]
     },
     {
       "title": "Tertiary",
       "usage": "Use tertiary for quiet actions in toolbars, empty states, or dense screens where a filled button would feel heavy.",
       "items": [
-        { "props": { "variant": "tertiary", "size": "sm", "children": "Edit" } },
-        { "props": { "variant": "tertiary", "size": "md", "children": "Learn more" } },
-        { "props": { "variant": "tertiary", "size": "lg", "children": "See all options" } }
+        {
+          "props": {
+            "variant": "tertiary",
+            "size": "sm",
+            "children": "Edit"
+          }
+        },
+        {
+          "props": {
+            "variant": "tertiary",
+            "size": "md",
+            "children": "Learn more"
+          }
+        },
+        {
+          "props": {
+            "variant": "tertiary",
+            "size": "lg",
+            "children": "See all options"
+          }
+        }
       ]
     },
     {
       "title": "Danger",
       "usage": "Use danger only for actions that cannot be undone, like delete. Ask the user to confirm when a mistake would be costly.",
       "items": [
-        { "props": { "variant": "danger", "size": "sm", "children": "Remove" } },
-        { "props": { "variant": "danger", "size": "md", "children": "Delete" } },
-        { "props": { "variant": "danger", "size": "lg", "children": "Delete account" } }
+        {
+          "props": {
+            "variant": "danger",
+            "size": "sm",
+            "children": "Remove"
+          }
+        },
+        {
+          "props": {
+            "variant": "danger",
+            "size": "md",
+            "children": "Delete"
+          }
+        },
+        {
+          "props": {
+            "variant": "danger",
+            "size": "lg",
+            "children": "Delete account"
+          }
+        }
       ]
     },
     {
       "title": "With icons",
       "usage": "Put an icon before the label to make the action clearer, or after it to show forward movement. Icon-only buttons still need a label for screen readers.",
       "items": [
-        { "props": { "variant": "secondary", "iconStart": "add", "children": "Create invoice" } },
-        { "props": { "variant": "secondary", "iconEnd": "arrow_forward", "children": "Next" } },
-        { "props": { "variant": "tertiary", "iconOnly": true, "iconStart": "close", "children": "Close" } }
+        {
+          "props": {
+            "variant": "secondary",
+            "iconStart": "add",
+            "children": "Create invoice"
+          }
+        },
+        {
+          "props": {
+            "variant": "secondary",
+            "iconEnd": "arrow_forward",
+            "children": "Next"
+          }
+        },
+        {
+          "props": {
+            "variant": "tertiary",
+            "iconOnly": true,
+            "iconStart": "close",
+            "children": "Close"
+          }
+        }
       ]
     }
   ]

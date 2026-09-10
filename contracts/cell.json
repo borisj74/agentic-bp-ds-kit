@@ -30,7 +30,7 @@
         "md"
       ],
       "default": "md",
-      "note": "Row height 48 / 56 px. Side padding 12 px at both sizes, same as HeaderCell. Avatars, Badge and Checkbox stay sm (32 / 20 / 16 px) so rows keep their height."
+      "note": "Row height 48 / 56 px. Side padding 12 px at both sizes, same as HeaderCell. Avatars, Badge and Checkbox stay sm (32 / 20 / 16 px) so rows keep their height. Without a size, a surrounding Density in compact makes it sm."
     },
     "text": {
       "type": "boolean",

@@ -25,7 +25,7 @@
         "lg"
       ],
       "default": "md",
-      "note": "Field height 28 / 36 / 44, same as Input."
+      "note": "Field height 28 / 36 / 44, same as Input. Without a size, a surrounding Density picks it: compact sm, default md, comfortable lg."
     },
     "labelPosition": {
       "enum": [

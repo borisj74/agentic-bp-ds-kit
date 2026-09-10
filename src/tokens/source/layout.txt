@@ -127,3 +127,17 @@ tooltip/max-width|256px
 
 # Figma context-info panel is 327px wide; 320 on the kit scale.
 help-popover/width|320px
+
+# Figma app-header 2652:90243: 56px bar, 451px search trigger (450 on the kit scale), company logo up to 116px.
+app-header/height|56px
+app-header/search-width|450px
+app-header/company-logo|116px
+app-header/gap|{ref/space/900}
+app-header/search-height|{ref/space/1100}
+app-header/menu-width|320px
+app-header/search-min|360px
+# Header density: compact 48 / comfortable 64 bars, with 32 / 48 search fields (default stays 56 / 40).
+app-header/height-compact|48px
+app-header/height-comfortable|64px
+app-header/search-height-compact|32px
+app-header/search-height-comfortable|48px

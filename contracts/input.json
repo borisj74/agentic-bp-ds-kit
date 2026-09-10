@@ -29,7 +29,7 @@
         "lg"
       ],
       "default": "md",
-      "note": "Heights 28 / 36 / 44, same as Button."
+      "note": "Heights 28 / 36 / 44, same as Button. Without a size, a surrounding Density picks it: compact sm, default md, comfortable lg."
     },
     "type": {
       "enum": [

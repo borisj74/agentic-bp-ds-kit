@@ -1,0 +1,125 @@
+/* Figma app-header 2652:90243: a 56px bar with a faint radial wash and a subtle bottom line.
+   The header is the size container; the bar inside does the layout, since a container query
+   cannot restyle the container itself. */
+.header {
+  /* Density: bar, search and company badge heights. Default is the Figma 56 / 40 / 36. */
+  --bar-h: var(--app-header-height); --search-h: var(--app-header-search-height); --who-h: var(--control-medium);
+  box-sizing: border-box; width: 100%; container-type: inline-size;
+  background: radial-gradient(ellipse at center, var(--bg-neutral-faint), var(--surface-flat) 70%);
+  border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
+  font-family: var(--font-sans);
+}
+
+/* Three columns so the search sits in the true centre. The sides never shrink below their content;
+   when the bar is narrow the search gives up width instead of covering the logo. */
+.bar {
+  box-sizing: border-box; display: grid;
+  grid-template-columns: minmax(max-content, 1fr) minmax(0, var(--app-header-search-width)) minmax(max-content, 1fr);
+  /* 56px including the header's 1px bottom line, as in Figma. */
+  align-items: center; gap: var(--app-header-gap); height: calc(var(--bar-h) - var(--border-width-thin)); padding: 0 var(--space-large);
+}
+.compact { --bar-h: var(--app-header-height-compact); --search-h: var(--app-header-search-height-compact); --who-h: var(--control-small); }
+.comfortable { --bar-h: var(--app-header-height-comfortable); --search-h: var(--app-header-search-height-comfortable); --who-h: var(--control-large); }
+.comfortable .searchText { font-size: var(--font-size-regular); }
+
+/* Start: nav toggle, logo and environment tag, 12px apart. */
+.start { display: flex; align-items: center; gap: var(--space-small); min-width: 0; }
+.home { display: inline-flex; align-items: center; border-radius: var(--radius-small); }
+a.home:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
+.brandFull, .brandSymbol { display: inline-flex; }
+.brandSymbol { display: none; }
+
+/* Figma global-search-trigger: 40px, white, neutral border, small shadow, 4px corners. */
+.center { display: flex; justify-content: center; min-width: 0; }
+.search {
+  box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xsmall); width: 100%; height: var(--search-h);
+  margin: 0; padding: 0 var(--space-small);
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-medium);
+  box-shadow: var(--elevation-card); font: inherit; color: var(--text-neutral-strong); text-align: start; cursor: pointer;
+  transition: border-color var(--motion-interaction-duration) var(--motion-interaction-easing);
+}
+.search:hover { border-color: var(--border-neutral-strong); }
+.search:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset-field); }
+.searchIcon { color: var(--icon-neutral); }
+.searchText { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--font-size-small); font-weight: var(--font-weight-medium); }
+/* Figma uses text/neutral/faint; subtle keeps the label readable. */
+.shortcut { flex: none; font-family: var(--font-mono); font-size: var(--font-size-xsmall); letter-spacing: 0.03em; text-transform: uppercase; color: var(--text-neutral-subtle); }
+.searchCompact { display: none; }
+/* Search dropdown: the kit Command (its own border and shadow). From the wide field it takes the field's
+   width (set inline) and lays over it; from the compact icon it uses the full search width. Never narrower
+   than --app-header-search-min, never wider than the window. Fixed and portaled. */
+.searchPanel {
+  position: fixed; top: 0; left: 0; z-index: var(--z-overlay); visibility: hidden;
+  width: var(--app-header-search-width); min-width: min(var(--app-header-search-min), calc(100vw - var(--space-medium)));
+  max-width: calc(100vw - var(--space-medium));
+}
+
+/* End: 36px icon buttons 4px apart, a divider with 12px each side, then user and company 4px apart. */
+.end { display: flex; align-items: center; justify-content: flex-end; min-width: 0; }
+.actions { display: flex; align-items: center; gap: var(--space-xxsmall); }
+.divider { flex: none; width: var(--border-width-thin); height: var(--control-small); margin: 0 var(--space-small); background: var(--border-neutral-subtle); }
+.dividerCompact { display: none; }
+.who { display: flex; align-items: center; gap: var(--space-xxsmall); }
+.userWrap { display: inline-flex; }
+/* 2px around the 32px kit Avatar makes the 36px Figma user badge. */
+.user { display: inline-flex; padding: var(--space-xxxsmall); margin: 0; border: 0; border-radius: var(--radius-medium); background: transparent; }
+button.user { cursor: pointer; }
+button.user:hover { background: var(--bg-neutral-min-hover); }
+button.user:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: 0; }
+
+/* Figma company-badge: a 36px white box with a subtle border; the customer's logo or name inside. */
+.company {
+  box-sizing: border-box; display: inline-flex; align-items: center; height: var(--who-h); max-width: calc(var(--app-header-company-logo) + var(--space-xsmall) * 2);
+  padding: var(--space-xxsmall) var(--space-xsmall); overflow: hidden;
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-small);
+}
+.company img, .company svg { display: block; max-width: var(--app-header-company-logo); max-height: 100%; }
+.companyName { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--font-size-small); font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); }
+
+/* Account menu under the avatar: name, settings, preferences, log out. Same panel look as DropdownMenu.
+   Fixed to the window and hidden until placed. */
+.menu {
+  position: fixed; top: 0; left: 0; z-index: var(--z-overlay); visibility: hidden;
+  box-sizing: border-box; display: flex; flex-direction: column; width: var(--app-header-menu-width); max-width: calc(100vw - var(--space-medium));
+  padding: var(--space-xsmall); background: var(--surface-flat);
+  border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-medium); box-shadow: var(--elevation-dropdown);
+  font-family: var(--font-sans);
+}
+.menuName {
+  margin: 0; padding: var(--space-xsmall) var(--space-small) var(--space-small);
+  font-size: var(--font-size-small); font-weight: var(--font-weight-bold); letter-spacing: 0.02em; text-transform: uppercase;
+  color: var(--text-neutral-strong); overflow-wrap: anywhere;
+}
+.menuItem {
+  box-sizing: border-box; display: flex; align-items: center; gap: var(--space-small); width: 100%; min-height: var(--control-large);
+  margin: 0; padding: 0 var(--space-small); border: 0; border-radius: var(--radius-medium); background: transparent;
+  font: inherit; font-size: var(--font-size-regular); color: var(--text-neutral); text-align: start; cursor: pointer;
+}
+.menuItem:hover { background: var(--bg-neutral-min-hover); color: var(--text-neutral-strong); }
+.menuItem:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: 0; }
+.menuIcon { color: var(--icon-neutral); }
+.menuRow { padding: var(--space-xsmall) var(--space-small); }
+.menuDivider { width: 100%; margin: var(--space-xsmall) 0; border: 0; border-top: var(--border-width-thin) solid var(--border-neutral-subtle); }
+
+/* Medium bars: drop the shortcut hint first. */
+@container (max-width: 1000px) { .shortcut { display: none; } }
+
+/* Narrow bars (the Figma compact header): the logo drops to its symbol and the search becomes
+   an icon button beside the other icons, with its own divider. */
+@container (max-width: 800px) {
+  .bar { display: flex; justify-content: space-between; gap: var(--space-small); }
+  .center { display: none; }
+  .brandFull { display: none; }
+  .brandSymbol, .searchCompact { display: inline-flex; }
+  .dividerCompact { display: block; }
+}
+
+/* Very narrow: the company badge goes; the avatar still says who is signed in. */
+@container (max-width: 480px) {
+  .bar { padding: 0 var(--space-small); }
+  .company { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search { transition: none; }
+}

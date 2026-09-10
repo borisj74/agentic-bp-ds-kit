@@ -1,5 +1,6 @@
 "use client";
 import type { ReactNode } from "react";
+import { useDensity } from "../Density/Density";
 import { Avatar } from "../Avatar/Avatar";
 import { AvatarGroup } from "../AvatarGroup/AvatarGroup";
 import { Badge, type BadgeTone } from "../Badge/Badge";
@@ -45,9 +46,11 @@ const STARS = 5;
 const score = (v?: string | number) => Math.max(0, Math.min(STARS, Math.round(Number(v) || 0)));
 
 export function Cell({
-  type = "text", size = "md", text = true, checkbox = false, label, href, name, src, people, icon,
+  type = "text", size: ownSize, text = true, checkbox = false, label, href, name, src, people, icon,
   tone = "neutral", badges, value, actions, options, onValueChange, checked, defaultChecked, onCheckedChange,
 }: CellProps) {
+  const density = useDensity();
+  const size = ownSize ?? (density === "compact" ? "sm" : "md");
   const who = name || label || "";
   let visual: ReactNode = null;
   let side = ""; // text shown after the visual

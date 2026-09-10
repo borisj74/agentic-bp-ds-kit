@@ -11,7 +11,7 @@
         "lg"
       ],
       "default": "md",
-      "note": "Heights 28 / 36 / 44, same as Button. The chevron part is square."
+      "note": "Heights 28 / 36 / 44, same as Button. The chevron part is square. Without a size, a surrounding Density picks it: compact sm, default md, comfortable lg."
     },
     "open": {
       "type": "boolean",

@@ -80,6 +80,8 @@
 .exampleCanvas { display: grid; place-items: center; min-height: 192px; padding: var(--space-medium); background: var(--stage); border-radius: var(--radius-large); }
 .block { width: 100%; max-width: 720px; }
 .stack { width: 100%; max-width: 720px; display: grid; gap: var(--space-small); }
+/* Full-width pieces like AppHeader use the whole stage. */
+.wide { max-width: none; }
 .items { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-medium); }
 /* Form fields read top to bottom, like a real form. */
 .column { display: flex; flex-direction: column; align-items: center; gap: var(--space-large); }

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useId, useRef, useState } from "react";
+import { useDensitySize } from "../Density/Density";
 import { Icon } from "../Icon/Icon";
 import styles from "./Checkbox.module.css";
 
@@ -22,7 +23,7 @@ export interface CheckboxProps {
 const iconSize = { sm: "xs", md: "sm", lg: "md" } as const;
 
 export function Checkbox({
-  size = "md",
+  size: ownSize,
   checked,
   defaultChecked = false,
   indeterminate = false,
@@ -34,6 +35,7 @@ export function Checkbox({
   id,
   onChange,
 }: CheckboxProps) {
+  const size = useDensitySize(ownSize);
   const autoId = useId();
   const inputId = id ?? autoId;
   const ref = useRef<HTMLInputElement>(null);

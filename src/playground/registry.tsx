@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
-import { AlertDialogDemo, DropdownMenuDemo, FormDemo, ModalDemo, calculate, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { AlertDialogDemo, AppHeaderDemo, DensityDemo, DropdownMenuDemo, FormDemo, ModalDemo, calculate, type FormDemoContent, type ModalDemoContent } from "./demos";
+import type { DensityValue } from "@/ui/Density/Density";
+import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
 import { AvatarGroup, type AvatarGroupItem } from "@/ui/AvatarGroup/AvatarGroup";
 import { Badge } from "@/ui/Badge/Badge";
@@ -26,6 +28,7 @@ import { Input, type InputProps } from "@/ui/Input/Input";
 import { Logo } from "@/ui/Logo/Logo";
 import { LogoAI } from "@/ui/LogoAI/LogoAI";
 import { RadioGroup, type RadioGroupOption } from "@/ui/RadioGroup/RadioGroup";
+import { SegmentedControl, type SegmentedControlProps } from "@/ui/SegmentedControl/SegmentedControl";
 import { Select, type SelectProps } from "@/ui/Select/Select";
 import { Switch, type SwitchProps } from "@/ui/Switch/Switch";
 import { Textarea, type TextareaProps } from "@/ui/Textarea/Textarea";
@@ -48,6 +51,8 @@ export interface Entry {
   column?: boolean;
   /** Variants stack their items top to bottom with no gap, like rows of one list. */
   flush?: boolean;
+  /** With block: use the whole stage width instead of 720px, for full-width bars like AppHeader. */
+  wide?: boolean;
   /** Playground-only radio controls that are not contract props. normalize turns them into real props. */
   extras?: Record<string, { values: string[]; default: string }>;
   /** Fills in props a combination needs, e.g. an icon for icon-only. */
@@ -338,6 +343,62 @@ export const registry: Record<string, Entry> = {
       </div>
     ),
   },
+  AppHeader: {
+    // Full-width bar. AppHeaderDemo wires the account menu (dark mode and density in local state). Keyed so controls re-apply.
+    render: (p) => <AppHeaderDemo key={JSON.stringify(p)} {...(p as unknown as AppHeaderProps)} />,
+    preview: {
+      onNavToggle: "{toggleNav}",
+      environment: "UAT-2",
+      searchShortcut: "Ctrl+K",
+      searchScopes: [
+        { value: "products", label: "Products" },
+        { value: "accounts", label: "Accounts" },
+        { value: "invoices", label: "Invoices" },
+      ],
+      searchGroups: [
+        {
+          heading: "Recent",
+          items: [
+            { id: "r1", label: "Acme Inc. — renewal quote", icon: "description" },
+            { id: "r2", label: "Premium support plan", icon: "radio_button_unchecked" },
+            { id: "r3", label: "Q3 revenue report", icon: "bar_chart" },
+            { id: "r4", label: "INV-1042", icon: "description" },
+          ],
+        },
+      ],
+      actions: [
+        { id: "help", label: "Help", icon: "help" },
+        { id: "news", label: "What's new", icon: "campaign" },
+        { id: "feedback", label: "Feedback", icon: "chat_info" },
+      ],
+      user: { name: "Maya Chen", src: "/faces/maya-chen.jpg" },
+      company: { name: "Acme Inc." },
+    },
+    snippet: { onSearch: "{openSearch}", onUserSettings: "{openSettings}", onDarkModeChange: "{setDarkMode}", onDensityChange: "{setDensity}", onLogout: "{logOut}" },
+    hint: "This stage is narrow, so the header is compact: menu button, logo symbol, search as an icon. Variants show it full width. Click the avatar for the account menu.",
+    block: true,
+    wide: true,
+    card: (
+      <div style={{ width: "285%", zoom: 0.35 }}>
+        <AppHeader environment="UAT-2" searchShortcut="Ctrl+K" actions={[{ id: "help", label: "Help", icon: "help" }]} user={{ name: "Maya Chen", src: "/faces/maya-chen.jpg" }} company={{ name: "Acme Inc." }} />
+      </div>
+    ),
+  },
+  Density: {
+    // Real kit controls with no size set; the Density around them picks sm, md or lg.
+    render: (p) => <DensityDemo value={p.value as DensityValue | undefined} />,
+    preview: {},
+    snippet: { children: "<App />" },
+    hint: "Switch the value: every control inside picks small, medium or large. A control's own size still wins.",
+    column: true,
+    card: (
+      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <Button size="sm">Compact</Button>
+        <Button size="md">Default</Button>
+        <Button size="lg">Comfortable</Button>
+      </div>
+    ),
+  },
   FormDisplay: {
     // The wrapper gives the full-width row a form-like width.
     render: (p) => (
@@ -453,6 +514,29 @@ export const registry: Record<string, Entry> = {
         <Select size="sm" label="Status" defaultValue="paid" options={[{ value: "paid", label: "Paid" }, { value: "draft", label: "Draft" }]} />
         <Select size="sm" label="Tags" multiple maxVisible={1} defaultValue={["usage", "annual"]} options={[{ value: "usage", label: "Usage" }, { value: "annual", label: "Annual" }]} />
       </div>
+    ),
+  },
+  SegmentedControl: {
+    // Keyed so a changed default value applies again; the options stay clickable.
+    render: (p) => (
+      <div style={{ width: p.fullWidth ? 360 : "auto", maxWidth: "100%" }}>
+        <SegmentedControl key={JSON.stringify(p)} {...(p as unknown as SegmentedControlProps)} />
+      </div>
+    ),
+    preview: {
+      label: "Density & text size",
+      options: [
+        { value: "compact", label: "Compact" },
+        { value: "default", label: "Default" },
+        { value: "comfortable", label: "Comfortable" },
+      ],
+      defaultValue: "default",
+    },
+    hint: "Switch size and toggle hidden label, full width and disabled. Click an option or use the arrow keys.",
+    column: true,
+    card: (
+      <SegmentedControl label="View" hideLabel size="sm" defaultValue="board"
+        options={[{ value: "list", label: "List", icon: "view_list" }, { value: "board", label: "Board", icon: "view_kanban" }]} />
     ),
   },
   Switch: {

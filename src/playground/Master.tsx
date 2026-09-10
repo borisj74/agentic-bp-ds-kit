@@ -26,12 +26,15 @@ const words = (k: string) => k.replace(/([A-Z])/g, " $1").toLowerCase();
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const list = (xs: string[]) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`);
 
-// Object literal for code samples: { id: "a", title: "A" }.
+// Object literal for code samples: { id: "a", title: "A" }. Nested objects and arrays print the same way.
 const lit = (v: unknown): string =>
-  v && typeof v === "object" && !Array.isArray(v) ? `{ ${Object.entries(v).map(([k, x]) => `${k}: ${JSON.stringify(x)}`).join(", ")} }` : JSON.stringify(v);
+  Array.isArray(v) ? `[${v.map(lit).join(", ")}]`
+  : v && typeof v === "object" ? `{ ${Object.entries(v).map(([k, x]) => `${k}: ${lit(x)}`).join(", ")} }`
+  : JSON.stringify(v);
 // Arrays of objects print one item per line so code samples stay readable.
+// Single objects print as { name: "Maya Chen" }, not JSON.
 const fmt = (v: unknown, pad: string) =>
-  Array.isArray(v) && v.some((x) => x && typeof x === "object") ? `[\n${v.map((x) => `${pad}  ${lit(x)},`).join("\n")}\n${pad}]` : JSON.stringify(v);
+  Array.isArray(v) && v.some((x) => x && typeof x === "object") ? `[\n${v.map((x) => `${pad}  ${lit(x)},`).join("\n")}\n${pad}]` : lit(v);
 
 // Writes props as JSX in contract prop order. Multiline matches the Preview snippet.
 // Array children are child kit components (e.g. Buttons in a ButtonGroup), one per line.
@@ -125,7 +128,7 @@ export function Master({ contract }: { contract: Contract }) {
       {tab === "preview" ? (
         <div className={styles.section}>
           <div className={styles.layout}>
-            <div className={[styles.canvas, hasControls ? "" : styles.canvasFull].join(" ")}>{entry.block ? <div className={styles.block}>{entry.render(shown)}</div> : entry.render(shown)}</div>
+            <div className={[styles.canvas, hasControls ? "" : styles.canvasFull].join(" ")}>{entry.block ? <div className={[styles.block, entry.wide ? styles.wide : ""].join(" ")}>{entry.render(shown)}</div> : entry.render(shown)}</div>
             {hasControls && (<aside className={styles.panel} aria-label={`${contract.name} controls`}>
               {enums.map(([k, v]) => {
                 const id = `ctl-${k}`;
@@ -194,7 +197,7 @@ export function Master({ contract }: { contract: Contract }) {
                       ))}
                     </div>
                   ) : (
-                    <div className={entry.block ? styles.stack : entry.flush ? styles.flush : entry.column ? styles.column : styles.items}>{ex.items.map((it, j) => <div key={j}>{entry.render(it.props)}</div>)}</div>
+                    <div className={entry.block ? [styles.stack, entry.wide ? styles.wide : ""].join(" ") : entry.flush ? styles.flush : entry.column ? styles.column : styles.items}>{ex.items.map((it, j) => <div key={j}>{entry.render(it.props)}</div>)}</div>
                   )}
                 </div>
                 <div className={styles.detail}>

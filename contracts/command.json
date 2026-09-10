@@ -2,7 +2,7 @@
   "name": "Command",
   "path": "src/ui/Command/Command.tsx",
   "intent": "A search field over a grouped list of pages, records and actions. Typing filters the list; arrow keys and Enter pick.",
-  "usage": "Use Command for quick jumps and actions across the app, like a global search. It is one component: pass groups of items as data. Typing filters by label and description. Arrow keys move the highlight and Enter picks; Escape clears the search. It shows inline; a ⌘K palette comes later. See contracts/command.json for the full contract.",
+  "usage": "Use Command for quick jumps and actions across the app, like a global search. It is one component: pass groups of items as data. Typing filters by label and description. Arrow keys move the highlight and Enter picks; Escape clears the search. It shows inline; a ⌘K palette comes later. scopes adds a menu in the search row to narrow what it looks through. AppHeader opens it over its search field, so the field grows into the results. See contracts/command.json for the full contract.",
   "props": {
     "groups": {
       "type": "CommandGroup[]",
@@ -11,7 +11,7 @@
         "heading": "string?",
         "items": "CommandItem[]: { id: string, label: string, description?: string, icon?: string, shortcut?: string, disabled?: boolean }"
       },
-      "note": "Groups are split by a thin line. icon is a Material Symbols name. shortcut shows as a key, like N."
+      "note": "Groups are split by a thin line. icon is a Material Symbols name. shortcut shows as a key, like N. Icons sit in a tinted tile, like DropdownMenu."
     },
     "label": {
       "type": "string",
@@ -35,6 +35,28 @@
       "type": "boolean",
       "default": true,
       "note": "Footer with the arrow keys to browse and Enter to select."
+    },
+    "scopes": {
+      "type": "CommandScope[]",
+      "itemShape": "{ value: string; label: string }",
+      "note": "Adds a scope menu at the end of the search row, like Products / Accounts. A kit DropdownMenu."
+    },
+    "scope": {
+      "type": "string",
+      "note": "Controlled scope value."
+    },
+    "defaultScope": {
+      "type": "string",
+      "note": "Uncontrolled start scope. Defaults to the first scope."
+    },
+    "onScopeChange": {
+      "type": "function",
+      "note": "(scope: string) => void. Focus returns to the search field."
+    },
+    "autoFocus": {
+      "type": "boolean",
+      "default": false,
+      "note": "Focus the search field on mount, when Command opens from a trigger like the AppHeader search."
     },
     "onSelect": {
       "type": "function",
@@ -99,6 +121,53 @@
                     "label": "Export all data",
                     "icon": "download",
                     "disabled": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "With scopes",
+      "usage": "A scope menu at the end of the search row narrows what the search looks through.",
+      "items": [
+        {
+          "props": {
+            "label": "Search",
+            "scopes": [
+              {
+                "value": "products",
+                "label": "Products"
+              },
+              {
+                "value": "accounts",
+                "label": "Accounts"
+              },
+              {
+                "value": "invoices",
+                "label": "Invoices"
+              }
+            ],
+            "groups": [
+              {
+                "heading": "Recent",
+                "items": [
+                  {
+                    "id": "p1",
+                    "label": "Premium support plan",
+                    "icon": "description"
+                  },
+                  {
+                    "id": "p2",
+                    "label": "Usage add-on",
+                    "icon": "radio_button_unchecked"
+                  },
+                  {
+                    "id": "p3",
+                    "label": "Revenue by product",
+                    "icon": "bar_chart"
                   }
                 ]
               }

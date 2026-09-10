@@ -1,0 +1,11 @@
+/* One choice from a few, as kit tertiary Buttons side by side. The chosen one gets a brand tint and a
+   brand border, so the choice never rests on color alone. Two classes deep so these win over Button's own. */
+.root { display: inline-flex; flex-direction: column; gap: var(--space-xxsmall); min-width: 0; font-family: var(--font-sans); }
+.full { display: flex; width: 100%; }
+
+.group { display: flex; gap: var(--space-xxsmall); }
+/* Full width: each option keeps room for its label and they share what is left. */
+.full .group > button { flex: 1 1 auto; min-width: 0; }
+
+.group > .on { background: var(--bg-neutral-min-selected); border-color: var(--border-brand-subtle); color: var(--text-neutral-strong); }
+.group > .on:hover:not(:disabled) { background: var(--bg-neutral-min-selected-hover); }
