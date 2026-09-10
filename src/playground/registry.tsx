@@ -20,6 +20,7 @@ import { Form, type FormProps } from "@/ui/Form/Form";
 import { FormDisplay, type FormDisplayProps } from "@/ui/FormDisplay/FormDisplay";
 import { FormulaEditor, type FormulaEditorProps } from "@/ui/FormulaEditor/FormulaEditor";
 import { HeaderCell } from "@/ui/HeaderCell/HeaderCell";
+import { HelpPopover, type HelpPopoverProps } from "@/ui/HelpPopover/HelpPopover";
 import { Icon } from "@/ui/Icon/Icon";
 import { Input, type InputProps } from "@/ui/Input/Input";
 import { Logo } from "@/ui/Logo/Logo";
@@ -378,6 +379,29 @@ export const registry: Record<string, Entry> = {
       <div style={{ width: "125%", zoom: 0.7 }}>
         <FormulaEditor label="Formula" hideLabel defaultValue="{!Amount} * 0.9" />
       </div>
+    ),
+  },
+  HelpPopover: {
+    // trigger is playground-only: a ? icon Button, or a real Input whose help prop opens HelpPopover.
+    // The Open switch pins it; off means uncontrolled (hover, focus, click). Keyed so it re-places.
+    render: ({ trigger, ...p }) =>
+      trigger === "field" ? (
+        <div style={{ width: 320, maxWidth: "100%" }}>
+          <Input label={(p.title as string) || "Tax ID"} help={p.content as string} placeholder="EU123456789" />
+        </div>
+      ) : (
+        <HelpPopover key={JSON.stringify(p)} {...(p as unknown as Omit<HelpPopoverProps, "children">)} open={p.open ? true : undefined}>
+          <Button variant="tertiary" size="sm" iconOnly iconStart="help_center">{`About ${(p.title as string) || "this"}`}</Button>
+        </HelpPopover>
+      ),
+    preview: { title: "Tax ID", content: "The number on your tax registration, like EU123456789. We print it on every invoice.", open: true },
+    snippet: { children: '<Button variant="tertiary" size="sm" iconOnly iconStart="help_center">About Tax ID</Button>' },
+    extras: { trigger: { values: ["icon", "field"], default: "icon" } },
+    hint: "Switch placement and trigger. Open pins the panel; turn it off, then hover, Tab or click the ? icon.",
+    card: (
+      <HelpPopover title="Tax ID" content="The number on your tax registration.">
+        <Button variant="tertiary" size="sm" iconOnly iconStart="help_center">About Tax ID</Button>
+      </HelpPopover>
     ),
   },
   Input: {

@@ -4,7 +4,7 @@ import { Button } from "../Button/Button";
 import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
 import { useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
-import { Tooltip } from "../Tooltip/Tooltip";
+import { HelpPopover } from "../HelpPopover/HelpPopover";
 // Label, help, hint and error share Input's styles so all form fields match.
 import field from "../Input/Input.module.css";
 import styles from "./FormulaEditor.module.css";
@@ -149,8 +149,8 @@ export function FormulaEditor({
           {label}
         </label>
         {help && !hideLabel && (
-          // help shows in the kit Tooltip on hover and keyboard focus.
-          <Tooltip content={help}><button type="button" className={field.help} aria-label={`About ${label}`}><Icon name="help_center" size="sm" /></button></Tooltip>
+          // help opens a HelpPopover titled with the label: hover, keyboard focus or click.
+          <HelpPopover title={label} content={help}><button type="button" className={field.help} aria-label={`About ${label}`}><Icon name="help_center" size="sm" /></button></HelpPopover>
         )}
         {help && <span id={helpId} className={field.srOnly}>{help}</span>}
       </div>

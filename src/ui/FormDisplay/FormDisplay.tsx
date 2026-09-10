@@ -2,7 +2,7 @@
 import { useId, type ReactNode } from "react";
 import { useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
-import { Tooltip } from "../Tooltip/Tooltip";
+import { HelpPopover } from "../HelpPopover/HelpPopover";
 // The help button matches the one on Input.
 import field from "../Input/Input.module.css";
 import styles from "./FormDisplay.module.css";
@@ -27,8 +27,8 @@ export function FormDisplay({ label, value, labelPosition: ownLabelPosition, hel
       <dt className={styles.term}>
         {label}
         {help && (
-          // help shows in the kit Tooltip on hover and keyboard focus.
-          <Tooltip content={help}><button type="button" className={field.help} aria-label={`About ${label}`}><Icon name="help_center" size="sm" /></button></Tooltip>
+          // help opens a HelpPopover titled with the label: hover, keyboard focus or click.
+          <HelpPopover title={label} content={help}><button type="button" className={field.help} aria-label={`About ${label}`}><Icon name="help_center" size="sm" /></button></HelpPopover>
         )}
         {help && <span id={helpId} className={field.srOnly}>{help}</span>}
       </dt>

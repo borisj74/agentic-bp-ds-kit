@@ -124,3 +124,6 @@ switch/inset|{ref/space/100}
 
 # Reference kit tooltip: 16rem max width; text wraps past it.
 tooltip/max-width|256px
+
+# Figma context-info panel is 327px wide; 320 on the kit scale.
+help-popover/width|320px

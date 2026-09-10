@@ -2,7 +2,7 @@
 import { useId, useState, type ChangeEvent } from "react";
 import { useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
-import { Tooltip } from "../Tooltip/Tooltip";
+import { HelpPopover } from "../HelpPopover/HelpPopover";
 import styles from "./Input.module.css";
 
 export type InputSize = "sm" | "md" | "lg";
@@ -78,8 +78,8 @@ export function Input({
           {label}
         </label>
         {help && !hideLabel && (
-          // help shows in the kit Tooltip on hover and keyboard focus.
-          <Tooltip content={help}><button type="button" className={styles.help} aria-label={`About ${label}`}><Icon name="help_center" size="sm" /></button></Tooltip>
+          // help opens a HelpPopover titled with the label: hover, keyboard focus or click.
+          <HelpPopover title={label} content={help}><button type="button" className={styles.help} aria-label={`About ${label}`}><Icon name="help_center" size="sm" /></button></HelpPopover>
         )}
         {help && <span id={helpId} className={styles.srOnly}>{help}</span>}
       </div>

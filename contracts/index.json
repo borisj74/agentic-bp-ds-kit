@@ -22,6 +22,7 @@
     {"name": "FormDisplay", "contract": "contracts/formdisplay.json", "category": "form", "tags": ["read only", "display", "detail", "key value", "label value", "summary", "form"]},
     {"name": "FormulaEditor", "contract": "contracts/formulaeditor.json", "category": "form", "tags": ["formula", "expression", "calculated field", "rule", "validation", "code", "editor", "form"]},
     {"name": "HeaderCell", "contract": "contracts/headercell.json", "category": "data", "tags": ["table", "header", "th", "column", "sort", "select all"]},
+    {"name": "HelpPopover", "contract": "contracts/helppopover.json", "category": "overlay", "tags": ["help", "popover", "context info", "question mark", "info panel", "field help"]},
     {"name": "Icon", "contract": "contracts/icon.json", "category": "base", "tags": ["glyph", "symbol"]},
     {"name": "Input", "contract": "contracts/input.json", "category": "form", "tags": ["form", "text field", "input", "search", "email", "label", "hint", "error", "required"]},
     {"name": "Logo", "contract": "contracts/logo.json", "category": "brand", "tags": ["brand", "wordmark", "symbol", "header"]},

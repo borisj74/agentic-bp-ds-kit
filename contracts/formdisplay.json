@@ -22,7 +22,7 @@
     },
     "help": {
       "type": "string",
-      "note": "Help icon beside the label. The text shows in a Tooltip on hover and keyboard focus."
+      "note": "Help icon beside the label. The text shows in a HelpPopover titled with the label, on hover, keyboard focus or click."
     },
     "empty": {
       "type": "string",

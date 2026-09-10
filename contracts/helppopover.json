@@ -1,0 +1,97 @@
+{
+  "name": "HelpPopover",
+  "path": "src/ui/HelpPopover/HelpPopover.tsx",
+  "intent": "A small help panel with an optional title and a short paragraph, opened from a ? icon beside a label or setting.",
+  "usage": "Wrap one focusable trigger, usually a ? help icon, in HelpPopover and pass title and content. It shows on hover and keyboard focus, and a click or tap pins it open until a click elsewhere, Escape, or another click. Form fields already use it: pass help on Input, Textarea, Select, DatePicker, FormulaEditor or FormDisplay and the label becomes the title. For a one-line name on an icon button, use Tooltip. See contracts/helppopover.json for the full contract.",
+  "props": {
+    "title": {
+      "type": "string",
+      "note": "Bold header on a faint band. Leave it out for body text only."
+    },
+    "content": {
+      "type": "string",
+      "required": true,
+      "note": "One to three short sentences. Plain text."
+    },
+    "placement": {
+      "enum": [
+        "top",
+        "bottom",
+        "left",
+        "right"
+      ],
+      "default": "bottom",
+      "note": "Preferred side. Flips when there is no room and stays inside the window; the arrow keeps pointing at the trigger."
+    },
+    "delay": {
+      "type": "number",
+      "default": 150,
+      "note": "Milliseconds of hover before it shows. Keyboard focus and click show it at once."
+    },
+    "open": {
+      "type": "boolean",
+      "note": "Controlled. true keeps it shown, false keeps it hidden."
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "note": "No panel; the child renders on its own."
+    },
+    "children": {
+      "type": "ReactElement",
+      "required": true,
+      "note": "One focusable trigger, like a ? icon button. It gets aria-describedby."
+    }
+  },
+  "useWhen": [
+    "A ? icon beside a form label or a setting that needs a sentence or two of explanation.",
+    "Help that needs a title, like the name of the field it explains."
+  ],
+  "doNot": [
+    "Do not invent Popover, HoverCard, InfoTip, ContextInfo or a local help panel.",
+    "Do not use for an icon button's name. Use Tooltip.",
+    "Do not put links, buttons or forms in it. Use Modal.",
+    "Do not put required instructions in it. Use the field's hint.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The title and text are always in the page as the trigger's description (aria-describedby), so screen readers get them on focus.",
+    "Shows on hover after the delay and at once on keyboard focus. Enter, Space, a click or a tap pins it open.",
+    "Escape, a click elsewhere, or moving focus away closes it. Escape does not close an enclosing Modal.",
+    "The pointer can move onto the panel to read it. It is fixed to the window, so containers never clip it."
+  ],
+  "snippet": "<HelpPopover title=\"Tax ID\" content=\"The number on your tax registration, like EU123456789.\">\n  <Button variant=\"tertiary\" size=\"sm\" iconOnly iconStart=\"help_center\">About Tax ID</Button>\n</HelpPopover>",
+  "examples": [
+    {
+      "title": "With a title",
+      "usage": "The title names what the text explains. Hover, Tab or click the ? icon.",
+      "items": [
+        { "props": { "title": "Tax ID", "content": "The number on your tax registration, like EU123456789. We print it on every invoice." } }
+      ]
+    },
+    {
+      "title": "Body only",
+      "usage": "Leave out title for a single short explanation.",
+      "items": [
+        { "props": { "content": "Invoices that match this rule cannot be sent until someone approves them." } }
+      ]
+    },
+    {
+      "title": "Placement",
+      "usage": "Below by default, like Figma. It flips when the preferred side has no room.",
+      "items": [
+        { "props": { "title": "Below", "content": "The default side.", "placement": "bottom" } },
+        { "props": { "title": "Above", "content": "Use when the space below is taken.", "placement": "top" } },
+        { "props": { "title": "Right", "content": "Beside the trigger.", "placement": "right" } }
+      ]
+    },
+    {
+      "title": "On a form field",
+      "usage": "Pass help on a kit field. Its label becomes the title.",
+      "a11y": true,
+      "items": [
+        { "props": { "title": "Tax ID", "content": "The number on your tax registration, like EU123456789.", "trigger": "field" } }
+      ]
+    }
+  ]
+}

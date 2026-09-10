@@ -1,0 +1,52 @@
+/* Figma context-info 1047:6384: a white raised panel with an optional faint header, a body, and an arrow
+   pointing at the trigger. Shown on hover, keyboard focus or click (a click pins it). Fixed to the window and
+   hidden until placed, so it never flashes at 0,0. */
+.wrap { display: inline-flex; }
+
+.panel {
+  /* Figma arrow is 23 x 11; 24 x 12 on the kit scale. --arrow-fill matches whatever the arrow touches. */
+  --aw: calc(var(--space-small) * 2);
+  --ah: var(--space-small);
+  --arrow-fill: var(--surface-raised);
+  position: fixed; top: 0; left: 0; z-index: var(--z-overlay); visibility: hidden;
+  box-sizing: border-box; width: var(--help-popover-width); max-width: calc(100vw - var(--space-medium));
+  background: var(--surface-raised); border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-small);
+  box-shadow: var(--elevation-card); font-family: var(--font-sans); text-align: start;
+  animation: appear var(--motion-overlay-duration) var(--motion-overlay-easing);
+}
+/* Below the trigger the arrow touches the header, so it takes the header's fill. */
+.panel[data-header][data-side="bottom"] { --arrow-fill: var(--bg-neutral-faint); }
+
+/* Figma header: faint fill, subtle bottom line, 8 / 16 padding, 16px bold title. */
+.header {
+  padding: var(--space-xsmall) var(--space-medium);
+  background: var(--bg-neutral-faint); border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
+  border-radius: var(--radius-small) var(--radius-small) 0 0;
+}
+.title { margin: 0; font-size: var(--font-size-regular); font-weight: var(--font-weight-bold); line-height: 1.25; color: var(--text-neutral-max); overflow-wrap: anywhere; }
+
+/* Figma body: 14px on a 20px line, 12 / 16 padding, tabular numbers. */
+.body {
+  margin: 0; padding: var(--space-small) var(--space-medium);
+  font-size: var(--font-size-small); line-height: 1.43; color: var(--text-neutral);
+  font-variant-numeric: lining-nums tabular-nums; overflow-wrap: break-word;
+}
+
+/* A triangle outline in the border color with the fill laid over it, so only the slanted edges show a line.
+   The fill's bottom row covers the panel's border where the arrow joins it. */
+.arrow { position: absolute; width: var(--aw); height: var(--ah); }
+.arrow::before, .arrow::after { content: ""; position: absolute; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.arrow::before { inset: 0; background: var(--border-neutral); }
+.arrow::after { inset: 1px 1px 0; background: var(--arrow-fill); }
+.panel[data-side="bottom"] .arrow { top: calc(var(--ah) * -1); left: calc(var(--arrow) - var(--aw) / 2); }
+.panel[data-side="top"] .arrow { top: 100%; left: calc(var(--arrow) - var(--aw) / 2); transform: rotate(180deg); }
+.panel[data-side="left"] .arrow { left: calc(100% - (var(--aw) - var(--ah)) / 2); top: calc(var(--arrow) - var(--ah) / 2); transform: rotate(90deg); }
+.panel[data-side="right"] .arrow { left: calc((var(--aw) + var(--ah)) / -2); top: calc(var(--arrow) - var(--ah) / 2); transform: rotate(-90deg); }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@keyframes appear { from { opacity: var(--opacity-0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .panel { animation: none; }
+}
