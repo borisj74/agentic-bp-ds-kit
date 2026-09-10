@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { Button } from "../Button/Button";
 import { useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
+import { Tooltip } from "../Tooltip/Tooltip";
 // Label, help, hint, error and the field box share Input's styles so all form fields match.
 import field from "../Input/Input.module.css";
 import styles from "./DatePicker.module.css";
@@ -301,9 +302,7 @@ export function DatePicker({
           {required && <span className={field.srOnly}>, required</span>}
         </label>
         {help && !hideLabel && (
-          <button type="button" className={field.help} aria-label={`About ${label}`} aria-describedby={helpId}>
-            <Icon name="help_center" size="sm" />
-          </button>
+          <Tooltip content={help}><button type="button" className={field.help} aria-label={`About ${label}`}><Icon name="help_center" size="sm" /></button></Tooltip>
         )}
         {help && <span id={helpId} className={field.srOnly}>{help}</span>}
       </div>

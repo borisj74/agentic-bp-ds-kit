@@ -28,6 +28,7 @@ import { RadioGroup, type RadioGroupOption } from "@/ui/RadioGroup/RadioGroup";
 import { Select, type SelectProps } from "@/ui/Select/Select";
 import { Switch, type SwitchProps } from "@/ui/Switch/Switch";
 import { Textarea, type TextareaProps } from "@/ui/Textarea/Textarea";
+import { Tooltip, type TooltipProps } from "@/ui/Tooltip/Tooltip";
 
 export type Props = Record<string, unknown>;
 export interface Entry {
@@ -447,6 +448,20 @@ export const registry: Record<string, Entry> = {
         <Switch size="sm" label="Auto-pay" />
       </div>
     ),
+  },
+  Tooltip: {
+    // A kit Button is the trigger; trigger is playground-only. Open pins the bubble while you switch placement. Keyed so it re-places.
+    // The Open switch pins it; off means uncontrolled (hover and focus), not forced shut.
+    render: ({ trigger, ...p }) => (
+      <Tooltip key={JSON.stringify(p)} {...(p as unknown as Omit<TooltipProps, "children">)} open={p.open ? true : undefined}>
+        {trigger === "icon" ? <Button variant="tertiary" iconOnly iconStart="download">Download invoice</Button> : <Button>Export</Button>}
+      </Tooltip>
+    ),
+    preview: { content: "Export includes all projects", open: true },
+    snippet: { children: "<Button>Export</Button>" },
+    extras: { trigger: { values: ["button", "icon"], default: "button" } },
+    hint: "Switch placement and trigger. Open pins the bubble; turn it off, then hover or Tab to the button.",
+    card: <Tooltip content="Export includes all projects"><Button size="sm">Export</Button></Tooltip>,
   },
   Textarea: {
     // Keyed so a changed default value applies again. The wrapper gives the full-width field a form-like width.

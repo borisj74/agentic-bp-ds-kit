@@ -2,6 +2,7 @@
 import { useId, type ReactNode } from "react";
 import { useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
+import { Tooltip } from "../Tooltip/Tooltip";
 // The help button matches the one on Input.
 import field from "../Input/Input.module.css";
 import styles from "./FormDisplay.module.css";
@@ -26,10 +27,8 @@ export function FormDisplay({ label, value, labelPosition: ownLabelPosition, hel
       <dt className={styles.term}>
         {label}
         {help && (
-          // The tooltip arrives with the kit Tooltip. Until then the text reaches screen readers through aria-describedby.
-          <button type="button" className={field.help} aria-label={`About ${label}`} aria-describedby={helpId}>
-            <Icon name="help_center" size="sm" />
-          </button>
+          // help shows in the kit Tooltip on hover and keyboard focus.
+          <Tooltip content={help}><button type="button" className={field.help} aria-label={`About ${label}`}><Icon name="help_center" size="sm" /></button></Tooltip>
         )}
         {help && <span id={helpId} className={field.srOnly}>{help}</span>}
       </dt>

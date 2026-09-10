@@ -2,6 +2,7 @@
 import { useId, useState, type ChangeEvent } from "react";
 import { useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
+import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./Input.module.css";
 
 export type InputSize = "sm" | "md" | "lg";
@@ -77,10 +78,8 @@ export function Input({
           {label}
         </label>
         {help && !hideLabel && (
-          // The tooltip arrives with the kit Tooltip. Until then the text reaches screen readers through aria-describedby.
-          <button type="button" className={styles.help} aria-label={`About ${label}`} aria-describedby={helpId}>
-            <Icon name="help_center" size="sm" />
-          </button>
+          // help shows in the kit Tooltip on hover and keyboard focus.
+          <Tooltip content={help}><button type="button" className={styles.help} aria-label={`About ${label}`}><Icon name="help_center" size="sm" /></button></Tooltip>
         )}
         {help && <span id={helpId} className={styles.srOnly}>{help}</span>}
       </div>

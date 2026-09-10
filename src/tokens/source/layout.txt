@@ -121,3 +121,6 @@ switch/height/sm|{ref/space/500}
 switch/height/md|{ref/space/600}
 switch/height/lg|{ref/space/700}
 switch/inset|{ref/space/100}
+
+# Reference kit tooltip: 16rem max width; text wraps past it.
+tooltip/max-width|256px

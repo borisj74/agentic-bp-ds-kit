@@ -1,0 +1,29 @@
+/* Reference kit tooltip: a small dark bubble with an arrow, 12px medium text, 4/8 padding, 256px max.
+   Shown after a short hover delay, and at once on keyboard focus.
+   Fixed to the window and hidden until placed, so it never flashes at 0,0. */
+.wrap { display: inline-flex; }
+
+.bubble {
+  position: fixed; top: 0; left: 0; z-index: var(--z-overlay); visibility: hidden;
+  box-sizing: border-box; width: max-content; max-width: var(--tooltip-max-width);
+  padding: var(--space-xxsmall) var(--space-xsmall); border-radius: var(--radius-medium);
+  background: var(--bg-neutral-max); color: var(--text-neutral-min); box-shadow: var(--elevation-popover);
+  font-family: var(--font-sans); font-size: var(--font-size-xsmall); font-weight: var(--font-weight-medium); line-height: 1.4;
+  text-align: center; overflow-wrap: break-word;
+  animation: appear var(--motion-overlay-duration) var(--motion-overlay-easing);
+}
+
+/* An 8px square turned 45deg, half tucked under the bubble. --arrow is its centre along the edge, set in JS. */
+.arrow { position: absolute; width: var(--space-xsmall); height: var(--space-xsmall); background: inherit; transform: rotate(45deg); }
+.bubble[data-side="top"] .arrow { bottom: calc(var(--space-xsmall) / -2); left: calc(var(--arrow) - var(--space-xsmall) / 2); }
+.bubble[data-side="bottom"] .arrow { top: calc(var(--space-xsmall) / -2); left: calc(var(--arrow) - var(--space-xsmall) / 2); }
+.bubble[data-side="left"] .arrow { right: calc(var(--space-xsmall) / -2); top: calc(var(--arrow) - var(--space-xsmall) / 2); }
+.bubble[data-side="right"] .arrow { left: calc(var(--space-xsmall) / -2); top: calc(var(--arrow) - var(--space-xsmall) / 2); }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@keyframes appear { from { opacity: var(--opacity-0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble { animation: none; }
+}

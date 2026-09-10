@@ -30,7 +30,8 @@
     {"name": "RadioGroup", "contract": "contracts/radiogroup.json", "category": "form", "tags": ["form", "radio", "single select", "choice", "options"]},
     {"name": "Select", "contract": "contracts/select.json", "category": "form", "tags": ["select", "dropdown", "picker", "multi-select", "options", "form"]},
     {"name": "Switch", "contract": "contracts/switch.json", "category": "form", "tags": ["switch", "toggle", "on off", "setting", "preference"]},
-    {"name": "Textarea", "contract": "contracts/textarea.json", "category": "form", "tags": ["form", "textarea", "multi-line", "notes", "description", "code", "formula"]}
+    {"name": "Textarea", "contract": "contracts/textarea.json", "category": "form", "tags": ["form", "textarea", "multi-line", "notes", "description", "code", "formula"]},
+    {"name": "Tooltip", "contract": "contracts/tooltip.json", "category": "overlay", "tags": ["tooltip", "hint", "help", "hover", "info", "icon button label"]}
   ],
   "patterns": []
 }

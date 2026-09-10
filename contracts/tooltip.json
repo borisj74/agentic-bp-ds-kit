@@ -1,0 +1,88 @@
+{
+  "name": "Tooltip",
+  "path": "src/ui/Tooltip/Tooltip.tsx",
+  "intent": "Brief extra text on hover or keyboard focus of one trigger. Short and non-essential.",
+  "usage": "Wrap one focusable kit piece, like a Button or an icon-only Button, in Tooltip and pass content. It shows after a short hover delay and at once on keyboard focus; Escape hides it. Keep it to a few words or one short sentence, and never put anything people must read or click in it. Field help icons already use it: pass help on Input, Textarea, Select, DatePicker, FormulaEditor or FormDisplay. See contracts/tooltip.json for the full contract.",
+  "props": {
+    "content": {
+      "type": "string",
+      "required": true,
+      "note": "Plain text. Wraps past 256px."
+    },
+    "placement": {
+      "enum": [
+        "top",
+        "bottom",
+        "left",
+        "right"
+      ],
+      "default": "top",
+      "note": "Preferred side. It flips to the other side when there is no room, and stays inside the window."
+    },
+    "delay": {
+      "type": "number",
+      "default": 150,
+      "note": "Milliseconds of hover before it shows. Keyboard focus shows it at once."
+    },
+    "open": {
+      "type": "boolean",
+      "note": "Controlled. true keeps it shown, false keeps it hidden."
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "note": "No tooltip; the child renders on its own."
+    },
+    "children": {
+      "type": "ReactElement",
+      "required": true,
+      "note": "One focusable element, like a kit Button. It gets aria-describedby."
+    }
+  },
+  "useWhen": [
+    "Naming an icon-only Button.",
+    "A short explanation behind a help icon.",
+    "Extra context that would clutter the layout if always shown."
+  ],
+  "doNot": [
+    "Do not invent Popover, HoverCard, InfoTip or a local tooltip.",
+    "Do not put required instructions in a tooltip. Use the field's hint.",
+    "Do not put links, buttons or forms in it. Use Modal.",
+    "Do not wrap something people cannot focus, like plain text or a disabled Button.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The text is always in the page as the trigger's description (aria-describedby), so screen readers read it on focus.",
+    "Shows on hover after the delay and at once on keyboard focus, not on a mouse click.",
+    "Escape hides it without moving focus or closing an enclosing Modal. The pointer can move onto the bubble to read it.",
+    "The bubble is fixed to the window, so scrolling containers, cards and tables never clip it."
+  ],
+  "snippet": "<Tooltip content=\"Export includes all projects\">\n  <Button>Export</Button>\n</Tooltip>",
+  "examples": [
+    {
+      "title": "Placement",
+      "usage": "Hover or Tab to each button. It flips when the preferred side has no room.",
+      "items": [
+        { "props": { "content": "Shows on top", "placement": "top" } },
+        { "props": { "content": "Shows below", "placement": "bottom" } },
+        { "props": { "content": "Shows on the left", "placement": "left" } },
+        { "props": { "content": "Shows on the right", "placement": "right" } }
+      ]
+    },
+    {
+      "title": "Icon button",
+      "usage": "The tooltip repeats the icon button's name for people who can see the screen.",
+      "items": [
+        { "props": { "content": "Download invoice", "trigger": "icon" } }
+      ]
+    },
+    {
+      "title": "Longer text",
+      "usage": "Wraps past 256px. Keep it to one short sentence.",
+      "a11y": true,
+      "items": [
+        { "props": { "content": "Export includes every project in this workspace, including archived ones." } }
+      ]
+    }
+  ]
+}

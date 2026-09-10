@@ -4,6 +4,7 @@ import { Button } from "../Button/Button";
 import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
 import { useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
+import { Tooltip } from "../Tooltip/Tooltip";
 // Label, help, hint and error share Input's styles so all form fields match.
 import field from "../Input/Input.module.css";
 import styles from "./FormulaEditor.module.css";
@@ -148,10 +149,8 @@ export function FormulaEditor({
           {label}
         </label>
         {help && !hideLabel && (
-          // The tooltip arrives with the kit Tooltip. Until then the text reaches screen readers through aria-describedby.
-          <button type="button" className={field.help} aria-label={`About ${label}`} aria-describedby={helpId}>
-            <Icon name="help_center" size="sm" />
-          </button>
+          // help shows in the kit Tooltip on hover and keyboard focus.
+          <Tooltip content={help}><button type="button" className={field.help} aria-label={`About ${label}`}><Icon name="help_center" size="sm" /></button></Tooltip>
         )}
         {help && <span id={helpId} className={field.srOnly}>{help}</span>}
       </div>

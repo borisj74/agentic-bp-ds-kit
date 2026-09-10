@@ -1213,4 +1213,5 @@
   --switch-height-md: var(--ref-space-600);
   --switch-height-lg: var(--ref-space-700);
   --switch-inset: var(--ref-space-100);
+  --tooltip-max-width: 256px;
 }

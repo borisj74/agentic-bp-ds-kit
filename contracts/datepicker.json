@@ -94,7 +94,7 @@
     },
     "help": {
       "type": "string",
-      "note": "Help icon beside the label. Opens in a Tooltip once the kit has one."
+      "note": "Help icon beside the label. The text shows in a Tooltip on hover and keyboard focus."
     }
   },
   "useWhen": [

@@ -113,7 +113,7 @@
     },
     "help": {
       "type": "string",
-      "note": "Shows a help icon beside the label. The text opens in a Tooltip once the kit has one; until then screen readers get it with the field."
+      "note": "Shows a help icon beside the label. The text shows in a Tooltip on hover and keyboard focus, and screen readers also get it with the field."
     },
     "prefix": {
       "type": "string",
@@ -143,7 +143,7 @@
   ],
   "doNot": [
     "Do not invent a local Field, FieldLabel, FieldDescription, FieldError, FormItem, InputGroup or SearchInput.",
-    "Do not build a local tooltip for help. Pass help; the kit Tooltip will show it.",
+    "Do not build a local tooltip for help. Pass help; it shows in the kit Tooltip.",
     "Do not use a placeholder as the label. Pass label, and hideLabel if it must not show.",
     "Do not use for long text. Use Textarea.",
     "Do not use for picking from fixed options. Use RadioGroup, or Select when it exists.",
@@ -219,7 +219,7 @@
     },
     {
       "title": "Help icon",
-      "usage": "help adds a ? icon beside the label for extra context. Hover shows it in a Tooltip once the kit has one.",
+      "usage": "help adds a ? icon beside the label for extra context. Hover or keyboard focus shows it in a Tooltip.",
       "items": [
         {
           "props": {
