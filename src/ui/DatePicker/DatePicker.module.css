@@ -1,0 +1,66 @@
+/* Figma date-picker dropdown 5735:3748 + day 5631:42778. The field reuses Input's .field box. */
+.trigger {
+  width: 100%; margin: 0; font: inherit; font-size: var(--fs); text-align: start; cursor: pointer;
+  justify-content: space-between; gap: var(--space-xsmall);
+}
+.trigger:disabled { cursor: not-allowed; }
+.value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.placeholder { color: var(--text-neutral-subtle); }
+.icon { color: var(--icon-neutral); }
+
+/* Fixed so tables, cards and modals never clip it. Hidden until placed. */
+.panel {
+  position: fixed; z-index: var(--z-overlay); visibility: hidden;
+  box-sizing: border-box; max-width: calc(100vw - var(--space-xsmall)); max-height: calc(100vh - var(--space-xsmall)); overflow: auto;
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-medium);
+  box-shadow: var(--elevation-dropdown); font-family: var(--font-sans);
+}
+.main { display: flex; }
+
+/* Quick ranges: same rows as the kit DropdownMenu. */
+.presets {
+  display: flex; flex-direction: column; gap: var(--space-xxxsmall); flex: none; width: var(--date-picker-presets);
+  padding: var(--space-small) var(--space-xxsmall); border-inline-end: var(--border-width-thin) solid var(--border-neutral-subtle);
+}
+.preset {
+  min-height: var(--menu-item-height); margin: 0; padding: var(--space-xxxsmall) var(--space-xsmall);
+  border: 0; border-radius: var(--radius-small); background: none; text-align: start; cursor: pointer;
+  font: inherit; font-size: var(--font-size-small); color: var(--text-neutral);
+}
+.preset:hover { background: var(--surface-sunken); color: var(--text-neutral-strong); }
+.preset[aria-pressed="true"] { background: var(--bg-brand-faint); color: var(--text-brand-strong); }
+.preset:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(var(--border-width-medium) * -1); }
+
+.months { display: flex; flex-wrap: wrap; gap: var(--space-xlarge); padding: var(--space-small); }
+.month { display: flex; flex-direction: column; gap: var(--space-xsmall); }
+.monthHead { display: flex; align-items: center; gap: var(--space-xsmall); }
+.heading { flex: 1; margin: 0; text-align: center; font-size: var(--font-size-regular); font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); }
+.spacer { flex: none; width: var(--control-small); }
+
+.grid { display: flex; flex-direction: column; gap: var(--space-xxsmall); }
+.row { display: grid; grid-template-columns: repeat(7, var(--date-picker-day)); gap: var(--space-xxsmall); }
+.weekday { display: flex; align-items: center; justify-content: center; height: var(--control-small); font-size: var(--font-size-xsmall); font-weight: var(--font-weight-semibold); color: var(--text-neutral); }
+.cell { display: flex; }
+
+/* Figma day: 42px, 4px corners, 14px medium. */
+.day {
+  box-sizing: border-box; display: flex; align-items: center; justify-content: center;
+  width: var(--date-picker-day); height: var(--date-picker-day); margin: 0; padding: 0;
+  border: var(--border-width-thin) solid transparent; border-radius: var(--radius-medium); background: var(--surface-flat);
+  font: inherit; font-size: var(--font-size-small); font-weight: var(--font-weight-medium); color: var(--text-neutral); cursor: pointer;
+}
+.day:hover:not([aria-disabled="true"]) { background: var(--bg-neutral-faint); border-color: var(--border-neutral); }
+.day:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset-field); }
+.today { border-color: var(--border-brand); color: var(--text-brand-strong); }
+.between, .between:hover:not([aria-disabled="true"]) { background: var(--bg-brand-faint); border-color: transparent; color: var(--text-neutral-strong); }
+/* text-neutral-min flips with the theme: white on dark blue in light, dark on light blue in dark (6.5 / 7.8 : 1). */
+.selected, .selected:hover:not([aria-disabled="true"]) { background: var(--bg-brand-strong); border-color: var(--border-brand-subtle); color: var(--text-neutral-min); }
+.outside { background: var(--bg-neutral-faint); color: var(--text-neutral-faint); cursor: default; }
+.day[aria-disabled="true"] { background: var(--bg-neutral-faint); color: var(--text-neutral-subtle); cursor: not-allowed; }
+
+.footer {
+  display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-small);
+  padding: var(--space-small); border-top: var(--border-width-thin) solid var(--border-neutral-subtle);
+}
+.selection { font-size: var(--font-size-small); color: var(--text-neutral-strong); }
+.actions { display: flex; gap: var(--space-xsmall); margin-inline-start: auto; }

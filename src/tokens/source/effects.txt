@@ -1,0 +1,19 @@
+# effects. name|css value. {ui/...} aliases resolve to var(--ui-...).
+# shadow + glow: from Figma effect styles (BP Foundations). Shadow color #0a121c is the Figma style value.
+shadow/raised|0 1px 2px 0 #0a121c0a, 0 2px 8px 0 #0a121c14
+shadow/floating|0 4px 8px -2px #0a121c0f, 0 8px 24px -4px #0a121c1f
+shadow/inset|inset 0 1px 2px 0 #0a121c0f, inset 0 2px 4px 0 #0a121c0a
+glow/brand|0 0 4px 0 {ui/brand/500}, 0 0 10px 1px {ui/brand/500}
+glow/info|0 0 4px 0 {ui/status/info/500}, 0 0 10px 1px {ui/status/info/500}
+glow/success|0 0 4px 0 {ui/status/success/500}, 0 0 10px 1px {ui/status/success/500}
+glow/warning|0 0 4px 0 {ui/status/warning/500}, 0 0 10px 1px {ui/status/warning/500}
+glow/danger|0 0 4px 0 {ui/status/danger/500}, 0 0 10px 1px {ui/status/danger/500}
+glow/highlight|0 0 4px 0 {ui/status/highlight/500}, 0 0 10px 1px {ui/status/highlight/500}
+# not in Figma: kit-defined elevation roles (alias the Figma styles above)
+elevation/card|{shadow/raised}
+elevation/dropdown|{shadow/floating}
+elevation/popover|{shadow/floating}
+elevation/modal|{shadow/floating}
+elevation/well|{shadow/inset}
+elevation/focus|{glow/brand}
+elevation/focus/danger|{glow/danger}

@@ -1,0 +1,36 @@
+.alert {
+  --line: 1.5em;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-small);
+  width: 100%;
+  padding: var(--space-xsmall) var(--space-small);
+  border: var(--border-width-thin) solid;
+  border-radius: var(--radius-large);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-small);
+  line-height: var(--line);
+  color: var(--text-neutral-strong);
+}
+.dismissible { grid-template-columns: auto minmax(0, 1fr) auto; }
+
+.info { background: var(--bg-info-faint); border-color: var(--border-info-subtle); }
+.success { background: var(--bg-success-faint); border-color: var(--border-success-subtle); }
+.warning { background: var(--bg-warning-faint); border-color: var(--border-warning-subtle); }
+.danger { background: var(--bg-danger-faint); border-color: var(--border-danger-subtle); }
+
+/* Icon, first text line and close Button share one center line, the height of a small control. */
+.icon { display: flex; align-items: center; height: var(--control-small); }
+.content { display: grid; gap: var(--space-xxxsmall); padding-block: calc((var(--control-small) - var(--line)) / 2); min-width: 0; }
+.title { margin: 0; font-weight: var(--font-weight-semibold); }
+.message { margin: 0; display: flex; flex-wrap: wrap; column-gap: var(--space-small); }
+
+.action {
+  font: inherit; font-weight: var(--font-weight-medium); color: var(--link-brand);
+  background: none; border: 0; padding: 0; cursor: pointer; border-radius: var(--radius-small);
+}
+.action:hover { color: var(--link-brand-hover); text-decoration: underline; }
+.action:active { color: var(--link-brand-press); }
+.action:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }

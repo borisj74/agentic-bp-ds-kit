@@ -1,0 +1,362 @@
+{
+  "name": "Input",
+  "path": "src/ui/Input/Input.tsx",
+  "intent": "Single-line text entry with its own label, hint, error and character count. The label sits on top, at the start, or is hidden.",
+  "usage": "Use Input for short text: names, emails, amounts, search. It is one component: pass label, hint and error as props, no Field wrapper. Always pass label; set hideLabel when the screen already makes the purpose clear, like a search box. required adds a red asterisk and the native required attribute. error shows a red border and a message under the field; invalid shows the red border alone. prefix and suffix are text inside the field, like https:// or USD. maxLength adds a live counter. type=\"file\" opens the native file picker; accept limits the file types and multiple allows more than one. See contracts/input.json for the full contract.",
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "note": "Always set. With hideLabel it stays for screen readers only."
+    },
+    "hideLabel": {
+      "type": "boolean",
+      "default": false,
+      "note": "No visible label. Use when the purpose is clear from the screen, like search."
+    },
+    "labelPosition": {
+      "enum": [
+        "top",
+        "start"
+      ],
+      "default": "top",
+      "note": "start puts the label in a 160px right-aligned column beside the field, for dense forms."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "Heights 28 / 36 / 44, same as Button."
+    },
+    "type": {
+      "enum": [
+        "text",
+        "email",
+        "password",
+        "search",
+        "number",
+        "tel",
+        "url",
+        "file"
+      ],
+      "default": "text",
+      "note": "file opens the native file picker. value, defaultValue, placeholder, prefix, suffix and maxLength do not apply to it."
+    },
+    "placeholder": {
+      "type": "string",
+      "note": "An example value. Never the only label."
+    },
+    "value": {
+      "type": "string",
+      "note": "Controlled value."
+    },
+    "defaultValue": {
+      "type": "string",
+      "note": "Uncontrolled start value."
+    },
+    "onChange": {
+      "type": "function",
+      "note": "(value: string) => void"
+    },
+    "accept": {
+      "type": "string",
+      "note": "type=\"file\" only. File types to offer, like image/* or .pdf,.png."
+    },
+    "multiple": {
+      "type": "boolean",
+      "default": false,
+      "note": "type=\"file\" only. Pick more than one file."
+    },
+    "onFilesChange": {
+      "type": "function",
+      "note": "type=\"file\" only. (files: File[]) => void. Runs with the chosen files."
+    },
+    "name": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "note": "Defaults to a generated id."
+    },
+    "autoComplete": {
+      "type": "string",
+      "note": "Like email, name or current-password."
+    },
+    "required": {
+      "type": "boolean",
+      "default": false,
+      "note": "Red asterisk before the label and the native required attribute."
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "readOnly": {
+      "type": "boolean",
+      "default": false
+    },
+    "invalid": {
+      "type": "boolean",
+      "default": false,
+      "note": "Red border without a message. Prefer error so people know what to fix."
+    },
+    "error": {
+      "type": "string",
+      "note": "Message under the field. Also turns the border red. Replaces hint."
+    },
+    "hint": {
+      "type": "string",
+      "note": "Help text under the field."
+    },
+    "help": {
+      "type": "string",
+      "note": "Shows a help icon beside the label. The text opens in a Tooltip once the kit has one; until then screen readers get it with the field."
+    },
+    "prefix": {
+      "type": "string",
+      "note": "Text inside the field before the value, like https:// or $."
+    },
+    "suffix": {
+      "type": "string",
+      "note": "Text inside the field after the value, like .com or USD."
+    },
+    "iconStart": {
+      "type": "string",
+      "note": "Material Symbols name before the value, like search. Decorative."
+    },
+    "iconEnd": {
+      "type": "string",
+      "note": "Material Symbols name after the value. Decorative."
+    },
+    "maxLength": {
+      "type": "number",
+      "note": "Limits the length and shows a count like 5/10 inside the field."
+    }
+  },
+  "useWhen": [
+    "Short text in a form: name, email, phone, amount.",
+    "A search box above a table or list.",
+    "A value with a fixed prefix or suffix, like a URL or a currency."
+  ],
+  "doNot": [
+    "Do not invent a local Field, FieldLabel, FieldDescription, FieldError, FormItem, InputGroup or SearchInput.",
+    "Do not build a local tooltip for help. Pass help; the kit Tooltip will show it.",
+    "Do not use a placeholder as the label. Pass label, and hideLabel if it must not show.",
+    "Do not use for long text. Use Textarea.",
+    "Do not use for picking from fixed options. Use RadioGroup, or Select when it exists.",
+    "Do not put the error only in the placeholder or only in color. Use error.",
+    "Do not build a local FileInput, upload button or hidden <input type=\"file\">. Use Input type=\"file\".",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A real label is tied to the input by id, visible or visually hidden with hideLabel.",
+    "hint, error and the counter are linked with aria-describedby.",
+    "error and invalid set aria-invalid. required sets the native required attribute; the asterisk is hidden from screen readers.",
+    "Focus shows a 2px brand ring around the field; red when invalid.",
+    "The help icon is a button named About {label}; its text is linked to the button and the input with aria-describedby.",
+    "Icons are decorative. Prefix and suffix are plain text next to the value.",
+    "type=\"file\" keeps the native picker: Space or Enter opens it, and the chosen file names are read with the label."
+  ],
+  "snippet": "<Input label=\"Email\" type=\"email\" required placeholder=\"you@example.com\" hint=\"We never share your email.\" />",
+  "examples": [
+    {
+      "title": "Label on top",
+      "usage": "The default. Label above the field, hint below.",
+      "items": [
+        {
+          "props": {
+            "label": "Email",
+            "type": "email",
+            "placeholder": "you@example.com",
+            "hint": "We never share your email."
+          }
+        }
+      ]
+    },
+    {
+      "title": "Label at start",
+      "usage": "For dense forms. The label sits in a 160px column beside the field.",
+      "items": [
+        {
+          "props": {
+            "label": "Company",
+            "labelPosition": "start",
+            "placeholder": "Acme Inc."
+          }
+        }
+      ]
+    },
+    {
+      "title": "No label",
+      "usage": "hideLabel keeps the label for screen readers only. Use when the screen makes the purpose clear.",
+      "items": [
+        {
+          "props": {
+            "label": "Search invoices",
+            "hideLabel": true,
+            "type": "search",
+            "iconStart": "search",
+            "placeholder": "Search"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Required",
+      "usage": "A red asterisk before the label. The browser also blocks an empty submit.",
+      "items": [
+        {
+          "props": {
+            "label": "Full name",
+            "required": true,
+            "autoComplete": "name"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Help icon",
+      "usage": "help adds a ? icon beside the label for extra context. Hover shows it in a Tooltip once the kit has one.",
+      "items": [
+        {
+          "props": {
+            "label": "Tax ID",
+            "help": "The number on your tax registration, like EU123456789.",
+            "placeholder": "EU123456789"
+          }
+        },
+        {
+          "props": {
+            "label": "Tax ID",
+            "labelPosition": "start",
+            "help": "The number on your tax registration, like EU123456789.",
+            "placeholder": "EU123456789"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Invalid",
+      "usage": "error turns the border red and says what to fix. invalid alone only turns the border red.",
+      "items": [
+        {
+          "props": {
+            "label": "Email",
+            "type": "email",
+            "defaultValue": "maya@",
+            "error": "Enter a full email address, like maya@acme.com."
+          }
+        },
+        {
+          "props": {
+            "label": "Invoice number",
+            "defaultValue": "INV-",
+            "invalid": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Disabled and read only",
+      "usage": "Disabled is grayed out and skipped. Read only can be selected and copied.",
+      "items": [
+        {
+          "props": {
+            "label": "Account ID",
+            "defaultValue": "ACC-2041",
+            "disabled": true
+          }
+        },
+        {
+          "props": {
+            "label": "Account ID",
+            "defaultValue": "ACC-2041",
+            "readOnly": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Prefix, suffix and count",
+      "usage": "Fixed text inside the field, and a live count when there is a limit.",
+      "items": [
+        {
+          "props": {
+            "label": "Website",
+            "prefix": "https://",
+            "suffix": ".com",
+            "placeholder": "acme"
+          }
+        },
+        {
+          "props": {
+            "label": "Amount",
+            "type": "number",
+            "prefix": "$",
+            "suffix": "USD",
+            "placeholder": "0.00"
+          }
+        },
+        {
+          "props": {
+            "label": "Short code",
+            "maxLength": 10,
+            "defaultValue": "SPRING"
+          }
+        }
+      ]
+    },
+    {
+      "title": "File",
+      "usage": "type=\"file\" opens the file picker. accept limits the types; multiple allows more than one file.",
+      "items": [
+        {
+          "props": {
+            "label": "Picture",
+            "type": "file",
+            "accept": "image/*"
+          }
+        },
+        {
+          "props": {
+            "label": "Attachments",
+            "type": "file",
+            "multiple": true,
+            "accept": ".pdf,.png,.jpg",
+            "hint": "PDF, PNG or JPG, up to 10 MB each."
+          }
+        }
+      ]
+    },
+    {
+      "title": "Sizes",
+      "usage": "Match the Buttons beside it.",
+      "items": [
+        {
+          "props": {
+            "label": "Name",
+            "size": "sm",
+            "placeholder": "Small"
+          }
+        },
+        {
+          "props": {
+            "label": "Name",
+            "size": "md",
+            "placeholder": "Medium"
+          }
+        },
+        {
+          "props": {
+            "label": "Name",
+            "size": "lg",
+            "placeholder": "Large"
+          }
+        }
+      ]
+    }
+  ]
+}

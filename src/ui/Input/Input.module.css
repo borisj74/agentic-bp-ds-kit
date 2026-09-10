@@ -1,0 +1,81 @@
+/* Figma input-text 925:1635 + .proposal / Input-text 5118:2158. Label on top (4px gap) or start (160px column). */
+.input { display: flex; flex-direction: column; gap: var(--space-xxsmall); width: 100%; min-width: 0; font-family: var(--font-sans); }
+.sm { --h: var(--control-small); --fs: var(--font-size-small); }
+.md { --h: var(--control-medium); --fs: var(--font-size-regular); }
+.lg { --h: var(--control-large); --fs: var(--font-size-regular); }
+
+.label {
+  display: inline-flex; align-items: center; gap: var(--space-xxsmall);
+  font-size: var(--font-size-small); font-weight: var(--font-weight-medium); line-height: 1.2; color: var(--text-neutral-strong);
+}
+.required { color: var(--text-danger); }
+
+.labelRow { display: flex; align-items: center; gap: var(--space-xxsmall); min-width: 0; }
+/* Figma help_center icon, 16px, beside the label. */
+.help {
+  display: inline-flex; flex: none; margin: 0; padding: 0; border: 0; background: none;
+  color: var(--icon-neutral); cursor: help; border-radius: var(--radius-small);
+}
+.help:hover { color: var(--icon-neutral-strong); }
+.help:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
+
+/* Start: label column right-aligned and centred on the field, as in Figma (pl 12, pr 16, 12px gap). */
+.start { flex-direction: row; align-items: flex-start; gap: var(--space-small); }
+.start .labelRow {
+  box-sizing: border-box; flex: none; justify-content: flex-end; width: var(--input-label-width); min-height: var(--h);
+  padding-inline: var(--space-small) var(--space-medium); text-align: end;
+}
+
+.body { display: flex; flex-direction: column; gap: var(--space-xxsmall); flex: 1; min-width: 0; }
+
+.field {
+  box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xxsmall);
+  height: var(--h); padding: 0 var(--space-xsmall);
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-medium);
+  color: var(--text-neutral-strong); font-size: var(--fs); cursor: text;
+  transition: border-color var(--motion-interaction-duration) var(--motion-interaction-easing);
+}
+.field:hover { border-color: var(--border-neutral-strong); }
+.field:focus-within { border-color: var(--border-brand); outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset-field); }
+
+.native {
+  flex: 1; min-width: 0; height: 100%; margin: 0; padding: 0; border: 0; background: transparent;
+  font: inherit; line-height: normal; color: inherit; outline: none;
+}
+/* Figma uses text/neutral/faint; subtle reads better and still looks like a placeholder. */
+.native::placeholder { color: var(--text-neutral-subtle); opacity: 1; }
+
+/* File: the native picker. "Choose file" reads as a quiet button at the start; the file name follows. */
+.field:has(> .native[type="file"]) { cursor: pointer; }
+.native[type="file"] { cursor: pointer; color: var(--text-neutral); }
+.native::file-selector-button {
+  height: 100%; margin: 0 var(--space-xsmall) 0 0; padding: 0; border: 0; background: transparent;
+  font: inherit; font-weight: var(--font-weight-medium); color: var(--text-neutral-strong); cursor: pointer;
+}
+.native::file-selector-button:hover { color: var(--text-brand); }
+.disabled .native::file-selector-button { color: inherit; cursor: not-allowed; }
+
+.affix { flex: none; color: var(--text-neutral); }
+.icon { color: var(--icon-neutral); }
+.count { flex: none; font-size: var(--font-size-xsmall); color: var(--text-neutral); }
+
+.hint, .error { margin: 0; font-size: var(--font-size-xsmall); line-height: 1.4; }
+.hint { color: var(--text-neutral); }
+.error { color: var(--text-danger); }
+
+.invalid .field, .invalid .field:hover { border-color: var(--border-danger-strong); }
+.invalid .field:focus-within { outline-color: var(--outline-danger); }
+
+.disabled .field, .disabled .field:hover {
+  background: var(--bg-neutral-subtle); border-color: var(--border-neutral-subtle); color: var(--text-neutral-subtle); cursor: not-allowed;
+}
+.disabled .native { cursor: not-allowed; }
+
+/* Dark: text-danger drops under 4.5:1 on the surface, so step it up. */
+:global([data-theme="dark"]) .error { color: var(--text-danger-strong); }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .field { transition: none; }
+}

@@ -1,0 +1,22 @@
+.root { display: flex; flex-direction: column; width: 100%; }
+.item { border-bottom: var(--border-divider) solid var(--border-neutral-subtle); }
+.item:first-child { border-top: var(--border-divider) solid var(--border-neutral-subtle); }
+
+.trigger {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-small);
+  width: 100%; margin: 0; padding: var(--space-medium) 0;
+  border: 0; background: transparent; cursor: pointer; text-align: left;
+  font-family: var(--font-sans); color: var(--text-neutral-strong);
+}
+.trigger:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); border-radius: var(--radius-small); }
+.title { font-size: var(--font-size-regular); font-weight: var(--font-weight-semibold); }
+
+.chevron { display: flex; flex: none; transition: transform var(--motion-expand-duration) var(--motion-expand-easing); }
+.chevronOpen { transform: rotate(180deg); }
+
+.panel { padding-bottom: var(--space-medium); }
+.body { font-family: var(--font-sans); font-size: var(--font-size-small); line-height: 1.5; color: var(--text-neutral); }
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron { transition: none; }
+}

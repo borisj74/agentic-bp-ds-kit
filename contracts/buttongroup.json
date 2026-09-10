@@ -1,0 +1,59 @@
+{
+  "name": "ButtonGroup",
+  "path": "src/ui/ButtonGroup/ButtonGroup.tsx",
+  "intent": "Joined row of kit Buttons that share one size and act as one control cluster.",
+  "usage": "Use a group for related actions that share one size, like a view switch, a cancel and save pair, or a toolbar. The group sets size and disabled for every Button inside it. Only kit Buttons go in a group. See contracts/buttongroup.json for the full contract.",
+  "props": {
+    "label": { "type": "string", "note": "Names the group for screen readers (aria-label)." },
+    "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "Applied to every Button in the group. Buttons inside do not set their own size." },
+    "disabled": { "type": "boolean", "default": false, "note": "Disables every Button in the group." },
+    "children": { "type": "Button[]", "required": true, "note": "Two or more kit Buttons. Nothing else." }
+  },
+  "useWhen": ["Related sibling actions, such as a view switch.", "A cancel and confirm pair that should read as one cluster.", "A toolbar of same-size Buttons."],
+  "doNot": ["Do not invent a local button group or segmented control.", "Do not mix sizes inside one group.", "Do not put more than one primary Button in a group or the view.", "Do not wrap Input, Select, or anything except kit Button.", "Do not nest groups.", "Do not use for paging a list."],
+  "a11y": ["Renders a div with role=group.", "label names the group.", "Each Button keeps its own name. Icon-only Buttons still need children as their label."],
+  "snippet": "<ButtonGroup label=\"Plan period\">\n  <Button>Day</Button>\n  <Button>Week</Button>\n  <Button>Month</Button>\n</ButtonGroup>",
+  "examples": [
+    {
+      "title": "Period switch",
+      "usage": "Related sibling actions that share one size. All secondary, so the group stays quiet.",
+      "items": [
+        { "props": { "label": "Plan period", "children": [
+          { "variant": "secondary", "children": "Day" },
+          { "variant": "secondary", "children": "Week" },
+          { "variant": "secondary", "children": "Month" }
+        ] } }
+      ]
+    },
+    {
+      "title": "Confirm pair",
+      "usage": "Cancel and save as one cluster. This is the one primary Button for the view.",
+      "items": [
+        { "props": { "label": "Save changes", "children": [
+          { "variant": "secondary", "children": "Cancel" },
+          { "variant": "primary", "children": "Save" }
+        ] } }
+      ]
+    },
+    {
+      "title": "Icon toolbar",
+      "usage": "Icon-only Buttons in one group. Each Button keeps a label for screen readers. Same size for all.",
+      "items": [
+        { "props": { "label": "Text alignment", "children": [
+          { "variant": "secondary", "iconOnly": true, "iconStart": "format_align_left", "children": "Align left" },
+          { "variant": "secondary", "iconOnly": true, "iconStart": "format_align_center", "children": "Align center" },
+          { "variant": "secondary", "iconOnly": true, "iconStart": "format_align_right", "children": "Align right" }
+        ] } }
+      ]
+    },
+    {
+      "title": "Sizes",
+      "usage": "Set size on the group, not on each Button. Pick the size that matches the controls around it.",
+      "items": [
+        { "props": { "label": "Small", "size": "sm", "children": [{ "variant": "secondary", "children": "Day" }, { "variant": "secondary", "children": "Week" }] } },
+        { "props": { "label": "Medium", "size": "md", "children": [{ "variant": "secondary", "children": "Day" }, { "variant": "secondary", "children": "Week" }] } },
+        { "props": { "label": "Large", "size": "lg", "children": [{ "variant": "secondary", "children": "Day" }, { "variant": "secondary", "children": "Week" }] } }
+      ]
+    }
+  ]
+}

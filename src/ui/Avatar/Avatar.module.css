@@ -1,0 +1,16 @@
+.avatar {
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  overflow: hidden;
+  font-family: var(--font-sans); font-weight: var(--font-weight-semibold); line-height: 1; user-select: none;
+}
+/* Inset ring keeps the circle visible on gray surfaces without changing its size. */
+.fallback { background: var(--bg-neutral-subtle); color: var(--text-neutral-strong); box-shadow: inset 0 0 0 var(--border-width-thin) var(--border-neutral-subtle); }
+
+.circle { border-radius: var(--radius-full); }
+.square { border-radius: var(--radius-medium); }
+
+.sm { width: var(--avatar-size-sm); height: var(--avatar-size-sm); font-size: var(--font-size-xsmall); }
+.md { width: var(--avatar-size-md); height: var(--avatar-size-md); font-size: var(--font-size-small); }
+.lg { width: var(--avatar-size-lg); height: var(--avatar-size-lg); font-size: var(--font-size-regular); }
+
+.image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 20%; }

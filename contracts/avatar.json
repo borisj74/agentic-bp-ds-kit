@@ -1,0 +1,65 @@
+{
+  "name": "Avatar",
+  "path": "src/ui/Avatar/Avatar.tsx",
+  "intent": "Photo or initials for one person. Not a status chip and not a button.",
+  "usage": "Always pass name. src is optional: a missing or broken photo falls back to initials from the name. A person icon shows only if there are no initials either. See contracts/avatar.json for the full contract.",
+  "props": {
+    "name": { "type": "string", "required": true, "note": "Full name. Used for alt text and initials." },
+    "src": { "type": "string", "note": "Photo URL. Cropped to the shape." },
+    "initials": { "type": "string", "note": "Overrides the initials from name. Two letters max." },
+    "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "32 / 40 / 48 px." },
+    "shape": { "enum": ["circle", "square"], "default": "circle", "note": "square has small rounded corners (--radius-medium)." }
+  },
+  "useWhen": ["User menus.", "Assignee in a table row.", "Comment authors.", "Profile headers."],
+  "doNot": ["Do not invent a local Avatar.", "Do not use for status or category labels.", "Do not make Avatar clickable. Wrap it in a Button or link only with a new contract.", "Do not put a status dot or count on Avatar.", "Do not mix circle and square in the same list.", "Do not use for logos or brands. Use Logo.", "Do not use raw hex."],
+  "a11y": ["With a photo, the img alt is the name.", "Without a photo, the circle is role=img with aria-label set to the name.", "The fallback person icon is decorative."],
+  "snippet": "<Avatar name=\"Maya Chen\" src=\"/faces/maya-chen.jpg\" />",
+  "examples": [
+    {
+      "title": "Photo",
+      "usage": "Photo avatars in sm, md and lg. The photo is cropped to the circle.",
+      "items": [
+        { "props": { "name": "Maya Chen", "src": "/faces/maya-chen.jpg", "size": "sm" } },
+        { "props": { "name": "Maya Chen", "src": "/faces/maya-chen.jpg", "size": "md" } },
+        { "props": { "name": "Maya Chen", "src": "/faces/maya-chen.jpg", "size": "lg" } }
+      ]
+    },
+    {
+      "title": "Initials",
+      "usage": "Leave out src to show initials. Two or more words use the first and last letters (Boris Jovanovic becomes BJ). One word uses its first two letters (Mira becomes MI).",
+      "items": [
+        { "props": { "name": "Boris Jovanovic" } },
+        { "props": { "name": "Ada Jones" } },
+        { "props": { "name": "Mira" } }
+      ]
+    },
+    {
+      "title": "Broken photo",
+      "usage": "If the photo fails to load, the Avatar shows initials instead. Nothing breaks on the screen.",
+      "items": [
+        { "props": { "name": "Noah Williams", "src": "/faces/missing.jpg" } }
+      ]
+    },
+    {
+      "title": "Square",
+      "usage": "Square with small rounded corners. Same sizes, photo and initials as the circle. Use one shape per list.",
+      "items": [
+        { "props": { "name": "Maya Chen", "src": "/faces/maya-chen.jpg", "shape": "square", "size": "sm" } },
+        { "props": { "name": "Maya Chen", "src": "/faces/maya-chen.jpg", "shape": "square", "size": "md" } },
+        { "props": { "name": "Maya Chen", "src": "/faces/maya-chen.jpg", "shape": "square", "size": "lg" } },
+        { "props": { "name": "Ada Jones", "shape": "square", "size": "sm" } },
+        { "props": { "name": "Ada Jones", "shape": "square", "size": "md" } },
+        { "props": { "name": "Ada Jones", "shape": "square", "size": "lg" } }
+      ]
+    },
+    {
+      "title": "Sizes",
+      "usage": "sm 32px, md 40px, lg 48px. The same sizes apply to photos and initials.",
+      "items": [
+        { "props": { "name": "Ada Jones", "size": "sm" } },
+        { "props": { "name": "Ada Jones", "size": "md" } },
+        { "props": { "name": "Ada Jones", "size": "lg" } }
+      ]
+    }
+  ]
+}

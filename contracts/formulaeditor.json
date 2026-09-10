@@ -1,0 +1,225 @@
+{
+  "name": "FormulaEditor",
+  "path": "src/ui/FormulaEditor/FormulaEditor.tsx",
+  "intent": "A monospace field for writing formulas and rules, with a toolbar that inserts fields, operators and functions and checks the syntax.",
+  "usage": "Use FormulaEditor for calculated fields, rules and validations. It is one form field: pass label, hint, error and help as props, same as Input, and it takes labelPosition from an enclosing Form. The toolbar inserts at the cursor. fields adds an Insert field menu that inserts {!Field.Id}; functions replaces the default function list. Check syntax runs onCheckSyntax, or a built-in bracket and quote check. onCalculate adds a Calculate button that shows its result under the field. See contracts/formulaeditor.json for the full contract.",
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "note": "Always set. With hideLabel it stays for screen readers only."
+    },
+    "hideLabel": {
+      "type": "boolean",
+      "default": false
+    },
+    "labelPosition": {
+      "enum": [
+        "top",
+        "start"
+      ],
+      "default": "top",
+      "note": "start puts the label in a 160px column, lined up with the toolbar. Inside a Form, the Form's labelPosition applies unless this is set."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "sm",
+      "note": "Starting height of the formula area: 100 / 180 / 260 px. People can drag it taller."
+    },
+    "placeholder": {
+      "type": "string"
+    },
+    "value": {
+      "type": "string",
+      "note": "Controlled formula."
+    },
+    "defaultValue": {
+      "type": "string",
+      "note": "Uncontrolled start formula."
+    },
+    "onChange": {
+      "type": "function",
+      "note": "(value: string) => void. Runs on typing and on every insert."
+    },
+    "fields": {
+      "type": "FormulaField[]",
+      "itemShape": "{ id: string; label: string }",
+      "note": "Adds a searchable Insert field menu. Picking one inserts {!id}."
+    },
+    "functions": {
+      "type": "FormulaFunction[]",
+      "itemShape": "{ name: string; syntax?: string; description?: string }",
+      "note": "The Insert function list. Each row shows syntax (or name) with description underneath, like IF(condition, then, else) / One value when true, another when false. Defaults to IF, AND, OR, NOT, ISBLANK, ROUND, ABS, MIN, MAX, SUM and TODAY. Picking one inserts NAME() with the cursor inside."
+    },
+    "onCheckSyntax": {
+      "type": "function",
+      "note": "(value: string) => string | null. Return a problem to show, or null when it is fine. Without it, Check syntax only checks that brackets and quotes close."
+    },
+    "onCalculate": {
+      "type": "function",
+      "note": "(value: string) => string. Adds a Calculate button; its return shows as Result: … under the field. Throw an Error to show a problem."
+    },
+    "name": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "note": "Defaults to a generated id."
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "note": "Gray. Nothing in the toolbar works."
+    },
+    "readOnly": {
+      "type": "boolean",
+      "default": false,
+      "note": "The formula can be read and checked but not changed; insert menus are off."
+    },
+    "invalid": {
+      "type": "boolean",
+      "default": false,
+      "note": "Red border without a message. Prefer error."
+    },
+    "error": {
+      "type": "string",
+      "note": "Message under the field. Turns the border red and wins over check results and hint."
+    },
+    "hint": {
+      "type": "string"
+    },
+    "help": {
+      "type": "string",
+      "note": "Help icon beside the label."
+    }
+  },
+  "useWhen": [
+    "Calculated fields, pricing rules and validation rules.",
+    "Any expression people build from fields, operators and functions."
+  ],
+  "doNot": [
+    "Do not invent CodeEditor, ExpressionInput, a formula toolbar or a Textarea with buttons above it.",
+    "Do not use for prose or notes. Use Textarea.",
+    "Do not use for one-line values. Use Input.",
+    "Do not put page actions like Save in the toolbar. They belong in the Form actions.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A real label is tied to the formula by id. The toolbar is a group named {label} tools.",
+    "Insert menus are kit DropdownMenus: arrow keys, type to search, Enter to insert. Focus returns to the formula at the cursor.",
+    "Check syntax and Calculate results are announced through a status region and linked with aria-describedby. A problem sets aria-invalid.",
+    "Focus shows a 2px brand ring around the whole editor; red when invalid."
+  ],
+  "snippet": "<FormulaEditor\n  label=\"Discount formula\"\n  fields={fields}\n  onCalculate={calculate}\n/>",
+  "examples": [
+    {
+      "title": "Label on top",
+      "usage": "Insert field, operator and function at the cursor. Check syntax and Calculate show their result under the field.",
+      "items": [
+        {
+          "props": {
+            "label": "Discount formula",
+            "defaultValue": "{!Amount} * (1 - {!Account.Discount})",
+            "hint": "Runs when the invoice is created.",
+            "fields": [
+              { "id": "Amount", "label": "Amount" },
+              { "id": "Account.Discount", "label": "Account discount" },
+              { "id": "Invoice.Quantity", "label": "Quantity" }
+            ],
+            "onCalculate": "{calculate}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Label at start",
+      "usage": "The label sits in a column at the beginning, lined up with the toolbar. A start-label Form does this for you.",
+      "items": [
+        {
+          "props": {
+            "label": "Rule",
+            "labelPosition": "start",
+            "defaultValue": "IF({!Invoice.Total} > 1000, \"Review\", \"Auto-approve\")"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Check syntax",
+      "usage": "This one is missing a closing bracket. Press Check syntax to see the problem.",
+      "items": [
+        {
+          "props": {
+            "label": "Late fee",
+            "defaultValue": "ROUND({!Invoice.Total} * 0.015, 2"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Required and help",
+      "usage": "A red asterisk before the label, and a help icon for extra context.",
+      "items": [
+        {
+          "props": {
+            "label": "Validation rule",
+            "required": true,
+            "help": "Invoices that match this rule cannot be sent.",
+            "placeholder": "ISBLANK({!Invoice.PONumber})"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Invalid",
+      "usage": "error turns the border red and says what to fix.",
+      "a11y": true,
+      "items": [
+        {
+          "props": {
+            "label": "Discount formula",
+            "defaultValue": "{!Amount} * {!Discount}",
+            "error": "Discount is not a field on this object. Pick one with Insert field."
+          }
+        }
+      ]
+    },
+    {
+      "title": "Disabled and read only",
+      "usage": "Disabled turns everything off. Read only can still be checked and copied.",
+      "items": [
+        {
+          "props": {
+            "label": "Tax formula",
+            "disabled": true,
+            "defaultValue": "{!Amount} * 0.2"
+          }
+        },
+        {
+          "props": {
+            "label": "Tax formula",
+            "readOnly": true,
+            "defaultValue": "{!Amount} * 0.2"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Sizes",
+      "usage": "Starting height of the formula area. People can drag it taller.",
+      "items": [
+        { "props": { "label": "Small", "size": "sm" } },
+        { "props": { "label": "Medium", "size": "md" } },
+        { "props": { "label": "Large", "size": "lg" } }
+      ]
+    }
+  ]
+}

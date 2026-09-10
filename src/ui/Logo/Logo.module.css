@@ -1,0 +1,13 @@
+/* Geometry from Figma logo-bp: symbol 21.896 x 28, gap 8.618, wordmark 114.75 x 17 with 2px top offset. */
+.logo { display: inline-flex; align-items: center; flex: none; line-height: 0; }
+.default { gap: 8.618px; }
+.mark { width: 21.8958px; height: 28px; flex: none; }
+.text { display: flex; padding-top: 2px; }
+.wordmark { width: 114.75px; height: 17px; flex: none; }
+/* Symbol-only frame is 32px tall with the 28px mark centered. */
+.logo.symbol { height: 32px; }
+
+/* Brand navy wordmark. Fixed brand colors, not tokens (BP Components: "never tokenized").
+   Dark theme uses the white reverse so the wordmark stays readable. The symbol never changes. */
+.text { color: #001c34; }
+:global([data-theme="dark"]) .text { color: #ffffff; }

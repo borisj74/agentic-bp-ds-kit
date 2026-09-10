@@ -1,0 +1,17 @@
+.group { display: inline-flex; align-items: center; }
+
+/* 2px ring in the page color separates overlapping faces. */
+.item { position: relative; display: inline-flex; flex: none; box-shadow: 0 0 0 var(--border-width-medium) var(--surface-flat); }
+.item:not(:first-child) { margin-inline-start: calc(var(--space-xsmall) * -1); }
+.circle .item { border-radius: var(--radius-full); }
+.square .item { border-radius: var(--radius-medium); }
+
+/* Count matches the Avatar initials look. */
+.count {
+  align-items: center; justify-content: center; user-select: none;
+  font-family: var(--font-sans); font-weight: var(--font-weight-semibold); line-height: 1;
+  background: var(--bg-neutral-subtle); color: var(--text-neutral);
+}
+.sm { width: var(--avatar-size-sm); height: var(--avatar-size-sm); font-size: var(--font-size-xsmall); }
+.md { width: var(--avatar-size-md); height: var(--avatar-size-md); font-size: var(--font-size-small); }
+.lg { width: var(--avatar-size-lg); height: var(--avatar-size-lg); font-size: var(--font-size-regular); }

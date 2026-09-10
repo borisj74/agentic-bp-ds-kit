@@ -1,0 +1,29 @@
+/* BP Components count (Figma 2004:19219): 4px corners, 12px medium, square at minimum. sm 16 / md 20; lg 24 is kit-defined. */
+.count {
+  position: relative; box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  border-radius: var(--radius-medium);
+  font-family: var(--font-sans); font-weight: var(--font-weight-medium); line-height: 1;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.sm { height: var(--count-height-sm); min-width: var(--count-height-sm); padding: 0 var(--count-padding-sm); font-size: var(--font-size-xsmall); }
+.md { height: var(--count-height-md); min-width: var(--count-height-md); padding: 0 var(--count-padding-md); font-size: var(--font-size-xsmall); }
+.lg { height: var(--count-height-lg); min-width: var(--count-height-lg); padding: 0 var(--count-padding-lg); font-size: var(--font-size-small); }
+
+.info { background: var(--bg-info-intense); color: var(--text-neutral-min); }
+.danger { background: var(--bg-danger-strong); color: var(--text-neutral-min); }
+.neutral { background: var(--bg-neutral-strong); color: var(--text-neutral-intense); }
+
+.subtle.info { background: var(--bg-brand-subtle); color: var(--text-brand-strong); }
+/* not in Figma: danger subtle follows the info subtle pattern. */
+.subtle.danger { background: var(--bg-danger-subtle); color: var(--text-danger-strong); }
+.subtle.neutral { background: var(--bg-neutral); color: var(--text-neutral); }
+
+/* Dark theme: BP dark fills turn light (strong) or saturated (subtle), so text flips to keep 4.5:1+. */
+:global([data-theme="dark"]) .neutral:not(.subtle) { color: var(--text-neutral-min); }
+:global([data-theme="dark"]) .subtle.info, :global([data-theme="dark"]) .subtle.danger { color: var(--text-neutral-strong); }
+:global([data-theme="dark"]) .subtle.neutral { background: var(--bg-neutral-subtle); color: var(--text-neutral-strong); }
+
+.count.disabled, :global([data-theme="dark"]) .count.disabled { background: var(--bg-neutral-subtle); color: var(--text-neutral-faint); }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

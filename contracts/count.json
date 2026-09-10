@@ -1,0 +1,32 @@
+{
+  "name": "Count",
+  "path": "src/ui/Count/Count.tsx",
+  "intent": "Small number badge for counts, like unread items on a nav link or tab.",
+  "usage": "Use Count for a number next to a nav item, tab, button or icon, like 3 unread. Use Badge for words. Counts above max show as max+ (99+). Pass label so screen readers hear 3 unread messages, not just 3. See contracts/count.json for the full contract.",
+  "props": {
+    "tone": { "enum": ["info", "danger", "neutral"], "default": "info", "note": "danger for items that need action now. neutral for plain totals." },
+    "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "Heights 16 / 20 / 24. sm and md are the BP Figma count; lg is kit-defined." },
+    "subtle": { "type": "boolean", "default": false, "note": "Lighter fill. Figma defines it for info and neutral; danger subtle is kit-defined." },
+    "disabled": { "type": "boolean", "default": false, "note": "Gray with faint text." },
+    "count": { "type": "number", "required": true },
+    "max": { "type": "number", "default": 99, "note": "Above max the Count shows max+." },
+    "label": { "type": "string", "note": "What is counted, for screen readers, like unread messages." }
+  },
+  "useWhen": ["Unread or pending counts on nav items, tabs and buttons.", "A total next to a section title."],
+  "doNot": ["Do not invent a local counter or notification dot.", "Do not put words in a Count. Use Badge.", "Do not use Count as a button.", "Do not show more than one danger Count in a row.", "Do not use raw hex."],
+  "a11y": ["The visible number is hidden from screen readers; they hear the full count plus label instead, like 150 unread messages.", "Tone is never the only signal; the number carries the meaning."],
+  "snippet": "<Count count={3} label=\"unread messages\" />",
+  "examples": [
+    { "title": "Tones", "usage": "info is the default. danger for items that need action now. neutral for plain totals.", "items": [
+      { "props": { "tone": "info", "count": 3 } }, { "props": { "tone": "danger", "count": 8 } }, { "props": { "tone": "neutral", "count": 24 } } ] },
+    { "title": "Subtle", "usage": "Lighter fill for quieter counts, like totals in a list.", "items": [
+      { "props": { "tone": "info", "subtle": true, "count": 3 } }, { "props": { "tone": "danger", "subtle": true, "count": 8 } }, { "props": { "tone": "neutral", "subtle": true, "count": 24 } } ] },
+    { "title": "Sizes", "usage": "sm 16px and md 20px match the BP count; lg 24px is for larger controls. The width grows with the number.", "items": [
+      { "props": { "size": "sm", "count": 3 } }, { "props": { "size": "md", "count": 3 } }, { "props": { "size": "lg", "count": 3 } },
+      { "props": { "size": "sm", "count": 150 } }, { "props": { "size": "md", "count": 150 } }, { "props": { "size": "lg", "count": 150 } } ] },
+    { "title": "Max", "usage": "Counts above max show max+. The default max is 99.", "items": [
+      { "props": { "count": 42 } }, { "props": { "count": 150 } }, { "props": { "count": 12, "max": 9 } } ] },
+    { "title": "Disabled", "usage": "Gray with faint text, for counts on a disabled item.", "items": [
+      { "props": { "disabled": true, "count": 3 } }, { "props": { "disabled": true, "size": "sm", "count": 3 } } ] }
+  ]
+}

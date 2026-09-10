@@ -1,0 +1,40 @@
+/* Figma textarea 3195:38849 + .proposal / textarea 5210:113973. Label, hint and error come from Input's styles. */
+/* --h lines a start label up with the first line of text. */
+.textarea { --h: var(--control-medium); }
+
+.area {
+  box-sizing: border-box; display: block; width: 100%; margin: 0; resize: vertical;
+  padding: var(--space-small);
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-medium);
+  font-family: var(--font-sans); font-size: var(--font-size-regular); line-height: 1.5; color: var(--text-neutral-intense);
+  transition: border-color var(--motion-interaction-duration) var(--motion-interaction-easing);
+}
+.sm { min-height: var(--textarea-height-sm); }
+.md { min-height: var(--textarea-height-md); }
+.lg { min-height: var(--textarea-height-lg); }
+
+/* Figma code type: Roboto Mono 12 on a 24px line. */
+.code { font-family: var(--font-mono); font-size: var(--font-size-xsmall); line-height: 2; }
+
+.area::placeholder { color: var(--text-neutral-subtle); opacity: 1; }
+.area:hover:not(:disabled) { border-color: var(--border-neutral-strong); }
+.area:focus-visible { border-color: var(--border-brand); outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset-field); }
+
+.invalid, .invalid:hover:not(:disabled) { border-color: var(--border-danger-strong); }
+.invalid:focus-visible { outline-color: var(--outline-danger); }
+
+.area:disabled {
+  resize: none; cursor: not-allowed;
+  background: var(--bg-neutral-subtle); border-color: var(--border-neutral-subtle); color: var(--text-neutral-subtle);
+}
+
+.footer { display: flex; align-items: flex-start; gap: var(--space-small); }
+.footer > p { flex: 1; }
+.count { margin-inline-start: auto; font-size: var(--font-size-xsmall); line-height: 1.4; color: var(--text-neutral); }
+
+/* Dark: text-neutral-intense stays dark in the BP palette, so use strong text on the dark field. */
+:global([data-theme="dark"]) .area { color: var(--text-neutral-strong); }
+
+@media (prefers-reduced-motion: reduce) {
+  .area { transition: none; }
+}

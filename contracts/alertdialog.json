@@ -1,0 +1,44 @@
+{
+  "name": "AlertDialog",
+  "path": "src/ui/AlertDialog/AlertDialog.tsx",
+  "intent": "Overlay that stops the user until they cancel or confirm.",
+  "usage": "Use AlertDialog when the user must choose before going on, like leaving with unsaved changes or deleting something. Use Alert for a message on the page. Escape cancels. Clicking the backdrop does nothing. See contracts/alertdialog.json for the full contract.",
+  "props": {
+    "open": { "type": "boolean", "required": true, "note": "Controlled. The screen owns the open state." },
+    "title": { "type": "string", "required": true, "note": "A short question, like Delete project?" },
+    "description": { "type": "string", "required": true, "note": "One or two sentences on what happens next." },
+    "cancelLabel": { "type": "string", "default": "Cancel" },
+    "actionLabel": { "type": "string", "required": true, "note": "A verb that names the result, like Delete or Continue. Not Yes or OK." },
+    "actionVariant": { "enum": ["primary", "danger"], "default": "primary", "note": "danger for actions that cannot be undone." },
+    "size": { "enum": ["sm", "md"], "default": "md", "note": "Max width 320 / 448." },
+    "onCancel": { "type": "function", "required": true, "note": "Called by Cancel and Escape." },
+    "onAction": { "type": "function", "required": true }
+  },
+  "useWhen": ["Confirming an action that cannot be undone.", "A decision the user must answer before the page goes on."],
+  "doNot": ["Do not invent a local confirm dialog or use window.confirm.", "Do not put forms, tables or extra actions inside.", "Do not add a close X or close on backdrop click.", "Do not wrap the two Buttons in a ButtonGroup. They stay separate with a gap.", "Do not use more than one primary or danger action. The action Button is the one.", "Do not use raw hex."],
+  "a11y": ["role=alertdialog with aria-modal.", "The title names the dialog; the description is aria-describedby.", "Focus moves to Cancel on open and returns to the trigger on close.", "Tab stays inside the dialog while it is open.", "Escape cancels. Backdrop click does nothing."],
+  "snippet": "<AlertDialog\n  open={open}\n  title=\"Delete project?\"\n  description=\"This cannot be undone.\"\n  actionLabel=\"Delete\"\n  actionVariant=\"danger\"\n  onCancel={close}\n  onAction={remove}\n/>",
+  "examples": [
+    {
+      "title": "Confirm",
+      "usage": "Use primary for a choice that is not destructive. The user still has to pick Cancel or Continue.",
+      "items": [
+        { "props": { "title": "Leave this page?", "description": "You have unsaved changes. Continue without saving?", "actionLabel": "Continue", "actionVariant": "primary", "size": "md" } }
+      ]
+    },
+    {
+      "title": "Destructive",
+      "usage": "Use danger for actions that cannot be undone. Cancel stays secondary. The backdrop does not close it.",
+      "items": [
+        { "props": { "title": "Delete project?", "description": "This cannot be undone. All invoices in this project will be removed.", "actionLabel": "Delete", "actionVariant": "danger", "size": "md" } }
+      ]
+    },
+    {
+      "title": "Small",
+      "usage": "Use sm for short questions with a one-line description.",
+      "items": [
+        { "props": { "title": "Sign out?", "description": "You will need to sign in again.", "actionLabel": "Sign out", "actionVariant": "primary", "size": "sm" } }
+      ]
+    }
+  ]
+}

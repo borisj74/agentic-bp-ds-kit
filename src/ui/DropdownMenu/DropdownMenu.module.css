@@ -1,0 +1,82 @@
+.root { display: inline-flex; }
+
+/* Field trigger (Select): full width, Input's field box. Two classes so these win over Input's .field. */
+.rootField { display: flex; width: 100%; }
+.rootField .fieldTrigger { width: 100%; margin: 0; font: inherit; font-size: var(--fs); text-align: start; cursor: pointer; gap: var(--space-xsmall); }
+.rootField .fieldTrigger:disabled { cursor: not-allowed; }
+.fieldText { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fieldMuted { color: var(--text-neutral-subtle); }
+.fieldIcon { color: var(--icon-neutral); }
+
+/* Figma dropdown-panel: brand top line, white body, 1px side and bottom border, rounded bottom corners, floating shadow.
+   Fixed so table cells and cards never clip it. Hidden until placed, so it never flashes at 0,0. */
+.panel {
+  position: fixed; z-index: var(--z-overlay); visibility: hidden;
+  box-sizing: border-box; display: flex; flex-direction: column; gap: var(--space-xxxsmall);
+  max-width: calc(100vw - var(--space-medium));
+  padding: var(--space-xsmall) var(--space-xxsmall);
+  background: var(--surface-flat);
+  border: var(--border-width-thin) solid var(--border-neutral);
+  border-top-color: var(--border-brand);
+  border-radius: var(--radius-medium);
+  box-shadow: var(--elevation-dropdown);
+}
+
+/* Figma menu-item: 28px min height, 2 / 8 px padding, 2px corners, 14px text.
+   flex: none so a long list scrolls; otherwise rows shrink and two-line rows overlap. */
+.item {
+  flex: none; box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xsmall);
+  width: 100%; min-height: var(--menu-item-height); margin: 0;
+  padding: var(--space-xxxsmall) var(--space-xsmall);
+  border: 0; border-radius: var(--radius-small); background: var(--surface-flat);
+  font-family: var(--font-sans); font-size: var(--font-size-small); line-height: 1.2; text-align: start;
+  color: var(--text-neutral); cursor: pointer;
+}
+.item:hover:not([aria-disabled="true"]) { background: var(--surface-sunken); color: var(--text-neutral-strong); }
+.item:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: 0; }
+.item[aria-disabled="true"] { color: var(--text-neutral-subtle); cursor: not-allowed; }
+.item[aria-disabled="true"] .tile { opacity: var(--opacity-disabled); }
+
+.selected { background: var(--bg-neutral-min-selected); color: var(--text-brand-strong); }
+.selected:hover:not([aria-disabled="true"]) { background: var(--bg-neutral-min-selected-hover); color: var(--text-brand-strong); }
+
+/* Long menus scroll past 280px. The 2px inset keeps item focus rings from being clipped. */
+.list {
+  display: flex; flex-direction: column; gap: var(--space-xxxsmall);
+  max-height: var(--dropdown-list-height); overflow-y: auto;
+  padding: var(--space-xxxsmall); margin: calc(var(--space-xxxsmall) * -1);
+}
+.search { padding: 0 var(--space-xxsmall) var(--space-xsmall); }
+.empty { padding: var(--space-small) var(--space-xsmall); font-size: var(--font-size-small); color: var(--text-neutral); }
+
+.danger { color: var(--text-danger); }
+.danger:hover:not([aria-disabled="true"]) { background: var(--bg-danger-subtle); color: var(--text-danger-intense); }
+.danger:focus-visible { outline-color: var(--outline-danger); }
+
+/* Dark: the Figma text roles drop under 4.5:1 on these fills, so step them up. */
+:global([data-theme="dark"]) .selected,
+:global([data-theme="dark"]) .selected:hover:not([aria-disabled="true"]) { color: var(--text-brand-intense); }
+:global([data-theme="dark"]) .danger { color: var(--text-danger-strong); }
+:global([data-theme="dark"]) .danger:hover:not([aria-disabled="true"]) { background: var(--bg-danger-faint); color: var(--text-danger-intense); }
+
+/* Leading icon sits in a tinted 32px tile, as in Figma. */
+.tile {
+  display: flex; align-items: center; justify-content: center; flex: none;
+  width: var(--menu-item-tile); height: var(--menu-item-tile); margin-block: var(--space-xxsmall);
+  border-radius: var(--radius-small); background: var(--bg-brand-faint); color: var(--icon-brand);
+}
+.item:hover:not([aria-disabled="true"]) .tile,
+.selected .tile { background: var(--bg-brand-subtle); }
+
+.text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-xxsmall); padding-block: var(--space-xxxsmall); }
+.label { overflow-wrap: anywhere; }
+/* Figma uses a fainter gray here; text-neutral keeps 12px text above 4.5:1. */
+.description { font-size: var(--font-size-xsmall); color: var(--text-neutral); overflow-wrap: anywhere; }
+.end { flex: none; }
+.checkbox { display: inline-flex; flex: none; }
+
+/* Figma menu-divider: a 16px row with a 1px line. The negative margin cancels the list gap. */
+.divider {
+  flex: none; height: var(--space-medium); margin-block: calc(var(--space-xxxsmall) * -1);
+  background: linear-gradient(var(--border-neutral-subtle), var(--border-neutral-subtle)) center / 100% var(--border-width-thin) no-repeat;
+}

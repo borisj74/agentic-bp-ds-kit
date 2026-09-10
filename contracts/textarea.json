@@ -1,0 +1,267 @@
+{
+  "name": "Textarea",
+  "path": "src/ui/Textarea/Textarea.tsx",
+  "intent": "Multi-line text entry for notes, descriptions and code, with its own label, hint, error and character count. Looks and behaves like Input.",
+  "usage": "Use Textarea for text that runs over one line: notes, descriptions, messages, formulas. Pass label, hint, error and help as props, same as Input. size sets the starting height (100 / 180 / 240+ px); people can drag it taller. type code switches to a monospace font for formulas and snippets. maxLength shows a live count under the field. See contracts/textarea.json for the full contract.",
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "note": "Always set. With hideLabel it stays for screen readers only."
+    },
+    "hideLabel": {
+      "type": "boolean",
+      "default": false,
+      "note": "No visible label. Use only when the screen makes the purpose clear."
+    },
+    "labelPosition": {
+      "enum": [
+        "top",
+        "start"
+      ],
+      "default": "top",
+      "note": "start puts the label in a 160px column beside the field, lined up with the first line."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "Starting height 100 / 180 / 260 px. People can drag it taller."
+    },
+    "type": {
+      "enum": [
+        "text",
+        "code"
+      ],
+      "default": "text",
+      "note": "code uses Roboto Mono 12px on a 24px line, for formulas and snippets."
+    },
+    "placeholder": {
+      "type": "string",
+      "note": "An example value. Never the only label."
+    },
+    "value": {
+      "type": "string",
+      "note": "Controlled value."
+    },
+    "defaultValue": {
+      "type": "string",
+      "note": "Uncontrolled start value."
+    },
+    "onChange": {
+      "type": "function",
+      "note": "(value: string) => void"
+    },
+    "name": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "note": "Defaults to a generated id."
+    },
+    "required": {
+      "type": "boolean",
+      "default": false,
+      "note": "Red asterisk before the label and the native required attribute."
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "note": "Gray, not editable, not resizable."
+    },
+    "readOnly": {
+      "type": "boolean",
+      "default": false
+    },
+    "invalid": {
+      "type": "boolean",
+      "default": false,
+      "note": "Red border without a message. Prefer error."
+    },
+    "error": {
+      "type": "string",
+      "note": "Message under the field. Also turns the border red. Replaces hint."
+    },
+    "hint": {
+      "type": "string",
+      "note": "Help text under the field."
+    },
+    "help": {
+      "type": "string",
+      "note": "Help icon beside the label. The text opens in a Tooltip once the kit has one."
+    },
+    "maxLength": {
+      "type": "number",
+      "note": "Limits the length and shows a count like 120/500 under the field, on the right."
+    }
+  },
+  "useWhen": [
+    "Notes, descriptions, comments or messages.",
+    "Templates or code snippets (type code). For formulas with insert and check tools, use FormulaEditor."
+  ],
+  "doNot": [
+    "Do not invent a local Field, FieldLabel, FieldError, CodeEditor or NotesBox.",
+    "Do not use for one-line values. Use Input.",
+    "Do not use for rich text or syntax highlighting. That is out of scope.",
+    "Do not add a formula toolbar above a Textarea. Use FormulaEditor.",
+    "Do not use a placeholder as the label.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A real label is tied to the textarea by id, visible or visually hidden with hideLabel.",
+    "hint, error, help and the counter are linked with aria-describedby.",
+    "error and invalid set aria-invalid. required sets the native required attribute; the asterisk is hidden from screen readers.",
+    "Focus shows a 2px brand ring around the field; red when invalid.",
+    "Disabled uses the native disabled attribute and cannot be resized."
+  ],
+  "snippet": "<Textarea label=\"Notes\" placeholder=\"Add a note for your team\" maxLength={500} />",
+  "examples": [
+    {
+      "title": "Label on top",
+      "usage": "The default. Label above, hint below.",
+      "items": [
+        {
+          "props": {
+            "label": "Description",
+            "placeholder": "What is this invoice for?",
+            "hint": "Shown to the customer on the invoice."
+          }
+        }
+      ]
+    },
+    {
+      "title": "Label at start",
+      "usage": "For dense forms. The label sits beside the first line.",
+      "items": [
+        {
+          "props": {
+            "label": "Notes",
+            "labelPosition": "start",
+            "size": "sm",
+            "placeholder": "Add a note"
+          }
+        }
+      ]
+    },
+    {
+      "title": "No label",
+      "usage": "hideLabel keeps the label for screen readers only.",
+      "items": [
+        {
+          "props": {
+            "label": "Reply",
+            "hideLabel": true,
+            "size": "sm",
+            "placeholder": "Write a reply"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Required and help",
+      "usage": "A red asterisk before the label, and a help icon for extra context.",
+      "items": [
+        {
+          "props": {
+            "label": "Reason for credit",
+            "required": true,
+            "size": "sm",
+            "help": "Shown in the audit log and on the credit note."
+          }
+        }
+      ]
+    },
+    {
+      "title": "Invalid",
+      "usage": "error turns the border red and says what to fix.",
+      "items": [
+        {
+          "props": {
+            "label": "Reason for credit",
+            "size": "sm",
+            "defaultValue": "N/A",
+            "error": "Add at least 10 characters so the reason is clear."
+          }
+        }
+      ]
+    },
+    {
+      "title": "Count",
+      "usage": "maxLength shows a live count under the field.",
+      "items": [
+        {
+          "props": {
+            "label": "Message",
+            "size": "sm",
+            "maxLength": 280,
+            "hint": "Sent by SMS.",
+            "defaultValue": "Your invoice INV-1042 is ready."
+          }
+        }
+      ]
+    },
+    {
+      "title": "Code",
+      "usage": "Monospace for formulas and templates.",
+      "items": [
+        {
+          "props": {
+            "label": "Formula",
+            "type": "code",
+            "size": "sm",
+            "defaultValue": "IF({!Account.Tier} = \"Gold\", {!Amount} * 0.9, {!Amount})"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Disabled and read only",
+      "usage": "Disabled is grayed out and cannot be resized. Read only can be selected and copied.",
+      "items": [
+        {
+          "props": {
+            "label": "Terms",
+            "size": "sm",
+            "disabled": true,
+            "defaultValue": "Net 30. Late fees apply after 45 days."
+          }
+        },
+        {
+          "props": {
+            "label": "Terms",
+            "size": "sm",
+            "readOnly": true,
+            "defaultValue": "Net 30. Late fees apply after 45 days."
+          }
+        }
+      ]
+    },
+    {
+      "title": "Sizes",
+      "usage": "Pick the starting height from how much people usually write.",
+      "items": [
+        {
+          "props": {
+            "label": "Small",
+            "size": "sm"
+          }
+        },
+        {
+          "props": {
+            "label": "Medium",
+            "size": "md"
+          }
+        },
+        {
+          "props": {
+            "label": "Large",
+            "size": "lg"
+          }
+        }
+      ]
+    }
+  ]
+}

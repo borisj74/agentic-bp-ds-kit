@@ -1,0 +1,70 @@
+/* BP Components badge (Figma 2004:19228) = sm: 20px tall, 8px side padding, 4px gap, 4px corners, 12px semibold.
+   md 24px and lg 28px are kit-defined. */
+.badge {
+  box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xxsmall);
+  padding: 0 var(--space-xsmall);
+  border: var(--border-width-thin) solid transparent; border-radius: var(--radius-medium);
+  font-family: var(--font-sans); font-weight: var(--font-weight-semibold); line-height: 1;
+  white-space: nowrap;
+}
+.sm { height: var(--badge-height-sm); font-size: var(--font-size-xsmall); }
+.md { height: var(--badge-height-md); font-size: var(--font-size-xsmall); }
+.lg { height: var(--badge-height-lg); font-size: var(--font-size-small); padding: 0 var(--space-small); }
+
+/* Icon-only is square. Figma strokes sit inside the box, so the border is included in the size. */
+.iconOnly { padding: 0; }
+.iconOnly.sm { width: var(--badge-height-sm); }
+.iconOnly.md { width: var(--badge-height-md); }
+.iconOnly.lg { width: var(--badge-height-lg); padding: 0; }
+
+/* Emphasis sets the text color; tone sets the fill. */
+.subtle, .faint { color: var(--text-neutral-intense); }
+.strong { color: var(--text-neutral-min-static); }
+
+.subtle.neutral { background: var(--bg-neutral-strong); }
+.strong.neutral { background: var(--bg-neutral-max); }
+.faint.neutral { background: var(--bg-neutral-faint); }
+
+.hollow { background: transparent; }
+.subtle.hollow { border-color: var(--border-neutral-strong); }
+.strong.hollow { border-color: var(--border-neutral-intense); color: var(--text-neutral-strong); }
+.faint.hollow { border-color: var(--border-neutral-faint); }
+
+.subtle.info { background: var(--bg-info-subtle); }
+.strong.info { background: var(--bg-info-strong); }
+.faint.info { background: var(--bg-info-faint); }
+.subtle.success { background: var(--bg-success-subtle); }
+.strong.success { background: var(--bg-success-strong); }
+.faint.success { background: var(--bg-success-faint); }
+.subtle.warning { background: var(--bg-warning-subtle); }
+.strong.warning { background: var(--bg-warning-strong); }
+.faint.warning { background: var(--bg-warning-faint); }
+.subtle.danger { background: var(--bg-danger-subtle); }
+.strong.danger { background: var(--bg-danger-strong); }
+.faint.danger { background: var(--bg-danger-faint); }
+.subtle.highlight { background: var(--bg-highlight-subtle); }
+.strong.highlight { background: var(--bg-highlight-strong); }
+.faint.highlight { background: var(--bg-highlight-faint); }
+
+/* Figma: icon-only strong and faint badges carry a 1px inverse border. */
+.iconOnly.strong:not(.hollow), .iconOnly.faint:not(.hollow) { border-color: var(--icon-neutral-min-static); }
+
+/* Dark theme: BP keeps text/neutral/intense dark, which disappears on dark fills. Light text on subtle, faint and hollow;
+   dark text on strong, whose dark-theme fills are light. Neutral subtle is mid-gray, so it takes dark text too. */
+:global([data-theme="dark"]) .subtle, :global([data-theme="dark"]) .faint, :global([data-theme="dark"]) .hollow { color: var(--text-neutral-strong); }
+:global([data-theme="dark"]) .subtle.neutral, :global([data-theme="dark"]) .strong:not(.hollow) { color: var(--text-neutral-min); }
+
+/* Disabled looks the same in every tone and emphasis. */
+.badge.disabled, :global([data-theme="dark"]) .badge.disabled { background: var(--bg-neutral-subtle); border-color: transparent; color: var(--text-neutral-faint); }
+
+.remove {
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  margin: 0; padding: 0; border: 0; border-radius: var(--radius-small);
+  background: transparent; color: inherit; cursor: pointer; line-height: 0;
+}
+.remove:hover { background: var(--bg-neutral-min-hover); }
+.remove:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: 1px; }
+.remove:disabled { cursor: not-allowed; background: transparent; }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

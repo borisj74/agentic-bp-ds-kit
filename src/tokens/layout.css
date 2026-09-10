@@ -1,0 +1,50 @@
+/* Layout patterns. Product screens compose these. Do not invent per-page grids.
+   Media queries use literal px because CSS vars cannot appear in media queries:
+   1024px = --grid-breakpoint-md, 640px = --grid-breakpoint-sm. */
+
+.layout-app { display: grid; grid-template-columns: var(--layout-sidebar) minmax(0, 1fr); min-height: 100vh; }
+.layout-app > aside { min-width: 0; background: var(--surface-sunken); border-right: var(--border-divider) solid var(--border-neutral-subtle); }
+
+.layout-canvas { display: grid; grid-template-rows: auto minmax(0, 1fr); min-width: 0; min-height: 0; }
+
+.layout-header {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--layout-gutter-md);
+  padding: var(--layout-gutter-md) var(--layout-margin-md);
+  border-bottom: var(--border-divider) solid var(--border-neutral-subtle);
+}
+
+.layout-workspace { display: grid; grid-template-columns: minmax(0, 1fr) auto; min-height: 0; }
+.layout-workspace > aside { width: var(--layout-rail); min-height: 0; overflow: auto; border-left: var(--border-divider) solid var(--border-neutral-subtle); }
+
+.layout-content { display: flex; flex-direction: column; gap: var(--layout-gutter-lg); padding: var(--layout-margin-md); min-width: 0; overflow: auto; }
+
+.layout-metrics { display: grid; gap: var(--layout-gutter-md); grid-template-columns: repeat(auto-fit, minmax(var(--layout-metrics-min), 1fr)); }
+.layout-metrics--fixed-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.layout-metrics--fixed-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+.layout-split { display: grid; gap: var(--layout-gutter-md); grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr)); }
+.layout-split > * { grid-column: span var(--layout-split-half); min-width: 0; }
+.layout-split--primary > :first-child { grid-column: span var(--layout-split-primary); }
+.layout-split--primary > :last-child { grid-column: span var(--layout-split-secondary); }
+.layout-split--thirds > * { grid-column: span var(--layout-split-third); }
+
+.layout-container-sm, .layout-container-md, .layout-container-lg, .layout-container-xl, .layout-container-2xl {
+  width: 100%; margin-inline: auto; padding-inline: var(--layout-margin-md);
+}
+.layout-container-sm { max-width: var(--layout-container-sm); }
+.layout-container-md { max-width: var(--layout-container-md); }
+.layout-container-lg { max-width: var(--layout-container-lg); }
+.layout-container-xl { max-width: var(--layout-container-xl); }
+.layout-container-2xl { max-width: var(--layout-container-2xl); }
+
+@media (max-width: 1024px) {
+  .layout-workspace { grid-template-columns: minmax(0, 1fr); }
+  .layout-workspace > aside { display: none; }
+  .layout-metrics--fixed-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .layout-app { grid-template-columns: minmax(0, 1fr); }
+  .layout-app > aside { display: none; }
+  .layout-split > *, .layout-split--primary > :first-child, .layout-split--primary > :last-child, .layout-split--thirds > * { grid-column: 1 / -1; }
+  .layout-metrics--fixed-3, .layout-metrics--fixed-4 { grid-template-columns: minmax(0, 1fr); }
+}

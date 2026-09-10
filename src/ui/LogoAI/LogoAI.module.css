@@ -1,0 +1,11 @@
+/* Figma frames: full 167.744 x 85.2, icon 100.706 x 85.2, filled 130.26 x 68.8, filled icon 68.8 x 68.8.
+   Scaled so full logos are 28px tall (same as Logo); every variant keeps its Figma size relative to the others. */
+.logo { display: inline-flex; align-items: center; flex: none; line-height: 0; }
+.full { display: block; width: 55.127px; height: 28px; }
+.icon { display: block; width: 33.096px; height: 28px; }
+.filledFull { display: block; width: 42.808px; height: 22.61px; }
+.filledIcon { display: block; width: 22.61px; height: 22.61px; }
+
+/* "AI" text in the color logo: brand navy, white reverse in dark theme (same rule as Logo). Fixed brand colors, not tokens. */
+.text { color: #001c34; }
+:global([data-theme="dark"]) .text { color: #ffffff; }

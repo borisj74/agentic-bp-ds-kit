@@ -1,0 +1,232 @@
+{
+  "name": "DatePicker",
+  "path": "src/ui/DatePicker/DatePicker.tsx",
+  "intent": "A date field that opens a calendar to pick one date, or a range between two dates. Looks like Input.",
+  "usage": "Use DatePicker for dates in forms and filters. mode single picks one day; mode range picks a start and an end across two months, with quick ranges like Last week. Picks stay pending until Apply; Cancel, Escape or a click outside leave the value as it was. Dates are ISO strings (YYYY-MM-DD); a range is { start, end }. Label, hint, error, help and sizes work like Input. See contracts/datepicker.json for the full contract.",
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "note": "Always set. With hideLabel it stays for screen readers only."
+    },
+    "mode": {
+      "enum": [
+        "single",
+        "range"
+      ],
+      "default": "single",
+      "note": "range shows two months, quick ranges and the picked range in the footer."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "Field height 28 / 36 / 44, same as Input. The calendar has one size."
+    },
+    "labelPosition": {
+      "enum": [
+        "top",
+        "start"
+      ],
+      "default": "top"
+    },
+    "hideLabel": {
+      "type": "boolean",
+      "default": false
+    },
+    "placeholder": {
+      "type": "string",
+      "note": "Defaults to Select date, or Select dates in range mode."
+    },
+    "value": {
+      "type": "string | DatePickerRange",
+      "note": "Controlled. YYYY-MM-DD, or { start, end } in range mode."
+    },
+    "defaultValue": {
+      "type": "string | DatePickerRange",
+      "note": "Uncontrolled start value."
+    },
+    "onChange": {
+      "type": "function",
+      "note": "(value) => void. Runs on Apply."
+    },
+    "minDate": {
+      "type": "string",
+      "note": "YYYY-MM-DD. Earlier days cannot be picked."
+    },
+    "maxDate": {
+      "type": "string",
+      "note": "YYYY-MM-DD. Later days cannot be picked."
+    },
+    "presets": {
+      "type": "boolean",
+      "default": true,
+      "note": "Range mode only: Today, Yesterday, This week, Last week, This month, Last month, This year, Last year."
+    },
+    "name": {
+      "type": "string",
+      "note": "Hidden input for forms. Range submits start/end, like 2027-01-08/2027-01-14."
+    },
+    "id": {
+      "type": "string"
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "invalid": {
+      "type": "boolean",
+      "default": false
+    },
+    "error": {
+      "type": "string",
+      "note": "Message under the field. Also turns the border red."
+    },
+    "hint": {
+      "type": "string"
+    },
+    "help": {
+      "type": "string",
+      "note": "Help icon beside the label. Opens in a Tooltip once the kit has one."
+    }
+  },
+  "useWhen": [
+    "A date in a form, like an invoice or due date.",
+    "A period for a report or filter, like last month (mode range)."
+  ],
+  "doNot": [
+    "Do not invent a local Calendar, DateRangePicker, Popover or native input type=date.",
+    "Do not use two DatePickers for a start and end. Use mode range.",
+    "Do not use for time. There is no time picker yet.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The field is a button with aria-haspopup=dialog and aria-expanded, labelled by the label. Required is read from the label; error and hint are linked with aria-describedby.",
+    "The calendar is a dialog; each month is a grid named by its heading; days are buttons named like Friday, January 8, 2027, today, start of range.",
+    "Opening moves focus to the picked day or today. Arrow keys move by day and week, Home and End to the week edges, Page Up and Page Down by month. Enter or Space picks.",
+    "Tab stays inside the calendar. Escape and Cancel close and return focus to the field; a click outside cancels.",
+    "Days outside the month are hidden from screen readers. The picked range in the footer is announced politely."
+  ],
+  "snippet": "<DatePicker label=\"Invoice date\" value={date} onChange={setDate} />",
+  "examples": [
+    {
+      "title": "Single date",
+      "usage": "Pick one day. Today jumps to the current date; Apply saves.",
+      "items": [
+        {
+          "props": {
+            "label": "Invoice date",
+            "hint": "Shown on the invoice."
+          }
+        },
+        {
+          "props": {
+            "label": "Due date",
+            "defaultValue": "2027-01-08"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Date range",
+      "usage": "Pick a start and an end across two months, or a quick range.",
+      "items": [
+        {
+          "props": {
+            "label": "Billing period",
+            "mode": "range"
+          }
+        },
+        {
+          "props": {
+            "label": "Billing period",
+            "mode": "range",
+            "defaultValue": {
+              "start": "2027-01-08",
+              "end": "2027-01-14"
+            }
+          }
+        },
+        {
+          "props": {
+            "label": "Report period",
+            "mode": "range",
+            "presets": false
+          }
+        }
+      ]
+    },
+    {
+      "title": "Limits",
+      "usage": "minDate and maxDate block days outside the allowed window.",
+      "items": [
+        {
+          "props": {
+            "label": "Delivery date",
+            "defaultValue": "2027-01-12",
+            "minDate": "2027-01-10",
+            "maxDate": "2027-01-24",
+            "hint": "Between Jan 10 and Jan 24."
+          }
+        }
+      ]
+    },
+    {
+      "title": "States",
+      "usage": "Same states as Input.",
+      "items": [
+        {
+          "props": {
+            "label": "Start date",
+            "required": true,
+            "error": "Pick a start date."
+          }
+        },
+        {
+          "props": {
+            "label": "Start date",
+            "disabled": true,
+            "defaultValue": "2027-01-08"
+          }
+        },
+        {
+          "props": {
+            "label": "Start date",
+            "labelPosition": "start"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Sizes",
+      "usage": "Match the Inputs and Buttons around it.",
+      "items": [
+        {
+          "props": {
+            "label": "Date",
+            "size": "sm"
+          }
+        },
+        {
+          "props": {
+            "label": "Date",
+            "size": "md"
+          }
+        },
+        {
+          "props": {
+            "label": "Date",
+            "size": "lg"
+          }
+        }
+      ]
+    }
+  ]
+}

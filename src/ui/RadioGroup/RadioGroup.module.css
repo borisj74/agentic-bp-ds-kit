@@ -1,0 +1,64 @@
+.group { margin: 0; padding: 0; border: 0; min-inline-size: 0; font-family: var(--font-sans); }
+.sm { --circle: var(--radio-size-sm); --gap: var(--space-xsmall); font-size: var(--font-size-xsmall); }
+.md { --circle: var(--radio-size-md); --gap: var(--space-small); font-size: var(--font-size-small); }
+.lg { --circle: var(--radio-size-lg); --gap: var(--space-medium); font-size: var(--font-size-regular); }
+
+/* float + full width lets the legend sit in the fieldset flow like a normal block. */
+.legend { float: left; width: 100%; padding: 0; margin: 0 0 var(--gap); font-size: var(--font-size-small); font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); }
+.options { clear: both; display: grid; gap: var(--gap); }
+.horizontal { display: flex; flex-wrap: wrap; column-gap: var(--space-large); }
+
+.option { position: relative; display: inline-flex; align-items: center; gap: var(--space-xsmall); cursor: pointer; }
+.input { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Resting outline uses --icon-neutral-subtle: 3:1 against the surroundings in light and dark (WCAG 1.4.11). */
+.control {
+  position: relative; flex: none; box-sizing: border-box; width: var(--circle); height: var(--circle);
+  border: var(--border-width-thin) solid var(--icon-neutral-subtle); border-radius: var(--radius-full);
+  background: var(--surface-raised);
+  transition: border-color var(--motion-interaction-duration) var(--motion-interaction-easing);
+}
+.dot {
+  position: absolute; inset: 0; margin: auto; width: 50%; height: 50%; border-radius: var(--radius-full);
+  background: var(--bg-brand); transform: scale(0); opacity: 0;
+  transition: transform var(--motion-expand-duration) var(--motion-ease-spring), opacity var(--motion-interaction-duration) var(--motion-interaction-easing);
+}
+.option:hover:not([data-disabled]) .control { border-color: var(--icon-neutral); }
+.option[data-checked] .control { border-color: var(--bg-brand); }
+.option[data-checked] .dot { transform: scale(1); opacity: 1; }
+.option[data-checked]:hover:not([data-disabled]) .control { border-color: var(--bg-brand-hover); }
+.option[data-checked]:hover:not([data-disabled]) .dot { background: var(--bg-brand-hover); }
+.option:has(.input:focus-visible) .control { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
+
+.label { font-weight: var(--font-weight-medium); line-height: 1.4; color: var(--text-neutral-strong); }
+
+.error .control, .error .option:hover:not([data-disabled]) .control { border-color: var(--border-danger); }
+.error .dot, .error .option[data-checked]:hover .dot { background: var(--bg-danger); }
+.error .option:has(.input:focus-visible) .control { outline-color: var(--outline-danger); }
+
+.option[data-disabled] { cursor: not-allowed; opacity: var(--opacity-disabled); }
+
+.message { clear: both; margin: var(--space-xsmall) 0 0; font-size: var(--font-size-xsmall); line-height: 1.4; color: var(--text-neutral-subtle); }
+.messageError { color: var(--text-danger-strong); }
+
+/* Card layout: bordered rows, radio on the right. */
+.card { width: 100%; max-width: 480px; }
+.card .options { gap: var(--space-xsmall); }
+.card .option {
+  display: flex; justify-content: space-between; gap: var(--space-medium); box-sizing: border-box; width: 100%;
+  padding: var(--space-medium); border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-large);
+  background: var(--surface-raised);
+  transition: border-color var(--motion-interaction-duration) var(--motion-interaction-easing);
+}
+.card .option:hover:not([data-disabled]) { border-color: var(--border-neutral-strong); }
+.card .option[data-checked] { border-color: var(--border-brand); }
+.copy { display: grid; gap: var(--space-xxsmall); min-width: 0; flex: 1; }
+.titleRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xsmall); }
+.card .label { font-weight: var(--font-weight-semibold); }
+.description { font-size: var(--font-size-small); line-height: 1.4; color: var(--text-neutral-subtle); }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .control, .dot, .card .option { transition: none; }
+}

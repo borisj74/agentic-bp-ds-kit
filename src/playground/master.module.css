@@ -1,0 +1,102 @@
+/* Component master: Preview | Variants. Shared tab + hint styles are also used by foundation pages. */
+.hint { margin: 0 0 var(--space-small); color: var(--text-neutral-subtle); font-size: var(--font-size-small); }
+.tabs { display: inline-flex; gap: 2px; padding: 2px; background: var(--bg-neutral-subtle); border-radius: var(--radius-medium); margin-bottom: var(--space-small); }
+.tab {
+  font: inherit; font-size: var(--font-size-small); color: var(--text-neutral); background: transparent; border: 0;
+  padding: var(--space-xxsmall) var(--space-small); border-radius: var(--radius-small); cursor: pointer;
+}
+.tab:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); }
+.tabActive { background: var(--surface-raised); color: var(--text-neutral-strong); }
+
+/* minmax(0, 1fr): long code lines scroll inside their block instead of stretching the page sideways. */
+.section { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-medium); --stage: var(--bg-neutral-subtle); }
+/* In dark, a lighter stage would sit above the page. Sink it instead so the panel reads as raised. */
+:global([data-theme="dark"]) .section { --stage: var(--surface-sunken); }
+.header { display: grid; gap: var(--space-xxsmall); justify-items: start; }
+.header .tabs { margin: var(--space-xsmall) 0 0; }
+.h2 { margin: 0; font-size: var(--font-size-large); font-weight: var(--font-weight-medium); color: var(--text-neutral-strong); }
+.lead { margin: 0; color: var(--text-neutral-subtle); font-size: var(--font-size-small); }
+
+/* Preview: one large stage with a floating control panel. */
+.layout {
+  --panel-w: 248px;
+  position: relative; display: grid; min-height: 544px;
+  background: var(--stage); border-radius: var(--radius-large);
+}
+.canvas {
+  display: grid; place-items: center; min-width: 0;
+  padding: var(--space-medium) calc(var(--panel-w) + var(--space-medium) * 2) var(--space-medium) var(--space-medium);
+}
+.canvasFull { padding: var(--space-medium); }
+.panel {
+  position: absolute; top: var(--space-medium); right: var(--space-medium);
+  width: var(--panel-w); max-height: calc(100% - var(--space-medium) * 2); overflow: auto;
+  display: grid; align-content: start; gap: var(--space-medium); padding: var(--space-small);
+  background: var(--surface-raised); border: var(--border-width-thin) solid var(--border-neutral-subtle);
+  border-radius: var(--radius-large); box-shadow: var(--elevation-popover);
+}
+.group { display: grid; gap: var(--space-xsmall); }
+.label { font-size: var(--font-size-xsmall); font-weight: var(--font-weight-medium); color: var(--text-neutral); }
+
+.segment { display: inline-flex; justify-self: start; gap: 2px; padding: 2px; background: var(--bg-neutral-subtle); border-radius: var(--radius-medium); }
+.segBtn {
+  font: inherit; font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); background: transparent; border: 0;
+  padding: var(--space-xxxsmall) var(--space-xsmall); border-radius: var(--radius-small); cursor: pointer;
+}
+.segBtn:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); }
+.segOn { background: var(--surface-raised); color: var(--text-neutral-strong); }
+
+.radio { display: flex; align-items: center; gap: var(--space-xsmall); font-size: var(--font-size-small); color: var(--text-neutral-strong); cursor: pointer; }
+.radio input {
+  appearance: none; margin: 0; width: var(--icon-size-medium); height: var(--icon-size-medium); flex: none;
+  display: grid; place-content: center; cursor: pointer;
+  border: var(--border-width-thin) solid var(--border-neutral-strong); border-radius: var(--radius-full); background: var(--surface-raised);
+}
+.radio input::before { content: ""; width: 10px; height: 10px; border-radius: var(--radius-full); background: var(--bg-brand); transform: scale(0); transition: transform var(--motion-interaction-duration) var(--motion-interaction-easing); }
+.radio input:checked { border-color: var(--border-brand); }
+.radio input:checked::before { transform: scale(1); }
+.radio input:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: 2px; }
+
+/* Usage + code under a stage. */
+.docs { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-medium); }
+.detail { display: grid; gap: var(--space-xxsmall); max-width: 640px; }
+.detailLabel { margin: 0; font-size: var(--font-size-xsmall); font-weight: var(--font-weight-medium); color: var(--text-neutral-subtle); }
+.detailText { margin: 0; font-size: var(--font-size-small); line-height: 1.5; color: var(--text-neutral-subtle); }
+.codeWrap { position: relative; }
+.code {
+  margin: 0; overflow-x: auto; white-space: pre;
+  font-family: var(--font-mono); font-size: var(--font-size-xsmall); line-height: 1.6; color: var(--text-neutral-strong);
+  background: var(--stage); border-radius: var(--radius-medium);
+  padding: var(--space-medium) calc(var(--space-xxlarge) * 2) var(--space-medium) var(--space-medium);
+}
+.copy { position: absolute; top: var(--space-xsmall); right: var(--space-xsmall); }
+
+/* Variants: one card per contract example. */
+.examples { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-large); }
+.example {
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-medium); padding: var(--space-medium);
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-large);
+}
+.exampleCanvas { display: grid; place-items: center; min-height: 192px; padding: var(--space-medium); background: var(--stage); border-radius: var(--radius-large); }
+.block { width: 100%; max-width: 720px; }
+.stack { width: 100%; max-width: 720px; display: grid; gap: var(--space-small); }
+.items { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-medium); }
+/* Form fields read top to bottom, like a real form. */
+.column { display: flex; flex-direction: column; align-items: center; gap: var(--space-large); }
+/* Rows of one list, like FormDisplay details: stacked with no gap, the row lines do the separating. */
+.flush { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.cells { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--space-medium); }
+.cell { display: grid; justify-items: center; align-content: start; gap: var(--space-xsmall); text-align: center; }
+.caption { font-size: var(--font-size-small); font-weight: var(--font-weight-medium); color: var(--text-neutral-subtle); }
+
+/* Gallery cards on /components. */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-medium); }
+.card { position: relative; display: block; border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-large); background: var(--surface-flat); overflow: hidden; }
+.card:hover { border-color: var(--border-neutral-strong); }
+.card:has(.cardTitle:focus-visible) { outline: var(--border-width-medium) solid var(--outline-brand); }
+.cardPreview { height: 120px; display: flex; align-items: center; justify-content: center; background: var(--surface-sunken); }
+.cardBody { padding: var(--space-small) var(--space-medium); }
+.cardTitle { display: block; font-weight: var(--font-weight-medium); color: var(--text-neutral-strong); text-decoration: none; outline: none; }
+/* Stretched link: the whole card is the click target. */
+.cardTitle::after { content: ""; position: absolute; inset: 0; }
+.cardDesc { font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); }

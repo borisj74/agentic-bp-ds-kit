@@ -1,0 +1,48 @@
+.section { margin-bottom: var(--space-xlarge); }
+.lead { margin: 0 0 var(--space-small); font-size: var(--font-size-small); color: var(--text-neutral); }
+.lead code { font-family: var(--font-mono); font-size: var(--font-size-xsmall); }
+
+.diagram {
+  display: grid; grid-template-columns: 22% minmax(0, 1fr); gap: var(--space-xxsmall);
+  height: 168px; padding: var(--space-xsmall); margin-bottom: var(--space-small);
+  background: var(--bg-neutral-subtle); border-radius: var(--radius-large);
+}
+.dBox { display: grid; place-items: center; font-size: var(--font-size-xsmall); color: var(--text-neutral); }
+.dNav { composes: dBox; background: var(--bg-neutral); border-radius: var(--radius-medium); }
+.dCanvas { display: grid; grid-template-rows: 32px minmax(0, 1fr); background: var(--surface-flat); border-radius: var(--radius-medium); overflow: hidden; }
+.dHeader { composes: dBox; border-bottom: var(--border-divider) solid var(--border-neutral-subtle); }
+.dWorkspace { display: grid; grid-template-columns: minmax(0, 1fr) 28%; min-height: 0; }
+.dMain { display: grid; grid-template-rows: 1fr 1fr; gap: var(--space-xxsmall); padding: var(--space-xxsmall); }
+.dMetrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-xxsmall); }
+.dSplit { display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-xxsmall); }
+.dCell { composes: dBox; background: var(--bg-neutral-subtle); border-radius: var(--radius-small); font-size: 11px; color: var(--text-neutral-subtle); }
+.dRail { composes: dBox; border-left: var(--border-divider) solid var(--border-neutral-subtle); }
+
+.codeWrap { position: relative; }
+.code { font-family: var(--font-mono); font-size: var(--font-size-xsmall); line-height: 1.6; background: var(--bg-neutral-subtle); padding: var(--space-medium); border-radius: var(--radius-large); overflow-x: auto; margin: 0; color: var(--text-neutral-strong); }
+.codeCopy { position: absolute; top: var(--space-xsmall); right: var(--space-xsmall); }
+
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-small); }
+@media (max-width: 1100px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .cards { grid-template-columns: minmax(0, 1fr); } }
+.card {
+  appearance: none; font: inherit; text-align: left; cursor: pointer;
+  display: flex; flex-direction: column; gap: var(--space-xxsmall); padding: var(--space-medium);
+  background: var(--surface-sunken); border: var(--border-width-thin) solid var(--border-neutral-faint); border-radius: var(--radius-large);
+  transition-property: border-color, background-color; transition-duration: var(--motion-interaction-duration); transition-timing-function: var(--motion-interaction-easing);
+}
+.card:hover { border-color: var(--border-neutral-strong); background: var(--bg-neutral-min-hover); }
+.card:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); }
+.cardHead { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-xsmall); }
+.cardTitle { font-size: var(--font-size-small); font-weight: var(--font-weight-medium); color: var(--text-neutral-strong); }
+.cardClass { font-family: var(--font-mono); font-size: var(--font-size-xsmall); color: var(--text-brand); }
+.cardDesc { font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); line-height: 1.5; }
+.copied { color: var(--text-success); }
+
+.demo { padding: var(--space-xsmall); margin-bottom: var(--space-small); background: var(--bg-neutral-subtle); border-radius: var(--radius-large); }
+.cell { display: grid; place-items: center; min-height: 40px; background: var(--surface-flat); border-radius: var(--radius-medium); font-family: var(--font-mono); font-size: var(--font-size-xsmall); color: var(--text-neutral); }
+.label { margin: 0 0 var(--space-xxsmall); font-family: var(--font-mono); font-size: var(--font-size-xsmall); color: var(--text-neutral-strong); }
+
+.cols { display: grid; grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr)); gap: 2px; width: 240px; height: 16px; }
+.cols span { background: var(--bg-neutral-strong); border-radius: 1px; }
+.frac { display: block; height: 12px; background: var(--bg-neutral-strong); border-radius: var(--radius-small); }

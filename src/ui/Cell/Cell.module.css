@@ -1,0 +1,30 @@
+/* Full width with a faint bottom border, so a stack of cells reads as table rows. */
+.cell {
+  box-sizing: border-box; display: flex; align-items: center; gap: var(--space-small);
+  width: 100%; min-width: 0;
+  background: var(--surface-flat); border-bottom: var(--border-width-thin) solid var(--border-neutral-faint);
+  font-family: var(--font-sans); font-size: var(--font-size-small); line-height: 1.4; color: var(--text-neutral-strong);
+}
+/* min-height sets the row; small block padding keeps 32px content plus the 1px border inside 48 / 56. */
+.sm { min-height: var(--cell-height-sm); padding: var(--space-xxsmall) var(--space-small); }
+.md { min-height: var(--cell-height-md); padding: var(--space-xsmall) var(--space-small); }
+
+.visual { display: inline-flex; align-items: center; flex: none; min-width: 0; }
+/* Select fills the rest of the row. */
+.fill { display: flex; flex: 1; min-width: 0; }
+.label { min-width: 0; overflow-wrap: anywhere; }
+.link { min-width: 0; overflow-wrap: anywhere; color: var(--link-brand); text-decoration: none; border-radius: var(--radius-small); }
+.link:hover { color: var(--link-brand-hover); text-decoration: underline; }
+.link:active { color: var(--link-brand-press); }
+.link:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
+/* Tight line height so name + second line (about 31px) fit beside the 32px avatar and rows stay 48 / 56 px. */
+.copy { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; }
+.name { font-weight: var(--font-weight-medium); overflow-wrap: anywhere; }
+.support { font-size: var(--font-size-xsmall); color: var(--text-neutral); overflow-wrap: anywhere; }
+
+.icon { display: flex; color: var(--icon-neutral-subtle); }
+.row { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--space-xxsmall); }
+
+.trend { display: inline-flex; align-items: center; gap: var(--space-xxsmall); font-weight: var(--font-weight-medium); }
+.up { color: var(--text-success-strong); }
+.down { color: var(--text-danger-strong); }

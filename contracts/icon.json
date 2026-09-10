@@ -1,0 +1,59 @@
+{
+  "name": "Icon",
+  "path": "src/ui/Icon/Icon.tsx",
+  "intent": "Draws one Material Symbols Outlined glyph at a kit size, colored by the parent text color or a semantic icon role.",
+  "usage": "Use Icon for every glyph. Pick a size from the scale and a tone from the semantic roles. Pass a label only when the icon means something on its own. See contracts/icon.json for the full contract.",
+  "props": {
+    "name": { "type": "string", "required": true, "note": "Material Symbols Outlined ligature name, e.g. 'search', 'close', 'check'." },
+    "size": { "enum": ["xs", "sm", "md", "lg", "xl"], "default": "md", "note": "xs 12, sm 16, md 20, lg 24, xl 32 (icon/size scale). xs is kit-defined for Badge icons." },
+    "tone": { "enum": ["inherit", "neutral", "subtle", "brand", "info", "success", "warning", "danger"], "default": "inherit" },
+    "filled": { "type": "boolean", "default": false },
+    "label": { "type": "string", "note": "Accessible name. Omit when decorative (icon then gets aria-hidden)." }
+  },
+  "useWhen": ["Any glyph inside a kit component or screen."],
+  "doNot": ["Do not inline SVGs or emoji.", "Do not size with custom px; use size enum."],
+  "a11y": ["Decorative icons are aria-hidden.", "Icons with meaning must pass label, which renders as role=img aria-label."],
+  "snippet": "<Icon name=\"search\" size=\"md\" />",
+  "examples": [
+    {
+      "title": "Accessibility",
+      "a11y": true,
+      "usage": "Most icons sit next to text and stay hidden. Add a label when the icon stands alone.",
+      "items": [
+        { "caption": "Decorative, hidden", "props": { "name": "search", "size": "lg" } },
+        { "caption": "Meaningful, labeled", "props": { "name": "warning", "size": "lg", "tone": "warning", "label": "Warning" } }
+      ]
+    },
+    {
+      "title": "Sizes",
+      "usage": "Match the icon to the text or control next to it. sm for dense rows, md for most controls, lg and xl for empty states and headers.",
+      "items": [
+        { "caption": "sm", "props": { "name": "favorite", "size": "sm" } },
+        { "caption": "md", "props": { "name": "favorite", "size": "md" } },
+        { "caption": "lg", "props": { "name": "favorite", "size": "lg" } },
+        { "caption": "xl", "props": { "name": "favorite", "size": "xl" } }
+      ]
+    },
+    {
+      "title": "Tones",
+      "usage": "Inherit follows the text color. Use a status tone only when the icon carries that status.",
+      "items": [
+        { "caption": "neutral", "props": { "name": "circle", "size": "lg", "tone": "neutral" } },
+        { "caption": "subtle", "props": { "name": "circle", "size": "lg", "tone": "subtle" } },
+        { "caption": "brand", "props": { "name": "star", "size": "lg", "tone": "brand" } },
+        { "caption": "info", "props": { "name": "info", "size": "lg", "tone": "info" } },
+        { "caption": "success", "props": { "name": "check_circle", "size": "lg", "tone": "success" } },
+        { "caption": "warning", "props": { "name": "warning", "size": "lg", "tone": "warning" } },
+        { "caption": "danger", "props": { "name": "error", "size": "lg", "tone": "danger" } }
+      ]
+    },
+    {
+      "title": "Filled",
+      "usage": "Use filled for selected or active states, like a starred item. Keep outlined as the default.",
+      "items": [
+        { "caption": "outlined", "props": { "name": "star", "size": "lg", "tone": "brand" } },
+        { "caption": "filled", "props": { "name": "star", "size": "lg", "tone": "brand", "filled": true } }
+      ]
+    }
+  ]
+}

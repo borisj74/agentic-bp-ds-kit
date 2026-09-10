@@ -1,0 +1,44 @@
+{
+  "name": "RadioGroup",
+  "path": "src/ui/RadioGroup/RadioGroup.tsx",
+  "intent": "Pick exactly one option from a short visible list. One piece: legend, options, message.",
+  "usage": "Use RadioGroup for one choice from two to six options that should stay visible, like a billing cycle. Use Checkbox for independent yes/no choices. The legend names the group; hide it only when a heading already names it. Card layout suits choices that need a description. See contracts/radiogroup.json for the full contract.",
+  "props": {
+    "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "Circle 16 / 20 / 24 px, labels 12 / 14 / 16 px." },
+    "orientation": { "enum": ["vertical", "horizontal"], "default": "vertical", "note": "Horizontal only for two or three short labels. Card layout is always vertical." },
+    "layout": { "enum": ["list", "card"], "default": "list", "note": "card = bordered rows, radio on the right, optional description and Badge." },
+    "disabled": { "type": "boolean", "default": false, "note": "Locks the whole group." },
+    "hideLegend": { "type": "boolean", "default": false, "note": "Keeps the legend for screen readers, hides it on screen." },
+    "legend": { "type": "string", "required": true },
+    "name": { "type": "string", "note": "Optional. A name is generated when omitted." },
+    "value": { "type": "string", "note": "Controlled. Pair with onChange." },
+    "defaultValue": { "type": "string" },
+    "error": { "type": "string", "note": "Message under the group. Tints the radios red." },
+    "hint": { "type": "string", "note": "Help text under the group. error replaces it." },
+    "options": { "type": "RadioGroupOption[]", "required": true, "itemShape": { "value": "string", "label": "string", "description": "string?", "badge": "string?", "badgeTone": "BadgeTone?", "disabled": "boolean?" }, "note": "Two to six. description and badge show in card layout." },
+    "onChange": { "type": "function", "note": "(value: string) => void" }
+  },
+  "useWhen": ["One choice from two to six visible options.", "Settings where people compare options side by side."],
+  "doNot": ["Do not invent a Radio, RadioItem or RadioLegend cousin.", "Do not use for independent yes/no choices. Use Checkbox.", "Do not use for long lists of options.", "Do not use to switch page panels.", "Do not use an unstyled native radio.", "Do not use raw hex."],
+  "a11y": ["fieldset with a legend that names the group.", "Each option is a native input type=radio with a visible label; arrow keys move between options.", "error sets aria-invalid on the fieldset and links the message with aria-describedby.", "Disabled options stay readable but cannot be picked.", "Focus ring on the circle for keyboard users."],
+  "snippet": "<RadioGroup legend=\"Billing cycle\" defaultValue=\"annual\" options={[{ value: \"monthly\", label: \"Monthly\" }, { value: \"annual\", label: \"Annual\" }]} />",
+  "examples": [
+    { "title": "Sizes", "usage": "lg for a main decision, md for most forms, sm in dense filters and side panels.", "items": [
+      { "props": { "size": "sm", "legend": "Billing cycle (sm)", "defaultValue": "annual", "options": [{ "value": "monthly", "label": "Monthly" }, { "value": "annual", "label": "Annual" }] } },
+      { "props": { "size": "md", "legend": "Billing cycle (md)", "defaultValue": "annual", "options": [{ "value": "monthly", "label": "Monthly" }, { "value": "annual", "label": "Annual" }] } },
+      { "props": { "size": "lg", "legend": "Billing cycle (lg)", "defaultValue": "annual", "options": [{ "value": "monthly", "label": "Monthly" }, { "value": "annual", "label": "Annual" }] } } ] },
+    { "title": "Horizontal", "usage": "For two or three short labels in one row.", "items": [
+      { "props": { "orientation": "horizontal", "legend": "Invoice format", "defaultValue": "pdf", "options": [{ "value": "pdf", "label": "PDF" }, { "value": "csv", "label": "CSV" }, { "value": "xlsx", "label": "Excel" }] } } ] },
+    { "title": "Card", "usage": "Bordered rows with the radio on the right. Use when each choice needs a short description or a Badge.", "items": [
+      { "props": { "layout": "card", "legend": "Plan", "defaultValue": "growth", "options": [
+        { "value": "starter", "label": "Starter", "description": "Up to 100 invoices a month." },
+        { "value": "growth", "label": "Growth", "description": "Unlimited invoices and usage billing.", "badge": "Recommended", "badgeTone": "success" },
+        { "value": "enterprise", "label": "Enterprise", "description": "Custom contracts and dedicated support." } ] } } ] },
+    { "title": "Error and hint", "usage": "Show error on the group when a required choice is empty or not allowed. Keep the message specific. Use hint for help text.", "items": [
+      { "props": { "legend": "Billing cycle", "error": "Select a billing cycle to continue.", "options": [{ "value": "monthly", "label": "Monthly" }, { "value": "annual", "label": "Annual" }] } },
+      { "props": { "legend": "Billing cycle", "hint": "Annual saves two months.", "defaultValue": "monthly", "options": [{ "value": "monthly", "label": "Monthly" }, { "value": "annual", "label": "Annual" }] } } ] },
+    { "title": "Disabled", "usage": "Disable one option when it is not available for this account, or the whole group when a permission locks the choice.", "items": [
+      { "props": { "legend": "Region", "defaultValue": "us", "options": [{ "value": "us", "label": "United States" }, { "value": "eu", "label": "Europe", "disabled": true }] } },
+      { "props": { "legend": "Seat type", "defaultValue": "editor", "disabled": true, "options": [{ "value": "viewer", "label": "Viewer" }, { "value": "editor", "label": "Editor" }] } } ] }
+  ]
+}

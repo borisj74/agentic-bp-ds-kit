@@ -1,0 +1,44 @@
+/* One button drawn as two parts. The chevron part is square inside, so the space around the chevron is equal. */
+.filter {
+  --h: var(--control-medium);
+  --line: var(--border-neutral-strong);
+  appearance: none; margin: 0; padding: 0; cursor: pointer;
+  box-sizing: border-box;
+  display: inline-flex; align-items: stretch; height: var(--h);
+  border: var(--border-width-thin) solid var(--line); border-radius: var(--radius-medium);
+  background: var(--surface-raised); color: var(--text-neutral-strong);
+  font-family: var(--font-sans); font-weight: var(--font-weight-medium); line-height: 1; white-space: nowrap;
+  transition: background-color var(--motion-interaction-duration) var(--motion-interaction-easing);
+}
+.sm { --h: var(--control-small); font-size: var(--font-size-xsmall); }
+.md { --h: var(--control-medium); font-size: var(--font-size-small); }
+.lg { --h: var(--control-large); font-size: var(--font-size-regular); }
+
+.main { display: inline-flex; align-items: center; gap: var(--space-xsmall); }
+.sm .main { padding: 0 var(--space-xsmall); }
+.md .main { padding: 0 var(--space-small); }
+.lg .main { padding: 0 var(--space-medium); }
+
+/* Content box is (height - 2 outer borders) on both axes, plus the 1px divider on the left. */
+.chevron {
+  box-sizing: border-box; flex: none; display: inline-flex; align-items: center; justify-content: center;
+  width: calc(var(--h) - var(--border-width-thin));
+  border-left: var(--border-width-thin) solid var(--line);
+  color: var(--icon-neutral);
+}
+.icon { display: flex; transition: transform var(--motion-expand-duration) var(--motion-expand-easing); }
+.iconOpen { transform: rotate(180deg); }
+
+.filter:hover:not(:disabled) { background: var(--bg-neutral-min-hover); }
+.filter:active:not(:disabled) { background: var(--bg-neutral-min-press); }
+.filter:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
+
+/* Filters applied: brand tint and border, like the reference. */
+.applied { --line: var(--border-brand-subtle); background: var(--bg-brand-faint); }
+.applied:hover:not(:disabled) { background: var(--bg-brand-subtle); }
+
+.filter:disabled { cursor: not-allowed; opacity: var(--opacity-disabled); }
+
+@media (prefers-reduced-motion: reduce) {
+  .filter, .icon { transition: none; }
+}

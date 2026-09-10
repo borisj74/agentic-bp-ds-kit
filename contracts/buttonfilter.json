@@ -1,0 +1,170 @@
+{
+  "name": "ButtonFilter",
+  "path": "src/ui/ButtonFilter/ButtonFilter.tsx",
+  "intent": "Filter button that opens a dropdown: a label part and a square chevron part in one button. Shows how many filters are applied.",
+  "usage": "Use ButtonFilter for filter controls above tables and lists, like Status or Owner. To open options, use DropdownMenu with trigger filter: it renders this button, passes open and count, and opens the menu from the whole button. The divider and chevron are visual. With no filters it looks like a quiet outline. With filters applied it turns blue and shows a Count of applied filters. See contracts/buttonfilter.json for the full contract.",
+  "props": {
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "Heights 28 / 36 / 44, same as Button. The chevron part is square."
+    },
+    "open": {
+      "type": "boolean",
+      "default": false,
+      "note": "Dropdown is open. Sets aria-expanded and turns the chevron."
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "count": {
+      "type": "number",
+      "default": 0,
+      "note": "Applied filters. Above 0 the button turns blue and shows a Count."
+    },
+    "children": {
+      "type": "string",
+      "required": true,
+      "note": "Filter name, like Status."
+    },
+    "onClick": {
+      "type": "function",
+      "note": "Whole button. DropdownMenu trigger=filter wires this for you."
+    }
+  },
+  "useWhen": [
+    "Filters above a table or list, like Status, Owner or Date.",
+    "A control that opens a list of options and shows how many are applied."
+  ],
+  "doNot": [
+    "Do not invent a local split button, filter chip or dropdown trigger. Use DropdownMenu trigger=filter for the menu.",
+    "Do not use for page actions. Use Button.",
+    "Do not put more than one word or two in the label.",
+    "Do not show the count as text in the label. Pass count.",
+    "Do not use raw hex.",
+    "Do not wire the label and chevron to different actions. The whole button opens the dropdown."
+  ],
+  "a11y": [
+    "One native button with aria-haspopup=menu and aria-expanded.",
+    "Its name is the filter name plus the count, like Status, 3 filters applied.",
+    "The chevron is decorative.",
+    "Focus ring around the whole button."
+  ],
+  "snippet": "<DropdownMenu trigger=\"filter\" label=\"Status\" count={2} closeOnSelect={false} items={statusOptions} onSelect={toggleStatus} />",
+  "examples": [
+    {
+      "title": "No filters",
+      "usage": "The quiet default before anything is picked.",
+      "items": [
+        {
+          "props": {
+            "children": "Status"
+          }
+        },
+        {
+          "props": {
+            "children": "Owner"
+          }
+        },
+        {
+          "props": {
+            "children": "Date"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Applied",
+      "usage": "Blue once one or more filters are picked. The Count shows how many.",
+      "items": [
+        {
+          "props": {
+            "count": 1,
+            "children": "Status"
+          }
+        },
+        {
+          "props": {
+            "count": 3,
+            "children": "Owner"
+          }
+        },
+        {
+          "props": {
+            "children": "Date"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Sizes",
+      "usage": "Match the size of the controls around it. The chevron part stays square.",
+      "items": [
+        {
+          "props": {
+            "size": "sm",
+            "count": 2,
+            "children": "Status"
+          }
+        },
+        {
+          "props": {
+            "size": "md",
+            "count": 2,
+            "children": "Status"
+          }
+        },
+        {
+          "props": {
+            "size": "lg",
+            "count": 2,
+            "children": "Status"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Open",
+      "usage": "While the dropdown is open the chevron turns up.",
+      "items": [
+        {
+          "props": {
+            "open": true,
+            "children": "Status"
+          }
+        },
+        {
+          "props": {
+            "open": true,
+            "count": 2,
+            "children": "Owner"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Disabled",
+      "usage": "Both parts are disabled together.",
+      "items": [
+        {
+          "props": {
+            "disabled": true,
+            "children": "Status"
+          }
+        },
+        {
+          "props": {
+            "disabled": true,
+            "count": 2,
+            "children": "Owner"
+          }
+        }
+      ]
+    }
+  ]
+}

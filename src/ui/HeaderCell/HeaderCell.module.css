@@ -1,0 +1,24 @@
+/* Column title with a 2px brand-faint bottom border. Side padding matches Cell sizes so columns line up. */
+.cell {
+  box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xsmall);
+  width: 100%; min-width: 0;
+  background: var(--surface-flat); border-bottom: var(--border-width-medium) solid var(--border-brand-faint);
+  font-family: var(--font-sans); font-size: var(--font-size-xsmall); font-weight: var(--font-weight-bold);
+  line-height: 1.2; text-transform: uppercase; color: var(--text-neutral);
+}
+.sm { min-height: var(--header-cell-height-sm); padding: var(--space-xsmall) var(--space-small); }
+.md { min-height: var(--header-cell-height-md); padding: var(--space-xsmall) var(--space-small); }
+
+.start { justify-content: flex-start; text-align: start; }
+.center { justify-content: center; text-align: center; }
+.end { justify-content: flex-end; text-align: end; }
+
+.label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.sort {
+  display: inline-flex; align-items: center; gap: var(--space-xxsmall); min-width: 0;
+  margin: 0; padding: 0; border: 0; background: none; cursor: pointer;
+  font: inherit; color: inherit; text-transform: inherit; border-radius: var(--radius-small);
+}
+.sort:hover { color: var(--text-neutral-strong); }
+.sort:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }

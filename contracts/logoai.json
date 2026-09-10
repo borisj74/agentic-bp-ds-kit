@@ -1,0 +1,37 @@
+{
+  "name": "LogoAI",
+  "path": "src/ui/LogoAI/LogoAI.tsx",
+  "intent": "BillingPlatform AI logo for AI features: full logo or icon, in fixed brand colors.",
+  "usage": "Use LogoAI to mark AI features, like an assistant panel header or an AI suggestion. Use Logo for the product brand itself. color is the default. Use white on dark or photo backgrounds, monochrome where color is not allowed, and filled for a stand-alone tile. In dark theme the AI text of the color logo switches to white. See contracts/logoai.json for the full contract.",
+  "props": {
+    "variant": { "enum": ["default", "symbol"], "default": "default", "note": "default = mark + AI text (55 x 28). symbol = mark only (33 x 28)." },
+    "tone": { "enum": ["color", "monochrome", "white", "filled"], "default": "color", "note": "filled = white logo on the brand gradient tile (43 x 23, icon 23 x 23)." },
+    "label": { "type": "string", "default": "BillingPlatform AI", "note": "Accessible name." }
+  },
+  "useWhen": ["Headers and entry points of AI features.", "Marking content an AI produced or suggested."],
+  "doNot": ["Do not recolor, retint or tokenize the logo. Brand colors are fixed.", "Do not redraw it, use an image of it, or paste the SVG into a screen.", "Do not stretch or resize it with custom px.", "Do not use it as the product logo. Use Logo.", "Do not use the deprecated Copilot logo."],
+  "a11y": ["Renders role=img with aria-label (default BillingPlatform AI).", "The SVG inside is aria-hidden.", "When the logo is inside a button or link, the label names it."],
+  "snippet": "<LogoAI />",
+  "examples": [
+    {
+      "title": "Color",
+      "usage": "The default. Full logo and icon.",
+      "items": [{ "props": { "variant": "default", "tone": "color" } }, { "props": { "variant": "symbol", "tone": "color" } }]
+    },
+    {
+      "title": "Monochrome",
+      "usage": "One color, for places where the brand colors are not allowed.",
+      "items": [{ "props": { "variant": "default", "tone": "monochrome" } }, { "props": { "variant": "symbol", "tone": "monochrome" } }]
+    },
+    {
+      "title": "Filled",
+      "usage": "White logo on the brand gradient tile. Use it where the logo stands alone, like an app tile.",
+      "items": [{ "props": { "variant": "default", "tone": "filled" } }, { "props": { "variant": "symbol", "tone": "filled" } }]
+    },
+    {
+      "title": "White",
+      "usage": "For dark or photo backgrounds. The playground stage turns dark in dark theme; in light theme this sits on a light stage only to show the shape.",
+      "items": [{ "props": { "variant": "default", "tone": "white" } }, { "props": { "variant": "symbol", "tone": "white" } }]
+    }
+  ]
+}

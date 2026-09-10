@@ -1,0 +1,123 @@
+# grid + layout. name|css value. {name} aliases resolve to var(--name).
+# From Figma: viewport widths 1280 / 1440 / 1920 (Helpers collection). Gutter and margin steps alias BP ref space.
+# not in Figma: 12 columns, 640 / 1024 widths, and the layout roles.
+grid/columns|12
+grid/gutter/sm|{ref/space/400}
+grid/gutter/md|{ref/space/500}
+grid/gutter/lg|{ref/space/700}
+grid/gutter/xl|{ref/space/1100}
+grid/margin/sm|{ref/space/500}
+grid/margin/md|{ref/space/700}
+grid/margin/lg|{ref/space/1100}
+grid/width/sm|640px
+grid/width/md|1024px
+grid/width/lg|1280px
+grid/width/xl|1440px
+grid/width/2xl|1920px
+grid/breakpoint/sm|640px
+grid/breakpoint/md|1024px
+grid/breakpoint/lg|1280px
+grid/breakpoint/xl|1440px
+grid/breakpoint/2xl|1920px
+layout/sidebar|224px
+layout/rail|352px
+layout/metrics-min|192px
+layout/gutter/sm|{grid/gutter/sm}
+layout/gutter/md|{grid/gutter/md}
+layout/gutter/lg|{grid/gutter/lg}
+layout/gutter/xl|{grid/gutter/xl}
+layout/margin/sm|{grid/margin/sm}
+layout/margin/md|{grid/margin/md}
+layout/margin/lg|{grid/margin/lg}
+layout/container/sm|{grid/width/sm}
+layout/container/md|{grid/width/md}
+layout/container/lg|{grid/width/lg}
+layout/container/xl|{grid/width/xl}
+layout/container/2xl|{grid/width/2xl}
+layout/split/half|6
+layout/split/primary|8
+layout/split/secondary|4
+layout/split/third|4
+
+# not in Figma: stacking layer for overlays (dialogs, backdrops).
+z/overlay|1000
+
+# not in Figma: avatar sizes. Alias BP ref space (32 / 40 / 48).
+avatar/size/sm|{ref/space/900}
+avatar/size/md|{ref/space/1100}
+avatar/size/lg|{ref/space/1300}
+
+# Badge heights. sm = Figma badge (ref/size/600 = 20px). md 24 and lg 28 are kit-defined, aliasing BP ref space.
+badge/height/sm|{ref/space/600}
+badge/height/md|{ref/space/700}
+badge/height/lg|{ref/space/800}
+
+# Count (Figma count 2004:19219): sm 16 / md 20 with 4 / 6 px side padding. md padding is Figma's border-r/6 (6px), no space step.
+# not in Figma: lg 24, same 6px padding so one digit stays square.
+count/height/sm|{ref/space/500}
+count/height/md|{ref/space/600}
+count/height/lg|{ref/space/700}
+count/padding/sm|{ref/space/200}
+count/padding/md|6px
+count/padding/lg|6px
+
+# not in Figma: checkbox box sizes 16 / 20 / 24, aliasing BP ref space.
+checkbox/size/sm|{ref/space/500}
+checkbox/size/md|{ref/space/600}
+checkbox/size/lg|{ref/space/700}
+
+# not in Figma: radio circle sizes 16 / 20 / 24, aliasing BP ref space (same steps as checkbox).
+radio/size/sm|{ref/space/500}
+radio/size/md|{ref/space/600}
+radio/size/lg|{ref/space/700}
+
+# not in Figma: table cell row heights. sm 48 aliases BP ref space; md 56 is past the ref scale.
+cell/height/sm|{ref/space/1300}
+cell/height/md|56px
+
+# Header cell (Figma .table / th 3559:106607): sm 40 is the Figma th height. md 48 matches the sm body row. Both alias BP ref space.
+header-cell/height/sm|{ref/space/1100}
+header-cell/height/md|{ref/space/1300}
+
+# Dropdown menu (Figma menu 2016:280599, menu-item 1270:25599, dropdown-panel 3736:12109).
+# Figma: menu width 200, item min height 28, icon tile 32. The top line is 1px (kit change from Figma 4px). Tile and height alias BP ref space; 200 is past the scale.
+dropdown/min-width|200px
+menu-item/height|{ref/space/800}
+menu-item/tile|{ref/space/900}
+
+# Input (Figma .form-field / label 3196:28121): start labels sit in a 120px column.
+input/label-width|160px
+
+# not in Figma: gap between a control and its focus ring, so the ring never touches buttons or fields.
+focus/offset|3px
+
+# Textarea (Figma textarea 3195:38849): minimum heights sm 100 / md 180 / lg 260, past the ref scale.
+textarea/height/sm|100px
+textarea/height/md|180px
+textarea/height/lg|260px
+
+# Command (Figma global-search 2316:609207): list body 280 tall (dropdown-panel default), key hints 20 tall.
+command/list-height|280px
+command/key|{ref/space/600}
+
+# Modal (Figma modal 1316:35956): widths xs 400 / sm 540 / md 768, here sm / md / lg. Past the ref scale.
+modal/width/sm|400px
+modal/width/md|540px
+modal/width/lg|768px
+# not in Figma: fields sit right under their label, so their ring hugs closer than on buttons.
+focus/offset-field|{ref/space/50}
+
+# DatePicker (Figma date-picker day 5631:42778, dropdown 5735:3748): 42px day cells, presets column. Past the ref scale.
+date-picker/day|42px
+date-picker/presets|160px
+# Figma dropdown-panel body height: long menus scroll past 280.
+dropdown/list-height|280px
+
+# not in Figma: Switch track 28x16 / 36x20 / 44x24 (heights match Checkbox), thumb inset 2. All BP ref space.
+switch/width/sm|{ref/space/800}
+switch/width/md|{ref/space/1000}
+switch/width/lg|{ref/space/1200}
+switch/height/sm|{ref/space/500}
+switch/height/md|{ref/space/600}
+switch/height/lg|{ref/space/700}
+switch/inset|{ref/space/100}

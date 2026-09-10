@@ -1,0 +1,153 @@
+{
+  "name": "Switch",
+  "path": "src/ui/Switch/Switch.tsx",
+  "intent": "An on/off setting that takes effect right away. A pill track with a sliding thumb. Not a Checkbox.",
+  "usage": "Use Switch in settings rows for preferences that apply as soon as they flip, like email notifications or auto-pay. The label sits first and the track last; a labeled Switch fills its row, so a stack of them reads as a settings list. description adds a second line. For choices saved with a form button, or agreeing to terms, use Checkbox. See contracts/switch.json for the full contract.",
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "note": "Always set. With hideLabel it stays for screen readers only."
+    },
+    "hideLabel": {
+      "type": "boolean",
+      "default": false,
+      "note": "Track only, like in a table cell. The switch keeps its natural width."
+    },
+    "description": {
+      "type": "string",
+      "note": "Second line under the label. Read with the switch."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "Track 28x16 / 36x20 / 44x24 px. Label text 12 / 14 / 16 px."
+    },
+    "checked": {
+      "type": "boolean",
+      "note": "Controlled."
+    },
+    "defaultChecked": {
+      "type": "boolean",
+      "default": false,
+      "note": "Uncontrolled start value."
+    },
+    "onChange": {
+      "type": "function",
+      "note": "(checked: boolean) => void. Runs on every flip; apply the setting right away."
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "name": {
+      "type": "string",
+      "note": "Hidden input for forms: on or off."
+    },
+    "id": {
+      "type": "string"
+    }
+  },
+  "useWhen": [
+    "Settings that apply right away, like notifications or dark mode.",
+    "Turning a feature on or off in a settings list."
+  ],
+  "doNot": [
+    "Do not invent Toggle, ToggleGroup, SwitchGroup or a local pill switch.",
+    "Do not use for choices that wait for a Save button, or for agreeing to terms. Use Checkbox.",
+    "Do not use for picking one of several options. Use RadioGroup.",
+    "Do not change the label text when it flips. The track shows the state.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A button with role=switch and aria-checked. Space and Enter flip it.",
+    "Named by its label (visible or hidden); description is linked with aria-describedby.",
+    "The off track reaches 3:1 against the page; on is the brand color. Focus shows the kit ring.",
+    "Disabled uses the native disabled attribute."
+  ],
+  "snippet": "<Switch label=\"Email notifications\" description=\"Get an email when an invoice is paid.\" defaultChecked />",
+  "examples": [
+    {
+      "title": "Settings list",
+      "usage": "Labeled switches fill the row. description adds a second line.",
+      "items": [
+        {
+          "props": {
+            "label": "Email notifications",
+            "description": "Get an email when an invoice is paid.",
+            "defaultChecked": true
+          }
+        },
+        {
+          "props": {
+            "label": "Auto-pay",
+            "description": "Charge the saved card on the due date."
+          }
+        }
+      ]
+    },
+    {
+      "title": "No visible label",
+      "usage": "hideLabel keeps the name for screen readers, like in a table row.",
+      "items": [
+        {
+          "props": {
+            "label": "Active",
+            "hideLabel": true,
+            "defaultChecked": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Disabled",
+      "usage": "Grayed out, on or off.",
+      "items": [
+        {
+          "props": {
+            "label": "Two-factor sign-in",
+            "disabled": true,
+            "defaultChecked": true
+          }
+        },
+        {
+          "props": {
+            "label": "Beta features",
+            "disabled": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Sizes",
+      "usage": "Match the text around it.",
+      "items": [
+        {
+          "props": {
+            "label": "Small",
+            "size": "sm",
+            "defaultChecked": true
+          }
+        },
+        {
+          "props": {
+            "label": "Medium",
+            "size": "md",
+            "defaultChecked": true
+          }
+        },
+        {
+          "props": {
+            "label": "Large",
+            "size": "lg",
+            "defaultChecked": true
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,425 @@
+{
+  "name": "Cell",
+  "path": "src/ui/Cell/Cell.tsx",
+  "intent": "Content for one table cell: text, a link, a person, a file, a status, a trend, a rating, a select, row actions or a row menu, with an optional row checkbox. Each cell is full width with a faint bottom border.",
+  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, link to open a record, avatar for a person, badge for status, trend for change, actions for row buttons, actionMenu for a More menu, select to change a value in place. Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, DropdownMenu, Icon and Select; it never draws its own. The progress type arrives with Progress. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract.",
+  "props": {
+    "type": {
+      "enum": [
+        "text",
+        "link",
+        "avatar",
+        "avatarGroup",
+        "file",
+        "payment",
+        "badge",
+        "badges",
+        "trendPositive",
+        "trendNegative",
+        "rating",
+        "select",
+        "actions",
+        "actionIcons",
+        "actionMenu"
+      ],
+      "default": "text"
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md"
+      ],
+      "default": "md",
+      "note": "Row height 48 / 56 px. Side padding 12 px at both sizes, same as HeaderCell. Avatars, Badge and Checkbox stay sm (32 / 20 / 16 px) so rows keep their height."
+    },
+    "text": {
+      "type": "boolean",
+      "default": true,
+      "note": "Show the text next to the visual. Off = visual only; the text stays for screen readers where needed."
+    },
+    "checkbox": {
+      "type": "boolean",
+      "default": false,
+      "note": "Leading row Checkbox, labeled Select {label or name}."
+    },
+    "label": {
+      "type": "string",
+      "note": "The text. For link it is the link text. For avatar it is the second line when name is set. For actionMenu it names the More button (default Row actions). For select it is the hidden field name."
+    },
+    "href": {
+      "type": "string",
+      "note": "For link. Where the link goes. Links navigate only; use actions for operations."
+    },
+    "name": {
+      "type": "string",
+      "note": "Person name for avatar."
+    },
+    "src": {
+      "type": "string",
+      "note": "Photo for avatar."
+    },
+    "people": {
+      "type": "CellPerson[]",
+      "itemShape": {
+        "name": "string",
+        "src": "string?"
+      },
+      "note": "For avatarGroup. Shows 3, then +N."
+    },
+    "icon": {
+      "type": "string",
+      "note": "Material Symbols name. file defaults to description, payment to credit_card."
+    },
+    "tone": {
+      "type": "BadgeTone",
+      "default": "neutral",
+      "note": "For badge."
+    },
+    "badges": {
+      "type": "CellBadge[]",
+      "itemShape": {
+        "label": "string",
+        "tone": "BadgeTone?"
+      },
+      "note": "For badges. Up to 3."
+    },
+    "value": {
+      "type": "string | number",
+      "note": "Trend amount like 12%, rating 0 to 5, or the picked option for select."
+    },
+    "actions": {
+      "type": "CellAction[]",
+      "itemShape": {
+        "label": "string",
+        "icon": "string?",
+        "variant": "ButtonVariant?",
+        "onClick": "function?"
+      },
+      "note": "For actions (labeled, up to 3), actionIcons (icon only, up to 3, label becomes the hidden name) and actionMenu (menu items, danger variant becomes a danger item). onClick runs when picked."
+    },
+    "options": {
+      "type": "SelectOption[]",
+      "itemShape": {
+        "value": "string",
+        "label": "string",
+        "disabled": "boolean?"
+      },
+      "note": "For select. The value prop is the picked option."
+    },
+    "onValueChange": {
+      "type": "function",
+      "note": "For select. (value: string) => void"
+    },
+    "checked": {
+      "type": "boolean",
+      "note": "Row checkbox, controlled."
+    },
+    "defaultChecked": {
+      "type": "boolean",
+      "note": "Row checkbox, uncontrolled."
+    },
+    "onCheckedChange": {
+      "type": "function",
+      "note": "(checked: boolean) => void"
+    }
+  },
+  "useWhen": [
+    "Cells in a data table.",
+    "A row that mixes text, people, status and actions."
+  ],
+  "doNot": [
+    "Do not invent a local table cell, Tag, Trend, FileIcon, PaymentMethod, Rating or ActionCell.",
+    "Do not use Badge for trends. Use a trend type.",
+    "Do not use link for actions like Delete or Send. Use actions or actionIcons.",
+    "Do not draw a local Avatar, Badge, Checkbox or Button. Cell composes the kit ones.",
+    "Use actionMenu instead of actionIcons when a row has more than 3 actions or a destructive one.",
+    "Do not put more than 3 badges or 3 actions in one cell.",
+    "Do not fake a progress cell before the kit Progress exists.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "link renders a real <a href> with a visible focus ring; the label is the link name.",
+    "Visual icons (file, payment, trend arrows, stars) are decorative; the text carries the meaning.",
+    "When text is off, file, payment and trend cells get an aria-label from label or value.",
+    "rating is role=img, read as {n} of 5.",
+    "The row checkbox has a hidden label: Select {label or name}.",
+    "Icon-only actions keep their label as the button name.",
+    "actionMenu is a kit DropdownMenu: an icon-only More button named by label, opening a role=menu.",
+    "select is a small kit Select with a hidden label from label, named with its value."
+  ],
+  "snippet": "<Cell type=\"avatar\" name=\"Maya Chen\" label=\"maya@acme.com\" src=\"/faces/maya-chen.jpg\" />",
+  "examples": [
+    {
+      "title": "Text",
+      "usage": "Plain value. Add checkbox for a selectable row.",
+      "items": [
+        {
+          "props": {
+            "type": "text",
+            "label": "INV-1042"
+          }
+        },
+        {
+          "props": {
+            "type": "text",
+            "label": "INV-1043",
+            "checkbox": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Link",
+      "usage": "A record name or ID that opens its page. Navigation only.",
+      "items": [
+        {
+          "props": {
+            "type": "link",
+            "label": "Acme Inc.",
+            "href": "#"
+          }
+        },
+        {
+          "props": {
+            "type": "link",
+            "label": "6861213",
+            "href": "#",
+            "checkbox": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Avatar",
+      "usage": "A person with the kit Avatar. label adds a second line, like an email.",
+      "items": [
+        {
+          "props": {
+            "type": "avatar",
+            "name": "Maya Chen",
+            "src": "/faces/maya-chen.jpg"
+          }
+        },
+        {
+          "props": {
+            "type": "avatar",
+            "name": "Noah Williams",
+            "label": "noah@acme.com",
+            "src": "/faces/noah-williams.jpg"
+          }
+        },
+        {
+          "props": {
+            "type": "avatar",
+            "name": "Ada Jones",
+            "label": "ada@acme.com"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Avatar group",
+      "usage": "Several people, like the owners of an account. Shows 3, then +N.",
+      "items": [
+        {
+          "props": {
+            "type": "avatarGroup",
+            "label": "Owners",
+            "text": false,
+            "people": [
+              {
+                "name": "Maya Chen",
+                "src": "/faces/maya-chen.jpg"
+              },
+              {
+                "name": "Noah Williams",
+                "src": "/faces/noah-williams.jpg"
+              },
+              {
+                "name": "Iris Okafor",
+                "src": "/faces/iris-okafor.jpg"
+              },
+              {
+                "name": "Jordan Lee",
+                "src": "/faces/jordan-lee.jpg"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "File and payment",
+      "usage": "A decorative icon before the value. The text carries the meaning.",
+      "items": [
+        {
+          "props": {
+            "type": "file",
+            "label": "invoice-1042.pdf"
+          }
+        },
+        {
+          "props": {
+            "type": "payment",
+            "label": "Visa ending 4242"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Badge",
+      "usage": "One status. Use badges for up to three labels.",
+      "items": [
+        {
+          "props": {
+            "type": "badge",
+            "label": "Paid",
+            "tone": "success"
+          }
+        },
+        {
+          "props": {
+            "type": "badge",
+            "label": "Overdue",
+            "tone": "danger"
+          }
+        },
+        {
+          "props": {
+            "type": "badges",
+            "badges": [
+              {
+                "label": "Usage",
+                "tone": "info"
+              },
+              {
+                "label": "Annual",
+                "tone": "neutral"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Trend",
+      "usage": "Change against the last period. Green arrow up, red arrow down. Never a Badge.",
+      "items": [
+        {
+          "props": {
+            "type": "trendPositive",
+            "value": "12%"
+          }
+        },
+        {
+          "props": {
+            "type": "trendNegative",
+            "value": "4%"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Rating",
+      "usage": "A score from 0 to 5, read as {n} of 5.",
+      "items": [
+        {
+          "props": {
+            "type": "rating",
+            "value": 4
+          }
+        }
+      ]
+    },
+    {
+      "title": "Select",
+      "usage": "Change a value in place, like a status. A small kit Select that fills the cell.",
+      "items": [
+        {
+          "props": {
+            "type": "select",
+            "label": "Status",
+            "value": "paid",
+            "options": [
+              {
+                "value": "draft",
+                "label": "Draft"
+              },
+              {
+                "value": "paid",
+                "label": "Paid"
+              },
+              {
+                "value": "void",
+                "label": "Void"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "usage": "Row buttons. Labeled actions sit in a ButtonGroup; icon actions keep their label as the hidden name. Up to 3.",
+      "items": [
+        {
+          "props": {
+            "type": "actions",
+            "actions": [
+              {
+                "label": "View"
+              },
+              {
+                "label": "Send"
+              }
+            ]
+          }
+        },
+        {
+          "props": {
+            "type": "actionIcons",
+            "actions": [
+              {
+                "label": "Edit",
+                "icon": "edit"
+              },
+              {
+                "label": "Download",
+                "icon": "download"
+              },
+              {
+                "label": "Delete",
+                "icon": "delete"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Action menu",
+      "usage": "A More button that opens a DropdownMenu, aligned to the row end. The danger action goes last.",
+      "items": [
+        {
+          "props": {
+            "type": "actionMenu",
+            "label": "Row actions",
+            "actions": [
+              {
+                "label": "View"
+              },
+              {
+                "label": "Download"
+              },
+              {
+                "label": "Delete",
+                "icon": "delete",
+                "variant": "danger"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

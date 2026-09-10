@@ -1,0 +1,39 @@
+.checkbox {
+  display: inline-flex; align-items: center; gap: var(--space-xsmall);
+  font-family: var(--font-sans); color: var(--text-neutral-strong); cursor: pointer;
+}
+.sm { --box: var(--checkbox-size-sm); font-size: var(--font-size-xsmall); }
+.md { --box: var(--checkbox-size-md); font-size: var(--font-size-small); }
+.lg { --box: var(--checkbox-size-lg); font-size: var(--font-size-regular); }
+
+.control { position: relative; display: inline-flex; flex: none; width: var(--box); height: var(--box); }
+/* Native input sits on top of the box, invisible, so clicks and keyboard work as usual. */
+.input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: inherit; z-index: 1; }
+
+/* Resting outline uses --icon-neutral-subtle: 3:1 against the surroundings in light and dark (WCAG 1.4.11). */
+.box {
+  box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;
+  border: var(--border-width-thin) solid var(--icon-neutral-subtle); border-radius: var(--radius-medium);
+  background: var(--surface-raised); color: var(--text-neutral-min-static);
+  transition: background-color var(--motion-interaction-duration) var(--motion-interaction-easing), border-color var(--motion-interaction-duration) var(--motion-interaction-easing);
+}
+.mark { display: flex; transform: scale(0); opacity: 0; transition: transform var(--motion-expand-duration) var(--motion-ease-spring), opacity var(--motion-interaction-duration) var(--motion-interaction-easing); }
+
+.checkbox:hover .input:not(:disabled) + .box { border-color: var(--icon-neutral); }
+.input:checked + .box, .input:indeterminate + .box { background: var(--bg-brand); border-color: var(--bg-brand); }
+.checkbox:hover .input:not(:disabled):checked + .box, .checkbox:hover .input:not(:disabled):indeterminate + .box { background: var(--bg-brand-hover); border-color: var(--bg-brand-hover); }
+.input:checked + .box .mark, .input:indeterminate + .box .mark { transform: scale(1); opacity: 1; }
+.input:focus-visible + .box { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
+
+.error .box, .checkbox.error:hover .input:not(:disabled) + .box { border-color: var(--border-danger); }
+.error .input:checked + .box, .error .input:indeterminate + .box { border-color: var(--border-danger); }
+.error .input:focus-visible + .box { outline-color: var(--outline-danger); }
+
+.disabled { cursor: not-allowed; opacity: var(--opacity-disabled); }
+
+.text { line-height: 1.4; }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .box, .mark { transition: none; }
+}

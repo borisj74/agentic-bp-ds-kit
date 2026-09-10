@@ -1,0 +1,162 @@
+{
+  "name": "Command",
+  "path": "src/ui/Command/Command.tsx",
+  "intent": "A search field over a grouped list of pages, records and actions. Typing filters the list; arrow keys and Enter pick.",
+  "usage": "Use Command for quick jumps and actions across the app, like a global search. It is one component: pass groups of items as data. Typing filters by label and description. Arrow keys move the highlight and Enter picks; Escape clears the search. It shows inline; a ⌘K palette comes later. See contracts/command.json for the full contract.",
+  "props": {
+    "groups": {
+      "type": "CommandGroup[]",
+      "required": true,
+      "itemShape": {
+        "heading": "string?",
+        "items": "CommandItem[]: { id: string, label: string, description?: string, icon?: string, shortcut?: string, disabled?: boolean }"
+      },
+      "note": "Groups are split by a thin line. icon is a Material Symbols name. shortcut shows as a key, like N."
+    },
+    "label": {
+      "type": "string",
+      "default": "Search",
+      "note": "Name of the search field and the list for screen readers."
+    },
+    "placeholder": {
+      "type": "string",
+      "default": "Search by name, type, and more..."
+    },
+    "empty": {
+      "type": "string",
+      "default": "No matches found for this search.",
+      "note": "Shown when nothing matches."
+    },
+    "defaultQuery": {
+      "type": "string",
+      "note": "Start with a search already typed."
+    },
+    "hints": {
+      "type": "boolean",
+      "default": true,
+      "note": "Footer with the arrow keys to browse and Enter to select."
+    },
+    "onSelect": {
+      "type": "function",
+      "note": "(id: string) => void. Runs on Enter or click."
+    }
+  },
+  "useWhen": [
+    "A global search across pages, records and reports.",
+    "A quick list of actions people find by typing."
+  ],
+  "doNot": [
+    "Do not invent CommandInput, CommandList, CommandItem, CommandGroup, CommandEmpty, CommandDialog or SearchPanel.",
+    "Do not use for a short list of actions from a button. Use DropdownMenu.",
+    "Do not use for choosing a form value. Use RadioGroup, or Select when it exists.",
+    "Do not wrap it in a local overlay or build a ⌘K palette yet.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The search field is a combobox with aria-controls, aria-autocomplete=list and aria-activedescendant pointing at the highlighted option.",
+    "The list is a listbox; groups are labelled by their heading; items are options with aria-selected and aria-disabled.",
+    "Focus stays in the search field. Arrow keys move the highlight, Enter picks, Escape clears the search.",
+    "A polite status message says how many results match.",
+    "The key hints footer is hidden from screen readers; icons are decorative."
+  ],
+  "snippet": "<Command groups={groups} onSelect={(id) => openItem(id)} />",
+  "examples": [
+    {
+      "title": "Search",
+      "usage": "Groups of records, reports and actions. Type to filter, arrows and Enter to pick.",
+      "items": [
+        {
+          "props": {
+            "groups": [
+              {
+                "heading": "Records",
+                "items": [
+                  {
+                    "id": "invoices",
+                    "label": "Invoices",
+                    "description": "Billing › Invoices",
+                    "icon": "receipt_long"
+                  },
+                  {
+                    "id": "customers",
+                    "label": "Customers",
+                    "description": "Accounts › Customers",
+                    "icon": "group"
+                  }
+                ]
+              },
+              {
+                "heading": "Actions",
+                "items": [
+                  {
+                    "id": "new-invoice",
+                    "label": "Create invoice",
+                    "icon": "add",
+                    "shortcut": "N"
+                  },
+                  {
+                    "id": "export",
+                    "label": "Export all data",
+                    "icon": "download",
+                    "disabled": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "No matches",
+      "usage": "A bordered message when the search finds nothing. Escape or the clear button starts over.",
+      "items": [
+        {
+          "props": {
+            "defaultQuery": "zzz",
+            "groups": [
+              {
+                "heading": "Records",
+                "items": [
+                  {
+                    "id": "invoices",
+                    "label": "Invoices",
+                    "icon": "receipt_long"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Without key hints",
+      "usage": "Turn off the footer when space is tight.",
+      "items": [
+        {
+          "props": {
+            "hints": false,
+            "placeholder": "Find a report",
+            "groups": [
+              {
+                "items": [
+                  {
+                    "id": "revenue",
+                    "label": "Revenue by month",
+                    "icon": "bar_chart"
+                  },
+                  {
+                    "id": "aging",
+                    "label": "Accounts receivable aging",
+                    "icon": "bar_chart"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

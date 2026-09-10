@@ -1,0 +1,82 @@
+# non-color scale, Default density. name|value(px unless noted)
+space/xxxsmall|2
+space/xxsmall|4
+space/xsmall|8
+space/small|12
+space/medium|16
+space/large|20
+space/xlarge|24
+space/xxlarge|28
+radius/small|2
+radius/medium|4
+radius/large|8
+radius/full|9999
+border/width/thin|1
+border/width/medium|2
+border/width/thick|3
+# not in Figma: xsmall 12 for Badge leading/close icons (Figma badge uses 12px glyphs).
+icon/size/xsmall|12
+icon/size/small|16
+icon/size/medium|20
+icon/size/large|24
+icon/size/xlarge|32
+control/small|28
+control/medium|36
+control/large|44
+font-size/xsmall|12
+font-size/small|14
+font-size/regular|16
+font-size/large|18
+font-size/xlarge|20
+font-size/xxlarge|24
+font-weight/regular|400
+font-weight/medium|500
+font-weight/semibold|600
+font-weight/bold|700
+# type scale primitives (ref/font-size from Figma, Default density)
+ref/font-size/100|10
+ref/font-size/200|12
+ref/font-size/300|14
+ref/font-size/400|16
+ref/font-size/500|18
+ref/font-size/600|20
+ref/font-size/700|22
+ref/font-size/800|24
+ref/font-size/900|26
+# not in Figma: kit-defined
+line-height/tight|1.2
+line-height/snug|1.35
+line-height/normal|1.5
+line-height/relaxed|1.65
+letter-spacing/tight|-0.02em
+letter-spacing/normal|0
+letter-spacing/wide|0.04em
+# space primitives (ref/space from Figma, Default density)
+ref/space/0|0
+ref/space/50|1
+ref/space/100|2
+ref/space/200|4
+ref/space/300|8
+ref/space/400|12
+ref/space/500|16
+ref/space/600|20
+ref/space/700|24
+ref/space/800|28
+ref/space/900|32
+ref/space/1000|36
+ref/space/1100|40
+ref/space/1200|44
+ref/space/1300|48
+# not in Figma: kit-defined radius roles (map to Figma radius primitives)
+radius/control/small|2
+radius/control/medium|4
+radius/control/large|8
+radius/surface|8
+radius/pill|9999
+# not in Figma: kit-defined border width roles (map to Figma border/width primitives)
+border/control|1
+border/control/strong|2
+border/surface|1
+border/divider|1
+border/divider/strong|2
+border/focus|2

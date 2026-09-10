@@ -1,0 +1,490 @@
+{
+  "name": "Select",
+  "path": "src/ui/Select/Select.tsx",
+  "intent": "Choose one or several options from a list. A field that opens the kit DropdownMenu. Looks like Input.",
+  "usage": "Use Select to pick a value from a fixed list in a form or filter: country, status, owner, tags. One pick closes the menu; with multiple the menu stays open and each pick toggles. The field shows the picked labels; with maxVisible it shows the first few and a +N badge. Label, hint, error, help, required and sizes work like Input. For 2 to 5 options that should stay visible, use RadioGroup. See contracts/select.json for the full contract.",
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "note": "Always set. With hideLabel it stays for screen readers only."
+    },
+    "options": {
+      "type": "SelectOption[]",
+      "required": true,
+      "itemShape": {
+        "value": "string",
+        "label": "string",
+        "disabled": "boolean?"
+      }
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "Field height 28 / 36 / 44, same as Input."
+    },
+    "labelPosition": {
+      "enum": [
+        "top",
+        "start"
+      ],
+      "default": "top"
+    },
+    "itemCheck": {
+      "enum": [
+        "check",
+        "checkbox"
+      ],
+      "default": "check",
+      "note": "With multiple: a check on picked rows, or a kit Checkbox on every row."
+    },
+    "hideLabel": {
+      "type": "boolean",
+      "default": false
+    },
+    "multiple": {
+      "type": "boolean",
+      "default": false,
+      "note": "Several values. The menu stays open; each pick toggles. value is string[]."
+    },
+    "placeholder": {
+      "type": "string",
+      "default": "Select",
+      "note": "Shown in gray until something is picked."
+    },
+    "value": {
+      "type": "string | string[]",
+      "note": "Controlled. string, or string[] with multiple."
+    },
+    "defaultValue": {
+      "type": "string | string[]",
+      "note": "Uncontrolled start value."
+    },
+    "onChange": {
+      "type": "function",
+      "note": "(value: string | string[]) => void"
+    },
+    "maxVisible": {
+      "type": "number",
+      "note": "With multiple: show this many labels, then a +N badge."
+    },
+    "searchable": {
+      "type": "boolean",
+      "default": false,
+      "note": "Search field at the top of the list. Filters options by label. For long lists."
+    },
+    "searchPlaceholder": {
+      "type": "string",
+      "default": "Search"
+    },
+    "name": {
+      "type": "string",
+      "note": "Hidden input for forms. Multiple submits values joined with commas."
+    },
+    "id": {
+      "type": "string"
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "invalid": {
+      "type": "boolean",
+      "default": false
+    },
+    "error": {
+      "type": "string",
+      "note": "Message under the field. Also turns the border red."
+    },
+    "hint": {
+      "type": "string"
+    },
+    "help": {
+      "type": "string",
+      "note": "Help icon beside the label. Opens in a Tooltip once the kit has one."
+    }
+  },
+  "useWhen": [
+    "Picking one value from a fixed list, like a country or status.",
+    "Picking several values, like tags or owners (multiple).",
+    "A long list, like countries or customers (searchable).",
+    "A value in a table row (Cell type select)."
+  ],
+  "doNot": [
+    "Do not use a native select.",
+    "Do not invent SelectTrigger, SelectContent, SelectItem, MultiSelect, Combobox or Tag.",
+    "Do not use for actions from a button. Use DropdownMenu.",
+    "Do not use for 2 to 5 options that should stay visible. Use RadioGroup.",
+    "Do not use for search across the app. Use Command.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The field is a button with aria-haspopup=menu, named by the label and the current value, like Country, Serbia.",
+    "The list is the kit DropdownMenu: one pick is a menuitemradio, multiple picks are menuitemcheckbox, with aria-checked.",
+    "With searchable, focus starts in the search field; Arrow Down moves into the list and Enter picks the first match.",
+    "Arrow keys move, Enter or Space picks, Escape closes and returns focus to the field.",
+    "Required is read from the label; error and hint are linked with aria-describedby."
+  ],
+  "snippet": "<Select label=\"Country\" placeholder=\"Select a country\" options={countries} value={country} onChange={setCountry} />",
+  "examples": [
+    {
+      "title": "Single",
+      "usage": "One pick closes the menu. Placeholder until something is picked.",
+      "items": [
+        {
+          "props": {
+            "label": "Country",
+            "placeholder": "Select a country",
+            "options": [
+              {
+                "value": "rs",
+                "label": "Serbia"
+              },
+              {
+                "value": "de",
+                "label": "Germany"
+              },
+              {
+                "value": "us",
+                "label": "United States"
+              }
+            ]
+          }
+        },
+        {
+          "props": {
+            "label": "Status",
+            "defaultValue": "paid",
+            "options": [
+              {
+                "value": "draft",
+                "label": "Draft"
+              },
+              {
+                "value": "paid",
+                "label": "Paid"
+              },
+              {
+                "value": "void",
+                "label": "Void",
+                "disabled": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Multiple",
+      "usage": "The menu stays open and each pick toggles. Checks, or a checkbox on every row.",
+      "items": [
+        {
+          "props": {
+            "label": "Tags",
+            "multiple": true,
+            "defaultValue": [
+              "usage",
+              "annual"
+            ],
+            "options": [
+              {
+                "value": "usage",
+                "label": "Usage"
+              },
+              {
+                "value": "annual",
+                "label": "Annual"
+              },
+              {
+                "value": "trial",
+                "label": "Trial"
+              }
+            ]
+          }
+        },
+        {
+          "props": {
+            "label": "Owners",
+            "multiple": true,
+            "itemCheck": "checkbox",
+            "maxVisible": 2,
+            "defaultValue": [
+              "maya",
+              "noah",
+              "iris"
+            ],
+            "options": [
+              {
+                "value": "maya",
+                "label": "Maya Chen"
+              },
+              {
+                "value": "noah",
+                "label": "Noah Williams"
+              },
+              {
+                "value": "iris",
+                "label": "Iris Okafor"
+              },
+              {
+                "value": "jordan",
+                "label": "Jordan Lee"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Searchable",
+      "usage": "A search field on top filters a long list. Works with multiple too.",
+      "items": [
+        {
+          "props": {
+            "label": "Country",
+            "placeholder": "Select a country",
+            "searchable": true,
+            "searchPlaceholder": "Search countries",
+            "options": [
+              {
+                "value": "australia",
+                "label": "Australia"
+              },
+              {
+                "value": "austria",
+                "label": "Austria"
+              },
+              {
+                "value": "belgium",
+                "label": "Belgium"
+              },
+              {
+                "value": "brazil",
+                "label": "Brazil"
+              },
+              {
+                "value": "canada",
+                "label": "Canada"
+              },
+              {
+                "value": "croatia",
+                "label": "Croatia"
+              },
+              {
+                "value": "denmark",
+                "label": "Denmark"
+              },
+              {
+                "value": "france",
+                "label": "France"
+              },
+              {
+                "value": "germany",
+                "label": "Germany"
+              },
+              {
+                "value": "india",
+                "label": "India"
+              },
+              {
+                "value": "ireland",
+                "label": "Ireland"
+              },
+              {
+                "value": "italy",
+                "label": "Italy"
+              },
+              {
+                "value": "japan",
+                "label": "Japan"
+              },
+              {
+                "value": "netherlands",
+                "label": "Netherlands"
+              },
+              {
+                "value": "norway",
+                "label": "Norway"
+              },
+              {
+                "value": "serbia",
+                "label": "Serbia"
+              },
+              {
+                "value": "spain",
+                "label": "Spain"
+              },
+              {
+                "value": "sweden",
+                "label": "Sweden"
+              },
+              {
+                "value": "united-kingdom",
+                "label": "United Kingdom"
+              },
+              {
+                "value": "united-states",
+                "label": "United States"
+              }
+            ]
+          }
+        },
+        {
+          "props": {
+            "label": "Markets",
+            "multiple": true,
+            "itemCheck": "checkbox",
+            "maxVisible": 2,
+            "searchable": true,
+            "options": [
+              {
+                "value": "australia",
+                "label": "Australia"
+              },
+              {
+                "value": "austria",
+                "label": "Austria"
+              },
+              {
+                "value": "belgium",
+                "label": "Belgium"
+              },
+              {
+                "value": "brazil",
+                "label": "Brazil"
+              },
+              {
+                "value": "canada",
+                "label": "Canada"
+              },
+              {
+                "value": "croatia",
+                "label": "Croatia"
+              },
+              {
+                "value": "denmark",
+                "label": "Denmark"
+              },
+              {
+                "value": "france",
+                "label": "France"
+              },
+              {
+                "value": "germany",
+                "label": "Germany"
+              },
+              {
+                "value": "india",
+                "label": "India"
+              },
+              {
+                "value": "ireland",
+                "label": "Ireland"
+              },
+              {
+                "value": "italy",
+                "label": "Italy"
+              },
+              {
+                "value": "japan",
+                "label": "Japan"
+              },
+              {
+                "value": "netherlands",
+                "label": "Netherlands"
+              },
+              {
+                "value": "norway",
+                "label": "Norway"
+              },
+              {
+                "value": "serbia",
+                "label": "Serbia"
+              },
+              {
+                "value": "spain",
+                "label": "Spain"
+              },
+              {
+                "value": "sweden",
+                "label": "Sweden"
+              },
+              {
+                "value": "united-kingdom",
+                "label": "United Kingdom"
+              },
+              {
+                "value": "united-states",
+                "label": "United States"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "States",
+      "usage": "Same states as Input.",
+      "items": [
+        {
+          "props": {
+            "label": "Plan",
+            "required": true,
+            "error": "Pick a plan.",
+            "options": [
+              {
+                "value": "basic",
+                "label": "Basic"
+              },
+              {
+                "value": "pro",
+                "label": "Pro"
+              }
+            ]
+          }
+        },
+        {
+          "props": {
+            "label": "Plan",
+            "disabled": true,
+            "defaultValue": "pro",
+            "options": [
+              {
+                "value": "basic",
+                "label": "Basic"
+              },
+              {
+                "value": "pro",
+                "label": "Pro"
+              }
+            ]
+          }
+        },
+        {
+          "props": {
+            "label": "Plan",
+            "labelPosition": "start",
+            "options": [
+              {
+                "value": "basic",
+                "label": "Basic"
+              },
+              {
+                "value": "pro",
+                "label": "Pro"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

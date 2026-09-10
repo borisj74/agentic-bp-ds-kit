@@ -1,0 +1,46 @@
+/* Figma formula-editor 3190:29300: a toolbar row stacked on a monospace textarea, sharing one border.
+   Label, help, hint and error come from Input's styles. */
+/* --h lines a start label up with the toolbar (28px buttons + 8px padding). */
+.root { --h: calc(var(--control-small) + var(--space-xsmall) * 2); }
+
+.editor {
+  display: flex; flex-direction: column; min-width: 0;
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-medium);
+  transition: border-color var(--motion-interaction-duration) var(--motion-interaction-easing);
+}
+.editor:hover { border-color: var(--border-neutral-strong); }
+.editor:has(.area:focus-visible) { border-color: var(--border-brand); outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset-field); }
+
+/* Figma toolbar: neutral subtle fill, 8px padding and gap, kit Buttons size sm. */
+.toolbar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xsmall); padding: var(--space-xsmall);
+  background: var(--bg-neutral-subtle); border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
+  border-radius: var(--radius-medium) var(--radius-medium) 0 0;
+}
+
+/* Figma text block: Roboto Mono 12 on a 24px line, 12px padding. */
+.area {
+  box-sizing: border-box; display: block; width: 100%; margin: 0; padding: var(--space-small);
+  border: 0; border-radius: 0 0 var(--radius-medium) var(--radius-medium); background: transparent; outline: none; resize: vertical;
+  font-family: var(--font-mono); font-size: var(--font-size-xsmall); line-height: 2; color: var(--text-neutral-intense);
+}
+.sm { min-height: var(--textarea-height-sm); }
+.md { min-height: var(--textarea-height-md); }
+.lg { min-height: var(--textarea-height-lg); }
+.area::placeholder { color: var(--text-neutral-subtle); opacity: 1; }
+
+.invalid, .invalid:hover { border-color: var(--border-danger-strong); }
+.invalid:has(.area:focus-visible) { outline-color: var(--outline-danger); }
+
+.disabled, .disabled:hover { background: var(--bg-neutral-subtle); border-color: var(--border-neutral-subtle); }
+.disabled .area { resize: none; cursor: not-allowed; color: var(--text-neutral-subtle); }
+
+.success { margin: 0; font-size: var(--font-size-xsmall); line-height: 1.4; color: var(--text-success); }
+
+/* Dark: text-neutral-intense stays dark in the BP palette, so use strong text on the dark field. */
+:global([data-theme="dark"]) .area { color: var(--text-neutral-strong); }
+:global([data-theme="dark"]) .success { color: var(--text-success-strong); }
+
+@media (prefers-reduced-motion: reduce) {
+  .editor { transition: none; }
+}

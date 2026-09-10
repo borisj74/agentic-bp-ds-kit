@@ -1,0 +1,66 @@
+{
+  "name": "AvatarGroup",
+  "path": "src/ui/AvatarGroup/AvatarGroup.tsx",
+  "intent": "Overlapping row of kit Avatars with a +N count for the rest.",
+  "usage": "Use for several people on a row, card or table cell. Only kit Avatars go in the group. People past max collapse into a +N count, not another face. One person is a plain Avatar. See contracts/avatargroup.json for the full contract.",
+  "props": {
+    "label": { "type": "string", "note": "Names the group for screen readers, like Assignees." },
+    "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "Applied to every Avatar and the count." },
+    "shape": { "enum": ["circle", "square"], "default": "circle", "note": "Applied to every Avatar and the count." },
+    "max": { "type": "number", "default": 3, "note": "How many Avatars show before +N. No count when items.length <= max." },
+    "items": { "type": "AvatarGroupItem[]", "required": true, "itemShape": { "name": "string", "src": "string?", "initials": "string?" }, "note": "Two or more people. Same fields as Avatar." }
+  },
+  "useWhen": ["Several people on a row, card or table cell, like assignees or viewers."],
+  "doNot": ["Do not invent a local avatar stack.", "Do not put anything but people in the group.", "Do not use for one person. Use Avatar.", "Do not put a status dot on a face.", "Do not make the group clickable.", "Do not use raw hex."],
+  "a11y": ["role=group; label names the group.", "Each Avatar keeps its own name.", "The +N count reads as N more."],
+  "snippet": "<AvatarGroup label=\"Assignees\" items={[{ name: \"Boris Jovanovic\" }, { name: \"Ada Jones\" }, { name: \"Mira\" }, { name: \"Leo\" }]} />",
+  "examples": [
+    {
+      "title": "Tight stack",
+      "usage": "Four people with max 4. When everyone fits, there is no count.",
+      "items": [
+        { "props": { "label": "Assignees", "max": 4, "items": [{ "name": "Boris Jovanovic" }, { "name": "Ada Jones" }, { "name": "Mira" }, { "name": "Leo" }] } }
+      ]
+    },
+    {
+      "title": "Overflow +N",
+      "usage": "Six people with max 3. The rest is a count (+3), not an Avatar.",
+      "items": [
+        { "props": { "label": "Assignees", "max": 3, "items": [
+          { "name": "Maya Chen", "src": "/faces/maya-chen.jpg" },
+          { "name": "Ada Jones" },
+          { "name": "Noah Williams", "src": "/faces/noah-williams.jpg" },
+          { "name": "Leo" },
+          { "name": "Iris Okafor", "src": "/faces/iris-okafor.jpg" },
+          { "name": "Rio Vale" }
+        ] } }
+      ]
+    },
+    {
+      "title": "All photos",
+      "usage": "Every face can be a photo. The ring in the page color keeps each face readable.",
+      "items": [
+        { "props": { "label": "Viewers", "max": 5, "items": [
+          { "name": "Maya Chen", "src": "/faces/maya-chen.jpg" },
+          { "name": "Noah Williams", "src": "/faces/noah-williams.jpg" },
+          { "name": "Iris Okafor", "src": "/faces/iris-okafor.jpg" },
+          { "name": "Jordan Lee", "src": "/faces/jordan-lee.jpg" },
+          { "name": "Alex Rivera", "src": "/faces/alex-rivera.jpg" }
+        ] } }
+      ]
+    },
+    {
+      "title": "Square",
+      "usage": "Square follows the Avatar shape. Use it where the list already uses square Avatars.",
+      "items": [
+        { "props": { "label": "Team", "shape": "square", "max": 3, "items": [
+          { "name": "Maya Chen", "src": "/faces/maya-chen.jpg" },
+          { "name": "Ada Jones" },
+          { "name": "Jordan Lee", "src": "/faces/jordan-lee.jpg" },
+          { "name": "Leo" },
+          { "name": "Alex Rivera", "src": "/faces/alex-rivera.jpg" }
+        ] } }
+      ]
+    }
+  ]
+}

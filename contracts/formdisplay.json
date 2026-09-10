@@ -1,0 +1,88 @@
+{
+  "name": "FormDisplay",
+  "path": "src/ui/FormDisplay/FormDisplay.tsx",
+  "intent": "A read-only label and value, like a form field that shows data instead of editing it.",
+  "usage": "Use FormDisplay on detail and review screens to show saved values: account type, billing email, payment terms. One component per pair, with a faint line underneath so a stack reads as a list. labelPosition start puts the label on a faint fill in the same 160px column as start-label inputs, so displays and fields line up in one Form; top puts it above the value. It takes labelPosition from an enclosing Form. An empty value shows a dash. See contracts/formdisplay.json for the full contract.",
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "value": {
+      "type": "ReactNode",
+      "note": "Text, or a small kit piece like Badge or Avatar. Empty (undefined, null or \"\") shows empty."
+    },
+    "labelPosition": {
+      "enum": [
+        "top",
+        "start"
+      ],
+      "default": "top",
+      "note": "start: label in a 160px column on a faint fill, right-aligned. top: label above the value. Inside a Form, the Form's labelPosition applies unless this is set."
+    },
+    "help": {
+      "type": "string",
+      "note": "Help icon beside the label. The text opens in a Tooltip once the kit has one."
+    },
+    "empty": {
+      "type": "string",
+      "default": "—",
+      "note": "Shown when there is no value."
+    }
+  },
+  "useWhen": [
+    "Detail pages and review steps that show saved values.",
+    "Read-only rows next to editable fields in the same Form."
+  ],
+  "doNot": [
+    "Do not invent DescriptionList, KeyValue, DetailRow, ReadOnlyField or a local label and value pair.",
+    "Do not use a disabled or read-only Input to show a value people cannot change. Use FormDisplay.",
+    "Do not put long paragraphs in value. Keep it to a short value.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A description list: the label is a dt and the value a dd, so screen readers read them as a pair.",
+    "The help icon is a button named About {label}; its text is linked with aria-describedby.",
+    "An empty value shows a dash in subtle text."
+  ],
+  "snippet": "<FormDisplay label=\"Account type\" value=\"Customer\" labelPosition=\"start\" />",
+  "examples": [
+    {
+      "title": "Label at start",
+      "usage": "The label sits on a faint fill in the same column as start-label inputs.",
+      "items": [
+        {
+          "props": {
+            "label": "Account type",
+            "value": "Customer",
+            "labelPosition": "start",
+            "help": "Set when the account is created."
+          }
+        }
+      ]
+    },
+    {
+      "title": "Label on top",
+      "usage": "The label sits above the value.",
+      "items": [
+        {
+          "props": {
+            "label": "Account type",
+            "value": "Customer",
+            "help": "Set when the account is created."
+          }
+        }
+      ]
+    },
+    {
+      "title": "A list of details",
+      "usage": "Stack them with no gap for a detail section; the line under each row does the separating. Back-to-back displays in a Form sit flush on their own. An empty value shows a dash.",
+      "items": [
+        { "props": { "label": "Account ID", "value": "ACC-2041", "labelPosition": "start" } },
+        { "props": { "label": "Billing email", "value": "billing@acme.com", "labelPosition": "start" } },
+        { "props": { "label": "Payment terms", "value": "Net 30", "labelPosition": "start" } },
+        { "props": { "label": "Tax ID", "labelPosition": "start" } }
+      ]
+    }
+  ]
+}

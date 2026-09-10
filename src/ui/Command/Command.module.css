@@ -1,0 +1,68 @@
+/* Figma global-search 2316:609207: 44px search row, 1px brand line, list up to 280px, key hints footer. */
+.command {
+  box-sizing: border-box; display: flex; flex-direction: column; width: 100%; min-width: 0; overflow: hidden;
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-medium);
+  box-shadow: var(--elevation-dropdown); font-family: var(--font-sans);
+}
+/* The search field has no box of its own, so the ring goes around the whole command. */
+.command:has(.input:focus-visible) { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset-field); }
+
+.search {
+  box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xsmall);
+  height: var(--control-large); padding: 0 var(--space-xsmall) 0 var(--space-small);
+  border-bottom: var(--border-width-thin) solid var(--border-brand);
+}
+.searchIcon { color: var(--icon-neutral); }
+.input {
+  flex: 1; min-width: 0; height: 100%; margin: 0; padding: 0; border: 0; background: transparent;
+  font: inherit; font-size: var(--font-size-small); color: var(--text-neutral-strong); outline: none;
+}
+.input::placeholder { color: var(--text-neutral-subtle); opacity: 1; }
+
+/* position: relative makes the list the offset parent, so keyboard scrolling can measure options. */
+.list { position: relative; max-height: var(--command-list-height); overflow-y: auto; padding: var(--space-xsmall) var(--space-xxsmall); }
+.list:empty { display: none; }
+
+.group { display: flex; flex-direction: column; gap: var(--space-xxxsmall); }
+.group + .group { margin-top: var(--space-xsmall); padding-top: var(--space-xsmall); border-top: var(--border-width-thin) solid var(--border-neutral-subtle); }
+.heading { padding: var(--space-xxsmall) var(--space-xsmall); font-size: var(--font-size-xsmall); font-weight: var(--font-weight-semibold); color: var(--text-neutral); }
+
+/* Rows match the kit DropdownMenu item: 28px min height, 2 / 8 px padding, 14px text. */
+.item {
+  display: flex; align-items: center; gap: var(--space-xsmall);
+  min-height: var(--menu-item-height); padding: var(--space-xxxsmall) var(--space-xsmall); border-radius: var(--radius-small);
+  font-size: var(--font-size-small); line-height: 1.2; color: var(--text-neutral); cursor: pointer;
+}
+.active { background: var(--bg-neutral-min-hover); color: var(--text-neutral-strong); }
+.item[aria-disabled="true"] { color: var(--text-neutral-subtle); cursor: not-allowed; }
+.icon { color: var(--icon-neutral); }
+.item[aria-disabled="true"] .icon { color: var(--icon-neutral-subtle); }
+.text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-xxxsmall); padding-block: var(--space-xxxsmall); }
+.label { overflow-wrap: anywhere; }
+.description { font-size: var(--font-size-xsmall); color: var(--text-neutral); overflow-wrap: anywhere; }
+
+/* Figma key badge: 20px tall, 1px strong border, 12px semibold. */
+.key {
+  box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; flex: none;
+  min-width: var(--command-key); height: var(--command-key); padding: 0 var(--space-xxsmall);
+  border: var(--border-width-thin) solid var(--border-neutral-strong); border-radius: var(--radius-medium); background: var(--surface-flat);
+  font: inherit; font-size: var(--font-size-xsmall); font-weight: var(--font-weight-semibold); line-height: 1; color: var(--text-neutral-intense);
+}
+
+.empty {
+  margin: var(--space-xsmall) var(--space-small); padding: var(--space-xxlarge) var(--space-medium);
+  border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-medium);
+  text-align: center; font-size: var(--font-size-small); color: var(--text-neutral);
+}
+
+.footer {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-small);
+  padding: var(--space-small) var(--space-medium); border-top: var(--border-width-thin) solid var(--border-neutral-subtle);
+  font-size: var(--font-size-xsmall); color: var(--text-neutral);
+}
+.hint { display: inline-flex; align-items: center; gap: var(--space-xxsmall); }
+
+/* Dark: text-neutral-intense stays dark in the BP palette. */
+:global([data-theme="dark"]) .key { color: var(--text-neutral-strong); }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

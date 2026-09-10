@@ -1,0 +1,29 @@
+/* Size and fill rules use two classes (.icon.sm) so they beat Google's
+   `.material-symbols-outlined { font-size: 24px }`, which loads after app CSS. */
+.icon {
+  display: inline-block;
+  flex-shrink: 0;
+  line-height: 1;
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+  user-select: none;
+}
+.icon.xs { font-size: var(--icon-size-xsmall); font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20; }
+.icon.sm { font-size: var(--icon-size-small); font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20; }
+.icon.md { font-size: var(--icon-size-medium); font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20; }
+.icon.lg { font-size: var(--icon-size-large); font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24; }
+.icon.xl { font-size: var(--icon-size-xlarge); font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 40; }
+.icon.filled.xs { font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20; }
+.icon.filled.sm { font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20; }
+.icon.filled.md { font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20; }
+.icon.filled.lg { font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24; }
+.icon.filled.xl { font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 40; }
+.inherit { color: inherit; }
+.neutral { color: var(--icon-neutral); }
+.subtle { color: var(--icon-neutral-subtle); }
+.brand { color: var(--icon-brand); }
+.info { color: var(--icon-info); }
+.success { color: var(--icon-success); }
+.warning { color: var(--icon-warning); }
+.danger { color: var(--icon-danger); }

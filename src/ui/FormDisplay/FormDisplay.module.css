@@ -1,0 +1,24 @@
+/* Read-only label and value. A line under every row, so a stack of them reads as a list.
+   border-neutral-subtle, not faint: faint disappears on white and on the page's gray stage. */
+.display {
+  box-sizing: border-box; display: flex; width: 100%; min-width: 0; margin: 0;
+  font-family: var(--font-sans); border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
+}
+.term {
+  display: flex; align-items: center; gap: var(--space-xxsmall); margin: 0;
+  font-size: var(--font-size-small); font-weight: var(--font-weight-medium); line-height: 1.2; color: var(--text-neutral-strong);
+}
+.value { margin: 0; min-width: 0; font-size: var(--font-size-regular); line-height: 1.5; color: var(--text-neutral); overflow-wrap: anywhere; }
+.blank { color: var(--text-neutral-subtle); }
+
+/* Top: label above the value. */
+.top { flex-direction: column; gap: var(--space-xxsmall); padding-block: var(--space-xsmall); }
+
+/* Start: the label sits on a faint fill in the same 160px column as start-label inputs, right-aligned. */
+.start { align-items: stretch; gap: var(--space-small); }
+.start .term {
+  box-sizing: border-box; flex: none; justify-content: flex-end; width: var(--input-label-width); min-height: var(--control-medium);
+  padding: var(--space-xsmall) var(--space-medium) var(--space-xsmall) var(--space-small);
+  background: var(--bg-neutral-faint); text-align: end;
+}
+.start .value { flex: 1; display: flex; align-items: center; padding-block: var(--space-xsmall); }

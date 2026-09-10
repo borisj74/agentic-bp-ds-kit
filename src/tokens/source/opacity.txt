@@ -1,0 +1,15 @@
+# not in Figma: kit-defined opacity. name|value. {name} aliases resolve to var(--name).
+opacity/0|0
+opacity/100|0.08
+opacity/200|0.16
+opacity/300|0.32
+opacity/400|0.48
+opacity/500|0.64
+opacity/600|0.8
+opacity/700|1
+opacity/disabled|{opacity/400}
+opacity/muted|{opacity/500}
+opacity/hover|{opacity/100}
+opacity/scrim/soft|{opacity/300}
+opacity/scrim|{opacity/500}
+opacity/full|{opacity/700}

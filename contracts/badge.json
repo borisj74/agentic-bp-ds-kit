@@ -1,0 +1,430 @@
+{
+  "name": "Badge",
+  "path": "src/ui/Badge/Badge.tsx",
+  "intent": "Short status or category label. Not a person and not a button.",
+  "usage": "Use Badge for status on rows and cards, and for category or filter labels. Pick the tone from meaning and the emphasis from how loud it should be: subtle is the default, strong for the one thing that must stand out, faint for quiet lists. Only dismissible filters are removable. sm (20px) is the BP Components badge and the default; md and lg are larger kit sizes for roomier layouts. See contracts/badge.json for the full contract.",
+  "props": {
+    "tone": {
+      "enum": [
+        "neutral",
+        "hollow",
+        "info",
+        "success",
+        "warning",
+        "danger",
+        "highlight"
+      ],
+      "default": "neutral",
+      "note": "hollow = outline only. highlight = purple, for new or featured."
+    },
+    "emphasis": {
+      "enum": [
+        "subtle",
+        "strong",
+        "faint"
+      ],
+      "default": "subtle",
+      "note": "strong = solid color with white text."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "sm",
+      "note": "sm 20px = the BP Figma badge (12px text). md 24px (12px text). lg 28px (14px text). md and lg are kit-defined."
+    },
+    "icon": {
+      "type": "string",
+      "note": "Material Symbols name. Leading icon (12px, 16px at lg), or the only content when iconOnly."
+    },
+    "iconOnly": {
+      "type": "boolean",
+      "default": false,
+      "note": "Square badge (20 / 24 / 28 px) with one icon. children becomes the hidden label."
+    },
+    "removable": {
+      "type": "boolean",
+      "default": false,
+      "note": "Adds a 12px close button that calls onRemove."
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "note": "Gray with faint text in every tone. The close button does not fire."
+    },
+    "children": {
+      "type": "string",
+      "required": true,
+      "note": "One to three words. Also the label for icon-only badges."
+    },
+    "onRemove": {
+      "type": "function",
+      "note": "Called by the close button when removable."
+    }
+  },
+  "useWhen": [
+    "Status on table rows or cards.",
+    "Category markers and filter labels.",
+    "A count or marker next to a title, like New."
+  ],
+  "doNot": [
+    "Do not invent a local Badge, Tag, Chip or Pill.",
+    "Do not use as a button or link. Only the close button is interactive.",
+    "Do not use for people. Use Avatar.",
+    "Do not put sentences in a Badge.",
+    "Do not use more than one strong Badge in a row or card.",
+    "Do not use raw hex.",
+    "Do not mix badge sizes in one row."
+  ],
+  "a11y": [
+    "Text carries the meaning; tone color is never the only signal.",
+    "Icon-only badges keep children as visually hidden text.",
+    "disabled sets aria-disabled.",
+    "The close control is a native button labeled Remove {children}, with a focus ring. When disabled, it is disabled too."
+  ],
+  "snippet": "<Badge tone=\"success\">Paid</Badge>",
+  "examples": [
+    {
+      "title": "Subtle",
+      "usage": "The default. Tinted background with dark text.",
+      "items": [
+        {
+          "props": {
+            "tone": "neutral",
+            "children": "Draft"
+          }
+        },
+        {
+          "props": {
+            "tone": "hollow",
+            "children": "Archived"
+          }
+        },
+        {
+          "props": {
+            "tone": "info",
+            "children": "In progress"
+          }
+        },
+        {
+          "props": {
+            "tone": "success",
+            "children": "Paid"
+          }
+        },
+        {
+          "props": {
+            "tone": "warning",
+            "children": "Pending"
+          }
+        },
+        {
+          "props": {
+            "tone": "danger",
+            "children": "Overdue"
+          }
+        },
+        {
+          "props": {
+            "tone": "highlight",
+            "children": "New"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Strong",
+      "usage": "Solid color with white text. Use for the one status that must stand out.",
+      "items": [
+        {
+          "props": {
+            "tone": "neutral",
+            "emphasis": "strong",
+            "children": "Draft"
+          }
+        },
+        {
+          "props": {
+            "tone": "hollow",
+            "emphasis": "strong",
+            "children": "Archived"
+          }
+        },
+        {
+          "props": {
+            "tone": "info",
+            "emphasis": "strong",
+            "children": "In progress"
+          }
+        },
+        {
+          "props": {
+            "tone": "success",
+            "emphasis": "strong",
+            "children": "Paid"
+          }
+        },
+        {
+          "props": {
+            "tone": "warning",
+            "emphasis": "strong",
+            "children": "Pending"
+          }
+        },
+        {
+          "props": {
+            "tone": "danger",
+            "emphasis": "strong",
+            "children": "Overdue"
+          }
+        },
+        {
+          "props": {
+            "tone": "highlight",
+            "emphasis": "strong",
+            "children": "New"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Faint",
+      "usage": "Lightest tint. Use in dense lists where many badges sit together.",
+      "items": [
+        {
+          "props": {
+            "tone": "neutral",
+            "emphasis": "faint",
+            "children": "Draft"
+          }
+        },
+        {
+          "props": {
+            "tone": "hollow",
+            "emphasis": "faint",
+            "children": "Archived"
+          }
+        },
+        {
+          "props": {
+            "tone": "info",
+            "emphasis": "faint",
+            "children": "In progress"
+          }
+        },
+        {
+          "props": {
+            "tone": "success",
+            "emphasis": "faint",
+            "children": "Paid"
+          }
+        },
+        {
+          "props": {
+            "tone": "warning",
+            "emphasis": "faint",
+            "children": "Pending"
+          }
+        },
+        {
+          "props": {
+            "tone": "danger",
+            "emphasis": "faint",
+            "children": "Overdue"
+          }
+        },
+        {
+          "props": {
+            "tone": "highlight",
+            "emphasis": "faint",
+            "children": "New"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Sizes",
+      "usage": "sm is the BP badge and the default. Use md or lg only when the badge sits next to larger text or controls. Keep one size per row.",
+      "items": [
+        {
+          "props": {
+            "tone": "info",
+            "size": "sm",
+            "children": "In progress"
+          }
+        },
+        {
+          "props": {
+            "tone": "info",
+            "size": "md",
+            "children": "In progress"
+          }
+        },
+        {
+          "props": {
+            "tone": "info",
+            "size": "lg",
+            "children": "In progress"
+          }
+        },
+        {
+          "props": {
+            "tone": "success",
+            "size": "sm",
+            "iconOnly": true,
+            "icon": "check",
+            "children": "Paid"
+          }
+        },
+        {
+          "props": {
+            "tone": "success",
+            "size": "md",
+            "iconOnly": true,
+            "icon": "check",
+            "children": "Paid"
+          }
+        },
+        {
+          "props": {
+            "tone": "success",
+            "size": "lg",
+            "iconOnly": true,
+            "icon": "check",
+            "children": "Paid"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Icon only",
+      "usage": "A 20px square with one icon. The text stays as a hidden label for screen readers.",
+      "items": [
+        {
+          "props": {
+            "tone": "neutral",
+            "iconOnly": true,
+            "icon": "description",
+            "children": "Draft"
+          }
+        },
+        {
+          "props": {
+            "tone": "hollow",
+            "iconOnly": true,
+            "icon": "inventory_2",
+            "children": "Archived"
+          }
+        },
+        {
+          "props": {
+            "tone": "info",
+            "iconOnly": true,
+            "icon": "info",
+            "children": "Info"
+          }
+        },
+        {
+          "props": {
+            "tone": "success",
+            "iconOnly": true,
+            "icon": "check",
+            "children": "Paid"
+          }
+        },
+        {
+          "props": {
+            "tone": "warning",
+            "iconOnly": true,
+            "icon": "schedule",
+            "children": "Pending"
+          }
+        },
+        {
+          "props": {
+            "tone": "danger",
+            "iconOnly": true,
+            "icon": "priority_high",
+            "children": "Overdue"
+          }
+        },
+        {
+          "props": {
+            "tone": "highlight",
+            "iconOnly": true,
+            "icon": "star",
+            "children": "New"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Icon and remove",
+      "usage": "A 12px leading icon adds meaning. Removable adds a 12px close button, only for dismissible filters.",
+      "items": [
+        {
+          "props": {
+            "tone": "success",
+            "icon": "check",
+            "children": "Paid"
+          }
+        },
+        {
+          "props": {
+            "tone": "info",
+            "removable": true,
+            "children": "This month"
+          }
+        },
+        {
+          "props": {
+            "tone": "hollow",
+            "icon": "filter_list",
+            "removable": true,
+            "children": "Enterprise"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Disabled",
+      "usage": "Gray with faint text in every tone and emphasis. If removable, the close button does not fire.",
+      "items": [
+        {
+          "props": {
+            "tone": "neutral",
+            "disabled": true,
+            "children": "Draft"
+          }
+        },
+        {
+          "props": {
+            "tone": "success",
+            "emphasis": "strong",
+            "disabled": true,
+            "children": "Paid"
+          }
+        },
+        {
+          "props": {
+            "tone": "info",
+            "disabled": true,
+            "removable": true,
+            "children": "This month"
+          }
+        },
+        {
+          "props": {
+            "tone": "warning",
+            "disabled": true,
+            "iconOnly": true,
+            "icon": "schedule",
+            "children": "Pending"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "Breadcrumb",
+  "path": "src/ui/Breadcrumb/Breadcrumb.tsx",
+  "intent": "Path to the current page as a trail of links.",
+  "usage": "Use Breadcrumb above a page title to show where the page sits in the app. The last crumb is the current page and is never a link. Slash is the default separator; chevron is the alternate. Long trails collapse with maxItems. See contracts/breadcrumb.json for the full contract.",
+  "props": {
+    "separator": { "enum": ["slash", "chevron"], "default": "slash", "note": "slash = text /. chevron = chevron_right icon." },
+    "maxItems": { "type": "number", "note": "When items.length > maxItems: first crumb, an ellipsis, then the last maxItems - 1 crumbs." },
+    "items": { "type": "BreadcrumbItem[]", "required": true, "itemShape": { "label": "string", "href": "string?", "onClick": "function?" }, "note": "Two or more. The last item is the current page; its href is ignored. onClick makes a crumb a button for in-app navigation." }
+  },
+  "useWhen": ["Show where a page sits in the app, above its title.", "Detail pages inside a list, like Invoices / INV-1042."],
+  "doNot": ["Do not invent a local Breadcrumb, BreadcrumbItem or BreadcrumbLink.", "Do not make the current page a link.", "Do not use Breadcrumb as the sidebar or as tabs.", "Do not put a menu on the ellipsis. It is visual only.", "Do not mix separators in one app.", "Do not use raw hex."],
+  "a11y": ["nav with aria-label=Breadcrumb around an ordered list.", "The current page has aria-current=page and is not a link.", "Separators and the ellipsis are aria-hidden.", "Links and buttons show a focus ring."],
+  "snippet": "<Breadcrumb items={[{ label: \"Home\", href: \"/\" }, { label: \"Invoices\", href: \"/invoices\" }, { label: \"INV-1042\" }]} />",
+  "examples": [
+    { "title": "Slash", "usage": "The default. Ancestors link; the current page does not.", "items": [
+      { "props": { "items": [{ "label": "Home", "href": "#" }, { "label": "Invoices", "href": "#" }, { "label": "INV-1042" }] } } ] },
+    { "title": "Chevron", "usage": "The alternate separator. Use one separator style across the app.", "items": [
+      { "props": { "separator": "chevron", "items": [{ "label": "Home", "href": "#" }, { "label": "Invoices", "href": "#" }, { "label": "INV-1042" }] } } ] },
+    { "title": "Collapsed", "usage": "For long trails, maxItems shows the first crumb, an ellipsis, then the last crumbs. The ellipsis is visual only, not a menu.", "items": [
+      { "props": { "maxItems": 4, "items": [{ "label": "Home", "href": "#" }, { "label": "Customers", "href": "#" }, { "label": "Acme Corp", "href": "#" }, { "label": "Accounts", "href": "#" }, { "label": "ACC-2231", "href": "#" }, { "label": "Settings" }] } },
+      { "props": { "separator": "chevron", "maxItems": 4, "items": [{ "label": "Home", "href": "#" }, { "label": "Customers", "href": "#" }, { "label": "Acme Corp", "href": "#" }, { "label": "Accounts", "href": "#" }, { "label": "ACC-2231", "href": "#" }, { "label": "Settings" }] } } ] }
+  ]
+}
