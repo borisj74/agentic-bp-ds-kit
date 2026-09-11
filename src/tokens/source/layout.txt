@@ -199,3 +199,7 @@ drawer/narrow|360px
 drawer/medium|460px
 drawer/wide|590px
 drawer/extended|1100px
+
+# Empty (reference kit empty): a 48 round icon well; text stays under 384 wide.
+empty/media|{ref/space/1300}
+empty/copy-max|384px

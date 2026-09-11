@@ -1,0 +1,20 @@
+/* Reference kit empty: everything centred in one column. */
+.empty {
+  box-sizing: border-box; display: grid; justify-items: center; gap: var(--space-medium);
+  width: 100%; min-width: 0; padding: var(--space-xlarge); text-align: center; font-family: var(--font-sans);
+}
+.outlined { border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-large); background: var(--surface-flat); }
+
+.media { display: flex; align-items: center; justify-content: center; }
+.well {
+  display: grid; place-items: center; width: var(--empty-media); height: var(--empty-media);
+  border-radius: var(--radius-full); background: var(--bg-neutral-subtle); color: var(--icon-neutral);
+}
+
+.plain { display: flex; color: var(--icon-neutral-subtle); }
+
+.copy { display: grid; gap: var(--space-xsmall); max-width: var(--empty-copy-max); min-width: 0; }
+.title { margin: 0; font-size: var(--font-size-large); font-weight: var(--font-weight-semibold); line-height: var(--line-height-snug); color: var(--text-neutral-strong); }
+.description { margin: 0; font-size: var(--font-size-small); line-height: var(--line-height-normal); color: var(--text-neutral); }
+
+.actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-xsmall); }

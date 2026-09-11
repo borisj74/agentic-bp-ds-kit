@@ -1258,4 +1258,6 @@
   --drawer-medium: 460px;
   --drawer-wide: 590px;
   --drawer-extended: 1100px;
+  --empty-media: var(--ref-space-1300);
+  --empty-copy-max: 384px;
 }

@@ -29,7 +29,7 @@ Invoke with `/prototype-from-kit <what you want to build>`.
 
 These pieces and patterns are planned but have no contract in this kit yet. If a screen needs one, stop and ask before going further.
 
-- Components: Empty, Chat, InsightCard, DataTable.
+- Components: Chat, InsightCard, DataTable.
 - Patterns and what they will contain:
   - `dashboard`
   - `list-detail`

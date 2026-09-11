@@ -23,6 +23,7 @@ import { DatePicker, type DatePickerProps } from "@/ui/DatePicker/DatePicker";
 import { DropdownMenu, type DropdownMenuEntry, type DropdownMenuProps } from "@/ui/DropdownMenu/DropdownMenu";
 import { Form, type FormProps } from "@/ui/Form/Form";
 import { FormDisplay, type FormDisplayProps } from "@/ui/FormDisplay/FormDisplay";
+import { Empty, type EmptyProps } from "@/ui/Empty/Empty";
 import { FormulaEditor, type FormulaEditorProps } from "@/ui/FormulaEditor/FormulaEditor";
 import { HeaderCell } from "@/ui/HeaderCell/HeaderCell";
 import { HelpPopover, type HelpPopoverProps } from "@/ui/HelpPopover/HelpPopover";
@@ -241,6 +242,16 @@ const SECTION_SAMPLES: Record<string, ReactNode> = {
 };
 const sectionProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in SECTION_SAMPLES ? SECTION_SAMPLES[v] : v])) as unknown as SectionProps;
+
+// Empty samples. Contract examples name them as {createActions}, {uploadAction}, {avatar}, {messageAction}.
+const EMPTY_SAMPLES: Record<string, ReactNode> = {
+  "{createActions}": <><Button variant="primary">Create invoice</Button><Button>Import</Button></>,
+  "{uploadAction}": <Button iconStart="upload">Upload files</Button>,
+  "{avatar}": <Avatar name="Maya Chen" src="/faces/maya-chen.jpg" size="lg" />,
+  "{messageAction}": <Button>Leave a message</Button>,
+};
+const emptyProps = (p: Props) =>
+  Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in EMPTY_SAMPLES ? EMPTY_SAMPLES[v] : v])) as unknown as EmptyProps;
 
 const MENU_ITEMS: DropdownMenuEntry[] = [
   { id: "edit", label: "Edit" },
@@ -568,6 +579,30 @@ export const registry: Record<string, Entry> = {
         <HeaderCell size="sm" label="Status" />
         <Cell size="sm" type="link" label="Acme Inc." href="#" />
         <Cell size="sm" type="badge" label="Paid" tone="success" />
+      </div>
+    ),
+  },
+  Empty: {
+    // Sample actions and media swap in for their {names}. The switches drop parts, like Figma boolean properties.
+    // Its icon well is the stage gray, so it sits on a white page panel.
+    render: (p) => (
+      <div style={{ width: 480, maxWidth: "100%", padding: "var(--space-medium)", background: "var(--surface-flat)", borderRadius: "var(--radius-medium)" }}>
+        <Empty {...emptyProps(p)} />
+      </div>
+    ),
+    preview: { icon: "receipt_long", title: "No invoices yet", description: "Create an invoice or import them from a file.", actions: "{createActions}" },
+    toggles: {
+      showIcon: { label: "Icon", default: true },
+      showDescription: { label: "Description", default: true },
+      showActions: { label: "Actions", default: true },
+    },
+    normalize: ({ showIcon, showDescription, showActions, icon, description, actions, ...p }) => ({
+      ...p, ...(showIcon ? { icon } : {}), ...(showDescription ? { description } : {}), ...(showActions ? { actions } : {}),
+    }),
+    hint: "Turn the icon, description and actions on and off; outlined adds the border.",
+    card: (
+      <div style={{ width: "250%", zoom: 0.4 }}>
+        <Empty icon="receipt_long" title="No invoices yet" description="Create an invoice or import them from a file." />
       </div>
     ),
   },

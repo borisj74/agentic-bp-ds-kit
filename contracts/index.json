@@ -24,6 +24,7 @@
     {"name": "Density", "contract": "contracts/density.json", "category": "layout", "tags": ["density", "size", "compact", "comfortable", "text size", "scale"]},
     {"name": "Drawer", "contract": "contracts/drawer.json", "category": "overlay", "tags": ["drawer", "side panel", "sheet", "slide over", "detail panel", "edit panel", "flyout"]},
     {"name": "DropdownMenu", "contract": "contracts/dropdownmenu.json", "category": "overlay", "tags": ["dropdown", "menu", "actions", "more", "context menu", "filter options"]},
+    {"name": "Empty", "contract": "contracts/empty.json", "category": "feedback", "tags": ["empty", "empty state", "no results", "no data", "blank slate", "first run", "placeholder"]},
     {"name": "Form", "contract": "contracts/form.json", "category": "form", "tags": ["form", "fieldset", "settings", "group", "legend", "submit", "sections"]},
     {"name": "FormDisplay", "contract": "contracts/formdisplay.json", "category": "form", "tags": ["read only", "display", "detail", "key value", "label value", "summary", "form"]},
     {"name": "FormulaEditor", "contract": "contracts/formulaeditor.json", "category": "form", "tags": ["formula", "expression", "calculated field", "rule", "validation", "code", "editor", "form"]},
