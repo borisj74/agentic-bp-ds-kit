@@ -112,6 +112,8 @@ export interface Entry {
   /** Fills in props a combination needs, e.g. an icon for icon-only. */
   normalize?: (p: Props) => Props;
   card: ReactNode;
+  /** Gallery card shows the start of a wide bar at full size, cropped and fading at the end, instead of shrinking it. */
+  cardCrop?: boolean;
 }
 
 const CELL_SAMPLES: Record<CellType, Props> = {
@@ -527,7 +529,7 @@ export const registry: Record<string, Entry> = {
     preview: { label: "Invoices by status by time", categories: "{weeks}", series: "{statuses}", format: "currency", stacked: true },
     hint: "Switch orientation. Hover or use the arrow keys for the tooltip. Turn stacked, values, grid, legend and animate on and off.",
     block: true,
-    card: <div style={{ width: "100%" }}><BarChart label="Invoices by status" categories={["W1", "W2", "W3", "W4"]} series={[{ name: "Paid", values: [3, 5, 4, 6] }, { name: "Sent", values: [2, 2, 3, 2] }]} stacked showLegend={false} height={110} animate={false} /></div>,
+    card: <div style={{ width: "100%" }}><BarChart label="Invoices by status" categories={["W1", "W2", "W3", "W4"]} series={[{ name: "Paid", values: [3, 5, 4, 6] }, { name: "Sent", values: [2, 2, 3, 2] }]} stacked showLegend={false} height={96} animate={false} /></div>,
   },
   Breadcrumb: {
     render: (p) => <Breadcrumb {...(p as object)} items={(p.items as BreadcrumbItem[] | undefined) ?? []} />,
@@ -575,7 +577,7 @@ export const registry: Record<string, Entry> = {
     preview: { label: "Revenue by period", categories: "{months}", series: "{revenue}", format: "currency", area: true, showPoints: true, showValues: true },
     hint: "Hover or use the arrow keys for the tooltip. Turn area, stacked, points, values, grid, legend and animate on and off.",
     block: true,
-    card: <div style={{ width: "100%" }}><LineChart label="Revenue" categories={["Jan", "Feb", "Mar", "Apr", "May"]} series={[{ name: "Revenue", values: [3, 3.4, 4.1, 4.3, 4.8] }]} area showLegend={false} height={110} animate={false} /></div>,
+    card: <div style={{ width: "100%" }}><LineChart label="Revenue" categories={["Jan", "Feb", "Mar", "Apr", "May"]} series={[{ name: "Revenue", values: [3, 3.4, 4.1, 4.3, 4.8] }]} area showLegend={false} height={96} animate={false} /></div>,
   },
   Logo: {
     render: (p) => <Logo {...(p as object)} />,
@@ -597,12 +599,7 @@ export const registry: Record<string, Entry> = {
     hint: "Switch views and weeks. Click an empty day or time to add an event, an event to edit or delete it, Calendars to show or hide one. In Month, the arrow keys move the day.",
     block: true,
     wide: true,
-    card: (
-      // Clipped to the card's preview box: the month is taller than it.
-      <div style={{ width: "250%", zoom: 0.4, height: 300, overflow: "hidden" }}>
-        <Calendar label="Team calendar" calendars={CAL_SOURCES} defaultEvents={CAL_EVENTS} readOnly />
-      </div>
-    ),
+    card: <div style={{ width: 400 }}><Calendar label="Team calendar" calendars={CAL_SOURCES} defaultEvents={CAL_EVENTS} readOnly /></div>,
   },
   Cascader: {
     // Sample fields swap in for their {names}. Keyed so switching controls starts fresh. Field keeps a form-like width;
@@ -655,8 +652,8 @@ export const registry: Record<string, Entry> = {
     }),
     hint: "Turn each part of the card on and off, like the Figma switches. Click the card to pick it; switch the message tone and disabled.",
     card: (
-      <div style={{ width: "250%", zoom: 0.4 }}>
-        <Card badge="New" overline="Req 6787686" title="Alpha Logic wireless ergonomic mouse" amount="$49.00" message="In stock" icon="mouse" selectable defaultSelected />
+      <div style={{ width: 300 }}>
+        <Card badge="New" title="Alpha Logic wireless mouse" amount="$49.00" selectable defaultSelected />
       </div>
     ),
   },
@@ -671,11 +668,7 @@ export const registry: Record<string, Entry> = {
     snippet: { items: "{slides}" },
     hint: "Page with the buttons, swipe or the arrow keys. Switch orientation, slides per view and align; turn on loop.",
     block: true,
-    card: (
-      <div style={{ width: "250%", zoom: 0.4 }}>
-        <Carousel items={slides(false)} slidesPerView={2} />
-      </div>
-    ),
+    card: <div style={{ width: 400 }}><Carousel items={slides(false)} slidesPerView={2} /></div>,
   },
   Cell: {
     // tree previews in a real Table of parent and child accounts, so the chevrons open and close rows.
@@ -709,8 +702,8 @@ export const registry: Record<string, Entry> = {
     hint: "Type to filter. Arrow keys move the highlight and Enter picks. Escape clears. Toggle the key hints.",
     card: (
       <div style={{ width: "85%" }}>
-        {/* One result and no hints so the card preview fits its frame. */}
-        <Command groups={[{ items: [{ id: "invoices", label: "Invoices", icon: "receipt_long" }] }]} hints={false} />
+        {/* Two results and no hints: the search and the start of the list. */}
+        <Command groups={[{ items: [{ id: "invoices", label: "Invoices", icon: "receipt_long" }, { id: "customers", label: "Customers", icon: "group" }] }]} hints={false} />
       </div>
     ),
   },
@@ -730,11 +723,7 @@ export const registry: Record<string, Entry> = {
     hint: "Click a cell to edit it: Field opens the formula editor, Condition is a select, Value is text. Enter saves, Escape cancels. Add and remove rows.",
     block: true,
     wide: true,
-    card: (
-      <div style={{ width: "250%", zoom: 0.4 }}>
-        <DataGrid label="Conditions" columns={CONDITION_COLUMNS} defaultRows={CONDITIONS} canRemoveRows />
-      </div>
-    ),
+    card: <div style={{ width: 400 }}><DataGrid label="Conditions" columns={CONDITION_COLUMNS} defaultRows={CONDITIONS.slice(0, 2)} canRemoveRows /></div>,
   },
   DatePicker: {
     // Keyed so a changed default value applies again. The wrapper gives the full-width field a form-like width.
@@ -749,12 +738,7 @@ export const registry: Record<string, Entry> = {
       message === "error" ? { ...p, error: "Pick a date to continue." } : message === "hint" ? { ...p, hint: "Shown on the invoice." } : p,
     hint: "Click the field to open the calendar. Switch mode to range for two dates. Picks save on Apply.",
     column: true,
-    card: (
-      <div style={{ display: "grid", gap: 8, width: "80%" }}>
-        <DatePicker size="sm" label="Invoice date" defaultValue="2027-01-08" />
-        <DatePicker size="sm" mode="range" label="Billing period" defaultValue={{ start: "2027-01-08", end: "2027-01-14" }} />
-      </div>
-    ),
+    card: <div style={{ width: "80%" }}><DatePicker size="sm" label="Invoice date" defaultValue="2027-01-08" /></div>,
   },
   Drawer: {
     // A kit Button opens the real Drawer. content is playground-only: it picks the sample body.
@@ -817,11 +801,7 @@ export const registry: Record<string, Entry> = {
       ...p, ...(showIcon ? { icon } : {}), ...(showDescription ? { description } : {}), ...(showActions ? { actions } : {}),
     }),
     hint: "Turn the icon, description and actions on and off; outlined adds the border.",
-    card: (
-      <div style={{ width: "250%", zoom: 0.4 }}>
-        <Empty icon="receipt_long" title="No invoices yet" description="Create an invoice or import them from a file." />
-      </div>
-    ),
+    card: <Empty icon="receipt_long" title="No invoices yet" />,
   },
   Form: {
     // FormDemo fills the real Form with sample kit fields. content and message are playground-only. Keyed so defaults re-apply.
@@ -881,7 +861,7 @@ export const registry: Record<string, Entry> = {
     block: true,
     wide: true,
     card: (
-      <div style={{ width: "285%", zoom: 0.35 }}>
+      <div style={{ width: 440 }}>
         <AppHeader environment="UAT-2" searchShortcut="Ctrl+K" actions={[{ id: "help", label: "Help", icon: "help" }]} user={{ name: "Maya Chen", src: "/faces/maya-chen.jpg" }} company={{ name: "Acme Inc." }} />
       </div>
     ),
@@ -913,8 +893,8 @@ export const registry: Record<string, Entry> = {
     flush: true,
     card: (
       <div style={{ width: "80%" }}>
-        <FormDisplay label="Account type" value="Customer" labelPosition="start" />
-        <FormDisplay label="Terms" value="Net 30" labelPosition="start" />
+        <FormDisplay label="Account type" value="Customer" />
+        <FormDisplay label="Terms" value="Net 30" />
       </div>
     ),
   },
@@ -938,11 +918,7 @@ export const registry: Record<string, Entry> = {
     },
     hint: "Switch size and label position. Insert a field, operator or function, then Check syntax or Calculate. The editor is live.",
     column: true,
-    card: (
-      <div style={{ width: "125%", zoom: 0.7 }}>
-        <FormulaEditor label="Formula" hideLabel defaultValue="{!Amount} * 0.9" />
-      </div>
-    ),
+    card: <div style={{ width: 400 }}><FormulaEditor label="Formula" hideLabel defaultValue="{!Amount} * 0.9" /></div>,
   },
   HelpPopover: {
     // trigger is playground-only: a ? icon Button, or a real Input whose help prop opens HelpPopover.
@@ -962,9 +938,8 @@ export const registry: Record<string, Entry> = {
     extras: { trigger: { values: ["icon", "field"], default: "icon" } },
     hint: "Switch placement and trigger. Open pins the panel; turn it off, then hover, Tab or click the ? icon.",
     card: (
-      <HelpPopover title="Tax ID" content="The number on your tax registration.">
-        <Button variant="tertiary" size="sm" iconOnly iconStart="help_center">About Tax ID</Button>
-      </HelpPopover>
+      // How it is met on a page: the help icon beside a field label, which opens the popover.
+      <div style={{ width: "80%" }}><Input size="sm" label="Tax ID" help="The number on your tax registration." placeholder="12-3456789" /></div>
     ),
   },
   Input: {
@@ -1011,12 +986,7 @@ export const registry: Record<string, Entry> = {
       message === "error" ? { ...p, error: "Pick a country to continue." } : message === "hint" ? { ...p, hint: "Used for tax on invoices." } : p,
     hint: "Click the field to open the list. Toggle multiple to pick several. Switch size, label position and message.",
     column: true,
-    card: (
-      <div style={{ display: "grid", gap: 8, width: "80%" }}>
-        <Select size="sm" label="Status" defaultValue="paid" options={[{ value: "paid", label: "Paid" }, { value: "draft", label: "Draft" }]} />
-        <Select size="sm" label="Tags" multiple maxVisible={1} defaultValue={["usage", "annual"]} options={[{ value: "usage", label: "Usage" }, { value: "annual", label: "Annual" }]} />
-      </div>
-    ),
+    card: <div style={{ width: "80%" }}><Select size="sm" label="Status" defaultValue="paid" options={[{ value: "paid", label: "Paid" }, { value: "draft", label: "Draft" }]} /></div>,
   },
   Scoreboard: {
     // Sample cards swap in for their {names}. Keyed so switching controls starts fresh.
@@ -1028,11 +998,7 @@ export const registry: Record<string, Entry> = {
     hint: "Switch between trends, spark charts and six cards. Turn on selectable to pick a card.",
     block: true,
     wide: true,
-    card: (
-      <div style={{ width: "250%", zoom: 0.4 }}>
-        <Scoreboard items={CHART_KPIS} />
-      </div>
-    ),
+    card: <div style={{ width: 380 }}><Scoreboard items={CHART_KPIS.slice(0, 2)} /></div>,
   },
   Section: {
     // Sample content and actions swap in for their {names}. Keyed so a changed default open state applies again.
@@ -1044,7 +1010,7 @@ export const registry: Record<string, Entry> = {
     hint: "Click the chevron to fold the section. Turn collapsible off for a static heading; content header only drops the body.",
     block: true,
     card: (
-      <div style={{ width: "250%", zoom: 0.4 }}>
+      <div style={{ width: 380 }}>
         <Section title="Account information" collapsible actions={<Button size="sm" iconStart="edit">Edit</Button>}>
           <FormDisplay label="Account name" value="Northwind Traders" />
         </Section>
@@ -1088,7 +1054,8 @@ export const registry: Record<string, Entry> = {
     block: true,
     wide: true,
     card: (
-      <div style={{ display: "flex", height: 520, zoom: 0.4 }}>
+      // The rail and the pinned menu's first items; the nav fills this height and the preview fades the rest.
+      <div style={{ display: "flex", height: 200 }}>
         <SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} defaultCurrent="revenue-general-ledger" defaultPinned />
       </div>
     ),
@@ -1122,7 +1089,7 @@ export const registry: Record<string, Entry> = {
     block: true,
     card: (
       <div style={{ width: "100%" }}>
-        <Table size="sm" columns={INVOICE_COLUMNS.slice(0, 2).concat(INVOICE_COLUMNS[3])} rows={INVOICES.slice(0, 3)} />
+        <Table size="sm" columns={INVOICE_COLUMNS.slice(0, 2).concat(INVOICE_COLUMNS[3])} rows={INVOICES.slice(0, 2)} />
       </div>
     ),
   },
@@ -1169,11 +1136,12 @@ export const registry: Record<string, Entry> = {
     block: true,
     wide: true,
     card: (
-      <div style={{ width: "250%", zoom: 0.4 }}>
+      <div style={{ width: 720 }}>
         <Toolbar filters={<></>} onSearchChange={() => {}} views={[{ id: "list", label: "List View" }]} onRefresh={() => {}}
           actions={<><Button size="sm">Export</Button><Button size="sm" variant="primary">Create</Button></>} />
       </div>
     ),
+    cardCrop: true,
   },
   Tooltip: {
     // A kit Button is the trigger; trigger is playground-only. Open pins the bubble while you switch placement. Keyed so it re-places.
@@ -1196,7 +1164,7 @@ export const registry: Record<string, Entry> = {
     snippet: { onItemsChange: "{setItems}" },
     hint: "Simple: selection single, icons and drag off. Advanced: selection multiple, icons and reorderable on. Click chevrons to open folders; drag a handle above, below or onto a folder; Alt with the arrows moves a row.",
     card: (
-      <div style={{ width: "100%", zoom: 0.7 }}>
+      <div style={{ width: "100%" }}>
         <TreeView label="Workspace" items={[{ id: "org", label: "Organization", children: [TREE_ITEMS[0].children![1]] }]} expanded={["org", "design"]} selection="multiple" selected={["sienna", "ammar"]} showIcons size="sm" />
       </div>
     ),
@@ -1256,11 +1224,12 @@ export const registry: Record<string, Entry> = {
     block: true,
     wide: true,
     card: (
-      <div style={{ width: "250%", zoom: 0.4 }}>
+      <div style={{ width: 560 }}>
         <PageHeader breadcrumbs={[{ label: "Billing", href: "#" }, { label: "Invoices", href: "#" }]} icon="folder_open" title="INV-1042" badge="Draft"
           actions={<><Button size="sm">Send</Button><Button size="sm" variant="primary">Approve</Button></>} />
       </div>
     ),
+    cardCrop: true,
   },
   Pagination: {
     // Keyed so a changed total or starting page starts fresh. Full width, like the footer of a table.
@@ -1271,11 +1240,8 @@ export const registry: Record<string, Entry> = {
     snippet: { onPageChange: "{setPage}" },
     hint: "Click the pages and arrows, and pick rows per page. Rows 500 shows the ellipsis. Turn the range and the Select on and off.",
     block: true,
-    card: (
-      <div style={{ width: "250%", zoom: 0.4 }}>
-        <Pagination total={59} />
-      </div>
-    ),
+    card: <div style={{ width: 560 }}><Pagination total={59} /></div>,
+    cardCrop: true,
   },
   PieChart: {
     // Sample data swaps in for its {names}; a white panel like a page. Keyed so switching a control plays the motion again.

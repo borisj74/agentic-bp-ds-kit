@@ -94,7 +94,21 @@
 .card { position: relative; display: block; border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-large); background: var(--surface-flat); overflow: hidden; }
 .card:hover { border-color: var(--border-neutral-strong); }
 .card:has(.cardTitle:focus-visible) { outline: var(--border-width-medium) solid var(--outline-brand); }
-.cardPreview { height: 120px; display: flex; align-items: center; justify-content: center; background: var(--surface-sunken); }
+/* The preview clips its piece inside a padded box; CardPreview scales it down to fit and fades any crop. */
+.cardPreview { position: relative; isolation: isolate; height: 120px; overflow: hidden; background: var(--surface-sunken); }
+.fit { position: absolute; inset: var(--space-small); overflow: hidden; }
+/* "safe" keeps a piece wider than the box starting at the left, so its full width can be measured and scaled. */
+.fitInner { position: absolute; width: 100%; display: flex; align-items: center; justify-content: safe center; transform-origin: top left; }
+/* Crop mode: the bar starts at the left at full size. */
+.fitStart { justify-content: flex-start; }
+/* A card piece keeps the width it asks for; the preview scales or crops it instead of squeezing it. */
+.fitInner > * { flex: none; max-width: none; }
+.fit[data-crop-y] { mask-image: linear-gradient(to bottom, black calc(100% - var(--space-xlarge)), transparent); }
+.fit[data-crop-x] { mask-image: linear-gradient(to right, black calc(100% - var(--space-xxlarge) * 2), transparent); }
+.fit[data-crop-x][data-crop-y] {
+  mask-image: linear-gradient(to bottom, black calc(100% - var(--space-xlarge)), transparent), linear-gradient(to right, black calc(100% - var(--space-xxlarge) * 2), transparent);
+  mask-composite: intersect;
+}
 .cardBody { padding: var(--space-small) var(--space-medium); }
 .cardTitle { display: block; font-weight: var(--font-weight-medium); color: var(--text-neutral-strong); text-decoration: none; outline: none; }
 /* Stretched link: the whole card is the click target. */
