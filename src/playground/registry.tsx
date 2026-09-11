@@ -109,6 +109,7 @@ const CELL_SAMPLES: Record<CellType, Props> = {
   actions: { actions: [{ label: "View" }, { label: "Send" }] },
   actionIcons: { actions: [{ label: "Edit", icon: "edit" }, { label: "Download", icon: "download" }, { label: "Delete", icon: "delete" }] },
   actionMenu: { label: "Row actions", actions: [{ label: "View" }, { label: "Download" }, { label: "Delete", icon: "delete", variant: "danger" }] },
+  checkbox: { label: "INV-1042" },
 };
 
 const MENU_ITEMS: DropdownMenuEntry[] = [

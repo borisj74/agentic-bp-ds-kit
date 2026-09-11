@@ -14,7 +14,7 @@ import styles from "./Cell.module.css";
 
 export type CellType =
   | "text" | "link" | "avatar" | "avatarGroup" | "file" | "payment" | "badge" | "badges"
-  | "trendPositive" | "trendNegative" | "rating" | "select" | "actions" | "actionIcons" | "actionMenu";
+  | "trendPositive" | "trendNegative" | "rating" | "select" | "actions" | "actionIcons" | "actionMenu" | "checkbox";
 export type CellSize = "sm" | "md";
 export interface CellPerson { name: string; src?: string }
 export interface CellBadge { label: string; tone?: BadgeTone }
@@ -57,6 +57,9 @@ export function Cell({
   let aria: string | undefined; // name for visual-only cells
 
   switch (type) {
+    // checkbox: only the row Checkbox, for a select column. label names the row, hidden.
+    case "checkbox":
+      break;
     case "text":
     case "link":
       side = label ?? "";
@@ -138,7 +141,7 @@ export function Cell({
 
   return (
     <span className={[styles.cell, styles[size]].join(" ")} aria-label={aria}>
-      {checkbox && (
+      {(checkbox || type === "checkbox") && (
         <Checkbox size="sm" hideLabel label={`Select ${label || name || "row"}`} checked={checked} defaultChecked={defaultChecked} onChange={onCheckedChange} />
       )}
       {visual && <span className={type === "select" ? styles.fill : styles.visual}>{visual}</span>}

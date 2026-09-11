@@ -2,7 +2,7 @@
   "name": "Cell",
   "path": "src/ui/Cell/Cell.tsx",
   "intent": "Content for one table cell: text, a link, a person, a file, a status, a trend, a rating, a select, row actions or a row menu, with an optional row checkbox. Each cell is full width with a faint bottom border.",
-  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, link to open a record, avatar for a person, badge for status, trend for change, actions for row buttons, actionMenu for a More menu, select to change a value in place. Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, DropdownMenu, Icon and Select; it never draws its own. The progress type arrives with Progress. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract.",
+  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, link to open a record, avatar for a person, badge for status, trend for change, actions for row buttons, actionMenu for a More menu, select to change a value in place, checkbox for a column with only the row Checkbox. Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, DropdownMenu, Icon and Select; it never draws its own. The progress type arrives with Progress. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract.",
   "props": {
     "type": {
       "enum": [
@@ -20,7 +20,8 @@
         "select",
         "actions",
         "actionIcons",
-        "actionMenu"
+        "actionMenu",
+        "checkbox"
       ],
       "default": "text"
     },
@@ -40,11 +41,11 @@
     "checkbox": {
       "type": "boolean",
       "default": false,
-      "note": "Leading row Checkbox, labeled Select {label or name}."
+      "note": "Leading row Checkbox before the value, labeled Select {label or name}. For a column with only the Checkbox, use type checkbox."
     },
     "label": {
       "type": "string",
-      "note": "The text. For link it is the link text. For avatar it is the second line when name is set. For actionMenu it names the More button (default Row actions). For select it is the hidden field name."
+      "note": "The text. For link it is the link text. For avatar it is the second line when name is set. For actionMenu it names the More button (default Row actions). For select it is the hidden field name. For checkbox it names the row: the Checkbox is Select {label}."
     },
     "href": {
       "type": "string",
@@ -417,6 +418,25 @@
                 "variant": "danger"
               }
             ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Checkbox only",
+      "usage": "type checkbox is a select column: just the row Checkbox, named Select plus the row's label.",
+      "items": [
+        {
+          "props": {
+            "type": "checkbox",
+            "label": "INV-1042"
+          }
+        },
+        {
+          "props": {
+            "type": "checkbox",
+            "label": "INV-1043",
+            "defaultChecked": true
           }
         }
       ]
