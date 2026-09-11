@@ -123,7 +123,7 @@
     },
     {
       "title": "Read-only details",
-      "usage": "FormDisplay rows show saved values. Back-to-back rows sit flush as one list, and the editable field under them lines up.",
+      "usage": "FormDisplay rows show saved values. Back-to-back rows sit flush as one list.",
       "items": [
         {
           "props": {

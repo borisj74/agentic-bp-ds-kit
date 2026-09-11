@@ -38,19 +38,18 @@ export function FormDemo({ content = "fields", ...p }: Omit<FormProps, "children
       <Button size={size} variant="primary" type="submit">Save</Button>
     </>
   );
-  const onSubmit = (data: FormData) => setSaved(`Saved: ${String(data.get("company") ?? data.get("name") ?? data.get("po"))}`);
+  const onSubmit = (data: FormData) => setSaved(`Saved: ${String(data.get("company") ?? data.get("name"))}`);
 
   return (
     <div style={{ display: "grid", gap: "var(--space-medium)" }}>
       {content === "details" ? (
-        // Read-only rows sit flush as one list; the editable field below lines up with them.
-        <Form {...p} actions={actions} onSubmit={onSubmit}>
+        // Read-only rows sit flush as one list. Nothing to edit, so no Cancel or Save.
+        <Form {...p}>
           <FormDisplay label="Account ID" value="ACC-2041" />
           <FormDisplay label="Account type" value="Customer" help="Set when the account is created." />
           <FormDisplay label="Billing email" value="billing@acme.com" />
           <FormDisplay label="Payment terms" value="Net 30" />
           <FormDisplay label="Tax ID" />
-          <Input label="PO number" name="po" placeholder="PO-0000" hint="Printed on the next invoice." required />
         </Form>
       ) : content === "sections" ? (
         <Form
