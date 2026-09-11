@@ -1,0 +1,135 @@
+{
+  "name": "TreeView",
+  "path": "src/ui/TreeView/TreeView.tsx",
+  "intent": "A nested list people open and close level by level, like teams in an organization, project folders or account hierarchies, to pick, check or reorder items.",
+  "usage": "Use TreeView for data that nests: folders and files, an org chart, parent and child accounts, product categories. It comes in two looks from one component: simple (chevrons and guide lines, one row selected) and advanced (selection multiple, showIcons and reorderable: checkboxes, folder icons and drag handles). It is one component: pass items, each with an id, a label and, for a folder, children. Chevrons open and close folders; faint guide lines join each level to its parent (showLines). selection single highlights one row (clicking a folder also opens it); multiple adds a checkbox to each row that checks a folder's whole branch and shows a dash when only part of it is checked; none only opens and closes. showIcons adds a folder or file icon (or the item's own). reorderable adds a drag handle: drag a row above or below another, or onto a folder to move it inside; Alt with the up and down arrows moves the focused row among its siblings. Items, selection and open folders can each be controlled or left to the tree. See contracts/treeview.json for the full contract.",
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "note": "Names the tree for screen readers, like Organization."
+    },
+    "items": {
+      "type": "TreeItem[]",
+      "itemShape": "{ id: string; label: string; icon?: string; disabled?: boolean; children?: TreeItem[] }",
+      "note": "Controlled items. An item with children (even an empty list) is a folder. icon is a Material Symbols name, shown with showIcons. Ids are unique across the tree."
+    },
+    "defaultItems": {
+      "type": "TreeItem[]",
+      "note": "Starting items when the tree keeps reorders itself."
+    },
+    "onItemsChange": {
+      "type": "function",
+      "signature": "(items: TreeItem[]) => void",
+      "note": "Called with the new tree after a drag or an Alt+arrow move."
+    },
+    "selection": {
+      "enum": [
+        "none",
+        "single",
+        "multiple"
+      ],
+      "default": "single",
+      "note": "single: one highlighted row. multiple: a checkbox on each row; a folder checks its whole branch. none: rows only open and close."
+    },
+    "selected": {
+      "type": "string[]",
+      "note": "Controlled selected (or checked) ids. In multiple, a folder is in the list when its whole branch is checked."
+    },
+    "defaultSelected": {
+      "type": "string[]",
+      "note": "Starting selected ids. In multiple, a folder id checks its whole branch."
+    },
+    "onSelectedChange": {
+      "type": "function",
+      "signature": "(ids: string[]) => void"
+    },
+    "expanded": {
+      "type": "string[]",
+      "note": "Controlled ids of open folders."
+    },
+    "defaultExpanded": {
+      "type": "string[]",
+      "note": "Folders open at first. Defaults to none."
+    },
+    "onExpandedChange": {
+      "type": "function",
+      "signature": "(ids: string[]) => void"
+    },
+    "showIcons": {
+      "type": "boolean",
+      "default": false,
+      "note": "A folder icon on folders and a file icon on the rest, or the item's own icon."
+    },
+    "showLines": {
+      "type": "boolean",
+      "default": true,
+      "note": "Faint vertical lines joining each level to its parent."
+    },
+    "reorderable": {
+      "type": "boolean",
+      "default": false,
+      "note": "A drag handle on each row. Drag above, below or onto a folder; Alt with the up and down arrows moves among siblings."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "note": "Row height: sm 28, md 32, lg 40. Follows Density when not set."
+    }
+  },
+  "useWhen": [
+    "Data that nests more than one level: folders, teams, accounts, categories.",
+    "Picking items or whole branches, with selection multiple.",
+    "Letting people arrange a hierarchy by dragging, with reorderable."
+  ],
+  "doNot": [
+    "Do not use it for a flat list. Use Table, Select or RadioGroup.",
+    "Do not use it for main app navigation. Use SideNav.",
+    "Do not use it for sections of one page that open and close. Use Accordion.",
+    "Do not build a local nested list, folder row or tree checkbox. Use TreeView.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "role tree named by label, with treeitems that carry their level, position, set size, open state and selected or checked state. Multiple sets aria-multiselectable.",
+    "One row is in the tab order. Up and down move a row; Right opens a folder or goes to its first child; Left closes it or goes to its parent; Home and End go to the first and last row; * opens every folder at that level; typing a letter jumps to the next row that starts with it.",
+    "Enter or Space selects the row (single), checks it (multiple) or opens and closes it (none).",
+    "The checkbox in each row is the kit Checkbox, shown for the eye only: the row itself is the checked item, and a partly checked folder reads as mixed.",
+    "Alt with up and down moves the focused row when reorderable, and the move is announced. Disabled rows can be focused but not selected, checked or moved."
+  ],
+  "snippet": "<TreeView\n  label=\"Organization\"\n  items={teams}\n  selection=\"multiple\"\n  defaultExpanded={[\"org\"]}\n  onSelectedChange={setPeople}\n/>",
+  "examples": [
+    {
+      "title": "Simple",
+      "usage": "Chevrons and guide lines. Open and close teams and projects; one row is selected at a time.",
+      "items": [
+        {
+          "props": {
+            "label": "Workspace",
+            "defaultItems": "{workspace}",
+            "defaultExpanded": "{open}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Advanced",
+      "usage": "Checkboxes that check whole branches, folder icons, and drag handles to rearrange rows.",
+      "items": [
+        {
+          "props": {
+            "label": "Workspace",
+            "defaultItems": "{workspace}",
+            "defaultExpanded": "{open}",
+            "selection": "multiple",
+            "defaultSelected": "{checked}",
+            "showIcons": true,
+            "reorderable": true
+          }
+        }
+      ]
+    }
+  ]
+}

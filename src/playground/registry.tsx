@@ -51,6 +51,7 @@ import { Table, type TableColumn, type TableProps, type TableRow } from "@/ui/Ta
 import { Textarea, type TextareaProps } from "@/ui/Textarea/Textarea";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 import { Tooltip, type TooltipProps } from "@/ui/Tooltip/Tooltip";
+import { TreeView, type TreeItem, type TreeViewProps } from "@/ui/TreeView/TreeView";
 
 export type Props = Record<string, unknown>;
 // SideNav sample: the app sections and menus from the Figma secondary navigation. "-" is a divider.
@@ -342,6 +343,34 @@ const CAL_EVENTS: CalendarEvent[] = [
 const CAL_SAMPLES: Record<string, unknown> = { "{calendars}": CAL_SOURCES, "{events}": CAL_EVENTS };
 const calendarProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in CAL_SAMPLES ? CAL_SAMPLES[v] : v])) as unknown as CalendarProps;
+
+// Tree samples after the Dunav DS tree: an organization, projects and settings. Contract examples name them {workspace}, {open} and {checked}.
+const leaf = (id: string, label: string): TreeItem => ({ id, label });
+const TREE_ITEMS: TreeItem[] = [
+  { id: "org", label: "Organization", children: [
+    { id: "eng", label: "Engineering", children: [leaf("eng-1", "Noah Pierre"), leaf("eng-2", "Lana Steiner"), leaf("eng-3", "Kari Rasmussen")] },
+    { id: "design", label: "Design", children: [leaf("sienna", "Sienna Hewitt"), leaf("ammar", "Ammar Foley"), leaf("caitlyn", "Caitlyn King")] },
+    { id: "product", label: "Product", children: [leaf("prod-1", "Olivia Rhye"), leaf("prod-2", "Phoenix Baker")] },
+    { id: "marketing", label: "Marketing", children: [leaf("mkt-1", "Lori Bryson")] },
+    { id: "sales", label: "Sales", children: [leaf("sales-1", "Zahir Mays"), leaf("sales-2", "Andi Lane")] },
+    { id: "finance", label: "Finance", children: [leaf("fin-1", "Demi Wilkinson")] },
+  ] },
+  { id: "projects", label: "Projects", children: [
+    { id: "powersurge", label: "Powersurge", children: [
+      { id: "brief", label: "Client brief", children: [leaf("brief-1", "Brief_v1"), leaf("brief-2", "Brief_v2")] },
+      leaf("deliverables", "Deliverables"),
+    ] },
+    { id: "ikigai", label: "Ikigai Labs", children: [leaf("ikigai-1", "Kickoff notes"), leaf("ikigai-2", "Roadmap")] },
+  ] },
+  { id: "settings", label: "Settings", children: [leaf("members", "Members"), leaf("billing", "Billing")] },
+];
+const TREE_SAMPLES: Record<string, unknown> = {
+  "{workspace}": TREE_ITEMS,
+  "{open}": ["org", "design", "projects", "powersurge", "brief"],
+  "{checked}": ["design"],
+};
+const treeProps = (p: Props) =>
+  Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in TREE_SAMPLES ? TREE_SAMPLES[v] : v])) as unknown as TreeViewProps;
 
 const MENU_ITEMS: DropdownMenuEntry[] = [
   { id: "edit", label: "Edit" },
@@ -1093,6 +1122,18 @@ export const registry: Record<string, Entry> = {
     extras: { trigger: { values: ["button", "icon"], default: "button" } },
     hint: "Switch placement and trigger. Open pins the bubble; turn it off, then hover or Tab to the button.",
     card: <Tooltip content="Export includes all projects"><Button size="sm">Export</Button></Tooltip>,
+  },
+  TreeView: {
+    // Sample items swap in for their {names}. Keyed so switching controls starts fresh. A white side-panel width: the guide lines are the stage gray.
+    render: (p) => <div style={{ ...chartPanel, width: 400, maxWidth: "100%" }}><TreeView key={JSON.stringify(p)} {...treeProps(p)} /></div>,
+    preview: { label: "Workspace", defaultItems: "{workspace}", defaultExpanded: "{open}", selection: "multiple", defaultSelected: "{checked}", showIcons: true, reorderable: true },
+    snippet: { onItemsChange: "{setItems}" },
+    hint: "Simple: selection single, icons and drag off. Advanced: selection multiple, icons and reorderable on. Click chevrons to open folders; drag a handle above, below or onto a folder; Alt with the arrows moves a row.",
+    card: (
+      <div style={{ width: "100%", zoom: 0.7 }}>
+        <TreeView label="Workspace" items={[{ id: "org", label: "Organization", children: [TREE_ITEMS[0].children![1]] }]} expanded={["org", "design"]} selection="multiple" selected={["sienna", "ammar"]} showIcons size="sm" />
+      </div>
+    ),
   },
   Textarea: {
     // Keyed so a changed default value applies again. The wrapper gives the full-width field a form-like width.

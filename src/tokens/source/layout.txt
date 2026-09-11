@@ -227,3 +227,9 @@ calendar/gutter|56px
 calendar/month-row|112px
 calendar/grid-height|480px
 calendar/swatch|{ref/space/1100}
+
+# TreeView (Dunav DS tree 1448:76955): each level steps in 32, the width of the chevron cell; rows sm 28 / md 32 / lg 40.
+tree/indent|{ref/space/900}
+tree/row-sm|{ref/space/800}
+tree/row-md|{ref/space/900}
+tree/row-lg|{ref/space/1100}

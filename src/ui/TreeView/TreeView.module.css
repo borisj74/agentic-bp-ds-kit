@@ -1,0 +1,50 @@
+/* Dunav DS tree 1448:76955: rows step in by a chevron cell per level; faint lines drop from each open folder's chevron. */
+.tree { --row: var(--tree-row-md); width: 100%; min-width: 0; font-family: var(--font-sans); color: var(--text-neutral-strong); }
+.sm { --row: var(--tree-row-sm); font-size: var(--font-size-small); }
+.md { --row: var(--tree-row-md); font-size: var(--font-size-regular); }
+.lg { --row: var(--tree-row-lg); font-size: var(--font-size-regular); }
+
+.list { margin: 0; padding: 0; list-style: none; }
+
+.row { position: relative; display: flex; align-items: stretch; min-height: var(--row); cursor: pointer; outline: none; user-select: none; line-height: 1.25; }
+.row.disabled { cursor: default; opacity: var(--opacity-disabled); }
+
+/* The row's content and its highlight: after the guide lines, with the same small inset at both ends. */
+.body {
+  position: relative; flex: 1; min-width: 0; display: flex; align-items: center; box-sizing: border-box;
+  padding-inline: var(--space-xsmall) var(--space-xxsmall); border-radius: var(--radius-small);
+}
+.row:hover .body { background: var(--bg-neutral-faint); }
+.row:focus-visible .body { box-shadow: inset 0 0 0 var(--border-width-medium) var(--outline-brand); }
+/* Single: the picked row is light blue. Multiple: checked rows get the gray band from Figma. */
+.row.selected .body { background: var(--bg-neutral-min-selected); color: var(--text-brand-strong); }
+.row.checked .body { background: var(--bg-neutral-faint); }
+
+/* One guide cell per level above the row; with lines, each carries its level's line, under the parent's chevron. */
+.guide { flex: none; align-self: stretch; width: var(--tree-indent); position: relative; }
+.lines .guide::before {
+  content: ""; position: absolute; inset-block: 0; inset-inline-start: calc(var(--space-xsmall) + var(--tree-indent) / 2);
+  border-inline-start: var(--border-width-thin) solid var(--border-neutral-subtle);
+}
+
+.toggle { flex: none; display: grid; place-items: center; width: var(--tree-indent); align-self: stretch; color: var(--icon-neutral); }
+.chevron { transition: transform var(--motion-expand-duration) var(--motion-expand-easing); }
+.chevron.open { transform: rotate(90deg); }
+@media (prefers-reduced-motion: reduce) { .chevron { transition: none; } }
+
+.check { flex: none; display: inline-flex; margin-inline-end: var(--space-xsmall); }
+.icon { flex: none; margin-inline-end: var(--space-xsmall); color: var(--icon-neutral); }
+.label { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.handle { flex: none; margin-inline-start: var(--space-small); color: var(--icon-neutral); cursor: grab; }
+.row:active .handle { cursor: grabbing; }
+
+/* Where a dragged row will land: a brand line above or below, or a brand outline around a folder. */
+.drop-before .body::after, .drop-after .body::after {
+  content: ""; position: absolute; inset-inline: 0; height: 0; pointer-events: none;
+  border-top: var(--border-width-medium) solid var(--border-brand);
+}
+.drop-before .body::after { top: calc(var(--border-width-medium) / -2); }
+.drop-after .body::after { bottom: calc(var(--border-width-medium) / -2); }
+.drop-inside .body { background: var(--bg-neutral-min-selected); box-shadow: inset 0 0 0 var(--border-width-medium) var(--border-brand); }
+
+.srOnly { position: absolute; width: 1px; height: 1px; margin: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

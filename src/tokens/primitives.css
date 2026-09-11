@@ -1274,4 +1274,8 @@
   --calendar-month-row: 112px;
   --calendar-grid-height: 480px;
   --calendar-swatch: var(--ref-space-1100);
+  --tree-indent: var(--ref-space-900);
+  --tree-row-sm: var(--ref-space-800);
+  --tree-row-md: var(--ref-space-900);
+  --tree-row-lg: var(--ref-space-1100);
 }
