@@ -14,8 +14,9 @@
 .end { justify-content: flex-end; text-align: end; }
 
 .visual { display: inline-flex; align-items: center; flex: none; min-width: 0; }
-/* Select fills the rest of the row. */
+/* Select and progress fill the rest of the row; a progress bar keeps a minimum so a hugging cell still shows it. */
 .fill { display: flex; flex: 1; min-width: 0; }
+.progress { min-width: var(--cell-progress-min); }
 .label { min-width: 0; overflow-wrap: anywhere; }
 .link { min-width: 0; overflow-wrap: anywhere; color: var(--link-brand); text-decoration: none; border-radius: var(--radius-small); }
 .link:hover { color: var(--link-brand-hover); text-decoration: underline; }

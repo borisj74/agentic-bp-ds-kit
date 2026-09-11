@@ -1,8 +1,8 @@
 {
   "name": "Cell",
   "path": "src/ui/Cell/Cell.tsx",
-  "intent": "Content for one table cell: text, a link, a person, a file, a status, a trend, a rating, a select, row actions or a row menu, with an optional row checkbox. Each cell is full width with a faint bottom border.",
-  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, link to open a record, avatar for a person, badge for status, trend for change, actions for row buttons, actionMenu for a More menu, select to change a value in place, checkbox for a column with only the row Checkbox. Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, DropdownMenu, Icon and Select; it never draws its own. The progress type arrives with Progress. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract.",
+  "intent": "Content for one table cell: text, a link, a person, a file, a status, a trend, progress, a rating, a select, row actions or a row menu, with an optional row checkbox. Each cell is full width with a faint bottom border.",
+  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, link to open a record, avatar for a person, badge for status, trend for change, progress for how far along something is, actions for row buttons, actionMenu for a More menu, select to change a value in place, checkbox for a column with only the row Checkbox. Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, DropdownMenu, Icon, Progress and Select; it never draws its own. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract.",
   "props": {
     "type": {
       "enum": [
@@ -16,6 +16,7 @@
         "badges",
         "trendPositive",
         "trendNegative",
+        "progress",
         "rating",
         "select",
         "actions",
@@ -45,7 +46,7 @@
     "text": {
       "type": "boolean",
       "default": true,
-      "note": "Show the text next to the visual. Off = visual only; the text stays for screen readers where needed."
+      "note": "Show the text next to the visual. Off = visual only; the text stays for screen readers where needed. For progress it is the percent after the bar."
     },
     "checkbox": {
       "type": "boolean",
@@ -54,7 +55,7 @@
     },
     "label": {
       "type": "string",
-      "note": "The text. For link it is the link text. For avatar it is the second line when name is set. For actionMenu it names the More button (default Row actions). For select it is the hidden field name. For checkbox it names the row: the Checkbox is Select {label}."
+      "note": "The text. For link it is the link text. For avatar it is the second line when name is set. For actionMenu it names the More button (default Row actions). For select it is the hidden field name. For progress it names the bar for screen readers (default Progress). For checkbox it names the row: the Checkbox is Select {label}."
     },
     "href": {
       "type": "string",
@@ -95,7 +96,7 @@
     },
     "value": {
       "type": "string | number",
-      "note": "Trend amount like 12%, rating 0 to 5, or the picked option for select."
+      "note": "Trend amount like 12%, progress 0 to 100, rating 0 to 5, or the picked option for select."
     },
     "actions": {
       "type": "CellAction[]",
@@ -139,6 +140,7 @@
   ],
   "doNot": [
     "Do not invent a local table cell, Tag, Trend, FileIcon, PaymentMethod, Rating or ActionCell.",
+    "Do not draw a progress bar in a cell. Use type progress; it is a kit Progress.",
     "Do not use Badge for trends. Use a trend type.",
     "Do not use link for actions like Delete or Send. Use actions or actionIcons.",
     "Do not draw a local Avatar, Badge, Checkbox or Button. Cell composes the kit ones.",
@@ -155,7 +157,8 @@
     "The row checkbox has a hidden label: Select {label or name}.",
     "Icon-only actions keep their label as the button name.",
     "actionMenu is a kit DropdownMenu: an icon-only More button named by label, opening a role=menu.",
-    "select is a small kit Select with a hidden label from label, named with its value."
+    "select is a small kit Select with a hidden label from label, named with its value.",
+    "progress is a kit Progress: a progressbar named by label, read as its percent."
   ],
   "snippet": "<Cell type=\"avatar\" name=\"Maya Chen\" label=\"maya@acme.com\" src=\"/faces/maya-chen.jpg\" />",
   "examples": [
@@ -325,6 +328,27 @@
           "props": {
             "type": "trendNegative",
             "value": "4%"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Progress",
+      "usage": "How far along a row is, from 0 to 100: a kit Progress bar that fills the cell, with the percent after it. label names it for screen readers.",
+      "items": [
+        {
+          "props": {
+            "type": "progress",
+            "value": 64,
+            "label": "Onboarding"
+          }
+        },
+        {
+          "props": {
+            "type": "progress",
+            "size": "sm",
+            "value": 30,
+            "label": "Onboarding"
           }
         }
       ]

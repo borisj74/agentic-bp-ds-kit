@@ -8,6 +8,7 @@ import { Button, type ButtonVariant } from "../Button/Button";
 import { ButtonGroup } from "../ButtonGroup/ButtonGroup";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
+import { Progress } from "../Progress/Progress";
 import { Select, type SelectOption } from "../Select/Select";
 import { Icon } from "../Icon/Icon";
 import { Tooltip } from "../Tooltip/Tooltip";
@@ -15,7 +16,7 @@ import styles from "./Cell.module.css";
 
 export type CellType =
   | "text" | "link" | "avatar" | "avatarGroup" | "file" | "payment" | "badge" | "badges"
-  | "trendPositive" | "trendNegative" | "rating" | "select" | "actions" | "actionIcons" | "actionMenu" | "checkbox";
+  | "trendPositive" | "trendNegative" | "progress" | "rating" | "select" | "actions" | "actionIcons" | "actionMenu" | "checkbox";
 export type CellSize = "sm" | "md";
 export type CellAlign = "start" | "center" | "end";
 export interface CellPerson { name: string; src?: string }
@@ -94,6 +95,10 @@ export function Cell({
       if (!text) aria = `${up ? "Up" : "Down"} ${value ?? ""}`.trim();
       break;
     }
+    case "progress":
+      // A kit Progress bar that fills the cell, sm or md like the row. label names it; text shows the percent after it.
+      visual = <Progress value={Number(value) || 0} size={size} label={label ?? "Progress"} showValue={text} />;
+      break;
     case "rating": {
       const n = score(value);
       visual = (
@@ -152,7 +157,7 @@ export function Cell({
       {(checkbox || type === "checkbox") && (
         <Checkbox size="sm" hideLabel label={`Select ${label || name || "row"}`} checked={checked} defaultChecked={defaultChecked} onChange={onCheckedChange} />
       )}
-      {visual && <span className={type === "select" ? styles.fill : styles.visual}>{visual}</span>}
+      {visual && <span className={type === "select" ? styles.fill : type === "progress" ? [styles.fill, styles.progress].join(" ") : styles.visual}>{visual}</span>}
       {twoLine ? (
         <span className={styles.copy}>
           <span className={styles.name}>{who}</span>

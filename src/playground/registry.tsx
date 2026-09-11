@@ -111,6 +111,7 @@ const CELL_SAMPLES: Record<CellType, Props> = {
   badges: { badges: [{ label: "Usage", tone: "info" }, { label: "Annual", tone: "neutral" }] },
   trendPositive: { value: "12%" },
   trendNegative: { value: "4%" },
+  progress: { value: 64, label: "Onboarding" },
   rating: { value: 4 },
   select: { label: "Status", value: "paid", options: [{ value: "draft", label: "Draft" }, { value: "paid", label: "Paid" }, { value: "void", label: "Void" }] },
   actions: { actions: [{ label: "View" }, { label: "Send" }] },

@@ -187,3 +187,6 @@ progress/bar-lg|{ref/space/400}
 progress/circle-sm|56px
 progress/circle-md|96px
 progress/circle-lg|196px
+
+# Cell progress (reference kit cell): the bar is at least 128 wide, so a hugging cell still shows it.
+cell/progress-min|128px
