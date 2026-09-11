@@ -1,9 +1,10 @@
 "use client";
 import {
-  cloneElement, useEffect, useId, useRef, useState,
-  type FocusEvent, type KeyboardEvent, type MouseEvent, type ReactElement,
+  useEffect, useId, useRef, useState,
+  type FocusEvent, type KeyboardEvent, type MouseEvent, type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
+import { useDescribedBy } from "../Tooltip/Tooltip";
 import { useFloating, useInBrowser, type FloatingSide } from "../Tooltip/useFloating";
 import styles from "./HelpPopover.module.css";
 
@@ -16,7 +17,7 @@ export interface HelpPopoverProps {
   delay?: number;
   open?: boolean;
   disabled?: boolean;
-  children: ReactElement<{ "aria-describedby"?: string }>;
+  children: ReactNode;
 }
 
 const GAP = 14; // px between trigger and panel; the 12px arrow sits in it
@@ -50,6 +51,8 @@ export function HelpPopover({ title, content, placement = "bottom", delay = 150,
   useEffect(() => clear, []);
 
   useFloating(open, wrapRef, panelRef, placement, GAP, `${title ?? ""}${content}`);
+  // The title and text are always in the page as the trigger's description, so screen readers get them without the panel.
+  useDescribedBy(wrapRef, id, disabled);
 
   // A click or tap anywhere else closes a pinned panel.
   useEffect(() => {
@@ -89,15 +92,13 @@ export function HelpPopover({ title, content, placement = "bottom", delay = 150,
 
   if (disabled) return children;
 
-  // The text is always in the page as the trigger's description, so screen readers get it without the panel.
-  const describedBy = [children.props["aria-describedby"], id].filter(Boolean).join(" ");
   return (
     <span
       ref={wrapRef} className={styles.wrap}
       onPointerEnter={() => show(delay)} onPointerLeave={() => hide()}
       onFocus={onFocus} onBlur={onBlur} onKeyDown={onKeyDown} onClick={onClick}
     >
-      {cloneElement(children, { "aria-describedby": describedBy })}
+      {children}
       <span id={id} className={styles.srOnly}>{title ? `${title}: ${content}` : content}</span>
       {open && createPortal(
         <div

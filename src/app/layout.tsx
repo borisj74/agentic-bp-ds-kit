@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
-import Script from "next/script";
 import "@/tokens/primitives.css";
 import "@/tokens/semantic.css";
 import "@/tokens/typography.css";
@@ -20,9 +19,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="dark" suppressHydrationWarning className={`${inter.variable} ${robotoMono.variable}`}>
+    // No data-theme here: light is the :root default. The theme script adds data-theme only for a saved choice,
+    // so React never renders over it.
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${robotoMono.variable}`}>
       <head>
-        <Script id="theme-init" strategy="beforeInteractive">{themeInit}</Script>
+        {/* A plain inline script (not next/script, whose inline beforeInteractive code is queued and may never run)
+            so the browser applies a saved theme before first paint. With nothing saved the page starts light. */}
+        <script id="theme-init" dangerouslySetInnerHTML={{ __html: themeInit }} />
         {/* Material Symbols is not in next/font. display=block avoids ligature text flashing before the icon font loads. */}
         {/* eslint-disable-next-line @next/next/no-page-custom-font, @next/next/google-font-display */}
         <link

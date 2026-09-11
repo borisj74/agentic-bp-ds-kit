@@ -1,5 +1,5 @@
 "use client";
-import { cloneElement, useEffect, useId, useRef, useState, type FocusEvent, type KeyboardEvent, type ReactElement } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type FocusEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
 import { createPortal } from "react-dom";
 import { useFloating, useInBrowser, type FloatingSide } from "./useFloating";
 import styles from "./Tooltip.module.css";
@@ -12,10 +12,27 @@ export interface TooltipProps {
   delay?: number;
   open?: boolean;
   disabled?: boolean;
-  children: ReactElement<{ "aria-describedby"?: string }>;
+  children: ReactNode;
 }
 
 const GAP = 8; // px between trigger and bubble; the arrow sits in it
+
+// Adds `id` to the trigger's aria-describedby after mount, keeping any ids it already has.
+// Done on the DOM rather than with cloneElement, because a child passed from a server component
+// can arrive as a lazy reference with no props to clone. Shared by Tooltip and HelpPopover.
+export function useDescribedBy(wrapRef: RefObject<HTMLElement | null>, id: string, off: boolean) {
+  useLayoutEffect(() => {
+    const el = wrapRef.current?.firstElementChild;
+    if (!el || off) return;
+    const ids = (el.getAttribute("aria-describedby") ?? "").split(" ").filter(Boolean);
+    if (!ids.includes(id)) el.setAttribute("aria-describedby", [...ids, id].join(" "));
+    return () => {
+      const rest = (el.getAttribute("aria-describedby") ?? "").split(" ").filter((x) => x && x !== id);
+      if (rest.length) el.setAttribute("aria-describedby", rest.join(" "));
+      else el.removeAttribute("aria-describedby");
+    };
+  }, [wrapRef, id, off]);
+}
 
 export function Tooltip({ content, placement = "top", delay = 150, open: openProp, disabled = false, children }: TooltipProps) {
   const id = useId();
@@ -41,6 +58,8 @@ export function Tooltip({ content, placement = "top", delay = 150, open: openPro
 
   // Fixed and portaled, so cards, tables and Forms never clip it.
   useFloating(open, wrapRef, bubbleRef, placement, GAP, content);
+  // The text is always in the page as the trigger's description, so screen readers get it without the bubble.
+  useDescribedBy(wrapRef, id, disabled);
 
   // Keyboard focus shows it at once; a mouse click does not, so it never sticks after clicking.
   const onFocus = (e: FocusEvent) => {
@@ -56,15 +75,13 @@ export function Tooltip({ content, placement = "top", delay = 150, open: openPro
 
   if (disabled) return children;
 
-  // The text is always in the page as the trigger's description, so screen readers get it without the bubble.
-  const describedBy = [children.props["aria-describedby"], id].filter(Boolean).join(" ");
   return (
     <span
       ref={wrapRef} className={styles.wrap}
       onPointerEnter={() => show(delay)} onPointerLeave={() => hide()}
       onFocus={onFocus} onBlur={() => hide(0)} onKeyDown={onKeyDown}
     >
-      {cloneElement(children, { "aria-describedby": describedBy })}
+      {children}
       <span id={id} role="tooltip" className={styles.srOnly}>{content}</span>
       {open && createPortal(
         <div ref={bubbleRef} className={styles.bubble} aria-hidden="true" onPointerEnter={clear} onPointerLeave={() => hide()}>

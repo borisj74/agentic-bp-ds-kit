@@ -11,7 +11,8 @@ function subscribe(cb: () => void) {
   mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "data-brand"] });
   return () => mo.disconnect();
 }
-const getTheme = () => (document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark");
+// Light unless dark was chosen: the playground starts in light mode.
+const getTheme = () => (document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
 const getBrand = () => document.documentElement.getAttribute("data-brand") ?? "cobalt";
 
 function persist(key: string, value: string) {
@@ -19,7 +20,7 @@ function persist(key: string, value: string) {
 }
 
 export function ThemeControls() {
-  const theme = useSyncExternalStore(subscribe, getTheme, () => "dark");
+  const theme = useSyncExternalStore(subscribe, getTheme, () => "light");
   const brand = useSyncExternalStore(subscribe, getBrand, () => "cobalt");
 
   const setTheme = (t: "dark" | "light") => { document.documentElement.setAttribute("data-theme", t); persist("theme", t); };
