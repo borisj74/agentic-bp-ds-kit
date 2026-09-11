@@ -19,11 +19,12 @@
 .help:hover { color: var(--icon-neutral-strong); }
 .help:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
 
-/* Start: label column right-aligned and centred on the field, as in Figma (pl 12, pr 16, 12px gap). */
-.start { flex-direction: row; align-items: flex-start; gap: var(--space-small); }
+/* Start: label column right-aligned and centred on the field. 12px before the label, and 8px from the
+   label to the field (no end padding, an 8px gap). */
+.start { flex-direction: row; align-items: flex-start; gap: var(--space-xsmall); }
 .start .labelRow {
   box-sizing: border-box; flex: none; justify-content: flex-end; width: var(--input-label-width); min-height: var(--h);
-  padding-inline: var(--space-small) var(--space-medium); text-align: end;
+  padding-inline: var(--space-small) 0; text-align: end;
 }
 
 .body { display: flex; flex-direction: column; gap: var(--space-xxsmall); flex: 1; min-width: 0; }

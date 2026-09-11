@@ -29,7 +29,7 @@
 /* Start labels: kit fields put their label in the 160px column. Controls with no label column
    (Checkbox, Switch, RadioGroup, hidden-label fields) shift over to line up with the fields. */
 .form { container-type: inline-size; }
-.start .fields > :not([data-label="start"]) { margin-inline-start: calc(var(--input-label-width) + var(--space-small)); }
+.start .fields > :not([data-label="start"]) { margin-inline-start: calc(var(--input-label-width) + var(--space-xsmall)); }
 
 /* Two columns: fields fill left to right. A Textarea spans both. Drops to one column when the form is narrow. */
 .two .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: var(--space-medium) var(--space-large); }
