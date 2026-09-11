@@ -21,6 +21,14 @@
       "default": "list",
       "note": "list shows every group with its heading. tabs adds a kit Tabs strip under the search: All, then one tab per group heading, like Records / Reports / Sections. A heading tab shows only that group; with a query each tab shows its result count."
     },
+    "iconStyle": {
+      "enum": [
+        "tile",
+        "plain"
+      ],
+      "default": "tile",
+      "note": "tile puts each item icon in a tinted 32px tile. plain shows just the icon, in neutral, darker on the highlighted row."
+    },
     "label": {
       "type": "string",
       "default": "Search",
@@ -85,7 +93,7 @@
   "a11y": [
     "The search field is a combobox with aria-controls, aria-autocomplete=list and aria-activedescendant pointing at the highlighted option.",
     "The list is a listbox; groups are labelled by their heading; items are options with aria-selected and aria-disabled.",
-    "Focus stays in the search field. Arrow keys move the highlight, Enter picks, Escape clears the search.",
+    "Focus stays in the search field. Nothing is highlighted until the pointer is over a row or the arrow keys move (Down starts at the first result, Up at the last); leaving the list clears it. Enter picks the highlighted result, or the first one. Escape clears the search.",
     "A polite status message says how many results match.",
     "The key hints footer is hidden from screen readers; icons are decorative."
   ],
@@ -190,6 +198,40 @@
                     "id": "users",
                     "label": "Users and roles",
                     "icon": "group"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Plain icons",
+      "usage": "iconStyle plain drops the tinted tile behind each icon.",
+      "items": [
+        {
+          "props": {
+            "label": "Search",
+            "iconStyle": "plain",
+            "groups": [
+              {
+                "heading": "Recent",
+                "items": [
+                  {
+                    "id": "p1",
+                    "label": "Premium support plan",
+                    "icon": "description"
+                  },
+                  {
+                    "id": "p2",
+                    "label": "Usage add-on",
+                    "icon": "radio_button_unchecked"
+                  },
+                  {
+                    "id": "p3",
+                    "label": "Revenue by product",
+                    "icon": "bar_chart"
                   }
                 ]
               }

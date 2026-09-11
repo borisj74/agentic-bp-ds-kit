@@ -32,7 +32,8 @@
   font-family: var(--font-sans); font-size: var(--font-size-small); line-height: 1.2; text-align: start;
   color: var(--text-neutral); cursor: pointer;
 }
-.item:hover:not([aria-disabled="true"]) { background: var(--surface-sunken); color: var(--text-neutral-strong); }
+/* Same hover as Command rows and tertiary Buttons. */
+.item:hover:not([aria-disabled="true"]) { background: var(--bg-neutral-min-hover); color: var(--text-neutral-strong); }
 .item:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: 0; }
 .item[aria-disabled="true"] { color: var(--text-neutral-subtle); cursor: not-allowed; }
 .item[aria-disabled="true"] .tile { opacity: var(--opacity-disabled); }

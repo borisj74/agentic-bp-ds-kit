@@ -7,6 +7,7 @@ import { Tabs } from "../Tabs/Tabs";
 import styles from "./Command.module.css";
 
 export type CommandVariant = "list" | "tabs";
+export type CommandIconStyle = "tile" | "plain";
 
 export interface CommandItem {
   id: string;
@@ -27,6 +28,7 @@ export interface CommandScope {
 export interface CommandProps {
   groups: CommandGroup[];
   variant?: CommandVariant;
+  iconStyle?: CommandIconStyle;
   label?: string;
   placeholder?: string;
   empty?: string;
@@ -41,7 +43,7 @@ export interface CommandProps {
 }
 
 export function Command({
-  groups, variant = "list", label = "Search", placeholder = "Search by name, type, and more...", empty = "No matches found for this search.",
+  groups, variant = "list", iconStyle = "tile", label = "Search", placeholder = "Search by name, type, and more...", empty = "No matches found for this search.",
   defaultQuery = "", hints = true, scopes, scope, defaultScope, onScopeChange, autoFocus = false, onSelect,
 }: CommandProps) {
   const uid = useId();
@@ -67,7 +69,8 @@ export function Command({
   const tabHeading = tabGroups.find((t) => t.id === tab)?.heading;
   const visible = matches.filter((g) => g.items.length > 0 && (!tabHeading || g.heading === tabHeading));
   const enabled = useMemo(() => visible.flatMap((g) => g.items.filter((i) => !i.disabled).map((i) => i.id)), [visible]);
-  const activeId = active && enabled.includes(active) ? active : enabled[0] ?? null;
+  // Nothing is highlighted until the pointer is over a row or the arrow keys move; Enter then falls back to the first result.
+  const activeId = active && enabled.includes(active) ? active : null;
   const count = visible.reduce((n, g) => n + g.items.length, 0);
 
   // Opened from a trigger, like the AppHeader search: typing can start at once.
@@ -87,7 +90,8 @@ export function Command({
   const move = (step: number) => {
     if (!enabled.length) return;
     const i = activeId ? enabled.indexOf(activeId) : -1;
-    setActive(enabled[(i + step + enabled.length) % enabled.length]);
+    // From nothing: Down starts at the first result, Up at the last.
+    setActive(i < 0 ? enabled[step > 0 ? 0 : enabled.length - 1] : enabled[(i + step + enabled.length) % enabled.length]);
   };
   const choose = (item: CommandItem) => {
     if (!item.disabled) onSelect?.(item.id);
@@ -104,7 +108,8 @@ export function Command({
     else if (e.key === "ArrowUp") { e.preventDefault(); move(-1); }
     else if (e.key === "Enter") {
       e.preventDefault();
-      const item = visible.flatMap((g) => g.items).find((i) => i.id === activeId);
+      const target = activeId ?? enabled[0];
+      const item = visible.flatMap((g) => g.items).find((i) => i.id === target);
       if (item) choose(item);
     }
     // Escape clears the query first. With an empty query it bubbles, so an overlay can close.
@@ -119,7 +124,7 @@ export function Command({
   }));
 
   return (
-    <div className={styles.command}>
+    <div className={[styles.command, iconStyle === "plain" ? styles.plainIcons : ""].join(" ")}>
       <div className={styles.search}>
         <Icon name="search" size="md" className={styles.searchIcon} />
         <input
@@ -150,7 +155,7 @@ export function Command({
           <Tabs label={`${label} categories`} items={tabItems} value={tab} onChange={(id) => { setTab(id); setActive(null); }} />
         </div>
       )}
-      <div ref={listRef} id={listId} role="listbox" aria-label={label} className={styles.list}>
+      <div ref={listRef} id={listId} role="listbox" aria-label={label} className={styles.list} onMouseLeave={() => setActive(null)}>
         {visible.map((g, gi) => (
           <div key={g.heading ?? gi} role="group" aria-labelledby={g.heading ? `${uid}-g${gi}` : undefined} className={styles.group}>
             {/* A single-category tab already names the group, so its heading is only for screen readers. */}
