@@ -13,11 +13,12 @@ import { DropdownMenu, type DropdownMenuProps } from "@/ui/DropdownMenu/Dropdown
 import { Form, type FormProps } from "@/ui/Form/Form";
 import { FormDisplay } from "@/ui/FormDisplay/FormDisplay";
 import { Input } from "@/ui/Input/Input";
+import { Lookup } from "@/ui/Lookup/Lookup";
 import { Modal, type ModalProps } from "@/ui/Modal/Modal";
 import { SegmentedControl } from "@/ui/SegmentedControl/SegmentedControl";
 import { Select } from "@/ui/Select/Select";
 import { Switch } from "@/ui/Switch/Switch";
-import { Table } from "@/ui/Table/Table";
+import { Table, type TableColumn, type TableRow } from "@/ui/Table/Table";
 import { Textarea } from "@/ui/Textarea/Textarea";
 import { Toast, type ToastProps } from "@/ui/Toast/Toast";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
@@ -91,6 +92,7 @@ export function FormDemo({ content = "fields", ...p }: Omit<FormProps, "children
           <Input label="Tax ID" name="taxId" placeholder="US-00-0000000" />
           <Input label="Billing email" name="email" type="email" defaultValue="billing@acme.com" hint="Invoices and receipts go here." />
           <Select label="Country" name="country" options={COUNTRIES} defaultValue="us" />
+          <Lookup label="Parent account" name="parentAccount" columns={ACCOUNT_LOOKUP_COLUMNS} rows={PARENT_ACCOUNTS} defaultValue="ACC-1001" />
           <Textarea label="Notes" name="notes" size="sm" placeholder="Shown at the bottom of every invoice" />
           <Checkbox label="Send invoices by email" name="sendInvoices" defaultChecked />
         </Form>
@@ -99,6 +101,19 @@ export function FormDemo({ content = "fields", ...p }: Omit<FormProps, "children
     </div>
   );
 }
+
+// Parent accounts for the Form demo's Lookup field.
+const PARENT_ACCOUNTS: TableRow[] = [
+  { id: "ACC-1001", name: "Northwind Holdings", type: "Enterprise", region: "North America", owner: "Maya Chen" },
+  { id: "ACC-1002", name: "Globex Corporation", type: "Enterprise", region: "Europe", owner: "Noah Williams" },
+  { id: "ACC-1003", name: "Initech Group", type: "Mid-market", region: "North America", owner: "Iris Okafor" },
+  { id: "ACC-1004", name: "Umbrella Health", type: "Enterprise", region: "Asia Pacific", owner: "Jordan Lee" },
+  { id: "ACC-1005", name: "Stark Logistics", type: "Mid-market", region: "Europe", owner: "Maya Chen" },
+];
+const ACCOUNT_LOOKUP_COLUMNS: TableColumn[] = [
+  { key: "name", header: "Account name" }, { key: "id", header: "ID" }, { key: "type", header: "Type" },
+  { key: "region", header: "Region" }, { key: "owner", header: "Owner" },
+];
 
 // Playground harness: a kit Button opens the real Modal with sample body content. Not a kit piece.
 export function ModalDemo({ content = "text", ...p }: Omit<ModalProps, "open" | "onClose" | "children" | "footer"> & { content?: ModalDemoContent }) {
