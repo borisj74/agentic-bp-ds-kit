@@ -19,6 +19,7 @@ import { Modal, type ModalProps } from "@/ui/Modal/Modal";
 import { SegmentedControl } from "@/ui/SegmentedControl/SegmentedControl";
 import { Select } from "@/ui/Select/Select";
 import { Skeleton, type SkeletonProps } from "@/ui/Skeleton/Skeleton";
+import { Stepper, type StepperProps } from "@/ui/Stepper/Stepper";
 import { Switch } from "@/ui/Switch/Switch";
 import { Table, type TableColumn, type TableRow } from "@/ui/Table/Table";
 import { Textarea } from "@/ui/Textarea/Textarea";
@@ -466,4 +467,22 @@ export function SkeletonDemo({ layout = "single", ...p }: SkeletonProps & { layo
       ? <div style={{ height: 96, borderRadius: "var(--radius-medium)", background: "var(--bg-brand-faint)", display: "grid", placeItems: "center", color: "var(--text-brand)" }}>Chart ready</div>
       : <p style={{ margin: 0 }}>Invoices sync every night at 2 AM. Failed payments retry after three days, then the account owner gets an email.</p>;
   return <div style={{ width: 320 }}><Skeleton {...p}>{real}</Skeleton></div>;
+}
+
+// Playground harness: the real Stepper walked with Back and Next, and done steps clickable. Not a kit piece.
+export function StepperDemo({ current = 1, steps, ...p }: StepperProps) {
+  const [at, setAt] = useState(current);
+  const [from, setFrom] = useState(current);
+  // A new start step from the controls resets the walk.
+  if (from !== current) { setFrom(current); setAt(current); }
+  const last = steps.length;
+  return (
+    <div style={{ display: "grid", gap: "var(--space-large)", width: "100%" }}>
+      <Stepper {...p} steps={steps} current={at} onStepClick={setAt} />
+      <div style={{ display: "flex", justifyContent: "center", gap: "var(--space-xsmall)" }}>
+        <Button size="sm" disabled={at <= 1} onClick={() => setAt(Math.max(at - 1, 1))}>Back</Button>
+        <Button size="sm" variant="primary" disabled={at > last} onClick={() => setAt(at + 1)}>{at >= last ? "Finish" : "Next"}</Button>
+      </div>
+    </div>
+  );
 }

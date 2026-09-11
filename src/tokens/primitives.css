@@ -1293,4 +1293,7 @@
   --skeleton-circle-sm: var(--ref-space-900);
   --skeleton-circle-md: var(--ref-space-1100);
   --skeleton-circle-lg: var(--ref-space-1300);
+  --stepper-step: 100px;
+  --stepper-node-sm: var(--ref-space-700);
+  --stepper-node-md: var(--ref-space-900);
 }

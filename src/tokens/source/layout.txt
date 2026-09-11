@@ -254,3 +254,8 @@ skeleton/block|96px
 skeleton/circle-sm|{ref/space/900}
 skeleton/circle-md|{ref/space/1100}
 skeleton/circle-lg|{ref/space/1300}
+
+# Stepper (Figma steps 2133:58431): each step is 100 wide; the circle is 32 (md) or 24 (sm).
+stepper/step|100px
+stepper/node-sm|{ref/space/700}
+stepper/node-md|{ref/space/900}

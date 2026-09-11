@@ -54,6 +54,7 @@
     {"name": "SideNav", "contract": "contracts/sidenav.json", "category": "navigation", "tags": ["side nav", "sidebar", "navigation", "rail", "flyout", "secondary navigation", "menu"]},
     {"name": "Skeleton", "contract": "contracts/skeleton.json", "category": "feedback", "tags": ["skeleton", "loading", "placeholder", "shimmer", "content loader", "gray bars", "pulse"]},
     {"name": "Spinner", "contract": "contracts/spinner.json", "category": "feedback", "tags": ["spinner", "loading", "loader", "busy", "wait", "activity indicator", "refresh"]},
+    {"name": "Stepper", "contract": "contracts/stepper.json", "category": "navigation", "tags": ["stepper", "steps", "wizard", "progress", "flow", "setup", "onboarding", "import"]},
     {"name": "Switch", "contract": "contracts/switch.json", "category": "form", "tags": ["switch", "toggle", "on off", "setting", "preference"]},
     {"name": "Table", "contract": "contracts/table.json", "category": "data", "tags": ["table", "data table", "rows", "columns", "list", "selection", "select all", "total"]},
     {"name": "Tabs", "contract": "contracts/tabs.json", "category": "navigation", "tags": ["tabs", "tab strip", "sections", "views", "panels", "count"]},

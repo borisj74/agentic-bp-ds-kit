@@ -1,0 +1,40 @@
+/* Figma steps 2133:58431: 100-wide steps, 28 apart, a circle over a centered label; a 2px line joins the circles. */
+.stepper {
+  --node: var(--stepper-node-md); --gap: var(--space-xxlarge);
+  display: flex; justify-content: center; gap: var(--gap); margin: 0; padding: 0; list-style: none;
+  font-family: var(--font-sans);
+}
+.sm { --node: var(--stepper-node-sm); --num: var(--font-size-xsmall); --fs: var(--font-size-xsmall); }
+.md { --node: var(--stepper-node-md); --num: var(--font-size-regular); --fs: var(--font-size-small); }
+
+/* Fill: steps share the full width, so the lines grow. */
+.fill .step { flex: 1 1 0; }
+
+/* Each step sets its tone; the circle and the line into it use it. */
+.step { --tone: var(--icon-neutral-subtle); --ink: var(--text-neutral-faint); position: relative; flex: none; width: var(--stepper-step); min-width: 0; }
+.complete { --tone: var(--bg-success-strong); --ink: var(--text-success); }
+.current { --tone: var(--bg-brand); --ink: var(--text-brand); }
+
+/* The line runs from the previous circle's edge to this one's. Steps are equal widths, so it is 100% + gap - one circle. */
+.step + .step::before {
+  content: ""; position: absolute; top: calc(var(--node) / 2 - var(--border-width-medium) / 2);
+  right: calc(50% + var(--node) / 2); width: calc(100% + var(--gap) - var(--node)); height: var(--border-width-medium);
+  background: var(--tone);
+}
+
+.target {
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-xsmall); width: 100%;
+  margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit; text-align: center;
+}
+.link { cursor: pointer; border-radius: var(--radius-medium); }
+.link:hover .label { text-decoration: underline; }
+.link:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--space-xxxsmall); }
+
+.node {
+  display: grid; place-items: center; width: var(--node); height: var(--node); border-radius: var(--radius-full);
+  background: var(--tone); color: var(--text-neutral-min-static);
+  font-size: var(--num); font-weight: var(--font-weight-bold); line-height: 1;
+}
+.label { font-size: var(--fs); font-weight: var(--font-weight-medium); line-height: var(--line-height-snug); color: var(--ink); overflow-wrap: anywhere; }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

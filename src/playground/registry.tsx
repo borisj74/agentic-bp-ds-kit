@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
-import { AlertDialogDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { AlertDialogDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -48,6 +48,7 @@ import { SegmentedControl, type SegmentedControlProps } from "@/ui/SegmentedCont
 import { ShimmerText, type ShimmerTextProps } from "@/ui/ShimmerText/ShimmerText";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
 import { Spinner, type SpinnerProps } from "@/ui/Spinner/Spinner";
+import { Stepper, type StepperProps } from "@/ui/Stepper/Stepper";
 import { Select, type SelectProps } from "@/ui/Select/Select";
 import { SideNav, type SideNavEntry, type SideNavItem, type SideNavProps } from "@/ui/SideNav/SideNav";
 import { Switch, type SwitchProps } from "@/ui/Switch/Switch";
@@ -119,6 +120,8 @@ export interface Entry {
   /** Gallery card shows the start of a wide bar at full size, cropped and fading at the end, instead of shrinking it. */
   cardCrop?: boolean;
 }
+
+const STEPS = ["Setup", "Map Columns", "Billing IDs", "Usage IDs", "Activate"];
 
 const CELL_SAMPLES: Record<CellType, Props> = {
   text: { label: "INV-1042" },
@@ -1135,6 +1138,19 @@ export const registry: Record<string, Entry> = {
     preview: { size: "md" },
     hint: "Switch size. Show label writes it beside the ring; screen readers always hear it. With reduced motion the ticks stay still.",
     card: <div style={{ display: "flex", gap: "var(--space-large)", alignItems: "center" }}><Spinner size="sm" /><Spinner /><Spinner size="lg" /></div>,
+  },
+  Stepper: {
+    // The stage walks the steps with Back and Next; Variants show the Stepper alone.
+    render: ({ walk, ...p }) => {
+      const props = { ...(p as unknown as StepperProps), steps: (p.steps as string[] | undefined) ?? STEPS };
+      return walk ? <StepperDemo {...props} /> : <Stepper {...props} />;
+    },
+    toggles: { walk: { label: "Back and Next", default: true } },
+    preview: { steps: STEPS, current: 2 },
+    hide: ["steps", "onStepClick"],
+    block: true,
+    hint: "Switch size. Next and Back walk the steps; click a done step to go back. Fill spreads the steps across the width.",
+    card: <div style={{ width: 240 }}><Stepper steps={["Setup", "Columns", "Review"]} current={2} fill /></div>,
   },
   Switch: {
     // The Checked switch sets the start value; the switch itself stays clickable. Keyed so controls re-apply.
