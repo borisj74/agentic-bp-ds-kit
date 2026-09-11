@@ -146,3 +146,8 @@ app-header/search-height-comfortable|48px
 tabs/height/sm|{ref/space/900}
 tabs/height/md|{ref/space/1100}
 tabs/height/lg|{ref/space/1300}
+
+# Figma page-header: 40px between the title and the page actions.
+page-header/gap|{ref/space/1100}
+page-header/height|80px
+page-header/height-sticky|52px

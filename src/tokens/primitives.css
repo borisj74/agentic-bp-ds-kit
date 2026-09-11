@@ -1229,4 +1229,7 @@
   --tabs-height-sm: var(--ref-space-900);
   --tabs-height-md: var(--ref-space-1100);
   --tabs-height-lg: var(--ref-space-1300);
+  --page-header-gap: var(--ref-space-1100);
+  --page-header-height: 80px;
+  --page-header-height-sticky: 52px;
 }

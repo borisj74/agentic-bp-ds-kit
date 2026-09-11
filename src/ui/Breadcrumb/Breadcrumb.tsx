@@ -14,6 +14,7 @@ export interface BreadcrumbProps {
   separator?: BreadcrumbSeparator;
   maxItems?: number;
   items: BreadcrumbItem[];
+  current?: boolean;
 }
 
 type Node = { kind: "ellipsis" } | { kind: "item"; item: BreadcrumbItem; index: number };
@@ -25,9 +26,10 @@ function visible(items: BreadcrumbItem[], maxItems?: number): Node[] {
   return [all[0], { kind: "ellipsis" }, ...all.slice(items.length - (maxItems - 1))];
 }
 
-export function Breadcrumb({ separator = "slash", maxItems, items }: BreadcrumbProps) {
+export function Breadcrumb({ separator = "slash", maxItems, items, current = true }: BreadcrumbProps) {
   const nodes = visible(items, maxItems);
-  const last = items.length - 1;
+  // current false: the trail is only parent sections (like above a page title), so the last crumb stays a link.
+  const last = current ? items.length - 1 : -1;
   return (
     <nav aria-label="Breadcrumb">
       <ol className={styles.list}>

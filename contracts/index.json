@@ -30,6 +30,7 @@
     {"name": "Logo", "contract": "contracts/logo.json", "category": "brand", "tags": ["brand", "wordmark", "symbol", "header"]},
     {"name": "LogoAI", "contract": "contracts/logoai.json", "category": "brand", "tags": ["ai", "brand", "assistant", "copilot"]},
     {"name": "Modal", "contract": "contracts/modal.json", "category": "overlay", "tags": ["modal", "dialog", "overlay", "form", "command palette"]},
+    {"name": "PageHeader", "contract": "contracts/pageheader.json", "category": "navigation", "tags": ["page header", "content header", "title", "breadcrumb", "page actions", "sticky"]},
     {"name": "RadioGroup", "contract": "contracts/radiogroup.json", "category": "form", "tags": ["form", "radio", "single select", "choice", "options"]},
     {"name": "SegmentedControl", "contract": "contracts/segmentedcontrol.json", "category": "form", "tags": ["segmented", "toggle", "choice", "density", "view switch", "period", "radio buttons"]},
     {"name": "Select", "contract": "contracts/select.json", "category": "form", "tags": ["select", "dropdown", "picker", "multi-select", "options", "form"]},

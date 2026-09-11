@@ -27,6 +27,7 @@ import { Icon } from "@/ui/Icon/Icon";
 import { Input, type InputProps } from "@/ui/Input/Input";
 import { Logo } from "@/ui/Logo/Logo";
 import { LogoAI } from "@/ui/LogoAI/LogoAI";
+import { PageHeader, type PageHeaderProps } from "@/ui/PageHeader/PageHeader";
 import { RadioGroup, type RadioGroupOption } from "@/ui/RadioGroup/RadioGroup";
 import { SegmentedControl, type SegmentedControlProps } from "@/ui/SegmentedControl/SegmentedControl";
 import { Select, type SelectProps } from "@/ui/Select/Select";
@@ -620,6 +621,38 @@ export const registry: Record<string, Entry> = {
     extras: { content: { values: ["text", "form"], default: "text" } },
     hint: "Click the button to open it. Switch size and content. Escape, the ×, or a backdrop click closes.",
     card: <Button>Open modal</Button>,
+  },
+  PageHeader: {
+    // actionButtons is playground-only: it adds a secondary and the one primary Button as actions.
+    render: ({ actionButtons, ...p }) => (
+      <PageHeader
+        {...(p as unknown as PageHeaderProps)} onMoreSelect={() => {}}
+        actions={actionButtons === "off" ? undefined : <><Button size="sm">Send</Button><Button size="sm" variant="primary">Approve</Button></>}
+      />
+    ),
+    preview: {
+      breadcrumbs: [{ label: "Billing", href: "#" }, { label: "Invoices", href: "#" }],
+      icon: "folder_open",
+      title: "INV-1042",
+      badge: "Draft",
+      moreActions: [
+        { id: "duplicate", label: "Duplicate" },
+        { id: "pdf", label: "Download PDF" },
+        { divider: true },
+        { id: "delete", label: "Delete", danger: true },
+      ],
+    },
+    snippet: { actions: "{actions}" },
+    extras: { actionButtons: { values: ["on", "off"], default: "on" } },
+    hint: "Toggle sticky and shadow, pick a badge tone, and turn the action buttons off. More opens the overflow menu.",
+    block: true,
+    wide: true,
+    card: (
+      <div style={{ width: "250%", zoom: 0.4 }}>
+        <PageHeader breadcrumbs={[{ label: "Billing", href: "#" }, { label: "Invoices", href: "#" }]} icon="folder_open" title="INV-1042" badge="Draft"
+          actions={<><Button size="sm">Send</Button><Button size="sm" variant="primary">Approve</Button></>} />
+      </div>
+    ),
   },
   RadioGroup: {
     // Keyed by props so switching layout or state starts fresh; the radios stay clickable.

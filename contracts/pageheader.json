@@ -1,0 +1,204 @@
+{
+  "name": "PageHeader",
+  "path": "src/ui/PageHeader/PageHeader.tsx",
+  "intent": "The top of a page's content: where it sits (breadcrumb), what it is (icon, title, badge) and the page actions. Below the AppHeader.",
+  "usage": "Put one PageHeader at the top of each page, under the AppHeader. It is one component: breadcrumbs are the parent sections (all links), then the title row with an optional icon and badge, and the page actions on the end. actions are kit Buttons, size sm, with the one primary last; moreActions puts less-used actions in a More menu before them. sticky is the compact bar for when the page scrolls: one line whose trail ends in the page title, with a raised shadow unless shadow is false. See contracts/pageheader.json for the full contract.",
+  "props": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "note": "The page name. It is the page's h1."
+    },
+    "breadcrumbs": {
+      "type": "BreadcrumbItem[]",
+      "itemShape": "{ label: string; href?: string; onClick?: () => void }",
+      "note": "Parent sections, all links. Sticky adds the title as the last, current crumb."
+    },
+    "icon": {
+      "type": "string",
+      "note": "Material Symbols name before the title, 32px in the brand color, like folder_open."
+    },
+    "badge": {
+      "type": "string",
+      "note": "A status after the title, like Draft. A kit Badge."
+    },
+    "badgeTone": {
+      "enum": [
+        "neutral",
+        "info",
+        "success",
+        "warning",
+        "danger",
+        "highlight"
+      ],
+      "default": "neutral"
+    },
+    "actions": {
+      "type": "ReactNode",
+      "note": "Kit Buttons, size sm: secondary first, one primary last. At most five visible actions including More."
+    },
+    "moreActions": {
+      "type": "DropdownMenuEntry[]",
+      "itemShape": "{ id: string; label: string; danger?: boolean } | { divider: true }",
+      "note": "Adds a More menu (kit DropdownMenu, tertiary and unbordered) before the actions, for less-used ones. Text only, no icons; Delete goes last, as danger."
+    },
+    "onMoreSelect": {
+      "type": "function",
+      "note": "(id: string) => void"
+    },
+    "sticky": {
+      "type": "boolean",
+      "default": false,
+      "note": "Compact 52px bar that sticks to the top of the scroll area: the trail ends in the title, no title row."
+    },
+    "shadow": {
+      "type": "boolean",
+      "default": true,
+      "note": "With sticky, a subtle line and raised shadow under the bar."
+    }
+  },
+  "useWhen": [
+    "The top of every page: record pages, lists, settings.",
+    "A page that scrolls: switch to sticky once the title scrolls away."
+  ],
+  "doNot": [
+    "Do not invent ContentHeader, PageTitle, TitleBar or a local heading row.",
+    "Do not put the app's logo, search or user in it. That is the AppHeader.",
+    "Do not put more than one primary Button in actions, or more than five visible actions.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A header with the page's h1. In sticky the h1 stays, hidden, and the trail marks the title as the current page.",
+    "The breadcrumb is the kit Breadcrumb (a nav named Breadcrumb). More is a kit DropdownMenu.",
+    "The icon is decorative; the title names the page."
+  ],
+  "snippet": "<PageHeader\n  breadcrumbs={[{ label: \"Billing\", href: \"/billing\" }, { label: \"Invoices\", href: \"/invoices\" }]}\n  icon=\"folder_open\"\n  title=\"INV-1042\"\n  badge=\"Draft\"\n  moreActions={moreActions}\n  actions={<>\n    <Button size=\"sm\">Send</Button>\n    <Button size=\"sm\" variant=\"primary\">Approve</Button>\n  </>}\n/>",
+  "examples": [
+    {
+      "title": "Default",
+      "usage": "Trail, icon, title and badge, with More and two actions. The one primary is last.",
+      "items": [
+        {
+          "props": {
+            "breadcrumbs": [
+              {
+                "label": "Billing",
+                "href": "#"
+              },
+              {
+                "label": "Invoices",
+                "href": "#"
+              }
+            ],
+            "icon": "folder_open",
+            "title": "INV-1042",
+            "badge": "Draft",
+            "moreActions": [
+              {
+                "id": "duplicate",
+                "label": "Duplicate"
+              },
+              {
+                "id": "pdf",
+                "label": "Download PDF"
+              },
+              {
+                "divider": true
+              },
+              {
+                "id": "delete",
+                "label": "Delete",
+                "danger": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Sticky",
+      "usage": "The compact bar for a scrolled page: the trail ends in the title, with a raised shadow.",
+      "a11y": true,
+      "items": [
+        {
+          "props": {
+            "breadcrumbs": [
+              {
+                "label": "Billing",
+                "href": "#"
+              },
+              {
+                "label": "Invoices",
+                "href": "#"
+              }
+            ],
+            "title": "INV-1042",
+            "sticky": true,
+            "moreActions": [
+              {
+                "id": "duplicate",
+                "label": "Duplicate"
+              },
+              {
+                "id": "delete",
+                "label": "Delete",
+                "danger": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "No actions",
+      "usage": "Leave out actions and moreActions for a read-only page.",
+      "items": [
+        {
+          "props": {
+            "breadcrumbs": [
+              {
+                "label": "Reports",
+                "href": "#"
+              }
+            ],
+            "icon": "bar_chart",
+            "title": "Q3 revenue",
+            "badge": "Final",
+            "badgeTone": "success",
+            "actionButtons": "off"
+          }
+        }
+      ]
+    },
+    {
+      "title": "No badge, sticky without shadow",
+      "usage": "Badge and icon are optional. shadow false drops the line and shadow in sticky.",
+      "items": [
+        {
+          "props": {
+            "breadcrumbs": [
+              {
+                "label": "Settings",
+                "href": "#"
+              }
+            ],
+            "title": "Billing settings"
+          }
+        },
+        {
+          "props": {
+            "breadcrumbs": [
+              {
+                "label": "Settings",
+                "href": "#"
+              }
+            ],
+            "title": "Billing settings",
+            "sticky": true,
+            "shadow": false
+          }
+        }
+      ]
+    }
+  ]
+}
