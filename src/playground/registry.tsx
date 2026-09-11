@@ -8,6 +8,7 @@ import { Avatar } from "@/ui/Avatar/Avatar";
 import { AvatarGroup, type AvatarGroupItem } from "@/ui/AvatarGroup/AvatarGroup";
 import { Badge } from "@/ui/Badge/Badge";
 import { BadgeAlt } from "@/ui/BadgeAlt/BadgeAlt";
+import { BarChart, type BarChartProps } from "@/ui/BarChart/BarChart";
 import { Breadcrumb, type BreadcrumbItem } from "@/ui/Breadcrumb/Breadcrumb";
 import { Button } from "@/ui/Button/Button";
 import { Card, type CardProps } from "@/ui/Card/Card";
@@ -29,9 +30,11 @@ import { HeaderCell } from "@/ui/HeaderCell/HeaderCell";
 import { HelpPopover, type HelpPopoverProps } from "@/ui/HelpPopover/HelpPopover";
 import { Icon } from "@/ui/Icon/Icon";
 import { Input, type InputProps } from "@/ui/Input/Input";
+import { LineChart, type LineChartProps } from "@/ui/LineChart/LineChart";
 import { Logo } from "@/ui/Logo/Logo";
 import { LogoAI } from "@/ui/LogoAI/LogoAI";
 import { PageHeader, type PageHeaderProps } from "@/ui/PageHeader/PageHeader";
+import { PieChart, type PieChartProps } from "@/ui/PieChart/PieChart";
 import { Pagination, type PaginationProps } from "@/ui/Pagination/Pagination";
 import { Progress, type ProgressProps } from "@/ui/Progress/Progress";
 import { ProgressLegacy, type ProgressLegacyProps } from "@/ui/ProgressLegacy/ProgressLegacy";
@@ -254,6 +257,50 @@ const EMPTY_SAMPLES: Record<string, ReactNode> = {
 const emptyProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in EMPTY_SAMPLES ? EMPTY_SAMPLES[v] : v])) as unknown as EmptyProps;
 
+// Chart samples, after the Persona Homepages charts. Contract examples name them as {months}, {revenue} and so on.
+const M = 1_000_000;
+const CHART_SAMPLES: Record<string, unknown> = {
+  "{months}": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+  "{revenue}": [{ name: "Revenue", values: [3.4 * M, 3.6 * M, 4.2 * M, 4.4 * M, 4.6 * M, 4.9 * M] }],
+  "{revenueByType}": [
+    { name: "Recurring", values: [2.1 * M, 2.3 * M, 2.6 * M, 2.8 * M, 3.0 * M, 3.2 * M] },
+    { name: "Non recurring", values: [1.3 * M, 1.3 * M, 1.6 * M, 1.6 * M, 1.6 * M, 1.7 * M] },
+  ],
+  "{days}": ["Apr 1", "Apr 5", "Apr 10", "Apr 15", "Apr 20", "Apr 25", "Apr 30"],
+  "{approvals}": [
+    { name: "20% to 49% approved", values: [0, 5800, 4800, 2600, 1100, 450, 150], tone: "orange" },
+    { name: "50% to 79% approved", values: [0, 6000, 5100, 2100, 950, 450, 0], tone: "cyan" },
+  ],
+  "{severityDays}": ["Apr 1", "Apr 5", "Apr 10", "Apr 20", "Apr 25", "Apr 30"],
+  "{severity}": [
+    { name: "Regular", values: [1.0 * M, 1.1 * M, 1.3 * M, 1.4 * M, 1.5 * M, 1.7 * M] },
+    { name: "Credit", values: [0.7 * M, 0.7 * M, 0.8 * M, 0.9 * M, 0.9 * M, 1.0 * M] },
+    { name: "Debit", values: [0.5 * M, 0.6 * M, 0.6 * M, 0.6 * M, 0.7 * M, 0.7 * M] },
+    { name: "Manual", values: [0.4 * M, 0.4 * M, 0.5 * M, 0.5 * M, 0.5 * M, 0.6 * M] },
+    { name: "Void", values: [0.3 * M, 0.3 * M, 0.3 * M, 0.3 * M, 0.4 * M, 0.4 * M] },
+    { name: "Draft", values: [0.1 * M, 0.1 * M, 0.1 * M, 0.1 * M, 0.1 * M, 0.15 * M] },
+  ],
+  "{weeks}": ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6", "Week 7"],
+  "{statuses}": [
+    { name: "Current", values: [600000, 550000, 240000, 230000, 60000, 20000, 20000], tone: "pink" },
+    { name: "Closing", values: [15000, 25000, 335000, 165000, 50000, 30000, 90000], tone: "orange" },
+    { name: "Closed", values: [20000, 30000, 55000, 235000, 285000, 15000, 15000], tone: "gray" },
+    { name: "Approved", values: [15000, 35000, 15000, 15000, 155000, 350000, 230000], tone: "cyan" },
+    { name: "Sent", values: [10000, 15000, 10000, 10000, 60000, 185000, 145000], tone: "mint" },
+    { name: "Paid", values: [15000, 20000, 20000, 20000, 65000, 75000, 175000], tone: "green" },
+  ],
+  "{payments}": [
+    { label: "Card", value: 182400 }, { label: "ACH", value: 96300 }, { label: "Wire", value: 41800 }, { label: "Check", value: 12600 },
+  ],
+  "{statusShare}": [
+    { label: "Paid", value: 58, tone: "green" }, { label: "Sent", value: 21, tone: "mint" }, { label: "Overdue", value: 13, tone: "red" }, { label: "Draft", value: 8, tone: "gray" },
+  ],
+};
+// Charts sit on a white page panel: their faint grid lines are the stage gray.
+const chartPanel = { width: "100%", padding: "var(--space-medium)", background: "var(--surface-flat)", borderRadius: "var(--radius-medium)", boxSizing: "border-box" } as const;
+const chartProps = <T,>(p: Props) =>
+  Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in CHART_SAMPLES ? CHART_SAMPLES[v] : v])) as unknown as T;
+
 const MENU_ITEMS: DropdownMenuEntry[] = [
   { id: "edit", label: "Edit" },
   { id: "duplicate", label: "Duplicate" },
@@ -357,6 +404,14 @@ export const registry: Record<string, Entry> = {
     preview: { tone: "info", children: "In progress" },
     card: <div style={{ display: "flex", gap: 8 }}><BadgeAlt tone="success">Active</BadgeAlt><BadgeAlt tone="warning">Pending</BadgeAlt><BadgeAlt tone="brand">Beta</BadgeAlt></div>,
   },
+  BarChart: {
+    // Sample data swaps in for its {names}; a white panel like a page. Keyed so switching a control plays the motion again.
+    render: (p) => <div style={chartPanel}><BarChart key={JSON.stringify(p)} {...chartProps<BarChartProps>(p)} /></div>,
+    preview: { label: "Invoices by status by time", categories: "{weeks}", series: "{statuses}", format: "currency", stacked: true },
+    hint: "Hover or use the arrow keys for the tooltip. Turn stacked, values, grid, legend and animate on and off.",
+    block: true,
+    card: <div style={{ width: "100%" }}><BarChart label="Invoices by status" categories={["W1", "W2", "W3", "W4"]} series={[{ name: "Paid", values: [3, 5, 4, 6] }, { name: "Sent", values: [2, 2, 3, 2] }]} stacked showLegend={false} height={110} animate={false} /></div>,
+  },
   Breadcrumb: {
     render: (p) => <Breadcrumb {...(p as object)} items={(p.items as BreadcrumbItem[] | undefined) ?? []} />,
     preview: { items: [{ label: "Home", href: "#" }, { label: "Invoices", href: "#" }, { label: "INV-1042" }] },
@@ -396,6 +451,14 @@ export const registry: Record<string, Entry> = {
       children: [{ variant: "secondary", children: "Day" }, { variant: "secondary", children: "Week" }, { variant: "secondary", children: "Month" }],
     },
     card: <ButtonGroup label="Plan period"><Button>Day</Button><Button>Week</Button><Button>Month</Button></ButtonGroup>,
+  },
+  LineChart: {
+    // Sample data swaps in for its {names}; a white panel like a page. Keyed so switching a control plays the motion again.
+    render: (p) => <div style={chartPanel}><LineChart key={JSON.stringify(p)} {...chartProps<LineChartProps>(p)} /></div>,
+    preview: { label: "Revenue by period", categories: "{months}", series: "{revenue}", format: "currency", area: true, showPoints: true, showValues: true },
+    hint: "Hover or use the arrow keys for the tooltip. Turn area, stacked, points, values, grid, legend and animate on and off.",
+    block: true,
+    card: <div style={{ width: "100%" }}><LineChart label="Revenue" categories={["Jan", "Feb", "Mar", "Apr", "May"]} series={[{ name: "Revenue", values: [3, 3.4, 4.1, 4.3, 4.8] }]} area showLegend={false} height={110} animate={false} /></div>,
   },
   Logo: {
     render: (p) => <Logo {...(p as object)} />,
@@ -1048,6 +1111,13 @@ export const registry: Record<string, Entry> = {
         <Pagination total={59} />
       </div>
     ),
+  },
+  PieChart: {
+    // Sample data swaps in for its {names}; a white panel like a page. Keyed so switching a control plays the motion again.
+    render: (p) => <div style={{ ...chartPanel, width: "auto" }}><PieChart key={JSON.stringify(p)} {...chartProps<PieChartProps>(p)} /></div>,
+    preview: { label: "Payments by method", data: "{payments}", format: "currency" },
+    hint: "Hover or use the arrow keys for each slice. Switch size and legend place; turn donut, total, legend and animate on and off.",
+    card: <PieChart label="Payments" data={[{ label: "Card", value: 5 }, { label: "ACH", value: 3 }, { label: "Wire", value: 2 }]} size="sm" showLegend={false} animate={false} />,
   },
   Progress: {
     // Its track is the stage gray, so it sits on a white page panel. A bar fills its container, so it gets a 240 column; rings size themselves.

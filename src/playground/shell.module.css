@@ -39,6 +39,11 @@
 .link:hover { background: var(--bg-neutral-min-hover); color: var(--text-neutral-strong); }
 .linkActive { background: var(--bg-neutral-min-selected); color: var(--text-brand); }
 .sub { padding-left: var(--space-large); }
+/* A family heading like Chart is not a link; its members sit one step further in. */
+.family { display: flex; flex-direction: column; gap: 2px; }
+.familyTitle { cursor: default; }
+.familyTitle:hover { background: none; color: var(--text-neutral); }
+.deep { padding-left: calc(var(--space-large) + var(--space-medium)); }
 .main { padding: var(--space-xxlarge) var(--space-xxlarge) var(--space-xxlarge) calc(var(--space-xxlarge) + var(--space-small)); width: 100%; min-width: 0; }
 .footer { margin-top: auto; display: flex; justify-content: space-between; align-items: center; padding: 0 var(--space-xsmall); }
 .select {

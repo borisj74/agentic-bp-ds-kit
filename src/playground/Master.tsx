@@ -104,7 +104,9 @@ export function Master({ contract }: { contract: Contract }) {
       const v = src[k], def = contract.props[k];
       // Hidden props stay out of code unless the entry supplies a code-only value (e.g. open={open}).
       if (v === undefined || entry.extras?.[k] || (entry.toggles?.[k] && !contract.props[k]) || (entry.hide?.includes(k) && entry.snippet?.[k] === undefined)) continue;
-      if (def?.enum || v === true || (typeof v === "number" && v !== def?.default) || Array.isArray(v) || (typeof v === "string" && v && v !== def?.default)) out[k] = v;
+      // Booleans print only when they differ from the default: on as the bare name, off (when on by default) as ={false}.
+      if (v === false && def?.default === true) out[k] = "{false}";
+      else if (def?.enum || (v === true && def?.default !== true) || (typeof v === "number" && v !== def?.default) || Array.isArray(v) || (typeof v === "string" && v && v !== def?.default)) out[k] = v;
     }
     return out;
   };

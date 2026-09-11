@@ -212,3 +212,9 @@ toast/bar|{ref/space/200}
 
 # Pagination (Figma table footer 3187:39779): 40 tall.
 pagination/height|{ref/space/1100}
+
+# Charts (Figma Persona Homepages charts): 10 square legend swatches; pies 160 / 200 / 240 wide (reference kit pie is 240).
+chart/swatch|10px
+chart/pie-sm|160px
+chart/pie-md|200px
+chart/pie-lg|240px

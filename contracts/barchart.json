@@ -1,0 +1,122 @@
+{
+  "name": "BarChart",
+  "path": "src/ui/BarChart/BarChart.tsx",
+  "intent": "Values side by side as vertical bars, one group or stack per category, like invoices by status for each week.",
+  "usage": "Use BarChart to compare amounts across categories or periods. It is one component: pass categories and series. Bars sit side by side per category, or on top of each other with stacked, so the bar height is the total and the colors are its parts. showValues writes each value above its bar. Hover or use the arrow keys for a tooltip with every series in that category. animate lets bars grow up from the baseline. Put the chart's title and report link in the Section or Card around it. ChartTone: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). See contracts/barchart.json for the full contract.",
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "note": "Names the chart for screen readers and captions its data table, like Revenue by period."
+    },
+    "categories": {
+      "type": "string[]",
+      "required": true,
+      "note": "The labels along the bottom, like Jan to Jun. Labels thin out when they would overlap."
+    },
+    "series": {
+      "type": "ChartSeries[]",
+      "required": true,
+      "itemShape": "{ name: string; values: number[]; tone?: ChartTone }",
+      "note": "One entry per line or bar color, with one value per category. tone picks the color; by default series take green, olive, cyan, orange, pink, gray, then purple, yellow, red and mint."
+    },
+    "stacked": {
+      "type": "boolean",
+      "default": false,
+      "note": "Piles the series in one bar per category; the bar height is the total."
+    },
+    "showValues": {
+      "type": "boolean",
+      "default": false,
+      "note": "The short value above each bar (side-by-side bars) or each stack."
+    },
+    "showGrid": {
+      "type": "boolean",
+      "default": true,
+      "note": "Faint lines at each value tick."
+    },
+    "showLegend": {
+      "type": "boolean",
+      "default": true,
+      "note": "Colored squares with the series names under the chart."
+    },
+    "animate": {
+      "type": "boolean",
+      "default": true,
+      "note": "Subtle motion when the chart appears. Off draws it at once. Always off when the person prefers reduced motion."
+    },
+    "format": {
+      "enum": [
+        "number",
+        "currency",
+        "percent"
+      ],
+      "default": "number",
+      "note": "How values read. Axis ticks and value labels are short ($4.2M, 750K); the tooltip and table show the full number."
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD",
+      "note": "ISO code for format currency."
+    },
+    "height": {
+      "type": "number",
+      "default": 240,
+      "note": "Height of the drawing in px, axis labels included. The width fills the container."
+    },
+    "emptyLabel": {
+      "type": "string",
+      "default": "No data for this range.",
+      "note": "Shown when there are no categories or series."
+    }
+  },
+  "useWhen": [
+    "Comparing amounts across categories or periods.",
+    "Parts of a total per period, with stacked."
+  ],
+  "doNot": [
+    "Do not use it for a long, smooth trend. Use LineChart.",
+    "Do not use it for one share of a total. Use PieChart.",
+    "Do not draw charts with loose SVG or a chart library. Use the kit charts.",
+    "Do not use raw hex; pick a tone."
+  ],
+  "a11y": [
+    "A figure named by label. The drawing is hidden from screen readers; a visually hidden table holds every value, with the categories as rows and the series as columns.",
+    "The chart takes focus: the arrow keys (and Home and End) move through the categories and show the same tooltip as pointing at them. Escape hides it.",
+    "Colors come with a legend and the tooltip names each series, so color is not the only way to tell them apart.",
+    "Motion is subtle and optional (animate), and never plays when the person prefers reduced motion."
+  ],
+  "snippet": "<BarChart\n  label=\"Invoices by status by time\"\n  categories={weeks}\n  series={[\n    { name: \"Current\", values: current, tone: \"pink\" },\n    { name: \"Paid\", values: paid, tone: \"green\" },\n  ]}\n  format=\"currency\"\n  stacked\n/>",
+  "examples": [
+    {
+      "title": "Stacked",
+      "usage": "One bar per week; its colors are the invoice statuses and its height the total.",
+      "items": [
+        {
+          "props": {
+            "label": "Invoices by status by time",
+            "categories": "{weeks}",
+            "series": "{statuses}",
+            "format": "currency",
+            "stacked": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Side by side",
+      "usage": "Series next to each other in each category, with their values.",
+      "items": [
+        {
+          "props": {
+            "label": "Revenue by type",
+            "categories": "{months}",
+            "series": "{revenueByType}",
+            "format": "currency",
+            "showValues": true
+          }
+        }
+      ]
+    }
+  ]
+}

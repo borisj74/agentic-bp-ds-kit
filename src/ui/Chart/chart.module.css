@@ -1,0 +1,48 @@
+/* Shared chart styles: Figma Persona Homepages charts (1206:33138, 1205:14553, 1139:11403, 996:22722). */
+.chart {
+  position: relative; display: flex; flex-direction: column; gap: var(--space-small);
+  width: 100%; min-width: 0; margin: 0; font-family: var(--font-sans); border-radius: var(--radius-medium);
+}
+.chart:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--space-xxsmall); }
+.plot { position: relative; width: 100%; }
+.svg { display: block; overflow: visible; }
+
+/* Axes: 12px labels, faint horizontal grid lines. */
+.tick { font-size: var(--font-size-xsmall); fill: var(--text-neutral-strong); }
+.grid { stroke: var(--border-neutral-faint); stroke-width: var(--border-width-thin); shape-rendering: crispEdges; }
+.valueLabel { font-size: var(--font-size-xsmall); font-weight: var(--font-weight-semibold); fill: var(--text-neutral-strong); }
+.hoverBand { fill: var(--bg-neutral-faint); }
+.crosshair { stroke: var(--border-neutral); stroke-width: var(--border-width-thin); }
+
+.legend {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-xsmall) var(--space-large);
+  margin: 0; padding: 0; list-style: none; font-size: var(--font-size-xsmall); color: var(--text-neutral-strong);
+}
+.legendItem { display: inline-flex; align-items: center; gap: var(--space-xsmall); }
+.legendNote { color: var(--text-neutral); font-variant-numeric: tabular-nums; }
+.swatch { flex: none; width: var(--chart-swatch); height: var(--chart-swatch); border-radius: var(--radius-small); }
+
+.tooltip {
+  position: absolute; z-index: 1; pointer-events: none; display: grid; gap: var(--space-xxsmall); min-width: max-content;
+  padding: var(--space-xsmall) var(--space-small); border: var(--border-width-thin) solid var(--border-neutral-subtle);
+  border-radius: var(--radius-medium); background: var(--surface-floating); box-shadow: var(--elevation-popover);
+  font-size: var(--font-size-xsmall); color: var(--text-neutral-strong);
+}
+.tooltipTitle { margin: 0; font-weight: var(--font-weight-semibold); }
+.tooltipRow { display: flex; align-items: center; gap: var(--space-xsmall); margin: 0; }
+.tooltipLabel { flex: 1; color: var(--text-neutral); }
+.tooltipValue { font-weight: var(--font-weight-medium); font-variant-numeric: tabular-nums; }
+
+.empty { display: grid; place-items: center; font-size: var(--font-size-small); color: var(--text-neutral); }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Subtle motion, only when animate is on: bars and areas grow from the baseline, lines draw in, slices sweep round. */
+.animated .grow { transform-box: fill-box; transform-origin: bottom; animation: grow var(--motion-page-duration) var(--motion-page-easing) both; }
+.animated .draw { stroke-dasharray: 1; animation: draw var(--motion-page-duration) var(--motion-page-easing) both; }
+.animated .fade { animation: fade var(--motion-page-duration) var(--motion-page-easing) both; }
+.animated .sweep { animation: sweep var(--motion-page-duration) var(--motion-page-easing) both; }
+@keyframes grow { from { transform: scaleY(0); } }
+@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes fade { from { opacity: var(--opacity-0); } }
+@keyframes sweep { from { stroke-dasharray: 0 100; } }
+@media (prefers-reduced-motion: reduce) { .animated .grow, .animated .draw, .animated .fade, .animated .sweep { animation: none; } }

@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useId, useState } from "react";
 import { Icon } from "@/ui/Icon/Icon";
 import styles from "./shell.module.css";
-import { components, patterns, slug } from "./nav";
+import { componentNav, patterns, slug } from "./nav";
 
 type SectionKey = "start" | "foundations" | "components" | "patterns";
 
@@ -12,11 +12,11 @@ type SectionKey = "start" | "foundations" | "components" | "patterns";
 const sectionOf = (path: string): SectionKey =>
   path.startsWith("/foundations") ? "foundations" : path.startsWith("/components") ? "components" : path.startsWith("/patterns") ? "patterns" : "start";
 
-function NavLink({ href, children, sub }: { href: string; children: React.ReactNode; sub?: boolean }) {
+function NavLink({ href, children, sub, deep }: { href: string; children: React.ReactNode; sub?: boolean; deep?: boolean }) {
   const path = usePathname();
   const active = path === href;
   return (
-    <Link href={href} className={[styles.link, active ? styles.linkActive : "", sub ? styles.sub : ""].join(" ")} aria-current={active ? "page" : undefined}>
+    <Link href={href} className={[styles.link, active ? styles.linkActive : "", sub ? styles.sub : "", deep ? styles.deep : ""].join(" ")} aria-current={active ? "page" : undefined}>
       {children}
     </Link>
   );
@@ -68,8 +68,14 @@ export function Sidebar() {
       </Section>
       <Section title="Components" open={open.components} onToggle={toggle("components")}>
         <NavLink href="/components">Gallery</NavLink>
-        {components.map((c) => (
-          <NavLink key={c.name} href={`/components/${slug(c.name)}`} sub>{c.name}</NavLink>
+        {componentNav.map((e) => "group" in e ? (
+          // A family heading (Chart) with its members indented under it.
+          <div key={e.group} className={styles.family} role="group" aria-label={e.group}>
+            <span className={[styles.link, styles.sub, styles.familyTitle].join(" ")} aria-hidden="true">{e.group}</span>
+            {e.items.map((c) => <NavLink key={c.name} href={`/components/${slug(c.name)}`} deep>{c.label}</NavLink>)}
+          </div>
+        ) : (
+          <NavLink key={e.name} href={`/components/${slug(e.name)}`} sub>{e.label}</NavLink>
         ))}
       </Section>
       <Section title="Patterns" open={open.patterns} onToggle={toggle("patterns")}>

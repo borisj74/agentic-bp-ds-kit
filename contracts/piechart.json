@@ -1,0 +1,136 @@
+{
+  "name": "PieChart",
+  "path": "src/ui/PieChart/PieChart.tsx",
+  "intent": "How a whole splits into a few parts, as a donut or a solid pie, like payments by method.",
+  "usage": "Use PieChart for the share of a total across a handful of parts. It is one component: pass data, one entry per slice. Slices go largest first from the top, clockwise; past maxSlices the rest merge into one grey Other slice. donut (the default) leaves a hole with the total in it; turn it off for a solid pie. The legend lists each part with its percent, beside the chart or under it. Hover or use the arrow keys for a tooltip with the value. animate sweeps the slices in. ChartTone: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). See contracts/piechart.json for the full contract.",
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "note": "Names the chart for screen readers and captions its data table."
+    },
+    "data": {
+      "type": "PieChartSlice[]",
+      "required": true,
+      "itemShape": "{ label: string; value: number; tone?: ChartTone }",
+      "note": "One entry per slice. Zero and negative values are left out."
+    },
+    "donut": {
+      "type": "boolean",
+      "default": true,
+      "note": "A ring with the total in the middle. Off draws a solid pie."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "160 / 200 / 240 wide."
+    },
+    "showTotal": {
+      "type": "boolean",
+      "default": true,
+      "note": "The total and totalLabel in the donut's hole."
+    },
+    "totalLabel": {
+      "type": "string",
+      "default": "Total",
+      "note": "The word under the total."
+    },
+    "showLegend": {
+      "type": "boolean",
+      "default": true,
+      "note": "Each part with its color and percent."
+    },
+    "legend": {
+      "enum": [
+        "end",
+        "bottom"
+      ],
+      "default": "end",
+      "note": "Legend beside the chart or under it."
+    },
+    "maxSlices": {
+      "type": "number",
+      "default": 6,
+      "note": "The most slices; past it the smallest merge into Other."
+    },
+    "otherLabel": {
+      "type": "string",
+      "default": "Other",
+      "note": "The name of the merged slice."
+    },
+    "animate": {
+      "type": "boolean",
+      "default": true,
+      "note": "The slices sweep in. Always off when the person prefers reduced motion."
+    },
+    "format": {
+      "enum": [
+        "number",
+        "currency",
+        "percent"
+      ],
+      "default": "number",
+      "note": "How values read."
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD",
+      "note": "ISO code for format currency."
+    },
+    "emptyLabel": {
+      "type": "string",
+      "default": "No data for this range.",
+      "note": "Shown when every value is 0."
+    }
+  },
+  "useWhen": [
+    "The share of a total across 2 to 6 parts: payments by method, revenue by region."
+  ],
+  "doNot": [
+    "Do not use it for many parts or values over time. Use BarChart or LineChart.",
+    "Do not use it to compare parts that don't add up to a whole.",
+    "Do not draw charts with loose SVG or a chart library. Use the kit charts.",
+    "Do not use raw hex; pick a tone."
+  ],
+  "a11y": [
+    "A figure named by label. The drawing is hidden from screen readers; a visually hidden table lists each part with its value and share.",
+    "The chart takes focus: the arrow keys move from slice to slice and show the tooltip. Escape hides it.",
+    "The legend names every color with its percent, so color is not the only way to tell slices apart.",
+    "The sweep is subtle and optional (animate), and never plays when the person prefers reduced motion."
+  ],
+  "snippet": "<PieChart\n  label=\"Payments by method\"\n  data={[\n    { label: \"Card\", value: 182400 },\n    { label: \"ACH\", value: 96300 },\n    { label: \"Wire\", value: 41800 },\n  ]}\n  format=\"currency\"\n/>",
+  "examples": [
+    {
+      "title": "Donut",
+      "usage": "The total in the middle, the legend with percents beside it.",
+      "items": [
+        {
+          "props": {
+            "label": "Payments by method",
+            "data": "{payments}",
+            "format": "currency"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Pie with the legend below",
+      "usage": "donut off draws a solid pie; legend bottom puts the parts under it.",
+      "items": [
+        {
+          "props": {
+            "label": "Invoices by status",
+            "data": "{statusShare}",
+            "donut": false,
+            "legend": "bottom",
+            "size": "sm"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+/* Legend beside the pie (end) or under it (bottom). */
+.layout { display: flex; align-items: center; gap: var(--space-xlarge); }
+.bottom { flex-direction: column; gap: var(--space-medium); }
+.end > ul { flex-direction: column; align-items: flex-start; }
+
+.pie { position: relative; flex: none; }
+.sm { width: var(--chart-pie-sm); }
+.md { width: var(--chart-pie-md); }
+.lg { width: var(--chart-pie-lg); }
+.svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+/* The total in the donut's hole. */
+.total { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+.totalValue { font-size: var(--font-size-large); font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); font-variant-numeric: tabular-nums; }
+.lg .totalValue { font-size: var(--font-size-xlarge); }
+.sm .totalValue { font-size: var(--font-size-regular); }
+.totalLabel { font-size: var(--font-size-xsmall); color: var(--text-neutral); }
+
+/* A point at the top centre of the pie; the tooltip hangs above it. */
+.tipAnchor { position: absolute; left: 50%; top: 0; width: 0; height: 0; }

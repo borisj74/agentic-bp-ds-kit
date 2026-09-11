@@ -1264,4 +1264,8 @@
   --toast-width: 400px;
   --toast-bar: var(--ref-space-200);
   --pagination-height: var(--ref-space-1100);
+  --chart-swatch: 10px;
+  --chart-pie-sm: 160px;
+  --chart-pie-md: 200px;
+  --chart-pie-lg: 240px;
 }
