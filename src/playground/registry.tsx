@@ -11,6 +11,7 @@ import { BadgeAlt } from "@/ui/BadgeAlt/BadgeAlt";
 import { BarChart, type BarChartProps } from "@/ui/BarChart/BarChart";
 import { Breadcrumb, type BreadcrumbItem } from "@/ui/Breadcrumb/Breadcrumb";
 import { Button } from "@/ui/Button/Button";
+import { Calendar, type CalendarEvent, type CalendarProps, type CalendarSource } from "@/ui/Calendar/Calendar";
 import { Card, type CardProps } from "@/ui/Card/Card";
 import { Carousel, type CarouselProps } from "@/ui/Carousel/Carousel";
 import { Cell, type CellType } from "@/ui/Cell/Cell";
@@ -303,6 +304,45 @@ const chartPanel = { width: "100%", padding: "var(--space-medium)", background: 
 const chartProps = <T,>(p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in CHART_SAMPLES ? CHART_SAMPLES[v] : v])) as unknown as T;
 
+// Calendar samples, laid around this week so today and the time line show. Contract examples name them {calendars} and {events}.
+const CAL_SOURCES: CalendarSource[] = [
+  { id: "pto", name: "PTO", tone: "orange" },
+  { id: "personal", name: "Personal calendar", tone: "cyan" },
+  { id: "shifts", name: "Open shifts", tone: "green" },
+  { id: "holidays", name: "US holidays", tone: "purple" },
+  { id: "billing", name: "Billing runs", tone: "pink" },
+];
+// A date n days after this week's Sunday, with an optional time.
+const calDay = (n: number, time?: string) => {
+  const d = new Date();
+  d.setDate(d.getDate() - d.getDay() + n);
+  const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  return time ? `${iso}T${time}` : iso;
+};
+const CAL_EVENTS: CalendarEvent[] = [
+  { id: "e1", title: "Maria out of office", start: calDay(0), end: calDay(1), allDay: true, calendar: "pto" },
+  { id: "e2", title: "Quarter close", start: calDay(2), allDay: true, calendar: "billing" },
+  { id: "e3", title: "Support desk shift", start: calDay(0, "08:00"), end: calDay(0, "13:00"), calendar: "shifts" },
+  { id: "e4", title: "Dentist", start: calDay(0, "09:30"), end: calDay(0, "12:00"), calendar: "personal" },
+  { id: "e5", title: "Invoice review", start: calDay(2, "09:30"), end: calDay(2, "13:00"), calendar: "billing" },
+  { id: "e6", title: "1:1 with Sam", start: calDay(2, "09:30"), end: calDay(2, "12:00"), calendar: "personal" },
+  { id: "e7", title: "Release day", start: calDay(3), allDay: true, calendar: "personal" },
+  { id: "e8", title: "Standup", start: calDay(3, "09:00"), end: calDay(3, "09:15"), calendar: "personal" },
+  { id: "e9", title: "Pricing sync", start: calDay(3, "11:00"), end: calDay(3, "12:00"), calendar: "billing" },
+  { id: "e10", title: "Design review", start: calDay(3, "13:00"), end: calDay(3, "14:30"), calendar: "personal" },
+  { id: "e11", title: "Payroll check", start: calDay(3, "15:30"), end: calDay(3, "16:00"), calendar: "billing" },
+  { id: "e12", title: "Onboarding shift", start: calDay(4, "12:00"), end: calDay(4, "17:30"), calendar: "shifts" },
+  { id: "e13", title: "Month-end billing run", start: calDay(5, "06:00"), end: calDay(5, "08:00"), calendar: "billing" },
+  { id: "e14", title: "Company holiday", start: calDay(8), allDay: true, calendar: "holidays" },
+  { id: "e15", title: "Planning", start: calDay(9, "10:00"), end: calDay(9, "11:30"), calendar: "personal" },
+  { id: "e16", title: "Sam on vacation", start: calDay(10), end: calDay(12), allDay: true, calendar: "pto" },
+  { id: "e17", title: "Evening shift", start: calDay(-4, "16:00"), end: calDay(-4, "22:00"), calendar: "shifts" },
+  { id: "e18", title: "Dunning run", start: calDay(-2, "07:00"), end: calDay(-2, "08:00"), calendar: "billing" },
+];
+const CAL_SAMPLES: Record<string, unknown> = { "{calendars}": CAL_SOURCES, "{events}": CAL_EVENTS };
+const calendarProps = (p: Props) =>
+  Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in CAL_SAMPLES ? CAL_SAMPLES[v] : v])) as unknown as CalendarProps;
+
 const MENU_ITEMS: DropdownMenuEntry[] = [
   { id: "edit", label: "Edit" },
   { id: "duplicate", label: "Duplicate" },
@@ -471,6 +511,22 @@ export const registry: Record<string, Entry> = {
     render: (p) => <LogoAI {...(p as object)} />,
     preview: {},
     card: <div style={{ display: "flex", gap: 16, alignItems: "center" }}><LogoAI /><LogoAI tone="filled" /></div>,
+  },
+  Calendar: {
+    // Sample calendars and events swap in for their {names}. Keyed so switching controls starts fresh.
+    render: (p) => <Calendar key={JSON.stringify(p)} {...calendarProps(p)} />,
+    preview: { label: "Team calendar", calendars: "{calendars}", defaultEvents: "{events}" },
+    // view is the controlled view; the switch inside changes it here.
+    hide: ["view"],
+    snippet: { onEventsChange: "{setEvents}" },
+    hint: "Switch views and weeks. Click an empty day or time to add an event, an event to edit or delete it, Calendars to show or hide one. In Month, the arrow keys move the day.",
+    block: true,
+    wide: true,
+    card: (
+      <div style={{ width: "250%", zoom: 0.4 }}>
+        <Calendar label="Team calendar" calendars={CAL_SOURCES} defaultEvents={CAL_EVENTS} readOnly />
+      </div>
+    ),
   },
   Card: {
     // Figma's card is 554 wide; 420 here so two sit side by side in the variants.

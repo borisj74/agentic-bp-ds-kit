@@ -1268,4 +1268,10 @@
   --chart-pie-sm: 160px;
   --chart-pie-md: 200px;
   --chart-pie-lg: 240px;
+  --calendar-hour: var(--ref-space-1100);
+  --calendar-row: var(--ref-space-600);
+  --calendar-gutter: 56px;
+  --calendar-month-row: 112px;
+  --calendar-grid-height: 480px;
+  --calendar-swatch: var(--ref-space-1100);
 }

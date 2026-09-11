@@ -1,0 +1,188 @@
+{
+  "name": "Calendar",
+  "path": "src/ui/Calendar/Calendar.tsx",
+  "intent": "A full calendar of events by month, week, day or as a list, where people browse dates, filter calendars and add, edit or delete events.",
+  "usage": "Use Calendar for schedules: shifts, PTO, billing runs, meetings. It is one component: pass events and, if events belong to calendars, calendars. The toolbar has a month picker, New event, previous and next, Today, Calendars (show or hide each calendar) and a Month / Week / Day / List switch. Month shows up to 3 events a day, then +N more; Week and Day show all-day events in a row on top and timed events on an hourly grid that scrolls, side by side when they overlap, with a line at the current time; List shows the week's events by day. Click an empty day or time, or New event, to open a drawer with the event form; click an event to edit or delete it. With events it is controlled (save changes in onEventsChange); with defaultEvents it keeps changes itself. readOnly turns creating and editing off. Dates are local ISO strings: 2024-10-09 for all-day, 2024-10-09T08:30 for timed. CalendarTone: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). See contracts/calendar.json for the full contract.",
+  "props": {
+    "label": {
+      "type": "string",
+      "default": "Calendar",
+      "note": "Names the calendar region for screen readers."
+    },
+    "events": {
+      "type": "CalendarEvent[]",
+      "itemShape": "{ id: string; title: string; start: string; end?: string; allDay?: boolean; calendar?: string; tone?: CalendarTone; note?: string }",
+      "note": "Controlled events. start and end are local ISO strings: a date (2024-10-09) when allDay, a date and time (2024-10-09T08:30) otherwise. An all-day end is the last day, inclusive. A timed event with no end lasts an hour. tone overrides its calendar's color."
+    },
+    "defaultEvents": {
+      "type": "CalendarEvent[]",
+      "note": "Starting events when the Calendar keeps changes itself."
+    },
+    "onEventsChange": {
+      "type": "function",
+      "signature": "(events: CalendarEvent[]) => void",
+      "note": "Called with the full new list after an event is created, edited or deleted."
+    },
+    "onEventClick": {
+      "type": "function",
+      "signature": "(event: CalendarEvent) => void",
+      "note": "Called when an event is clicked, before the edit drawer opens (or instead of it when readOnly)."
+    },
+    "calendars": {
+      "type": "CalendarSource[]",
+      "itemShape": "{ id: string; name: string; tone?: CalendarTone; hidden?: boolean }",
+      "note": "The calendars events belong to. They give events their color, fill the Calendar field of the event form and list in the Calendars drawer, where each can be shown or hidden. hidden starts one hidden. Without calendars there is no Calendars button."
+    },
+    "view": {
+      "enum": [
+        "month",
+        "week",
+        "day",
+        "list"
+      ],
+      "note": "Controlled view. Leave it out to let the switch change it."
+    },
+    "defaultView": {
+      "enum": [
+        "month",
+        "week",
+        "day",
+        "list"
+      ],
+      "default": "month",
+      "note": "The first view."
+    },
+    "onViewChange": {
+      "type": "function",
+      "signature": "(view: CalendarView) => void"
+    },
+    "views": {
+      "type": "CalendarView[]",
+      "note": "Which views the switch offers, in order. Defaults to month, week, day and list. With one view there is no switch."
+    },
+    "date": {
+      "type": "string",
+      "note": "Controlled focused date, like 2024-10-09. The view shows the month, week or day around it."
+    },
+    "defaultDate": {
+      "type": "string",
+      "note": "The first focused date. Defaults to today."
+    },
+    "onDateChange": {
+      "type": "function",
+      "signature": "(date: string) => void"
+    },
+    "weekStart": {
+      "enum": [
+        "sunday",
+        "monday"
+      ],
+      "default": "sunday",
+      "note": "The first day of each week row and of Week and List."
+    },
+    "startHour": {
+      "type": "number",
+      "default": 7,
+      "note": "Week and Day open scrolled to this hour (0 to 23). The whole day can still be scrolled."
+    },
+    "readOnly": {
+      "type": "boolean",
+      "default": false,
+      "note": "Hides New event and turns off creating, editing and deleting. Events can still be clicked through onEventClick."
+    }
+  },
+  "useWhen": [
+    "A schedule people browse by date: shifts, PTO, holidays, billing runs, meetings.",
+    "Adding and editing dated events in place.",
+    "Several calendars layered on one view, each in its own color."
+  ],
+  "doNot": [
+    "Do not use it to pick one date or a range in a form. Use DatePicker.",
+    "Do not use it for a timeline of one record's history or a list of due dates. Use Table.",
+    "Do not build a local month grid, week grid or event chip. Use Calendar.",
+    "Do not put a primary Button in its toolbar; the event form's Save is the primary action.",
+    "Do not use raw hex; pick a tone."
+  ],
+  "a11y": [
+    "A region named by label. The title (the month, week or day shown) is a heading and is announced when it changes.",
+    "Month is a grid: one day is in the tab order; the arrow keys move a day or a week, Home and End go to the week's ends, Page Up and Page Down change the month, and Enter opens a new event on that day (or Day view when readOnly). Each day is named by its full date and event count.",
+    "Every event is a button named by its title, time and calendar. +N more and the day numbers open Day view.",
+    "Icon buttons are kit Buttons with a kit Tooltip: New event, Previous and Next name the step (month, week or day).",
+    "The event form and the Calendars list open in a kit Drawer, which traps focus and gives it back on close. Fields are kit fields with labels and errors.",
+    "Color is never the only cue: events show their title and time, and the calendar name is in each event's name."
+  ],
+  "snippet": "<Calendar\n  label=\"Team calendar\"\n  calendars={calendars}\n  events={events}\n  onEventsChange={setEvents}\n  defaultView=\"week\"\n/>",
+  "examples": [
+    {
+      "title": "Month",
+      "usage": "The month around today. Click a day to add an event, an event to edit it, or +N more to open the day.",
+      "items": [
+        {
+          "props": {
+            "label": "Team calendar",
+            "calendars": "{calendars}",
+            "defaultEvents": "{events}",
+            "defaultView": "month"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Week",
+      "usage": "All-day events on top, timed events on the hourly grid, side by side when they overlap.",
+      "items": [
+        {
+          "props": {
+            "label": "Team calendar",
+            "calendars": "{calendars}",
+            "defaultEvents": "{events}",
+            "defaultView": "week"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Day",
+      "usage": "One day at full width.",
+      "items": [
+        {
+          "props": {
+            "label": "Team calendar",
+            "calendars": "{calendars}",
+            "defaultEvents": "{events}",
+            "defaultView": "day"
+          }
+        }
+      ]
+    },
+    {
+      "title": "List",
+      "usage": "The week's events by day, for reading at a glance.",
+      "items": [
+        {
+          "props": {
+            "label": "Team calendar",
+            "calendars": "{calendars}",
+            "defaultEvents": "{events}",
+            "defaultView": "list"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Read only, week starts Monday",
+      "usage": "No New event and no editing; weeks run Monday to Sunday.",
+      "items": [
+        {
+          "props": {
+            "label": "Holidays",
+            "calendars": "{calendars}",
+            "defaultEvents": "{events}",
+            "weekStart": "monday",
+            "readOnly": true
+          }
+        }
+      ]
+    }
+  ]
+}

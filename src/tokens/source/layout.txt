@@ -218,3 +218,12 @@ chart/swatch|10px
 chart/pie-sm|160px
 chart/pie-md|200px
 chart/pie-lg|240px
+
+# Calendar (Figma RDS calendar 29101:500): an hour is 40 tall (two 20 half-hour rows); events and all-day pills are 20 rows;
+# month rows 112 tall; the time grid scrolls in 480; the hour gutter is 56; calendar swatches 40 square. 56, 112 and 480 are past the ref scale.
+calendar/hour|{ref/space/1100}
+calendar/row|{ref/space/600}
+calendar/gutter|56px
+calendar/month-row|112px
+calendar/grid-height|480px
+calendar/swatch|{ref/space/1100}
