@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
-import { AlertDialogDemo, AppHeaderDemo, ButtonFilterDemo, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { AlertDialogDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -14,7 +14,7 @@ import { Button } from "@/ui/Button/Button";
 import { Calendar, type CalendarEvent, type CalendarProps, type CalendarSource } from "@/ui/Calendar/Calendar";
 import { Card, type CardProps } from "@/ui/Card/Card";
 import { Carousel, type CarouselProps } from "@/ui/Carousel/Carousel";
-import { Cell, type CellType } from "@/ui/Cell/Cell";
+import { Cell, type CellSize, type CellType } from "@/ui/Cell/Cell";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
 import { Command, type CommandGroup, type CommandProps } from "@/ui/Command/Command";
 import { Count } from "@/ui/Count/Count";
@@ -131,6 +131,7 @@ const CELL_SAMPLES: Record<CellType, Props> = {
   actionIcons: { actions: [{ label: "Edit", icon: "edit" }, { label: "Download", icon: "download" }, { label: "Delete", icon: "delete" }] },
   actionMenu: { label: "Row actions", actions: [{ label: "View" }, { label: "Download" }, { label: "Delete", icon: "delete", variant: "danger" }] },
   checkbox: { label: "INV-1042" },
+  tree: { label: "Acme Holdings" },
 };
 
 // Table samples. Contract examples name them as {invoiceColumns}, {invoices}, {total}, {accountColumns}, {accounts}.
@@ -617,8 +618,13 @@ export const registry: Record<string, Entry> = {
     ),
   },
   Cell: {
-    render: (p) => <Cell {...(p as object)} />,
+    // tree previews in a real Table of parent and child accounts, so the chevrons open and close rows.
+    render: (p) => (p.type === "tree"
+      ? <div style={{ width: 640, maxWidth: "100%" }}><CellTreeDemo size={p.size as CellSize | undefined} checkbox={Boolean(p.checkbox)} showLines={p.showLines !== false} /></div>
+      : <Cell {...(p as object)} />),
     preview: { type: "text", label: "INV-1042" },
+    // expanded belongs to each tree row; the tree preview keeps its own open rows.
+    hide: ["expanded"],
     // Fills sample data for the picked type so every type previews with real content.
     normalize: (p) => ({ ...CELL_SAMPLES[(p.type as CellType) ?? "text"], ...p, ...(p.type !== "text" && p.label === "INV-1042" ? { label: CELL_SAMPLES[p.type as CellType]?.label } : {}) }),
     hint: "Pick a type, size and states. Each type fills in sample data.",

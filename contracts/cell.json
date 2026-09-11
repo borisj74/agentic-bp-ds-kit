@@ -1,8 +1,8 @@
 {
   "name": "Cell",
   "path": "src/ui/Cell/Cell.tsx",
-  "intent": "Content for one table cell: text, a link, a person, a file, a status, a trend, progress, a rating, a select, row actions or a row menu, with an optional row checkbox. Each cell is full width with a faint bottom border.",
-  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, link to open a record, avatar for a person, badge for status, trend for change, progress for how far along something is, actions for row buttons, actionMenu for a More menu, select to change a value in place, checkbox for a column with only the row Checkbox. Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, DropdownMenu, Icon, Progress and Select; it never draws its own. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract.",
+  "intent": "Content for one table cell: text, a link, a person, a file, a status, a trend, progress, a rating, a select, row actions or a row menu, a tree row, with an optional row checkbox. Each cell is full width with a faint bottom border.",
+  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, link to open a record, avatar for a person, badge for status, trend for change, progress for how far along something is, actions for row buttons, actionMenu for a More menu, select to change a value in place, checkbox for a column with only the row Checkbox, tree for the first cell of parent and child rows (an indent per level, faint guide lines and a chevron to open and close its children). Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, DropdownMenu, Icon, Progress and Select; it never draws its own. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract.",
   "props": {
     "type": {
       "enum": [
@@ -22,7 +22,8 @@
         "actions",
         "actionIcons",
         "actionMenu",
-        "checkbox"
+        "checkbox",
+        "tree"
       ],
       "default": "text"
     },
@@ -79,7 +80,7 @@
     },
     "icon": {
       "type": "string",
-      "note": "Material Symbols name. file defaults to description, payment to credit_card."
+      "note": "Material Symbols name. file defaults to description, payment to credit_card. For tree, an optional icon before the label."
     },
     "tone": {
       "type": "BadgeTone",
@@ -132,6 +133,25 @@
     "onCheckedChange": {
       "type": "function",
       "note": "(checked: boolean) => void"
+    },
+    "level": {
+      "type": "number",
+      "default": 1,
+      "note": "For tree. The row's depth: 1 for top rows, 2 for their children, and so on. Each level steps in 32 px (tree/indent)."
+    },
+    "expanded": {
+      "type": "boolean",
+      "note": "For tree. Set it (true or false) on rows that have children to show the chevron; leave it out on rows without children, which line up with their parent's label."
+    },
+    "onExpandedChange": {
+      "type": "function",
+      "signature": "(expanded: boolean) => void",
+      "note": "For tree. The chevron was clicked; show or hide the row's children. The table keeps which rows are open."
+    },
+    "showLines": {
+      "type": "boolean",
+      "default": true,
+      "note": "For tree. Faint lines under each open parent's chevron, joining its children from row to row."
     }
   },
   "useWhen": [
@@ -158,7 +178,8 @@
     "Icon-only actions keep their label as the button name.",
     "actionMenu is a kit DropdownMenu: an icon-only More button named by label, opening a role=menu.",
     "select is a small kit Select with a hidden label from label, named with its value.",
-    "progress is a kit Progress: a progressbar named by label, read as its percent."
+    "progress is a kit Progress: a progressbar named by label, read as its percent.",
+    "tree: the chevron is a kit Button named Expand or Collapse and the row label, with aria-expanded. The indent and guide lines are hidden from screen readers."
   ],
   "snippet": "<Cell type=\"avatar\" name=\"Maya Chen\" label=\"maya@acme.com\" src=\"/faces/maya-chen.jpg\" />",
   "examples": [
@@ -470,6 +491,20 @@
             "type": "checkbox",
             "label": "INV-1043",
             "defaultChecked": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Tree",
+      "usage": "Parent and child accounts in a Table: the chevron opens and closes a row's children; rows without children line up with their parent's label.",
+      "items": [
+        {
+          "props": {
+            "type": "tree",
+            "label": "Acme Holdings",
+            "icon": "domain",
+            "expanded": true
           }
         }
       ]

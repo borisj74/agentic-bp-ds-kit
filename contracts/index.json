@@ -17,7 +17,7 @@
     {"name": "Calendar", "contract": "contracts/calendar.json", "category": "data", "tags": ["calendar", "schedule", "events", "month view", "week view", "day view", "agenda", "shifts", "pto", "planner"]},
     {"name": "Card", "contract": "contracts/card.json", "category": "data", "tags": ["card", "tile", "item", "product", "proposal", "line item", "plan", "selectable card", "grid"]},
     {"name": "Carousel", "contract": "contracts/carousel.json", "category": "layout", "tags": ["carousel", "slider", "slides", "gallery", "featured", "paged", "swipe"]},
-    {"name": "Cell", "contract": "contracts/cell.json", "category": "data", "tags": ["table", "cell", "data table", "row", "td"]},
+    {"name": "Cell", "contract": "contracts/cell.json", "category": "data", "tags": ["table", "cell", "data table", "row", "td", "tree cell", "tree table", "tree grid", "nested rows", "expandable row"]},
     {"name": "Checkbox", "contract": "contracts/checkbox.json", "category": "form", "tags": ["form", "checkbox", "multi-select", "toggle", "select all"]},
     {"name": "Command", "contract": "contracts/command.json", "category": "navigation", "tags": ["command", "search", "global search", "palette", "quick actions", "combobox"]},
     {"name": "Count", "contract": "contracts/count.json", "category": "feedback", "tags": ["counter", "notification", "number badge", "unread", "badge count"]},

@@ -1,10 +1,11 @@
 "use client";
-import { useId, useState } from "react";
+import { useId, useState, type ReactNode } from "react";
 import { Alert } from "@/ui/Alert/Alert";
 import { AlertDialog, type AlertDialogProps } from "@/ui/AlertDialog/AlertDialog";
 import { AppHeader, type AppHeaderDensity, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Button } from "@/ui/Button/Button";
 import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
+import { Cell, type CellSize } from "@/ui/Cell/Cell";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
 import { Density, type DensityValue } from "@/ui/Density/Density";
 import { Drawer, type DrawerProps } from "@/ui/Drawer/Drawer";
@@ -16,6 +17,7 @@ import { Modal, type ModalProps } from "@/ui/Modal/Modal";
 import { SegmentedControl } from "@/ui/SegmentedControl/SegmentedControl";
 import { Select } from "@/ui/Select/Select";
 import { Switch } from "@/ui/Switch/Switch";
+import { Table } from "@/ui/Table/Table";
 import { Textarea } from "@/ui/Textarea/Textarea";
 import { Toast, type ToastProps } from "@/ui/Toast/Toast";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
@@ -344,6 +346,50 @@ export function ToolbarDemo(p: Record<string, unknown>) {
       moreActions={p.moreActions ? [{ id: "import", label: "Import" }, { id: "columns", label: "Edit columns" }, { divider: true }, { id: "delete", label: "Delete all", danger: true }] : undefined}
       onMoreSelect={() => {}}
       actions={p.actions ? <><Button size="sm">Export</Button><Button size="sm" variant="primary">Create</Button></> : undefined}
+    />
+  );
+}
+
+// Playground harness: a kit Table whose first column is tree Cells, parent and child accounts that open and close.
+// The Table and Cells are the real kit; this only keeps which rows are open. Not a kit piece.
+interface AccountNode { id: string; name: string; owner: string; mrr: string; icon?: string; children?: AccountNode[] }
+const ACCOUNT_TREE: AccountNode[] = [
+  { id: "acme", name: "Acme Holdings", owner: "Maya Chen", mrr: "$48,200", icon: "domain", children: [
+    { id: "acme-us", name: "Acme US", owner: "Noah Williams", mrr: "$31,500", icon: "domain", children: [
+      { id: "acme-east", name: "Acme East", owner: "Iris Okafor", mrr: "$18,900", icon: "store" },
+      { id: "acme-west", name: "Acme West", owner: "Jordan Lee", mrr: "$12,600", icon: "store" },
+    ] },
+    { id: "acme-eu", name: "Acme EU", owner: "Maya Chen", mrr: "$16,700", icon: "store" },
+  ] },
+  { id: "globex", name: "Globex", owner: "Jordan Lee", mrr: "$22,400", icon: "domain", children: [
+    { id: "globex-retail", name: "Globex Retail", owner: "Iris Okafor", mrr: "$22,400", icon: "store" },
+  ] },
+  { id: "initech", name: "Initech", owner: "Noah Williams", mrr: "$9,800", icon: "store" },
+];
+
+export function CellTreeDemo({ size, checkbox = false, showLines = true, icons = true }: { size?: CellSize; checkbox?: boolean; showLines?: boolean; icons?: boolean }) {
+  const [open, setOpen] = useState<string[]>(["acme", "acme-us"]);
+  const rows: { id: string; account: ReactNode; owner: string; mrr: string }[] = [];
+  const add = (list: AccountNode[], level: number) => list.forEach((a) => {
+    const isOpen = open.includes(a.id);
+    rows.push({
+      id: a.id, owner: a.owner, mrr: a.mrr,
+      account: (
+        <Cell
+          type="tree" size={size} label={a.name} level={level} checkbox={checkbox} showLines={showLines} icon={icons ? a.icon : undefined}
+          expanded={a.children ? isOpen : undefined}
+          onExpandedChange={(next) => setOpen((o) => (next ? [...o, a.id] : o.filter((id) => id !== a.id)))}
+        />
+      ),
+    });
+    if (a.children && isOpen) add(a.children, level + 1);
+  });
+  add(ACCOUNT_TREE, 1);
+  return (
+    <Table
+      size={size} caption="Accounts and their sub-accounts"
+      columns={[{ key: "account", header: "Account", width: "45%" }, { key: "owner", header: "Owner" }, { key: "mrr", header: "MRR", numeric: true }]}
+      rows={rows}
     />
   );
 }

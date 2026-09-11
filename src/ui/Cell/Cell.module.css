@@ -6,8 +6,8 @@
   font-family: var(--font-sans); font-size: var(--font-size-small); line-height: 1.4; color: var(--text-neutral-strong);
 }
 /* min-height sets the row; small block padding keeps 32px content plus the 1px border inside 48 / 56. */
-.sm { min-height: var(--cell-height-sm); padding: var(--space-xxsmall) var(--space-small); }
-.md { min-height: var(--cell-height-md); padding: var(--space-xsmall) var(--space-small); }
+.sm { --pad-y: var(--space-xxsmall); min-height: var(--cell-height-sm); padding: var(--pad-y) var(--space-small); }
+.md { --pad-y: var(--space-xsmall); min-height: var(--cell-height-md); padding: var(--pad-y) var(--space-small); }
 /* Same alignment options as HeaderCell: end for numbers and amounts, center for a checkbox-only column. */
 .start { justify-content: flex-start; text-align: start; }
 .center { justify-content: center; text-align: center; }
@@ -35,3 +35,17 @@
 .trend { display: inline-flex; align-items: center; gap: var(--space-xxsmall); font-weight: var(--font-weight-medium); }
 .up { color: var(--text-success-strong); }
 .down { color: var(--text-danger-strong); }
+
+/* Tree: indent cells and the chevron sit flush (tree/indent each, like TreeView), 8px before the rest.
+   Guide cells reach through the row's padding and border, so the lines join from row to row. */
+.tree { position: relative; }
+.treeLead { display: flex; align-self: stretch; flex: none; margin-inline-end: calc(var(--space-xsmall) - var(--space-small)); }
+.guide {
+  position: relative; flex: none; width: var(--tree-indent);
+  margin-block: calc(var(--pad-y) * -1) calc((var(--pad-y) + var(--border-width-thin)) * -1);
+}
+.lines .guide::before {
+  content: ""; position: absolute; inset-block: 0; inset-inline-start: 50%;
+  border-inline-start: var(--border-width-thin) solid var(--border-neutral-subtle);
+}
+.toggle { display: grid; place-items: center; flex: none; width: var(--tree-indent); }

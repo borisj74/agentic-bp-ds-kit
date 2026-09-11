@@ -16,7 +16,7 @@ import styles from "./Cell.module.css";
 
 export type CellType =
   | "text" | "link" | "avatar" | "avatarGroup" | "file" | "payment" | "badge" | "badges"
-  | "trendPositive" | "trendNegative" | "progress" | "rating" | "select" | "actions" | "actionIcons" | "actionMenu" | "checkbox";
+  | "trendPositive" | "trendNegative" | "progress" | "rating" | "select" | "actions" | "actionIcons" | "actionMenu" | "checkbox" | "tree";
 export type CellSize = "sm" | "md";
 export type CellAlign = "start" | "center" | "end";
 export interface CellPerson { name: string; src?: string }
@@ -44,6 +44,10 @@ export interface CellProps {
   checked?: boolean;
   defaultChecked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
+  level?: number;
+  expanded?: boolean;
+  onExpandedChange?: (expanded: boolean) => void;
+  showLines?: boolean;
 }
 
 const STARS = 5;
@@ -52,6 +56,7 @@ const score = (v?: string | number) => Math.max(0, Math.min(STARS, Math.round(Nu
 export function Cell({
   type = "text", size: ownSize, align = "start", text = true, checkbox = false, label, href, name, src, people, icon,
   tone = "neutral", badges, value, actions, options, onValueChange, checked, defaultChecked, onCheckedChange,
+  level = 1, expanded, onExpandedChange, showLines = true,
 }: CellProps) {
   const density = useDensity();
   const size = ownSize ?? (density === "compact" ? "sm" : "md");
@@ -66,6 +71,11 @@ export function Cell({
       break;
     case "text":
     case "link":
+      side = label ?? "";
+      break;
+    case "tree":
+      // An optional icon, then the label; the indent and chevron lead the cell (below).
+      if (icon) visual = <span className={styles.icon}><Icon name={icon} size="sm" /></span>;
       side = label ?? "";
       break;
     case "avatar":
@@ -152,8 +162,29 @@ export function Cell({
   const twoLine = type === "avatar" && text && who;
   const showSide = text && side && type !== "trendPositive" && type !== "trendNegative";
 
+  // Tree: one indent cell per level above this row, carrying the guide line, then the chevron when the row has children.
+  // A row with no children lines up with its parent's label, like TreeView.
+  const depth = Math.max(Math.floor(level), 1) - 1;
+  const parent = expanded !== undefined;
+  const lead = type === "tree" && (
+    <span className={[styles.treeLead, showLines ? styles.lines : ""].join(" ")}>
+      {Array.from({ length: depth }, (_, k) => <span key={k} className={styles.guide} aria-hidden="true" />)}
+      {parent ? (
+        <span className={styles.toggle}>
+          <Button
+            size="sm" variant="tertiary" iconOnly iconStart={expanded ? "expand_more" : "chevron_right"}
+            aria-expanded={expanded} onClick={() => onExpandedChange?.(!expanded)}
+          >
+            {`${expanded ? "Collapse" : "Expand"} ${label ?? "row"}`}
+          </Button>
+        </span>
+      ) : depth === 0 && <span className={styles.toggle} aria-hidden="true" />}
+    </span>
+  );
+
   return (
-    <span className={[styles.cell, styles[size], styles[align]].join(" ")} aria-label={aria}>
+    <span className={[styles.cell, styles[size], styles[align], type === "tree" ? styles.tree : ""].join(" ")} aria-label={aria}>
+      {lead}
       {(checkbox || type === "checkbox") && (
         <Checkbox size="sm" hideLabel label={`Select ${label || name || "row"}`} checked={checked} defaultChecked={defaultChecked} onChange={onCheckedChange} />
       )}
