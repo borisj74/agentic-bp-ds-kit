@@ -1,19 +1,15 @@
-/* Component master: Preview | Variants. Shared tab + hint styles are also used by foundation pages. */
+/* Component master: Preview | Variants. The hint style is also used by foundation pages. */
 .hint { margin: 0 0 var(--space-small); color: var(--text-neutral-subtle); font-size: var(--font-size-small); }
-.tabs { display: inline-flex; gap: 2px; padding: 2px; background: var(--bg-neutral-subtle); border-radius: var(--radius-medium); margin-bottom: var(--space-small); }
-.tab {
-  font: inherit; font-size: var(--font-size-small); color: var(--text-neutral); background: transparent; border: 0;
-  padding: var(--space-xxsmall) var(--space-small); border-radius: var(--radius-small); cursor: pointer;
-}
-.tab:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); }
-.tabActive { background: var(--surface-raised); color: var(--text-neutral-strong); }
+/* Page-level token tabs are the kit Tabs. */
+.pageTabs { margin-bottom: var(--space-small); }
 
 /* minmax(0, 1fr): long code lines scroll inside their block instead of stretching the page sideways. */
 .section { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-medium); --stage: var(--bg-neutral-subtle); }
 /* In dark, a lighter stage would sit above the page. Sink it instead so the panel reads as raised. */
 :global([data-theme="dark"]) .section { --stage: var(--surface-sunken); }
 .header { display: grid; gap: var(--space-xxsmall); justify-items: start; }
-.header .tabs { margin: var(--space-xsmall) 0 0; }
+/* Preview | Variants is the kit Tabs; it spans the header like a section strip. */
+.viewTabs { justify-self: stretch; margin-top: var(--space-xsmall); }
 .h2 { margin: 0; font-size: var(--font-size-large); font-weight: var(--font-weight-medium); color: var(--text-neutral-strong); }
 .lead { margin: 0; color: var(--text-neutral-subtle); font-size: var(--font-size-small); }
 

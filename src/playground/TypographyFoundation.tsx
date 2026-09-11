@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Tabs } from "@/ui/Tabs/Tabs";
 import master from "./master.module.css";
 import styles from "./typography.module.css";
 import { useCopy } from "./useCopy";
@@ -51,10 +52,8 @@ export function TypographyFoundation() {
   };
   return (
     <>
-      <div className={master.tabs} role="tablist">
-        {(["primitives", "semantics"] as const).map((k) => (
-          <button key={k} role="tab" aria-selected={tab === k} className={[master.tab, tab === k ? master.tabActive : ""].join(" ")} onClick={() => setTab(k)}>{k === "primitives" ? "Primitives" : "Semantics"}</button>
-        ))}
+      <div className={master.pageTabs}>
+        <Tabs label="Typography tokens" value={tab} onChange={(id) => setTab(id as typeof tab)} items={[{ id: "primitives", label: "Primitives" }, { id: "semantics", label: "Semantics" }]} />
       </div>
       <p className={master.hint}>Click any row to copy its token.</p>
       {tab === "primitives" && (

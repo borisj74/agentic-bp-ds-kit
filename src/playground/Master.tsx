@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/ui/Button/Button";
 import { Switch } from "@/ui/Switch/Switch";
+import { Tabs } from "@/ui/Tabs/Tabs";
 import styles from "./master.module.css";
 import { registry, type Props } from "./registry";
 import { useCopy, type Copy } from "./useCopy";
@@ -116,12 +117,12 @@ export function Master({ contract }: { contract: Contract }) {
       <div className={styles.header}>
         <h2 className={styles.h2}>Master</h2>
         <p className={styles.lead}>{hint}</p>
-        <div className={styles.tabs} role="tablist">
-          {(["preview", "variants"] as const).map((t) => (
-            <button key={t} role="tab" aria-selected={tab === t} className={[styles.tab, tab === t ? styles.tabActive : ""].join(" ")} onClick={() => setTab(t)}>
-              {cap(t)}
-            </button>
-          ))}
+        {/* The real kit Tabs, as a strip: the Master shows the chosen view below. */}
+        <div className={styles.viewTabs}>
+          <Tabs
+            label={`${contract.name} views`} value={tab} onChange={(id) => setTab(id as "preview" | "variants")}
+            items={[{ id: "preview", label: "Preview" }, { id: "variants", label: "Variants" }]}
+          />
         </div>
       </div>
 

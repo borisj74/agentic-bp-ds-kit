@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Tabs } from "@/ui/Tabs/Tabs";
 import { useCopy, type Copy } from "./useCopy";
 import master from "./master.module.css";
 import styles from "./color.module.css";
@@ -64,10 +65,8 @@ export function ColorFoundation({ ramps, scheme, semantics }: { ramps: Ramp[]; s
   const tabs = [["primitives", "Primitives"], ["semantics", "Semantics"], ["scheme", "Scheme"]] as const;
   return (
     <>
-      <div className={master.tabs} role="tablist">
-        {tabs.map(([k, label]) => (
-          <button key={k} role="tab" aria-selected={tab === k} className={[master.tab, tab === k ? master.tabActive : ""].join(" ")} onClick={() => setTab(k)}>{label}</button>
-        ))}
+      <div className={master.pageTabs}>
+        <Tabs label="Color tokens" value={tab} onChange={(id) => setTab(id as typeof tab)} items={tabs.map(([k, label]) => ({ id: k, label }))} />
       </div>
       <p className={master.hint}>Click a primitive to copy its hex. Click a semantic or scheme swatch to copy its token.</p>
       {tab === "primitives" && ramps.map((r) => (

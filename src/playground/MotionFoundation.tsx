@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Tabs } from "@/ui/Tabs/Tabs";
 import master from "./master.module.css";
 import styles from "./motion.module.css";
 import { useCopy, type Copy } from "./useCopy";
@@ -37,10 +38,8 @@ export function MotionFoundation({ tabs }: { tabs: MotionTab[] }) {
   const active = tabs.find((t) => t.key === tab) ?? tabs[0];
   return (
     <>
-      <div className={master.tabs} role="tablist">
-        {tabs.map((t) => (
-          <button key={t.key} role="tab" aria-selected={tab === t.key} className={[master.tab, tab === t.key ? master.tabActive : ""].join(" ")} onClick={() => setTab(t.key)}>{t.label}</button>
-        ))}
+      <div className={master.pageTabs}>
+        <Tabs label="Motion tokens" value={tab} onChange={(id) => setTab(id as typeof tab)} items={tabs.map((t) => ({ id: t.key, label: t.label }))} />
       </div>
       <p className={master.hint}>Hover or focus a tile to play it. Click to copy its tokens.</p>
       {active.groups.map((g) => (

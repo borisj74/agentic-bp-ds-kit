@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Tabs } from "@/ui/Tabs/Tabs";
 import { Button } from "@/ui/Button/Button";
 import master from "./master.module.css";
 import rowStyles from "./scale.module.css";
@@ -114,12 +115,8 @@ export function GridFoundation() {
   const c = useCopy();
   return (
     <>
-      <div className={master.tabs} role="tablist">
-        {(["semantics", "primitives"] as const).map((k) => (
-          <button key={k} role="tab" aria-selected={tab === k} className={[master.tab, tab === k ? master.tabActive : ""].join(" ")} onClick={() => setTab(k)}>
-            {k === "semantics" ? "Semantics" : "Primitives"}
-          </button>
-        ))}
+      <div className={master.pageTabs}>
+        <Tabs label="Grid tokens" value={tab} onChange={(id) => setTab(id as typeof tab)} items={[{ id: "semantics", label: "Semantics" }, { id: "primitives", label: "Primitives" }]} />
       </div>
       <p className={master.hint}>Click any row or card to copy its token or class.</p>
 
