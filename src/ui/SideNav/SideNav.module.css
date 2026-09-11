@@ -1,0 +1,110 @@
+/* Figma closed rail 557:29103 and secondary navigation 1409:71403.
+   The nav fills its column's height. Flyout menus sit over the page beside the rail; a pinned menu takes space. */
+.nav {
+  position: relative; z-index: 2; /* above a sticky PageHeader (z-index 1) in the page beside it */
+  display: flex; height: 100%; min-height: 0;
+  font-family: var(--font-sans);
+}
+
+/* Rail: brand fill, white icons and labels, 48px rows. 56px closed, 170px with labels. */
+.rail {
+  display: flex; flex-direction: column; flex: none;
+  width: var(--side-nav-rail); height: 100%; overflow-x: hidden; overflow-y: auto;
+  background: var(--bg-brand);
+  transition: width var(--motion-expand-duration) var(--motion-expand-easing);
+}
+.expanded .rail { width: var(--side-nav-rail-open); }
+.list { margin: 0; padding: 0; list-style: none; }
+.end { margin-top: auto; }
+
+.row { position: relative; display: flex; }
+.row > :first-child { flex: 1; min-width: 0; }
+.section {
+  box-sizing: border-box; display: flex; align-items: center; gap: var(--space-medium);
+  width: 100%; height: var(--side-nav-row); margin: 0; padding: 0 var(--space-medium);
+  border: 0; background: var(--bg-brand); color: var(--text-neutral-min-static);
+  font: inherit; font-size: var(--font-size-regular); line-height: var(--line-height-tight); text-align: start; text-decoration: none;
+  white-space: nowrap; cursor: pointer;
+}
+/* Rest rows keep white text on the brand fill in both themes. Hover, open and current fills turn light in dark,
+   so their text takes text-neutral-min, which turns dark there. */
+.section:hover, .open { background: var(--bg-brand-hover); color: var(--text-neutral-min); }
+.current, .current:hover { background: var(--bg-brand-press); color: var(--text-neutral-min); }
+/* The brand fill hides a brand ring, so rail rings take the row's text color, inset. */
+.section:focus-visible, .cascade:focus-visible {
+  outline: var(--border-width-medium) solid currentColor; outline-offset: calc(var(--border-width-medium) * -1);
+}
+.label { overflow: hidden; text-overflow: ellipsis; }
+/* Closed rail: labels stay as the links' names but are not shown. */
+.nav:not(.expanded) .label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+/* Cascade button: a chevron at the row's end with labels shown. Closed, it only shows when it has keyboard focus. */
+.cascade {
+  position: absolute; inset-block: 0; inset-inline-end: 0;
+  display: flex; align-items: center; justify-content: center;
+  width: var(--space-xlarge); margin: 0; padding: 0; border: 0;
+  background: transparent; color: var(--icon-neutral-min-static); cursor: pointer;
+}
+.row:hover .cascade, .row:has(.open, .current) .cascade { color: var(--icon-neutral-min); }
+.nav:not(.expanded) .cascade { width: var(--space-medium); opacity: 0; }
+.nav:not(.expanded) .cascade:focus-visible { opacity: 1; }
+
+.divider { height: var(--border-width-thin); background: var(--bg-brand-strong); }
+
+/* Menu: faint fill, a white 40px header with the pin, 40px link rows. Flyout: a floating shadow over the page. */
+.panel {
+  position: absolute; top: 0; left: 100%;
+  box-sizing: border-box; display: flex; flex-direction: column;
+  min-width: var(--side-nav-panel-min); max-width: var(--side-nav-panel-max); width: max-content; max-height: 100%;
+  background: var(--bg-neutral-faint); box-shadow: var(--elevation-dropdown);
+  /* Roll out from the rail edge and back in. The clip leaves room for the shadow. */
+  clip-path: inset(calc(var(--space-xlarge) * -1) 100% calc(var(--space-xlarge) * -1) 0);
+  visibility: hidden;
+  transition: clip-path var(--motion-expand-duration) var(--motion-expand-easing), visibility 0s linear var(--motion-expand-duration);
+}
+.panel[data-open="true"] {
+  clip-path: inset(calc(var(--space-xlarge) * -1) calc(var(--space-xlarge) * -1) calc(var(--space-xlarge) * -1) 0);
+  visibility: visible;
+  transition: clip-path var(--motion-expand-duration) var(--motion-expand-easing), visibility 0s;
+}
+/* Pinned: docked beside the rail, full height, a border and no shadow. */
+.pinned .panel { position: relative; left: auto; height: 100%; max-height: none; box-shadow: none; border-right: var(--border-width-thin) solid var(--border-neutral-subtle); }
+.pinned .panel[data-open="false"] { display: none; }
+
+.header {
+  box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: var(--space-xsmall);
+  flex: none; height: var(--side-nav-panel-row); padding: 0 var(--space-xsmall) 0 var(--space-medium);
+  background: var(--bg-neutral-min); border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
+}
+.title { font-size: var(--font-size-small); font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); white-space: nowrap; }
+
+.links { flex: 1 1 auto; min-height: 0; margin: 0; padding: 0; list-style: none; overflow-y: auto; scrollbar-width: none; }
+.link {
+  box-sizing: border-box; display: flex; align-items: center;
+  width: 100%; min-height: var(--side-nav-panel-row); margin: 0; padding: var(--space-xxsmall) var(--space-medium);
+  border: 0; background: var(--bg-neutral-faint); color: var(--text-neutral-strong);
+  font: inherit; font-size: var(--font-size-small); line-height: var(--line-height-tight); text-align: start; text-decoration: none; cursor: pointer;
+}
+.link:hover { background: var(--bg-neutral-min-hover); }
+.link[aria-current="page"] { background: var(--bg-neutral-min-selected); color: var(--text-brand-strong); font-weight: var(--font-weight-medium); }
+.link[aria-current="page"]:hover { background: var(--bg-neutral-min-selected-hover); }
+.link:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(var(--border-width-medium) * -1); }
+.linkDivider { height: var(--border-width-thin); background: var(--border-neutral); }
+
+/* Overflow rows (Figma 1409:71803): 28px, a chevron, shown only when there is more to scroll to. */
+.overflow {
+  display: none; align-items: center; justify-content: center; flex: none;
+  width: 100%; height: var(--control-small); margin: 0; padding: 0; border: 0;
+  background: var(--bg-neutral-faint); color: var(--icon-neutral); cursor: pointer;
+}
+.overflow:hover { background: var(--bg-neutral-min-hover); }
+.overflow:active { background: var(--bg-neutral-min-press); }
+.panel[data-up="true"] .up, .panel[data-down="true"] .down { display: flex; }
+.up { border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle); }
+.down { border-top: var(--border-width-thin) solid var(--border-neutral-subtle); }
+
+:global([data-theme="dark"]) .link[aria-current="page"] { color: var(--text-brand-intense); }
+
+@media (prefers-reduced-motion: reduce) {
+  .rail, .panel, .panel[data-open="true"] { transition: none; }
+}

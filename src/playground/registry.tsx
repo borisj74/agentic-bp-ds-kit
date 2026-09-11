@@ -31,12 +31,42 @@ import { PageHeader, type PageHeaderProps } from "@/ui/PageHeader/PageHeader";
 import { RadioGroup, type RadioGroupOption } from "@/ui/RadioGroup/RadioGroup";
 import { SegmentedControl, type SegmentedControlProps } from "@/ui/SegmentedControl/SegmentedControl";
 import { Select, type SelectProps } from "@/ui/Select/Select";
+import { SideNav, type SideNavEntry, type SideNavItem, type SideNavProps } from "@/ui/SideNav/SideNav";
 import { Switch, type SwitchProps } from "@/ui/Switch/Switch";
 import { Tabs, type TabItem, type TabsProps } from "@/ui/Tabs/Tabs";
 import { Textarea, type TextareaProps } from "@/ui/Textarea/Textarea";
 import { Tooltip, type TooltipProps } from "@/ui/Tooltip/Tooltip";
 
 export type Props = Record<string, unknown>;
+// SideNav sample: the app sections and menus from the Figma secondary navigation. "-" is a divider.
+const menu = (section: string, labels: string[]) =>
+  labels.map((l) => (l === "-" ? { divider: true as const } : { id: `${section}-${l.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, label: l }));
+const SIDE_NAV_SECTIONS: SideNavEntry[] = [
+  { id: "home", label: "Home", icon: "home", children: menu("home", ["Home Dashboards", "Approval Management", "Alert Groups", "Grouped Activity"]) },
+  { id: "accounts", label: "Accounts", icon: "group" },
+  { id: "products", label: "Products", icon: "inventory_2", children: menu("products", ["Products", "Product Categories", "Packages", "Rate Classes"]) },
+  { divider: true },
+  { id: "quotes", label: "Quotes", icon: "request_quote", children: menu("quotes", ["Quotes", "Quote Rules", "Product Relationships"]) },
+  { id: "orders", label: "Orders", icon: "shopping_cart" },
+  { id: "billing", label: "Billing", icon: "receipt_long", children: menu("billing", ["Invoices", "Invoice Management", "Statements", "Electronic Files", "Invoice Periods", "Tiered Pricing", "Bulk Actions"]) },
+  { id: "ar", label: "AR", icon: "account_balance", children: menu("ar", ["Account Ledgers", "Payments & Refunds", "BP Payouts", "Payouts", "Chargebacks", "Scheduled Payment Retries", "-", "Lockbox Files", "Lockbox Matching Rules", "Unreconciled Payments", "-", "Credit Memos", "Bulk Approve/Reject Credits"]) },
+  { id: "revenue", label: "Revenue", icon: "monetization_on", children: menu("revenue", ["Month-End Close Dashboard", "Chart of Accounts", "Chart of Account Categories", "General Ledger", "General Ledger Rules", "Journal Entries", "Ledger Accrual History", "-", "SSP Profiles", "Revenue Allocation Groups", "Revenue Allocation Routines", "-", "Accounting Period Configuration", "Legal Entities"]) },
+  { id: "mediation", label: "Mediation", icon: "speed", children: menu("mediation", ["Usage Collectors", "Usage Identifiers", "MDL Events", "Unaggregated Data Browser", "Usage Reload", "Usage Data"]) },
+  { divider: true },
+  { id: "reports", label: "Reports", icon: "summarize", children: menu("reports", ["Reports Home", "AI Report Builder", "-", "Accounting", "Accounts & Insights", "AR", "Billing", "Financials", "Payments & Credits", "Products", "Revenue", "-", "All Reports"]) },
+  { id: "settings", label: "Settings", icon: "settings", children: menu("settings", ["Settings Home", "Develop", "External Connectors", "Security & Users", "Monitoring & Logs", "System", "Configuration Deployment", "-", "AI Settings", "Billing", "Payments", "Financials & Revenue", "Collections"]) },
+];
+const SIDE_NAV_END: SideNavItem[] = [
+  { id: "recycle", label: "Recycle Bin", icon: "recycling" },
+  { id: "processes", label: "Processes", icon: "tune" },
+];
+// Contract examples name the sample as {sections} and {endSections}; swap in the real arrays.
+const sideNavProps = (p: Props) => ({
+  ...p,
+  items: typeof p.items === "string" || !p.items ? SIDE_NAV_SECTIONS : p.items,
+  endItems: typeof p.endItems === "string" ? SIDE_NAV_END : p.endItems,
+}) as unknown as SideNavProps;
+
 export interface Entry {
   render: (p: Props) => ReactNode;
   /** Starting props for the Preview tab, on top of contract defaults. */
@@ -539,6 +569,25 @@ export const registry: Record<string, Entry> = {
     card: (
       <SegmentedControl label="View" hideLabel size="sm" defaultValue="board"
         options={[{ value: "list", label: "List", icon: "view_list" }, { value: "board", label: "Board", icon: "view_kanban" }]} />
+    ),
+  },
+  SideNav: {
+    // A page-sized frame, tall enough for the whole rail: the nav fills its height, the sunken area stands in for the page. Keyed so the pin control re-applies.
+    render: (p) => (
+      <div key={JSON.stringify(p)} style={{ display: "flex", height: 720, border: "var(--border-width-thin) solid var(--border-neutral-subtle)", background: "var(--surface-sunken)" }}>
+        <SideNav {...sideNavProps(p)} />
+      </div>
+    ),
+    preview: { items: "{sections}", endItems: "{endSections}" },
+    hide: ["pinned"],
+    snippet: { onNavigate: "{openPage}" },
+    hint: "Hover a section for its menu; click one to open its first page. Toggle expanded for labels and default pinned to dock the menu. Tab and Enter work too.",
+    block: true,
+    wide: true,
+    card: (
+      <div style={{ display: "flex", height: 520, zoom: 0.4 }}>
+        <SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} defaultCurrent="revenue-general-ledger" defaultPinned />
+      </div>
     ),
   },
   Switch: {

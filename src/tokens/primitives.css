@@ -1232,4 +1232,10 @@
   --page-header-gap: var(--ref-space-1100);
   --page-header-height: 80px;
   --page-header-height-sticky: 52px;
+  --side-nav-rail: 56px;
+  --side-nav-rail-open: 170px;
+  --side-nav-row: var(--ref-space-1300);
+  --side-nav-panel-row: var(--ref-space-1100);
+  --side-nav-panel-min: 160px;
+  --side-nav-panel-max: 280px;
 }
