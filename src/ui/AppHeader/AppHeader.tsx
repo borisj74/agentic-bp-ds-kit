@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 import { Avatar } from "../Avatar/Avatar";
 import { Badge, type BadgeTone } from "../Badge/Badge";
 import { Button } from "../Button/Button";
-import { Command, type CommandGroup, type CommandScope, type CommandVariant } from "../Command/Command";
+import { Command, type CommandGroup, type CommandIconStyle, type CommandScope, type CommandVariant } from "../Command/Command";
 import { useDensity, type DensitySize } from "../Density/Density";
 import { Icon } from "../Icon/Icon";
 import { Logo } from "../Logo/Logo";
@@ -33,6 +33,7 @@ export interface AppHeaderProps {
   onSearch?: () => void;
   searchGroups?: CommandGroup[];
   searchVariant?: CommandVariant;
+  searchIconStyle?: CommandIconStyle;
   onSearchSelect?: (id: string) => void;
   searchScopes?: CommandScope[];
   searchScope?: string;
@@ -62,7 +63,7 @@ const CONTROL: Record<AppHeaderDensity, DensitySize> = { compact: "sm", default:
 export function AppHeader({
   onNavToggle, navOpen = false, logo, homeHref, environment, environmentTone = "success",
   search = true, searchPlaceholder = "Search", searchShortcut, onSearch,
-  searchGroups, searchVariant = "list", onSearchSelect, searchScopes, searchScope, onSearchScopeChange,
+  searchGroups, searchVariant = "list", searchIconStyle = "tile", onSearchSelect, searchScopes, searchScope, onSearchScopeChange,
   actions = [], onAction, user, company,
   onUserSettings, darkMode = false, onDarkModeChange, density: densityProp, onDensityChange, onLogout,
 }: AppHeaderProps) {
@@ -247,7 +248,7 @@ export function AppHeader({
       {searchIsOpen && searchGroups && createPortal(
         <div ref={searchPanelRef} role="dialog" aria-label={searchPlaceholder} className={styles.searchPanel} style={{ width: searchFit.width }} onKeyDown={onSearchKey}>
           <Command
-            groups={searchGroups} variant={searchVariant} label={searchPlaceholder} scopes={searchScopes} scope={searchScope} onScopeChange={onSearchScopeChange} autoFocus
+            groups={searchGroups} variant={searchVariant} iconStyle={searchIconStyle} label={searchPlaceholder} scopes={searchScopes} scope={searchScope} onScopeChange={onSearchScopeChange} autoFocus
             onSelect={(id) => { closeSearch(true); onSearchSelect?.(id); }}
           />
         </div>,

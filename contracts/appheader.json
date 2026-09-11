@@ -67,6 +67,14 @@
       "default": "list",
       "note": "Command variant for the search dropdown. tabs adds All and one tab per group heading, like the Figma global search (Records / Reports / Sections)."
     },
+    "searchIconStyle": {
+      "enum": [
+        "tile",
+        "plain"
+      ],
+      "default": "tile",
+      "note": "Command iconStyle for the search dropdown: tile puts item icons in a tinted tile, plain shows just the icon."
+    },
     "onSearchSelect": {
       "type": "function",
       "note": "(id: string) => void. Runs on Enter or click in the dropdown; it closes first."
