@@ -173,3 +173,6 @@ data-grid/edit-min|96px
 scoreboard/card-min|196px
 scoreboard/chart-width|64px
 scoreboard/chart-height|20px
+
+# Carousel (reference kit carousel): a vertical track is 200 tall; its slides fill it.
+carousel/vertical-height|200px

@@ -1,0 +1,32 @@
+/* Reference kit carousel. The buttons sit beside the track (above and below when vertical), inside the carousel's
+   own box, so a narrow container never clips them. */
+.carousel { width: 100%; min-width: 0; font-family: var(--font-sans); border-radius: var(--radius-medium); }
+.carousel:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--space-xxsmall); }
+
+.stage { display: grid; align-items: center; gap: var(--space-xsmall); }
+.horizontal .stage { grid-template-columns: auto minmax(0, 1fr) auto; }
+.vertical .stage { grid-template-rows: auto var(--carousel-vertical-height) auto; justify-items: center; }
+.control { display: flex; }
+
+/* A native scroll-snap scroller with its scrollbar hidden; the buttons, keys, swipe and trackpad page it. */
+.viewport { position: relative; min-width: 0; overscroll-behavior: contain; scrollbar-width: none; }
+.viewport::-webkit-scrollbar { display: none; }
+.horizontal .viewport { overflow: auto hidden; scroll-snap-type: x mandatory; }
+.vertical .viewport { width: 100%; height: 100%; overflow: hidden auto; scroll-snap-type: y mandatory; }
+
+.track { display: flex; gap: var(--space-medium); }
+.vertical .track { flex-direction: column; height: 100%; }
+
+/* Each slide takes its share of the track, less the gaps between the slides in view. */
+.slide {
+  --per: 1;
+  display: flex; flex-direction: column; flex: 0 0 calc((100% - (var(--per) - 1) * var(--space-medium)) / var(--per));
+  min-width: 0; min-height: 0; scroll-snap-align: start;
+}
+.center .slide { scroll-snap-align: center; }
+.per2 .slide { --per: 2; }
+.per3 .slide { --per: 3; }
+.per4 .slide { --per: 4; }
+.slide > * { flex: 1 1 auto; min-width: 0; }
+
+.index { margin: var(--space-small) 0 0; text-align: center; font-size: var(--font-size-xsmall); color: var(--text-neutral); }

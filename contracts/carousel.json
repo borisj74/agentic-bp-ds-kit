@@ -1,0 +1,123 @@
+{
+  "name": "Carousel",
+  "path": "src/ui/Carousel/Carousel.tsx",
+  "intent": "A track of slides people page through with previous and next buttons, swipe or the arrow keys, like a gallery or featured cards.",
+  "usage": "Use Carousel for galleries, featured cards and paged media. It is one component: pass items as an array of slides. slidesPerView shows 1 to 4 slides at once, so the next ones peek in. Previous and next are kit Buttons beside the track (above and below it when vertical); they turn off at the ends unless loop wraps around. People can also swipe or scroll the track, and press the arrow keys when it has focus. showIndex adds a Slide 2 of 5 caption under it. See contracts/carousel.json for the full contract.",
+  "props": {
+    "items": {
+      "type": "ReactNode[]",
+      "required": true,
+      "note": "One node per slide. Each fills its slide's width (and height when vertical)."
+    },
+    "orientation": {
+      "enum": [
+        "horizontal",
+        "vertical"
+      ],
+      "default": "horizontal",
+      "note": "Vertical is a 200-tall track paged up and down."
+    },
+    "slidesPerView": {
+      "enum": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "default": 1,
+      "note": "How many slides show at once. The last page stops at the end, so the track never shows empty space."
+    },
+    "align": {
+      "enum": [
+        "start",
+        "center"
+      ],
+      "default": "start",
+      "note": "Where a slide lines up when it is the current one. Center matters when more than one slide shows."
+    },
+    "loop": {
+      "type": "boolean",
+      "default": false,
+      "note": "Next on the last page goes back to the first, and previous on the first goes to the last. The buttons stay on."
+    },
+    "showControls": {
+      "type": "boolean",
+      "default": true,
+      "note": "The previous and next buttons. Without them, people swipe, scroll or use the arrow keys."
+    },
+    "showIndex": {
+      "type": "boolean",
+      "default": false,
+      "note": "A caption under the track, like Slide 2 of 5, counted by page."
+    },
+    "onIndexChange": {
+      "type": "function",
+      "note": "(index: number) => void. The current page, counted from 0."
+    },
+    "label": {
+      "type": "string",
+      "default": "Carousel",
+      "note": "Names the carousel for screen readers, like Featured reports."
+    }
+  },
+  "useWhen": [
+    "Galleries, featured cards and paged media.",
+    "A row of cards wider than the space, where peeking at the next one invites people to page."
+  ],
+  "doNot": [
+    "Do not add CarouselContent, CarouselItem, CarouselPrevious or CarouselNext. Pass items.",
+    "Do not use it to switch views. Use Tabs.",
+    "Do not use it to page a list or table. Show the rows.",
+    "Do not use it for main navigation.",
+    "No autoplay.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A region with aria-roledescription carousel, named by label. It takes focus, and the arrow keys page it (up and down when vertical).",
+    "Each slide is a group with aria-roledescription slide, named Slide 2 of 5.",
+    "Previous and next are kit Buttons named Previous slide and Next slide, with the same Tooltip. They are disabled at the ends unless loop is on.",
+    "The index caption is a polite live region, so paging is announced.",
+    "Paging scrolls smoothly unless the person prefers reduced motion."
+  ],
+  "snippet": "<Carousel\n  label=\"Featured reports\"\n  items={reports.map((r) => <ReportCard key={r.id} {...r} />)}\n  slidesPerView={3}\n  showIndex\n/>",
+  "examples": [
+    {
+      "title": "Three up",
+      "usage": "slidesPerView 3 shows three slides; next pages one at a time and stops when the last slide is in view.",
+      "items": [
+        {
+          "props": {
+            "items": "{slides}",
+            "slidesPerView": 3
+          }
+        }
+      ]
+    },
+    {
+      "title": "Loop",
+      "usage": "Next on the last slide goes back to the first. The buttons stay on.",
+      "items": [
+        {
+          "props": {
+            "items": "{slides}",
+            "loop": true,
+            "showIndex": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Vertical",
+      "usage": "A 200-tall track paged up and down, with the buttons above and below.",
+      "items": [
+        {
+          "props": {
+            "items": "{slides}",
+            "orientation": "vertical",
+            "showIndex": true
+          }
+        }
+      ]
+    }
+  ]
+}

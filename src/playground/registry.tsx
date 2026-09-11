@@ -10,6 +10,7 @@ import { Badge } from "@/ui/Badge/Badge";
 import { BadgeAlt } from "@/ui/BadgeAlt/BadgeAlt";
 import { Breadcrumb, type BreadcrumbItem } from "@/ui/Breadcrumb/Breadcrumb";
 import { Button } from "@/ui/Button/Button";
+import { Carousel, type CarouselProps } from "@/ui/Carousel/Carousel";
 import { Cell, type CellType } from "@/ui/Cell/Cell";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
 import { Command, type CommandGroup, type CommandProps } from "@/ui/Command/Command";
@@ -201,6 +202,20 @@ const SCORE_SAMPLES: Record<string, unknown> = { "{trendKpis}": TREND_KPIS, "{ch
 const scoreProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in SCORE_SAMPLES ? SCORE_SAMPLES[v] : v])) as unknown as ScoreboardProps;
 
+// Carousel sample: five numbered panels. Contract examples name them as {slides}. Vertical panels fill the short track.
+const slides = (vertical: boolean) => Array.from({ length: 5 }, (_, i) => (
+  <div
+    key={i}
+    style={{
+      display: "grid", placeItems: "center", minHeight: vertical ? 0 : 160, boxSizing: "border-box",
+      background: "var(--surface-flat)", border: "var(--border-width-thin) solid var(--border-neutral-faint)", borderRadius: "var(--radius-large)",
+      fontSize: "var(--font-size-xlarge)", fontWeight: "var(--font-weight-semibold)", color: "var(--text-neutral-strong)",
+    }}
+  >
+    {i + 1}
+  </div>
+));
+
 const MENU_ITEMS: DropdownMenuEntry[] = [
   { id: "edit", label: "Edit" },
   { id: "duplicate", label: "Duplicate" },
@@ -353,6 +368,23 @@ export const registry: Record<string, Entry> = {
     render: (p) => <LogoAI {...(p as object)} />,
     preview: {},
     card: <div style={{ display: "flex", gap: 16, alignItems: "center" }}><LogoAI /><LogoAI tone="filled" /></div>,
+  },
+  Carousel: {
+    // Sample panels swap in for {slides}. Keyed so a changed layout starts on the first slide. Vertical gets a narrow column.
+    render: (p) => (
+      <div style={{ width: p.orientation === "vertical" ? 320 : "100%", maxWidth: "100%", margin: "0 auto" }}>
+        <Carousel key={JSON.stringify(p)} {...(p as unknown as CarouselProps)} items={slides(p.orientation === "vertical")} />
+      </div>
+    ),
+    preview: { items: "{slides}", showIndex: true },
+    snippet: { items: "{slides}" },
+    hint: "Page with the buttons, swipe or the arrow keys. Switch orientation, slides per view and align; turn on loop.",
+    block: true,
+    card: (
+      <div style={{ width: "250%", zoom: 0.4 }}>
+        <Carousel items={slides(false)} slidesPerView={2} />
+      </div>
+    ),
   },
   Cell: {
     render: (p) => <Cell {...(p as object)} />,
