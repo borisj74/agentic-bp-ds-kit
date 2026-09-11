@@ -33,6 +33,8 @@ export interface PieChartProps {
 // The ring draws in a 100 box, lengths out of 100 from the top, clockwise. A donut is a 16-wide ring;
 // a solid pie is one circle whose stroke fills it to the centre.
 const C = 50;
+// Each slice runs a hair under the next one, so the edges meet over colour and no hairline of background shows.
+const OVERLAP = 0.4;
 
 // Reference kit pie chart, in the colors of the Persona Homepages charts.
 export function PieChart({
@@ -82,7 +84,7 @@ export function PieChart({
               {arcs.map((a, i) => (
                 <circle
                   key={a.label} className={c.sweep} cx={C} cy={C} r={r} pathLength={100}
-                  strokeDasharray={`${Math.max(a.len, 0.01)} 100`} strokeDashoffset={-a.start}
+                  strokeDasharray={`${Math.max(a.len + (arcs.length > 1 ? OVERLAP : 0), 0.01)} 100`} strokeDashoffset={-a.start}
                   style={{ stroke: toneVar(a.tone), opacity: active !== null && active !== i ? "var(--opacity-muted)" : 1 }}
                   onPointerEnter={() => setActive(i)}
                 />
