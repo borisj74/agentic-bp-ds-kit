@@ -59,6 +59,14 @@
       "itemShape": "{ heading?: string; items: { id; label; description?; icon?; shortcut?; disabled? }[] }",
       "note": "Makes the search open a kit Command. From the wide field, the Command's search row lays exactly over the header field, so there is one search box that grows down into the results (Recent items, scopes, key hints). From the compact icon it opens just below the icon. Typing filters the items."
     },
+    "searchVariant": {
+      "enum": [
+        "list",
+        "tabs"
+      ],
+      "default": "list",
+      "note": "Command variant for the search dropdown. tabs adds All and one tab per group heading, like the Figma global search (Records / Reports / Sections)."
+    },
     "onSearchSelect": {
       "type": "function",
       "note": "(id: string) => void. Runs on Enter or click in the dropdown; it closes first."
@@ -218,6 +226,61 @@
                 ]
               }
             ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Search with tabs",
+      "usage": "searchVariant tabs: the dropdown gets All, Records, Reports and Sections tabs. Open the search to see it.",
+      "items": [
+        {
+          "props": {
+            "environment": "UAT-2",
+            "searchVariant": "tabs",
+            "searchGroups": [
+              {
+                "heading": "Records",
+                "items": [
+                  {
+                    "id": "acme",
+                    "label": "Acme Inc.",
+                    "description": "Account",
+                    "icon": "domain"
+                  },
+                  {
+                    "id": "inv-1042",
+                    "label": "INV-1042",
+                    "description": "Invoice · Paid",
+                    "icon": "receipt_long"
+                  }
+                ]
+              },
+              {
+                "heading": "Reports",
+                "items": [
+                  {
+                    "id": "q3",
+                    "label": "Q3 revenue",
+                    "icon": "bar_chart"
+                  }
+                ]
+              },
+              {
+                "heading": "Sections",
+                "items": [
+                  {
+                    "id": "billing",
+                    "label": "Billing settings",
+                    "icon": "settings"
+                  }
+                ]
+              }
+            ],
+            "user": {
+              "name": "Maya Chen",
+              "src": "/faces/maya-chen.jpg"
+            }
           }
         }
       ]

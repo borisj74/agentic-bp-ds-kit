@@ -3,7 +3,10 @@ import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 
 import { Button } from "../Button/Button";
 import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
 import { Icon } from "../Icon/Icon";
+import { Tabs } from "../Tabs/Tabs";
 import styles from "./Command.module.css";
+
+export type CommandVariant = "list" | "tabs";
 
 export interface CommandItem {
   id: string;
@@ -23,6 +26,7 @@ export interface CommandScope {
 }
 export interface CommandProps {
   groups: CommandGroup[];
+  variant?: CommandVariant;
   label?: string;
   placeholder?: string;
   empty?: string;
@@ -37,7 +41,7 @@ export interface CommandProps {
 }
 
 export function Command({
-  groups, label = "Search", placeholder = "Search by name, type, and more...", empty = "No matches found for this search.",
+  groups, variant = "list", label = "Search", placeholder = "Search by name, type, and more...", empty = "No matches found for this search.",
   defaultQuery = "", hints = true, scopes, scope, defaultScope, onScopeChange, autoFocus = false, onSelect,
 }: CommandProps) {
   const uid = useId();
@@ -51,12 +55,17 @@ export function Command({
   const [innerScope, setInnerScope] = useState(defaultScope ?? scopes?.[0]?.value ?? "");
   const currentScope = scope ?? innerScope;
 
-  const visible = useMemo(() => {
+  const [tab, setTab] = useState("all");
+
+  const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return groups
-      .map((g) => ({ ...g, items: q ? g.items.filter((i) => `${i.label} ${i.description ?? ""}`.toLowerCase().includes(q)) : g.items }))
-      .filter((g) => g.items.length > 0);
+    return groups.map((g) => ({ ...g, items: q ? g.items.filter((i) => `${i.label} ${i.description ?? ""}`.toLowerCase().includes(q)) : g.items }));
   }, [groups, query]);
+  // Tabs variant: All, then one tab per group heading. A heading tab shows only that group.
+  const tabbed = variant === "tabs";
+  const tabGroups = tabbed ? groups.map((g, i) => ({ id: `g${i}`, heading: g.heading })).filter((g) => g.heading) : [];
+  const tabHeading = tabGroups.find((t) => t.id === tab)?.heading;
+  const visible = matches.filter((g) => g.items.length > 0 && (!tabHeading || g.heading === tabHeading));
   const enabled = useMemo(() => visible.flatMap((g) => g.items.filter((i) => !i.disabled).map((i) => i.id)), [visible]);
   const activeId = active && enabled.includes(active) ? active : enabled[0] ?? null;
   const count = visible.reduce((n, g) => n + g.items.length, 0);
@@ -103,6 +112,11 @@ export function Command({
   };
 
   const scopeLabel = scopes?.find((s) => s.value === currentScope)?.label ?? scopes?.[0]?.label;
+  // With a query, each tab shows how many results it holds.
+  const countOf = (heading?: string) => matches.filter((g) => !heading || g.heading === heading).reduce((n, g) => n + g.items.length, 0);
+  const tabItems = [{ id: "all", label: "All" }, ...tabGroups.map((t) => ({ id: t.id, label: t.heading as string }))].map((t) => ({
+    ...t, ...(query ? { count: countOf(t.id === "all" ? undefined : t.label), countLabel: "results" } : {}),
+  }));
 
   return (
     <div className={styles.command}>
@@ -131,10 +145,16 @@ export function Command({
           </span>
         )}
       </div>
+      {tabbed && tabGroups.length > 0 && (
+        <div className={styles.tabs}>
+          <Tabs label={`${label} categories`} items={tabItems} value={tab} onChange={(id) => { setTab(id); setActive(null); }} />
+        </div>
+      )}
       <div ref={listRef} id={listId} role="listbox" aria-label={label} className={styles.list}>
         {visible.map((g, gi) => (
           <div key={g.heading ?? gi} role="group" aria-labelledby={g.heading ? `${uid}-g${gi}` : undefined} className={styles.group}>
-            {g.heading && <div id={`${uid}-g${gi}`} className={styles.heading}>{g.heading}</div>}
+            {/* A single-category tab already names the group, so its heading is only for screen readers. */}
+            {g.heading && <div id={`${uid}-g${gi}`} className={tabHeading ? styles.srOnly : styles.heading}>{g.heading}</div>}
             {g.items.map((item) => (
               <div
                 key={item.id} id={optionId(item.id)} role="option" aria-selected={item.id === activeId} aria-disabled={item.disabled || undefined}

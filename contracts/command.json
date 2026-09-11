@@ -2,7 +2,7 @@
   "name": "Command",
   "path": "src/ui/Command/Command.tsx",
   "intent": "A search field over a grouped list of pages, records and actions. Typing filters the list; arrow keys and Enter pick.",
-  "usage": "Use Command for quick jumps and actions across the app, like a global search. It is one component: pass groups of items as data. Typing filters by label and description. Arrow keys move the highlight and Enter picks; Escape clears the search. It shows inline; a ⌘K palette comes later. scopes adds a menu in the search row to narrow what it looks through. AppHeader opens it over its search field, so the field grows into the results. See contracts/command.json for the full contract.",
+  "usage": "Use Command for quick jumps and actions across the app, like a global search. It is one component: pass groups of items as data. Typing filters by label and description. Arrow keys move the highlight and Enter picks; Escape clears the search. It shows inline; a ⌘K palette comes later. variant tabs turns the group headings into tabs (All, Records, Reports...), like the global search. scopes adds a menu in the search row to narrow what it looks through. AppHeader opens it over its search field, so the field grows into the results. See contracts/command.json for the full contract.",
   "props": {
     "groups": {
       "type": "CommandGroup[]",
@@ -12,6 +12,14 @@
         "items": "CommandItem[]: { id: string, label: string, description?: string, icon?: string, shortcut?: string, disabled?: boolean }"
       },
       "note": "Groups are split by a thin line. icon is a Material Symbols name. shortcut shows as a key, like N. Icons sit in a tinted tile, like DropdownMenu."
+    },
+    "variant": {
+      "enum": [
+        "list",
+        "tabs"
+      ],
+      "default": "list",
+      "note": "list shows every group with its heading. tabs adds a kit Tabs strip under the search: All, then one tab per group heading, like Records / Reports / Sections. A heading tab shows only that group; with a query each tab shows its result count."
     },
     "label": {
       "type": "string",
@@ -121,6 +129,67 @@
                     "label": "Export all data",
                     "icon": "download",
                     "disabled": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Tabs variant",
+      "usage": "variant tabs puts All and one tab per group heading under the search. Type to see a result count on each tab.",
+      "items": [
+        {
+          "props": {
+            "label": "Search",
+            "variant": "tabs",
+            "groups": [
+              {
+                "heading": "Records",
+                "items": [
+                  {
+                    "id": "acme",
+                    "label": "Acme Inc.",
+                    "description": "Account",
+                    "icon": "domain"
+                  },
+                  {
+                    "id": "inv-1042",
+                    "label": "INV-1042",
+                    "description": "Invoice · Paid",
+                    "icon": "receipt_long"
+                  }
+                ]
+              },
+              {
+                "heading": "Reports",
+                "items": [
+                  {
+                    "id": "q3",
+                    "label": "Q3 revenue",
+                    "icon": "bar_chart"
+                  },
+                  {
+                    "id": "aging",
+                    "label": "Invoice aging",
+                    "icon": "bar_chart"
+                  }
+                ]
+              },
+              {
+                "heading": "Sections",
+                "items": [
+                  {
+                    "id": "billing",
+                    "label": "Billing settings",
+                    "icon": "settings"
+                  },
+                  {
+                    "id": "users",
+                    "label": "Users and roles",
+                    "icon": "group"
                   }
                 ]
               }

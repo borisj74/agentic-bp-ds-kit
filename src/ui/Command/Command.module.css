@@ -28,6 +28,8 @@
 .group + .group { margin-top: var(--space-xsmall); padding-top: var(--space-xsmall); border-top: var(--border-width-thin) solid var(--border-neutral-subtle); }
 .heading { padding: var(--space-xxsmall) var(--space-xsmall); font-size: var(--font-size-small); font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); }
 .scope { flex: none; display: inline-flex; }
+/* Tabs variant: the kit Tabs strip sits under the search row, lined up with the list. */
+.tabs { padding: 0 var(--space-small); }
 
 /* Rows match the kit DropdownMenu item: 28px min height, 2 / 8 px padding, 14px text. */
 .item {
