@@ -16,6 +16,7 @@ import { Command, type CommandGroup, type CommandProps } from "@/ui/Command/Comm
 import { Count } from "@/ui/Count/Count";
 import { ButtonFilter } from "@/ui/ButtonFilter/ButtonFilter";
 import { ButtonGroup } from "@/ui/ButtonGroup/ButtonGroup";
+import { DataGrid, type DataGridColumn, type DataGridProps, type DataGridRow } from "@/ui/DataGrid/DataGrid";
 import { DatePicker, type DatePickerProps } from "@/ui/DatePicker/DatePicker";
 import { DropdownMenu, type DropdownMenuEntry, type DropdownMenuProps } from "@/ui/DropdownMenu/DropdownMenu";
 import { Form, type FormProps } from "@/ui/Form/Form";
@@ -151,6 +152,32 @@ const TABLE_SAMPLES: Record<string, unknown> = {
 };
 const tableProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in TABLE_SAMPLES ? TABLE_SAMPLES[v] : v])) as unknown as TableProps;
+
+// DataGrid samples. Contract examples name them as {conditionColumns}, {conditions}, {lineItemColumns}, {lineItems}.
+const CONDITION_COLUMNS: DataGridColumn[] = [
+  { key: "field", header: "Field", type: "formula", placeholder: "Pick a field or write a formula", fields: [{ id: "Account.Status", label: "Account status" }, { id: "Invoice.Amount", label: "Invoice amount" }, { id: "Invoice.DueDate", label: "Due date" }], onCalculate: (f) => (f.trim() ? "Valid formula" : "Nothing to calculate") },
+  { key: "condition", header: "Condition", type: "select", placeholder: "Choose", width: "200px", options: [{ value: "equals", label: "Equals" }, { value: "notEquals", label: "Does not equal" }, { value: "greater", label: "Greater than" }, { value: "less", label: "Less than" }, { value: "contains", label: "Contains" }] },
+  { key: "value", header: "Value", placeholder: "Enter a value" },
+];
+const CONDITIONS: DataGridRow[] = [
+  { id: "c1", field: "{!Account.Status}", condition: "equals", value: "Active" },
+  { id: "c2", field: "{!Invoice.Amount}", condition: "greater", value: "1000" },
+];
+const LINE_ITEM_COLUMNS: DataGridColumn[] = [
+  { key: "product", header: "Product" },
+  { key: "sku", header: "SKU", readOnly: true, hug: true },
+  { key: "qty", header: "Qty", type: "number", hug: true },
+  { key: "price", header: "Unit price", type: "number" },
+];
+const LINE_ITEMS: DataGridRow[] = [
+  { id: "l1", product: "Premium support", sku: "SUP-100", qty: "1", price: "1200.00" },
+  { id: "l2", product: "Seat license", sku: "LIC-020", qty: "25", price: "40.00" },
+];
+const GRID_SAMPLES: Record<string, unknown> = {
+  "{conditionColumns}": CONDITION_COLUMNS, "{conditions}": CONDITIONS, "{lineItemColumns}": LINE_ITEM_COLUMNS, "{lineItems}": LINE_ITEMS,
+};
+const gridProps = (p: Props) =>
+  Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in GRID_SAMPLES ? GRID_SAMPLES[v] : v])) as unknown as DataGridProps;
 
 const MENU_ITEMS: DropdownMenuEntry[] = [
   { id: "edit", label: "Edit" },
@@ -344,6 +371,20 @@ export const registry: Record<string, Entry> = {
     normalize: ({ value, ...p }) => ({ ...p, count: Number(value ?? p.count) }),
     hint: "Switch size, tone and value. 150 shows as 99+ with the default max.",
     card: <div style={{ display: "flex", gap: 8, alignItems: "center" }}><Count count={3} /><Count tone="danger" count={12} /><Count tone="neutral" count={150} /></div>,
+  },
+  DataGrid: {
+    // Sample columns and rows swap in for their {names}. Keyed so switching controls starts fresh.
+    render: (p) => <DataGrid key={JSON.stringify(p)} {...gridProps(p)} />,
+    preview: { label: "Conditions", columns: "{conditionColumns}", defaultRows: "{conditions}", canAddRows: true, canRemoveRows: true },
+    snippet: { onRowsChange: "{setRules}" },
+    hint: "Click a cell to edit it: Field opens the formula editor, Condition is a select, Value is text. Enter saves, Escape cancels. Add and remove rows.",
+    block: true,
+    wide: true,
+    card: (
+      <div style={{ width: "250%", zoom: 0.4 }}>
+        <DataGrid label="Conditions" columns={CONDITION_COLUMNS} defaultRows={CONDITIONS} canRemoveRows />
+      </div>
+    ),
   },
   DatePicker: {
     // Keyed so a changed default value applies again. The wrapper gives the full-width field a form-like width.

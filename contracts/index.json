@@ -17,6 +17,7 @@
     {"name": "Checkbox", "contract": "contracts/checkbox.json", "category": "form", "tags": ["form", "checkbox", "multi-select", "toggle", "select all"]},
     {"name": "Command", "contract": "contracts/command.json", "category": "navigation", "tags": ["command", "search", "global search", "palette", "quick actions", "combobox"]},
     {"name": "Count", "contract": "contracts/count.json", "category": "feedback", "tags": ["counter", "notification", "number badge", "unread", "badge count"]},
+    {"name": "DataGrid", "contract": "contracts/datagrid.json", "category": "data", "tags": ["data grid", "editable table", "spreadsheet", "inline edit", "rows", "conditions", "line items", "rule builder"]},
     {"name": "DatePicker", "contract": "contracts/datepicker.json", "category": "form", "tags": ["date", "calendar", "date range", "picker", "period", "form"]},
     {"name": "Density", "contract": "contracts/density.json", "category": "layout", "tags": ["density", "size", "compact", "comfortable", "text size", "scale"]},
     {"name": "DropdownMenu", "contract": "contracts/dropdownmenu.json", "category": "overlay", "tags": ["dropdown", "menu", "actions", "more", "context menu", "filter options"]},

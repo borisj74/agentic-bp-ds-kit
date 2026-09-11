@@ -1,5 +1,5 @@
 "use client";
-import { useId, useState, type ChangeEvent } from "react";
+import { useId, useRef, useState, type ChangeEvent } from "react";
 import { useDensitySize } from "../Density/Density";
 import { useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
@@ -62,6 +62,17 @@ export function Input({
   const message = error || hint;
   const describedBy = [message ? messageId : "", maxLength ? countId : "", help ? helpId : ""].filter(Boolean).join(" ") || undefined;
   const iconSize = size === "sm" ? "sm" : "md";
+  const nativeRef = useRef<HTMLInputElement>(null);
+  // Number fields swap the browser's spinner for kit chevrons. Arrow keys still step, as usual.
+  const stepper = type === "number" && !disabled && !readOnly;
+  // Each half of a 28 or 36px field fits the 12px chevron; a 44px field fits the 16px one.
+  const stepIcon = size === "lg" ? "sm" : "xs";
+  const step = (by: number) => {
+    const next = String((Number(current) || 0) + by);
+    if (value === undefined) setInner(next);
+    onChange?.(next);
+    nativeRef.current?.focus();
+  };
 
   const handle = (e: ChangeEvent<HTMLInputElement>) => {
     if (isFile) onFilesChange?.(Array.from(e.target.files ?? []));
@@ -90,7 +101,7 @@ export function Input({
           {iconStart && <Icon name={iconStart} size={iconSize} className={styles.icon} />}
           {prefix && <span className={styles.affix}>{prefix}</span>}
           <input
-            id={inputId} className={styles.native} type={type} name={name} autoComplete={autoComplete}
+            ref={nativeRef} id={inputId} className={styles.native} type={type} name={name} autoComplete={autoComplete}
             {...(isFile ? { accept, multiple } : { placeholder, value: current })}
             onChange={handle} required={required} disabled={disabled} readOnly={readOnly} maxLength={maxLength}
             aria-invalid={bad || undefined} aria-describedby={describedBy}
@@ -98,6 +109,17 @@ export function Input({
           {suffix && <span className={styles.affix}>{suffix}</span>}
           {maxLength !== undefined && <span id={countId} className={styles.count}>{current.length}/{maxLength}</span>}
           {iconEnd && <Icon name={iconEnd} size={iconSize} className={styles.icon} />}
+          {stepper && (
+            // Pointer aids only: keyboard users step with the arrow keys, so these stay out of the tab order.
+            <span className={styles.stepper} aria-hidden="true">
+              <button type="button" tabIndex={-1} className={styles.step} onMouseDown={(e) => e.preventDefault()} onClick={() => step(1)}>
+                <Icon name="expand_less" size={stepIcon} />
+              </button>
+              <button type="button" tabIndex={-1} className={styles.step} onMouseDown={(e) => e.preventDefault()} onClick={() => step(-1)}>
+                <Icon name="expand_more" size={stepIcon} />
+              </button>
+            </span>
+          )}
         </div>
         {message && <p id={messageId} className={error ? styles.error : styles.hint}>{message}</p>}
       </div>

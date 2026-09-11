@@ -46,6 +46,23 @@
 /* Figma uses text/neutral/faint; subtle reads better and still looks like a placeholder. */
 .native::placeholder { color: var(--text-neutral-subtle); opacity: 1; }
 
+/* Number: no browser spinner; kit chevrons stacked at the end step the value instead. */
+.native[type="number"] { appearance: textfield; -moz-appearance: textfield; }
+.native[type="number"]::-webkit-inner-spin-button,
+.native[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+/* Two halves of the field's inner height, so the pair always fits and sits centred. */
+.stepper {
+  display: flex; flex-direction: column; flex: none; align-self: stretch;
+  gap: var(--border-width-thin); padding-block: var(--border-width-thin); margin-inline-end: calc(var(--space-xxsmall) * -1);
+}
+.step {
+  display: flex; align-items: center; justify-content: center; flex: 1 1 0; min-height: 0; overflow: hidden;
+  width: var(--icon-size-medium); margin: 0; padding: 0; border: 0; border-radius: var(--radius-small);
+  background: transparent; color: var(--icon-neutral); cursor: pointer;
+}
+.step:hover { background: var(--bg-neutral-min-hover); color: var(--icon-neutral-strong); }
+.step:active { background: var(--bg-neutral-min-press); }
+
 /* File: the native picker. "Choose file" reads as a quiet button at the start; the file name follows. */
 .field:has(> .native[type="file"]) { cursor: pointer; }
 .native[type="file"] { cursor: pointer; color: var(--text-neutral); }

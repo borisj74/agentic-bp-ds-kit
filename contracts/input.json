@@ -43,7 +43,7 @@
         "file"
       ],
       "default": "text",
-      "note": "file opens the native file picker. value, defaultValue, placeholder, prefix, suffix and maxLength do not apply to it."
+      "note": "file opens the native file picker. value, defaultValue, placeholder, prefix, suffix and maxLength do not apply to it. number shows kit up and down chevrons at the end instead of the browser spinner; arrow keys still step by 1."
     },
     "placeholder": {
       "type": "string",

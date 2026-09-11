@@ -1239,4 +1239,6 @@
   --side-nav-panel-min: 160px;
   --side-nav-panel-max: 280px;
   --toolbar-search: 200px;
+  --data-grid-column-min: 160px;
+  --data-grid-edit-min: 96px;
 }

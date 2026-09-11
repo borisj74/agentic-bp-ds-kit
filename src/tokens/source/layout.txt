@@ -163,3 +163,8 @@ side-nav/panel-max|280px
 
 # Toolbar (Figma toolbar 6057:15099, filters-bar 3579:30240): search field 200 wide, past the ref scale.
 toolbar/search|200px
+
+# DataGrid (Figma data-grid 4350:109705, table cell notes 4350:109418): columns are at least 160 wide unless they hug.
+data-grid/column-min|160px
+# not in Figma: a hug cell being edited is at least 96 wide, room for a few digits and the stepper.
+data-grid/edit-min|96px

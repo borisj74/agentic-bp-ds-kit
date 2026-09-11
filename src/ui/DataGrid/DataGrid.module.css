@@ -1,0 +1,66 @@
+/* Figma data-grid 4350:109705: a spreadsheet-like grid. Every body cell is boxed by a line, on a faint fill,
+   so it reads as something to fill in. The header is the kit HeaderCell on white, with its brand-faint line. */
+.grid { display: flex; flex-direction: column; gap: var(--space-xsmall); min-width: 0; font-family: var(--font-sans); }
+.wrap { max-width: 100%; overflow-x: auto; }
+
+.table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.table th, .table td { padding: 0; text-align: start; vertical-align: middle; }
+.table th { background: var(--surface-flat); border-right: var(--border-width-thin) solid var(--border-neutral-faint); }
+.table th:first-child { border-left: var(--border-width-thin) solid var(--border-neutral-faint); }
+.table th > * { background: transparent; }
+.table td {
+  background: var(--bg-neutral-faint);
+  border-right: var(--border-width-thin) solid var(--border-neutral-subtle);
+  border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
+  font-size: var(--font-size-small); color: var(--text-neutral-strong);
+}
+.table td:first-child { border-left: var(--border-width-thin) solid var(--border-neutral-subtle); }
+/* Rows are 48 / 56 like Table, line included; a table cell's height acts as its minimum, so formula editors can grow it. */
+.sm td { height: calc(var(--cell-height-sm) - var(--border-width-thin)); }
+.md td { height: calc(var(--cell-height-md) - var(--border-width-thin)); }
+
+/* Columns are at least 160 wide; hug columns (# and remove) are only as wide as their content. */
+.fill { min-width: var(--data-grid-column-min); }
+.hug { width: 1%; white-space: nowrap; }
+/* Hug cells keep their value on one line, so the column sizes to the whole value instead of one character. */
+.hugCell { white-space: nowrap; }
+.hugCell .value { overflow-wrap: normal; }
+/* While editing, the editor takes the column's width instead of pushing it open (width 0, then fill);
+   the cell only grows to a small floor so a short number and the stepper fit. */
+.hugCell.editing .control { width: 0; min-width: 100%; box-sizing: border-box; }
+.table td.hugCell.editing { min-width: var(--data-grid-edit-min); }
+
+/* td.x so these win over the base ".table td" rule (no padding, text at the start). */
+.table td.index { width: 1%; padding: 0 var(--space-small); text-align: center; color: var(--text-neutral); font-variant-numeric: tabular-nums; }
+.table td.remove { width: 1%; padding: 0 var(--space-xxsmall); text-align: center; }
+
+/* A cell at rest: its value as a button that fills the cell. Hover shows it can be edited. */
+.cellButton {
+  box-sizing: border-box; display: flex; align-items: center;
+  width: 100%; min-height: inherit; height: 100%; margin: 0; padding: var(--space-xsmall) var(--space-small);
+  border: 0; background: transparent; cursor: text;
+  font: inherit; color: inherit; text-align: start;
+}
+.sm .cellButton { min-height: calc(var(--cell-height-sm) - var(--border-width-thin)); }
+.md .cellButton { min-height: calc(var(--cell-height-md) - var(--border-width-thin)); }
+.cellButton:hover { background: var(--bg-neutral-min-hover); }
+.cellButton:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(var(--border-width-medium) * -1); }
+.value { min-width: 0; overflow-wrap: anywhere; }
+.placeholder { color: var(--text-neutral-subtle); }
+.mono { font-family: var(--font-mono); font-size: var(--font-size-xsmall); }
+.numeric .cellButton { justify-content: flex-end; }
+.numeric { font-variant-numeric: tabular-nums; }
+.readOnly { color: var(--text-neutral); }
+.readOnly .value { display: block; padding: var(--space-xsmall) var(--space-small); }
+.numeric.readOnly .value { text-align: end; }
+
+/* Editing: the cell turns white and holds the kit editor. */
+.table td.editing { background: var(--surface-flat); }
+.control { display: block; padding: var(--space-xxsmall) var(--space-xsmall); }
+.formula { display: flex; flex-direction: column; gap: var(--space-xxsmall); padding: var(--space-xsmall); }
+.done { display: flex; justify-content: flex-end; }
+
+.table td.empty { padding: var(--space-medium); text-align: center; color: var(--text-neutral); }
+.add { display: flex; }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

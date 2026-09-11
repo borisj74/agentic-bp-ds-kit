@@ -1,0 +1,122 @@
+{
+  "name": "DataGrid",
+  "path": "src/ui/DataGrid/DataGrid.tsx",
+  "intent": "An editable table: people click a cell to add or change its content, like rule conditions, line items or mappings.",
+  "usage": "Use DataGrid when people enter or change data in rows, not just read it. It is one component: pass columns and rows as data. Each column has a type: text and number cells edit in place with a kit Input, select cells are a kit Select, formula cells open a kit FormulaEditor in the cell, and readOnly columns only show. Click a cell or press Enter to edit; Enter or leaving the cell saves, Escape cancels, Tab moves to the next cell. rowNumbers adds a # column. canAddRows adds an Add row button under the grid and canRemoveRows a remove button on each row. Columns are at least 160 wide unless they hug. For read-only lists use Table. See contracts/datagrid.json for the full contract.",
+  "props": {
+    "columns": {
+      "type": "DataGridColumn[]",
+      "required": true,
+      "itemShape": "{ key: string; header: string; type?: \"text\" | \"number\" | \"select\" | \"formula\"; options?: SelectOption[]; placeholder?: string; readOnly?: boolean; hug?: boolean; width?: string; fields?: FormulaField[]; onCalculate?: (formula: string) => string }",
+      "note": "type defaults to text. options for select. fields and onCalculate for formula, passed to the FormulaEditor. hug makes the column only as wide as its content; otherwise it is at least 160 wide. width is a CSS width."
+    },
+    "rows": {
+      "type": "DataGridRow[]",
+      "itemShape": "{ id: string; [key: string]: string }",
+      "note": "Controlled rows, one value per column key."
+    },
+    "defaultRows": {
+      "type": "DataGridRow[]",
+      "note": "Starting rows when rows is not controlled."
+    },
+    "onRowsChange": {
+      "type": "function",
+      "note": "(rows: DataGridRow[]) => void. Runs when a cell is saved and when rows are added or removed."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md"
+      ],
+      "default": "md",
+      "note": "Row height 48 / 56, header 40 / 48, same as Table. Without a size, a surrounding Density in compact makes it sm. Formula cells grow while they are edited."
+    },
+    "rowNumbers": {
+      "type": "boolean",
+      "default": true,
+      "note": "A # column with each row's number."
+    },
+    "canAddRows": {
+      "type": "boolean",
+      "default": false,
+      "note": "An Add row button under the grid. The new row starts empty and its first cell opens for editing."
+    },
+    "canRemoveRows": {
+      "type": "boolean",
+      "default": false,
+      "note": "A remove button at the end of each row, named by a kit Tooltip."
+    },
+    "emptyLabel": {
+      "type": "string",
+      "default": "No rows yet.",
+      "note": "Shown across the columns when there are no rows."
+    },
+    "label": {
+      "type": "string",
+      "default": "Data grid",
+      "note": "Names the grid for screen readers, and each cell's field, like Value, row 2."
+    }
+  },
+  "useWhen": [
+    "People build or change rows of data in place: rule conditions, price tiers, field mappings, line items.",
+    "Short editable lists where a form per row would be slow."
+  ],
+  "doNot": [
+    "Do not use it to show data people only read. Use Table.",
+    "Do not invent an EditableCell, GridRow or a table of loose inputs. Pass columns with a type.",
+    "Do not put a Form around each row. Save the rows from onRowsChange.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A native table named by label, with kit HeaderCell headers.",
+    "Each editable cell is a button named by its column and row with its value, like Value, row 2: 100. Enter or click opens a kit Input, Select or FormulaEditor named the same way, and focus moves into it.",
+    "Enter saves and Escape cancels; focus goes back to the cell. Tab moves to the next cell.",
+    "Remove row buttons are named Remove row 2 and show that in a Tooltip."
+  ],
+  "snippet": "<DataGrid\n  label=\"Conditions\"\n  columns={[\n    { key: \"field\", header: \"Field\", type: \"formula\", fields: accountFields },\n    { key: \"condition\", header: \"Condition\", type: \"select\", options: conditions, width: \"200px\" },\n    { key: \"value\", header: \"Value\" },\n  ]}\n  rows={rules}\n  onRowsChange={setRules}\n  canAddRows\n  canRemoveRows\n/>",
+  "examples": [
+    {
+      "title": "Conditions",
+      "usage": "Field is a formula cell, Condition a Select and Value text. Click a cell to edit it; add and remove rows.",
+      "items": [
+        {
+          "props": {
+            "label": "Conditions",
+            "columns": "{conditionColumns}",
+            "defaultRows": "{conditions}",
+            "canAddRows": true,
+            "canRemoveRows": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Line items",
+      "usage": "number cells align to the end. A readOnly column shows values people cannot change. Small size for denser rows.",
+      "items": [
+        {
+          "props": {
+            "label": "Line items",
+            "size": "sm",
+            "columns": "{lineItemColumns}",
+            "defaultRows": "{lineItems}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Empty",
+      "usage": "No rows yet: headers stay, and Add row starts the first one.",
+      "items": [
+        {
+          "props": {
+            "label": "Conditions",
+            "columns": "{conditionColumns}",
+            "defaultRows": [],
+            "canAddRows": true
+          }
+        }
+      ]
+    }
+  ]
+}
