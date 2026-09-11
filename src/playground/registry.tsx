@@ -32,6 +32,7 @@ import { LogoAI } from "@/ui/LogoAI/LogoAI";
 import { PageHeader, type PageHeaderProps } from "@/ui/PageHeader/PageHeader";
 import { RadioGroup, type RadioGroupOption } from "@/ui/RadioGroup/RadioGroup";
 import { Scoreboard, type ScoreboardItem, type ScoreboardProps } from "@/ui/Scoreboard/Scoreboard";
+import { Section, type SectionProps } from "@/ui/Section/Section";
 import { SegmentedControl, type SegmentedControlProps } from "@/ui/SegmentedControl/SegmentedControl";
 import { Select, type SelectProps } from "@/ui/Select/Select";
 import { SideNav, type SideNavEntry, type SideNavItem, type SideNavProps } from "@/ui/SideNav/SideNav";
@@ -215,6 +216,22 @@ const slides = (vertical: boolean) => Array.from({ length: 5 }, (_, i) => (
     {i + 1}
   </div>
 ));
+
+// Section samples. Contract examples name them as {editAction}, {addAction}, {accountRows}, {invoiceTable}.
+const SECTION_SAMPLES: Record<string, ReactNode> = {
+  "{editAction}": <Button size="sm" iconStart="edit">Edit</Button>,
+  "{addAction}": <Button size="sm" iconStart="add">Add contact</Button>,
+  "{accountRows}": (
+    <div>
+      <FormDisplay label="Account name" value="Northwind Traders" />
+      <FormDisplay label="Account number" value="ACC-10482" />
+      <FormDisplay label="Billing contact" value="Maria Anders" />
+    </div>
+  ),
+  "{invoiceTable}": <Table size="sm" columns={INVOICE_COLUMNS} rows={INVOICES.slice(0, 3)} />,
+};
+const sectionProps = (p: Props) =>
+  Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in SECTION_SAMPLES ? SECTION_SAMPLES[v] : v])) as unknown as SectionProps;
 
 const MENU_ITEMS: DropdownMenuEntry[] = [
   { id: "edit", label: "Edit" },
@@ -699,6 +716,23 @@ export const registry: Record<string, Entry> = {
     card: (
       <div style={{ width: "250%", zoom: 0.4 }}>
         <Scoreboard items={CHART_KPIS} />
+      </div>
+    ),
+  },
+  Section: {
+    // Sample content and actions swap in for their {names}. Keyed so a changed default open state applies again.
+    render: (p) => <Section key={JSON.stringify(p)} {...sectionProps(p)} />,
+    preview: { title: "Account information", help: "Details from the account record. Edit them on the account.", collapsible: true, actions: "{editAction}", children: "{accountRows}" },
+    hide: ["open"],
+    extras: { content: { values: ["body", "header only"], default: "body" } },
+    normalize: ({ content, children, ...p }) => (content === "header only" ? p : { ...p, children }),
+    hint: "Click the chevron to fold the section. Turn collapsible off for a static heading; content header only drops the body.",
+    block: true,
+    card: (
+      <div style={{ width: "250%", zoom: 0.4 }}>
+        <Section title="Account information" collapsible actions={<Button size="sm" iconStart="edit">Edit</Button>}>
+          <FormDisplay label="Account name" value="Northwind Traders" />
+        </Section>
       </div>
     ),
   },

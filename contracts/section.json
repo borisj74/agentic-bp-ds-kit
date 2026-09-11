@@ -1,0 +1,121 @@
+{
+  "name": "Section",
+  "path": "src/ui/Section/Section.tsx",
+  "intent": "A titled block of a page, like Account information or Recent invoices: a header with a line under it, optional help and buttons, and the content below. It can collapse.",
+  "usage": "Use Section to split a page under its PageHeader into titled parts, each holding a Table, FormDisplay rows, a Scoreboard or a Form. It is one component: pass title and the content as children, or leave children out for a header only, like a heading above content laid out by the page. help adds a ? icon after the title that opens a HelpPopover. actions holds kit Buttons at the end of the header. collapsible adds a chevron button before the title that hides and shows the content; it starts open unless defaultOpen is false. See contracts/section.json for the full contract.",
+  "props": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "note": "The heading, an h2."
+    },
+    "description": {
+      "type": "string",
+      "note": "One short line under the title."
+    },
+    "help": {
+      "type": "string",
+      "note": "Adds a ? icon after the title that opens a HelpPopover titled with the section title, like the field help icons."
+    },
+    "actions": {
+      "type": "ReactNode",
+      "note": "Kit Buttons or a DropdownMenu at the end of the header, usually size sm. One primary Button per view."
+    },
+    "children": {
+      "type": "ReactNode",
+      "note": "The section's content. Leave it out for a header only: the title row and its line, with nothing below."
+    },
+    "collapsible": {
+      "type": "boolean",
+      "default": false,
+      "note": "A chevron button before the title hides and shows the content."
+    },
+    "open": {
+      "type": "boolean",
+      "note": "Controlled open state when collapsible."
+    },
+    "defaultOpen": {
+      "type": "boolean",
+      "default": true,
+      "note": "Starting open state when collapsible and not controlled."
+    },
+    "onOpenChange": {
+      "type": "function",
+      "note": "(open: boolean) => void"
+    }
+  },
+  "useWhen": [
+    "Splitting a record or dashboard page into titled parts, like Account information, Contacts and Invoices.",
+    "Long detail pages where people fold away parts they don't need: make them collapsible."
+  ],
+  "doNot": [
+    "Do not invent a SectionHeader, SectionTitle or a heading with a border. Use Section.",
+    "Do not use it for the page title. Use PageHeader.",
+    "Do not use it for a list of questions that open one at a time. Use Accordion.",
+    "Do not put a Section around a Form's own sections. Form has sections.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A section element named by its h2 title.",
+    "The chevron is a kit Button named by the title, with aria-expanded and aria-controls pointing at the content. Collapsed content is hidden, so it is skipped by keyboard and screen readers.",
+    "The help icon is a button named About plus the title; the help text is also the heading's description."
+  ],
+  "snippet": "<Section\n  title=\"Account information\"\n  help=\"Details from the account record. Edit them on the account.\"\n  collapsible\n  actions={<Button size=\"sm\" iconStart=\"edit\">Edit</Button>}\n>\n  <FormDisplay label=\"Account name\" value=\"Northwind Traders\" />\n</Section>",
+  "examples": [
+    {
+      "title": "Collapsible",
+      "usage": "The chevron before the title folds the content away. help adds the ? icon, actions the buttons at the end.",
+      "items": [
+        {
+          "props": {
+            "title": "Account information",
+            "help": "Details from the account record. Edit them on the account.",
+            "collapsible": true,
+            "actions": "{editAction}",
+            "children": "{accountRows}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Static",
+      "usage": "Without collapsible the header is only a title, here with a description line and a table below.",
+      "items": [
+        {
+          "props": {
+            "title": "Recent invoices",
+            "description": "Invoices from the last 30 days.",
+            "children": "{invoiceTable}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Header only",
+      "usage": "No children: just the title row and its line, with help and actions. Use it as a heading above content the page lays out itself.",
+      "items": [
+        {
+          "props": {
+            "title": "Contacts",
+            "help": "People on this account who get invoices and notices.",
+            "actions": "{addAction}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Starts closed",
+      "usage": "defaultOpen false starts folded, for parts people rarely need.",
+      "items": [
+        {
+          "props": {
+            "title": "Billing history",
+            "collapsible": true,
+            "defaultOpen": false,
+            "children": "{accountRows}"
+          }
+        }
+      ]
+    }
+  ]
+}
