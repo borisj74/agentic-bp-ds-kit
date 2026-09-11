@@ -1,0 +1,186 @@
+{
+  "name": "Card",
+  "path": "src/ui/Card/Card.tsx",
+  "intent": "One item in a grid or list of options people compare and pick, like a proposal line, product or plan: title, details, a price and a status note, with an optional image and a select checkbox.",
+  "usage": "Use Card for items people scan side by side and often pick from. It is one component: pass the parts you need as props; every part is optional, like the Figma switches (header, badge, overline, title, description, amount, message, image, footer). The header row holds a badge and an overline, like a request code. description is two lines at most. amount is the price or key number. message is a short status line with an icon, colored by messageTone. image shows a photo tile at the top right, or icon an icon tile. selectable adds a footer checkbox; clicking anywhere on the card toggles it, and the selected card turns blue. disabled greys the card out. Lay cards out with the layout grid classes. See contracts/card.json for the full contract.",
+  "props": {
+    "title": {
+      "type": "string",
+      "note": "The item name, an h3. Two lines at most. Without it, the overline (or else the description) names the card and its checkbox."
+    },
+    "overline": {
+      "type": "string",
+      "note": "A short line in the header row, like Req 6787686."
+    },
+    "badge": {
+      "type": "string",
+      "note": "A kit Badge at the start of the header row."
+    },
+    "badgeTone": {
+      "type": "BadgeTone",
+      "default": "neutral",
+      "note": "The Badge tone."
+    },
+    "description": {
+      "type": "string",
+      "note": "Body text, cut off after two lines."
+    },
+    "amount": {
+      "type": "string",
+      "note": "The price or key number, like $1,200.00."
+    },
+    "message": {
+      "type": "string",
+      "note": "A short status line under the text, like In stock or Needs approval."
+    },
+    "messageTone": {
+      "enum": [
+        "success",
+        "warning",
+        "danger",
+        "info"
+      ],
+      "default": "success",
+      "note": "The message's icon and color: success a check, warning a triangle, danger an error mark, info an i."
+    },
+    "image": {
+      "type": "string",
+      "note": "Photo URL for the 72 tile at the top right."
+    },
+    "imageAlt": {
+      "type": "string",
+      "note": "Describes the photo. Leave it out when the photo only repeats the title."
+    },
+    "icon": {
+      "type": "string",
+      "note": "Material Symbols name for the 72 tile when there is no image, white on brand."
+    },
+    "selectable": {
+      "type": "boolean",
+      "default": false,
+      "note": "Adds the footer checkbox, named Select plus the title. Clicking anywhere on the card toggles it."
+    },
+    "selected": {
+      "type": "boolean",
+      "note": "Controlled selection."
+    },
+    "defaultSelected": {
+      "type": "boolean",
+      "default": false,
+      "note": "Starting selection when not controlled."
+    },
+    "onSelectedChange": {
+      "type": "function",
+      "note": "(selected: boolean) => void"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "note": "Greys the card out and disables its checkbox."
+    }
+  },
+  "useWhen": [
+    "Proposal lines, products or plans people compare and pick, in a grid or a list.",
+    "Items that each need a title, a few details, a price and a status at a glance."
+  ],
+  "doNot": [
+    "Do not build a card from a div with a border, or add a ProductCard, ProposalCard or CardFooter. Use Card.",
+    "Do not use it for page sections. Use Section.",
+    "Do not use it for key numbers. Use Scoreboard.",
+    "Do not put rows of records in cards when people need to sort or compare columns. Use Table.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The title is an h3 that names the card. Without a title, the card and its checkbox are named by the overline, or else the description.",
+    "When selectable, the footer Checkbox is the control, named Select plus the title. Clicking the card is a pointer shortcut for it; keyboard users tab to the Checkbox.",
+    "The message icon is decorative; the message text says what it means.",
+    "The image uses imageAlt, or is decorative without it. The icon tile is decorative."
+  ],
+  "snippet": "<Card\n  badge=\"New\"\n  overline=\"Req 6787686\"\n  title=\"Alpha Logic wireless ergonomic mouse\"\n  description=\"Rechargeable, 6 buttons, works with Windows and macOS.\"\n  amount=\"$49.00\"\n  message=\"In stock\"\n  icon=\"mouse\"\n  selectable\n/>",
+  "examples": [
+    {
+      "title": "Selectable",
+      "usage": "Click anywhere on a card to pick it; the checkbox follows and the picked card turns blue.",
+      "items": [
+        {
+          "props": {
+            "badge": "New",
+            "overline": "Req 6787686",
+            "title": "Alpha Logic wireless ergonomic mouse",
+            "description": "Rechargeable, 6 buttons and a thumb rest. Works with Windows and macOS over Bluetooth or the USB receiver.",
+            "amount": "$49.00",
+            "message": "In stock",
+            "icon": "mouse",
+            "selectable": true
+          }
+        },
+        {
+          "props": {
+            "badge": "New",
+            "overline": "Req 6787687",
+            "title": "Keystone low-profile keyboard",
+            "description": "Quiet scissor keys, backlit, with a numeric pad.",
+            "amount": "$89.00",
+            "message": "Ships in 2 weeks",
+            "messageTone": "warning",
+            "icon": "keyboard",
+            "selectable": true,
+            "defaultSelected": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Disabled",
+      "usage": "A card people can't pick right now: greyed out, checkbox off.",
+      "items": [
+        {
+          "props": {
+            "badge": "Retired",
+            "overline": "Req 6787601",
+            "title": "Beacon USB-C dock",
+            "description": "No longer offered on new proposals.",
+            "amount": "$129.00",
+            "message": "Out of stock",
+            "messageTone": "danger",
+            "icon": "dock",
+            "selectable": true,
+            "disabled": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Without title",
+      "usage": "No title: the header row, description and amount carry the card. The overline names it for screen readers.",
+      "items": [
+        {
+          "props": {
+            "badge": "Draft",
+            "overline": "Req 6787690",
+            "description": "Two monitors and stands for the new design team, delivered to the Berlin office.",
+            "amount": "$1,480.00",
+            "message": "Needs approval",
+            "messageTone": "warning",
+            "selectable": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Plain",
+      "usage": "Without selectable, the card only shows. Leave out the parts you don't need.",
+      "items": [
+        {
+          "props": {
+            "title": "Annual support plan",
+            "description": "Priority email and phone support, with a named account manager.",
+            "amount": "$1,200.00 / year",
+            "message": "Renews on 1 March",
+            "messageTone": "info"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+/* Figma card 6290:315. */
+.card {
+  box-sizing: border-box; display: flex; flex-direction: column; min-width: 0; overflow: hidden;
+  border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-large);
+  background: var(--surface-flat); font-family: var(--font-sans); color: var(--text-neutral);
+}
+/* Hover only shows when the card can be picked. */
+.selectable { cursor: pointer; }
+.selectable:hover { background: var(--bg-neutral-faint); border-color: var(--border-neutral); }
+.card.selected { background: var(--bg-neutral-min-selected); border-color: var(--border-brand); }
+.card.disabled { background: var(--bg-neutral-faint); border-color: var(--border-neutral-subtle); }
+
+/* The body grows, so in a grid row of cards the footers line up at the bottom. */
+.body { display: flex; flex-direction: column; gap: var(--space-medium); flex: 1 1 auto; padding: var(--space-xlarge); }
+.top { display: flex; align-items: flex-start; gap: var(--space-medium); }
+.text { display: flex; flex-direction: column; gap: var(--space-small); flex: 1 1 auto; min-width: 0; }
+.header { display: flex; align-items: center; gap: var(--space-xsmall); min-width: 0; }
+.overline { min-width: 0; font-size: var(--font-size-small); line-height: var(--line-height-tight); overflow-wrap: anywhere; }
+
+/* Title and body stop after two lines. */
+.title, .description { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; margin: 0; }
+.title { font-size: var(--font-size-large); font-weight: var(--font-weight-bold); line-height: var(--line-height-tight); color: var(--text-neutral-intense); }
+.description { font-size: var(--font-size-small); line-height: var(--line-height-tight); }
+.amount { margin: 0; font-size: var(--font-size-regular); font-weight: var(--font-weight-semibold); line-height: var(--line-height-tight); color: var(--text-neutral-intense); font-variant-numeric: tabular-nums; }
+/* Dark: text-neutral-intense stays dark in the BP palette, so use strong text on the dark card. */
+:global([data-theme="dark"]) .title, :global([data-theme="dark"]) .amount { color: var(--text-neutral-strong); }
+
+/* The 72 tile: Figma Avatar icon type, square. The icon tile is white on the brand color. */
+.tile { flex: none; width: var(--card-tile); height: var(--card-tile); border-radius: var(--radius-medium); object-fit: cover; }
+.iconTile { display: grid; place-items: center; background: var(--icon-brand-strong); color: var(--icon-neutral-min); }
+
+.message { display: flex; align-items: center; gap: var(--space-xsmall); margin: 0; font-size: var(--font-size-xsmall); line-height: var(--line-height-tight); }
+.message.success { color: var(--text-success); }
+.message.warning { color: var(--text-warning); }
+.message.danger { color: var(--text-danger); }
+.message.info { color: var(--text-info); }
+
+/* Footer: the select checkbox. It turns faint grey on the picked card, like Figma. */
+.footer { display: flex; align-items: center; padding: var(--space-small) var(--space-medium); }
+.selected .footer { background: var(--bg-neutral-faint); }
+
+/* Disabled: every line turns faint and the tile goes grey. */
+.disabled .title, .disabled .description, .disabled .amount, .disabled .message { color: var(--text-neutral-faint); }
+.disabled .iconTile { background: var(--bg-neutral-subtle); color: var(--icon-neutral-faint); }
+.disabled img.tile { opacity: var(--opacity-disabled); }

@@ -13,6 +13,7 @@
     {"name": "Button", "contract": "contracts/button.json", "category": "base", "tags": ["action", "cta", "submit"]},
     {"name": "ButtonFilter", "contract": "contracts/buttonfilter.json", "category": "base", "tags": ["filter", "split button", "dropdown trigger", "menu button"]},
     {"name": "ButtonGroup", "contract": "contracts/buttongroup.json", "category": "base", "tags": ["toolbar", "segmented", "view switch", "actions"]},
+    {"name": "Card", "contract": "contracts/card.json", "category": "data", "tags": ["card", "tile", "item", "product", "proposal", "line item", "plan", "selectable card", "grid"]},
     {"name": "Carousel", "contract": "contracts/carousel.json", "category": "layout", "tags": ["carousel", "slider", "slides", "gallery", "featured", "paged", "swipe"]},
     {"name": "Cell", "contract": "contracts/cell.json", "category": "data", "tags": ["table", "cell", "data table", "row", "td"]},
     {"name": "Checkbox", "contract": "contracts/checkbox.json", "category": "form", "tags": ["form", "checkbox", "multi-select", "toggle", "select all"]},

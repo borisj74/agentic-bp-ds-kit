@@ -10,6 +10,7 @@ import { Badge } from "@/ui/Badge/Badge";
 import { BadgeAlt } from "@/ui/BadgeAlt/BadgeAlt";
 import { Breadcrumb, type BreadcrumbItem } from "@/ui/Breadcrumb/Breadcrumb";
 import { Button } from "@/ui/Button/Button";
+import { Card, type CardProps } from "@/ui/Card/Card";
 import { Carousel, type CarouselProps } from "@/ui/Carousel/Carousel";
 import { Cell, type CellType } from "@/ui/Cell/Cell";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
@@ -95,6 +96,9 @@ export interface Entry {
   wide?: boolean;
   /** Playground-only radio controls that are not contract props. normalize turns them into real props. */
   extras?: Record<string, { values: string[]; default: string }>;
+  /** Playground-only on/off switches, shown as a Content group, like Figma boolean properties. A key that is a real
+   *  boolean prop sets it (labelled here instead of under States); other keys are read by normalize to drop parts. */
+  toggles?: Record<string, { label: string; default: boolean }>;
   /** Fills in props a combination needs, e.g. an icon for icon-only. */
   normalize?: (p: Props) => Props;
   card: ReactNode;
@@ -388,6 +392,48 @@ export const registry: Record<string, Entry> = {
     render: (p) => <LogoAI {...(p as object)} />,
     preview: {},
     card: <div style={{ display: "flex", gap: 16, alignItems: "center" }}><LogoAI /><LogoAI tone="filled" /></div>,
+  },
+  Card: {
+    // Figma's card is 554 wide; 420 here so two sit side by side in the variants.
+    render: (p) => (
+      <div style={{ width: 420, maxWidth: "100%" }}>
+        <Card key={JSON.stringify(p)} {...(p as unknown as CardProps)} />
+      </div>
+    ),
+    preview: {
+      badge: "New", overline: "Req 6787686", title: "Alpha Logic wireless ergonomic mouse",
+      description: "Rechargeable, 6 buttons and a thumb rest. Works with Windows and macOS over Bluetooth or the USB receiver.",
+      amount: "$49.00", message: "In stock", icon: "mouse",
+    },
+    hide: ["selected"],
+    // The Figma card's boolean properties. Footer is the real selectable prop; the rest drop parts in normalize.
+    toggles: {
+      showHeader: { label: "Header slot", default: true },
+      showBadge: { label: "Badge", default: true },
+      showOverline: { label: "Overline", default: true },
+      showTitle: { label: "Title", default: true },
+      showDescription: { label: "Secondary", default: true },
+      showAmount: { label: "Tertiary", default: true },
+      showMessage: { label: "Item message", default: true },
+      showImage: { label: "Image", default: true },
+      selectable: { label: "Footer", default: true },
+    },
+    normalize: ({ showHeader, showBadge, showOverline, showTitle, showDescription, showAmount, showMessage, showImage, badge, overline, title, description, amount, message, icon, ...p }) => ({
+      ...p,
+      ...(showHeader && showBadge ? { badge } : {}),
+      ...(showHeader && showOverline ? { overline } : {}),
+      ...(showTitle ? { title } : {}),
+      ...(showDescription ? { description } : {}),
+      ...(showAmount ? { amount } : {}),
+      ...(showMessage ? { message } : {}),
+      ...(showImage ? { icon } : {}),
+    }),
+    hint: "Turn each part of the card on and off, like the Figma switches. Click the card to pick it; switch the message tone and disabled.",
+    card: (
+      <div style={{ width: "250%", zoom: 0.4 }}>
+        <Card badge="New" overline="Req 6787686" title="Alpha Logic wireless ergonomic mouse" amount="$49.00" message="In stock" icon="mouse" selectable defaultSelected />
+      </div>
+    ),
   },
   Carousel: {
     // Sample panels swap in for {slides}. Keyed so a changed layout starts on the first slide. Vertical gets a narrow column.

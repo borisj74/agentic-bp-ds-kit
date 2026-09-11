@@ -79,6 +79,7 @@ export function Master({ contract }: { contract: Contract }) {
     const d: Props = {};
     for (const [k, v] of Object.entries(contract.props)) if (v.default !== undefined) d[k] = v.default;
     for (const [k, v] of Object.entries(entry?.extras ?? {})) d[k] = v.default;
+    for (const [k, v] of Object.entries(entry?.toggles ?? {})) d[k] = v.default;
     return { ...d, ...entry?.preview };
   });
   const set = (k: string, v: unknown) => setState((s) => ({ ...s, [k]: v }));
@@ -91,7 +92,8 @@ export function Master({ contract }: { contract: Contract }) {
   const skip = new Set(["children", ...(entry.hide ?? [])]);
   const enums = Object.entries(contract.props).filter(([k, v]) => v.enum && !skip.has(k)).sort(([a], [b]) => Number(b === "size") - Number(a === "size"))
     .concat(Object.entries(entry.extras ?? {}).map(([k, v]) => [k, { enum: v.values }]));
-  const bools = Object.entries(contract.props).filter(([k, v]) => v.type === "boolean" && !skip.has(k));
+  const bools = Object.entries(contract.props).filter(([k, v]) => v.type === "boolean" && !skip.has(k) && !entry.toggles?.[k]);
+  const toggles = Object.entries(entry.toggles ?? {});
   const shown = entry.normalize ? entry.normalize(state) : state;
 
   // Enums always show; strings and numbers show unless they equal the contract default.
@@ -101,14 +103,14 @@ export function Master({ contract }: { contract: Contract }) {
     for (const k of [...keys, ...Object.keys(src).filter((x) => !keys.includes(x))]) {
       const v = src[k], def = contract.props[k];
       // Hidden props stay out of code unless the entry supplies a code-only value (e.g. open={open}).
-      if (v === undefined || entry.extras?.[k] || (entry.hide?.includes(k) && entry.snippet?.[k] === undefined)) continue;
+      if (v === undefined || entry.extras?.[k] || (entry.toggles?.[k] && !contract.props[k]) || (entry.hide?.includes(k) && entry.snippet?.[k] === undefined)) continue;
       if (def?.enum || v === true || (typeof v === "number" && v !== def?.default) || Array.isArray(v) || (typeof v === "string" && v && v !== def?.default)) out[k] = v;
     }
     return out;
   };
   const snippetProps = codeProps(shown);
   const snippet = toJsx(contract.name, snippetProps, keys, true, childName);
-  const hasControls = enums.length + bools.length > 0;
+  const hasControls = enums.length + bools.length + toggles.length > 0;
   const hint = entry.hint ?? (!hasControls ? contract.intent : `Toggle ${list([...enums, ...bools].map(([k]) => words(k)))} to preview every ${contract.name} combination.`);
   const file = `contracts/${contract.name.toLowerCase()}.json`;
 
@@ -155,6 +157,14 @@ export function Master({ contract }: { contract: Contract }) {
                   </div>
                 );
               })}
+              {toggles.length > 0 && (
+                <div className={styles.group}>
+                  <span className={styles.label}>Content</span>
+                  {toggles.map(([k, t]) => (
+                    <Switch key={k} size="sm" label={t.label} checked={Boolean(state[k])} onChange={(v) => set(k, v)} />
+                  ))}
+                </div>
+              )}
               {bools.length > 0 && (
                 <div className={styles.group}>
                   <span className={styles.label}>States</span>

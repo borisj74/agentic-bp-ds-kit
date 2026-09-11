@@ -190,3 +190,6 @@ progress/circle-lg|196px
 
 # Cell progress (reference kit cell): the bar is at least 128 wide, so a hugging cell still shows it.
 cell/progress-min|128px
+
+# Card (Figma card 6290:315): the image or icon tile is 72 square.
+card/tile|72px
