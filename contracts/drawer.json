@@ -1,0 +1,81 @@
+{
+  "name": "Drawer",
+  "path": "src/ui/Drawer/Drawer.tsx",
+  "intent": "A panel that slides in from the right edge for a detail view or an edit form about something on the page, while the page stays in view behind it.",
+  "usage": "Use Drawer to show or edit one record next to the list it came from: a detail view, an edit form, related context. It is one component: pass open, title, onClose and the content as children. size picks the width: narrow 360 for quick views, medium 460 for forms, wide 590 for rich details, extended 1100 for side-by-side work. footer holds kit Buttons, size sm, at the end: secondary first, one primary last. Escape, the close button or a click on the page behind it closes it. For a decision that must block the page, use Modal or AlertDialog. See contracts/drawer.json for the full contract.",
+  "props": {
+    "open": {
+      "type": "boolean",
+      "required": true
+    },
+    "title": {
+      "type": "string",
+      "required": true,
+      "note": "24px bold. It names the drawer for screen readers."
+    },
+    "description": {
+      "type": "string",
+      "note": "One line under the title. Read with the drawer."
+    },
+    "size": {
+      "enum": [
+        "narrow",
+        "medium",
+        "wide",
+        "extended"
+      ],
+      "default": "narrow",
+      "note": "Width 360 / 460 / 590 / 1100, never wider than the screen. Full height; the body scrolls."
+    },
+    "showClose": {
+      "type": "boolean",
+      "default": true,
+      "note": "The close button in the header. Escape and a click behind the drawer still close."
+    },
+    "onClose": {
+      "type": "function",
+      "required": true,
+      "note": "() => void. Runs on Escape, the close button, or a click behind the drawer."
+    },
+    "children": {
+      "type": "ReactNode",
+      "required": true,
+      "note": "The body: FormDisplay rows, a Form, a Table or text."
+    },
+    "footer": {
+      "type": "ReactNode",
+      "note": "Kit Buttons, size sm: secondary first, one primary last. A Form inside can put its submit here with the form attribute."
+    }
+  },
+  "useWhen": [
+    "Viewing or editing one record while its list stays in view.",
+    "Extra context about a selected item, like its history or related records."
+  ],
+  "doNot": [
+    "Do not use it for main navigation. Use SideNav.",
+    "Do not open a drawer from inside another drawer.",
+    "Do not use it for a decision that must block the page. Use Modal or AlertDialog.",
+    "Do not invent a Sheet, SidePanel, DrawerHeader or DrawerFooter. Use Drawer.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "role dialog with aria-modal, named by its title and described by description.",
+    "On open, focus moves to the first field in the body, else the close button. Tab stays inside; on close, focus goes back to what opened it.",
+    "Escape closes it, unless a menu inside handles Escape first. The page behind does not scroll while it is open.",
+    "The close button is a kit Button named Close, with a kit Tooltip.",
+    "It slides in unless the person prefers reduced motion."
+  ],
+  "snippet": "<Drawer\n  open={open}\n  title=\"Edit contact\"\n  size=\"medium\"\n  onClose={close}\n  footer={<>\n    <Button size=\"sm\" onClick={close}>Cancel</Button>\n    <Button size=\"sm\" variant=\"primary\" type=\"submit\" form=\"contact\">Save</Button>\n  </>}\n>\n  <Form id=\"contact\">…</Form>\n</Drawer>",
+  "examples": [
+    {
+      "title": "Sizes",
+      "usage": "Open each width: narrow 360, medium 460, wide 590, extended 1100.",
+      "items": [
+        { "props": { "size": "narrow", "title": "Invoice INV-1042" } },
+        { "props": { "size": "medium", "title": "Edit contact" } },
+        { "props": { "size": "wide", "title": "Account details" } },
+        { "props": { "size": "extended", "title": "Compare proposals" } }
+      ]
+    }
+  ]
+}

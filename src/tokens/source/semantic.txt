@@ -73,6 +73,7 @@ surface/raised|{ui/neutral/0}|{ui/neutral/150}
 surface/floating|{ui/neutral/0}|{ui/neutral/300}
 # kit change: Figma maps backdrop to ui/neutral/alpha/800 (92% in light, solid gray-50 in dark). Uses the BP 60% gray alpha in both modes instead.
 surface/backdrop|{ref/gray/alpha/500}|{ref/gray/alpha/500}
+surface/backdrop-soft|{ref/gray/alpha/100}|{ref/gray/alpha/300}
 outline/brand|{ui/brand/500}|{ui/brand/600}
 outline/danger|{ui/status/danger/500}|{ui/status/danger/600}
 background/info/faint|{ui/status/info/50}|{ui/status/info/50}

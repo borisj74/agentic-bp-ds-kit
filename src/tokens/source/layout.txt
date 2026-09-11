@@ -193,3 +193,9 @@ cell/progress-min|128px
 
 # Card (Figma card 6290:315): the image or icon tile is 72 square.
 card/tile|72px
+
+# Drawer (Figma drawer-panel 2975:9762): narrow 360, medium 460, wide 590, extended 1100.
+drawer/narrow|360px
+drawer/medium|460px
+drawer/wide|590px
+drawer/extended|1100px

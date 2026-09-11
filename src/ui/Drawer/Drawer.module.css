@@ -1,0 +1,46 @@
+/* Figma drawer 2975:10337: a light backdrop, so the page stays readable behind the panel. */
+.overlay {
+  position: fixed; inset: 0; z-index: var(--z-overlay);
+  display: flex; justify-content: flex-end;
+  background: var(--surface-backdrop-soft);
+  animation: fade var(--motion-overlay-duration) var(--motion-overlay-easing);
+}
+
+/* Full height at the right edge; never wider than the screen. */
+.drawer {
+  box-sizing: border-box; display: flex; flex-direction: column; height: 100%; max-width: 100%; overflow: hidden;
+  background: var(--surface-flat); box-shadow: var(--elevation-modal);
+  font-family: var(--font-sans); outline: none;
+  animation: slide var(--motion-page-duration) var(--motion-page-easing);
+}
+.narrow { width: var(--drawer-narrow); }
+.medium { width: var(--drawer-medium); }
+.wide { width: var(--drawer-wide); }
+.extended { width: var(--drawer-extended); }
+
+/* Figma drawer-header: 20px padding, 24px bold title, a 28px close button at the end. */
+.header { display: flex; align-items: center; gap: var(--space-small); padding: var(--space-large); }
+.copy { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-xxsmall); }
+.title { margin: 0; font-size: var(--font-size-xxlarge); font-weight: var(--font-weight-bold); line-height: var(--line-height-tight); color: var(--text-neutral-strong); overflow-wrap: anywhere; }
+.description { margin: 0; font-size: var(--font-size-small); line-height: var(--line-height-normal); color: var(--text-neutral); }
+.close { flex: none; align-self: flex-start; }
+
+/* Figma body: 20px padding; it scrolls when the content is tall. */
+.body {
+  flex: 1; min-height: 0; overflow-y: auto; padding: 0 var(--space-large) var(--space-large);
+  font-size: var(--font-size-small); line-height: var(--line-height-normal); color: var(--text-neutral-strong);
+}
+
+/* Figma drawer-footer: faint fill, faint top line, 12 / 16 padding, buttons at the end. */
+.footer {
+  display: flex; justify-content: flex-end; flex-wrap: wrap; gap: var(--space-xsmall);
+  padding: var(--space-small) var(--space-medium);
+  background: var(--bg-neutral-faint); border-top: var(--border-width-thin) solid var(--border-neutral-faint);
+}
+
+@keyframes fade { from { opacity: var(--opacity-0); } }
+@keyframes slide { from { transform: translateX(100%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay, .drawer { animation: none; }
+}

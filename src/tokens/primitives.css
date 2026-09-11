@@ -1254,4 +1254,8 @@
   --progress-circle-lg: 196px;
   --cell-progress-min: 128px;
   --card-tile: 72px;
+  --drawer-narrow: 360px;
+  --drawer-medium: 460px;
+  --drawer-wide: 590px;
+  --drawer-extended: 1100px;
 }

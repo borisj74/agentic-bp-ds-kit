@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
-import { AlertDialogDemo, AppHeaderDemo, ButtonFilterDemo, ToolbarDemo, DensityDemo, DropdownMenuDemo, FormDemo, ModalDemo, calculate, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { AlertDialogDemo, AppHeaderDemo, ButtonFilterDemo, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -99,6 +99,8 @@ export interface Entry {
   /** Playground-only on/off switches, shown as a Content group, like Figma boolean properties. A key that is a real
    *  boolean prop sets it (labelled here instead of under States); other keys are read by normalize to drop parts. */
   toggles?: Record<string, { label: string; default: boolean }>;
+  /** Control panel width in px on this page only, when its chips don't fit the default 248. */
+  panelWidth?: number;
   /** Fills in props a combination needs, e.g. an icon for icon-only. */
   normalize?: (p: Props) => Props;
   card: ReactNode;
@@ -525,6 +527,18 @@ export const registry: Record<string, Entry> = {
         <DatePicker size="sm" mode="range" label="Billing period" defaultValue={{ start: "2027-01-08", end: "2027-01-14" }} />
       </div>
     ),
+  },
+  Drawer: {
+    // A kit Button opens the real Drawer. content is playground-only: it picks the sample body.
+    render: (p) => <DrawerDemo {...(p as { title: string })} content={p.content as DrawerDemoContent | undefined} />,
+    preview: { title: "Invoice INV-1042" },
+    hide: ["open"],
+    snippet: { open: "{open}", onClose: "{close}" },
+    extras: { content: { values: ["details", "form"], default: "details" } },
+    hint: "Click the button to open it. Switch size and content. Escape, the close button, or a click behind it closes.",
+    // Four long size chips need more room than the default panel.
+    panelWidth: 300,
+    card: <Button>Open drawer</Button>,
   },
   DropdownMenu: {
     // Keyed by props so a control change starts closed. The demo keeps picks in state; the menu is the real kit piece.

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { Button } from "@/ui/Button/Button";
 import { Switch } from "@/ui/Switch/Switch";
 import { Tabs } from "@/ui/Tabs/Tabs";
@@ -130,7 +130,7 @@ export function Master({ contract }: { contract: Contract }) {
 
       {tab === "preview" ? (
         <div className={styles.section}>
-          <div className={styles.layout}>
+          <div className={styles.layout} style={entry.panelWidth ? ({ "--panel-w": `${entry.panelWidth}px` } as CSSProperties) : undefined}>
             <div className={[styles.canvas, hasControls ? "" : styles.canvasFull].join(" ")}>{entry.block ? <div className={[styles.block, entry.wide ? styles.wide : ""].join(" ")}>{entry.render(shown)}</div> : entry.render(shown)}</div>
             {hasControls && (<aside className={styles.panel} aria-label={`${contract.name} controls`}>
               {enums.map(([k, v]) => {

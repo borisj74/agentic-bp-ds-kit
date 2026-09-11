@@ -76,6 +76,7 @@
   --surface-raised: var(--ui-neutral-0);
   --surface-floating: var(--ui-neutral-0);
   --surface-backdrop: var(--ref-gray-alpha-500);
+  --surface-backdrop-soft: var(--ref-gray-alpha-100);
   --outline-brand: var(--ui-brand-500);
   --outline-danger: var(--ui-status-danger-500);
   --bg-info-faint: var(--ui-status-info-50);
@@ -513,6 +514,7 @@
   --surface-raised: var(--ui-neutral-150);
   --surface-floating: var(--ui-neutral-300);
   --surface-backdrop: var(--ref-gray-alpha-500);
+  --surface-backdrop-soft: var(--ref-gray-alpha-300);
   --outline-brand: var(--ui-brand-600);
   --outline-danger: var(--ui-status-danger-600);
   --bg-info-faint: var(--ui-status-info-50);

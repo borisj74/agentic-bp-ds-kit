@@ -7,6 +7,7 @@ import { Button } from "@/ui/Button/Button";
 import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
 import { Density, type DensityValue } from "@/ui/Density/Density";
+import { Drawer, type DrawerProps } from "@/ui/Drawer/Drawer";
 import { DropdownMenu, type DropdownMenuProps } from "@/ui/DropdownMenu/DropdownMenu";
 import { Form, type FormProps } from "@/ui/Form/Form";
 import { FormDisplay } from "@/ui/FormDisplay/FormDisplay";
@@ -19,6 +20,7 @@ import { Textarea } from "@/ui/Textarea/Textarea";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 
 export type ModalDemoContent = "text" | "form";
+export type DrawerDemoContent = "details" | "form";
 export type FormDemoContent = "fields" | "sections" | "details";
 
 const COUNTRIES = [
@@ -126,6 +128,47 @@ export function ModalDemo({ content = "text", ...p }: Omit<ModalProps, "open" | 
           <p style={{ margin: 0 }}>Modals hold a short task or extra detail. Press Escape, the ×, or click outside to close.</p>
         )}
       </Modal>
+    </>
+  );
+}
+
+// Playground harness: a kit Button opens the real Drawer with sample details or an edit form. Not a kit piece.
+export function DrawerDemo({ content = "details", ...p }: Omit<DrawerProps, "open" | "onClose" | "children" | "footer"> & { content?: DrawerDemoContent }) {
+  const [open, setOpen] = useState(false);
+  const close = () => setOpen(false);
+  const formId = useId();
+
+  // Details only read, so the footer just closes; the form's Save submits it through its id.
+  const footer = content === "form" ? (
+    <>
+      <Button size="sm" onClick={close}>Cancel</Button>
+      <Button size="sm" variant="primary" type="submit" form={formId}>Save</Button>
+    </>
+  ) : (
+    <Button size="sm" onClick={close}>Close</Button>
+  );
+
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>{`Open ${p.size ?? "narrow"} drawer`}</Button>
+      <Drawer {...p} open={open} onClose={close} footer={footer}>
+        {content === "form" ? (
+          <Form id={formId} onSubmit={close}>
+            <Input label="Name" name="name" defaultValue="Maria Anders" required />
+            <Input label="Email" name="email" type="email" defaultValue="maria@northwind.com" />
+            <Select label="Role" options={[{ value: "billing", label: "Billing contact" }, { value: "admin", label: "Admin" }]} defaultValue="billing" />
+            <Textarea label="Notes" name="notes" size="sm" placeholder="Add a note for your team" />
+          </Form>
+        ) : (
+          <div>
+            <FormDisplay label="Invoice" value="INV-1042" />
+            <FormDisplay label="Account" value="Northwind Traders" />
+            <FormDisplay label="Amount" value="$2,500.00" />
+            <FormDisplay label="Due date" value="30 Sep 2026" />
+            <FormDisplay label="Status" value="Pending" />
+          </div>
+        )}
+      </Drawer>
     </>
   );
 }
