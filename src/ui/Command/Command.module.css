@@ -44,7 +44,7 @@
 /* Leading icon in a tinted 32px tile, same as the kit DropdownMenu. */
 .tile {
   display: flex; align-items: center; justify-content: center; flex: none;
-  width: var(--menu-item-tile); height: var(--menu-item-tile); margin-block: var(--space-xxxsmall);
+  width: var(--menu-item-tile); height: var(--menu-item-tile);
   border-radius: var(--radius-small); background: var(--bg-brand-faint); color: var(--icon-brand);
 }
 .active .tile { background: var(--bg-brand-subtle); }
@@ -52,9 +52,11 @@
 /* iconStyle plain: just the icon, no tinted tile. Neutral, a step darker on the highlighted row. */
 .plainIcons .tile, .plainIcons .active .tile { width: auto; height: auto; background: none; color: var(--icon-neutral); }
 .plainIcons .active .tile { color: var(--icon-neutral-strong); }
-.text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-xxxsmall); padding-block: var(--space-xxxsmall); }
+/* No extra padding on the text, so a label with a description is about as tall as the tile and the row's
+   8px padding shows evenly on every side of the highlight. */
+.text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-xxxsmall); }
 .label { overflow-wrap: anywhere; }
-.description { font-size: var(--font-size-xsmall); color: var(--text-neutral); overflow-wrap: anywhere; }
+.description { font-size: var(--font-size-xsmall); line-height: 1.2; color: var(--text-neutral); overflow-wrap: anywhere; }
 
 /* Figma key badge: 20px tall, 1px strong border, 12px semibold. */
 .key {
