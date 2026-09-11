@@ -52,8 +52,9 @@ export function SideNav({
   const sections = [...items.filter(isEntry<SideNavItem>), ...endItems];
   const byId = (id: string | null) => sections.find((s) => s.id === id);
   const currentSection = sections.find((s) => s.id === current || linksOf(s).some((l) => l.id === current));
-  // Pinned keeps a menu docked: the last one opened, else the current section's.
-  const menuItem = byId(shownId) ?? (pinned && currentSection?.children?.length ? currentSection : undefined);
+  // Pinned keeps a menu docked: the last one opened, else the current section's, else the first section with one.
+  const docked = currentSection?.children?.length ? currentSection : sections.find((s) => s.children?.length);
+  const menuItem = byId(shownId) ?? (pinned ? docked : undefined);
   const menuOpen = Boolean(menuItem) && (pinned || openId !== null);
 
   const open = (id: string) => { setOpenId(id); setShownId(id); };

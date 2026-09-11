@@ -38,7 +38,7 @@
     "defaultPinned": {
       "type": "boolean",
       "default": false,
-      "note": "Starting pin when pinned is not controlled."
+      "note": "Starting pin when pinned is not controlled. The docked menu is the current section's, or the first section with a menu until one is opened."
     },
     "onPinnedChange": {
       "type": "function",
