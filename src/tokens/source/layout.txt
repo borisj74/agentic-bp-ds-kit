@@ -209,3 +209,6 @@ empty/copy-max|384px
 # Toast: 400 wide, a 4px countdown bar on top.
 toast/width|400px
 toast/bar|{ref/space/200}
+
+# Pagination (Figma table footer 3187:39779): 40 tall.
+pagination/height|{ref/space/1100}

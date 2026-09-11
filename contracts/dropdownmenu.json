@@ -149,6 +149,14 @@
       "type": "string",
       "default": "No results.",
       "note": "Shown when the search matches nothing."
+    },
+    "menuWidth": {
+      "enum": [
+        "default",
+        "field"
+      ],
+      "default": "default",
+      "note": "default: the menu is at least 200 wide. field: the menu is only as wide as the trigger. Select passes it through."
     }
   },
   "useWhen": [

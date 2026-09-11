@@ -1,0 +1,99 @@
+{
+  "name": "Pagination",
+  "path": "src/ui/Pagination/Pagination.tsx",
+  "intent": "The bar under a long table that moves between pages, says which rows are showing, and lets people pick how many rows a page holds.",
+  "usage": "Use Pagination under a Table or DataGrid whose rows don't fit on one page. It is one component: pass total (the number of rows) and read page and pageSize back to slice your rows. Previous and next arrows sit at the start with the page numbers between them; long runs collapse into an ellipsis around the current page. At the end, Showing 1 to 10 of 59 rows and a kit Select to pick 10, 25, 50 or 100 rows per page. Changing the page size keeps the first visible row on screen. See contracts/pagination.json for the full contract.",
+  "props": {
+    "total": {
+      "type": "number",
+      "required": true,
+      "note": "How many rows there are in all."
+    },
+    "page": {
+      "type": "number",
+      "note": "Controlled current page, counted from 1."
+    },
+    "defaultPage": {
+      "type": "number",
+      "default": 1,
+      "note": "Starting page when page is not controlled."
+    },
+    "onPageChange": {
+      "type": "function",
+      "note": "(page: number) => void"
+    },
+    "pageSize": {
+      "type": "number",
+      "note": "Controlled rows per page."
+    },
+    "defaultPageSize": {
+      "type": "number",
+      "default": 10,
+      "note": "Starting rows per page when pageSize is not controlled."
+    },
+    "onPageSizeChange": {
+      "type": "function",
+      "note": "(pageSize: number) => void. The page moves so the first row that was showing stays in view."
+    },
+    "pageSizes": {
+      "type": "number[]",
+      "default": [10, 25, 50, 100],
+      "note": "The choices in the rows per page Select."
+    },
+    "showRange": {
+      "type": "boolean",
+      "default": true,
+      "note": "The Showing 1 to 10 of 59 rows text."
+    },
+    "showPageSize": {
+      "type": "boolean",
+      "default": true,
+      "note": "The rows per page Select."
+    },
+    "label": {
+      "type": "string",
+      "default": "Pagination",
+      "note": "Names the page navigation for screen readers."
+    }
+  },
+  "useWhen": [
+    "Under a Table or DataGrid with more rows than fit on one page.",
+    "Lists people move through page by page and may want longer pages for."
+  ],
+  "doNot": [
+    "Do not use it to switch views or steps. Use Tabs.",
+    "Do not build page buttons from a ButtonGroup or loose Buttons. Use Pagination.",
+    "Do not invent a PageSizeSelect or RowsInfo. Turn showPageSize and showRange on or off.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A nav named by label holds the arrows and page buttons.",
+    "Page buttons are named Page 3; the current one has aria-current page. The ellipsis is hidden from screen readers.",
+    "The arrows are kit Buttons named Previous page and Next page, disabled on the first and last page.",
+    "The rows per page Select is named Rows per page, and the range text is a polite live region, so a change is read out."
+  ],
+  "snippet": "<Pagination\n  total={invoices.length}\n  page={page}\n  onPageChange={setPage}\n  pageSize={pageSize}\n  onPageSizeChange={setPageSize}\n/>",
+  "examples": [
+    {
+      "title": "Rows and page size",
+      "usage": "59 rows, 10 per page. Pick another page size from the Select; the current rows stay in view.",
+      "items": [
+        { "props": { "total": 59 } }
+      ]
+    },
+    {
+      "title": "Many pages",
+      "usage": "With 500 rows, the page numbers collapse into an ellipsis around the current page.",
+      "items": [
+        { "props": { "total": 500, "defaultPage": 12 } }
+      ]
+    },
+    {
+      "title": "Pages only",
+      "usage": "Without the range text or the Select, only the page navigation.",
+      "items": [
+        { "props": { "total": 59, "showRange": false, "showPageSize": false } }
+      ]
+    }
+  ]
+}

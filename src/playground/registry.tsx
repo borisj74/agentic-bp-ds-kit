@@ -32,6 +32,7 @@ import { Input, type InputProps } from "@/ui/Input/Input";
 import { Logo } from "@/ui/Logo/Logo";
 import { LogoAI } from "@/ui/LogoAI/LogoAI";
 import { PageHeader, type PageHeaderProps } from "@/ui/PageHeader/PageHeader";
+import { Pagination, type PaginationProps } from "@/ui/Pagination/Pagination";
 import { Progress, type ProgressProps } from "@/ui/Progress/Progress";
 import { ProgressLegacy, type ProgressLegacyProps } from "@/ui/ProgressLegacy/ProgressLegacy";
 import { RadioGroup, type RadioGroupOption } from "@/ui/RadioGroup/RadioGroup";
@@ -1030,6 +1031,21 @@ export const registry: Record<string, Entry> = {
       <div style={{ width: "250%", zoom: 0.4 }}>
         <PageHeader breadcrumbs={[{ label: "Billing", href: "#" }, { label: "Invoices", href: "#" }]} icon="folder_open" title="INV-1042" badge="Draft"
           actions={<><Button size="sm">Send</Button><Button size="sm" variant="primary">Approve</Button></>} />
+      </div>
+    ),
+  },
+  Pagination: {
+    // Keyed so a changed total or starting page starts fresh. Full width, like the footer of a table.
+    render: (p) => <Pagination key={JSON.stringify(p)} {...(p as unknown as PaginationProps)} />,
+    preview: { total: 59 },
+    extras: { rows: { values: ["59", "500"], default: "59" } },
+    normalize: ({ rows, ...p }) => ({ ...p, total: Number(rows ?? p.total) }),
+    snippet: { onPageChange: "{setPage}" },
+    hint: "Click the pages and arrows, and pick rows per page. Rows 500 shows the ellipsis. Turn the range and the Select on and off.",
+    block: true,
+    card: (
+      <div style={{ width: "250%", zoom: 0.4 }}>
+        <Pagination total={59} />
       </div>
     ),
   },

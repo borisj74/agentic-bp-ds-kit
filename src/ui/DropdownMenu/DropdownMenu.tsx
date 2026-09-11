@@ -55,7 +55,10 @@ export interface DropdownMenuProps {
   searchable?: boolean;
   searchPlaceholder?: string;
   empty?: string;
+  menuWidth?: DropdownMenuWidth;
 }
+
+export type DropdownMenuWidth = "default" | "field";
 
 const GAP = 4; // px between trigger and panel
 const isItem = (e: DropdownMenuEntry): e is DropdownMenuItem => !("divider" in e);
@@ -66,7 +69,7 @@ export function DropdownMenu({
   label, items, trigger = "button", variant = "secondary", size: ownSize, icon, iconOnly = false, count = 0,
   align = "start", disabled = false, closeOnSelect = true, open: openProp, onOpenChange, onSelect,
   multiple = false, id, text, muted = false, badge, toggle, onToggle, labelledBy, describedBy,
-  searchable = false, searchPlaceholder = "Search", empty = "No results.",
+  searchable = false, searchPlaceholder = "Search", empty = "No results.", menuWidth = "default",
 }: DropdownMenuProps) {
   const size = useDensitySize(ownSize);
   const [query, setQuery] = useState("");
@@ -105,7 +108,8 @@ export function DropdownMenu({
       const h = panel.offsetHeight;
       const below = r.bottom + GAP + h <= window.innerHeight || r.top < h + GAP;
       panel.style.top = `${below ? r.bottom + GAP : r.top - GAP - h}px`;
-      panel.style.minWidth = `max(var(--dropdown-min-width), ${r.width}px)`;
+      // field: as wide as the trigger, for a narrow Select like rows per page. default: never under the menu minimum.
+      panel.style.minWidth = menuWidth === "field" ? `${r.width}px` : `max(var(--dropdown-min-width), ${r.width}px)`;
       // Line up with the trigger's start or end edge, then keep the whole panel inside the window.
       const w = panel.offsetWidth;
       const want = align === "end" ? r.right - w : r.left;
@@ -125,7 +129,7 @@ export function DropdownMenu({
       window.removeEventListener("resize", place);
       window.removeEventListener("scroll", place, true);
     };
-  }, [open, align, menuId]);
+  }, [open, align, menuId, menuWidth]);
 
   // Outside click closes without moving focus; Escape closes and returns focus to the trigger.
   useEffect(() => {

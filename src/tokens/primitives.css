@@ -1263,4 +1263,5 @@
   --empty-copy-max: 384px;
   --toast-width: 400px;
   --toast-bar: var(--ref-space-200);
+  --pagination-height: var(--ref-space-1100);
 }

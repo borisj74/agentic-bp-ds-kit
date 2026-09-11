@@ -1,7 +1,7 @@
 "use client";
 import { useId, useState } from "react";
 import { useDensitySize } from "../Density/Density";
-import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
+import { DropdownMenu, type DropdownMenuEntry, type DropdownMenuWidth } from "../DropdownMenu/DropdownMenu";
 import { useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
@@ -36,11 +36,12 @@ export interface SelectProps {
   error?: string;
   hint?: string;
   help?: string;
+  menuWidth?: DropdownMenuWidth;
 }
 
 export function Select({
   label, options, hideLabel = false, labelPosition: ownLabelPosition, size: ownSize, placeholder = "Select", value, defaultValue, onChange,
-  multiple = false, itemCheck = "check", maxVisible, searchable = false, searchPlaceholder, name, id, required = false, disabled = false, invalid = false, error, hint, help,
+  multiple = false, itemCheck = "check", maxVisible, searchable = false, searchPlaceholder, name, id, required = false, disabled = false, invalid = false, error, hint, help, menuWidth = "default",
 }: SelectProps) {
   const size = useDensitySize(ownSize);
   const labelPosition = useLabelPosition(ownLabelPosition);
@@ -88,7 +89,7 @@ export function Select({
         <DropdownMenu
           trigger="field" id={fieldId} label={label} labelledBy={labelId} describedBy={describedBy}
           text={text || placeholder} muted={!text} badge={over ? `+${over}` : undefined}
-          size={size} disabled={disabled} multiple={multiple} items={items} searchable={searchable} searchPlaceholder={searchPlaceholder}
+          size={size} disabled={disabled} multiple={multiple} items={items} searchable={searchable} searchPlaceholder={searchPlaceholder} menuWidth={menuWidth}
           onSelect={(v) => emit(multiple ? (values.includes(v) ? values.filter((x) => x !== v) : [...values, v]) : v)}
         />
         {message && <p id={messageId} className={error ? field.error : field.hint}>{message}</p>}

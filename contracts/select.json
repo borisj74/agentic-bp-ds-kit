@@ -110,6 +110,14 @@
     "help": {
       "type": "string",
       "note": "Help icon beside the label. The text shows in a HelpPopover titled with the label, on hover, keyboard focus or click."
+    },
+    "menuWidth": {
+      "enum": [
+        "default",
+        "field"
+      ],
+      "default": "default",
+      "note": "default: the menu is at least 200 wide. field: the menu is only as wide as the field, for a narrow Select like rows per page."
     }
   },
   "useWhen": [

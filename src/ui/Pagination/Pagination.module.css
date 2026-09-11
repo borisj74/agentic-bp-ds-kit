@@ -1,0 +1,28 @@
+/* Figma table footer 3187:39779: a faint 40-tall bar, pages at the start and the range at the end. */
+.pagination {
+  box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  column-gap: var(--space-xxlarge); row-gap: var(--space-xsmall);
+  min-height: var(--pagination-height); padding: var(--space-xxxsmall) var(--space-small);
+  background: var(--bg-neutral-faint); font-family: var(--font-sans);
+}
+.pages { display: flex; align-items: center; gap: var(--space-xxsmall); }
+
+/* Page boxes: 28 square, faint border; the current page is brand. */
+.page {
+  box-sizing: border-box; display: grid; place-items: center; min-width: var(--control-small); height: var(--control-small);
+  margin: 0; padding: 0 var(--space-xxsmall); cursor: pointer;
+  border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-small);
+  background: var(--bg-neutral-min); color: var(--text-neutral);
+  font: inherit; font-size: var(--font-size-small); font-variant-numeric: tabular-nums;
+}
+.page:hover { background: var(--bg-neutral-min-hover); color: var(--text-neutral-intense); }
+.page:active { background: var(--bg-neutral-min-press); }
+.page:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--border-width-thin); }
+.page.current { background: var(--bg-neutral-min-selected); border-color: var(--border-brand); color: var(--text-brand-strong); }
+:global([data-theme="dark"]) .page:hover { color: var(--text-neutral-strong); }
+.gap { display: grid; place-items: center; width: var(--control-small); height: var(--control-small); font-size: var(--font-size-small); color: var(--text-neutral); }
+
+.end { display: flex; align-items: center; gap: var(--space-xsmall); }
+.text { font-size: var(--font-size-xsmall); color: var(--text-neutral-strong); white-space: nowrap; }
+/* The Select hugs its number, so the number sits 8px from the chevron whatever the size. */
+.size { width: max-content; }
