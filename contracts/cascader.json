@@ -1,0 +1,173 @@
+{
+  "name": "Cascader",
+  "path": "src/ui/Cascader/Cascader.tsx",
+  "intent": "Pick one item from options that nest several levels deep by walking columns left to right, like a field on a related object (Invoice / Account / Owner) or a region / country / city.",
+  "usage": "Use Cascader when the choice sits at the end of a path and people need to see each level: fields on related records, categories, locations. It is one component: pass options, each with a value, a label and, when it opens another level, children. variant field is a form field that opens the columns in a dropdown and shows the picked path (Invoice / Account / Owner); variant panel draws the columns inline, like the field picker in a modal, with the page showing the choice. Each row can carry a path in brackets (the related object or id), a type badge (Text, Num, Date) and a relation mark: parent ([+], opens the related record's fields) or children (», opens related child records). A legend under the columns explains the marks when any row has one. Only the last level can be picked unless changeOnSelect lets any level be the answer. searchable adds a search box that lists every matching path. See contracts/cascader.json for the full contract.",
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "note": "Field label (field) or the name of the columns for screen readers (panel)."
+    },
+    "options": {
+      "type": "CascaderOption[]",
+      "required": true,
+      "itemShape": "{ value: string; label: string; path?: string; type?: string; relation?: \"parent\" | \"children\"; disabled?: boolean; children?: CascaderOption[] }",
+      "note": "The first column. path shows in brackets after the label, like (Payment.Id). type is a short badge, like Text or Num. relation marks rows that open a related record: parent [+] or children ». An option with children opens a column to its right. Values are unique among siblings."
+    },
+    "value": {
+      "type": "string[]",
+      "note": "Controlled picked path: one value per level, like [\"invoice\", \"account\", \"owner\"]."
+    },
+    "defaultValue": {
+      "type": "string[]",
+      "note": "Starting path when the Cascader keeps it itself."
+    },
+    "onChange": {
+      "type": "function",
+      "signature": "(value: string[], options: CascaderOption[]) => void",
+      "note": "Called with the picked path and its options."
+    },
+    "variant": {
+      "enum": [
+        "field",
+        "panel"
+      ],
+      "default": "field",
+      "note": "field: a form field with the columns in a dropdown. panel: the columns inline, with a border, for a modal or a side panel."
+    },
+    "changeOnSelect": {
+      "type": "boolean",
+      "default": false,
+      "note": "Any level can be picked, not only the last. Clicking a row with children both picks it and opens its column."
+    },
+    "searchable": {
+      "type": "boolean",
+      "default": false,
+      "note": "A search box over the columns. Typing lists every path whose labels match; picking one sets the whole path."
+    },
+    "showLegend": {
+      "type": "boolean",
+      "default": true,
+      "note": "The legend bar under the columns, explaining the relation marks. Shows only when some option has a relation."
+    },
+    "placeholder": {
+      "type": "string",
+      "default": "Select",
+      "note": "For field, when nothing is picked."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "note": "Field height, like Select. Follows Density when not set. Columns keep 28 rows."
+    },
+    "labelPosition": {
+      "enum": [
+        "top",
+        "start"
+      ],
+      "note": "For field, like Select. Follows Form."
+    },
+    "hideLabel": {
+      "type": "boolean",
+      "default": false
+    },
+    "name": {
+      "type": "string",
+      "note": "Adds a hidden input with the path joined by dots, for forms."
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "invalid": {
+      "type": "boolean",
+      "default": false
+    },
+    "error": {
+      "type": "string"
+    },
+    "hint": {
+      "type": "string"
+    },
+    "help": {
+      "type": "string",
+      "note": "Opens a HelpPopover from a help icon next to the label, like other fields."
+    },
+    "emptyLabel": {
+      "type": "string",
+      "default": "No matches.",
+      "note": "Shown when a search finds nothing."
+    }
+  },
+  "useWhen": [
+    "The answer sits at the end of a path of two or more levels, like a field on a related record.",
+    "People need to see which level each choice lives on while they browse.",
+    "A field picker in a modal or side panel, with variant panel."
+  ],
+  "doNot": [
+    "Do not use it for a flat list. Use Select.",
+    "Do not use it to browse or arrange a hierarchy without picking. Use TreeView.",
+    "Do not nest Selects to fake levels, or build local columns. Use Cascader.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "Each column is a listbox named by label and its level; rows are options. The rows on the open path are selected.",
+    "One row is in the tab order. Up and Down move in a column, Home and End go to its ends; Right (or Enter) opens a row's column and moves into it; Left goes back to the parent row; Enter or Space picks a row that can be picked.",
+    "field: the field is a button with aria-expanded; the dropdown opens on click, Enter, Space or Down, and Escape or a click outside closes it and gives focus back.",
+    "Relation marks are icons with names (Related parent, Related children), explained by the legend. Type badges are kit Badges.",
+    "The newest column scrolls into view when it opens."
+  ],
+  "snippet": "<Cascader\n  label=\"Field\"\n  options={fields}\n  value={path}\n  onChange={setPath}\n  searchable\n/>",
+  "examples": [
+    {
+      "title": "Field",
+      "usage": "A form field that opens the columns in a dropdown and shows the picked path.",
+      "items": [
+        {
+          "props": {
+            "label": "Invoice field",
+            "options": "{fields}",
+            "defaultValue": "{path}",
+            "searchable": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Panel",
+      "usage": "Columns inline, like the field picker in a modal: types, related records and the legend.",
+      "items": [
+        {
+          "props": {
+            "label": "Invoice fields",
+            "options": "{fields}",
+            "defaultValue": "{path}",
+            "variant": "panel"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Any level",
+      "usage": "With changeOnSelect, a related record itself can be the answer, not only its fields.",
+      "items": [
+        {
+          "props": {
+            "label": "Location",
+            "options": "{locations}",
+            "changeOnSelect": true,
+            "placeholder": "Region, country or city"
+          }
+        }
+      ]
+    }
+  ]
+}

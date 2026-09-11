@@ -1,0 +1,77 @@
+/* Figma BP cascader 3737:20806: white columns on a sunken frame, 28 rows, a legend bar at the bottom. */
+
+/* Field: the trigger reuses Input's .field box, like DatePicker. */
+.trigger {
+  width: 100%; margin: 0; font: inherit; font-size: var(--fs); text-align: start; cursor: pointer;
+  justify-content: space-between; gap: var(--space-xsmall);
+}
+.trigger:disabled { cursor: not-allowed; }
+.value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.placeholder { color: var(--text-neutral-subtle); }
+.icon { flex: none; color: var(--icon-neutral); }
+
+/* The dropdown is fixed so tables, cards and modals never clip it. Hidden until placed. */
+.popup {
+  position: fixed; z-index: var(--z-overlay); visibility: hidden; box-sizing: border-box; max-width: calc(100vw - var(--space-xsmall));
+  border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-medium);
+  box-shadow: var(--elevation-dropdown); overflow: hidden; font-family: var(--font-sans);
+}
+.panelWrap { width: 100%; min-width: 0; font-family: var(--font-sans); }
+
+.frame { --list-h: var(--cascader-height); display: flex; flex-direction: column; min-width: 0; background: var(--surface-sunken); }
+.inline {
+  --list-h: var(--cascader-panel-height);
+  border: var(--border-width-thin) solid var(--border-neutral-faint); border-radius: var(--radius-medium); overflow: hidden;
+}
+
+.search { padding: var(--space-xsmall); background: var(--surface-flat); border-bottom: var(--border-width-thin) solid var(--border-neutral-faint); }
+
+/* Columns side by side; past the width they scroll sideways, newest column in view. */
+.columns { display: flex; align-items: stretch; min-width: 0; overflow-x: auto; }
+.column {
+  box-sizing: border-box; flex: none; display: flex; flex-direction: column;
+  width: max-content; min-width: var(--cascader-column-min); max-width: var(--cascader-column-max); height: var(--list-h);
+  padding: var(--space-xsmall) 0; overflow-y: auto; outline: none;
+  background: var(--surface-flat); border-inline-end: var(--border-width-thin) solid var(--border-neutral-faint);
+}
+.results { width: auto; max-width: none; flex: 1; }
+.dropdown .column:last-child { border-inline-end: 0; }
+
+/* A row: the label and its path in brackets, then a type badge or relation mark at the end. */
+.item {
+  position: relative; box-sizing: border-box; flex: none; display: flex; align-items: center; gap: var(--space-xsmall);
+  min-height: var(--cascader-row); padding: var(--space-xxsmall) var(--space-small);
+  font-size: var(--font-size-small); line-height: 1.25; color: var(--text-neutral); cursor: pointer; outline: none; white-space: nowrap;
+}
+.item:hover { background: var(--bg-neutral-faint); }
+.item:focus-visible::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  border: var(--border-width-medium) solid var(--outline-brand); border-radius: var(--radius-small);
+}
+/* The rows on the open path: brand tint and brand text, a stronger tint on hover. */
+.item.selected { background: var(--bg-brand-faint); color: var(--text-brand); }
+.item.selected:hover, .item.selected:focus-visible { background: var(--bg-brand-subtle); color: var(--text-brand-strong); }
+.item.disabled { cursor: default; opacity: var(--opacity-disabled); }
+.item.disabled:hover { background: none; }
+
+.text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.path { color: var(--text-neutral-faint); }
+.item:hover .path, .item.selected .path { color: var(--text-neutral-subtle); }
+/* The end slot keeps 40 so badges and marks line up down the column. */
+.end { flex: none; display: flex; align-items: center; justify-content: flex-end; gap: var(--space-xxsmall); min-width: var(--cascader-end); }
+.chevron { color: var(--icon-neutral); }
+.parent { color: var(--icon-brand); }
+.children { color: var(--text-purple); }
+
+.empty { margin: 0; padding: var(--space-xsmall) var(--space-small); font-size: var(--font-size-small); color: var(--text-neutral); }
+
+/* Legend: explains the relation marks. */
+.legend {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xxsmall) var(--space-large);
+  padding: var(--space-xsmall) var(--space-medium); border-top: var(--border-width-thin) solid var(--border-neutral-faint);
+  background: var(--surface-sunken); font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle);
+}
+.legendTitle { font-weight: var(--font-weight-medium); }
+.legendItem { display: inline-flex; align-items: center; gap: var(--space-xxsmall); }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

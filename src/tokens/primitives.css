@@ -1278,4 +1278,10 @@
   --tree-row-sm: var(--ref-space-800);
   --tree-row-md: var(--ref-space-900);
   --tree-row-lg: var(--ref-space-1100);
+  --cascader-row: var(--ref-space-800);
+  --cascader-end: var(--ref-space-1100);
+  --cascader-column-min: 240px;
+  --cascader-column-max: 400px;
+  --cascader-height: 320px;
+  --cascader-panel-height: 436px;
 }

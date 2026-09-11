@@ -233,3 +233,13 @@ tree/indent|{ref/space/900}
 tree/row-sm|{ref/space/800}
 tree/row-md|{ref/space/900}
 tree/row-lg|{ref/space/1100}
+
+# Cascader (Figma BP cascader 3737:20806): 28 rows; columns start at 240 and grow with their content up to 400
+# (Figma's field picker uses 333 wide columns); the dropdown lists scroll in 320, the inline panel in 436 (Figma).
+# 240, 320, 400 and 436 are past the ref scale.
+cascader/row|{ref/space/800}
+cascader/end|{ref/space/1100}
+cascader/column-min|240px
+cascader/column-max|400px
+cascader/height|320px
+cascader/panel-height|436px

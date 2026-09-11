@@ -11,6 +11,7 @@ import { BadgeAlt } from "@/ui/BadgeAlt/BadgeAlt";
 import { BarChart, type BarChartProps } from "@/ui/BarChart/BarChart";
 import { Breadcrumb, type BreadcrumbItem } from "@/ui/Breadcrumb/Breadcrumb";
 import { Button } from "@/ui/Button/Button";
+import { Cascader, type CascaderOption, type CascaderProps } from "@/ui/Cascader/Cascader";
 import { Calendar, type CalendarEvent, type CalendarProps, type CalendarSource } from "@/ui/Calendar/Calendar";
 import { Card, type CardProps } from "@/ui/Card/Card";
 import { Carousel, type CarouselProps } from "@/ui/Carousel/Carousel";
@@ -373,6 +374,50 @@ const TREE_SAMPLES: Record<string, unknown> = {
 const treeProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in TREE_SAMPLES ? TREE_SAMPLES[v] : v])) as unknown as TreeViewProps;
 
+// Cascader samples after the Figma field picker: invoice fields, with related records that open more fields.
+// Contract examples name them {fields}, {path} and {locations}.
+const f = (value: string, type: string): CascaderOption => ({ value, label: value, type });
+const USER_FIELDS: CascaderOption[] = [
+  f("Created", "Date"), f("DefaultFlag", "Num"), f("DisplayFlag", "Num"), f("Email", "Text"), f("Id", "Num"), f("Tzname", "Text"),
+  f("Updated", "Date"), f("UtcOffset", "Num"),
+];
+const CASCADER_FIELDS: CascaderOption[] = [
+  { value: "AccountingPeriod", label: "AccountingPeriod", path: "Id", relation: "parent", children: [f("Id", "Num"), f("Name", "Text"), f("StartDate", "Date"), f("EndDate", "Date")] },
+  f("AchBankAcctNum", "Text"), f("AchToken", "Num"), f("Address1", "Text"), f("AllocatedToExtAc", "Date"), f("Amount", "Num"),
+  { value: "ApproveInvoice", label: "ApproveInvoice", path: "Id", relation: "parent", children: [f("ApprovedBy", "Text"), f("ApprovedDate", "Date"), f("Status", "Text")] },
+  f("Autoallocate", "Num"), f("BankTransactionId", "Num"),
+  { value: "BillingProfile", label: "BillingProfile", path: "Id", relation: "parent", children: [
+    { value: "Account", label: "Account", path: "Id", relation: "parent", children: [
+      f("AccountNumber", "Text"), f("Name", "Text"), f("Status", "Text"),
+      { value: "Owner", label: "Owner", path: "User.Id", relation: "parent", children: USER_FIELDS },
+    ] },
+    f("BillingCycle", "Text"), f("Currency", "Text"), f("PaymentTerms", "Text"),
+  ] },
+  { value: "BpPayout", label: "BpPayout", path: "Id", relation: "parent", children: [f("Amount", "Num"), f("PayoutDate", "Date")] },
+  { value: "Bppay_Payout_Report_Detail", label: "Bppay_Payout_Report_Detail", path: "Payment.ItemId", relation: "children", children: [f("Amount", "Num"), f("Fee", "Num"), f("ReportDate", "Date")] },
+  { value: "Bppay_Payout", label: "Bppay_Payout", path: "Payment.Id", relation: "children", children: [f("Amount", "Num"), f("Status", "Text")] },
+  { value: "C_Remittancesets", label: "C_Remittancesets", path: "Payment.Id", relation: "children", children: [f("Name", "Text"), f("Total", "Num")] },
+  { value: "CreatedUserIdObj", label: "CreatedUserIdObj", path: "User.Id", relation: "parent", children: USER_FIELDS },
+  f("DueDate", "Date"), f("InvoiceNumber", "Text"),
+];
+const CASCADER_LOCATIONS: CascaderOption[] = [
+  { value: "na", label: "North America", children: [
+    { value: "us", label: "United States", children: [{ value: "nyc", label: "New York" }, { value: "sf", label: "San Francisco" }, { value: "austin", label: "Austin" }] },
+    { value: "ca", label: "Canada", children: [{ value: "toronto", label: "Toronto" }, { value: "vancouver", label: "Vancouver" }] },
+  ] },
+  { value: "eu", label: "Europe", children: [
+    { value: "de", label: "Germany", children: [{ value: "berlin", label: "Berlin" }, { value: "munich", label: "Munich" }] },
+    { value: "rs", label: "Serbia", children: [{ value: "belgrade", label: "Belgrade" }, { value: "novisad", label: "Novi Sad" }] },
+  ] },
+];
+const CASCADER_SAMPLES: Record<string, unknown> = {
+  "{fields}": CASCADER_FIELDS,
+  "{path}": ["BillingProfile", "Account", "Owner", "Email"],
+  "{locations}": CASCADER_LOCATIONS,
+};
+const cascaderProps = (p: Props) =>
+  Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in CASCADER_SAMPLES ? CASCADER_SAMPLES[v] : v])) as unknown as CascaderProps;
+
 const MENU_ITEMS: DropdownMenuEntry[] = [
   { id: "edit", label: "Edit" },
   { id: "duplicate", label: "Duplicate" },
@@ -553,10 +598,25 @@ export const registry: Record<string, Entry> = {
     block: true,
     wide: true,
     card: (
-      <div style={{ width: "250%", zoom: 0.4 }}>
+      // Clipped to the card's preview box: the month is taller than it.
+      <div style={{ width: "250%", zoom: 0.4, height: 300, overflow: "hidden" }}>
         <Calendar label="Team calendar" calendars={CAL_SOURCES} defaultEvents={CAL_EVENTS} readOnly />
       </div>
     ),
+  },
+  Cascader: {
+    // Sample fields swap in for their {names}. Keyed so switching controls starts fresh. Field keeps a form-like width;
+    // panel gets the page width, like the field picker in a modal.
+    render: (p) => (
+      <div style={{ width: p.variant === "panel" ? "100%" : 360, maxWidth: "100%" }}>
+        <Cascader key={JSON.stringify(p)} {...cascaderProps(p)} />
+      </div>
+    ),
+    preview: { label: "Invoice field", options: "{fields}", defaultValue: "{path}", searchable: true },
+    snippet: { onChange: "{setPath}" },
+    hint: "Open the field and walk the columns: [+] opens a related record's fields, » its child records. Type to search every path. Switch variant to panel for the inline field picker.",
+    block: true,
+    card: <div style={{ width: "100%" }}><Cascader label="Invoice field" hideLabel options={CASCADER_FIELDS} defaultValue={["BillingProfile", "Account", "Owner", "Email"]} size="sm" /></div>,
   },
   Card: {
     // Figma's card is 554 wide; 420 here so two sit side by side in the variants.
