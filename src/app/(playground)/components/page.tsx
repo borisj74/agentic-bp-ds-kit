@@ -1,7 +1,7 @@
 import Link from "next/link";
 import shell from "@/playground/shell.module.css";
 import styles from "@/playground/master.module.css";
-import { registry } from "@/playground/registry";
+import { CardPreview } from "@/playground/CardPreview";
 import { components, slug } from "@/playground/nav";
 import { loadContract } from "@/playground/contracts";
 
@@ -15,7 +15,7 @@ export default async function Gallery() {
         {components.map((c, i) => (
           // The title link stretches over the whole card. The preview is inert, so its own links and buttons never nest inside the card link.
           <div key={c.name} className={styles.card}>
-            <div className={styles.cardPreview} inert aria-hidden="true">{registry[c.name]?.card}</div>
+            <div className={styles.cardPreview} inert aria-hidden="true"><CardPreview name={c.name} /></div>
             <div className={styles.cardBody}>
               <Link href={`/components/${slug(c.name)}`} className={styles.cardTitle}>{c.name}</Link>
               <div className={styles.cardDesc}>{contracts[i]?.intent}</div>

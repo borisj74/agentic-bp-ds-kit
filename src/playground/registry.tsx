@@ -30,6 +30,7 @@ import { Logo } from "@/ui/Logo/Logo";
 import { LogoAI } from "@/ui/LogoAI/LogoAI";
 import { PageHeader, type PageHeaderProps } from "@/ui/PageHeader/PageHeader";
 import { RadioGroup, type RadioGroupOption } from "@/ui/RadioGroup/RadioGroup";
+import { Scoreboard, type ScoreboardItem, type ScoreboardProps } from "@/ui/Scoreboard/Scoreboard";
 import { SegmentedControl, type SegmentedControlProps } from "@/ui/SegmentedControl/SegmentedControl";
 import { Select, type SelectProps } from "@/ui/Select/Select";
 import { SideNav, type SideNavEntry, type SideNavItem, type SideNavProps } from "@/ui/SideNav/SideNav";
@@ -178,6 +179,27 @@ const GRID_SAMPLES: Record<string, unknown> = {
 };
 const gridProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in GRID_SAMPLES ? GRID_SAMPLES[v] : v])) as unknown as DataGridProps;
+
+// Scoreboard samples. Contract examples name them as {trendKpis}, {chartKpis}, {sixKpis}.
+const TREND_KPIS: ScoreboardItem[] = [
+  { id: "open", title: "Open invoices", metric: "128", badge: "Month", trend: { value: "12%", unit: "MoM", status: "success", direction: "up" }, metadata: "Updated today" },
+  { id: "overdue", title: "Overdue", metric: "$36,420", badge: "Month", trend: { value: "4.1%", unit: "MoM", status: "danger", direction: "up" }, metadata: "14 accounts" },
+  { id: "dso", title: "Days to pay", metric: "32 days", trend: { value: "0%", unit: "MoM", status: "neutral", direction: "none" }, metadata: "Average across accounts" },
+];
+const CHART_KPIS: ScoreboardItem[] = [
+  { id: "revenue", title: "Revenue", metric: "$482,900", badge: "YTD", chart: { points: [52, 58, 54, 66, 62, 74, 70, 82], status: "success" }, metadata: "Last 8 weeks" },
+  { id: "churn", title: "Churn", metric: "2.4%", chart: { points: [30, 36, 32, 42, 40, 48, 44, 54], status: "danger" }, metadata: "Last 8 weeks" },
+  { id: "seats", title: "Active seats", metric: "1,204", chart: { points: [1180, 1210, 1195, 1190, 1215, 1200, 1198, 1204] }, metadata: "Last 8 weeks" },
+];
+const SIX_KPIS: ScoreboardItem[] = [
+  ...TREND_KPIS,
+  { id: "paid", title: "Paid", metric: "$210,300", trend: { value: "8.2%", unit: "YoY", status: "success", direction: "up" }, metadata: "This month" },
+  { id: "disputed", title: "Disputed", metric: "6", trend: { value: "2", status: "success", direction: "down" }, metadata: "Needs review" },
+  { id: "credits", title: "Credits", metric: "$4,800", metadata: "This month" },
+];
+const SCORE_SAMPLES: Record<string, unknown> = { "{trendKpis}": TREND_KPIS, "{chartKpis}": CHART_KPIS, "{sixKpis}": SIX_KPIS };
+const scoreProps = (p: Props) =>
+  Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in SCORE_SAMPLES ? SCORE_SAMPLES[v] : v])) as unknown as ScoreboardProps;
 
 const MENU_ITEMS: DropdownMenuEntry[] = [
   { id: "edit", label: "Edit" },
@@ -629,6 +651,22 @@ export const registry: Record<string, Entry> = {
       <div style={{ display: "grid", gap: 8, width: "80%" }}>
         <Select size="sm" label="Status" defaultValue="paid" options={[{ value: "paid", label: "Paid" }, { value: "draft", label: "Draft" }]} />
         <Select size="sm" label="Tags" multiple maxVisible={1} defaultValue={["usage", "annual"]} options={[{ value: "usage", label: "Usage" }, { value: "annual", label: "Annual" }]} />
+      </div>
+    ),
+  },
+  Scoreboard: {
+    // Sample cards swap in for their {names}. Keyed so switching controls starts fresh.
+    render: (p) => <Scoreboard key={JSON.stringify(p)} {...scoreProps(p)} />,
+    preview: { items: "{trendKpis}" },
+    hide: ["selected", "defaultSelected"],
+    extras: { cards: { values: ["trends", "charts", "six"], default: "trends" } },
+    normalize: ({ cards, ...p }) => ({ ...p, items: cards === "charts" ? "{chartKpis}" : cards === "six" ? "{sixKpis}" : "{trendKpis}" }),
+    hint: "Switch between trends, spark charts and six cards. Turn on selectable to pick a card.",
+    block: true,
+    wide: true,
+    card: (
+      <div style={{ width: "250%", zoom: 0.4 }}>
+        <Scoreboard items={CHART_KPIS} />
       </div>
     ),
   },

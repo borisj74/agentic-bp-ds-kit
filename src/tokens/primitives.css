@@ -1241,4 +1241,7 @@
   --toolbar-search: 200px;
   --data-grid-column-min: 160px;
   --data-grid-edit-min: 96px;
+  --scoreboard-card-min: 196px;
+  --scoreboard-chart-width: 64px;
+  --scoreboard-chart-height: 20px;
 }

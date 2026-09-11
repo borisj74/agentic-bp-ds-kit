@@ -29,7 +29,7 @@ Invoke with `/prototype-from-kit <what you want to build>`.
 
 These pieces and patterns are planned but have no contract in this kit yet. If a screen needs one, stop and ask before going further.
 
-- Components: Scoreboard, Empty, Chat, InsightCard, DataTable, Section, Drawer, Progress.
+- Components: Empty, Chat, InsightCard, DataTable, Section, Drawer, Progress.
 - Patterns and what they will contain:
   - `dashboard`
   - `list-detail`
@@ -39,4 +39,4 @@ These pieces and patterns are planned but have no contract in this kit yet. If a
   - `empty-first-run` — empty / first-run screens (PageHeader + Empty + one primary that opens a create Modal).
   - `activity` — activity screens (Scoreboard + task cards or list + tabbed DataTable feed).
   - `inbox` — inbox screens (Scoreboard + tabbed Table + detail Section + reply Drawer).
-- Metric rows will use `<Scoreboard items={...} />`, not flex layouts with borders.
+- Metric rows use `<Scoreboard items={...} />` (it exists now), not flex layouts with borders.

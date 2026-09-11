@@ -33,6 +33,7 @@
     {"name": "Modal", "contract": "contracts/modal.json", "category": "overlay", "tags": ["modal", "dialog", "overlay", "form", "command palette"]},
     {"name": "PageHeader", "contract": "contracts/pageheader.json", "category": "navigation", "tags": ["page header", "content header", "title", "breadcrumb", "page actions", "sticky"]},
     {"name": "RadioGroup", "contract": "contracts/radiogroup.json", "category": "form", "tags": ["form", "radio", "single select", "choice", "options"]},
+    {"name": "Scoreboard", "contract": "contracts/scoreboard.json", "category": "data", "tags": ["scoreboard", "kpi", "metrics", "stats", "scorecard", "summary", "trend", "sparkline", "dashboard"]},
     {"name": "SegmentedControl", "contract": "contracts/segmentedcontrol.json", "category": "form", "tags": ["segmented", "toggle", "choice", "density", "view switch", "period", "radio buttons"]},
     {"name": "Select", "contract": "contracts/select.json", "category": "form", "tags": ["select", "dropdown", "picker", "multi-select", "options", "form"]},
     {"name": "SideNav", "contract": "contracts/sidenav.json", "category": "navigation", "tags": ["side nav", "sidebar", "navigation", "rail", "flyout", "secondary navigation", "menu"]},

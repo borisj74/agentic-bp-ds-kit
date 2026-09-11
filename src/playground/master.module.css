@@ -73,9 +73,11 @@
   display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-medium); padding: var(--space-medium);
   background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-large);
 }
-.exampleCanvas { display: grid; place-items: center; min-height: 192px; padding: var(--space-medium); background: var(--stage); border-radius: var(--radius-large); }
+/* minmax(0, 1fr) and min-width 0: a wide piece, like six Scoreboard cards, scrolls inside itself instead of stretching the page. */
+.exampleCanvas { display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; min-height: 192px; padding: var(--space-medium); background: var(--stage); border-radius: var(--radius-large); }
 .block { width: 100%; max-width: 720px; }
 .stack { width: 100%; max-width: 720px; display: grid; gap: var(--space-small); }
+.stack > * { min-width: 0; }
 /* Full-width pieces like AppHeader use the whole stage. */
 .wide { max-width: none; }
 .items { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-medium); }
