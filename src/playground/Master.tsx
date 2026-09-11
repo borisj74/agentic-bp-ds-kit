@@ -13,6 +13,8 @@ export interface Example {
   usage?: string;
   a11y?: boolean;
   items: { caption?: string; props: Props }[];
+  /** Hand-written code for an example that composes several pieces; replaces the generated snippet. */
+  code?: string;
 }
 export interface Contract {
   name: string; path: string; intent: string; usage?: string;
@@ -190,7 +192,7 @@ export function Master({ contract }: { contract: Contract }) {
         <div className={styles.examples}>
           {(contract.examples ?? []).map((ex, i) => {
             const captioned = ex.items.some((it) => it.caption);
-            const code = ex.items.map((it) => {
+            const code = ex.code ?? ex.items.map((it) => {
               const p = { ...entry.snippet, ...it.props };
               const long = Object.keys(p).filter((k) => k !== "children").length > 4;
               return toJsx(contract.name, long ? p : it.props, keys, long, childName);

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
-import { AlertDialogDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { AlertDialogDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -45,6 +45,8 @@ import { RadioGroup, type RadioGroupOption } from "@/ui/RadioGroup/RadioGroup";
 import { Scoreboard, type ScoreboardItem, type ScoreboardProps } from "@/ui/Scoreboard/Scoreboard";
 import { Section, type SectionProps } from "@/ui/Section/Section";
 import { SegmentedControl, type SegmentedControlProps } from "@/ui/SegmentedControl/SegmentedControl";
+import { ShimmerText, type ShimmerTextProps } from "@/ui/ShimmerText/ShimmerText";
+import { Skeleton } from "@/ui/Skeleton/Skeleton";
 import { Select, type SelectProps } from "@/ui/Select/Select";
 import { SideNav, type SideNavEntry, type SideNavItem, type SideNavProps } from "@/ui/SideNav/SideNav";
 import { Switch, type SwitchProps } from "@/ui/Switch/Switch";
@@ -1080,6 +1082,12 @@ export const registry: Record<string, Entry> = {
         options={[{ value: "list", label: "List", icon: "view_list" }, { value: "board", label: "Board", icon: "view_kanban" }]} />
     ),
   },
+  ShimmerText: {
+    render: ({ children, ...p }) => <ShimmerText {...(p as Omit<ShimmerTextProps, "children">)}>{(children as string) || "Generating response…"}</ShimmerText>,
+    preview: { children: "Generating response…" },
+    hint: "Switch size and speed. The light runs through the letters left to right; with reduced motion it stays still.",
+    card: <ShimmerText size="lg">Generating response…</ShimmerText>,
+  },
   SideNav: {
     // A page-sized frame, tall enough for the whole rail: the nav fills its height, the sunken area stands in for the page. Keyed so the pin control re-applies.
     render: (p) => (
@@ -1097,6 +1105,25 @@ export const registry: Record<string, Entry> = {
       // The rail and the pinned menu's first items; the nav fills this height and the preview fades the rest.
       <div style={{ display: "flex", height: 200 }}>
         <SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} defaultCurrent="revenue-general-ledger" defaultPinned />
+      </div>
+    ),
+  },
+  Skeleton: {
+    // SkeletonDemo puts kit Skeletons in real layouts, each wrapping its real content. Keyed so switches restart the motion.
+    // On a white panel, like a page: the skeleton gray is the stage gray.
+    render: ({ layout, ...p }) => (
+      <div style={{ ...chartPanel, width: "auto" }}>
+        <SkeletonDemo key={JSON.stringify(p) + String(layout)} layout={layout as SkeletonDemoLayout} {...(p as object)} />
+      </div>
+    ),
+    preview: { lines: 3 },
+    hide: ["children", "label"],
+    extras: { layout: { values: ["single", "card", "list", "table"], default: "single" } },
+    hint: "Switch layout for a card, a list or table rows while they load. Turn Loading off to swap in the real content. Pick shimmer, pulse or none.",
+    card: (
+      <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "var(--space-small)", alignItems: "center", width: 220 }}>
+        <Skeleton shape="circle" animation="none" />
+        <div style={{ display: "grid" }}><Skeleton size="sm" width="50%" animation="none" label="" /><Skeleton size="sm" width="80%" animation="none" label="" /></div>
       </div>
     ),
   },

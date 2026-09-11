@@ -2,6 +2,7 @@
 import { useId, useState, type ReactNode } from "react";
 import { Alert } from "@/ui/Alert/Alert";
 import { AlertDialog, type AlertDialogProps } from "@/ui/AlertDialog/AlertDialog";
+import { Avatar } from "@/ui/Avatar/Avatar";
 import { AppHeader, type AppHeaderDensity, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Button } from "@/ui/Button/Button";
 import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
@@ -17,6 +18,7 @@ import { Lookup } from "@/ui/Lookup/Lookup";
 import { Modal, type ModalProps } from "@/ui/Modal/Modal";
 import { SegmentedControl } from "@/ui/SegmentedControl/SegmentedControl";
 import { Select } from "@/ui/Select/Select";
+import { Skeleton, type SkeletonProps } from "@/ui/Skeleton/Skeleton";
 import { Switch } from "@/ui/Switch/Switch";
 import { Table, type TableColumn, type TableRow } from "@/ui/Table/Table";
 import { Textarea } from "@/ui/Textarea/Textarea";
@@ -407,4 +409,61 @@ export function CellTreeDemo({ size, checkbox = false, showLines = true, icons =
       rows={rows}
     />
   );
+}
+
+// Playground harness: kit Skeletons in the layout of real content (a card, a list, a table), each wrapping the content
+// it stands for, so turning loading off swaps in the real thing. Not a kit piece.
+export type SkeletonDemoLayout = "single" | "card" | "list" | "table";
+const PEOPLE = [
+  { name: "Maya Chen", email: "maya@acme.com", src: "/faces/maya-chen.jpg" },
+  { name: "Noah Williams", email: "noah@acme.com", src: "/faces/noah-williams.jpg" },
+  { name: "Iris Okafor", email: "iris@acme.com", src: "/faces/iris-okafor.jpg" },
+];
+const panel = { display: "grid", gap: "var(--space-small)", padding: "var(--space-medium)", background: "var(--surface-flat)", borderRadius: "var(--radius-medium)", border: "var(--border-width-thin) solid var(--border-neutral-faint)" } as const;
+const person = { display: "grid", gridTemplateColumns: "auto 1fr", alignItems: "center", gap: "var(--space-small)" } as const;
+const copy = { display: "grid", gap: "var(--space-xxxsmall)", minWidth: 0, fontSize: "var(--font-size-small)" } as const;
+
+export function SkeletonDemo({ layout = "single", ...p }: SkeletonProps & { layout?: SkeletonDemoLayout }) {
+  const { loading = true, animation } = p;
+  const bone = (props: SkeletonProps, content: ReactNode) => <Skeleton loading={loading} animation={animation} label="" {...props}>{content}</Skeleton>;
+  const row = (who: (typeof PEOPLE)[number], first: boolean) => (
+    <div key={who.name} style={person}>
+      {bone({ shape: "circle", size: "md", label: first ? "Loading people" : "" }, <Avatar name={who.name} src={who.src} size="md" />)}
+      <div style={copy}>
+        {bone({ size: "sm", width: "40%" }, <strong>{who.name}</strong>)}
+        {bone({ size: "sm", width: "60%" }, <span style={{ color: "var(--text-neutral)" }}>{who.email}</span>)}
+      </div>
+    </div>
+  );
+
+  if (layout === "card") {
+    return (
+      <div style={{ ...panel, width: 320 }}>
+        {row(PEOPLE[0], true)}
+        {bone({ shape: "rect", height: 96 }, <div style={{ height: 96, borderRadius: "var(--radius-medium)", background: "var(--bg-brand-faint)", display: "grid", placeItems: "center", color: "var(--text-brand)" }}>Q3 revenue up 12%</div>)}
+        {bone({ lines: 2, size: "sm" }, <p style={{ margin: 0, fontSize: "var(--font-size-small)" }}>Renewals closed early this quarter, and two new accounts signed annual plans.</p>)}
+      </div>
+    );
+  }
+  if (layout === "list") return <div style={{ ...panel, width: 320 }}>{PEOPLE.map((who, i) => row(who, i === 0))}</div>;
+  if (layout === "table") {
+    // One text line per cell, padded like a Cell, keeps the columns in place while rows load.
+    const cell = (text: string, first = false) => (
+      <div style={{ padding: "var(--space-small)" }}>{bone({ size: "sm", width: first ? "70%" : "50%", label: first ? "Loading invoices" : "" }, <span style={{ fontSize: "var(--font-size-small)" }}>{text}</span>)}</div>
+    );
+    const rows = [["INV001", "Paid", "$250.00"], ["INV002", "Pending", "$150.00"], ["INV003", "Unpaid", "$350.00"], ["INV004", "Paid", "$450.00"]]
+      .map(([invoice, status, amount], i) => ({ id: invoice, invoice: cell(invoice, i === 0), status: cell(status), amount: cell(amount) }));
+    return (
+      <div style={{ width: 480 }}>
+        <Table size="sm" columns={[{ key: "invoice", header: "Invoice" }, { key: "status", header: "Status" }, { key: "amount", header: "Amount" }]} rows={rows} />
+      </div>
+    );
+  }
+  // One Skeleton, wrapping the content it stands for.
+  const real = p.shape === "circle"
+    ? <Avatar name="Maya Chen" src="/faces/maya-chen.jpg" size={p.size === "sm" ? "sm" : p.size === "lg" ? "lg" : "md"} />
+    : p.shape === "rect"
+      ? <div style={{ height: 96, borderRadius: "var(--radius-medium)", background: "var(--bg-brand-faint)", display: "grid", placeItems: "center", color: "var(--text-brand)" }}>Chart ready</div>
+      : <p style={{ margin: 0 }}>Invoices sync every night at 2 AM. Failed payments retry after three days, then the account owner gets an email.</p>;
+  return <div style={{ width: 320 }}><Skeleton {...p}>{real}</Skeleton></div>;
 }

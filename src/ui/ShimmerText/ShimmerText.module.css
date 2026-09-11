@@ -1,0 +1,20 @@
+/* Reference kit ShimmerText: a wave of opacity through the letters. */
+.root {
+  position: relative;
+  --wave: calc(var(--motion-loading-duration) * var(--speed, 1));
+  display: inline-block; font-family: var(--font-sans); font-size: var(--font-size-regular); line-height: 1.5; color: var(--text-neutral-strong);
+}
+.sm { font-size: var(--font-size-small); }
+.lg { font-size: var(--font-size-large); font-weight: var(--font-weight-semibold); }
+.content { white-space: pre-wrap; }
+.letter {
+  display: inline-block; opacity: var(--opacity-300);
+  animation: wave var(--wave) var(--motion-loading-easing) infinite;
+  animation-delay: calc(var(--wave) * var(--phase) * -1);
+}
+@keyframes wave {
+  0%, 100% { opacity: var(--opacity-300); }
+  50% { opacity: var(--opacity-full); }
+}
+@media (prefers-reduced-motion: reduce) { .letter { opacity: var(--opacity-full); animation: none; } }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

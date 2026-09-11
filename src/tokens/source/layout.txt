@@ -248,3 +248,9 @@ cascader/panel-height|436px
 
 # Lookup (Figma lookup 138:5591): the search box is about 320 wide; past the ref scale.
 lookup/search|320px
+
+# Skeleton: a block placeholder is 96 tall by default; circles follow the avatar sizes (sm 32 / md 40 / lg 48).
+skeleton/block|96px
+skeleton/circle-sm|{ref/space/900}
+skeleton/circle-md|{ref/space/1100}
+skeleton/circle-lg|{ref/space/1300}

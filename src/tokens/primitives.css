@@ -1115,6 +1115,8 @@
   --motion-modal-exit-easing: var(--motion-ease-out);
   --motion-page-duration: var(--motion-duration-500);
   --motion-page-easing: var(--motion-ease-emphasized);
+  --motion-loading-duration: 1600ms;
+  --motion-loading-easing: var(--motion-ease-in-out);
   --opacity-0: 0;
   --opacity-100: 0.08;
   --opacity-200: 0.16;
@@ -1286,4 +1288,8 @@
   --cascader-height: 320px;
   --cascader-panel-height: 436px;
   --lookup-search: 320px;
+  --skeleton-block: 96px;
+  --skeleton-circle-sm: var(--ref-space-900);
+  --skeleton-circle-md: var(--ref-space-1100);
+  --skeleton-circle-lg: var(--ref-space-1300);
 }

@@ -1,0 +1,153 @@
+{
+  "name": "Skeleton",
+  "path": "src/ui/Skeleton/Skeleton.tsx",
+  "intent": "Gray placeholder shapes in the layout of content that is still loading, like lines of text, an avatar or an image, so the page keeps its shape until the data arrives.",
+  "usage": "Use Skeleton while data loads, in the place and rough shape the content will take: text lines for copy, a circle for an avatar, a block for an image, chart or card. It is one component: pick a shape, and for text how many lines (the last is shorter). animation shimmer runs a soft band of light across every skeleton on the page together; pulse fades them in and out; none keeps them still gray. Wrap the real content as children and set loading to false when it is ready: the Skeleton steps aside. Compose several for a card, a list row or a table. For a short line saying work is happening, use ShimmerText; for a known amount done, use Progress. See contracts/skeleton.json for the full contract.",
+  "props": {
+    "shape": {
+      "enum": [
+        "text",
+        "circle",
+        "rect"
+      ],
+      "default": "text",
+      "note": "text: rounded lines as tall as the text. circle: an avatar or icon. rect: a block, like an image, chart or card."
+    },
+    "lines": {
+      "type": "number",
+      "default": 1,
+      "note": "For text. With more than one, the last line is shorter, like the end of a paragraph."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "text: line height like 14, 16 or 18 text. circle: 32, 40 or 48, like Avatar."
+    },
+    "width": {
+      "type": "string | number",
+      "note": "Any CSS width, or px. Text and blocks fill the width by default; circles are square."
+    },
+    "height": {
+      "type": "string | number",
+      "note": "For rect. Defaults to 96 px."
+    },
+    "animation": {
+      "enum": [
+        "shimmer",
+        "pulse",
+        "none"
+      ],
+      "default": "shimmer",
+      "note": "shimmer: a band of light moves across, in step on every skeleton. pulse: a slow fade. none: still gray."
+    },
+    "loading": {
+      "type": "boolean",
+      "default": true,
+      "note": "Off shows children instead."
+    },
+    "children": {
+      "type": "ReactNode",
+      "note": "The real content, shown when loading is off."
+    },
+    "label": {
+      "type": "string",
+      "default": "Loading",
+      "note": "Read by screen readers in place of the shapes. Give one label to a group and an empty label to the rest."
+    }
+  },
+  "useWhen": [
+    "Content with a known layout is loading: a card, a list, a table, a profile.",
+    "Keeping the page from jumping while data arrives."
+  ],
+  "doNot": [
+    "Do not use it for a short status line. Use ShimmerText.",
+    "Do not use it when the amount done is known. Use Progress.",
+    "Do not leave it up when the load failed; show an Alert or an Empty state.",
+    "Do not draw loading bars with local gray divs. Use Skeleton.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The shapes are hidden from screen readers; a visually hidden label (Loading) stands in, and the wrapper is aria-busy while loading.",
+    "In a group, label one Skeleton and give the rest an empty label, so the page says Loading once.",
+    "No motion when the person prefers reduced motion: the shapes stay still gray."
+  ],
+  "snippet": "<Skeleton loading={!data} lines={3}>\n  <p>{data?.summary}</p>\n</Skeleton>",
+  "examples": [
+    {
+      "title": "Shapes",
+      "usage": "Text lines, a circle and a block.",
+      "items": [
+        {
+          "props": {
+            "shape": "text",
+            "lines": 3
+          }
+        },
+        {
+          "props": {
+            "shape": "circle",
+            "size": "lg"
+          }
+        },
+        {
+          "props": {
+            "shape": "rect",
+            "height": 96
+          }
+        }
+      ]
+    },
+    {
+      "title": "Animation",
+      "usage": "shimmer moves a band of light across; pulse fades; none stays still gray.",
+      "items": [
+        {
+          "props": {
+            "lines": 2,
+            "animation": "shimmer"
+          }
+        },
+        {
+          "props": {
+            "lines": 2,
+            "animation": "pulse"
+          }
+        },
+        {
+          "props": {
+            "lines": 2,
+            "animation": "none"
+          }
+        }
+      ]
+    },
+    {
+      "title": "A card while it loads",
+      "usage": "Skeletons in the card's layout: avatar, name and details, then an image block.",
+      "items": [
+        {
+          "props": {
+            "layout": "card"
+          }
+        }
+      ],
+      "code": "<Skeleton shape=\"circle\" loading={loading} label=\"Loading people\">\n  <Avatar name={person.name} src={person.photo} />\n</Skeleton>\n<Skeleton size=\"sm\" width=\"40%\" loading={loading} label=\"\">\n  <strong>{person.name}</strong>\n</Skeleton>\n<Skeleton size=\"sm\" width=\"60%\" loading={loading} label=\"\">\n  <span>{person.email}</span>\n</Skeleton>\n<Skeleton shape=\"rect\" height={96} loading={loading} label=\"\">\n  <LineChart … />\n</Skeleton>\n<Skeleton lines={2} size=\"sm\" loading={loading} label=\"\">\n  <p>{summary}</p>\n</Skeleton>"
+    },
+    {
+      "title": "Table rows while they load",
+      "usage": "One text line per cell keeps the table's columns in place.",
+      "items": [
+        {
+          "props": {
+            "layout": "table"
+          }
+        }
+      ],
+      "code": "// While loading, each cell holds one text Skeleton; label only the first.\nconst rows = loading\n  ? placeholders.map((id, i) => ({\n      id,\n      invoice: <Skeleton size=\"sm\" width=\"70%\" label={i === 0 ? \"Loading invoices\" : \"\"} />,\n      status: <Skeleton size=\"sm\" width=\"50%\" label=\"\" />,\n      amount: <Skeleton size=\"sm\" width=\"50%\" label=\"\" />,\n    }))\n  : invoices;\n\n<Table columns={columns} rows={rows} />"
+    }
+  ]
+}

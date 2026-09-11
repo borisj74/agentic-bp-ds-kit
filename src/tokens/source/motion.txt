@@ -30,3 +30,6 @@ motion/modal-exit/duration|{motion/duration/200}
 motion/modal-exit/easing|{motion/ease/out}
 motion/page/duration|{motion/duration/500}
 motion/page/easing|{motion/ease/emphasized}
+# Loading loops (ShimmerText, Skeleton): one slow, even cycle. Not in Figma.
+motion/loading/duration|1600ms
+motion/loading/easing|{motion/ease/in-out}

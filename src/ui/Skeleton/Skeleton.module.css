@@ -1,0 +1,37 @@
+/* Placeholder shapes in the neutral fill, which reads on white and on faint surfaces: text lines, circles and blocks. */
+.root { position: relative; display: flex; flex-direction: column; gap: var(--space-xsmall); min-width: 0; }
+.text { width: 100%; }
+.circle, .rect { display: inline-flex; }
+.rect { width: 100%; }
+
+.bone { display: block; flex: none; background-color: var(--bg-neutral); }
+
+/* Text: a rounded bar as tall as the text, centred in its line; the last of several is shorter. */
+.text .bone { width: 100%; height: var(--bar); margin-block: var(--pad); border-radius: var(--radius-small); }
+.text.sm { --bar: var(--font-size-small); --pad: var(--space-xxxsmall); }
+.text.md { --bar: var(--font-size-regular); --pad: var(--space-xxsmall); }
+.text.lg { --bar: var(--font-size-large); --pad: var(--space-xxsmall); }
+.text .last { width: 60%; }
+
+.circle .bone { border-radius: var(--radius-full); }
+.circle.sm .bone { width: var(--skeleton-circle-sm); height: var(--skeleton-circle-sm); }
+.circle.md .bone { width: var(--skeleton-circle-md); height: var(--skeleton-circle-md); }
+.circle.lg .bone { width: var(--skeleton-circle-lg); height: var(--skeleton-circle-lg); }
+
+.rect .bone { width: 100%; height: var(--skeleton-block); border-radius: var(--radius-medium); }
+
+/* Shimmer: a lighter band slides across, fixed to the window so all skeletons move as one. */
+.shimmer .bone {
+  background-image: linear-gradient(90deg, transparent 30%, var(--bg-neutral-subtle) 50%, transparent 70%);
+  background-size: 200vw 100%; background-attachment: fixed; background-repeat: no-repeat;
+  animation: shimmer var(--motion-loading-duration) var(--motion-ease-linear) infinite;
+}
+/* The band starts off the left edge of the window and leaves past the right. */
+@keyframes shimmer { from { background-position: -150vw 0; } to { background-position: 50vw 0; } }
+
+.pulse .bone { animation: pulse var(--motion-loading-duration) var(--motion-loading-easing) infinite; }
+@keyframes pulse { 0%, 100% { opacity: var(--opacity-full); } 50% { opacity: var(--opacity-400); } }
+
+@media (prefers-reduced-motion: reduce) { .shimmer .bone, .pulse .bone { animation: none; background-image: none; } }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

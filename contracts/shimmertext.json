@@ -1,0 +1,98 @@
+{
+  "name": "ShimmerText",
+  "path": "src/ui/ShimmerText/ShimmerText.tsx",
+  "intent": "Short text with a soft wave of light running through it, for a moment of work whose end is unknown, like Generating response… or Syncing invoices….",
+  "usage": "Use ShimmerText for one short line that says something is being worked on: an AI answer being written, a sync, a search. It is one component: pass the text as children. The letters fade in and out one after another, left to right. Swap it for the real content as soon as it is ready. For the shape of content that is still loading, use Skeleton; for a known amount done, use Progress. See contracts/shimmertext.json for the full contract.",
+  "props": {
+    "children": {
+      "type": "string",
+      "required": true,
+      "note": "The line, like Generating response…. Keep it short: a few words."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "sm 14, md 16, lg 18 semibold."
+    },
+    "speed": {
+      "enum": [
+        "slow",
+        "normal",
+        "fast"
+      ],
+      "default": "normal",
+      "note": "How long one wave takes: slow 2.4s, normal 1.6s, fast 1.2s."
+    }
+  },
+  "useWhen": [
+    "A short line while something is generated or processed and the wait is unknown.",
+    "Inline status next to an AI answer or a running job."
+  ],
+  "doNot": [
+    "Do not use it for headings or body copy.",
+    "Do not use it for long text; keep it to a few words.",
+    "Do not use it when the amount done is known. Use Progress.",
+    "Do not use it for the layout of loading content. Use Skeleton.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A span labelled with the whole line; the separate letters are hidden from screen readers, so it reads as one phrase.",
+    "It is not a live region: announce the start and end of the work where it happens.",
+    "No motion when the person prefers reduced motion: the text sits still at full strength."
+  ],
+  "snippet": "<ShimmerText>Generating response…</ShimmerText>",
+  "examples": [
+    {
+      "title": "Sizes",
+      "usage": "sm, md and lg.",
+      "items": [
+        {
+          "props": {
+            "size": "sm",
+            "children": "Syncing invoices…"
+          }
+        },
+        {
+          "props": {
+            "size": "md",
+            "children": "Generating response…"
+          }
+        },
+        {
+          "props": {
+            "size": "lg",
+            "children": "Building your forecast…"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Speeds",
+      "usage": "slow, normal and fast.",
+      "items": [
+        {
+          "props": {
+            "speed": "slow",
+            "children": "Thinking…"
+          }
+        },
+        {
+          "props": {
+            "speed": "normal",
+            "children": "Thinking…"
+          }
+        },
+        {
+          "props": {
+            "speed": "fast",
+            "children": "Thinking…"
+          }
+        }
+      ]
+    }
+  ]
+}
