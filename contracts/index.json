@@ -33,6 +33,8 @@
     {"name": "LogoAI", "contract": "contracts/logoai.json", "category": "brand", "tags": ["ai", "brand", "assistant", "copilot"]},
     {"name": "Modal", "contract": "contracts/modal.json", "category": "overlay", "tags": ["modal", "dialog", "overlay", "form", "command palette"]},
     {"name": "PageHeader", "contract": "contracts/pageheader.json", "category": "navigation", "tags": ["page header", "content header", "title", "breadcrumb", "page actions", "sticky"]},
+    {"name": "Progress", "contract": "contracts/progress.json", "category": "feedback", "tags": ["progress", "progress bar", "meter", "gauge", "ring", "donut", "percent", "thresholds", "completion", "usage"]},
+    {"name": "ProgressLegacy", "contract": "contracts/progresslegacy.json", "category": "feedback", "tags": ["progress", "progress bar", "legacy", "percent", "upload", "loading", "completion"]},
     {"name": "RadioGroup", "contract": "contracts/radiogroup.json", "category": "form", "tags": ["form", "radio", "single select", "choice", "options"]},
     {"name": "Scoreboard", "contract": "contracts/scoreboard.json", "category": "data", "tags": ["scoreboard", "kpi", "metrics", "stats", "scorecard", "summary", "trend", "sparkline", "dashboard"]},
     {"name": "Section", "contract": "contracts/section.json", "category": "layout", "tags": ["section", "section header", "heading", "group", "block", "collapsible", "panel", "detail page"]},

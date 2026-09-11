@@ -1245,4 +1245,11 @@
   --scoreboard-chart-width: 64px;
   --scoreboard-chart-height: 20px;
   --carousel-vertical-height: 200px;
+  --progress-legacy-height: var(--ref-space-600);
+  --progress-bar-sm: var(--ref-space-200);
+  --progress-bar-md: var(--ref-space-300);
+  --progress-bar-lg: var(--ref-space-400);
+  --progress-circle-sm: 56px;
+  --progress-circle-md: 96px;
+  --progress-circle-lg: 196px;
 }

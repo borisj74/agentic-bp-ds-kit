@@ -1,0 +1,16 @@
+/* Figma progress-bar 3013:5958 (legacy). The bar fills its container; the right label takes its own width after it. */
+.progress { display: flex; align-items: center; gap: var(--space-xsmall); width: 100%; min-width: 0; font-family: var(--font-sans); }
+
+.track {
+  position: relative; display: flex; align-items: center; justify-content: center; flex: 1 1 auto; min-width: 0;
+  height: var(--progress-legacy-height); border-radius: var(--radius-small); background: var(--bg-neutral-subtle); overflow: hidden;
+}
+/* The Figma fill is status info 400; border-info is that color in both themes. */
+.fill {
+  position: absolute; inset-block: 0; inset-inline-start: 0;
+  border-radius: var(--radius-small); background: var(--border-info);
+  transition: width var(--motion-expand-duration) var(--motion-expand-easing);
+}
+@media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+
+.value { position: relative; font-size: var(--font-size-xsmall); line-height: var(--line-height-tight); color: var(--text-neutral-strong); white-space: nowrap; font-variant-numeric: tabular-nums; }

@@ -30,6 +30,8 @@ import { Input, type InputProps } from "@/ui/Input/Input";
 import { Logo } from "@/ui/Logo/Logo";
 import { LogoAI } from "@/ui/LogoAI/LogoAI";
 import { PageHeader, type PageHeaderProps } from "@/ui/PageHeader/PageHeader";
+import { Progress, type ProgressProps } from "@/ui/Progress/Progress";
+import { ProgressLegacy, type ProgressLegacyProps } from "@/ui/ProgressLegacy/ProgressLegacy";
 import { RadioGroup, type RadioGroupOption } from "@/ui/RadioGroup/RadioGroup";
 import { Scoreboard, type ScoreboardItem, type ScoreboardProps } from "@/ui/Scoreboard/Scoreboard";
 import { Section, type SectionProps } from "@/ui/Section/Section";
@@ -923,6 +925,45 @@ export const registry: Record<string, Entry> = {
       <div style={{ width: "250%", zoom: 0.4 }}>
         <PageHeader breadcrumbs={[{ label: "Billing", href: "#" }, { label: "Invoices", href: "#" }]} icon="folder_open" title="INV-1042" badge="Draft"
           actions={<><Button size="sm">Send</Button><Button size="sm" variant="primary">Approve</Button></>} />
+      </div>
+    ),
+  },
+  Progress: {
+    // Its track is the stage gray, so it sits on a white page panel. A bar fills its container, so it gets a 240 column; rings size themselves.
+    render: (p) => {
+      const ring = p.shape === "circle" || p.shape === "semicircle";
+      return (
+        <div style={{ width: ring ? "auto" : 240, maxWidth: "100%", padding: "var(--space-medium)", background: "var(--surface-flat)", borderRadius: "var(--radius-medium)" }}>
+          <Progress {...(p as unknown as ProgressProps)} />
+        </div>
+      );
+    },
+    preview: { label: "Budget spent", value: 60, showValue: true },
+    extras: { value: { values: ["0", "30", "60", "100"], default: "60" } },
+    normalize: ({ value, ...p }) => ({ ...p, value: Number(value ?? p.value) }),
+    hint: "Switch shape, size and thresholds; turn on reference lines and the value. Value moves it between the zones.",
+    card: (
+      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div style={{ width: 120 }}><Progress label="Upload" value={60} /></div>
+        <Progress label="Setup" value={60} shape="circle" size="sm" />
+      </div>
+    ),
+  },
+  ProgressLegacy: {
+    // Figma's bar is 180 wide (224 with the label on the right). Its track is the stage gray, so it sits on a white page panel.
+    render: (p) => (
+      <div style={{ width: p.labelPosition === "right" ? 224 : 180, maxWidth: "100%", padding: "var(--space-small)", background: "var(--surface-flat)", borderRadius: "var(--radius-medium)" }}>
+        <ProgressLegacy {...(p as unknown as ProgressLegacyProps)} />
+      </div>
+    ),
+    preview: { label: "Upload", value: 25 },
+    extras: { value: { values: ["25", "50", "100"], default: "25" } },
+    normalize: ({ value, ...p }) => ({ ...p, value: Number(value ?? p.value) }),
+    hint: "Switch the value, where the label sits, and whether it shows.",
+    card: (
+      <div style={{ display: "grid", gap: 8, width: 180 }}>
+        <ProgressLegacy label="Upload" value={25} />
+        <ProgressLegacy label="Upload" value={100} />
       </div>
     ),
   },

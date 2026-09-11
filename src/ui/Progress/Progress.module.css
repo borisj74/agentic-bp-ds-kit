@@ -1,0 +1,70 @@
+/* Figma Meter Bar - Horizontal 6578:325 and Meter - Circle 6605:193. */
+.progress { min-width: 0; font-family: var(--font-sans); }
+
+/* ---------- Bar: fills its container's width ---------- */
+.bar { display: flex; flex-direction: column; gap: var(--space-xxsmall); width: 100%; }
+.barRow { display: flex; align-items: center; gap: var(--space-xsmall); }
+.trackWrap { position: relative; flex: 1 1 auto; min-width: 0; }
+.track { position: relative; display: flex; overflow: hidden; border-radius: var(--radius-small); }
+.sm .track { height: var(--progress-bar-sm); }
+.md .track { height: var(--progress-bar-md); }
+.lg .track { height: var(--progress-bar-lg); }
+.band { flex: 1 1 0; }
+.fill {
+  position: absolute; inset-block: 0; inset-inline-start: 0; border-radius: var(--radius-small);
+  transition: width var(--motion-expand-duration) var(--motion-expand-easing);
+}
+
+/* Tones: the track is neutral unless it shows a zone; the value is blue unless it takes its zone's color. */
+.track.neutral { background: var(--bg-neutral-subtle); }
+.track.danger, .band.danger, .fill.danger { background: var(--bg-danger); }
+.track.warning, .band.warning, .fill.warning { background: var(--bg-warning); }
+.track.success, .band.success, .fill.success { background: var(--bg-success); }
+.fill.info { background: var(--bg-info); }
+
+/* Reference line: a 4px cap above a 2px line that crosses the bar, with a thin light edge so it reads on any color. */
+.marker {
+  position: absolute; top: calc(var(--space-xxsmall) * -1); bottom: calc(var(--space-xxxsmall) * -1);
+  width: var(--border-width-medium); transform: translateX(-50%);
+  background: var(--icon-neutral-intense); box-shadow: var(--border-width-thin) 0 0 var(--surface-flat);
+}
+.marker::before {
+  content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: var(--space-xxsmall); height: var(--space-xxsmall); background: var(--icon-neutral-intense);
+}
+
+/* Datatip: Figma Meter Datatip 6572:198. */
+.tipRow { position: relative; height: calc(var(--font-size-xsmall) * var(--line-height-tight) + var(--space-xxsmall) * 2 + var(--border-width-thin) * 2); }
+.tip {
+  position: absolute; top: 0; box-sizing: border-box; padding: var(--space-xxsmall) var(--space-xsmall);
+  border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-medium);
+  background: var(--surface-floating); color: var(--text-neutral-intense);
+  font-size: var(--font-size-xsmall); line-height: var(--line-height-tight); white-space: nowrap;
+}
+:global([data-theme="dark"]) .tip { color: var(--text-neutral-strong); }
+
+.value { flex: none; font-size: var(--font-size-xsmall); line-height: var(--line-height-tight); color: var(--text-neutral-strong); font-variant-numeric: tabular-nums; }
+
+/* ---------- Circle and semicircle ---------- */
+.ring { position: relative; display: inline-flex; flex: none; }
+.ring.sm { width: var(--progress-circle-sm); }
+.ring.md { width: var(--progress-circle-md); }
+.ring.lg { width: var(--progress-circle-lg); }
+.svg { display: block; width: 100%; height: auto; }
+.arc { transition: stroke-dasharray var(--motion-expand-duration) var(--motion-expand-easing); }
+.arc.neutral { stroke: var(--bg-neutral-subtle); }
+.arc.info { stroke: var(--bg-info); }
+.arc.danger { stroke: var(--bg-danger); }
+.arc.warning { stroke: var(--bg-warning); }
+.arc.success { stroke: var(--bg-success); }
+.tick { stroke: var(--icon-neutral-intense); stroke-width: var(--border-width-medium); vector-effect: non-scaling-stroke; }
+
+/* The percent sits in the hole, or near the top of the bowl. */
+.ring .value { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-weight: var(--font-weight-semibold); }
+.ring.semi .value { top: 35%; }
+.ring.sm .value { font-size: var(--font-size-xsmall); }
+.ring.md .value { font-size: var(--font-size-regular); }
+.ring.lg .value { font-size: var(--font-size-xlarge); }
+.ring .tip { transform: translate(-50%, calc(-100% - var(--space-xxsmall))); }
+
+@media (prefers-reduced-motion: reduce) { .fill, .arc { transition: none; } }

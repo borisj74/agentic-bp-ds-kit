@@ -176,3 +176,14 @@ scoreboard/chart-height|20px
 
 # Carousel (reference kit carousel): a vertical track is 200 tall; its slides fill it.
 carousel/vertical-height|200px
+
+# ProgressLegacy (Figma progress-bar 3013:5958): the bar is 20 tall.
+progress-legacy/height|{ref/space/600}
+
+# Progress (Figma Meter Bar - Horizontal 6578:325, Meter - Circle 6605:193): bar track 4 / 8 / 12 tall; rings 56 / 96 / 196 wide.
+progress/bar-sm|{ref/space/200}
+progress/bar-md|{ref/space/300}
+progress/bar-lg|{ref/space/400}
+progress/circle-sm|56px
+progress/circle-md|96px
+progress/circle-lg|196px
