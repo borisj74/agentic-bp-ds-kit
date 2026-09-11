@@ -1119,6 +1119,8 @@ export const registry: Record<string, Entry> = {
     preview: { lines: 3 },
     hide: ["children", "label"],
     extras: { layout: { values: ["single", "card", "list", "table"], default: "single" } },
+    // Variants stack shapes and animations top to bottom, like rows of a page.
+    column: true,
     hint: "Switch layout for a card, a list or table rows while they load. Turn Loading off to swap in the real content. Pick shimmer, pulse or none.",
     card: (
       <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "var(--space-small)", alignItems: "center", width: 220 }}>
