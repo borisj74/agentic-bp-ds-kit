@@ -1,0 +1,87 @@
+{
+  "name": "Toast",
+  "path": "src/ui/Toast/Toast.tsx",
+  "intent": "A short note that floats in after an action, like Saved successfully, and goes away on its own after a few seconds, with an optional Undo.",
+  "usage": "Use Toast to confirm an action people just took, or to offer a quick Undo. It is one component: render it with open and onClose, and set open when the action happens. It floats at the bottom right of the screen, above dialogs; several stack. A bar along the top counts down duration (5 seconds by default) and then onClose runs; pointing at the toast or tabbing into it pauses the countdown. tone colors the icon and the bar. actionLabel adds one link-style action, like Undo; picking it runs onAction and closes the toast. For messages that must stay on the page, use Alert. See contracts/toast.json for the full contract.",
+  "props": {
+    "open": {
+      "type": "boolean",
+      "required": true,
+      "note": "Shows the toast. Set it when the action happens."
+    },
+    "onClose": {
+      "type": "function",
+      "required": true,
+      "note": "() => void. Runs when the time is up, on the close button, or after the action."
+    },
+    "title": {
+      "type": "string",
+      "required": true,
+      "note": "The bold line, like Saved successfully."
+    },
+    "description": {
+      "type": "string",
+      "note": "One line under the title."
+    },
+    "tone": {
+      "enum": [
+        "info",
+        "success",
+        "warning",
+        "danger"
+      ],
+      "default": "info",
+      "note": "Colors the icon and the countdown bar; the toast stays white. info an i, success a check, warning a triangle, danger an error mark."
+    },
+    "actionLabel": {
+      "type": "string",
+      "note": "One link-style action under the text, like Undo."
+    },
+    "onAction": {
+      "type": "function",
+      "note": "() => void. Runs when the action is picked; the toast then closes."
+    },
+    "duration": {
+      "type": "number | null",
+      "default": 5000,
+      "note": "How long it stays, in ms, while the bar counts down. null keeps it until it is closed, with no bar."
+    }
+  },
+  "useWhen": [
+    "Confirming an action people just took: saved, sent, deleted.",
+    "Offering a quick Undo right after a change."
+  ],
+  "doNot": [
+    "Do not use it for errors people must fix or read later. Use Alert on the page.",
+    "Do not put more than one action in a toast.",
+    "Do not make duration shorter than people need to read it and reach the action.",
+    "Do not invent ToastTitle, ToastDescription, ToastAction or a toast container. Render Toast.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "role status, announced politely; danger toasts are role alert and announced at once.",
+    "The countdown pauses while the pointer is over the toast or focus is inside it, so people can read it and reach the action.",
+    "The close button is a kit Button named Dismiss. The icon and the bar are decorative.",
+    "It fades in unless the person prefers reduced motion."
+  ],
+  "snippet": "<Toast\n  open={saved}\n  onClose={() => setSaved(false)}\n  title=\"Saved successfully\"\n  description=\"Your changes have been saved.\"\n  actionLabel=\"Undo\"\n  onAction={undo}\n/>",
+  "examples": [
+    {
+      "title": "Tones",
+      "usage": "Click a button to show the toast. tone colors the icon and the countdown bar.",
+      "items": [
+        { "props": { "tone": "info", "title": "Saved successfully", "description": "Your changes have been saved.", "actionLabel": "Undo" } },
+        { "props": { "tone": "success", "title": "Invoice sent", "description": "INV-1042 went to billing@acme.com." } },
+        { "props": { "tone": "warning", "title": "Sync delayed", "description": "Changes will sync when you are back online." } },
+        { "props": { "tone": "danger", "title": "Couldn't delete", "description": "The account still has open invoices.", "actionLabel": "Try again" } }
+      ]
+    },
+    {
+      "title": "Stays open",
+      "usage": "duration null keeps the toast until it is closed, with no countdown bar.",
+      "items": [
+        { "props": { "title": "Export ready", "description": "Your report is ready to download.", "actionLabel": "Download", "duration": null } }
+      ]
+    }
+  ]
+}

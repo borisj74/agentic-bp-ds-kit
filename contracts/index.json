@@ -48,6 +48,7 @@
     {"name": "Table", "contract": "contracts/table.json", "category": "data", "tags": ["table", "data table", "rows", "columns", "list", "selection", "select all", "total"]},
     {"name": "Tabs", "contract": "contracts/tabs.json", "category": "navigation", "tags": ["tabs", "tab strip", "sections", "views", "panels", "count"]},
     {"name": "Textarea", "contract": "contracts/textarea.json", "category": "form", "tags": ["form", "textarea", "multi-line", "notes", "description", "code", "formula"]},
+    {"name": "Toast", "contract": "contracts/toast.json", "category": "feedback", "tags": ["toast", "snackbar", "notification", "confirmation", "undo", "timed", "flash message"]},
     {"name": "Toolbar", "contract": "contracts/toolbar.json", "category": "navigation", "tags": ["toolbar", "filter bar", "filters", "search", "list view", "table actions", "refresh"]},
     {"name": "Tooltip", "contract": "contracts/tooltip.json", "category": "overlay", "tags": ["tooltip", "hint", "help", "hover", "info", "icon button label"]}
   ],

@@ -17,6 +17,7 @@ import { SegmentedControl } from "@/ui/SegmentedControl/SegmentedControl";
 import { Select } from "@/ui/Select/Select";
 import { Switch } from "@/ui/Switch/Switch";
 import { Textarea } from "@/ui/Textarea/Textarea";
+import { Toast, type ToastProps } from "@/ui/Toast/Toast";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 
 export type ModalDemoContent = "text" | "form";
@@ -170,6 +171,19 @@ export function DrawerDemo({ content = "details", ...p }: Omit<DrawerProps, "ope
         )}
       </Drawer>
     </>
+  );
+}
+
+// Playground harness: a kit Button shows the real Toast, as an action would. Its action reopens a note. Not a kit piece.
+export function ToastDemo(p: Omit<ToastProps, "open" | "onClose" | "onAction">) {
+  const [open, setOpen] = useState(false);
+  const [done, setDone] = useState("");
+  return (
+    <div style={{ display: "grid", justifyItems: "center", gap: "var(--space-xsmall)" }}>
+      <Button onClick={() => { setDone(""); setOpen(true); }}>{`Show ${p.tone ?? "info"} toast`}</Button>
+      {done && <span style={{ fontSize: "var(--font-size-xsmall)", color: "var(--text-neutral)" }}>{done}</span>}
+      <Toast {...p} open={open} onClose={() => setOpen(false)} onAction={() => setDone(`${p.actionLabel} picked`)} />
+    </div>
   );
 }
 

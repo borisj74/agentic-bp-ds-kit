@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
-import { AlertDialogDemo, AppHeaderDemo, ButtonFilterDemo, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { AlertDialogDemo, AppHeaderDemo, ButtonFilterDemo, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -928,6 +928,15 @@ export const registry: Record<string, Entry> = {
     card: (
       <Tabs label="Account sections" items={[{ id: "overview", label: "Overview" }, { id: "invoices", label: "Invoices", count: 5 }, { id: "payments", label: "Payments" }]} />
     ),
+  },
+  Toast: {
+    // A kit Button shows the real Toast. duration is fixed at the 5 second default here; the Variants show null.
+    render: (p) => <ToastDemo {...(p as { title: string })} />,
+    preview: { title: "Saved successfully", description: "Your changes have been saved.", actionLabel: "Undo" },
+    hide: ["open"],
+    snippet: { open: "{saved}", onClose: "{close}", onAction: "{undo}" },
+    hint: "Click the button to show it. The top bar counts down 5 seconds; point at the toast to pause it. Switch the tone.",
+    card: <Button>Show toast</Button>,
   },
   Toolbar: {
     // ToolbarDemo wires real filter chips with local value and on/off. Keyed so the open control re-applies.

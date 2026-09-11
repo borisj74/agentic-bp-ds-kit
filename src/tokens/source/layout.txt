@@ -41,6 +41,8 @@ layout/split/third|4
 
 # not in Figma: stacking layer for overlays (dialogs, backdrops).
 z/overlay|1000
+# not in Figma: toasts float above dialogs, so a toast from an action inside a Modal still shows.
+z/toast|1100
 
 # not in Figma: avatar sizes. Alias BP ref space (32 / 40 / 48).
 avatar/size/sm|{ref/space/900}
@@ -203,3 +205,7 @@ drawer/extended|1100px
 # Empty (reference kit empty): a 48 round icon well; text stays under 384 wide.
 empty/media|{ref/space/1300}
 empty/copy-max|384px
+
+# Toast: 400 wide, a 4px countdown bar on top.
+toast/width|400px
+toast/bar|{ref/space/200}

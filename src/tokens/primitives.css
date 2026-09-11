@@ -1167,6 +1167,7 @@
   --layout-split-secondary: 4;
   --layout-split-third: 4;
   --z-overlay: 1000;
+  --z-toast: 1100;
   --avatar-size-sm: var(--ref-space-900);
   --avatar-size-md: var(--ref-space-1100);
   --avatar-size-lg: var(--ref-space-1300);
@@ -1260,4 +1261,6 @@
   --drawer-extended: 1100px;
   --empty-media: var(--ref-space-1300);
   --empty-copy-max: 384px;
+  --toast-width: 400px;
+  --toast-bar: var(--ref-space-200);
 }
