@@ -9,7 +9,7 @@
     {"name": "AvatarGroup", "contract": "contracts/avatargroup.json", "category": "base", "tags": ["people", "assignees", "stack", "facepile"]},
     {"name": "Badge", "contract": "contracts/badge.json", "category": "feedback", "tags": ["status", "tag", "chip", "label", "pill", "filter"]},
     {"name": "BadgeAlt", "contract": "contracts/badgealt.json", "category": "feedback", "tags": ["status", "tag", "label", "bordered", "alternate badge"]},
-    {"name": "BarChart", "contract": "contracts/barchart.json", "category": "data", "tags": ["chart", "bar chart", "column chart", "stacked bar", "compare", "graph", "dashboard"]},
+    {"name": "BarChart", "contract": "contracts/barchart.json", "category": "data", "tags": ["chart", "bar chart", "column chart", "stacked bar", "horizontal bar", "ranked", "compare", "graph", "dashboard"]},
     {"name": "Breadcrumb", "contract": "contracts/breadcrumb.json", "category": "navigation", "tags": ["path", "trail", "navigation", "hierarchy"]},
     {"name": "Button", "contract": "contracts/button.json", "category": "base", "tags": ["action", "cta", "submit"]},
     {"name": "ButtonFilter", "contract": "contracts/buttonfilter.json", "category": "base", "tags": ["filter", "split button", "dropdown trigger", "menu button"]},

@@ -36,13 +36,15 @@
 .empty { display: grid; place-items: center; font-size: var(--font-size-small); color: var(--text-neutral); }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-/* Subtle motion, only when animate is on: bars and areas grow from the baseline, lines draw in, slices sweep round. */
+/* Subtle motion, only when animate is on: bars and areas grow from the baseline (horizontal bars from the start), lines draw in, slices sweep round. */
 .animated .grow { transform-box: fill-box; transform-origin: bottom; animation: grow var(--motion-page-duration) var(--motion-page-easing) both; }
+.animated .growX { transform-box: fill-box; transform-origin: left; animation: growX var(--motion-page-duration) var(--motion-page-easing) both; }
 .animated .draw { stroke-dasharray: 1; animation: draw var(--motion-page-duration) var(--motion-page-easing) both; }
 .animated .fade { animation: fade var(--motion-page-duration) var(--motion-page-easing) both; }
 .animated .sweep { animation: sweep var(--motion-page-duration) var(--motion-page-easing) both; }
 @keyframes grow { from { transform: scaleY(0); } }
+@keyframes growX { from { transform: scaleX(0); } }
 @keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes fade { from { opacity: var(--opacity-0); } }
 @keyframes sweep { from { stroke-dasharray: 0 100; } }
-@media (prefers-reduced-motion: reduce) { .animated .grow, .animated .draw, .animated .fade, .animated .sweep { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .animated .grow, .animated .growX, .animated .draw, .animated .fade, .animated .sweep { animation: none; } }

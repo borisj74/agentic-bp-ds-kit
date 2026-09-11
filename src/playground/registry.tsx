@@ -289,6 +289,8 @@ const CHART_SAMPLES: Record<string, unknown> = {
     { name: "Sent", values: [10000, 15000, 10000, 10000, 60000, 185000, 145000], tone: "mint" },
     { name: "Paid", values: [15000, 20000, 20000, 20000, 65000, 75000, 175000], tone: "green" },
   ],
+  "{customers}": ["Northwind Traders", "Acme Corporation", "Globex Industries", "Initech", "Umbrella Health Services", "Stark Logistics"],
+  "{balances}": [{ name: "Open balance", values: [482000, 391500, 268200, 174900, 121300, 64800] }],
   "{payments}": [
     { label: "Card", value: 182400 }, { label: "ACH", value: 96300 }, { label: "Wire", value: 41800 }, { label: "Check", value: 12600 },
   ],
@@ -408,7 +410,7 @@ export const registry: Record<string, Entry> = {
     // Sample data swaps in for its {names}; a white panel like a page. Keyed so switching a control plays the motion again.
     render: (p) => <div style={chartPanel}><BarChart key={JSON.stringify(p)} {...chartProps<BarChartProps>(p)} /></div>,
     preview: { label: "Invoices by status by time", categories: "{weeks}", series: "{statuses}", format: "currency", stacked: true },
-    hint: "Hover or use the arrow keys for the tooltip. Turn stacked, values, grid, legend and animate on and off.",
+    hint: "Switch orientation. Hover or use the arrow keys for the tooltip. Turn stacked, values, grid, legend and animate on and off.",
     block: true,
     card: <div style={{ width: "100%" }}><BarChart label="Invoices by status" categories={["W1", "W2", "W3", "W4"]} series={[{ name: "Paid", values: [3, 5, 4, 6] }, { name: "Sent", values: [2, 2, 3, 2] }]} stacked showLegend={false} height={110} animate={false} /></div>,
   },

@@ -1,8 +1,8 @@
 {
   "name": "BarChart",
   "path": "src/ui/BarChart/BarChart.tsx",
-  "intent": "Values side by side as vertical bars, one group or stack per category, like invoices by status for each week.",
-  "usage": "Use BarChart to compare amounts across categories or periods. It is one component: pass categories and series. Bars sit side by side per category, or on top of each other with stacked, so the bar height is the total and the colors are its parts. showValues writes each value above its bar. Hover or use the arrow keys for a tooltip with every series in that category. animate lets bars grow up from the baseline. Put the chart's title and report link in the Section or Card around it. ChartTone: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). See contracts/barchart.json for the full contract.",
+  "intent": "Values side by side as bars, one group or stack per category, like invoices by status for each week. Bars stand up, or run across with orientation horizontal.",
+  "usage": "Use BarChart to compare amounts across categories or periods. It is one component: pass categories and series. orientation vertical puts the categories along the bottom with bars standing up; horizontal lists them down the start with bars running across, best for long names or ranked lists like top customers. Bars sit side by side per category, or on top of each other with stacked, so the bar height is the total and the colors are its parts. showValues writes each value at the end of its bar. Hover or use the arrow keys for a tooltip with every series in that category. animate lets bars grow out from the baseline. Put the chart's title and report link in the Section or Card around it. ChartTone: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). See contracts/barchart.json for the full contract.",
   "props": {
     "label": {
       "type": "string",
@@ -12,13 +12,21 @@
     "categories": {
       "type": "string[]",
       "required": true,
-      "note": "The labels along the bottom, like Jan to Jun. Labels thin out when they would overlap."
+      "note": "The category labels: along the bottom when vertical (they thin out when they would overlap), down the start when horizontal (long ones shorten with an ellipsis; the tooltip shows the full name)."
     },
     "series": {
       "type": "ChartSeries[]",
       "required": true,
       "itemShape": "{ name: string; values: number[]; tone?: ChartTone }",
       "note": "One entry per line or bar color, with one value per category. tone picks the color; by default series take green, olive, cyan, orange, pink, gray, then purple, yellow, red and mint."
+    },
+    "orientation": {
+      "enum": [
+        "vertical",
+        "horizontal"
+      ],
+      "default": "vertical",
+      "note": "vertical: categories along the bottom, bars standing up. horizontal: categories down the start, bars running across, values along the bottom."
     },
     "stacked": {
       "type": "boolean",
@@ -28,7 +36,7 @@
     "showValues": {
       "type": "boolean",
       "default": false,
-      "note": "The short value above each bar (side-by-side bars) or each stack."
+      "note": "The short value at the end of each bar (side-by-side bars) or each stack: above it when vertical, past it when horizontal."
     },
     "showGrid": {
       "type": "boolean",
@@ -61,8 +69,7 @@
     },
     "height": {
       "type": "number",
-      "default": 240,
-      "note": "Height of the drawing in px, axis labels included. The width fills the container."
+      "note": "Height of the drawing in px, axis labels included. Vertical defaults to 240. Horizontal grows by 36 a category unless you set it. The width fills the container."
     },
     "emptyLabel": {
       "type": "string",
@@ -72,7 +79,8 @@
   },
   "useWhen": [
     "Comparing amounts across categories or periods.",
-    "Parts of a total per period, with stacked."
+    "Parts of a total per period, with stacked.",
+    "Long category names or a ranked list, like top customers by balance, with orientation horizontal."
   ],
   "doNot": [
     "Do not use it for a long, smooth trend. Use LineChart.",
@@ -82,7 +90,7 @@
   ],
   "a11y": [
     "A figure named by label. The drawing is hidden from screen readers; a visually hidden table holds every value, with the categories as rows and the series as columns.",
-    "The chart takes focus: the arrow keys (and Home and End) move through the categories and show the same tooltip as pointing at them. Escape hides it.",
+    "The chart takes focus: the arrow keys (and Home and End) move through the categories, in either orientation, and show the same tooltip as pointing at them. Escape hides it.",
     "Colors come with a legend and the tooltip names each series, so color is not the only way to tell them apart.",
     "Motion is subtle and optional (animate), and never plays when the person prefers reduced motion."
   ],
@@ -113,6 +121,22 @@
             "categories": "{months}",
             "series": "{revenueByType}",
             "format": "currency",
+            "showValues": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Horizontal",
+      "usage": "Categories down the start and bars running across, for long names or a ranked list.",
+      "items": [
+        {
+          "props": {
+            "label": "Open balance by customer",
+            "categories": "{customers}",
+            "series": "{balances}",
+            "format": "currency",
+            "orientation": "horizontal",
             "showValues": true
           }
         }
