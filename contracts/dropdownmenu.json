@@ -106,7 +106,7 @@
     },
     "text": {
       "type": "string",
-      "note": "Field trigger text. Defaults to label."
+      "note": "Field trigger text. Defaults to label. With trigger filter it is the chosen value, shown as Name: value."
     },
     "muted": {
       "type": "boolean",
@@ -116,6 +116,17 @@
     "badge": {
       "type": "string",
       "note": "Field trigger Badge after the text, like +2."
+    },
+    "toggle": {
+      "enum": [
+        "on",
+        "off"
+      ],
+      "note": "trigger filter only: the filter's on/off state. See ButtonFilter."
+    },
+    "onToggle": {
+      "type": "function",
+      "note": "trigger filter only: () => void. Splits the filter button: the name turns it on or off, the chevron opens the menu."
     },
     "labelledBy": {
       "type": "string",

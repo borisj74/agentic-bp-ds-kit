@@ -8,6 +8,7 @@ import styles from "./Command.module.css";
 
 export type CommandVariant = "list" | "tabs";
 export type CommandIconStyle = "tile" | "plain";
+export type CommandSize = "sm" | "md";
 
 export interface CommandItem {
   id: string;
@@ -29,6 +30,7 @@ export interface CommandProps {
   groups: CommandGroup[];
   variant?: CommandVariant;
   iconStyle?: CommandIconStyle;
+  size?: CommandSize;
   label?: string;
   placeholder?: string;
   empty?: string;
@@ -40,11 +42,20 @@ export interface CommandProps {
   onScopeChange?: (scope: string) => void;
   autoFocus?: boolean;
   onSelect?: (id: string) => void;
+  onViewAll?: (query: string) => void;
+}
+
+// The typed text shows bold inside each matching label, like Sales in Sales Team.
+function Highlight({ text, query }: { text: string; query: string }) {
+  const q = query.trim();
+  if (!q) return text;
+  const parts = text.split(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "i"));
+  return parts.map((part, i) => (i % 2 ? <strong key={i} className={styles.match}>{part}</strong> : part));
 }
 
 export function Command({
-  groups, variant = "list", iconStyle = "tile", label = "Search", placeholder = "Search by name, type, and more...", empty = "No matches found for this search.",
-  defaultQuery = "", hints = true, scopes, scope, defaultScope, onScopeChange, autoFocus = false, onSelect,
+  groups, variant = "list", iconStyle = "tile", size = "md", label = "Search", placeholder = "Search by name, type, and more...", empty = "No matches found for this search.",
+  defaultQuery = "", hints = true, scopes, scope, defaultScope, onScopeChange, autoFocus = false, onSelect, onViewAll,
 }: CommandProps) {
   const uid = useId();
   const listId = `${uid}-list`;
@@ -68,7 +79,13 @@ export function Command({
   const tabGroups = tabbed ? groups.map((g, i) => ({ id: `g${i}`, heading: g.heading })).filter((g) => g.heading) : [];
   const tabHeading = tabGroups.find((t) => t.id === tab)?.heading;
   const visible = matches.filter((g) => g.items.length > 0 && (!tabHeading || g.heading === tabHeading));
-  const enabled = useMemo(() => visible.flatMap((g) => g.items.filter((i) => !i.disabled).map((i) => i.id)), [visible]);
+  // With onViewAll and a query, a last row runs the full search. It takes part in the arrow keys like any result.
+  const viewAllId = `${uid}-all`;
+  const viewAll = Boolean(onViewAll) && query.trim() !== "";
+  const enabled = useMemo(
+    () => [...visible.flatMap((g) => g.items.filter((i) => !i.disabled).map((i) => i.id)), ...(viewAll ? [viewAllId] : [])],
+    [visible, viewAll, viewAllId],
+  );
   // Nothing is highlighted until the pointer is over a row or the arrow keys move; Enter then falls back to the first result.
   const activeId = active && enabled.includes(active) ? active : null;
   const count = visible.reduce((n, g) => n + g.items.length, 0);
@@ -81,11 +98,11 @@ export function Command({
   // Keep the highlighted option in view inside the list, without scrolling the page.
   useEffect(() => {
     const list = listRef.current;
-    const el = activeId ? document.getElementById(`${uid}-opt-${activeId}`) : null;
+    const el = activeId ? document.getElementById(activeId === viewAllId ? viewAllId : `${uid}-opt-${activeId}`) : null;
     if (!list || !el) return;
     if (el.offsetTop < list.scrollTop) list.scrollTop = el.offsetTop;
     else if (el.offsetTop + el.offsetHeight > list.scrollTop + list.clientHeight) list.scrollTop = el.offsetTop + el.offsetHeight - list.clientHeight;
-  }, [activeId, uid]);
+  }, [activeId, uid, viewAllId]);
 
   const move = (step: number) => {
     if (!enabled.length) return;
@@ -109,6 +126,7 @@ export function Command({
     else if (e.key === "Enter") {
       e.preventDefault();
       const target = activeId ?? enabled[0];
+      if (target === viewAllId) { onViewAll?.(query.trim()); return; }
       const item = visible.flatMap((g) => g.items).find((i) => i.id === target);
       if (item) choose(item);
     }
@@ -124,16 +142,17 @@ export function Command({
   }));
 
   return (
-    <div className={[styles.command, iconStyle === "plain" ? styles.plainIcons : ""].join(" ")}>
+    <div className={[styles.command, styles[size], iconStyle === "plain" ? styles.plainIcons : ""].join(" ")}>
       <div className={styles.search}>
-        <Icon name="search" size="md" className={styles.searchIcon} />
+        <Icon name="search" size={size === "sm" ? "sm" : "md"} className={styles.searchIcon} />
         <input
           ref={inputRef} type="text" role="combobox" className={styles.input} value={query} placeholder={placeholder}
           autoComplete="off" spellCheck={false} aria-label={label} aria-expanded="true" aria-controls={listId}
-          aria-autocomplete="list" aria-activedescendant={activeId ? optionId(activeId) : undefined}
+          aria-autocomplete="list" aria-activedescendant={activeId ? (activeId === viewAllId ? viewAllId : optionId(activeId)) : undefined}
           onChange={(e) => { setQuery(e.target.value); setActive(null); }} onKeyDown={onKey}
         />
-        {query && (
+        {/* Small rows are too short for the clear button; Escape clears there. */}
+        {query && size === "md" && (
           <Button variant="tertiary" size="sm" iconOnly iconStart="close" onClick={() => { setQuery(""); inputRef.current?.focus(); }}>
             Clear search
           </Button>
@@ -171,7 +190,7 @@ export function Command({
               >
                 {item.icon && <span className={styles.tile}><Icon name={item.icon} size="md" /></span>}
                 <span className={styles.text}>
-                  <span className={styles.label}>{item.label}</span>
+                  <span className={styles.label}><Highlight text={item.label} query={query} /></span>
                   {item.description && <span className={styles.description}>{item.description}</span>}
                 </span>
                 {item.shortcut && <kbd className={styles.key}>{item.shortcut}</kbd>}
@@ -179,6 +198,15 @@ export function Command({
             ))}
           </div>
         ))}
+        {viewAll && (
+          <div
+            id={viewAllId} role="option" aria-selected={activeId === viewAllId}
+            className={[styles.item, styles.viewAll, activeId === viewAllId ? styles.active : ""].join(" ")}
+            onMouseMove={() => setActive(viewAllId)} onMouseDown={(e) => e.preventDefault()} onClick={() => onViewAll?.(query.trim())}
+          >
+            <span className={styles.text}><span>View all results for <strong>{query.trim()}</strong></span></span>
+          </div>
+        )}
       </div>
       {visible.length === 0 && <div className={styles.empty}>{empty}</div>}
       <div className={styles.srOnly} role="status" aria-live="polite">{query ? `${count} result${count === 1 ? "" : "s"}` : ""}</div>

@@ -14,6 +14,8 @@
   border-bottom: var(--border-width-medium) solid var(--border-brand-subtle);
 }
 .searchIcon { color: var(--icon-neutral); }
+/* Small: a 28px search row, to lay over a small field like the Toolbar search. */
+.sm .search { height: var(--control-small); padding: 0 var(--space-xsmall); gap: var(--space-xxsmall); border-bottom-width: var(--border-width-thin); }
 .input {
   flex: 1; min-width: 0; height: 100%; margin: 0; padding: 0; border: 0; background: transparent;
   font: inherit; font-size: var(--font-size-small); color: var(--text-neutral-strong); outline: none;
@@ -56,6 +58,10 @@
    8px padding shows evenly on every side of the highlight. */
 .text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-xxxsmall); }
 .label { overflow-wrap: anywhere; }
+/* The typed text, bold inside each label. */
+.match { font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); }
+/* View all results: the last row, in link blue. */
+.viewAll, .viewAll.active { color: var(--text-brand); }
 .description { font-size: var(--font-size-xsmall); line-height: 1.2; color: var(--text-neutral); overflow-wrap: anywhere; }
 
 /* Figma key badge: 20px tall, 1px strong border, 12px semibold. */

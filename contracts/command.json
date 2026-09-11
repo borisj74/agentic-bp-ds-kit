@@ -2,7 +2,7 @@
   "name": "Command",
   "path": "src/ui/Command/Command.tsx",
   "intent": "A search field over a grouped list of pages, records and actions. Typing filters the list; arrow keys and Enter pick.",
-  "usage": "Use Command for quick jumps and actions across the app, like a global search. It is one component: pass groups of items as data. Typing filters by label and description. Arrow keys move the highlight and Enter picks; Escape clears the search. It shows inline; a ⌘K palette comes later. variant tabs turns the group headings into tabs (All, Records, Reports...), like the global search. scopes adds a menu in the search row to narrow what it looks through. AppHeader opens it over its search field, so the field grows into the results. See contracts/command.json for the full contract.",
+  "usage": "Use Command for quick jumps and actions across the app, like a global search. It is one component: pass groups of items as data. Typing filters by label and description, and the typed text shows bold in each label. Arrow keys move the highlight and Enter picks; Escape clears the search. It shows inline; a \u2318K palette comes later. variant tabs turns the group headings into tabs (All, Records, Reports...), like the global search. scopes adds a menu in the search row to narrow what it looks through. onViewAll adds a View all results row at the end. AppHeader and Toolbar open it over their search field, so the field grows into the results. See contracts/command.json for the full contract.",
   "props": {
     "groups": {
       "type": "CommandGroup[]",
@@ -28,6 +28,14 @@
       ],
       "default": "tile",
       "note": "tile puts each item icon in a tinted 32px tile. plain shows just the icon, in neutral, darker on the highlighted row."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md"
+      ],
+      "default": "md",
+      "note": "md: the 44px search row. sm: a 28px row with no clear button (Escape clears), to lay over a small field like the Toolbar search."
     },
     "label": {
       "type": "string",
@@ -77,6 +85,10 @@
     "onSelect": {
       "type": "function",
       "note": "(id: string) => void. Runs on Enter or click."
+    },
+    "onViewAll": {
+      "type": "function",
+      "note": "(query: string) => void. With a query, adds a last row, View all results for <query>, in link blue. Arrow keys reach it; Enter or click runs it."
     }
   },
   "useWhen": [
@@ -87,7 +99,7 @@
     "Do not invent CommandInput, CommandList, CommandItem, CommandGroup, CommandEmpty, CommandDialog or SearchPanel.",
     "Do not use for a short list of actions from a button. Use DropdownMenu.",
     "Do not use for choosing a form value. Use RadioGroup, or Select when it exists.",
-    "Do not wrap it in a local overlay or build a ⌘K palette yet.",
+    "Do not wrap it in a local overlay or build a \u2318K palette yet.",
     "Do not use raw hex."
   ],
   "a11y": [
@@ -112,13 +124,13 @@
                   {
                     "id": "invoices",
                     "label": "Invoices",
-                    "description": "Billing › Invoices",
+                    "description": "Billing \u203a Invoices",
                     "icon": "receipt_long"
                   },
                   {
                     "id": "customers",
                     "label": "Customers",
-                    "description": "Accounts › Customers",
+                    "description": "Accounts \u203a Customers",
                     "icon": "group"
                   }
                 ]
@@ -166,7 +178,7 @@
                   {
                     "id": "inv-1042",
                     "label": "INV-1042",
-                    "description": "Invoice · Paid",
+                    "description": "Invoice \u00b7 Paid",
                     "icon": "receipt_long"
                   }
                 ]

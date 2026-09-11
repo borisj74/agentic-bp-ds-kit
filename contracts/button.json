@@ -39,6 +39,10 @@
       "type": "boolean",
       "default": false
     },
+    "pressed": {
+      "type": "boolean",
+      "note": "Toggle state for secondary and tertiary Buttons: brand tint and border, with aria-pressed. With aria-expanded (a button that shows or hides a panel, like the Toolbar Filters button) only the look changes."
+    },
     "disabled": {
       "type": "boolean",
       "default": false
@@ -73,7 +77,8 @@
     "Native <button>.",
     "Visible focus ring via --outline-brand.",
     "loading sets aria-busy and aria-disabled, keeps width and full color, and ignores clicks. It does not look disabled.",
-    "iconOnly needs children as accessible label."
+    "iconOnly needs children as accessible label.",
+    "pressed sets aria-pressed, unless the Button already has aria-expanded."
   ],
   "snippet": "<Button variant=\"primary\" iconStart=\"add\">Create invoice</Button>",
   "examples": [
@@ -248,6 +253,29 @@
             "iconOnly": true,
             "iconStart": "close",
             "children": "Close"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Pressed",
+      "usage": "A toggle that stays on, like Filters while the filter bar is open.",
+      "items": [
+        {
+          "props": {
+            "variant": "secondary",
+            "size": "sm",
+            "iconStart": "filter_list",
+            "pressed": true,
+            "children": "Filters"
+          }
+        },
+        {
+          "props": {
+            "variant": "secondary",
+            "size": "sm",
+            "iconStart": "filter_list",
+            "children": "Filters"
           }
         }
       ]

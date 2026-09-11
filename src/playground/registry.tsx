@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
-import { AlertDialogDemo, AppHeaderDemo, DensityDemo, DropdownMenuDemo, FormDemo, ModalDemo, calculate, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { AlertDialogDemo, AppHeaderDemo, ButtonFilterDemo, ToolbarDemo, DensityDemo, DropdownMenuDemo, FormDemo, ModalDemo, calculate, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -35,6 +35,7 @@ import { SideNav, type SideNavEntry, type SideNavItem, type SideNavProps } from 
 import { Switch, type SwitchProps } from "@/ui/Switch/Switch";
 import { Tabs, type TabItem, type TabsProps } from "@/ui/Tabs/Tabs";
 import { Textarea, type TextareaProps } from "@/ui/Textarea/Textarea";
+import { Toolbar } from "@/ui/Toolbar/Toolbar";
 import { Tooltip, type TooltipProps } from "@/ui/Tooltip/Tooltip";
 
 export type Props = Record<string, unknown>;
@@ -233,12 +234,13 @@ export const registry: Record<string, Entry> = {
     card: <div style={{ display: "flex", gap: 8 }}><Button variant="primary">Primary</Button><Button>Secondary</Button></div>,
   },
   ButtonFilter: {
-    render: ({ children, ...p }) => <ButtonFilter {...(p as object)}>{(children as string) || "Status"}</ButtonFilter>,
-    preview: { children: "Status" },
-    extras: { filters: { values: ["none", "1", "3"], default: "none" } },
-    normalize: ({ filters, ...p }) => ({ ...p, count: filters === "none" || !filters ? 0 : Number(filters) }),
-    hint: "Switch size, applied filters and states. With filters applied the button turns blue and shows a Count.",
-    card: <div style={{ display: "flex", gap: 8 }}><ButtonFilter>Status</ButtonFilter><ButtonFilter count={2}>Owner</ButtonFilter></div>,
+    // ButtonFilterDemo keeps on/off in local state. Keyed so switching controls starts fresh.
+    render: (p) => <ButtonFilterDemo key={JSON.stringify(p)} {...(p as object)} />,
+    preview: { children: "Status", onToggle: "{toggleStatus}" },
+    extras: { filters: { values: ["none", "1", "3"], default: "none" }, value: { values: ["none", "Pending"], default: "none" } },
+    normalize: ({ filters, value, ...p }) => ({ ...p, count: filters === "none" || !filters ? 0 : Number(filters), value: value === "none" ? undefined : value }),
+    hint: "Pick a value or applied filters to set it: it turns blue and splits. Click the name to switch it on and off; off is dashed. Turn off has dropdown for a plain chip.",
+    card: <div style={{ display: "flex", gap: 8 }}><ButtonFilter>Status</ButtonFilter><ButtonFilter value="Pending" onToggle={() => {}}>Status</ButtonFilter></div>,
   },
   ButtonGroup: {
     render: ({ children, ...p }) => (
@@ -626,6 +628,26 @@ export const registry: Record<string, Entry> = {
     hint: "Switch size and toggle expand and border. Click a tab or use the arrow keys.",
     card: (
       <Tabs label="Account sections" items={[{ id: "overview", label: "Overview" }, { id: "invoices", label: "Invoices", count: 5 }, { id: "payments", label: "Payments" }]} />
+    ),
+  },
+  Toolbar: {
+    // ToolbarDemo wires real filter chips with local value and on/off. Keyed so the open control re-applies.
+    render: (p) => <ToolbarDemo key={JSON.stringify(p)} {...p} />,
+    preview: {
+      filters: "{filterChips}", onReset: "{resetFilters}", onApply: "{applyFilters}",
+      filterHelp: "Filters narrow the list. Switch a filter off to keep it without applying it.",
+      onSearchChange: "{setQuery}", searchGroups: "{quickLinks}", onSearchViewAll: "{searchAll}",
+      views: "{views}", onRefresh: "{reload}", moreActions: "{moreActions}", actions: "{actions}",
+    },
+    hide: ["filtersOpen"],
+    hint: "Click the search and type Sales for quick navigation. Click Filters to open the filter bar; pick a Status or Period, then click its name to switch it off and on.",
+    block: true,
+    wide: true,
+    card: (
+      <div style={{ width: "250%", zoom: 0.4 }}>
+        <Toolbar filters={<></>} onSearchChange={() => {}} views={[{ id: "list", label: "List View" }]} onRefresh={() => {}}
+          actions={<><Button size="sm">Export</Button><Button size="sm" variant="primary">Create</Button></>} />
+      </div>
     ),
   },
   Tooltip: {

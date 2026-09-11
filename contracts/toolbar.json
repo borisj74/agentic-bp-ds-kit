@@ -1,0 +1,168 @@
+{
+  "name": "Toolbar",
+  "path": "src/ui/Toolbar/Toolbar.tsx",
+  "intent": "The bar above a list or table: find and filter on the left, view and actions on the right, with a filter bar that opens under it.",
+  "usage": "Put one Toolbar right above a list or table, under the PageHeader. It is one component. Left: a Filters button (when filters are passed) and a search field, which with searchGroups opens a kit Command dropdown of quick-navigation results; then, after a divider, the view picker and refresh. Right: a More menu and the actions, kit Buttons size sm with at most one primary, last. Filters toggles the filter bar under it: the filter chips (kit DropdownMenu trigger filter), then Reset and Apply filters, and an optional help icon at the end. Every part is optional; leave out what the list does not need. See contracts/toolbar.json for the full contract.",
+  "props": {
+    "filters": {
+      "type": "ReactNode",
+      "note": "Filter chips for the filter bar: kit DropdownMenu with trigger filter (or ButtonFilter). Adds the Filters button that opens the bar."
+    },
+    "filtersOpen": {
+      "type": "boolean",
+      "note": "Controlled: the filter bar is open. The Filters button shows pressed."
+    },
+    "defaultFiltersOpen": {
+      "type": "boolean",
+      "default": false,
+      "note": "Starting state when filtersOpen is not controlled."
+    },
+    "onFiltersOpenChange": {
+      "type": "function",
+      "note": "(open: boolean) => void."
+    },
+    "onReset": {
+      "type": "function",
+      "note": "() => void. Adds Reset to the filter bar."
+    },
+    "onApply": {
+      "type": "function",
+      "note": "() => void. Adds Apply filters (check icon) to the filter bar."
+    },
+    "filterHelp": {
+      "type": "string",
+      "note": "Adds a help icon at the end of the filter bar that opens a kit HelpPopover with this text."
+    },
+    "searchValue": {
+      "type": "string",
+      "note": "Controlled search text."
+    },
+    "onSearchChange": {
+      "type": "function",
+      "note": "(value: string) => void. Adds the search field."
+    },
+    "searchPlaceholder": {
+      "type": "string",
+      "default": "Search in list",
+      "note": "Also names the field."
+    },
+    "searchGroups": {
+      "type": "CommandGroup[]",
+      "itemShape": "{ heading?: string; items: { id: string; label: string; description?: string; icon?: string }[] }",
+      "note": "Quick navigation results. The search field becomes a trigger that opens a kit Command (size sm) laid over it, same width. Typed text shows bold in the results."
+    },
+    "onSearchSelect": {
+      "type": "function",
+      "note": "(id: string) => void. A result was picked. The dropdown closes."
+    },
+    "onSearchViewAll": {
+      "type": "function",
+      "note": "(query: string) => void. Adds View all results for <query> as the last row. The field then shows the query."
+    },
+    "views": {
+      "type": "ToolbarView[]",
+      "itemShape": "{ id: string; label: string }",
+      "note": "View options, like List View and Board View. Adds a picker that shows the current one."
+    },
+    "view": {
+      "type": "string",
+      "note": "id of the current view. Leave it out and the Toolbar tracks it, starting with the first."
+    },
+    "onViewChange": {
+      "type": "function",
+      "note": "(id: string) => void."
+    },
+    "onRefresh": {
+      "type": "function",
+      "note": "() => void. Adds a refresh icon button named by a Tooltip."
+    },
+    "moreActions": {
+      "type": "DropdownMenuEntry[]",
+      "itemShape": "{ id: string; label: string; danger?: boolean } | { divider: true }",
+      "note": "Adds a tertiary More menu before the actions for less-used ones. Delete goes last, as danger."
+    },
+    "onMoreSelect": {
+      "type": "function",
+      "note": "(id: string) => void"
+    },
+    "actions": {
+      "type": "ReactNode",
+      "note": "Kit Buttons size sm: secondary first, one primary last. At most five visible actions including More."
+    },
+    "label": {
+      "type": "string",
+      "default": "List tools",
+      "note": "Names the toolbar group for screen readers."
+    }
+  },
+  "useWhen": [
+    "Right above a list or table that people search, filter, switch views on or act on.",
+    "A page with several filters: they live in the filter bar, not across the page."
+  ],
+  "doNot": [
+    "Do not invent a FilterBar, ListToolbar or a local row of controls above a table.",
+    "Do not put more than one primary Button in actions.",
+    "Do not put page titles or breadcrumbs in it. Those are the PageHeader.",
+    "Do not use Tabs or ButtonGroup for the view picker. Pass views.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A group named by label. Filters is a kit Button with aria-expanded and aria-controls pointing at the filter bar, and shows pressed while it is open.",
+    "The search is a kit Input named by its placeholder. With searchGroups it is a button (aria-haspopup=dialog) that opens a kit Command combobox over it; Escape clears, then closes and returns focus. The view picker, More and filter chips are kit DropdownMenus.",
+    "Refresh and the help icon are icon buttons named by a kit Tooltip or HelpPopover.",
+    "The filter bar is a group named Filters. Tab order runs left to right, then into the filter bar."
+  ],
+  "snippet": "<Toolbar\n  filters={filterChips}\n  onReset={resetFilters}\n  onApply={applyFilters}\n  onSearchChange={setQuery}\n  views={[{ id: \"list\", label: \"List View\" }, { id: \"board\", label: \"Board View\" }]}\n  onRefresh={reload}\n  actions={<>\n    <Button size=\"sm\">Export</Button>\n    <Button size=\"sm\" variant=\"primary\">Create</Button>\n  </>}\n/>",
+  "examples": [
+    {
+      "title": "Closed",
+      "usage": "Filters, search, view and refresh on the left; More, Export and the one primary Create on the right. Click the search for quick navigation; type Sales.",
+      "items": [
+        {
+          "props": {
+            "filters": "{filterChips}",
+            "onSearchChange": "{setQuery}",
+            "views": "{views}",
+            "onRefresh": "{reload}",
+            "moreActions": "{moreActions}",
+            "actions": "{actions}",
+            "searchGroups": "{quickLinks}",
+            "onSearchViewAll": "{searchAll}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Filter bar open",
+      "usage": "Filters is pressed and the bar shows the chips, Reset, Apply filters and help. A set chip shows its value; click its name to switch it off.",
+      "items": [
+        {
+          "props": {
+            "filters": "{filterChips}",
+            "defaultFiltersOpen": true,
+            "onReset": "{resetFilters}",
+            "onApply": "{applyFilters}",
+            "filterHelp": "Filters narrow the list. Switch a filter off to keep it without applying it.",
+            "onSearchChange": "{setQuery}",
+            "views": "{views}",
+            "onRefresh": "{reload}",
+            "moreActions": "{moreActions}",
+            "actions": "{actions}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Search only",
+      "usage": "Leave out what the list does not need.",
+      "items": [
+        {
+          "props": {
+            "onSearchChange": "{setQuery}",
+            "actions": "{actions}"
+          }
+        }
+      ]
+    }
+  ]
+}

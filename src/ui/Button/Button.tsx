@@ -15,6 +15,7 @@ export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
   iconEnd?: string;
   iconOnly?: boolean;
   loading?: boolean;
+  pressed?: boolean;
   fullWidth?: boolean;
   children: ReactNode;
 }
@@ -26,6 +27,7 @@ export function Button({
   iconEnd,
   iconOnly = false,
   loading = false,
+  pressed,
   fullWidth = false,
   disabled,
   type = "button",
@@ -47,6 +49,7 @@ export function Button({
     iconOnly ? styles.iconOnly : "",
     fullWidth ? styles.fullWidth : "",
     loading ? styles.loading : "",
+    pressed ? styles.pressed : "",
     className ?? "",
   ]
     .join(" ")
@@ -58,6 +61,8 @@ export function Button({
       type={type}
       className={cls}
       disabled={off}
+      // A toggle announces its state. A disclosure (aria-expanded) already does, so pressed only changes its look.
+      aria-pressed={pressed === undefined || rest["aria-expanded"] !== undefined ? undefined : pressed}
       aria-busy={loading || undefined}
       aria-disabled={loading || undefined}
       onClick={loading ? (e) => e.preventDefault() : onClick}

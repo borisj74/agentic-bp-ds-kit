@@ -1238,4 +1238,5 @@
   --side-nav-panel-row: var(--ref-space-1100);
   --side-nav-panel-min: 160px;
   --side-nav-panel-max: 280px;
+  --toolbar-search: 200px;
 }

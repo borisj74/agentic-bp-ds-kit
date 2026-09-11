@@ -3,7 +3,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent
 import { useDensitySize } from "../Density/Density";
 import { createPortal } from "react-dom";
 import { Button, type ButtonSize, type ButtonVariant } from "../Button/Button";
-import { ButtonFilter } from "../ButtonFilter/ButtonFilter";
+import { ButtonFilter, type ButtonFilterToggle } from "../ButtonFilter/ButtonFilter";
 import { Badge } from "../Badge/Badge";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { Icon } from "../Icon/Icon";
@@ -48,6 +48,8 @@ export interface DropdownMenuProps {
   text?: string;
   muted?: boolean;
   badge?: string;
+  toggle?: ButtonFilterToggle;
+  onToggle?: () => void;
   labelledBy?: string;
   describedBy?: string;
   searchable?: boolean;
@@ -63,7 +65,7 @@ const enabledItems = (panel: HTMLElement | null) =>
 export function DropdownMenu({
   label, items, trigger = "button", variant = "secondary", size: ownSize, icon, iconOnly = false, count = 0,
   align = "start", disabled = false, closeOnSelect = true, open: openProp, onOpenChange, onSelect,
-  multiple = false, id, text, muted = false, badge, labelledBy, describedBy,
+  multiple = false, id, text, muted = false, badge, toggle, onToggle, labelledBy, describedBy,
   searchable = false, searchPlaceholder = "Search", empty = "No results.",
 }: DropdownMenuProps) {
   const size = useDensitySize(ownSize);
@@ -80,7 +82,8 @@ export function DropdownMenu({
     if (openProp === undefined) setInnerOpen(next);
     onOpenChange?.(next);
   };
-  const triggerEl = () => rootRef.current?.querySelector<HTMLButtonElement>("button") ?? null;
+  // The button that opens the menu. A split filter's first button is its on/off toggle, so match the popup one.
+  const triggerEl = () => rootRef.current?.querySelector<HTMLButtonElement>("button[aria-haspopup]") ?? null;
   const close = (refocus: boolean) => {
     setOpen(false);
     setQuery("");
@@ -175,7 +178,7 @@ export function DropdownMenu({
     if (closeOnSelect && !multiple) close(true);
   };
 
-  const toggle = () => !disabled && setOpen(!open);
+  const flip = () => !disabled && setOpen(!open);
 
   return (
     <span ref={rootRef} className={[styles.root, trigger === "field" ? `${styles.rootField} ${field[size]}` : ""].join(" ")} onKeyDown={onTriggerKey}>
@@ -184,19 +187,19 @@ export function DropdownMenu({
         <button
           id={id} type="button" disabled={disabled} className={[field.field, styles.fieldTrigger].join(" ")}
           aria-haspopup="menu" aria-expanded={open} aria-labelledby={labelledBy ? `${labelledBy} ${textId}` : undefined}
-          aria-describedby={describedBy} onClick={toggle}
+          aria-describedby={describedBy} onClick={flip}
         >
           <span id={textId} className={[styles.fieldText, muted ? styles.fieldMuted : ""].join(" ")}>{text ?? label}</span>
           {badge && <Badge size="sm">{badge}</Badge>}
           <Icon name={open ? "expand_less" : "expand_more"} size={size === "sm" ? "sm" : "md"} className={styles.fieldIcon} />
         </button>
       ) : trigger === "filter" ? (
-        <ButtonFilter size={size} open={open} disabled={disabled} count={count} onClick={toggle}>{label}</ButtonFilter>
+        <ButtonFilter size={size} open={open} disabled={disabled} count={count} value={text} toggle={toggle} onToggle={onToggle} onClick={flip}>{label}</ButtonFilter>
       ) : (
         <Button
           variant={variant} size={size} disabled={disabled} iconOnly={iconOnly}
           iconStart={iconOnly ? icon ?? "more_vert" : icon} iconEnd={iconOnly ? undefined : open ? "expand_less" : "expand_more"}
-          aria-haspopup="menu" aria-expanded={open} onClick={toggle}
+          aria-haspopup="menu" aria-expanded={open} onClick={flip}
         >
           {label}
         </Button>

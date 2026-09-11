@@ -1,0 +1,41 @@
+/* Figma toolbar 6057:15099: a 44px subtle bar (28px controls, 8 / 12 padding) with a line under it.
+   The filter bar (filters-bar 3579:30240) opens under it, same fill, with the bar's shadow falling onto it. */
+.toolbar {
+  display: flex; flex-direction: column;
+  background: var(--bg-neutral-subtle);
+  border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
+}
+
+.bar {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-medium);
+  padding: var(--space-xsmall) var(--space-small);
+}
+.start, .end { display: flex; align-items: center; gap: var(--space-xsmall); min-width: 0; }
+.start { flex-wrap: wrap; }
+.end { flex: none; }
+
+.search { width: var(--toolbar-search); max-width: 100%; }
+/* Search trigger: Input's small field box, as a button. Two classes so these win over Input's .field. */
+.search .searchTrigger { width: 100%; margin: 0; font: inherit; font-size: var(--fs); text-align: start; cursor: pointer; gap: var(--space-xxsmall); }
+.searchIcon { flex: none; color: var(--icon-neutral); }
+.searchText, .searchPlaceholder { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.searchText { color: var(--text-neutral-strong); }
+.searchPlaceholder { color: var(--text-neutral-subtle); }
+/* The Command dropdown, fixed and portaled over the search field. useFloating places it and makes it visible. */
+.searchPanel { position: fixed; top: 0; left: 0; z-index: var(--z-overlay); visibility: hidden; max-width: calc(100vw - var(--space-medium)); }
+.divider { align-self: stretch; width: var(--border-width-thin); background: var(--border-neutral-subtle); }
+
+.filters {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-medium);
+  position: relative; overflow: hidden;
+  padding: var(--space-xsmall) var(--space-small);
+}
+/* Figma shadow-raised-straight: the bar above casts a raised shadow along the top edge only. A strip just above
+   the filter bar, wider than it, carries the shadow; the bar clips everything but the part that falls inside. */
+.filters::before {
+  content: ""; position: absolute; pointer-events: none;
+  bottom: 100%; left: calc(var(--space-xlarge) * -1); right: calc(var(--space-xlarge) * -1); height: var(--space-xlarge);
+  box-shadow: var(--elevation-card);
+}
+.chips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xsmall); min-width: 0; }
+.apply { display: inline-flex; align-items: center; }

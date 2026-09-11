@@ -160,3 +160,6 @@ side-nav/row|{ref/space/1300}
 side-nav/panel-row|{ref/space/1100}
 side-nav/panel-min|160px
 side-nav/panel-max|280px
+
+# Toolbar (Figma toolbar 6057:15099, filters-bar 3579:30240): search field 200 wide, past the ref scale.
+toolbar/search|200px

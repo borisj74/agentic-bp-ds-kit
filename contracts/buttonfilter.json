@@ -1,8 +1,8 @@
 {
   "name": "ButtonFilter",
   "path": "src/ui/ButtonFilter/ButtonFilter.tsx",
-  "intent": "Filter button that opens a dropdown: a label part and a square chevron part in one button. Shows how many filters are applied.",
-  "usage": "Use ButtonFilter for filter controls above tables and lists, like Status or Owner. To open options, use DropdownMenu with trigger filter: it renders this button, passes open and count, and opens the menu from the whole button. The divider and chevron are visual. With no filters it looks like a quiet outline. With filters applied it turns blue and shows a Count of applied filters. See contracts/buttonfilter.json for the full contract.",
+  "intent": "Filter chip for lists and tables: shows the filter name or its chosen value, opens its options, and turns an applied filter on or off.",
+  "usage": "Use ButtonFilter for filter controls above tables and lists, like Status or Owner, and in the Toolbar filter bar. To open options, use DropdownMenu with trigger filter: it renders this button and opens the menu. Nothing set: one quiet outline with the chevron; the whole button opens the options. Once a filter is set (value or count) it turns blue; with onToggle it splits in two: the name turns the filter on or off (off keeps the selection, drawn dashed) and the chevron opens the options. hasDropdown false makes a plain on/off chip. See contracts/buttonfilter.json for the full contract.",
   "props": {
     "size": {
       "enum": [
@@ -25,7 +25,27 @@
     "count": {
       "type": "number",
       "default": 0,
-      "note": "Applied filters. Above 0 the button turns blue and shows a Count."
+      "note": "Applied values, like 3 statuses. Above 0 the filter is set and shows a Count."
+    },
+    "value": {
+      "type": "string",
+      "note": "The chosen value. Shows as Status: Pending, the name quieter than the value."
+    },
+    "toggle": {
+      "enum": [
+        "on",
+        "off"
+      ],
+      "note": "On or off once a filter is set. Leave it out and a set filter is on. Off keeps the selection but does not apply it: dashed outline, gray count."
+    },
+    "onToggle": {
+      "type": "function",
+      "note": "() => void. With a filter set, the name part becomes its own button that turns it on or off, and only the chevron opens the options."
+    },
+    "hasDropdown": {
+      "type": "boolean",
+      "default": true,
+      "note": "false: a plain on/off chip with no chevron, for filters with no value to pick. Clicking it calls onToggle."
     },
     "children": {
       "type": "string",
@@ -34,28 +54,27 @@
     },
     "onClick": {
       "type": "function",
-      "note": "Whole button. DropdownMenu trigger=filter wires this for you."
+      "note": "Opens the options: the whole button when nothing is set, or the chevron once it splits. DropdownMenu trigger=filter wires this for you."
     }
   },
   "useWhen": [
     "Filters above a table or list, like Status, Owner or Date.",
-    "A control that opens a list of options and shows how many are applied."
+    "A filter the user can keep but switch off for a moment, without losing what they picked."
   ],
   "doNot": [
     "Do not invent a local split button, filter chip or dropdown trigger. Use DropdownMenu trigger=filter for the menu.",
-    "Do not use for page actions. Use Button.",
-    "Do not put more than one word or two in the label.",
+    "Do not use for page actions or view switches. Use Button or a DropdownMenu.",
+    "Do not put more than one word or two in the name.",
     "Do not show the count as text in the label. Pass count.",
-    "Do not use raw hex.",
-    "Do not wire the label and chevron to different actions. The whole button opens the dropdown."
+    "Do not use raw hex."
   ],
   "a11y": [
-    "One native button with aria-haspopup=menu and aria-expanded.",
-    "Its name is the filter name plus the count, like Status, 3 filters applied.",
-    "The chevron is decorative.",
-    "Focus ring around the whole button."
+    "Nothing set: one native button with aria-haspopup=menu and aria-expanded.",
+    "Split: the name is a toggle button with aria-pressed; the chevron is a separate button named Status options, with aria-haspopup and aria-expanded.",
+    "Its name is the filter name or Name: value, plus the count, like Status, 3 filters applied.",
+    "Each button has its own focus ring."
   ],
-  "snippet": "<DropdownMenu trigger=\"filter\" label=\"Status\" count={2} closeOnSelect={false} items={statusOptions} onSelect={toggleStatus} />",
+  "snippet": "<DropdownMenu trigger=\"filter\" label=\"Status\" text={statusLabel} toggle={statusOn ? \"on\" : \"off\"} onToggle={toggleStatus} closeOnSelect={false} items={statusOptions} onSelect={pickStatus} />",
   "examples": [
     {
       "title": "No filters",
@@ -97,6 +116,68 @@
         {
           "props": {
             "children": "Date"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Value and on/off",
+      "usage": "A set filter shows its value. With onToggle the name turns it on or off; off is dashed and keeps the value.",
+      "items": [
+        {
+          "props": {
+            "size": "sm",
+            "value": "Pending",
+            "toggle": "on",
+            "onToggle": "{toggleStatus}",
+            "children": "Status"
+          }
+        },
+        {
+          "props": {
+            "size": "sm",
+            "value": "Pending",
+            "toggle": "off",
+            "onToggle": "{toggleStatus}",
+            "children": "Status"
+          }
+        },
+        {
+          "props": {
+            "size": "sm",
+            "count": 2,
+            "toggle": "off",
+            "onToggle": "{toggleOwner}",
+            "children": "Owner"
+          }
+        }
+      ]
+    },
+    {
+      "title": "No dropdown",
+      "usage": "A plain on/off chip for a filter with nothing to pick, like Overdue.",
+      "items": [
+        {
+          "props": {
+            "size": "sm",
+            "hasDropdown": false,
+            "children": "Overdue"
+          }
+        },
+        {
+          "props": {
+            "size": "sm",
+            "hasDropdown": false,
+            "toggle": "on",
+            "children": "Overdue"
+          }
+        },
+        {
+          "props": {
+            "size": "sm",
+            "hasDropdown": false,
+            "toggle": "off",
+            "children": "Overdue"
           }
         }
       ]

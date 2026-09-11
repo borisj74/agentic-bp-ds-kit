@@ -1,4 +1,5 @@
-/* One button drawn as two parts. The chevron part is square inside, so the space around the chevron is equal. */
+/* Figma filter-button 4541:505. Nothing set: one quiet outline with the chevron inline. Set: a divider splits off a
+   square chevron part. On: brand tint. Off: a dashed outline, the selection kept but not applied. */
 .filter {
   --h: var(--control-medium);
   --line: var(--border-neutral-strong);
@@ -18,13 +19,19 @@
 .sm .main { padding: 0 var(--space-xsmall); }
 .md .main { padding: 0 var(--space-small); }
 .lg .main { padding: 0 var(--space-medium); }
+/* "Status:" before a chosen value is quieter than the value. */
+.name { color: var(--text-neutral); }
 
-/* Content box is (height - 2 outer borders) on both axes, plus the 1px divider on the left. */
+/* Chevron inline while nothing is set: no divider, it sits right after the label. */
 .chevron {
   box-sizing: border-box; flex: none; display: inline-flex; align-items: center; justify-content: center;
-  width: calc(var(--h) - var(--border-width-thin));
-  border-left: var(--border-width-thin) solid var(--line);
+  margin-inline-start: calc(var(--space-xxsmall) * -1); padding-inline-end: var(--space-xxsmall);
   color: var(--icon-neutral);
+}
+/* Set: the chevron part is square inside (height - 2 borders) plus the 1px divider. */
+.applied .chevron, .off .chevron {
+  width: calc(var(--h) - var(--border-width-thin)); margin: 0; padding: 0;
+  border-left: var(--border-width-thin) solid var(--line);
 }
 .icon { display: flex; transition: transform var(--motion-expand-duration) var(--motion-expand-easing); }
 .iconOpen { transform: rotate(180deg); }
@@ -33,12 +40,28 @@
 .filter:active:not(:disabled) { background: var(--bg-neutral-min-press); }
 .filter:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
 
-/* Filters applied: brand tint and border, like the reference. */
 .applied { --line: var(--border-brand-subtle); background: var(--bg-brand-faint); }
 .applied:hover:not(:disabled) { background: var(--bg-brand-subtle); }
+.off { --line: var(--border-neutral-intense); border-style: dashed; background: transparent; }
+.off .chevron { border-left-style: dashed; }
 
-.filter:disabled { cursor: not-allowed; opacity: var(--opacity-disabled); }
+/* Split: the box is a span; each part is its own button with its own hover and ring. */
+.split, .split:hover, .split:active { background: transparent; cursor: default; }
+.split.applied { background: var(--bg-brand-faint); }
+.part {
+  appearance: none; margin: 0; padding: 0; border: 0; display: inline-flex; align-items: center;
+  background: transparent; color: inherit; font: inherit; cursor: pointer;
+  transition: background-color var(--motion-interaction-duration) var(--motion-interaction-easing);
+}
+.part:first-child { border-radius: var(--radius-medium) 0 0 var(--radius-medium); }
+.part:last-child { border-radius: 0 var(--radius-medium) var(--radius-medium) 0; }
+.part:hover:not(:disabled) { background: var(--bg-neutral-min-hover); }
+.applied .part:hover:not(:disabled) { background: var(--bg-brand-subtle); }
+.part:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); position: relative; }
+.part:disabled { cursor: not-allowed; }
+
+.filter:disabled, .split:has(.part:disabled) { cursor: not-allowed; opacity: var(--opacity-disabled); }
 
 @media (prefers-reduced-motion: reduce) {
-  .filter, .icon { transition: none; }
+  .filter, .part, .icon { transition: none; }
 }

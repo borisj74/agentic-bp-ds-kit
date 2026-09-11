@@ -4,6 +4,7 @@ import { Alert } from "@/ui/Alert/Alert";
 import { AlertDialog, type AlertDialogProps } from "@/ui/AlertDialog/AlertDialog";
 import { AppHeader, type AppHeaderDensity, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Button } from "@/ui/Button/Button";
+import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
 import { Density, type DensityValue } from "@/ui/Density/Density";
 import { DropdownMenu, type DropdownMenuProps } from "@/ui/DropdownMenu/DropdownMenu";
@@ -15,6 +16,7 @@ import { SegmentedControl } from "@/ui/SegmentedControl/SegmentedControl";
 import { Select } from "@/ui/Select/Select";
 import { Switch } from "@/ui/Switch/Switch";
 import { Textarea } from "@/ui/Textarea/Textarea";
+import { Toolbar } from "@/ui/Toolbar/Toolbar";
 
 export type ModalDemoContent = "text" | "form";
 export type FormDemoContent = "fields" | "sections" | "details";
@@ -221,4 +223,71 @@ export function calculate(formula: string): string {
   skip();
   if (i < src.length) throw new Error("There is extra text at the end.");
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(v);
+}
+
+// Playground harness: onToggle="{toggleStatus}" in props turns on the split; here it flips a local on/off.
+export function ButtonFilterDemo({ children, toggle, onToggle, ...p }: Omit<ButtonFilterProps, "children" | "onToggle"> & { children?: string; onToggle?: unknown }) {
+  const [state, setState] = useState<ButtonFilterToggle | undefined>(toggle);
+  const local = onToggle !== undefined || p.hasDropdown === false;
+  return (
+    <ButtonFilter
+      {...p} toggle={local ? state : toggle}
+      onToggle={local ? () => setState((s) => (s === "on" ? "off" : "on")) : undefined}
+    >
+      {children || "Status"}
+    </ButtonFilter>
+  );
+}
+
+// Playground harness for Toolbar: real filter chips (kit DropdownMenu trigger filter) with their value and on/off in
+// local state. Contract props arrive as "{name}" placeholders; each one present turns on that part.
+type FilterOption = { id: string; label: string };
+const FILTER_SETS: { id: string; label: string; options: FilterOption[]; start?: string }[] = [
+  { id: "status", label: "Status", start: "pending", options: [{ id: "pending", label: "Pending" }, { id: "paid", label: "Paid" }, { id: "overdue", label: "Overdue" }] },
+  { id: "account", label: "Account Name", options: [{ id: "acme", label: "Acme Inc." }, { id: "globex", label: "Globex" }, { id: "initech", label: "Initech" }] },
+  { id: "accountId", label: "Account ID", options: [{ id: "a-1001", label: "A-1001" }, { id: "a-1002", label: "A-1002" }] },
+  { id: "period", label: "Period", options: [{ id: "month", label: "This month" }, { id: "last", label: "Last month" }, { id: "quarter", label: "This quarter" }] },
+];
+const QUICK_LINKS = [{
+  heading: "Quick navigation",
+  items: ["Salesforce", "Sales Tax", "Sales Team", "Team Sales", "Workgroup Sales", "Acme Inc.", "Globex", "Invoices", "Payments"].map((label) => ({ id: label.toLowerCase().replace(/[^a-z0-9]+/g, "-"), label })),
+}];
+const START = Object.fromEntries(FILTER_SETS.map((f) => [f.id, f.start]));
+
+export function ToolbarDemo(p: Record<string, unknown>) {
+  const [values, setValues] = useState<Record<string, string | undefined>>(START);
+  const [off, setOff] = useState<Record<string, boolean>>({});
+  const [query, setQuery] = useState("");
+  const chips = FILTER_SETS.map((f) => {
+    const value = values[f.id];
+    return (
+      <DropdownMenu
+        key={f.id} trigger="filter" size="sm" label={f.label}
+        text={f.options.find((o) => o.id === value)?.label}
+        toggle={value ? (off[f.id] ? "off" : "on") : undefined}
+        onToggle={value ? () => setOff((o) => ({ ...o, [f.id]: !o[f.id] })) : undefined}
+        items={f.options.map((o) => ({ ...o, selected: o.id === value }))}
+        onSelect={(id) => { setValues((v) => ({ ...v, [f.id]: v[f.id] === id ? undefined : id })); setOff((o) => ({ ...o, [f.id]: false })); }}
+      />
+    );
+  });
+  return (
+    <Toolbar
+      defaultFiltersOpen={Boolean(p.defaultFiltersOpen)}
+      filters={p.filters ? <>{chips}</> : undefined}
+      onReset={p.onReset ? () => { setValues({}); setOff({}); } : undefined}
+      onApply={p.onApply ? () => {} : undefined}
+      filterHelp={typeof p.filterHelp === "string" ? p.filterHelp : undefined}
+      onSearchChange={p.onSearchChange ? setQuery : undefined}
+      searchValue={query}
+      searchGroups={p.searchGroups ? QUICK_LINKS : undefined}
+      onSearchSelect={() => {}}
+      onSearchViewAll={p.onSearchViewAll ? () => {} : undefined}
+      views={p.views ? [{ id: "list", label: "List View" }, { id: "board", label: "Board View" }, { id: "calendar", label: "Calendar View" }] : undefined}
+      onRefresh={p.onRefresh ? () => {} : undefined}
+      moreActions={p.moreActions ? [{ id: "import", label: "Import" }, { id: "columns", label: "Edit columns" }, { divider: true }, { id: "delete", label: "Delete all", danger: true }] : undefined}
+      onMoreSelect={() => {}}
+      actions={p.actions ? <><Button size="sm">Export</Button><Button size="sm" variant="primary">Create</Button></> : undefined}
+    />
+  );
 }
