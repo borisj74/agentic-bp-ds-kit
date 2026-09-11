@@ -1,0 +1,149 @@
+{
+  "name": "Table",
+  "path": "src/ui/Table/Table.tsx",
+  "intent": "A semantic table of rows and columns, like invoices or accounts, with optional row selection, a caption and a total.",
+  "usage": "Use Table for lists of records. It is one component: pass columns and rows as data. Headers are kit HeaderCells; string and number values become text Cells, and anything richer is a kit Cell you put in the row (badge, avatar, link, actionMenu). Number columns take numeric, which aligns them to the end with even digits. selectable adds a checkbox column: each row gets a checkbox Cell and the header a select-all that shows a dash when only some rows are picked. The caption sits under the grid; footer holds a total in the last column. With no rows, one cell spans the columns and shows emptyLabel. Search, filters and actions belong in a Toolbar above it. See contracts/table.json for the full contract.",
+  "props": {
+    "columns": {
+      "type": "TableColumn[]",
+      "required": true,
+      "itemShape": "{ key: string; header?: string; align?: \"start\" | \"center\" | \"end\"; numeric?: boolean; emphasis?: boolean; width?: string }",
+      "note": "key picks the row value. numeric aligns to the end with tabular digits. emphasis makes the column's text medium weight, like the record id. width is a CSS width, like 30%."
+    },
+    "rows": {
+      "type": "TableRow[]",
+      "required": true,
+      "itemShape": "{ id?: string; [key: string]: ReactNode }",
+      "note": "One object per row, keyed by column key. Strings and numbers become text Cells; pass a kit Cell for anything else. id identifies the row for selection; it defaults to the row's index."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md"
+      ],
+      "default": "md",
+      "note": "Row height 48 / 56, header 40 / 48, same as Cell and HeaderCell. Without a size, a surrounding Density in compact makes it sm. Give Cells you pass the same size."
+    },
+    "caption": {
+      "type": "string",
+      "note": "Describes the table. Sits under the grid, and names the table for screen readers."
+    },
+    "footer": {
+      "type": "TableFooter",
+      "itemShape": "{ label: string; value: ReactNode }",
+      "note": "A total row: label across the first columns, value in the last column."
+    },
+    "emptyLabel": {
+      "type": "string",
+      "default": "No results.",
+      "note": "Shown in one cell across the columns when rows is empty. Headers stay, so the table keeps its shape."
+    },
+    "selectable": {
+      "type": "boolean",
+      "default": false,
+      "note": "Adds a checkbox column with a select-all in the header."
+    },
+    "selected": {
+      "type": "string[]",
+      "note": "Controlled ids of the selected rows."
+    },
+    "defaultSelected": {
+      "type": "string[]",
+      "note": "Starting selection when selected is not controlled."
+    },
+    "onSelectionChange": {
+      "type": "function",
+      "note": "(ids: string[]) => void"
+    },
+    "rowLabel": {
+      "type": "string",
+      "note": "Column key whose value names each row checkbox, like Select INV001. Defaults to the first column."
+    }
+  },
+  "useWhen": [
+    "Records people scan, compare and pick from: invoices, accounts, products.",
+    "A short list of values with a total, like line items."
+  ],
+  "doNot": [
+    "Do not invent TableHeader, TableRow, TableCell or a local grid of divs. Pass columns and rows.",
+    "Do not draw cell content yourself. Use kit Cell types for badges, people, links and row actions.",
+    "Do not put search or filters in the table. Use a Toolbar above it.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A native table: caption, th scope=col headers (kit HeaderCell) and td cells.",
+    "Row checkboxes are named Select plus the row label; the header one is Select all rows and is mixed when only some rows are selected. Selected rows set aria-selected.",
+    "The empty message is a real cell spanning the columns, so screen readers read it in place."
+  ],
+  "snippet": "<Table\n  caption=\"A list of your recent invoices.\"\n  columns={[\n    { key: \"invoice\", header: \"Invoice\", emphasis: true },\n    { key: \"status\", header: \"Status\" },\n    { key: \"method\", header: \"Method\" },\n    { key: \"amount\", header: \"Amount\", numeric: true },\n  ]}\n  rows={invoices}\n  footer={{ label: \"Total\", value: \"$2,500.00\" }}\n/>",
+  "examples": [
+    {
+      "title": "Invoices",
+      "usage": "Caption under the grid, the total in the footer, and Amount at the end of each row.",
+      "items": [
+        {
+          "props": {
+            "caption": "A list of your recent invoices.",
+            "columns": "{invoiceColumns}",
+            "rows": "{invoices}",
+            "footer": "{total}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Selection",
+      "usage": "selectable adds the checkbox column. Pick some rows and the header shows a dash; the header picks all or none.",
+      "items": [
+        {
+          "props": {
+            "selectable": true,
+            "defaultSelected": [
+              "INV002"
+            ],
+            "columns": "{invoiceColumns}",
+            "rows": "{invoices}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Rich cells",
+      "usage": "Put kit Cells in rows for status, people and row actions. Strings still become text Cells.",
+      "items": [
+        {
+          "props": {
+            "columns": "{accountColumns}",
+            "rows": "{accounts}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Icon actions",
+      "usage": "A last column of icon-only row actions: a kit Cell with type actionIcons, up to three buttons. Each is named by its label, like Edit, and the group by Actions for INV001.",
+      "items": [
+        {
+          "props": {
+            "columns": "{iconActionColumns}",
+            "rows": "{invoicesWithActions}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Empty",
+      "usage": "No rows: one cell spans the columns and shows emptyLabel. Headers keep the shape.",
+      "items": [
+        {
+          "props": {
+            "caption": "A list of your recent invoices.",
+            "emptyLabel": "No results.",
+            "columns": "{invoiceColumns}",
+            "rows": []
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -8,6 +8,10 @@
 /* min-height sets the row; small block padding keeps 32px content plus the 1px border inside 48 / 56. */
 .sm { min-height: var(--cell-height-sm); padding: var(--space-xxsmall) var(--space-small); }
 .md { min-height: var(--cell-height-md); padding: var(--space-xsmall) var(--space-small); }
+/* Same alignment options as HeaderCell: end for numbers and amounts, center for a checkbox-only column. */
+.start { justify-content: flex-start; text-align: start; }
+.center { justify-content: center; text-align: center; }
+.end { justify-content: flex-end; text-align: end; }
 
 .visual { display: inline-flex; align-items: center; flex: none; min-width: 0; }
 /* Select fills the rest of the row. */
@@ -24,6 +28,8 @@
 
 .icon { display: flex; color: var(--icon-neutral-subtle); }
 .row { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--space-xxsmall); }
+/* Icon actions stay on one line, so a narrow actions column sizes to all its buttons. */
+.nowrap { flex-wrap: nowrap; }
 
 .trend { display: inline-flex; align-items: center; gap: var(--space-xxsmall); font-weight: var(--font-weight-medium); }
 .up { color: var(--text-success-strong); }

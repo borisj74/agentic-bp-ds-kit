@@ -33,6 +33,15 @@
       "default": "md",
       "note": "Row height 48 / 56 px. Side padding 12 px at both sizes, same as HeaderCell. Avatars, Badge and Checkbox stay sm (32 / 20 / 16 px) so rows keep their height. Without a size, a surrounding Density in compact makes it sm."
     },
+    "align": {
+      "enum": [
+        "start",
+        "center",
+        "end"
+      ],
+      "default": "start",
+      "note": "Same as HeaderCell: end for numbers and amounts, center for a checkbox-only column."
+    },
     "text": {
       "type": "boolean",
       "default": true,
@@ -96,7 +105,7 @@
         "variant": "ButtonVariant?",
         "onClick": "function?"
       },
-      "note": "For actions (labeled, up to 3), actionIcons (icon only, up to 3, label becomes the hidden name) and actionMenu (menu items, danger variant becomes a danger item). onClick runs when picked."
+      "note": "For actions (labeled, up to 3), actionIcons (icon only, up to 3, label becomes the name and a kit Tooltip) and actionMenu (menu items, danger variant becomes a danger item). onClick runs when picked."
     },
     "options": {
       "type": "SelectOption[]",

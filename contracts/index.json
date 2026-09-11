@@ -36,6 +36,7 @@
     {"name": "Select", "contract": "contracts/select.json", "category": "form", "tags": ["select", "dropdown", "picker", "multi-select", "options", "form"]},
     {"name": "SideNav", "contract": "contracts/sidenav.json", "category": "navigation", "tags": ["side nav", "sidebar", "navigation", "rail", "flyout", "secondary navigation", "menu"]},
     {"name": "Switch", "contract": "contracts/switch.json", "category": "form", "tags": ["switch", "toggle", "on off", "setting", "preference"]},
+    {"name": "Table", "contract": "contracts/table.json", "category": "data", "tags": ["table", "data table", "rows", "columns", "list", "selection", "select all", "total"]},
     {"name": "Tabs", "contract": "contracts/tabs.json", "category": "navigation", "tags": ["tabs", "tab strip", "sections", "views", "panels", "count"]},
     {"name": "Textarea", "contract": "contracts/textarea.json", "category": "form", "tags": ["form", "textarea", "multi-line", "notes", "description", "code", "formula"]},
     {"name": "Toolbar", "contract": "contracts/toolbar.json", "category": "navigation", "tags": ["toolbar", "filter bar", "filters", "search", "list view", "table actions", "refresh"]},

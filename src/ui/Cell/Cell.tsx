@@ -10,12 +10,14 @@ import { Checkbox } from "../Checkbox/Checkbox";
 import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
 import { Select, type SelectOption } from "../Select/Select";
 import { Icon } from "../Icon/Icon";
+import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./Cell.module.css";
 
 export type CellType =
   | "text" | "link" | "avatar" | "avatarGroup" | "file" | "payment" | "badge" | "badges"
   | "trendPositive" | "trendNegative" | "rating" | "select" | "actions" | "actionIcons" | "actionMenu" | "checkbox";
 export type CellSize = "sm" | "md";
+export type CellAlign = "start" | "center" | "end";
 export interface CellPerson { name: string; src?: string }
 export interface CellBadge { label: string; tone?: BadgeTone }
 export interface CellAction { label: string; icon?: string; variant?: ButtonVariant; onClick?: () => void }
@@ -23,6 +25,7 @@ export interface CellAction { label: string; icon?: string; variant?: ButtonVari
 export interface CellProps {
   type?: CellType;
   size?: CellSize;
+  align?: CellAlign;
   text?: boolean;
   checkbox?: boolean;
   label?: string;
@@ -46,7 +49,7 @@ const STARS = 5;
 const score = (v?: string | number) => Math.max(0, Math.min(STARS, Math.round(Number(v) || 0)));
 
 export function Cell({
-  type = "text", size: ownSize, text = true, checkbox = false, label, href, name, src, people, icon,
+  type = "text", size: ownSize, align = "start", text = true, checkbox = false, label, href, name, src, people, icon,
   tone = "neutral", badges, value, actions, options, onValueChange, checked, defaultChecked, onCheckedChange,
 }: CellProps) {
   const density = useDensity();
@@ -119,8 +122,13 @@ export function Cell({
       break;
     case "actionIcons":
       visual = (
-        <span className={styles.row} role="group" aria-label={label ?? "Row actions"}>
-          {(actions ?? []).slice(0, 3).map((a, i) => <Button key={i} size="sm" variant={a.variant ?? "tertiary"} iconOnly iconStart={a.icon ?? "more_horiz"} onClick={a.onClick}>{a.label}</Button>)}
+        <span className={[styles.row, styles.nowrap].join(" ")} role="group" aria-label={label ?? "Row actions"}>
+          {/* Icon-only, so each button shows its label in a kit Tooltip, like the AppHeader and Toolbar icons. */}
+          {(actions ?? []).slice(0, 3).map((a, i) => (
+            <Tooltip key={i} content={a.label} placement="top">
+              <Button size="sm" variant={a.variant ?? "tertiary"} iconOnly iconStart={a.icon ?? "more_horiz"} onClick={a.onClick}>{a.label}</Button>
+            </Tooltip>
+          ))}
         </span>
       );
       break;
@@ -140,7 +148,7 @@ export function Cell({
   const showSide = text && side && type !== "trendPositive" && type !== "trendNegative";
 
   return (
-    <span className={[styles.cell, styles[size]].join(" ")} aria-label={aria}>
+    <span className={[styles.cell, styles[size], styles[align]].join(" ")} aria-label={aria}>
       {(checkbox || type === "checkbox") && (
         <Checkbox size="sm" hideLabel label={`Select ${label || name || "row"}`} checked={checked} defaultChecked={defaultChecked} onChange={onCheckedChange} />
       )}

@@ -34,6 +34,7 @@ import { Select, type SelectProps } from "@/ui/Select/Select";
 import { SideNav, type SideNavEntry, type SideNavItem, type SideNavProps } from "@/ui/SideNav/SideNav";
 import { Switch, type SwitchProps } from "@/ui/Switch/Switch";
 import { Tabs, type TabItem, type TabsProps } from "@/ui/Tabs/Tabs";
+import { Table, type TableColumn, type TableProps, type TableRow } from "@/ui/Table/Table";
 import { Textarea, type TextareaProps } from "@/ui/Textarea/Textarea";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 import { Tooltip, type TooltipProps } from "@/ui/Tooltip/Tooltip";
@@ -111,6 +112,45 @@ const CELL_SAMPLES: Record<CellType, Props> = {
   actionMenu: { label: "Row actions", actions: [{ label: "View" }, { label: "Download" }, { label: "Delete", icon: "delete", variant: "danger" }] },
   checkbox: { label: "INV-1042" },
 };
+
+// Table samples. Contract examples name them as {invoiceColumns}, {invoices}, {total}, {accountColumns}, {accounts}.
+const INVOICE_COLUMNS: TableColumn[] = [
+  { key: "invoice", header: "Invoice", emphasis: true },
+  { key: "status", header: "Status" },
+  { key: "method", header: "Method" },
+  { key: "amount", header: "Amount", numeric: true },
+];
+const INVOICES: TableRow[] = [
+  ["INV001", "Paid", "Credit Card", "$250.00"], ["INV002", "Pending", "PayPal", "$150.00"], ["INV003", "Unpaid", "Bank Transfer", "$350.00"],
+  ["INV004", "Paid", "Credit Card", "$450.00"], ["INV005", "Paid", "PayPal", "$550.00"], ["INV006", "Pending", "Bank Transfer", "$200.00"],
+  ["INV007", "Unpaid", "Credit Card", "$300.00"],
+].map(([invoice, status, method, amount]) => ({ id: invoice, invoice, status, method, amount }));
+const ACCOUNT_COLUMNS: TableColumn[] = [
+  { key: "account", header: "Account", width: "34%" },
+  { key: "owner", header: "Owner" },
+  { key: "status", header: "Status" },
+  { key: "mrr", header: "MRR", numeric: true },
+  { key: "actions", header: "", align: "end", width: "1%" },
+];
+const ACCOUNT_ACTIONS = [{ label: "View" }, { label: "Edit" }, { label: "Delete", variant: "danger" as const }];
+const ACCOUNTS: TableRow[] = [
+  { id: "acme", account: <Cell type="link" label="Acme Inc." href="#" />, owner: <Cell type="avatar" name="Maya Chen" src="/faces/maya-chen.jpg" />, status: <Cell type="badge" label="Active" tone="success" />, mrr: "$12,400", actions: <Cell type="actionMenu" align="end" actions={ACCOUNT_ACTIONS} /> },
+  { id: "globex", account: <Cell type="link" label="Globex" href="#" />, owner: <Cell type="avatar" name="Noah Williams" src="/faces/noah-williams.jpg" />, status: <Cell type="badge" label="Trial" tone="info" />, mrr: "$3,150", actions: <Cell type="actionMenu" align="end" actions={ACCOUNT_ACTIONS} /> },
+  { id: "initech", account: <Cell type="link" label="Initech" href="#" />, owner: <Cell type="avatar" name="Iris Okafor" src="/faces/iris-okafor.jpg" />, status: <Cell type="badge" label="Past due" tone="danger" />, mrr: "$980", actions: <Cell type="actionMenu" align="end" actions={ACCOUNT_ACTIONS} /> },
+];
+// Icon-only row actions: a kit Cell actionIcons, each button named by its label.
+const ICON_ACTIONS = [{ label: "Edit", icon: "edit" }, { label: "Download", icon: "download" }, { label: "Delete", icon: "delete" }];
+const ICON_ACTION_COLUMNS: TableColumn[] = [...INVOICE_COLUMNS, { key: "actions", header: "", align: "end", width: "1%" }];
+const ICON_ACTION_ROWS: TableRow[] = INVOICES.slice(0, 4).map((r) => ({
+  ...r, actions: <Cell type="actionIcons" align="end" label={`Actions for ${r.invoice}`} actions={ICON_ACTIONS} />,
+}));
+const TABLE_SAMPLES: Record<string, unknown> = {
+  "{invoiceColumns}": INVOICE_COLUMNS, "{invoices}": INVOICES, "{total}": { label: "Total", value: "$2,250.00" },
+  "{accountColumns}": ACCOUNT_COLUMNS, "{accounts}": ACCOUNTS,
+  "{iconActionColumns}": ICON_ACTION_COLUMNS, "{invoicesWithActions}": ICON_ACTION_ROWS,
+};
+const tableProps = (p: Props) =>
+  Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in TABLE_SAMPLES ? TABLE_SAMPLES[v] : v])) as unknown as TableProps;
 
 const MENU_ITEMS: DropdownMenuEntry[] = [
   { id: "edit", label: "Edit" },
@@ -608,6 +648,21 @@ export const registry: Record<string, Entry> = {
       <div style={{ display: "grid", gap: 12, width: "80%" }}>
         <Switch size="sm" label="Email notifications" defaultChecked />
         <Switch size="sm" label="Auto-pay" />
+      </div>
+    ),
+  },
+  Table: {
+    // Sample columns and rows swap in for their {names}. Keyed so the selectable switch starts fresh.
+    render: (p) => <Table key={JSON.stringify(p)} {...tableProps(p)} />,
+    preview: { caption: "A list of your recent invoices.", columns: "{invoiceColumns}", rows: "{invoices}", footer: "{total}" },
+    hide: ["selected"],
+    extras: { data: { values: ["invoices", "empty"], default: "invoices" } },
+    normalize: ({ data, ...p }) => (data === "empty" ? { ...p, rows: [] } : p),
+    hint: "Switch size and turn on selectable for the checkbox column. Data empty shows the empty row.",
+    block: true,
+    card: (
+      <div style={{ width: "100%" }}>
+        <Table size="sm" columns={INVOICE_COLUMNS.slice(0, 2).concat(INVOICE_COLUMNS[3])} rows={INVOICES.slice(0, 3)} />
       </div>
     ),
   },
