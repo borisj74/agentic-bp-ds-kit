@@ -1203,6 +1203,7 @@
   --modal-width-sm: 400px;
   --modal-width-md: 540px;
   --modal-width-lg: 768px;
+  --modal-width-xl: 1152px;
   --focus-offset-field: var(--ref-space-50);
   --date-picker-day: 42px;
   --date-picker-presets: 160px;
@@ -1284,4 +1285,5 @@
   --cascader-column-max: 400px;
   --cascader-height: 320px;
   --cascader-panel-height: 436px;
+  --lookup-search: 320px;
 }

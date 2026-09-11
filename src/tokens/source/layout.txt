@@ -106,6 +106,8 @@ command/key|{ref/space/600}
 modal/width/sm|400px
 modal/width/md|540px
 modal/width/lg|768px
+# xl (Figma lookup 138:5591): wide enough for a table of 8 columns; past the ref scale.
+modal/width/xl|1152px
 # not in Figma: fields sit right under their label, so their ring hugs closer than on buttons.
 focus/offset-field|{ref/space/50}
 
@@ -243,3 +245,6 @@ cascader/column-min|240px
 cascader/column-max|400px
 cascader/height|320px
 cascader/panel-height|436px
+
+# Lookup (Figma lookup 138:5591): the search box is about 320 wide; past the ref scale.
+lookup/search|320px

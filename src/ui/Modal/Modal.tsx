@@ -2,15 +2,17 @@
 import { useId, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "../Button/Button";
+import { Icon } from "../Icon/Icon";
 import styles from "./Modal.module.css";
 import { useDialog } from "./useDialog";
 
-export type ModalSize = "sm" | "md" | "lg" | "full";
+export type ModalSize = "sm" | "md" | "lg" | "xl" | "full";
 
 export interface ModalProps {
   open: boolean;
   title: string;
   description?: string;
+  icon?: string;
   size?: ModalSize;
   showClose?: boolean;
   onClose: () => void;
@@ -18,7 +20,7 @@ export interface ModalProps {
   footer?: ReactNode;
 }
 
-export function Modal({ open, title, description, size = "sm", showClose = true, onClose, children, footer }: ModalProps) {
+export function Modal({ open, title, description, icon, size = "sm", showClose = true, onClose, children, footer }: ModalProps) {
   const titleId = useId();
   const descriptionId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -44,6 +46,8 @@ export function Modal({ open, title, description, size = "sm", showClose = true,
         className={[styles.modal, styles[size]].join(" ")}
       >
         <header className={styles.header}>
+          {/* An optional icon before the title, like PageHeader's. */}
+          {icon && <span className={styles.icon}><Icon name={icon} size="lg" tone="brand" /></span>}
           <div className={styles.copy}>
             <h2 id={titleId} className={styles.title}>{title}</h2>
             {description && <p id={descriptionId} className={styles.description}>{description}</p>}

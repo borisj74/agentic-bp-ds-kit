@@ -18,6 +18,7 @@
 .sm td > * { min-height: calc(var(--cell-height-sm) - var(--border-width-thin)); }
 .md td > * { min-height: calc(var(--cell-height-md) - var(--border-width-thin)); }
 .table tbody tr:hover { background: var(--bg-neutral-min-hover); }
+.table tbody tr.clickable { cursor: pointer; }
 .table tbody tr.selected { background: var(--bg-neutral-min-selected); }
 .table tbody tr.selected:hover { background: var(--bg-neutral-min-selected-hover); }
 

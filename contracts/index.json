@@ -38,6 +38,7 @@
     {"name": "LineChart", "contract": "contracts/linechart.json", "category": "data", "tags": ["chart", "line chart", "area chart", "stacked area", "trend", "time series", "graph", "dashboard"]},
     {"name": "Logo", "contract": "contracts/logo.json", "category": "brand", "tags": ["brand", "wordmark", "symbol", "header"]},
     {"name": "LogoAI", "contract": "contracts/logoai.json", "category": "brand", "tags": ["ai", "brand", "assistant", "copilot"]},
+    {"name": "Lookup", "contract": "contracts/lookup.json", "category": "form", "tags": ["lookup", "record picker", "search dialog", "table picker", "reference field", "product picker", "account picker", "modal table"]},
     {"name": "Modal", "contract": "contracts/modal.json", "category": "overlay", "tags": ["modal", "dialog", "overlay", "form", "command palette"]},
     {"name": "PageHeader", "contract": "contracts/pageheader.json", "category": "navigation", "tags": ["page header", "content header", "title", "breadcrumb", "page actions", "sticky"]},
     {"name": "Pagination", "contract": "contracts/pagination.json", "category": "navigation", "tags": ["pagination", "pager", "pages", "rows per page", "page size", "table footer", "next page"]},

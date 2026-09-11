@@ -34,6 +34,7 @@ import { Icon } from "@/ui/Icon/Icon";
 import { Input, type InputProps } from "@/ui/Input/Input";
 import { LineChart, type LineChartProps } from "@/ui/LineChart/LineChart";
 import { Logo } from "@/ui/Logo/Logo";
+import { Lookup, type LookupProps } from "@/ui/Lookup/Lookup";
 import { LogoAI } from "@/ui/LogoAI/LogoAI";
 import { PageHeader, type PageHeaderProps } from "@/ui/PageHeader/PageHeader";
 import { PieChart, type PieChartProps } from "@/ui/PieChart/PieChart";
@@ -419,6 +420,45 @@ const CASCADER_SAMPLES: Record<string, unknown> = {
 };
 const cascaderProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in CASCADER_SAMPLES ? CASCADER_SAMPLES[v] : v])) as unknown as CascaderProps;
+
+// Lookup samples after the Figma product lookup. Contract examples name them {productColumns} and {products}.
+const PRODUCT_COLUMNS: TableColumn[] = [
+  { key: "name", header: "Product name", width: "22%" },
+  { key: "id", header: "ID" },
+  { key: "method", header: "Rating method" },
+  { key: "type", header: "Product type" },
+  { key: "level", header: "Product level" },
+  { key: "status", header: "Status" },
+  { key: "rate", header: "Rate", numeric: true },
+  { key: "created", header: "Created" },
+];
+const product = (id: string, name: string, method: string, type: string, level: string, active: boolean, rate: string, created: string): TableRow => ({
+  id, name, method, type, level, rate, created,
+  status: <Cell size="sm" type="badge" label={active ? "Active" : "Deactivated"} tone={active ? "success" : "neutral"} />,
+});
+const PRODUCTS: TableRow[] = [
+  product("13980", "On-Demand Virtual Training - Gold", "One Time Charge", "Training", "Gold", false, "$3,000.00", "06/04/2022"),
+  product("13981", "On-Demand Virtual Training - Silver", "One Time Charge", "Training", "Silver", false, "$2,000.00", "06/04/2022"),
+  product("13982", "On-Demand Virtual Training - Bronze", "One Time Charge", "Training", "Bronze", false, "$1,000.00", "06/04/2022"),
+  product("13984", "Software Maintenance - Dedicated", "Subscription", "Maintenance", "Gold", true, "$14,000.00", "06/04/2022"),
+  product("13985", "Software Maintenance - Basic", "Subscription", "Maintenance", "Silver", false, "$6,000.00", "06/04/2022"),
+  product("13987", "Software Maintenance - Dedicated Support", "Subscription", "Support", "Enterprise", true, "$12,000.00", "06/04/2022"),
+  product("13988", "Software Maintenance - Dedicated Bronze", "Subscription", "Maintenance", "Bronze", true, "$10,000.00", "06/04/2022"),
+  product("13989", "Software Subscription - Gold", "Subscription", "API", "Enterprise", true, "$12,000.00", "06/04/2022"),
+  product("13990", "Software Subscription - Silver", "Subscription", "Software", "Silver", false, "$225,000.00", "06/04/2022"),
+  product("13991", "Software Subscription - Bronze", "Subscription", "Software", "Bronze", false, "$200,000.00", "06/04/2022"),
+  product("13992", "Implementation - Gold", "One Time Charge", "Implementation", "Gold", false, "$80,000.00", "06/04/2022"),
+  product("13993", "Implementation - Silver", "One Time Charge", "Implementation", "Silver", false, "$70,000.00", "06/04/2022"),
+  product("13994", "Implementation - Bronze", "One Time Charge", "Implementation", "Bronze", false, "$60,000.00", "06/04/2022"),
+  product("13995", "BB Product - Subscription", "Subscription", "Software", "Gold", false, "$1,000.00", "06/13/2022"),
+  product("13996", "BB Product - Hardware", "One Time Charge", "Other", "Gold", false, "$1,000.00", "06/13/2022"),
+  product("13997", "Backup & Disaster Recovery", "Subscription", "Disaster Recovery Services", "Enterprise", false, "$375,000.00", "07/08/2022"),
+  product("13998", "24x7 Toll Free Support", "Subscription", "Support", "Enterprise", false, "$0.00", "07/08/2022"),
+  product("13999", "Ajanta's Revenue Subscription", "Subscription", "Support", "Enterprise", false, "$0.00", "09/23/2022"),
+];
+const LOOKUP_SAMPLES: Record<string, unknown> = { "{productColumns}": PRODUCT_COLUMNS, "{products}": PRODUCTS };
+const lookupProps = (p: Props) =>
+  Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in LOOKUP_SAMPLES ? LOOKUP_SAMPLES[v] : v])) as unknown as LookupProps;
 
 const MENU_ITEMS: DropdownMenuEntry[] = [
   { id: "edit", label: "Edit" },
@@ -1187,6 +1227,21 @@ export const registry: Record<string, Entry> = {
         <Textarea size="sm" label="Notes" placeholder="Add a note for your team" />
       </div>
     ),
+  },
+  Lookup: {
+    // Sample products swap in for their {names}. Keyed so switching controls starts fresh. A form-like width.
+    render: (p) => (
+      <div style={{ width: p.labelPosition === "start" ? 440 : 320, maxWidth: "100%" }}>
+        <Lookup key={JSON.stringify(p)} {...lookupProps(p)} />
+      </div>
+    ),
+    preview: { label: "Product", columns: "{productColumns}", rows: "{products}", required: true },
+    snippet: { onChange: "{setProductId}" },
+    extras: { message: { values: ["none", "hint", "error"], default: "none" } },
+    normalize: ({ message, ...p }) =>
+      message === "error" ? { ...p, error: "Pick a product to continue." } : message === "hint" ? { ...p, hint: "Only active products can be billed." } : p,
+    hint: "Click the field or the lookup button: search, page through the table and click a row to pick it. The × clears the pick.",
+    card: <div style={{ width: "80%" }}><Lookup label="Product" columns={PRODUCT_COLUMNS} rows={PRODUCTS} defaultValue="13984" size="sm" /></div>,
   },
   Modal: {
     // A kit Button opens the real Modal. content is playground-only: it picks the sample body.

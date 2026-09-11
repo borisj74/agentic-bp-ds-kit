@@ -1,0 +1,165 @@
+{
+  "name": "Lookup",
+  "path": "src/ui/Lookup/Lookup.tsx",
+  "intent": "A form field for picking one record from a long list, like a product or an account, through a searchable table in a wide Modal.",
+  "usage": "Use Lookup when the choice is a record from a list too long or too detailed for a Select: products, accounts, contracts, users. It is one component: pass label, the table's columns and rows, and value with onChange. The field shows the picked record's name, a × to clear it and a lookup button at the end; clicking the field or the button opens a Modal (xl) titled Lookup: label, with a folder icon, a search box with a Search button, the kit Table and Pagination under it. Clicking a row, or its name, picks it and closes the Modal; the × on the Modal closes it without a change. Search looks through every text value of each row. See contracts/lookup.json for the full contract.",
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "note": "Field label. Also names the Modal: Lookup: label."
+    },
+    "columns": {
+      "type": "TableColumn[]",
+      "required": true,
+      "note": "The Modal table's columns, as in Table."
+    },
+    "rows": {
+      "type": "TableRow[]",
+      "required": true,
+      "note": "Every record, each with a unique id. The labelKey column must be text: it becomes the link that picks the row and the text in the field. Other columns can hold text or kit Cells, like a Badge for status."
+    },
+    "value": {
+      "type": "string | null",
+      "note": "Controlled id of the picked row."
+    },
+    "defaultValue": {
+      "type": "string | null",
+      "note": "Starting id when the Lookup keeps it itself."
+    },
+    "onChange": {
+      "type": "function",
+      "signature": "(id: string | null, row: TableRow | null) => void",
+      "note": "Called with the picked row, or null when cleared."
+    },
+    "labelKey": {
+      "type": "string",
+      "note": "The column that names each row. Defaults to the first column."
+    },
+    "title": {
+      "type": "string",
+      "note": "Modal title. Defaults to Lookup: label."
+    },
+    "icon": {
+      "type": "string",
+      "default": "folder_open",
+      "note": "Material Symbols name before the Modal title."
+    },
+    "searchPlaceholder": {
+      "type": "string",
+      "note": "Defaults to Search label, like Search products."
+    },
+    "pageSize": {
+      "type": "number",
+      "default": 10,
+      "note": "Rows per page at first. People can change it in the Pagination."
+    },
+    "clearable": {
+      "type": "boolean",
+      "default": true,
+      "note": "The × in the field that clears the pick."
+    },
+    "placeholder": {
+      "type": "string",
+      "note": "Field text when nothing is picked."
+    },
+    "emptyLabel": {
+      "type": "string",
+      "default": "No matches.",
+      "note": "Shown in the table when a search finds nothing."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "note": "Field height, like Input. Follows Density when not set."
+    },
+    "labelPosition": {
+      "enum": [
+        "top",
+        "start"
+      ],
+      "note": "Like Input. Follows Form."
+    },
+    "hideLabel": {
+      "type": "boolean",
+      "default": false
+    },
+    "name": {
+      "type": "string",
+      "note": "Adds a hidden input with the picked id, for forms."
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "invalid": {
+      "type": "boolean",
+      "default": false
+    },
+    "error": {
+      "type": "string"
+    },
+    "hint": {
+      "type": "string"
+    },
+    "help": {
+      "type": "string",
+      "note": "Opens a HelpPopover from a help icon next to the label, like other fields."
+    }
+  },
+  "useWhen": [
+    "Picking one record from a long list that people need to search and compare: products, accounts, contracts.",
+    "The choice needs more than a name to tell records apart, like an ID, type, level or status."
+  ],
+  "doNot": [
+    "Do not use it for a short list of plain options. Use Select.",
+    "Do not use it for a path through nested levels. Use Cascader.",
+    "Do not build a local lookup dialog, table picker or search field with a button. Use Lookup.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The field is a button named by its label, with aria-haspopup dialog; it opens the Modal on click, Enter or Space. The lookup button beside it does the same for the pointer and stays out of the tab order.",
+    "The × is a kit Button named Clear and the label.",
+    "The Modal traps focus, starts in the search box and gives focus back to the field on close. Enter in the search box searches.",
+    "Each row's name is a link-styled button that picks the row, so rows can be picked from the keyboard; clicking anywhere on a row is a pointer shortcut. The picked row is highlighted.",
+    "Pagination announces the rows shown and the page."
+  ],
+  "snippet": "<Lookup\n  label=\"Product\"\n  columns={productColumns}\n  rows={products}\n  value={productId}\n  onChange={setProductId}\n  required\n/>",
+  "examples": [
+    {
+      "title": "Empty",
+      "usage": "Nothing picked yet. Click the field or the lookup button to open the table.",
+      "items": [
+        {
+          "props": {
+            "label": "Product",
+            "columns": "{productColumns}",
+            "rows": "{products}",
+            "required": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Picked",
+      "usage": "The picked product's name, with a × to clear it.",
+      "items": [
+        {
+          "props": {
+            "label": "Product",
+            "columns": "{productColumns}",
+            "rows": "{products}",
+            "defaultValue": "13984"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+/* Figma lookup field 1059:33521: Input's field box, the picked name, a × and a lookup button behind a divider at the end. */
+.box { padding-inline-end: 0; cursor: pointer; }
+.trigger {
+  flex: 1; min-width: 0; height: 100%; margin: 0; padding: 0; border: 0; background: none;
+  font: inherit; font-size: var(--fs); text-align: start; color: inherit; cursor: pointer; outline: none;
+}
+.trigger:disabled { cursor: not-allowed; }
+.value { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.placeholder { color: var(--text-neutral-subtle); }
+.clear { flex: none; display: flex; }
+
+/* The lookup button: square, as tall as the field, a faint divider before it. */
+.lookup {
+  flex: none; display: grid; place-items: center; align-self: stretch; aspect-ratio: 1; margin: 0; padding: 0;
+  border: 0; border-inline-start: var(--border-width-thin) solid var(--border-neutral-subtle);
+  border-start-end-radius: var(--radius-medium); border-end-end-radius: var(--radius-medium);
+  background: none; color: var(--icon-neutral); cursor: pointer;
+}
+.lookup:hover { background: var(--bg-neutral-faint); color: var(--icon-neutral-strong); }
+.lookup:disabled { cursor: not-allowed; }
+
+/* The dialog body (Figma lookup 138:5591): search and its button, the table, pagination under it. */
+.content { display: flex; flex-direction: column; gap: var(--space-medium); min-width: 0; }
+.search { display: flex; align-items: center; gap: var(--space-xsmall); }
+.searchField { width: 100%; max-width: var(--lookup-search); }

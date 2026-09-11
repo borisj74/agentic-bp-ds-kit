@@ -17,15 +17,20 @@
       "type": "string",
       "note": "One line under the title. Read with the dialog."
     },
+    "icon": {
+      "type": "string",
+      "note": "Material Symbols name shown before the title in the brand color, like PageHeader's icon. Decorative."
+    },
     "size": {
       "enum": [
         "sm",
         "md",
         "lg",
+        "xl",
         "full"
       ],
       "default": "sm",
-      "note": "Width 400 / 540 / 768 px, or full screen. The body scrolls when content is tall."
+      "note": "Width 400 / 540 / 768 / 1152 px, or full screen. xl is for a table, like a Lookup. Every size shrinks to fit the window. The body scrolls when content is tall."
     },
     "showClose": {
       "type": "boolean",

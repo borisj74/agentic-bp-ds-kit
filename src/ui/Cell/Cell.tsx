@@ -44,6 +44,7 @@ export interface CellProps {
   checked?: boolean;
   defaultChecked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
+  onClick?: () => void;
   level?: number;
   expanded?: boolean;
   onExpandedChange?: (expanded: boolean) => void;
@@ -56,7 +57,7 @@ const score = (v?: string | number) => Math.max(0, Math.min(STARS, Math.round(Nu
 export function Cell({
   type = "text", size: ownSize, align = "start", text = true, checkbox = false, label, href, name, src, people, icon,
   tone = "neutral", badges, value, actions, options, onValueChange, checked, defaultChecked, onCheckedChange,
-  level = 1, expanded, onExpandedChange, showLines = true,
+  level = 1, expanded, onExpandedChange, showLines = true, onClick,
 }: CellProps) {
   const density = useDensity();
   const size = ownSize ?? (density === "compact" ? "sm" : "md");
@@ -194,8 +195,11 @@ export function Cell({
           <span className={styles.name}>{who}</span>
           {name && label && label !== name && <span className={styles.support}>{label}</span>}
         </span>
+      ) : showSide && type === "link" && onClick && !href ? (
+        // A link that acts in place, like picking a row in a Lookup: a button that looks like a link.
+        <button type="button" className={[styles.link, styles.linkButton].join(" ")} onClick={onClick}>{side}</button>
       ) : showSide && type === "link" ? (
-        <a className={styles.link} href={href}>{side}</a>
+        <a className={styles.link} href={href} onClick={onClick}>{side}</a>
       ) : showSide ? (
         <span className={styles.label}>{side}</span>
       ) : null}

@@ -28,6 +28,7 @@ export interface TableProps {
   defaultSelected?: string[];
   onSelectionChange?: (ids: string[]) => void;
   rowLabel?: string;
+  onRowClick?: (id: string, row: TableRow) => void;
 }
 
 const idOf = (row: TableRow, i: number) => row.id ?? String(i);
@@ -36,7 +37,7 @@ const idOf = (row: TableRow, i: number) => row.id ?? String(i);
 // fills, so cells of different heights in one row still line up.
 export function Table({
   columns, rows, size: ownSize, caption, footer, emptyLabel = "No results.",
-  selectable = false, selected: selectedProp, defaultSelected = [], onSelectionChange, rowLabel,
+  selectable = false, selected: selectedProp, defaultSelected = [], onSelectionChange, rowLabel, onRowClick,
 }: TableProps) {
   const density = useDensity();
   const size = ownSize ?? (density === "compact" ? "sm" : "md");
@@ -91,7 +92,11 @@ export function Table({
             const on = selected.includes(id);
             const name = labelKey && typeof row[labelKey] !== "object" ? String(row[labelKey] ?? "") : "";
             return (
-              <tr key={id} className={on ? styles.selected : undefined} aria-selected={selectable ? on : undefined}>
+              <tr
+                key={id} className={[on ? styles.selected : "", onRowClick ? styles.clickable : ""].join(" ") || undefined} aria-selected={selectable ? on : undefined}
+                // A pointer shortcut: clicks on the row's own controls (its link, checkbox or buttons) act on their own.
+                onClick={onRowClick ? (e) => { if (!(e.target as HTMLElement).closest("a, button, input, label, select, textarea")) onRowClick(id, row); } : undefined}
+              >
                 {selectable && (
                   <td className={styles.select}>
                     <Cell size={size} type="checkbox" align="center" label={name || `row ${i + 1}`} checked={on} onCheckedChange={(v) => toggleRow(id, v)} />

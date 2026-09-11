@@ -58,6 +58,11 @@
     "rowLabel": {
       "type": "string",
       "note": "Column key whose value names each row checkbox, like Select INV001. Defaults to the first column."
+    },
+    "onRowClick": {
+      "type": "function",
+      "signature": "(id: string, row: TableRow) => void",
+      "note": "Clicking anywhere on a row runs it, for picking a row, like in a Lookup. It is a pointer shortcut: give the row a keyboard control too, like a link Cell with onClick in its first column. Clicks on the row's own links, buttons and checkboxes act on their own."
     }
   },
   "useWhen": [
