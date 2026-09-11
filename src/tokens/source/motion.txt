@@ -33,3 +33,5 @@ motion/page/easing|{motion/ease/emphasized}
 # Loading loops (ShimmerText, Skeleton): one slow, even cycle. Not in Figma.
 motion/loading/duration|1600ms
 motion/loading/easing|{motion/ease/in-out}
+# Spinner: one turn of the ticks. Not in Figma.
+motion/spin/duration|1000ms

@@ -1117,6 +1117,7 @@
   --motion-page-easing: var(--motion-ease-emphasized);
   --motion-loading-duration: 1600ms;
   --motion-loading-easing: var(--motion-ease-in-out);
+  --motion-spin-duration: 1000ms;
   --opacity-0: 0;
   --opacity-100: 0.08;
   --opacity-200: 0.16;

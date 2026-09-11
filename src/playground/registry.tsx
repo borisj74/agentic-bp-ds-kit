@@ -47,6 +47,7 @@ import { Section, type SectionProps } from "@/ui/Section/Section";
 import { SegmentedControl, type SegmentedControlProps } from "@/ui/SegmentedControl/SegmentedControl";
 import { ShimmerText, type ShimmerTextProps } from "@/ui/ShimmerText/ShimmerText";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
+import { Spinner, type SpinnerProps } from "@/ui/Spinner/Spinner";
 import { Select, type SelectProps } from "@/ui/Select/Select";
 import { SideNav, type SideNavEntry, type SideNavItem, type SideNavProps } from "@/ui/SideNav/SideNav";
 import { Switch, type SwitchProps } from "@/ui/Switch/Switch";
@@ -1128,6 +1129,12 @@ export const registry: Record<string, Entry> = {
         <div style={{ display: "grid" }}><Skeleton size="sm" width="50%" animation="none" label="" /><Skeleton size="sm" width="80%" animation="none" label="" /></div>
       </div>
     ),
+  },
+  Spinner: {
+    render: (p) => <Spinner {...(p as SpinnerProps)} />,
+    preview: { size: "md" },
+    hint: "Switch size. Show label writes it beside the ring; screen readers always hear it. With reduced motion the ticks stay still.",
+    card: <div style={{ display: "flex", gap: "var(--space-large)", alignItems: "center" }}><Spinner size="sm" /><Spinner /><Spinner size="lg" /></div>,
   },
   Switch: {
     // The Checked switch sets the start value; the switch itself stays clickable. Keyed so controls re-apply.

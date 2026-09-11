@@ -1,0 +1,87 @@
+{
+  "name": "Spinner",
+  "path": "src/ui/Spinner/Spinner.tsx",
+  "intent": "A small ring of ticks in the brand color that turns while something loads and the wait is short and unknown.",
+  "usage": "Use Spinner for a short wait with no known end, in the spot that is loading: a panel refreshing, a list fetching more, a Drawer loading a record. It is one component: pick a size. label is read by screen readers (Loading by default); showLabel writes it next to the ring, like Loading invoices…. For a button that is working, use Button loading. For content with a known layout, use Skeleton; for a known amount done, use Progress; for a line of status text, use ShimmerText. See contracts/spinner.json for the full contract.",
+  "props": {
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "16, 24 or 32 px, like icons."
+    },
+    "label": {
+      "type": "string",
+      "default": "Loading",
+      "note": "What is loading, for screen readers, like Loading invoices. Empty makes the Spinner decorative, when the text beside it already says it."
+    },
+    "showLabel": {
+      "type": "boolean",
+      "default": false,
+      "note": "Writes the label to the right of the ring."
+    }
+  },
+  "useWhen": [
+    "A short wait with no known end, in the place that is loading.",
+    "A panel, list or Drawer fetching data where the layout is not known yet."
+  ],
+  "doNot": [
+    "Do not put it in a Button. Use Button loading.",
+    "Do not use it when the amount done is known. Use Progress.",
+    "Do not use it for content with a known layout. Use Skeleton.",
+    "Do not use more than one for the same wait.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "role status with the label, so the wait is announced once when the Spinner appears.",
+    "The ring is hidden from screen readers.",
+    "No motion when the person prefers reduced motion: the ticks stay still."
+  ],
+  "snippet": "<Spinner label=\"Loading invoices\" showLabel />",
+  "examples": [
+    {
+      "title": "Sizes",
+      "usage": "sm 16, md 24, lg 32.",
+      "items": [
+        {
+          "props": {
+            "size": "sm"
+          }
+        },
+        {
+          "props": {
+            "size": "md"
+          }
+        },
+        {
+          "props": {
+            "size": "lg"
+          }
+        }
+      ]
+    },
+    {
+      "title": "With a label",
+      "usage": "showLabel writes the label beside the ring.",
+      "items": [
+        {
+          "props": {
+            "size": "sm",
+            "label": "Loading invoices…",
+            "showLabel": true
+          }
+        },
+        {
+          "props": {
+            "size": "md",
+            "label": "Refreshing forecast…",
+            "showLabel": true
+          }
+        }
+      ]
+    }
+  ]
+}

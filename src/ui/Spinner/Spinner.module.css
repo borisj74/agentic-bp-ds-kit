@@ -1,0 +1,17 @@
+/* Figma spinner 3013:3740: 12 rounded ticks in the brand fill, at icon sizes instead of 68. */
+.spinner { position: relative; display: inline-flex; align-items: center; gap: var(--space-xsmall); font-family: var(--font-sans); color: var(--text-neutral); }
+.ring { flex: none; display: block; width: var(--s); height: var(--s); }
+.sm { --s: var(--icon-size-small); font-size: var(--font-size-xsmall); }
+.md { --s: var(--icon-size-large); font-size: var(--font-size-small); }
+.lg { --s: var(--icon-size-xlarge); font-size: var(--font-size-regular); }
+
+.tick { fill: var(--bg-brand); opacity: var(--opacity-200); animation: trail var(--motion-spin-duration) var(--motion-ease-linear) infinite; }
+@keyframes trail { 0% { opacity: var(--opacity-full); } 100% { opacity: var(--opacity-200); } }
+
+/* Reduced motion: the ticks stay still, at a steady middle strength. */
+@media (prefers-reduced-motion: reduce) {
+  .tick { animation: none; opacity: var(--opacity-muted); }
+}
+
+.label { line-height: 1.4; }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
