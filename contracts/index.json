@@ -34,6 +34,7 @@
     {"name": "SegmentedControl", "contract": "contracts/segmentedcontrol.json", "category": "form", "tags": ["segmented", "toggle", "choice", "density", "view switch", "period", "radio buttons"]},
     {"name": "Select", "contract": "contracts/select.json", "category": "form", "tags": ["select", "dropdown", "picker", "multi-select", "options", "form"]},
     {"name": "Switch", "contract": "contracts/switch.json", "category": "form", "tags": ["switch", "toggle", "on off", "setting", "preference"]},
+    {"name": "Tabs", "contract": "contracts/tabs.json", "category": "navigation", "tags": ["tabs", "tab strip", "sections", "views", "panels", "count"]},
     {"name": "Textarea", "contract": "contracts/textarea.json", "category": "form", "tags": ["form", "textarea", "multi-line", "notes", "description", "code", "formula"]},
     {"name": "Tooltip", "contract": "contracts/tooltip.json", "category": "overlay", "tags": ["tooltip", "hint", "help", "hover", "info", "icon button label"]}
   ],

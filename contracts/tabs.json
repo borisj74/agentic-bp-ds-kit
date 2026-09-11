@@ -1,0 +1,114 @@
+{
+  "name": "Tabs",
+  "path": "src/ui/Tabs/Tabs.tsx",
+  "intent": "A row of tabs that switches between related views in the same place. The selected tab has a brand label and underline.",
+  "usage": "Use Tabs to switch between two or more related views on one page, like the sections of a record or settings. One component: pass items with a label and, optionally, an icon, a count and content. With content, Tabs shows the selected panel under the strip; without it, it is a strip only and you show the view yourself from value and onChange. size sets the height (sm is the default, as in Figma); expand stretches the tabs across the row; border draws the line under the strip. For a small always-visible choice like density or a view switch, use SegmentedControl. See contracts/tabs.json for the full contract.",
+  "props": {
+    "items": {
+      "type": "TabItem[]",
+      "itemShape": "{ id: string; label: string; icon?: string; count?: number; countLabel?: string; disabled?: boolean; content?: ReactNode }",
+      "note": "Two or more. icon is a leading Material Symbols name. count shows a kit Count after the label; countLabel says what it counts for screen readers. content is the panel for that tab."
+    },
+    "label": {
+      "type": "string",
+      "default": "Tabs",
+      "note": "Names the tab list for screen readers, like Invoice sections."
+    },
+    "value": {
+      "type": "string",
+      "note": "Controlled selected id."
+    },
+    "defaultValue": {
+      "type": "string",
+      "note": "Uncontrolled start id. Defaults to the first enabled tab."
+    },
+    "onChange": {
+      "type": "function",
+      "note": "(id: string) => void. Runs on click and on arrow keys."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "sm",
+      "note": "Tab height 32 / 40 / 48 px, label 12 / 14 / 16 px. sm is the Figma default."
+    },
+    "expand": {
+      "type": "boolean",
+      "default": false,
+      "note": "Tabs share the full width equally instead of hugging their labels."
+    },
+    "border": {
+      "type": "boolean",
+      "default": true,
+      "note": "The 1px line under the whole strip."
+    }
+  },
+  "useWhen": [
+    "Sections of one record or page, like Overview / Invoices / Payments.",
+    "Two to seven peer views that share the same context."
+  ],
+  "doNot": [
+    "Do not invent TabList, Tab, TabPanel, TabsTrigger or a local tab strip. It is one component.",
+    "Do not use for app or page navigation. Use the side nav.",
+    "Do not use for a small choice that applies at once, like density or List / Board. Use SegmentedControl.",
+    "Do not select more than one tab, and do not disable a tab to hide it. Leave it out instead.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A tablist named by label; each tab is a button with role tab and aria-selected. With content, the panel is a tabpanel named by its tab.",
+    "One tab stop. Arrow Left and Right move and select, Home and End jump to the ends. Disabled tabs are skipped.",
+    "The selected tab is shown by an underline as well as color. Focus shows the kit ring inside the tab.",
+    "A count is read with its countLabel, like 5 unpaid invoices."
+  ],
+  "snippet": "<Tabs\n  label=\"Account sections\"\n  items={[\n    { id: \"overview\", label: \"Overview\" },\n    { id: \"invoices\", label: \"Invoices\", count: 5 },\n    { id: \"payments\", label: \"Payments\" },\n  ]}\n/>",
+  "examples": [
+    {
+      "title": "Default",
+      "usage": "Small tabs on a line, as in Figma. The first tab starts selected.",
+      "items": [
+        { "props": { "label": "Account sections", "items": [{ "id": "overview", "label": "Overview" }, { "id": "invoices", "label": "Invoices" }, { "id": "payments", "label": "Payments" }] } }
+      ]
+    },
+    {
+      "title": "Icons and counts",
+      "usage": "A leading icon and a Count after the label.",
+      "items": [
+        { "props": { "label": "Inbox", "items": [{ "id": "all", "label": "All", "icon": "inbox" }, { "id": "unpaid", "label": "Unpaid", "icon": "receipt_long", "count": 5, "countLabel": "unpaid invoices" }, { "id": "failed", "label": "Failed", "icon": "error", "count": 2, "countLabel": "failed payments" }] } }
+      ]
+    },
+    {
+      "title": "With panels",
+      "usage": "Give items content and the selected panel shows under the strip.",
+      "a11y": true,
+      "items": [
+        { "props": { "label": "Account sections", "items": [{ "id": "overview", "label": "Overview", "content": "Balance, plan and the last five invoices." }, { "id": "invoices", "label": "Invoices", "count": 5, "countLabel": "invoices", "content": "Every invoice for this account, newest first." }, { "id": "payments", "label": "Payments", "content": "Payment methods and payment history." }] } }
+      ]
+    },
+    {
+      "title": "Expand",
+      "usage": "The tabs share the full width.",
+      "items": [
+        { "props": { "label": "Period", "expand": true, "items": [{ "id": "day", "label": "Day" }, { "id": "week", "label": "Week" }, { "id": "month", "label": "Month" }] } }
+      ]
+    },
+    {
+      "title": "Disabled tab, no border",
+      "usage": "A tab can be off for now; arrow keys skip it. border false drops the strip line.",
+      "items": [
+        { "props": { "label": "Settings", "border": false, "items": [{ "id": "general", "label": "General" }, { "id": "billing", "label": "Billing" }, { "id": "sso", "label": "SSO", "disabled": true }] } }
+      ]
+    },
+    {
+      "title": "Sizes",
+      "usage": "sm is the default. md and lg for roomier pages.",
+      "items": [
+        { "props": { "label": "Small", "size": "sm", "items": [{ "id": "a", "label": "Overview" }, { "id": "b", "label": "Invoices", "count": 5 }] } },
+        { "props": { "label": "Medium", "size": "md", "items": [{ "id": "a", "label": "Overview" }, { "id": "b", "label": "Invoices", "count": 5 }] } },
+        { "props": { "label": "Large", "size": "lg", "items": [{ "id": "a", "label": "Overview" }, { "id": "b", "label": "Invoices", "count": 5 }] } }
+      ]
+    }
+  ]
+}

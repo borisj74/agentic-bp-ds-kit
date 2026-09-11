@@ -1226,4 +1226,7 @@
   --app-header-height-comfortable: 64px;
   --app-header-search-height-compact: 32px;
   --app-header-search-height-comfortable: 48px;
+  --tabs-height-sm: var(--ref-space-900);
+  --tabs-height-md: var(--ref-space-1100);
+  --tabs-height-lg: var(--ref-space-1300);
 }

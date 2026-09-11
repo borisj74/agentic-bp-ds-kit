@@ -141,3 +141,8 @@ app-header/height-compact|48px
 app-header/height-comfortable|64px
 app-header/search-height-compact|32px
 app-header/search-height-comfortable|48px
+
+# Figma tabs 2302:381996: small tabs are 32px; medium and large follow the kit scale.
+tabs/height/sm|{ref/space/900}
+tabs/height/md|{ref/space/1100}
+tabs/height/lg|{ref/space/1300}

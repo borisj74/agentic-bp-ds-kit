@@ -31,6 +31,7 @@ import { RadioGroup, type RadioGroupOption } from "@/ui/RadioGroup/RadioGroup";
 import { SegmentedControl, type SegmentedControlProps } from "@/ui/SegmentedControl/SegmentedControl";
 import { Select, type SelectProps } from "@/ui/Select/Select";
 import { Switch, type SwitchProps } from "@/ui/Switch/Switch";
+import { Tabs, type TabItem, type TabsProps } from "@/ui/Tabs/Tabs";
 import { Textarea, type TextareaProps } from "@/ui/Textarea/Textarea";
 import { Tooltip, type TooltipProps } from "@/ui/Tooltip/Tooltip";
 
@@ -555,6 +556,26 @@ export const registry: Record<string, Entry> = {
         <Switch size="sm" label="Email notifications" defaultChecked />
         <Switch size="sm" label="Auto-pay" />
       </div>
+    ),
+  },
+  Tabs: {
+    // Keyed so a changed default selection applies again; the tabs stay clickable.
+    render: (p) => (
+      <div style={{ width: p.expand ? 480 : "auto", maxWidth: "100%" }}>
+        <Tabs key={JSON.stringify(p)} {...(p as unknown as TabsProps)} items={(p.items as TabItem[] | undefined) ?? []} />
+      </div>
+    ),
+    preview: {
+      label: "Account sections",
+      items: [
+        { id: "overview", label: "Overview", content: "Balance, plan and the last five invoices." },
+        { id: "invoices", label: "Invoices", count: 5, countLabel: "invoices", content: "Every invoice for this account, newest first." },
+        { id: "payments", label: "Payments", content: "Payment methods and payment history." },
+      ],
+    },
+    hint: "Switch size and toggle expand and border. Click a tab or use the arrow keys.",
+    card: (
+      <Tabs label="Account sections" items={[{ id: "overview", label: "Overview" }, { id: "invoices", label: "Invoices", count: 5 }, { id: "payments", label: "Payments" }]} />
     ),
   },
   Tooltip: {
