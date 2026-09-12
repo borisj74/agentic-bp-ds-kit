@@ -709,7 +709,7 @@ export const registry: Record<string, Entry> = {
     render: ({ state, ...p }) => <ListPageDemo {...(p as Record<string, unknown>)} state={(state as "ready" | "loading" | "empty" | "error") ?? "ready"} />,
     preview: { state: "ready" },
     hide: ["children", "toolbar", "pagination", "bulk", "empty", "error", "onRetry", "label", "loadingRows"],
-    hint: "Tick rows and the bar over the list becomes what can be done to them. Search, set a filter, change the view or the page size, and switch the state to see the loading, empty and failed lists.",
+    hint: "Switch between Table View, List View and Card View: the same records, laid out three ways. Tick rows and the bar over the list becomes what can be done to them. Search, set a filter, change the page size, and switch the state to see the loading, empty and failed lists.",
     block: true,
     wide: true,
     card: <div style={{ width: 300 }}><Pagination total={248} defaultPage={2} showPageSize={false} /></div>,

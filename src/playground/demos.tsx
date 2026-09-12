@@ -9,6 +9,7 @@ import { AppShell, type AppShellProps } from "@/patterns/AppShell/AppShell";
 import { ListPage, type ListPageProps, type ListPageState } from "@/patterns/ListPage/ListPage";
 import { Button } from "@/ui/Button/Button";
 import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
+import { Card } from "@/ui/Card/Card";
 import { Cell, type CellSize } from "@/ui/Cell/Cell";
 import { ChatComposer, type ChatComposerMode, type ChatComposerProps } from "@/ui/ChatComposer/ChatComposer";
 import { ChatComposer as ChatComposerPiece } from "@/ui/ChatComposer/ChatComposer";
@@ -961,18 +962,49 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
 
 // Playground harness: the ListPage pattern driven like a screen would drive it. Not a kit piece.
 // A longer invoice list, so the pages and the ticked-row bar have something to work on.
-const LIST_ROWS: TableRow[] = Array.from({ length: 12 }, (_, i) => {
+// The records behind every view: the table, the list and the cards all read from these.
+const LIST_RECORDS = Array.from({ length: 12 }, (_, i) => {
   const accounts = ["Northwind Holdings", "Globex Corporation", "Initech Group", "Umbrella Health", "Stark Logistics"];
-  const status = ["Paid", "Pending", "Overdue"][i % 3];
+  const paid = ["Paid", "Partially paid", "Unpaid"][i % 3];
   return {
     id: `INV-44${71 + i}`,
     account: accounts[i % accounts.length],
-    status: <Cell type="badge" tone={status === "Paid" ? "success" : status === "Overdue" ? "danger" : "warning"} label={status} />,
+    paid,
+    active: i % 4 !== 3,
     due: `${12 + i} Sep 2026`,
     amount: `$${(2_980 + i * 1_450).toLocaleString("en-US")}.00`,
-    actions: rowActions,
   };
 });
+const LIST_PAID: Record<string, string> = Object.fromEntries(LIST_RECORDS.map((r) => [r.id, r.paid]));
+const paidTone = (paid: string) => (paid === "Paid" ? "success" : paid === "Unpaid" ? "danger" : "warning");
+const LIST_ROWS: TableRow[] = LIST_RECORDS.map((r) => ({
+  id: r.id,
+  account: r.account,
+  status: <Cell type="badge" tone={paidTone(r.paid)} label={r.paid} />,
+  due: r.due,
+  amount: r.amount,
+  actions: rowActions,
+}));
+// List View (BP DS Hub list view): the account is one two-line cell — its name over the record number and
+// how it is paid — then whether it is active, the balance, the date and the row's actions.
+const LIST_VIEW_COLUMNS: TableColumn[] = [
+  { key: "account", header: "Account" }, { key: "state", header: "Status" },
+  { key: "amount", header: "Balance", numeric: true }, { key: "due", header: "Date" },
+  { key: "actions", header: "Actions", align: "end", width: "112px" },
+];
+const LIST_VIEW_ROWS: TableRow[] = LIST_RECORDS.map((r) => ({
+  id: r.id,
+  account: <Cell type="avatar" name={r.account} label={`${r.id} \u00b7 ${r.paid}`} />,
+  state: <Cell type="badge" tone={r.active ? "success" : "neutral"} label={r.active ? "Active" : "Inactive"} />,
+  amount: r.amount,
+  due: r.due,
+  actions: (
+    <Cell
+      type="actionIcons" align="end" actions={[{ label: "Edit", icon: "edit" }]}
+      menu={[{ label: "Send", icon: "send" }, { label: "Download PDF", icon: "download" }, { label: "Void", icon: "block", variant: "danger" }]}
+    />
+  ),
+}));
 const LIST_COLUMNS: TableColumn[] = [
   { key: "id", header: "Invoice", emphasis: true }, { key: "account", header: "Account" }, { key: "status", header: "Status" },
   { key: "due", header: "Due" }, { key: "amount", header: "Amount", numeric: true },
@@ -983,7 +1015,7 @@ export function ListPageDemo({ state = "ready", ...p }: Omit<ListPageProps, "chi
   const [values, setValues] = useState<Record<string, string | undefined>>(START);
   const [off, setOff] = useState<Record<string, boolean>>({});
   const [query, setQuery] = useState("");
-  const [view, setView] = useState("list");
+  const [view, setView] = useState("table");
   const [picked, setPicked] = useState<string[]>([]);
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
@@ -1017,7 +1049,7 @@ export function ListPageDemo({ state = "ready", ...p }: Omit<ListPageProps, "chi
           label="Invoices" filters={<>{chips}</>} defaultFiltersOpen
           onReset={() => { setValues({}); setOff({}); }} onApply={() => {}}
           searchValue={query} onSearchChange={setQuery} searchPlaceholder="Search invoices"
-          views={[{ id: "list", label: "List View" }, { id: "board", label: "Board View" }]}
+          views={[{ id: "table", label: "Table View" }, { id: "list", label: "List View" }, { id: "card", label: "Card View" }]}
           view={view} onViewChange={setView} onRefresh={() => {}}
           moreActions={[{ id: "import", label: "Import" }, { id: "export", label: "Export all" }]} onMoreSelect={() => {}}
           actions={<Button size="sm" variant="primary" iconStart="add">New invoice</Button>}
@@ -1046,10 +1078,26 @@ export function ListPageDemo({ state = "ready", ...p }: Omit<ListPageProps, "chi
       error="The invoice list could not be loaded."
       onRetry={() => {}}
     >
-      <Table
-        columns={LIST_COLUMNS} rows={shown.slice(start, start + size)}
-        selectable selected={picked} onSelectionChange={setPicked} rowLabel="id"
-      />
+      {view === "card" ? (
+        // Card View: the same records as kit Cards, wrapped by the layout class rather than a new grid.
+        <div className="layout-metrics">
+          {shown.slice(start, start + size).map((r) => (
+            <Card
+              key={String(r.id)} overline={String(r.id)} title={String(r.account)} amount={String(r.amount)}
+              badge={LIST_PAID[String(r.id)]} badgeTone={paidTone(LIST_PAID[String(r.id)])}
+              description={`Due ${String(r.due)}`}
+              selectable selected={picked.includes(String(r.id))}
+              onSelectedChange={(on) => setPicked((old) => (on ? [...old, String(r.id)] : old.filter((id) => id !== String(r.id))))}
+            />
+          ))}
+        </div>
+      ) : (
+        <Table
+          columns={view === "list" ? LIST_VIEW_COLUMNS : LIST_COLUMNS}
+          rows={(view === "list" ? LIST_VIEW_ROWS : shown).slice(start, start + size)}
+          selectable selected={picked} onSelectionChange={setPicked} rowLabel="id"
+        />
+      )}
     </ListPage>
   );
 }
