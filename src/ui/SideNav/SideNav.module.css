@@ -105,6 +105,16 @@
 
 :global([data-theme="dark"]) .link[aria-current="page"] { color: var(--text-brand-intense); }
 
+/* 640px = --grid-breakpoint-sm, the kit's mobile break: CSS vars cannot appear in container queries.
+   On a phone there is no room for a rail beside the page, so the nav is either away or a drawer over it: it
+   takes the open width with its labels shown, whether or not the screen also calls it expanded, and it does
+   not animate its own width, since the frame is already sliding the whole drawer in. */
+@container (max-width: 640px) {
+  .rail, .expanded .rail { width: var(--side-nav-rail-open); transition: none; }
+  .nav:not(.expanded) .label { position: static; width: auto; height: auto; clip-path: none; }
+  .nav:not(.expanded) .cascade { width: var(--space-xlarge); opacity: 1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .rail, .panel, .panel[data-open="true"] { transition: none; }
 }

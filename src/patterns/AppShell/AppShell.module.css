@@ -42,15 +42,37 @@
 /* The sheet over the page while the phone nav is open. It is a button, so a tap or Enter closes the nav;
    off on any bar wide enough to hold the rail beside the page. */
 .scrim { display: none; margin: 0; padding: 0; border: 0; }
+@keyframes sheet { from { opacity: 0; } }
 
 /* 640px = --grid-breakpoint-sm: CSS vars cannot appear in container or media queries. */
 @container (max-width: 640px) {
-  /* No room for a column of its own: the nav is closed until it is asked for, then it stands over the page
-     at its own width rather than pushing the page sideways. */
-  .nav { position: absolute; inset-block: 0; inset-inline-start: 0; z-index: 4; display: none; }
-  .navOpen { display: block; }
-  .scrim { position: absolute; inset: 0; z-index: 3; display: block; background: var(--surface-backdrop); cursor: pointer; }
+  /* No room for a column of its own: the nav waits off the start edge and slides in over the page when it is
+     asked for, rather than pushing the page sideways. Hidden while it is away, so it is not a stop for the
+     keyboard; visibility waits for the slide out to finish, as the SideNav's own menus do. */
+  .nav {
+    position: absolute; inset-block: 0; inset-inline-start: 0; z-index: 4;
+    /* Off by the open rail's width rather than 100%, so the whole drawer is away whatever width the nav is
+       when it is asked for. */
+    transform: translateX(calc(-1 * var(--side-nav-rail-open))); visibility: hidden;
+    transition: transform var(--motion-expand-duration) var(--motion-expand-easing),
+      visibility 0s linear var(--motion-expand-duration);
+  }
+  /* Right to left pages open from the other edge, since that is where the rail lives there. */
+  .nav:dir(rtl) { transform: translateX(var(--side-nav-rail-open)); }
+  .navOpen, .navOpen:dir(rtl) {
+    transform: translateX(0); visibility: visible;
+    transition: transform var(--motion-expand-duration) var(--motion-expand-easing), visibility 0s;
+  }
+  /* The sheet fades up with the nav. */
+  .scrim {
+    position: absolute; inset: 0; z-index: 3; display: block; background: var(--surface-backdrop); cursor: pointer;
+    animation: sheet var(--motion-expand-duration) var(--motion-expand-easing);
+  }
   /* No room for both: the assistant takes the page's place while it is open. */
   .stage:has(.assistant) .page { display: none; }
   .assistant { flex: 1 1 auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav, .navOpen, .scrim { transition: none; animation: none; }
 }

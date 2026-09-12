@@ -2,7 +2,7 @@
   "name": "SideNav",
   "path": "src/ui/SideNav/SideNav.tsx",
   "intent": "The app's main navigation: a brand rail of sections on the left, each with an optional second-level menu that flies out beside it.",
-  "usage": "Put one SideNav on the left of the app shell, under the AppHeader, full height. It is one component: items are the rail sections (icon and label), endItems sit at the bottom of the rail, and a section's children make its second-level menu. Hovering a section rolls its menu out beside the rail; moving off the nav or picking a link rolls it back in. Clicking a section opens its first link, so a section with no menu still works. pin docks the menu open beside the rail; the \u00d7 closes it. expanded shows the labels (the AppHeader menu button toggles it). A long menu is kept on screen and scrolls with overflow rows at the top and bottom. See contracts/sidenav.json for the full contract.",
+  "usage": "Put one SideNav on the left of the app shell, under the AppHeader, full height. It is one component: items are the rail sections (icon and label), endItems sit at the bottom of the rail, and a section's children make its second-level menu. Hovering a section rolls its menu out beside the rail; moving off the nav or picking a link rolls it back in. Clicking a section opens its first link, so a section with no menu still works. pin docks the menu open beside the rail; the × closes it. expanded shows the labels (the AppHeader menu button toggles it). A long menu is kept on screen and scrolls with overflow rows at the top and bottom. See contracts/sidenav.json for the full contract. In a box narrower than 640px, the kit's mobile break, there is no room for a rail beside the page, so the nav is a drawer: it takes its open width with the labels shown whether or not expanded is passed, and it leaves the sliding to the frame around it.",
   "props": {
     "items": {
       "type": "SideNavEntry[]",
@@ -42,7 +42,7 @@
     },
     "onPinnedChange": {
       "type": "function",
-      "note": "(pinned: boolean) => void. Called by the pin and \u00d7 buttons in the menu header."
+      "note": "(pinned: boolean) => void. Called by the pin and × buttons in the menu header."
     },
     "label": {
       "type": "string",
@@ -97,7 +97,7 @@
     },
     {
       "title": "Pinned",
-      "usage": "The menu docked open beside the rail, with a border and no shadow. \u00d7 closes it. Here General Ledger is the current page, so Revenue and its link show selected.",
+      "usage": "The menu docked open beside the rail, with a border and no shadow. × closes it. Here General Ledger is the current page, so Revenue and its link show selected.",
       "items": [
         {
           "props": {
