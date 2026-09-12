@@ -1,0 +1,140 @@
+{
+  "name": "ChatMessage",
+  "path": "src/ui/ChatMessage/ChatMessage.tsx",
+  "intent": "One turn in a chat with the assistant: what the person asked, or what the assistant answered, with its workings, buttons and suggestions.",
+  "usage": "Use ChatMessage for each turn in an assistant panel. It is one component: pass author user or assistant. A person's turn sits on the right in a grey bubble with their avatar, and can carry a More menu for Edit and Copy. The assistant answers on the left under the AI mark: a short line sits in a brand bubble, a long answer runs as plain text, and status shows the bubble glowing while it works, like Analyzing your request. sections opens its workings, like Reasoning 1 and Tool References 2. actions draws the row under an answer (copy, good work, needs work, share, read aloud), and pressed keeps the one that was picked lit. suggestions writes what to ask next, each one a kit Button that sends itself. See contracts/chatmessage.json for the full contract.",
+  "props": {
+    "author": {
+      "enum": [
+        "user",
+        "assistant"
+      ],
+      "required": true,
+      "note": "Who is speaking. user sits right in a grey bubble; assistant sits left under the AI mark."
+    },
+    "text": {
+      "type": "string",
+      "note": "The words of the turn. For a long answer this runs as plain text."
+    },
+    "children": {
+      "type": "ReactNode",
+      "note": "Anything richer the assistant answers with: a kit Table, a chart, a Form or a list."
+    },
+    "bubble": {
+      "type": "boolean",
+      "note": "Overrides the default: a person always speaks in a bubble, the assistant only for a short line or while working."
+    },
+    "status": {
+      "type": "string",
+      "note": "What the assistant is doing, like Analyzing your request. It shows in a bubble that glows until the answer arrives."
+    },
+    "sections": {
+      "type": "ChatMessageSection[]",
+      "itemShape": {
+        "id": "string",
+        "label": "string",
+        "count": "number?",
+        "content": "ReactNode",
+        "defaultOpen": "boolean?"
+      },
+      "note": "The assistant's workings, like Reasoning and Tool References. The count shows in a kit Badge. Several can be open at once."
+    },
+    "actions": {
+      "type": "ChatMessageActionId[]",
+      "note": "The buttons under the turn, from copy, up, down, share and speak. Without it, an answer gets all five and a person's turn gets none."
+    },
+    "pressed": {
+      "type": "ChatMessageActionId[]",
+      "note": "Buttons that stay lit, like the vote that was cast."
+    },
+    "onAction": {
+      "type": "(action: ChatMessageActionId) => void",
+      "note": "A button under the turn was pressed."
+    },
+    "suggestions": {
+      "type": "ChatSuggestion[]",
+      "itemShape": {
+        "id": "string",
+        "label": "string"
+      },
+      "note": "What to ask next. Each is a kit Button; pressing one sends that message."
+    },
+    "onSuggestion": {
+      "type": "(id: string, label: string) => void",
+      "note": "A suggestion was picked. Send it as the next message."
+    },
+    "menu": {
+      "type": "DropdownMenuEntry[]",
+      "note": "The More menu beside a person's turn, like Edit message and Copy message. It shows on hover or focus."
+    },
+    "onMenuSelect": {
+      "type": "(id: string) => void",
+      "note": "A pick from that menu."
+    },
+    "person": {
+      "type": "{ name?: string; src?: string; initials?: string }",
+      "note": "The person's avatar, drawn with the kit Avatar as a square."
+    },
+    "label": {
+      "type": "string",
+      "note": "Who the turn is from for screen readers. Without it, the person's name or BP AI."
+    }
+  },
+  "useWhen": [
+    "A turn in an assistant panel or a full-screen chat.",
+    "An answer that needs its workings, a vote and suggestions."
+  ],
+  "doNot": [
+    "Do not build a bubble from your own divs, or add a ChatBubble, MessageRow or AiAvatar. Pass the props.",
+    "Do not use it for an alert or a system notice. Use Alert or Toast.",
+    "Do not put more than one action row on a turn.",
+    "Do not use Accordion for the workings; sections already opens them.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "Each turn is an article named after who said it, so a screen reader can move turn by turn.",
+    "The workings are a button with aria-expanded and the panel under it.",
+    "Every button under a turn says what it does, with a kit Tooltip on hover and focus.",
+    "The More menu is reachable with Tab even before the turn is hovered.",
+    "The glow stops when the person prefers reduced motion."
+  ],
+  "snippet": "<ChatMessage author=\"assistant\" text=\"You have 42 inactive accounts.\" onAction={(a) => {}} />",
+  "examples": [
+    {
+      "title": "A turn each",
+      "usage": "The person on the right, the assistant on the left with its buttons.",
+      "items": [
+        {
+          "props": {
+            "author": "user",
+            "text": "How many accounts are inactive?"
+          }
+        },
+        {
+          "props": {
+            "author": "assistant",
+            "text": "Summary of results"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Working",
+      "usage": "status glows in the bubble until the answer arrives.",
+      "items": [
+        {
+          "props": {
+            "author": "assistant",
+            "status": "Analyzing your request"
+          }
+        },
+        {
+          "props": {
+            "author": "assistant",
+            "status": "Compiling recommendations"
+          }
+        }
+      ]
+    }
+  ]
+}

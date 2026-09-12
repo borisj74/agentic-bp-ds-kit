@@ -8,6 +8,7 @@ import { AppHeader, type AppHeaderDensity, type AppHeaderProps } from "@/ui/AppH
 import { Button } from "@/ui/Button/Button";
 import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
 import { Cell, type CellSize } from "@/ui/Cell/Cell";
+import { ChatMessage, type ChatMessageActionId, type ChatMessageProps } from "@/ui/ChatMessage/ChatMessage";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
 import { Density, type DensityValue } from "@/ui/Density/Density";
 import { Drawer, type DrawerProps } from "@/ui/Drawer/Drawer";
@@ -517,4 +518,39 @@ export function AnchorNavDemo(p: Omit<AnchorNavProps, "items">) {
 export function LegendDemo(p: LegendProps) {
   const [hidden, setHidden] = useState<string[]>([]);
   return <Legend {...p} hidden={hidden} onHiddenChange={setHidden} />;
+}
+
+const CHAT_MENU = [
+  { id: "edit", label: "Edit message", icon: "edit" },
+  { id: "copy", label: "Copy message", icon: "content_copy" },
+];
+const CHAT_SECTIONS = [
+  { id: "reasoning", label: "Reasoning", count: 1, content: "Checked the account list for the last sign-in date, then counted the ones over 90 days." },
+  { id: "tools", label: "Tool References", count: 2, content: "bp_entity_schema, bp_entity_schema2" },
+];
+const CHAT_SUGGESTIONS = [
+  { id: "new", label: "Create a new account" },
+  { id: "trends", label: "Show revenue trends across accounts" },
+  { id: "more", label: "View more suggestions" },
+];
+
+// Playground harness: a short conversation with the real ChatMessage, so votes and menus work. Not a kit piece.
+export function ChatMessageDemo(p: Omit<ChatMessageProps, "author">) {
+  const [vote, setVote] = useState<ChatMessageActionId[]>([]);
+  const [said, setSaid] = useState("");
+  const act = (a: ChatMessageActionId) => {
+    if (a === "up" || a === "down") setVote(vote.includes(a) ? [] : [a]);
+    setSaid(a === "copy" ? "Copied" : a === "share" ? "Shared" : a === "speak" ? "Reading aloud" : a === "up" ? "Marked good work" : "Marked needs work");
+  };
+  return (
+    <div style={{ display: "grid", gap: "var(--space-large)", width: "100%", maxWidth: 460 }}>
+      <ChatMessage author="user" text="How many accounts are inactive?" person={{ name: "Ana Petrovic" }} menu={CHAT_MENU} onMenuSelect={(id) => setSaid(id === "edit" ? "Editing the message" : "Copied the message")} />
+      <ChatMessage
+        {...p} author="assistant"
+        text="42 accounts have had no activity for 90 days or more. Most sit on the Standard plan, and 11 of them still have an open balance."
+        sections={CHAT_SECTIONS} suggestions={CHAT_SUGGESTIONS} pressed={vote} onAction={act} onSuggestion={(_, labelText) => setSaid(`Asked: ${labelText}`)}
+      />
+      {said && <p style={{ margin: 0, fontSize: "var(--font-size-xsmall)", color: "var(--text-neutral)" }}>{said}</p>}
+    </div>
+  );
 }

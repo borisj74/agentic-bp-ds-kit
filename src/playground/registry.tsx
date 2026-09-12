@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
-import { AlertDialogDemo, AnchorNavDemo, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { AlertDialogDemo, AnchorNavDemo, ChatMessageDemo, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -17,6 +17,7 @@ import { Calendar, type CalendarEvent, type CalendarProps, type CalendarSource }
 import { Card, type CardProps } from "@/ui/Card/Card";
 import { Carousel, type CarouselProps } from "@/ui/Carousel/Carousel";
 import { Cell, type CellSize, type CellType } from "@/ui/Cell/Cell";
+import { ChatMessage, type ChatMessageProps } from "@/ui/ChatMessage/ChatMessage";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
 import { Command, type CommandGroup, type CommandProps } from "@/ui/Command/Command";
 import { Conveyor, type ConveyorProps } from "@/ui/Conveyor/Conveyor";
@@ -368,6 +369,10 @@ const CHART_SAMPLES: Record<string, unknown> = {
     { label: "Paid", value: 58, tone: "green" }, { label: "Sent", value: 21, tone: "mint" }, { label: "Overdue", value: 13, tone: "red" }, { label: "Draft", value: 8, tone: "gray" },
   ],
 };
+const CHAT_TURN_MENU = [
+  { id: "edit", label: "Edit message", icon: "edit" },
+  { id: "copy", label: "Copy message", icon: "content_copy" },
+];
 const LEGEND_SERIES = [{ label: "Recurring" }, { label: "Non recurring" }, { label: "Credits" }];
 const LEGEND_WITH_VALUES = [
   { label: "Recurring", value: "$3.2M" }, { label: "Non recurring", value: "$1.7M" }, { label: "Credits", value: "$0.4M" },
@@ -819,6 +824,24 @@ export const registry: Record<string, Entry> = {
     normalize: (p) => ({ ...CELL_SAMPLES[(p.type as CellType) ?? "text"], ...p, ...(p.type !== "text" && p.label === "INV-1042" ? { label: CELL_SAMPLES[p.type as CellType]?.label } : {}) }),
     hint: "Pick a type, size and states. Each type fills in sample data.",
     card: <div style={{ display: "grid" }}><Cell type="avatar" size="sm" name="Maya Chen" label="maya@acme.com" src="/faces/maya-chen.jpg" /><Cell type="badge" size="sm" label="Paid" tone="success" /></div>,
+  },
+  ChatMessage: {
+    // The stage runs a short conversation, so the vote, the menu and the suggestions all work.
+    render: ({ conversation, ...p }) => {
+      const author = (p.author as "user" | "assistant") ?? "assistant";
+      if (conversation) return <ChatMessageDemo {...(p as unknown as ChatMessageProps)} />;
+      // One turn on its own: the person asks in a bubble, the assistant answers with its buttons.
+      const sample = author === "user"
+        ? { text: "How many accounts are inactive?", person: { name: "Ana Petrovic" }, menu: CHAT_TURN_MENU }
+        : { text: "42 accounts have had no activity for 90 days or more.", suggestions: [{ id: "new", label: "Create a new account" }] };
+      return <div style={{ width: "100%", maxWidth: 460 }}><ChatMessage {...sample} {...(p as unknown as ChatMessageProps)} author={author} /></div>;
+    },
+    preview: { author: "assistant" },
+    hide: ["children", "sections", "actions", "pressed", "suggestions", "menu", "person", "label", "onAction", "onSuggestion", "onMenuSelect"],
+    toggles: { conversation: { label: "Whole conversation", default: false } },
+    hint: "Switch the author for a person’s turn or the assistant’s. Turn on the whole conversation for a question and an answer with its workings, buttons and suggestions, where the vote and the menu work.",
+    block: true,
+    card: <div style={{ width: 300 }}><ChatMessage author="assistant" text="Summary of results" actions={[]} /></div>,
   },
   Checkbox: {
     // The Checked switch sets the start value; the checkbox itself stays clickable. Keyed so switches re-apply.

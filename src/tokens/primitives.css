@@ -1298,4 +1298,6 @@
   --stepper-node-md: var(--ref-space-900);
   --timeline-node-md: var(--ref-space-1200);
   --timeline-node-sm: var(--ref-space-900);
+  --chat-avatar: var(--ref-space-900);
+  --chat-bubble-max: 280px;
 }

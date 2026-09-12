@@ -1,0 +1,61 @@
+/* Figma BP AI messages 487:9226: 32 avatar, 8 to the bubble, a 4-radius bubble with 16 of side padding. */
+.message { width: 100%; min-width: 0; font-family: var(--font-sans); }
+.row { display: flex; align-items: flex-start; gap: var(--space-xsmall); }
+.mine .row { justify-content: flex-end; }
+
+.avatar { flex: none; }
+.aiMark { display: grid; place-items: center; width: var(--chat-avatar); height: var(--chat-avatar); }
+.body { min-width: 0; display: flex; flex-direction: column; gap: var(--space-medium); }
+.mine .body { align-items: flex-end; max-width: var(--chat-bubble-max); }
+.mine .bubble { align-self: flex-end; }
+.theirs .body { flex: 1 1 auto; }
+
+/* The bubble: grey for the person, brand faint for a short line from the assistant. */
+.bubble {
+  margin: 0; box-sizing: border-box; align-self: flex-start; max-width: var(--chat-bubble-max); padding: var(--space-xsmall) var(--space-medium);
+  border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-medium);
+  background: var(--bg-neutral-subtle); color: var(--text-neutral-strong);
+  font-size: var(--font-size-small); line-height: var(--line-height-normal); overflow-wrap: anywhere;
+}
+.theirs .bubble { border-color: var(--border-brand-faint); background: var(--bg-brand-faint); }
+
+/* While it is working the bubble glows, on the loading beat. */
+.working { animation: glow var(--motion-loading-duration) var(--motion-loading-easing) infinite; }
+@keyframes glow {
+  0%, 100% { background: var(--bg-brand-faint); }
+  50% { background: var(--bg-brand-subtle); }
+}
+@media (prefers-reduced-motion: reduce) { .working { animation: none; } }
+
+.text { display: flex; flex-direction: column; gap: var(--space-small); min-width: 0; }
+.paragraph { margin: 0; font-size: var(--font-size-small); line-height: var(--line-height-normal); color: var(--text-neutral-strong); overflow-wrap: anywhere; }
+
+/* Reasoning and Tool References: a chevron, the name and how many, opening the workings under it. */
+.sections { display: flex; flex-direction: column; gap: var(--space-xsmall); }
+.section { display: flex; flex-direction: column; gap: var(--space-xsmall); }
+.sectionHead {
+  display: flex; align-items: center; gap: var(--space-xsmall); margin: 0; padding: 0;
+  border: 0; background: none; font: inherit; color: inherit; cursor: pointer; text-align: start;
+}
+.sectionHead:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--space-xxxsmall); border-radius: var(--radius-small); }
+.sectionLabel { font-size: var(--font-size-small); font-weight: var(--font-weight-medium); color: var(--text-neutral-subtle); }
+.sectionHead:hover .sectionLabel { color: var(--text-neutral-strong); }
+.chevron { color: var(--icon-neutral); transition: transform var(--motion-expand-duration) var(--motion-expand-easing); }
+.chevron.open { transform: rotate(90deg); }
+@media (prefers-reduced-motion: reduce) { .chevron { transition: none; } }
+.sectionBody {
+  padding-inline-start: var(--space-xlarge); font-size: var(--font-size-small);
+  line-height: var(--line-height-normal); color: var(--text-neutral);
+}
+
+/* The buttons under an answer. A pressed one keeps a tint, like a vote that has been cast. */
+.actions { display: flex; align-items: center; gap: var(--space-xsmall); }
+.pressed { display: inline-flex; border-radius: var(--radius-medium); background: var(--bg-neutral-intense); }
+
+/* Suggestions: what to ask next, each one a kit Button that sends itself. */
+.suggestions { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-xsmall); }
+
+/* The person's More menu: quiet until the message is hovered or something in it has focus. */
+.menu { flex: none; opacity: 0; transition: opacity var(--motion-expand-duration) var(--motion-expand-easing); }
+.message:hover .menu, .menu:focus-within { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .menu { transition: none; } }
