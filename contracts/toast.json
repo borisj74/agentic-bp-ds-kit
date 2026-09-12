@@ -2,7 +2,7 @@
   "name": "Toast",
   "path": "src/ui/Toast/Toast.tsx",
   "intent": "A short note that floats in after an action, like Saved successfully, and goes away on its own after a few seconds, with an optional Undo.",
-  "usage": "Use Toast to confirm an action people just took, or to offer a quick Undo. It is one component: render it with open and onClose, and set open when the action happens. It floats at the bottom right of the screen, above dialogs; several stack. A bar along the top counts down duration (5 seconds by default) and then onClose runs; pointing at the toast or tabbing into it pauses the countdown. tone colors the icon and the bar. actionLabel adds one link-style action, like Undo; picking it runs onAction and closes the toast. For messages that must stay on the page, use Alert. See contracts/toast.json for the full contract.",
+  "usage": "Use Toast to confirm an action people just took, or to offer a quick Undo. It is one component: render it with open and onClose, and set open when the action happens. It floats at the bottom right of the screen, above dialogs; several stack. A bar along the top counts down duration (5 seconds by default) and then onClose runs; pointing at the toast or tabbing into it pauses the countdown. tone colors the icon and the bar. actionLabel adds one link-style action, like Undo; picking it runs onAction and closes the toast. For messages that must stay on the page, use Alert. See contracts/toast.json for the full contract. A toast is not opened by anything in particular, so it follows the page's own theme rather than a frame's.",
   "props": {
     "open": {
       "type": "boolean",
@@ -70,17 +70,50 @@
       "title": "Tones",
       "usage": "Click a button to show the toast. tone colors the icon and the countdown bar.",
       "items": [
-        { "props": { "tone": "info", "title": "Saved successfully", "description": "Your changes have been saved.", "actionLabel": "Undo" } },
-        { "props": { "tone": "success", "title": "Invoice sent", "description": "INV-1042 went to billing@acme.com." } },
-        { "props": { "tone": "warning", "title": "Sync delayed", "description": "Changes will sync when you are back online." } },
-        { "props": { "tone": "danger", "title": "Couldn't delete", "description": "The account still has open invoices.", "actionLabel": "Try again" } }
+        {
+          "props": {
+            "tone": "info",
+            "title": "Saved successfully",
+            "description": "Your changes have been saved.",
+            "actionLabel": "Undo"
+          }
+        },
+        {
+          "props": {
+            "tone": "success",
+            "title": "Invoice sent",
+            "description": "INV-1042 went to billing@acme.com."
+          }
+        },
+        {
+          "props": {
+            "tone": "warning",
+            "title": "Sync delayed",
+            "description": "Changes will sync when you are back online."
+          }
+        },
+        {
+          "props": {
+            "tone": "danger",
+            "title": "Couldn't delete",
+            "description": "The account still has open invoices.",
+            "actionLabel": "Try again"
+          }
+        }
       ]
     },
     {
       "title": "Stays open",
       "usage": "duration null keeps the toast until it is closed, with no countdown bar.",
       "items": [
-        { "props": { "title": "Export ready", "description": "Your report is ready to download.", "actionLabel": "Download", "duration": null } }
+        {
+          "props": {
+            "title": "Export ready",
+            "description": "Your report is ready to download.",
+            "actionLabel": "Download",
+            "duration": null
+          }
+        }
       ]
     }
   ]

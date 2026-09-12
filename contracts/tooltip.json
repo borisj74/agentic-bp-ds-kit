@@ -2,7 +2,7 @@
   "name": "Tooltip",
   "path": "src/ui/Tooltip/Tooltip.tsx",
   "intent": "Brief extra text on hover or keyboard focus of one trigger. Short and non-essential.",
-  "usage": "Wrap one focusable kit piece, like a Button or an icon-only Button, in Tooltip and pass content. It shows after a short hover delay and at once on keyboard focus; Escape hides it. Keep it to a few words or one short sentence, and never put anything people must read or click in it. For a ? icon beside a field or setting, use HelpPopover; field help props already do. See contracts/tooltip.json for the full contract.",
+  "usage": "Wrap one focusable kit piece, like a Button or an icon-only Button, in Tooltip and pass content. It shows after a short hover delay and at once on keyboard focus; Escape hides it. Keep it to a few words or one short sentence, and never put anything people must read or click in it. For a ? icon beside a field or setting, use HelpPopover; field help props already do. See contracts/tooltip.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page.",
   "props": {
     "content": {
       "type": "string",

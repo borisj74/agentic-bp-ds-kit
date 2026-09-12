@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, type KeyboardEvent, type RefObject } from "react";
+import { carryTheme } from "../Tooltip/useFloating";
 
 export const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -15,6 +16,9 @@ export function useDialog(
   useEffect(() => {
     if (!open) return;
     const back = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    // A portaled dialog is outside whatever set the theme around the thing that opened it, so it takes that
+    // thing's theme. Focus is still on it at this point, which is what says where the dialog came from.
+    if (dialogRef.current) carryTheme(back, dialogRef.current);
     const first = bodyRef.current?.querySelector<HTMLElement>(FOCUSABLE) ?? dialogRef.current?.querySelector<HTMLElement>(FOCUSABLE);
     (first ?? dialogRef.current)?.focus();
     const overflow = document.body.style.overflow;

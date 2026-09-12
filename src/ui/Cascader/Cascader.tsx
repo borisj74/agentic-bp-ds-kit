@@ -9,6 +9,7 @@ import { Icon } from "../Icon/Icon";
 import { Input } from "../Input/Input";
 // Label, help, hint, error and the field box share Input's styles so all form fields match.
 import field from "../Input/Input.module.css";
+import { carryTheme } from "../Tooltip/useFloating";
 import styles from "./Cascader.module.css";
 
 export type CascaderVariant = "field" | "panel";
@@ -222,6 +223,7 @@ export function Cascader({
       const popup = popupRef.current;
       if (!popup) return;
       const r = btn.getBoundingClientRect();
+      carryTheme(btn, popup);
       const h = popup.offsetHeight;
       const w = popup.offsetWidth;
       const below = r.bottom + GAP + h <= window.innerHeight || r.top < h + GAP;

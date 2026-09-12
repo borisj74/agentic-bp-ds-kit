@@ -11,6 +11,20 @@ const noSubscribe = () => () => {};
 export const useInBrowser = () => useSyncExternalStore(noSubscribe, () => true, () => false);
 
 /**
+ * Gives a portaled panel the theme of the thing that opened it. A panel is portaled to the end of the page, so it
+ * is outside whatever set the theme around its trigger: a dark app frame, or a preview of one. Saying the theme on
+ * the panel itself re-declares the semantic tokens there, so the panel is dark with the app that opened it.
+ */
+export function carryTheme(trigger: Element | null | undefined, panel: HTMLElement) {
+  const theme = trigger?.closest<HTMLElement>("[data-theme]")?.dataset.theme;
+  // Only when it differs: setting the attribute to what it already says still counts as a change, and something
+  // watching for theme changes would answer its own write for ever.
+  if (theme === panel.dataset.theme) return;
+  if (theme) panel.dataset.theme = theme;
+  else delete panel.dataset.theme;
+}
+
+/**
  * Places a fixed, portaled panel next to its trigger (the first child of wrapRef). Uses the preferred side, or the
  * opposite one when it has no room, and keeps the panel inside the frame the trigger sits in — the app frame when
  * there is one (it says so with data-frame), else the window. Sets data-side and --arrow (the trigger's
@@ -32,6 +46,7 @@ export function useFloating(
       const panel = panelRef.current;
       if (!trigger || !panel) return;
       const r = trigger.getBoundingClientRect();
+      carryTheme(trigger, panel);
       // The room the panel has: the app frame around the trigger if it marks itself as one, else the window. A frame
       // docked in a preview, a split view or a phone-width box is narrower than the window, and a panel that left it
       // would hang over whatever is beside it.
@@ -63,7 +78,17 @@ export function useFloating(
     place();
     window.addEventListener("resize", place);
     window.addEventListener("scroll", place, true);
+    // The theme can be switched while the panel is open — the account menu holds that very switch — and the panel
+    // is outside the frame it belongs to, so it has to be told. Watching the page for a theme attribute anywhere
+    // catches both a change and the frame taking one on for the first time.
+    // The panel's own theme attribute is one of the changes, so skip those and answer only the page's.
+    const themes = new MutationObserver((records) => {
+      if (records.every((m) => panelRef.current?.contains(m.target))) return;
+      place();
+    });
+    themes.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"], subtree: true });
     return () => {
+      themes.disconnect();
       window.removeEventListener("resize", place);
       window.removeEventListener("scroll", place, true);
     };

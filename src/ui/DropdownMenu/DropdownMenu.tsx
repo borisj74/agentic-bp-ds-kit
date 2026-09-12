@@ -10,6 +10,7 @@ import { Icon } from "../Icon/Icon";
 import { Input } from "../Input/Input";
 // The field trigger (used by Select) reuses Input's field box so form controls match.
 import field from "../Input/Input.module.css";
+import { carryTheme } from "../Tooltip/useFloating";
 import styles from "./DropdownMenu.module.css";
 
 export type DropdownMenuTrigger = "button" | "filter" | "field";
@@ -106,6 +107,7 @@ export function DropdownMenu({
       const panel = panelRef.current;
       if (!panel) return;
       const r = btn.getBoundingClientRect();
+      carryTheme(btn, panel);
       // The room the menu has: the app frame around the trigger when it marks itself as one (data-frame), else the
       // window. A frame docked in a preview, a split view or a phone-width box is narrower than the window.
       const frame = btn.closest("[data-frame]")?.getBoundingClientRect();

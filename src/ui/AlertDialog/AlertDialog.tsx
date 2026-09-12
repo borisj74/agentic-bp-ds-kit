@@ -2,6 +2,7 @@
 import { useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "../Button/Button";
+import { carryTheme } from "../Tooltip/useFloating";
 import styles from "./AlertDialog.module.css";
 
 export type AlertDialogActionVariant = "primary" | "danger";
@@ -43,6 +44,8 @@ export function AlertDialog({
     const root = dialogRef.current;
     if (!root) return;
     const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    // Portaled, so it is outside whatever set the theme around the thing that opened it: it takes that thing's.
+    carryTheme(trigger, root);
     // Cancel is the first button: the safe choice gets focus.
     root.querySelector<HTMLButtonElement>("button")?.focus();
 

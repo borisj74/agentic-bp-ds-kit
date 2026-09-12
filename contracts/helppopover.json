@@ -2,7 +2,7 @@
   "name": "HelpPopover",
   "path": "src/ui/HelpPopover/HelpPopover.tsx",
   "intent": "A small help panel with an optional title and a short paragraph, opened from a ? icon beside a label or setting.",
-  "usage": "Wrap one focusable trigger, usually a ? help icon, in HelpPopover and pass title and content. It shows on hover and keyboard focus, and a click or tap pins it open until a click elsewhere, Escape, or another click. Form fields already use it: pass help on Input, Textarea, Select, DatePicker, FormulaEditor or FormDisplay and the label becomes the title. For a one-line name on an icon button, use Tooltip. See contracts/helppopover.json for the full contract.",
+  "usage": "Wrap one focusable trigger, usually a ? help icon, in HelpPopover and pass title and content. It shows on hover and keyboard focus, and a click or tap pins it open until a click elsewhere, Escape, or another click. Form fields already use it: pass help on Input, Textarea, Select, DatePicker, FormulaEditor or FormDisplay and the label becomes the title. For a one-line name on an icon button, use Tooltip. See contracts/helppopover.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page.",
   "props": {
     "title": {
       "type": "string",

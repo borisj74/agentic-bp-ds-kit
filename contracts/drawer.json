@@ -2,7 +2,7 @@
   "name": "Drawer",
   "path": "src/ui/Drawer/Drawer.tsx",
   "intent": "A panel that slides in from the right edge for a detail view or an edit form about something on the page, while the page stays in view behind it.",
-  "usage": "Use Drawer to show or edit one record next to the list it came from: a detail view, an edit form, related context. It is one component: pass open, title, onClose and the content as children. size picks the width: narrow 360 for quick views, medium 460 for forms, wide 590 for rich details, extended 1100 for side-by-side work. footer holds kit Buttons, size sm, at the end: secondary first, one primary last. Escape, the close button or a click on the page behind it closes it. For a decision that must block the page, use Modal or AlertDialog. See contracts/drawer.json for the full contract.",
+  "usage": "Use Drawer to show or edit one record next to the list it came from: a detail view, an edit form, related context. It is one component: pass open, title, onClose and the content as children. size picks the width: narrow 360 for quick views, medium 460 for forms, wide 590 for rich details, extended 1100 for side-by-side work. footer holds kit Buttons, size sm, at the end: secondary first, one primary last. Escape, the close button or a click on the page behind it closes it. For a decision that must block the page, use Modal or AlertDialog. See contracts/drawer.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page.",
   "props": {
     "open": {
       "type": "boolean",
@@ -71,10 +71,30 @@
       "title": "Sizes",
       "usage": "Open each width: narrow 360, medium 460, wide 590, extended 1100.",
       "items": [
-        { "props": { "size": "narrow", "title": "Invoice INV-1042" } },
-        { "props": { "size": "medium", "title": "Edit contact" } },
-        { "props": { "size": "wide", "title": "Account details" } },
-        { "props": { "size": "extended", "title": "Compare proposals" } }
+        {
+          "props": {
+            "size": "narrow",
+            "title": "Invoice INV-1042"
+          }
+        },
+        {
+          "props": {
+            "size": "medium",
+            "title": "Edit contact"
+          }
+        },
+        {
+          "props": {
+            "size": "wide",
+            "title": "Account details"
+          }
+        },
+        {
+          "props": {
+            "size": "extended",
+            "title": "Compare proposals"
+          }
+        }
       ]
     }
   ]

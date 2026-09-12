@@ -2,7 +2,7 @@
   "name": "Modal",
   "path": "src/ui/Modal/Modal.tsx",
   "intent": "A window over the page for a short task, a form or extra detail. People can always close it.",
-  "usage": "Use Modal for work that can be dismissed: a short form or extra detail. One component: title, description, body (children) and footer come from props. Put kit Buttons in footer, size sm, secondary first and one primary last. Escape, the close button and a backdrop click all close it. For a must-choose confirm, use AlertDialog. See contracts/modal.json for the full contract.",
+  "usage": "Use Modal for work that can be dismissed: a short form or extra detail. One component: title, description, body (children) and footer come from props. Put kit Buttons in footer, size sm, secondary first and one primary last. Escape, the close button and a backdrop click all close it. For a must-choose confirm, use AlertDialog. See contracts/modal.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page.",
   "props": {
     "open": {
       "type": "boolean",
