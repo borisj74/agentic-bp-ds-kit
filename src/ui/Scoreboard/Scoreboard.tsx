@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Badge } from "../Badge/Badge";
+import { Conveyor } from "../Conveyor/Conveyor";
 import { Icon } from "../Icon/Icon";
 import styles from "./Scoreboard.module.css";
 
@@ -38,6 +39,7 @@ export interface ScoreboardProps {
 }
 
 // The chart draws in a 64 x 20 box (the scoreboard chart tokens), 1 unit in from the top and bottom so the line isn't clipped.
+const CONVEYOR_AT = 4;
 const W = 64;
 const H = 20;
 const INSET = 1;
@@ -97,8 +99,7 @@ export function Scoreboard({
     onSelectedChange?.(next);
   };
 
-  return (
-    <div className={[styles.wrap, scroll ? styles.scrolls : ""].join(" ")}>
+  const row = (
       <div role="group" aria-label={label} className={styles.scoreboard}>
         {items.map((item) => {
           const body = (
@@ -130,6 +131,10 @@ export function Scoreboard({
           );
         })}
       </div>
-    </div>
   );
+
+  // Past four cards the strip no longer fits, so a Conveyor moves it along with its arrows.
+  if (!scroll) return row;
+  if (items.length > CONVEYOR_AT) return <Conveyor label={label}>{row}</Conveyor>;
+  return <div className={[styles.wrap, styles.scrolls].join(" ")}>{row}</div>;
 }

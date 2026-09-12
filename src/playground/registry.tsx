@@ -1071,7 +1071,7 @@ export const registry: Record<string, Entry> = {
     hide: ["selected", "defaultSelected"],
     extras: { cards: { values: ["trends", "charts", "six"], default: "trends" } },
     normalize: ({ cards, ...p }) => ({ ...p, items: cards === "charts" ? "{chartKpis}" : cards === "six" ? "{sixKpis}" : "{trendKpis}" }),
-    hint: "Switch between trends, spark charts and six cards. Turn on selectable to pick a card.",
+    hint: "Switch between trends, spark charts and six cards. Past four cards the strip sits in a Conveyor, with arrows when the cards do not fit. Turn on selectable to pick a card.",
     block: true,
     wide: true,
     card: <div style={{ width: 380 }}><Scoreboard items={CHART_KPIS.slice(0, 2)} /></div>,

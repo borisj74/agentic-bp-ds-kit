@@ -9,13 +9,10 @@
   position: relative; box-sizing: border-box; display: flex; flex-direction: column; gap: var(--space-xsmall);
   flex: 1 1 0; min-width: var(--scoreboard-card-min); padding: var(--space-medium);
   background: var(--bg-neutral-min); line-height: var(--line-height-tight);
+  /* A line down the right of every card but the last, running the full height. */
+  border: 0; border-inline-end: var(--border-width-thin) solid var(--border-neutral-faint);
 }
-
-/* The line between two cards, held in from the top and bottom by the card's own padding. */
-.card + .card::before {
-  content: ""; position: absolute; inset-block: var(--space-medium); inset-inline-start: 0;
-  width: var(--border-width-thin); background: var(--border-neutral-faint);
-}
+.card:last-child { border-inline-end: 0; }
 
 .header { display: flex; align-items: center; gap: var(--space-medium); }
 .title { flex: 1 1 auto; min-width: 0; font-size: var(--font-size-regular); color: var(--text-neutral); }
@@ -47,7 +44,7 @@
 .chart.neutral .area { fill: var(--bg-neutral-intense); }
 
 /* Selectable cards: hover is a faint fill with a line under the card; selected is brand faint with a brand line. */
-.button { margin: 0; border: 0; font: inherit; line-height: var(--line-height-tight); text-align: start; cursor: pointer; }
+.button { margin: 0; font: inherit; line-height: var(--line-height-tight); text-align: start; cursor: pointer; }
 .button:hover { background: var(--bg-neutral-faint); box-shadow: inset 0 calc(var(--border-width-medium) * -1) 0 var(--border-neutral); }
 .button.selected { background: var(--bg-brand-faint); box-shadow: inset 0 calc(var(--border-width-medium) * -1) 0 var(--border-brand); }
 .button:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(var(--border-width-medium) * -1); }
