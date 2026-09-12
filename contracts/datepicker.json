@@ -2,7 +2,7 @@
   "name": "DatePicker",
   "path": "src/ui/DatePicker/DatePicker.tsx",
   "intent": "A date field that opens a calendar to pick one date, or a range between two dates. Looks like Input.",
-  "usage": "Use DatePicker for dates in forms and filters. mode single picks one day; mode range picks a start and an end across two months, with quick ranges like Last week. Picks stay pending until Apply; Cancel, Escape or a click outside leave the value as it was. Dates are ISO strings (YYYY-MM-DD); a range is { start, end }. Label, hint, error, help and sizes work like Input. See contracts/datepicker.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page.",
+  "usage": "Use DatePicker for dates in forms and filters. mode single picks one day; mode range picks a start and an end across two months, with quick ranges like Last week. Picks stay pending until Apply; Cancel, Escape or a click outside leave the value as it was. Dates are ISO strings (YYYY-MM-DD); a range is { start, end }. Label, hint, error, help and sizes work like Input. See contracts/datepicker.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page. A label set at the start goes back on top of the field when the box around it is narrower than 480px, since a 160px label column would leave too little of the field to type in.",
   "props": {
     "label": {
       "type": "string",

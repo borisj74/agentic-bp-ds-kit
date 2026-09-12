@@ -2,7 +2,7 @@
   "name": "Textarea",
   "path": "src/ui/Textarea/Textarea.tsx",
   "intent": "Multi-line text entry for notes, descriptions and code, with its own label, hint, error and character count. Looks and behaves like Input.",
-  "usage": "Use Textarea for text that runs over one line: notes, descriptions, messages, formulas. Pass label, hint, error and help as props, same as Input. size sets the starting height (100 / 180 / 240+ px); people can drag it taller. type code switches to a monospace font for formulas and snippets. maxLength shows a live count under the field. See contracts/textarea.json for the full contract.",
+  "usage": "Use Textarea for text that runs over one line: notes, descriptions, messages, formulas. Pass label, hint, error and help as props, same as Input. size sets the starting height (100 / 180 / 240+ px); people can drag it taller. type code switches to a monospace font for formulas and snippets. maxLength shows a live count under the field. See contracts/textarea.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 480px, since a 160px label column would leave too little of the field to type in.",
   "props": {
     "label": {
       "type": "string",

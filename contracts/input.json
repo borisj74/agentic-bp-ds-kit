@@ -2,7 +2,7 @@
   "name": "Input",
   "path": "src/ui/Input/Input.tsx",
   "intent": "Single-line text entry with its own label, hint, error and character count. The label sits on top, at the start, or is hidden.",
-  "usage": "Use Input for short text: names, emails, amounts, search. It is one component: pass label, hint and error as props, no Field wrapper. Always pass label; set hideLabel when the screen already makes the purpose clear, like a search box. required adds a red asterisk and the native required attribute. error shows a red border and a message under the field; invalid shows the red border alone. prefix and suffix are text inside the field, like https:// or USD. maxLength adds a live counter. type=\"file\" opens the native file picker; accept limits the file types and multiple allows more than one. See contracts/input.json for the full contract.",
+  "usage": "Use Input for short text: names, emails, amounts, search. It is one component: pass label, hint and error as props, no Field wrapper. Always pass label; set hideLabel when the screen already makes the purpose clear, like a search box. required adds a red asterisk and the native required attribute. error shows a red border and a message under the field; invalid shows the red border alone. prefix and suffix are text inside the field, like https:// or USD. maxLength adds a live counter. type=\"file\" opens the native file picker; accept limits the file types and multiple allows more than one. See contracts/input.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 480px, since a 160px label column would leave too little of the field to type in.",
   "props": {
     "label": {
       "type": "string",

@@ -1,6 +1,7 @@
 "use client";
 import { useId, type FormEvent, type ReactNode } from "react";
 import { Alert } from "../Alert/Alert";
+import { Section } from "../Section/Section";
 import { FormLayoutContext, type FieldLabelPosition } from "./FormContext";
 import styles from "./Form.module.css";
 
@@ -11,7 +12,12 @@ export type FormColumns = 1 | 2;
 export interface FormSection {
   title: string;
   description?: string;
+  help?: string;
   content: ReactNode;
+  collapsible?: boolean;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export interface FormProps {
@@ -60,17 +66,17 @@ export function Form({
       )}
       <div className={styles.body}>
         {error && <Alert tone="danger">{error}</Alert>}
+        {/* A group of fields is titled by the kit Section, so a group in a form folds away, carries its help and
+            reads the same as a block anywhere else in the kit. */}
         {sections
-          ? sections.map((s, i) => {
-              const sectionDescription = `${base}-section-${i}`;
-              return (
-                <fieldset key={s.title} className={styles.section} aria-describedby={s.description ? sectionDescription : undefined}>
-                  <legend className={styles.legend}>{s.title}</legend>
-                  {s.description && <p id={sectionDescription} className={styles.sectionDescription}>{s.description}</p>}
-                  <div className={styles.fields}>{s.content}</div>
-                </fieldset>
-              );
-            })
+          ? sections.map((s) => (
+              <Section
+                key={s.title} title={s.title} description={s.description} help={s.help}
+                collapsible={s.collapsible} open={s.open} defaultOpen={s.defaultOpen} onOpenChange={s.onOpenChange}
+              >
+                <div className={styles.fields}>{s.content}</div>
+              </Section>
+            ))
           : <div className={styles.fields}>{children}</div>}
       </div>
       {actions && <footer className={styles.footer}>{actions}</footer>}

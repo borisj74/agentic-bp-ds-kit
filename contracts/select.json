@@ -2,7 +2,7 @@
   "name": "Select",
   "path": "src/ui/Select/Select.tsx",
   "intent": "Choose one or several options from a list. A field that opens the kit DropdownMenu. Looks like Input.",
-  "usage": "Use Select to pick a value from a fixed list in a form or filter: country, status, owner, tags. One pick closes the menu; with multiple the menu stays open and each pick toggles. The field shows the picked labels; with maxVisible it shows the first few and a +N badge. Label, hint, error, help, required and sizes work like Input. For 2 to 5 options that should stay visible, use RadioGroup. See contracts/select.json for the full contract.",
+  "usage": "Use Select to pick a value from a fixed list in a form or filter: country, status, owner, tags. One pick closes the menu; with multiple the menu stays open and each pick toggles. The field shows the picked labels; with maxVisible it shows the first few and a +N badge. Label, hint, error, help, required and sizes work like Input. For 2 to 5 options that should stay visible, use RadioGroup. See contracts/select.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 480px, since a 160px label column would leave too little of the field to type in.",
   "props": {
     "label": {
       "type": "string",

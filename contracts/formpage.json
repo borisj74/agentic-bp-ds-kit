@@ -1,0 +1,87 @@
+{
+  "name": "FormPage",
+  "path": "src/patterns/FormPage/FormPage.tsx",
+  "intent": "One record being filled in: its name and the save at the top, anything that has to be read first under that, and the fields in folding groups underneath.",
+  "usage": "Use FormPage to create or edit one record: a new account, a new invoice, a rate card. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the values and what is folded away. Pass the kit PageHeader as header, with the trail, what is being made, and the actions: Cancel, then one primary that saves. children are one kit Form with an id, labelPosition start and columns 2, and its groups of fields as sections, each collapsible; give the header's save Button type submit and form set to that id, so one press saves the whole page and the form stays one form. notice writes what has to be read before filling anything in, as a kit Alert; it stays under the name while the fields scroll. Field problems belong on the fields; a save that failed goes on the Form's error. Do not put a second save at the foot of the page: the one in the header is always in reach. It goes in the AppShell page, which owns the page padding. See contracts/formpage.json for the full contract.",
+  "composes": [
+    "PageHeader",
+    "Alert",
+    "Form",
+    "Section",
+    "Input",
+    "Select",
+    "Checkbox",
+    "DatePicker",
+    "Lookup"
+  ],
+  "props": {
+    "children": {
+      "type": "ReactNode",
+      "required": true,
+      "note": "The fields: one kit Form with sections, each a folding group like Account information or Billing profile."
+    },
+    "header": {
+      "type": "ReactNode",
+      "note": "What is being made and the save: a kit PageHeader with the trail, a title, Cancel and one primary submit Button."
+    },
+    "notice": {
+      "type": "ReactNode",
+      "note": "What has to be read before filling anything in, as a kit Alert people can dismiss."
+    },
+    "sticky": {
+      "type": "boolean",
+      "default": true,
+      "note": "The name and the save stay at the top while the fields scroll away under them. Off, the whole page scrolls together."
+    },
+    "stickyNotice": {
+      "type": "boolean",
+      "default": true,
+      "note": "The notice stays under the name, since it says how to fill the form in. Off, it scrolls away with the fields."
+    },
+    "onStickyChange": {
+      "type": "(stuck: boolean) => void",
+      "note": "Says when the top of the page has scrolled away. Keep the boolean in the screen and pass it to the PageHeader as sticky, so the name shrinks to the kit's compact bar."
+    },
+    "label": {
+      "type": "string",
+      "default": "Form",
+      "note": "Names the page for screen readers, like Create account."
+    }
+  },
+  "useWhen": [
+    "Making a new record from a page of its own, not from a Modal.",
+    "Editing a record's fields on a page, where the groups of fields are long enough to fold.",
+    "The save has to be in reach while a long form is scrolled."
+  ],
+  "doNot": [
+    "Do not invent CreatePage, EditPage, NewRecordPage or FormLayout.",
+    "Do not put a Form inside every Section yourself. One Form holds the groups as sections, so one press saves the page.",
+    "Do not add a second save bar at the foot. The header keeps the save in reach.",
+    "Do not put page padding on it. The AppShell page owns that; read contracts/layout.json.",
+    "Do not use it for a short form. Two or three fields belong in a Modal or a Drawer.",
+    "Do not keep the fold state or the values in the pattern. The screen owns them."
+  ],
+  "a11y": [
+    "The page is one section named by label, so a screen reader says what is being filled in.",
+    "One form element holds every group, so the fields are read and submitted as one thing.",
+    "Each group is a kit Section named by its heading, and folding one hides its fields from the reading order as well as from the screen.",
+    "The save Button carries form, so it submits from the header without leaving the form.",
+    "The name and the notice stay on an opaque bar, so nothing scrolls through them."
+  ],
+  "snippet": "<FormPage\n  header={<PageHeader breadcrumbs={[{ label: \"Home\", href: \"/\" }, { label: \"Accounts\", href: \"/accounts\" }]} title=\"Create account\" actions={<><Button onClick={cancel}>Cancel</Button><Button variant=\"primary\" type=\"submit\" form=\"account\">Create</Button></>} />}\n  notice={<Alert tone=\"info\" onDismiss={hide}>Use this form for the account's general and default billing information.</Alert>}\n>\n  <Form id=\"account\" labelPosition=\"start\" columns={2} onSubmit={save} sections={sections} />\n</FormPage>",
+  "examples": [
+    {
+      "title": "Creating an account",
+      "usage": "The trail, the name, Cancel and Create, a line to read first, then the groups of fields.",
+      "items": [
+        {
+          "props": {
+            "header": "{header}",
+            "notice": "{notice}",
+            "children": "{form}"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+/* The page as one column: the name and the save, what has to be read first, then the groups of fields. The gap
+   is the section rhythm from contracts/layout.json; the page padding belongs to the AppShell page around it. */
+.page { position: relative; display: flex; flex-direction: column; gap: var(--layout-gutter-lg); min-width: 0; font-family: var(--font-sans); }
+
+/* The marker that says the top has scrolled away. Out of the flow, so it adds neither height nor a gap. */
+.mark { position: absolute; inset-block-start: 0; inset-inline-start: 0; width: 1px; height: 1px; pointer-events: none; }
+
+/* The name and the save only: the fields scroll away under them. The bar is the top of the page, so it sits
+   flush against the frame's bar: it pulls up through the page's own top inset (--layout-margin-md), which the
+   bar's own block padding already stands in for. The inset still holds for everything under it. */
+.head {
+  min-width: 0; background: var(--surface-flat);
+  margin-block-start: calc(-1 * var(--layout-margin-md));
+  /* The bar reads as the top of the page, so it sits a smaller gutter above the form than the groups keep
+     between themselves. */
+  margin-block-end: calc(var(--layout-gutter-md) - var(--layout-gutter-lg));
+}
+/* Sticky rather than fixed, so nothing is covered when the page is zoomed. The negative offset is the page's
+   own inset: it pins the bar flush to the top edge of the scroll box rather than one inset below it. The line
+   and shadow under it are the PageHeader's own. */
+.stuck { position: sticky; top: calc(-1 * var(--layout-margin-md)); z-index: 2; }
+
+/* What has to be read before filling anything in. It stays under the name, since a form is filled in while it
+   is scrolled: it bleeds out to the page edges the way the header does and pays the inset back as padding, so
+   nothing scrolls past it in the side gutters. */
+.notice { min-width: 0; background: var(--surface-flat); }
+.stuckNotice {
+  /* Sticky offsets count from the page's padding box, one inset below the top edge, so the inset comes off the
+     header's height: the notice lands directly under the compact bar. A layer above the fields and below the
+     header, so the fields scroll under it and the header's line falls onto it. */
+  position: sticky; top: calc(var(--page-header-height-sticky) - var(--layout-margin-md)); z-index: 1;
+  margin-inline: calc(-1 * var(--layout-margin-md));
+  padding: var(--space-xsmall) var(--layout-margin-md);
+}
+
+.fields { min-width: 0; }

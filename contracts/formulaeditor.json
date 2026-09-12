@@ -2,7 +2,7 @@
   "name": "FormulaEditor",
   "path": "src/ui/FormulaEditor/FormulaEditor.tsx",
   "intent": "A monospace field for writing formulas and rules, with a toolbar that inserts fields, operators and functions and checks the syntax.",
-  "usage": "Use FormulaEditor for calculated fields, rules and validations. It is one form field: pass label, hint, error and help as props, same as Input, and it takes labelPosition from an enclosing Form. The toolbar inserts at the cursor. fields adds an Insert field menu that inserts {!Field.Id}; functions replaces the default function list. Check syntax runs onCheckSyntax, or a built-in bracket and quote check. onCalculate adds a Calculate button that shows its result under the field. See contracts/formulaeditor.json for the full contract.",
+  "usage": "Use FormulaEditor for calculated fields, rules and validations. It is one form field: pass label, hint, error and help as props, same as Input, and it takes labelPosition from an enclosing Form. The toolbar inserts at the cursor. fields adds an Insert field menu that inserts {!Field.Id}; functions replaces the default function list. Check syntax runs onCheckSyntax, or a built-in bracket and quote check. onCalculate adds a Calculate button that shows its result under the field. See contracts/formulaeditor.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 480px, since a 160px label column would leave too little of the field to type in.",
   "props": {
     "label": {
       "type": "string",
@@ -130,9 +130,18 @@
             "defaultValue": "{!Amount} * (1 - {!Account.Discount})",
             "hint": "Runs when the invoice is created.",
             "fields": [
-              { "id": "Amount", "label": "Amount" },
-              { "id": "Account.Discount", "label": "Account discount" },
-              { "id": "Invoice.Quantity", "label": "Quantity" }
+              {
+                "id": "Amount",
+                "label": "Amount"
+              },
+              {
+                "id": "Account.Discount",
+                "label": "Account discount"
+              },
+              {
+                "id": "Invoice.Quantity",
+                "label": "Quantity"
+              }
             ],
             "onCalculate": "{calculate}"
           }
@@ -216,9 +225,24 @@
       "title": "Sizes",
       "usage": "Starting height of the formula area. People can drag it taller.",
       "items": [
-        { "props": { "label": "Small", "size": "sm" } },
-        { "props": { "label": "Medium", "size": "md" } },
-        { "props": { "label": "Large", "size": "lg" } }
+        {
+          "props": {
+            "label": "Small",
+            "size": "sm"
+          }
+        },
+        {
+          "props": {
+            "label": "Medium",
+            "size": "md"
+          }
+        },
+        {
+          "props": {
+            "label": "Large",
+            "size": "lg"
+          }
+        }
       ]
     }
   ]

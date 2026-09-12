@@ -7,6 +7,7 @@ import { Avatar } from "@/ui/Avatar/Avatar";
 import { AppHeader, type AppHeaderDensity, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { AppShell, type AppShellProps } from "@/patterns/AppShell/AppShell";
 import { ListPage, type ListPageProps, type ListPageState } from "@/patterns/ListPage/ListPage";
+import { FormPage, type FormPageProps } from "@/patterns/FormPage/FormPage";
 import { RecordPage } from "@/patterns/RecordPage/RecordPage";
 import { Dashboard, type DashboardProps, type DashboardState } from "@/patterns/Dashboard/Dashboard";
 import { SettingsPage, type SettingsPageProps } from "@/patterns/SettingsPage/SettingsPage";
@@ -21,6 +22,7 @@ import { ChatHeader, type ChatHeaderProps } from "@/ui/ChatHeader/ChatHeader";
 import { ChatList, type ChatListProps } from "@/ui/ChatList/ChatList";
 import { ChatMessage, type ChatMessageActionId, type ChatMessageProps } from "@/ui/ChatMessage/ChatMessage";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
+import { DatePicker } from "@/ui/DatePicker/DatePicker";
 import { Empty } from "@/ui/Empty/Empty";
 import { Illustration, type IllustrationName } from "@/ui/Illustration/Illustration";
 import { ChatWindow, type ChatWindowProps } from "@/patterns/ChatWindow/ChatWindow";
@@ -1714,6 +1716,214 @@ export function SettingsPageDemo({ shell = true, notice = false, stage = "deskto
             actions={<Button size="sm" onClick={() => setSection("settings-settings-home")}>Back to Settings</Button>}
           />
         ) : settings}
+      </AppShell>
+    </div>
+  );
+}
+
+// Playground harness: the FormPage pattern driven like a screen would drive it. Not a kit piece.
+// The fields of a new account, from the portal's create-account form: what the account is, then how it bills.
+const TIME_ZONES = [
+  { value: "us-mountain", label: "US/Mountain" },
+  { value: "us-eastern", label: "US/Eastern" },
+  { value: "us-pacific", label: "US/Pacific" },
+  { value: "europe-london", label: "Europe/London" },
+  { value: "europe-belgrade", label: "Europe/Belgrade" },
+];
+const CURRENCIES = [
+  { value: "usd", label: "US Dollars" },
+  { value: "eur", label: "Euros" },
+  { value: "gbp", label: "Pounds Sterling" },
+];
+const ACCOUNT_TYPES = [
+  { value: "account", label: "Account" },
+  { value: "parent", label: "Parent account" },
+  { value: "child", label: "Child account" },
+];
+const ACCOUNT_STATUSES = [
+  { value: "active", label: "Active" },
+  { value: "pending", label: "Pending" },
+  { value: "inactive", label: "Inactive" },
+];
+const VENDOR_NUMBERS = [
+  { value: "none", label: "Not set" },
+  { value: "vcn-1", label: "VCN-4471" },
+  { value: "vcn-2", label: "VCN-4472" },
+];
+const BILLING_CYCLES = [
+  { value: "monthly", label: "Monthly" },
+  { value: "quarterly", label: "Quarterly" },
+  { value: "annual", label: "Annual" },
+];
+const CLOSING_DAYS = ["1", "15", "28", "30", "31"].map((d) => ({ value: d, label: d }));
+const STATEMENT_RUNS = [
+  { value: "monthly", label: "Monthly" },
+  { value: "quarterly", label: "Quarterly" },
+  { value: "never", label: "Never" },
+];
+const DATE_FORMATS = [
+  { value: "mdy", label: "MM/DD/YYYY" },
+  { value: "dmy", label: "DD/MM/YYYY" },
+  { value: "iso", label: "YYYY-MM-DD" },
+];
+const INVOICE_TEMPLATES: TableRow[] = [
+  { id: "TPL-1", name: "Standard invoice", use: "Default", updated: "12 Aug 2026" },
+  { id: "TPL-2", name: "Usage summary", use: "Metered accounts", updated: "02 Sep 2026" },
+  { id: "TPL-3", name: "Credit memo", use: "Credits", updated: "28 Jul 2026" },
+];
+const TEMPLATE_COLUMNS: TableColumn[] = [
+  { key: "name", header: "Template" }, { key: "use", header: "Used for" }, { key: "updated", header: "Updated" },
+];
+
+export function FormPageDemo({ shell = true, notice = true, stage = "desktop", ...p }: Omit<FormPageProps, "children"> & { shell?: boolean; notice?: boolean; stage?: string }) {
+  const [dark, setDark] = useState(false);
+  const [density, setDensity] = useState<AppHeaderDensity>("default");
+  const [navOpen, setNavOpen] = useState(false);
+  const [section, setSection] = useState("accounts");
+  const [said, setSaid] = useState(true);
+  const [saved, setSaved] = useState("");
+  // The screen holds whether the top has scrolled away; the pattern only reports the crossing.
+  const [compact, setCompact] = useState(false);
+  // One form for the whole page, so the save in the page header submits every group at once.
+  const formId = useId();
+
+  const sections = [
+    {
+      title: "Account information",
+      help: "What the account is and who it belongs to. The name is the only field that has to be filled in.",
+      collapsible: true,
+      content: (
+        <>
+          <Input label="Account name" name="name" placeholder="Enter a value" required />
+          <Select label="Account type" name="type" options={ACCOUNT_TYPES} defaultValue="account" />
+          <Lookup label="Parent account" name="parent" columns={ACCOUNT_LOOKUP_COLUMNS} rows={PARENT_ACCOUNTS} placeholder="Select a value" clearable />
+          <Input label="Total due in collections" name="collections" placeholder="Enter a value" />
+          <Select label="Invoice time zone" name="timeZone" options={TIME_ZONES} defaultValue="us-mountain" />
+          <Select label="Status" name="status" options={ACCOUNT_STATUSES} defaultValue="active" />
+          <Select label="Invoice currency" name="currency" options={CURRENCIES} defaultValue="usd" />
+          <Input label="Legal entity" name="legalEntity" placeholder="Enter a value" />
+          <Checkbox label="Restricted rate hierarchy" name="restrictedRates" />
+          <Select label="Vendor customer number" name="vendorNumber" options={VENDOR_NUMBERS} defaultValue="none" />
+          <Checkbox label="Allow different currency" name="differentCurrency" />
+        </>
+      ),
+    },
+    {
+      title: "Billing profile information",
+      help: "How and when this account is invoiced. These are the defaults every new invoice starts from.",
+      collapsible: true,
+      content: (
+        <>
+          <Select label="Default billing cycle" name="cycle" options={BILLING_CYCLES} defaultValue="monthly" />
+          <Select label="Bill cycle closing day" name="closingDay" options={CLOSING_DAYS} defaultValue="31" />
+          <DatePicker label="Period cutoff date" name="cutoff" defaultValue="2027-04-30" />
+          <Lookup label="Invoice template" name="template" columns={TEMPLATE_COLUMNS} rows={INVOICE_TEMPLATES} placeholder="Enter a value" clearable />
+          <Checkbox label="Manual closing" name="manualClosing" defaultChecked />
+          <Checkbox label="Approve invoices before delivery" name="approve" />
+          <Checkbox label="Deliver invoices by email" name="deliverEmail" defaultChecked />
+          <Checkbox label="Deliver invoices by mail" name="deliverMail" />
+          <Checkbox label="Allow invoice based billing" name="invoiceBased" />
+        </>
+      ),
+    },
+    {
+      title: "Billing contact information",
+      help: "Who the invoices go to. Left empty, the account's own contact is used.",
+      collapsible: true,
+      defaultOpen: false,
+      content: (
+        <>
+          <Input label="Contact name" name="contactName" placeholder="Enter a value" />
+          <Input label="Billing email" name="contactEmail" type="email" placeholder="billing@example.com" />
+          <Input label="Phone" name="contactPhone" placeholder="Enter a value" />
+          <Select label="Country" name="contactCountry" options={COUNTRIES} defaultValue="us" />
+        </>
+      ),
+    },
+    {
+      title: "Statement information",
+      help: "Whether this account gets statements, and how often.",
+      collapsible: true,
+      defaultOpen: false,
+      content: (
+        <>
+          <Select label="Statement run" name="statementRun" options={STATEMENT_RUNS} defaultValue="monthly" />
+          <Checkbox label="Include zero balances" name="zeroBalance" />
+        </>
+      ),
+    },
+    {
+      title: "Locale information",
+      help: "The language, dates and numbers this account's documents are written in.",
+      collapsible: true,
+      defaultOpen: false,
+      content: (
+        <>
+          <Select label="Language" name="language" options={[{ value: "en", label: "English" }, { value: "de", label: "German" }, { value: "sr", label: "Serbian" }]} defaultValue="en" />
+          <Select label="Date format" name="dateFormat" options={DATE_FORMATS} defaultValue="mdy" />
+        </>
+      ),
+    },
+  ];
+
+  const page = (
+    <FormPage
+      {...p} label="Create account" onStickyChange={setCompact}
+      header={
+        <PageHeader
+          breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]}
+          title="Create account" sticky={compact}
+          actions={
+            <>
+              <Button size="sm" onClick={() => setSaved("")}>Cancel</Button>
+              {/* The save sits outside the form and submits it by id, so one press saves every group. */}
+              <Button size="sm" variant="primary" type="submit" form={formId}>Create</Button>
+            </>
+          }
+        />
+      }
+      notice={
+        notice && said ? (
+          <Alert tone="info" dismissible onDismiss={() => setSaid(false)} actionLabel="Main action" onAction={() => {}}>
+            Use this form to manage general account information as well as the default billing information for the account.
+          </Alert>
+        ) : undefined
+      }
+    >
+      <Form
+        id={formId} labelPosition="start" columns={2} sections={sections}
+        onSubmit={(data) => setSaved(String(data.get("name") || "").trim() ? `Created ${String(data.get("name"))}.` : "Created the account.")}
+      />
+      {saved && <Alert tone="success">{saved}</Alert>}
+    </FormPage>
+  );
+
+  if (!shell) return page;
+  // In the frame, the way a screen would ship it.
+  return (
+    <div
+      data-theme={dark ? "dark" : undefined}
+      style={{
+        height: 900, width: STAGE_WIDTHS[stage] ?? "100%", maxWidth: "100%", marginInline: "auto",
+        border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden",
+      }}
+    >
+      <AppShell
+        header={
+          <AppHeader
+            navOpen={navOpen} onNavToggle={() => setNavOpen((o) => !o)}
+            environment="UAT-2" searchShortcut="Ctrl+K" searchGroups={SHELL_SEARCH} searchScopes={SHELL_SEARCH_SCOPES}
+            actions={SHELL_HEADER_ACTIONS} onAction={() => {}}
+            user={{ name: "Ana Petrovic" }} company={{ name: "Northwind Holdings" }}
+            darkMode={dark} onDarkModeChange={setDark}
+            density={density} onDensityChange={setDensity}
+            onUserSettings={() => {}} onLogout={() => {}}
+          />
+        }
+        nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        navOpen={navOpen} onNavClose={() => setNavOpen(false)}
+      >
+        {page}
       </AppShell>
     </div>
   );

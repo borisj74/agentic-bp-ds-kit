@@ -27,6 +27,18 @@
   padding-inline: var(--space-small) 0; text-align: end;
 }
 
+/* 480px: on a box that narrow a 160px label column leaves too little of the field to type in, so a start
+   label goes back on top of it. CSS vars cannot appear in container queries. The box being measured is the
+   Form around the field, which is a size container. */
+@container (max-width: 480px) {
+  /* stretch, or the label and the field would each be only as wide as their content. */
+  .start { flex-direction: column; align-items: stretch; gap: var(--space-xxsmall); }
+  .start .labelRow {
+    justify-content: flex-start; width: auto; min-height: 0;
+    padding-inline: 0; text-align: start;
+  }
+}
+
 .body { display: flex; flex-direction: column; gap: var(--space-xxsmall); flex: 1; min-width: 0; }
 
 .field {

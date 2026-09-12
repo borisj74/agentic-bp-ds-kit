@@ -11,18 +11,7 @@
 .body { display: flex; flex-direction: column; gap: var(--space-large); min-width: 0; }
 .fields { display: flex; flex-direction: column; gap: var(--space-medium); min-width: 0; }
 
-/* Sections are real fieldsets. A native legend sits on the top border, so it floats full width
-   to flow like a normal heading and let the divider line sit above it. */
-.section { min-width: 0; margin: 0; padding: 0; border: 0; }
-.section + .section { padding-top: var(--space-large); border-top: var(--border-width-thin) solid var(--border-neutral-faint); }
-.legend {
-  float: left; width: 100%; padding: 0; margin: 0 0 var(--space-xxsmall);
-  font-size: var(--font-size-regular); font-weight: var(--font-weight-semibold); line-height: 1.4; color: var(--text-neutral-strong);
-}
-.legend:has(+ .fields) { margin-bottom: var(--space-medium); }
-.legend + * { clear: both; }
-.sectionDescription { margin: 0; font-size: var(--font-size-small); line-height: 1.5; color: var(--text-neutral); }
-.sectionDescription + .fields { margin-top: var(--space-medium); }
+/* A titled group of fields is a kit Section, which brings its own heading row, line and fold. */
 
 .footer { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: var(--space-xsmall); }
 
@@ -30,6 +19,8 @@
    (Checkbox, Switch, RadioGroup, hidden-label fields) shift over to line up with the fields. */
 .form { container-type: inline-size; }
 .start .fields > :not([data-label="start"]) { margin-inline-start: calc(var(--input-label-width) + var(--space-xsmall)); }
+/* Once the fields put their label on top (under 480px), there is no column to line up with. */
+@container (max-width: 480px) { .start .fields > :not([data-label="start"]) { margin-inline-start: 0; } }
 
 /* Two columns: fields fill left to right. A Textarea spans both. Drops to one column when the form is narrow. */
 .two .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: var(--space-medium) var(--space-large); }

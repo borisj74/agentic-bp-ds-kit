@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
-import { SIDE_NAV_SECTIONS, SIDE_NAV_END, AppShellDemo, DashboardDemo, SettingsPageDemo, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { SIDE_NAV_SECTIONS, SIDE_NAV_END, AppShellDemo, DashboardDemo, FormPageDemo, SettingsPageDemo, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -1117,6 +1117,36 @@ export const registry: Record<string, Entry> = {
         <Form actions={<Button size="sm" variant="primary" type="submit">Save</Button>}>
           <Input size="sm" label="Company" defaultValue="Acme Inc." />
         </Form>
+      </div>
+    ),
+  },
+  FormPage: {
+    // The pattern in the frame, driven the way a screen would drive it: the values, the folds and what has
+    // been saved live in the screen.
+    render: ({ shell, notice, stage, ...p }) => (
+      <FormPageDemo
+        {...(p as Record<string, unknown>)}
+        shell={shell !== false} notice={notice !== false} stage={String(stage ?? "desktop")}
+      />
+    ),
+    preview: {},
+    hide: ["children", "header", "notice", "onStickyChange", "label"],
+    toggles: {
+      sticky: { label: "Top stays put", default: true },
+      stickyNotice: { label: "Notice stays put", default: true },
+      notice: { label: "Something to read first", default: true },
+      shell: { label: "In the app frame", default: true },
+    },
+    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
+    hint: "Fill in the new account: the name is the only field that has to be filled in, and Create in the bar saves every group at once. Fold a group away, open one of the three that start closed, and scroll: the name and the notice stay at the top while the fields pass under them. Stage narrows the box the frame lives in, so watch the two columns become one on a phone.",
+    block: true,
+    wide: true,
+    page: <FormPageDemo shell />,
+    card: (
+      <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
+        <PageHeader title="Create account" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]} actions={<><Button size="sm">Cancel</Button><Button size="sm" variant="primary">Create</Button></>} />
+        <Input size="sm" label="Account name" labelPosition="start" placeholder="Enter a value" required />
+        <Select size="sm" label="Status" labelPosition="start" options={[{ value: "active", label: "Active" }, { value: "pending", label: "Pending" }]} defaultValue="active" />
       </div>
     ),
   },

@@ -1029,6 +1029,18 @@
       ]
     },
     {
+      "name": "FormPage",
+      "contract": "contracts/formpage.json",
+      "tags": [
+        "form page",
+        "create record",
+        "new account",
+        "edit record",
+        "create form",
+        "field groups"
+      ]
+    },
+    {
       "name": "ListPage",
       "contract": "contracts/listpage.json",
       "tags": [
