@@ -1,0 +1,128 @@
+{
+  "name": "Tile",
+  "path": "src/ui/Tile/Tile.tsx",
+  "intent": "A way in to somewhere: the name of a place, a line about what is in it, and a colored icon square. One of a grid of them on a landing page.",
+  "usage": "Use Tile for the doors on a landing page: a settings home, a reports home, the start of a job. It is one component: title names the place, description says in one line what is inside, icon and tone draw the 72px square, and href or onClick is where it goes. Give each tile in a grid its own tone so people learn the colors; tone takes the kit category colors, not a color of your own. Lay a set of them out with the .layout-metrics class from contracts/layout.json, never a grid of your own. It is a link, not a choice: if people are comparing options and picking one, that is a Card. See contracts/tile.json for the full contract.",
+  "props": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "note": "The name of the place, as an h3. Keep it to one line, like Security & Users."
+    },
+    "description": {
+      "type": "string",
+      "note": "One line on what is inside, like Includes roles, sharing groups and approvals. Cut off after three lines."
+    },
+    "icon": {
+      "type": "string",
+      "note": "Material Symbols name, drawn white in the 72px square. Without it the square is left out."
+    },
+    "tone": {
+      "enum": [
+        "brand",
+        "green",
+        "olive",
+        "cyan",
+        "orange",
+        "pink",
+        "gray",
+        "purple",
+        "yellow",
+        "red",
+        "mint"
+      ],
+      "default": "brand",
+      "note": "The square's color, from the kit category colors. One per tile in a grid, so the color becomes part of how the place is recognised."
+    },
+    "href": {
+      "type": "string",
+      "note": "Where the tile goes. The whole tile is the link."
+    },
+    "onClick": {
+      "type": "() => void",
+      "note": "For a tile the screen handles itself, like opening a drawer. Without href or onClick the tile is not clickable."
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "note": "The place is not available: the tile greys out and stops being clickable."
+    }
+  },
+  "useWhen": [
+    "A landing page of places to go, like a settings or reports home.",
+    "A set of doors where the icon and its color help people find the same one again."
+  ],
+  "doNot": [
+    "Do not use it to compare or pick options; that is Card.",
+    "Do not put buttons or fields inside it. The whole tile is one link.",
+    "Do not give a grid of tiles one tone; give each its own so the colors mean something.",
+    "Do not build a grid for them. Use .layout-metrics; read contracts/layout.json.",
+    "Do not write a paragraph in description; one line, at most three.",
+    "Do not use raw hex; pick a tone."
+  ],
+  "a11y": [
+    "The tile is one link or button, so it is reached with one Tab and read as one thing.",
+    "The title is the accessible name and the description is read after it.",
+    "The icon square is decorative, so a screen reader does not name the icon.",
+    "Focus draws the kit focus ring around the whole tile.",
+    "A disabled tile is a real disabled button, so it is skipped rather than silently dead."
+  ],
+  "snippet": "<Tile title=\"Security & Users\" description=\"Includes roles, sharing groups, approvals and user management.\" icon=\"shield_person\" tone=\"red\" href=\"/settings/security\" />",
+  "examples": [
+    {
+      "title": "Ways in",
+      "usage": "A grid of places, each with its own color.",
+      "items": [
+        {
+          "props": {
+            "title": "Develop",
+            "description": "Includes entities, workflows, functions, data presentations, OAuth, and APIs.",
+            "icon": "handyman",
+            "tone": "yellow",
+            "href": "#"
+          }
+        },
+        {
+          "props": {
+            "title": "External Connectors",
+            "description": "Includes application, data and tax connectors.",
+            "icon": "account_tree",
+            "tone": "olive",
+            "href": "#"
+          }
+        },
+        {
+          "props": {
+            "title": "Security & Users",
+            "description": "Includes roles, sharing groups, approvals, authentication, and user management.",
+            "icon": "shield_person",
+            "tone": "red",
+            "href": "#"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Without an icon, and closed",
+      "usage": "The square is optional; disabled says the place is not available.",
+      "items": [
+        {
+          "props": {
+            "title": "Collections",
+            "description": "Includes collection modules and dunning templates.",
+            "href": "#"
+          }
+        },
+        {
+          "props": {
+            "title": "Mediation",
+            "description": "Not switched on for this company.",
+            "icon": "speed",
+            "tone": "gray",
+            "disabled": true
+          }
+        }
+      ]
+    }
+  ]
+}

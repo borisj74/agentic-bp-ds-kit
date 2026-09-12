@@ -96,6 +96,10 @@
 .card:has(.cardTitle:focus-visible) { outline: var(--border-width-medium) solid var(--outline-brand); }
 /* The preview clips its piece inside a padded box; CardPreview scales it down to fit and fades any crop. */
 .cardPreview { position: relative; isolation: isolate; height: 120px; overflow: hidden; background: var(--surface-sunken); }
+/* Patterns are screens, so their gallery gives each card a wider column and a taller preview: a blueprint
+   needs room to read as a layout rather than as one piece. */
+.gridWide { grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); }
+.cardPreviewTall { height: 240px; }
 .fit { position: absolute; inset: var(--space-small); overflow: hidden; }
 /* "safe" keeps a piece wider than the box starting at the left, so its full width can be measured and scaled. */
 .fitInner { position: absolute; width: 100%; display: flex; align-items: center; justify-content: safe center; transform-origin: top left; }

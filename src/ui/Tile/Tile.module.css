@@ -1,0 +1,48 @@
+/* A way in: the name and its line on the start, the colored square on the end. Same 72px square and 8px
+   corners as the kit Card, since they sit in the same kind of grid. */
+.root {
+  box-sizing: border-box; display: flex; align-items: flex-start; gap: var(--space-medium);
+  width: 100%; min-width: 0; margin: 0; padding: var(--space-medium);
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-subtle);
+  border-radius: var(--radius-large); font-family: var(--font-sans); text-align: start; text-decoration: none;
+  transition: border-color var(--motion-interaction-duration) var(--motion-interaction-easing),
+    box-shadow var(--motion-interaction-duration) var(--motion-interaction-easing);
+}
+a.root, button.root { cursor: pointer; }
+a.root:hover, button.root:not(:disabled):hover { border-color: var(--border-brand); box-shadow: var(--elevation-card); }
+a.root:focus-visible, button.root:focus-visible {
+  outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset);
+}
+
+.text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-xxsmall); }
+.title {
+  min-width: 0; font-size: var(--font-size-large); font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-snug); color: var(--text-neutral-strong);
+}
+/* Three lines at most: a door needs a line about it, not a paragraph. */
+.description {
+  min-width: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden;
+  font-size: var(--font-size-small); line-height: var(--line-height-normal); color: var(--text-neutral);
+}
+
+/* The square: white glyph on a category color. */
+.square {
+  flex: none; display: inline-flex; align-items: center; justify-content: center;
+  width: var(--card-tile); height: var(--card-tile); border-radius: var(--radius-medium); color: var(--text-neutral-min-static);
+}
+.brand { background: var(--bg-brand); }
+.green { background: var(--bg-green); }
+.olive { background: var(--bg-olive); }
+.cyan { background: var(--bg-cyan); }
+.orange { background: var(--bg-orange); }
+.pink { background: var(--bg-pink); }
+.gray { background: var(--bg-gray); }
+.purple { background: var(--bg-purple); }
+.yellow { background: var(--bg-yellow); }
+.red { background: var(--bg-red); }
+.mint { background: var(--bg-mint); }
+
+/* Closed: every line goes faint and the square loses its color. */
+.disabled { cursor: not-allowed; background: var(--bg-neutral-faint); }
+.disabled .title, .disabled .description { color: var(--text-neutral-faint); }
+.disabled .square { background: var(--bg-neutral-subtle); color: var(--icon-neutral-faint); }

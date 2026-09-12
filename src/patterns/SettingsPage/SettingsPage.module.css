@@ -1,0 +1,9 @@
+/* The settings home as one column: anything that needs saying first, then the grid of ways in. The gap is the
+   section rhythm from contracts/layout.json; the page padding belongs to the AppShell page around it. */
+.settings { display: flex; flex-direction: column; gap: var(--layout-gutter-lg); min-width: 0; font-family: var(--font-sans); }
+
+.intro { min-width: 0; }
+
+/* The grid is the layout class; only the column floor is remapped, since a Tile carries a title and a line
+   of text and reads badly at the 192 the metrics grid assumes. */
+.grid { --layout-metrics-min: 320px; min-width: 0; }

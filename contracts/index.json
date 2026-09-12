@@ -901,6 +901,19 @@
       ]
     },
     {
+      "name": "Tile",
+      "contract": "contracts/tile.json",
+      "tags": [
+        "tile",
+        "landing",
+        "settings home",
+        "way in",
+        "link card",
+        "icon tile",
+        "grid"
+      ]
+    },
+    {
       "name": "Timeline",
       "contract": "contracts/timeline.json",
       "category": "data",
@@ -1041,6 +1054,18 @@
         "details",
         "sections",
         "summary"
+      ]
+    },
+    {
+      "name": "SettingsPage",
+      "contract": "contracts/settingspage.json",
+      "tags": [
+        "settings",
+        "settings home",
+        "landing",
+        "tiles",
+        "ways in",
+        "reports home"
       ]
     }
   ],

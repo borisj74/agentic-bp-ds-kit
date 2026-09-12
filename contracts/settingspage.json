@@ -1,0 +1,56 @@
+{
+  "name": "SettingsPage",
+  "path": "src/patterns/SettingsPage/SettingsPage.tsx",
+  "intent": "The settings home: a grid of the places people can go from here, each with its own icon and color.",
+  "usage": "Use SettingsPage for a home that sends people onwards rather than showing them data: the settings home, or another home shaped like it, such as a reports home. It is a blueprint: it composes kit pieces and keeps no state of its own. children are kit Tiles, one per place, each with its own tone so the colors become part of how people find the same place again. intro writes anything that has to be said before the tiles, like a kit Alert about a setting that needs attention. The page's name and trail are the kit PageHeader in the AppShell page around it, which owns the page padding. The grid is the .layout-metrics class from contracts/layout.json, widened so a tile has room for its line of text. See contracts/settingspage.json for the full contract.",
+  "composes": [
+    "Tile",
+    "Section",
+    "Alert"
+  ],
+  "props": {
+    "children": {
+      "type": "ReactNode",
+      "required": true,
+      "note": "The ways in: kit Tiles, one per place, each with its own tone."
+    },
+    "intro": {
+      "type": "ReactNode",
+      "note": "Anything that has to be said before the tiles, usually a kit Alert."
+    },
+    "label": {
+      "type": "string",
+      "note": "Names the settings home for screen readers. Without it, the region is named Settings."
+    }
+  },
+  "useWhen": [
+    "The settings home: a page whose job is to send people on.",
+    "Another home shaped the same way, like a reports home.",
+    "A set of places where the icon and its color help people find the same one again."
+  ],
+  "doNot": [
+    "Do not add state to it; it is a blueprint.",
+    "Do not build the tiles inside it. Pass kit Tiles.",
+    "Do not use kit Cards as the tiles; a Card is for comparing and picking, a Tile is a way in.",
+    "Do not put the page's name inside it. That is the PageHeader in the frame around it.",
+    "Do not add a grid of your own or page padding around it. Read contracts/layout.json.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The settings home is a region named after label, so a screen reader can jump to it.",
+    "Each tile is one link, so the page is walked with one Tab per place.",
+    "The tiles are in reading order, so the order heard is the order seen."
+  ],
+  "snippet": "<SettingsPage label=\"Settings\">{places.map((p) => <Tile key={p.id} {...p} />)}</SettingsPage>",
+  "examples": [
+    {
+      "title": "A settings home",
+      "usage": "Every place under Settings, each with its own color.",
+      "items": [
+        {
+          "props": {}
+        }
+      ]
+    }
+  ]
+}

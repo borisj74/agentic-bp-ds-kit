@@ -9,6 +9,7 @@ import { AppShell, type AppShellProps } from "@/patterns/AppShell/AppShell";
 import { ListPage, type ListPageProps, type ListPageState } from "@/patterns/ListPage/ListPage";
 import { RecordPage } from "@/patterns/RecordPage/RecordPage";
 import { Dashboard, type DashboardProps, type DashboardState } from "@/patterns/Dashboard/Dashboard";
+import { SettingsPage, type SettingsPageProps } from "@/patterns/SettingsPage/SettingsPage";
 import { Badge } from "@/ui/Badge/Badge";
 import { Button } from "@/ui/Button/Button";
 import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
@@ -50,6 +51,7 @@ import { Table, type TableColumn, type TableRow } from "@/ui/Table/Table";
 import { Tabs, type TabItem } from "@/ui/Tabs/Tabs";
 import { Textarea } from "@/ui/Textarea/Textarea";
 import { Toast, type ToastProps } from "@/ui/Toast/Toast";
+import { Tile, type TileTone } from "@/ui/Tile/Tile";
 import { Timeline } from "@/ui/Timeline/Timeline";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 
@@ -1570,6 +1572,88 @@ export function DashboardDemo({ state = "ready", shell = true, ...p }: Omit<Dash
         }
       >
         {dash}
+      </AppShell>
+    </div>
+  );
+}
+
+// Playground harness: the SettingsPage pattern in the AppShell frame, driven like a screen would drive it.
+// Not a kit piece. The places are the real Settings entries from the side nav, with the descriptions and
+// colors of the BP DS Hub settings home.
+const SETTINGS_PLACES: { id: string; title: string; description: string; icon: string; tone: TileTone }[] = [
+  { id: "settings-develop", title: "Develop", description: "Includes entities, workflows, functions, data presentations, OAuth, and APIs.", icon: "handyman", tone: "yellow" },
+  { id: "settings-external-connectors", title: "External Connectors", description: "Includes application, data and tax connectors.", icon: "account_tree", tone: "olive" },
+  { id: "settings-security-users", title: "Security & Users", description: "Includes roles, sharing groups, approvals, authentication, and user management.", icon: "shield_person", tone: "red" },
+  { id: "settings-monitoring-logs", title: "Monitoring & Logs", description: "Includes process console, alerts, scheduled jobs, logs, events and recycle bin.", icon: "monitor_heart", tone: "cyan" },
+  { id: "settings-system", title: "System", description: "Includes company setup, system parameters, reference, localization, and email settings.", icon: "settings_applications", tone: "pink" },
+  { id: "settings-ai-settings", title: "AI Settings", description: "Includes assistants, prompts and the data they are allowed to read.", icon: "auto_awesome", tone: "purple" },
+  { id: "settings-billing", title: "Billing", description: "Includes invoices, statements, templates, periods and tiered pricing.", icon: "receipt_long", tone: "brand" },
+  { id: "settings-payments", title: "Payments", description: "Includes gateways, payment methods and retry rules.", icon: "credit_card", tone: "green" },
+  { id: "settings-financials-revenue", title: "Financials & Revenue", description: "Includes accounting periods, legal entities and revenue contracts.", icon: "paid", tone: "gray" },
+  { id: "settings-collections", title: "Collections", description: "Includes collection modules and dunning templates.", icon: "account_balance", tone: "orange" },
+];
+
+export function SettingsPageDemo({ shell = true, notice = false, ...p }: Omit<SettingsPageProps, "children"> & { shell?: boolean; notice?: boolean }) {
+  const [navOpen, setNavOpen] = useState(false);
+  const [section, setSection] = useState("settings-settings-home");
+  const [dark, setDark] = useState(false);
+  const [density, setDensity] = useState<AppHeaderDensity>("default");
+  const [open, setOpen] = useState(true);
+  // Picking a tile goes to that place, and only the landing itself is built here.
+  const chosen = SETTINGS_PLACES.find((s) => s.id === section);
+
+  const settings = (
+    <SettingsPage
+      {...p}
+      label="Settings"
+      intro={notice && open ? (
+        <Alert tone="warning" dismissible onDismiss={() => setOpen(false)} actionLabel="Review users" onAction={() => {}}>
+          Four users have not signed in for 90 days.
+        </Alert>
+      ) : undefined}
+    >
+      {SETTINGS_PLACES.map((s) => (
+        <Tile
+          key={s.id} title={s.title} description={s.description} icon={s.icon} tone={s.tone}
+          onClick={() => setSection(s.id)}
+        />
+      ))}
+    </SettingsPage>
+  );
+
+  if (!shell) return settings;
+  // In the frame, the way a screen would ship it.
+  return (
+    <div data-theme={dark ? "dark" : undefined} style={{ height: 900, border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden" }}>
+      <AppShell
+        header={
+          <AppHeader
+            navOpen={navOpen} onNavToggle={() => setNavOpen((o) => !o)}
+            environment="UAT-2" searchShortcut="Ctrl+K" searchGroups={SHELL_SEARCH} searchScopes={SHELL_SEARCH_SCOPES}
+            actions={SHELL_HEADER_ACTIONS} onAction={() => {}}
+            user={{ name: "Ana Petrovic" }} company={{ name: "Northwind Holdings" }}
+            darkMode={dark} onDarkModeChange={setDark}
+            density={density} onDensityChange={setDensity}
+            onUserSettings={() => {}} onLogout={() => {}}
+          />
+        }
+        nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        pageHeader={
+          <PageHeader
+            title={chosen ? chosen.title : "Settings"}
+            breadcrumbs={chosen
+              ? [{ label: "Home", href: "#" }, { label: "Settings", onClick: () => setSection("settings-settings-home") }]
+              : [{ label: "Home", href: "#" }]}
+          />
+        }
+      >
+        {chosen ? (
+          <Empty
+            icon="construction" title={`${chosen.title} is not built here`}
+            description="This playground ships the settings home. Go back to Settings for the way in."
+            actions={<Button size="sm" onClick={() => setSection("settings-settings-home")}>Back to Settings</Button>}
+          />
+        ) : settings}
       </AppShell>
     </div>
   );

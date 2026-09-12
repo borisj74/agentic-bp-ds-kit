@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
-import { SIDE_NAV_SECTIONS, SIDE_NAV_END, AppShellDemo, DashboardDemo, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { SIDE_NAV_SECTIONS, SIDE_NAV_END, AppShellDemo, DashboardDemo, SettingsPageDemo, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -63,6 +63,7 @@ import { Switch, type SwitchProps } from "@/ui/Switch/Switch";
 import { Tabs, type TabItem, type TabsProps } from "@/ui/Tabs/Tabs";
 import { Table, type TableColumn, type TableProps, type TableRow } from "@/ui/Table/Table";
 import { Textarea, type TextareaProps } from "@/ui/Textarea/Textarea";
+import { Tile } from "@/ui/Tile/Tile";
 import { Timeline, type TimelineItem, type TimelineProps } from "@/ui/Timeline/Timeline";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 import { Tooltip, type TooltipProps } from "@/ui/Tooltip/Tooltip";
@@ -679,6 +680,27 @@ export const registry: Record<string, Entry> = {
     },
     card: <ButtonGroup label="Plan period"><Button>Day</Button><Button>Week</Button><Button>Month</Button></ButtonGroup>,
   },
+  SettingsPage: {
+    // The pattern in the frame, driven the way a screen would drive it: which place is chosen lives in the screen.
+    render: ({ shell, notice, ...p }) => (
+      <SettingsPageDemo {...(p as Record<string, unknown>)} shell={shell !== false} notice={Boolean(notice)} />
+    ),
+    preview: {},
+    hide: ["children", "intro", "label"],
+    toggles: {
+      notice: { label: "Something to say first", default: false },
+      shell: { label: "In the app frame", default: true },
+    },
+    hint: "Every place under Settings, each tile its own color. Pick one and the side nav follows. Turn the notice on for a line that has to be read before the tiles, and the frame off to see the settings home on its own.",
+    block: true,
+    wide: true,
+    card: (
+      <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
+        <Tile title="Security & Users" description="Roles, sharing groups and approvals." icon="shield_person" tone="red" href="#" />
+        <Tile title="Billing" description="Invoices, statements, templates and periods." icon="receipt_long" tone="brand" href="#" />
+      </div>
+    ),
+  },
   Legend: {
     // On the stage the keys switch, so the toggling shows; Variants show the plain key.
     render: ({ toggles, ...p }) => {
@@ -712,7 +734,12 @@ export const registry: Record<string, Entry> = {
     hint: "Switch between Table View, List View and Card View: the same records, laid out three ways. Tick rows and the bar over the list becomes what can be done to them. Search, set a filter, change the page size, and switch the state to see the loading, empty and failed lists.",
     block: true,
     wide: true,
-    card: <div style={{ width: 300 }}><Pagination total={248} defaultPage={2} showPageSize={false} /></div>,
+    card: (
+      <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
+        <Toolbar label="Invoices" views={[{ id: "table", label: "Table View" }]} onRefresh={() => {}} actions={<Button size="sm" variant="primary" iconStart="add">New</Button>} />
+        <Pagination total={248} defaultPage={2} showPageSize={false} />
+      </div>
+    ),
   },
   Logo: {
     render: (p) => <Logo {...(p as object)} />,
@@ -882,7 +909,12 @@ export const registry: Record<string, Entry> = {
     hint: "Switch between the docked column and full screen. Change the page the assistant was opened from: the scope row takes its name, and goes when there is nothing to scope to. Pick a suggestion or type to start; open Chats or Playbooks from the options menu, and watch where the panel lands in each size.",
     block: true,
     wide: true,
-    card: <div style={{ width: 300 }}><ChatHeader title="BP AI" chatsCount={7} onNewChat={() => {}} onClose={() => {}} /></div>,
+    card: (
+      <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
+        <ChatHeader title="BP AI" chatsCount={7} onNewChat={() => {}} onClose={() => {}} />
+        <ChatMessage author="assistant" text="312 invoices are overdue, worth $1.2M in total." />
+      </div>
+    ),
   },
   Checkbox: {
     // The Checked switch sets the start value; the checkbox itself stays clickable. Keyed so switches re-apply.
@@ -952,7 +984,12 @@ export const registry: Record<string, Entry> = {
     hint: "Fold a group of numbers away, pick another saved dashboard from the bar, and scroll: the page header shrinks to one compact line and the bar stays under it. Switch the state to see the loading and empty dashboards. Turn the frame off to see the dashboard on its own.",
     block: true,
     wide: true,
-    card: <div style={{ width: 300 }}><Scoreboard items={TREND_KPIS.slice(0, 2)} label="Dashboard numbers" /></div>,
+    card: (
+      <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
+        <Scoreboard items={TREND_KPIS.slice(0, 3)} label="Dashboard numbers" />
+        <BarChart label="Aging" categories={["Current", "1-30", "31-60", "61-90"]} series={[{ name: "Balance", values: [230, 60, 22, 8], tone: "orange" }]} height={96} />
+      </div>
+    ),
   },
   DataGrid: {
     // Sample columns and rows swap in for their {names}. Keyed so switching controls starts fresh.
@@ -1090,7 +1127,12 @@ export const registry: Record<string, Entry> = {
     hint: "Open the menu button to widen the rail, walk the side nav, and press Ask BP AI to bring the assistant in beside the page. Scroll the page: the page header stays at the top and shrinks to one compact line whose trail ends in the page name. Stage narrows the box the frame lives in, so watch the rail go on a phone. Width caps the page to a reading column; it does not resize the frame.",
     block: true,
     wide: true,
-    card: <div style={{ width: 300 }}><AppHeader search={false} /></div>,
+    card: (
+      <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
+        <AppHeader search={false} />
+        <PageHeader title="Accounts" breadcrumbs={[{ label: "Home", href: "#" }]} actions={<Button size="sm" variant="primary">New account</Button>} />
+      </div>
+    ),
   },
   AppHeader: {
     // Full-width bar. AppHeaderDemo wires the account menu (dark mode and density in local state). Keyed so controls re-apply.
@@ -1264,7 +1306,12 @@ export const registry: Record<string, Entry> = {
     hint: "Walk the record's tabs, fold a section of details away, dismiss the notice, and scroll: the name stays at the top and shrinks to one compact line whose trail ends in the record, while the tabs and the bar scroll away under it. Turn the frame off to see the record on its own.",
     block: true,
     wide: true,
-    card: <div style={{ width: 300 }}><PageHeader icon="account_balance" title="Apex Digital Services" badge="Active" badgeTone="success" /></div>,
+    card: (
+      <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
+        <PageHeader icon="account_balance" title="Apex Digital Services" badge="Active" badgeTone="success" />
+        <Tabs label="Record parts" items={[{ id: "details", label: "Details" }, { id: "contacts", label: "Contacts", count: 4 }, { id: "invoices", label: "Invoices", count: 12 }]} />
+      </div>
+    ),
   },
   Scoreboard: {
     // Sample cards swap in for their {names}. Keyed so switching controls starts fresh.
@@ -1436,6 +1483,13 @@ export const registry: Record<string, Entry> = {
     card: (
       <Tabs label="Account sections" items={[{ id: "overview", label: "Overview" }, { id: "invoices", label: "Invoices", count: 5 }, { id: "payments", label: "Payments" }]} />
     ),
+  },
+  Tile: {
+    render: (p) => <Tile {...(p as { title: string })} />,
+    preview: { title: "Security & Users", description: "Includes roles, sharing groups, approvals, authentication, and user management.", icon: "shield_person", tone: "red", href: "#" },
+    hide: ["onClick"],
+    hint: "Walk the tones: each tile in a grid takes its own, so the color becomes part of how people find the place again. A tile is a link, not a choice; comparing options is Card.",
+    card: <div style={{ width: 300 }}><Tile title="Billing" description="Invoices, statements, templates and periods." icon="receipt_long" tone="brand" href="#" /></div>,
   },
   Timeline: {
     render: (p) => <Timeline {...timelineProps(p)} />,
