@@ -49,3 +49,18 @@
   .layout-split > *, .layout-split--primary > :first-child, .layout-split--primary > :last-child, .layout-split--thirds > * { grid-column: 1 / -1; }
   .layout-metrics--fixed-3, .layout-metrics--fixed-4 { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* The same two steps again, against the box the layout is in rather than the window. A frame can be a phone-width
+   box inside a wide window — docked in a preview, a split view, or the AppShell's own phone stage — and there the
+   window says nothing about the room the layout has. The AppShell frame is the box being measured. */
+@container (max-width: 1024px) {
+  .layout-workspace { grid-template-columns: minmax(0, 1fr); }
+  .layout-workspace > aside { display: none; }
+  .layout-metrics--fixed-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container (max-width: 640px) {
+  .layout-app { grid-template-columns: minmax(0, 1fr); }
+  .layout-app > aside { display: none; }
+  .layout-split > *, .layout-split--primary > :first-child, .layout-split--primary > :last-child, .layout-split--thirds > * { grid-column: 1 / -1; }
+  .layout-metrics--fixed-3, .layout-metrics--fixed-4 { grid-template-columns: minmax(0, 1fr); }
+}

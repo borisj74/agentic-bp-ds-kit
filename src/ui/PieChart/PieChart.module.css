@@ -1,5 +1,10 @@
 /* Legend beside the pie (end) or under it (bottom). */
 .layout { display: flex; align-items: center; gap: var(--space-xlarge); }
+/* Under 360px the pie and its legend leave too little of each side by side, so the legend drops under the pie.
+   640px = --grid-breakpoint-sm elsewhere in the kit; a pie needs its room sooner than a page does. */
+@container (max-width: 360px) {
+  .layout { flex-direction: column; align-items: center; gap: var(--space-medium); }
+}
 .bottom { flex-direction: column; gap: var(--space-medium); }
 
 .pie { position: relative; flex: none; }

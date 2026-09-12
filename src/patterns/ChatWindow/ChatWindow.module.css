@@ -27,3 +27,10 @@
 .aside { flex: none; width: var(--chat-panel); max-width: 50%; border-inline-end: var(--border-width-thin) solid var(--border-neutral-subtle); }
 /* Side panel: the chats come over the conversation instead, since there is no room beside it. */
 .cover { position: absolute; inset: 0; background: var(--surface-flat); }
+
+/* 640px = --grid-breakpoint-sm, the kit's mobile break: CSS vars cannot appear in container queries.
+   On a phone the assistant stands in for the page rather than sitting beside it, so the panel gives up its
+   395 column and takes the whole width, and the line down its side has nothing to part from. */
+@container (max-width: 640px) {
+  .panel { width: 100%; border-inline-start: 0; }
+}

@@ -1048,7 +1048,7 @@ const LIST_COLUMNS: TableColumn[] = [
   { key: "actions", header: "", align: "end", width: "112px" },
 ];
 
-export function ListPageDemo({ state = "ready", shell = false, ...p }: Omit<ListPageProps, "children"> & { state?: ListPageState; shell?: boolean }) {
+export function ListPageDemo({ state = "ready", shell = false, stage = "desktop", ...p }: Omit<ListPageProps, "children"> & { state?: ListPageState; shell?: boolean; stage?: string }) {
   const [navOpen, setNavOpen] = useState(false);
   const [section, setSection] = useState("billing-invoices");
   const [dark, setDark] = useState(false);
@@ -1145,7 +1145,13 @@ export function ListPageDemo({ state = "ready", shell = false, ...p }: Omit<List
   if (!shell) return list;
   // In the frame, the way a screen would ship it.
   return (
-    <div data-theme={dark ? "dark" : undefined} style={{ height: 900, border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden" }}>
+    <div
+      data-theme={dark ? "dark" : undefined}
+      style={{
+        height: 900, width: STAGE_WIDTHS[stage] ?? "100%", maxWidth: "100%", marginInline: "auto",
+        border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden",
+      }}
+    >
       <AppShell
         header={
           <AppHeader
@@ -1234,7 +1240,7 @@ function RecordFields({ fields }: { fields: { label: string; value: ReactNode; h
   );
 }
 
-export function RecordPageDemo({ sticky = true, shell = true }: { sticky?: boolean; shell?: boolean }) {
+export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" }: { sticky?: boolean; shell?: boolean; stage?: string }) {
   const [tab, setTab] = useState("details");
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");
@@ -1289,7 +1295,13 @@ export function RecordPageDemo({ sticky = true, shell = true }: { sticky?: boole
   if (!shell) return record;
   // In the frame, the way a screen would ship it.
   return (
-    <div data-theme={dark ? "dark" : undefined} style={{ height: 900, border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden" }}>
+    <div
+      data-theme={dark ? "dark" : undefined}
+      style={{
+        height: 900, width: STAGE_WIDTHS[stage] ?? "100%", maxWidth: "100%", marginInline: "auto",
+        border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden",
+      }}
+    >
       <AppShell
         header={
           <AppHeader
@@ -1415,7 +1427,7 @@ function Tiles({ children }: { children: ReactNode }) {
   return <div className="layout-split">{children}</div>;
 }
 
-export function DashboardDemo({ state = "ready", shell = true, ...p }: Omit<DashboardProps, "children"> & { state?: DashboardState; shell?: boolean }) {
+export function DashboardDemo({ state = "ready", shell = true, stage = "desktop", ...p }: Omit<DashboardProps, "children"> & { state?: DashboardState; shell?: boolean; stage?: string }) {
   const [navOpen, setNavOpen] = useState(false);
   const [section, setSection] = useState("home-home-dashboards");
   const [saved, setSaved] = useState("accounting");
@@ -1582,7 +1594,13 @@ export function DashboardDemo({ state = "ready", shell = true, ...p }: Omit<Dash
   if (!shell) return dash;
   // In the frame, the way a screen would ship it.
   return (
-    <div data-theme={dark ? "dark" : undefined} style={{ height: 900, border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden" }}>
+    <div
+      data-theme={dark ? "dark" : undefined}
+      style={{
+        height: 900, width: STAGE_WIDTHS[stage] ?? "100%", maxWidth: "100%", marginInline: "auto",
+        border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden",
+      }}
+    >
       <AppShell
         header={
           <AppHeader
@@ -1628,7 +1646,7 @@ const SETTINGS_PLACES: { id: string; title: string; description: string; icon: s
   { id: "settings-collections", title: "Collections", description: "Includes collection modules and dunning templates.", icon: "account_balance", tone: "orange" },
 ];
 
-export function SettingsPageDemo({ shell = true, notice = false, ...p }: Omit<SettingsPageProps, "children"> & { shell?: boolean; notice?: boolean }) {
+export function SettingsPageDemo({ shell = true, notice = false, stage = "desktop", ...p }: Omit<SettingsPageProps, "children"> & { shell?: boolean; notice?: boolean; stage?: string }) {
   const [navOpen, setNavOpen] = useState(false);
   const [section, setSection] = useState("settings-settings-home");
   const [dark, setDark] = useState(false);
@@ -1659,7 +1677,13 @@ export function SettingsPageDemo({ shell = true, notice = false, ...p }: Omit<Se
   if (!shell) return settings;
   // In the frame, the way a screen would ship it.
   return (
-    <div data-theme={dark ? "dark" : undefined} style={{ height: 900, border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden" }}>
+    <div
+      data-theme={dark ? "dark" : undefined}
+      style={{
+        height: 900, width: STAGE_WIDTHS[stage] ?? "100%", maxWidth: "100%", marginInline: "auto",
+        border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden",
+      }}
+    >
       <AppShell
         header={
           <AppHeader

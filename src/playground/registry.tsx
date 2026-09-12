@@ -685,8 +685,8 @@ export const registry: Record<string, Entry> = {
   },
   SettingsPage: {
     // The pattern in the frame, driven the way a screen would drive it: which place is chosen lives in the screen.
-    render: ({ shell, notice, ...p }) => (
-      <SettingsPageDemo {...(p as Record<string, unknown>)} shell={shell !== false} notice={Boolean(notice)} />
+    render: ({ shell, notice, stage, ...p }) => (
+      <SettingsPageDemo {...(p as Record<string, unknown>)} shell={shell !== false} notice={Boolean(notice)} stage={String(stage ?? "desktop")} />
     ),
     preview: {},
     hide: ["children", "intro", "label"],
@@ -694,7 +694,8 @@ export const registry: Record<string, Entry> = {
       notice: { label: "Something to say first", default: false },
       shell: { label: "In the app frame", default: true },
     },
-    hint: "Every place under Settings, each tile its own color. Pick one and the side nav follows. Turn the notice on for a line that has to be read before the tiles, and the frame off to see the settings home on its own.",
+    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
+    hint: "Stage narrows the box the frame lives in, so watch the tiles and the rail on a phone. Every place under Settings, each tile its own color. Pick one and the side nav follows. Turn the notice on for a line that has to be read before the tiles, and the frame off to see the settings home on its own.",
     block: true,
     wide: true,
     page: <SettingsPageDemo shell />,
@@ -732,17 +733,19 @@ export const registry: Record<string, Entry> = {
   },
   ListPage: {
     // The pattern, driven the way a screen would drive it: the filters, the ticks and the page live in the screen.
-    render: ({ state, shell, ...p }) => (
+    render: ({ state, shell, stage, ...p }) => (
       <ListPageDemo
         {...(p as Record<string, unknown>)}
         state={(state as "ready" | "loading" | "empty" | "error") ?? "ready"}
         shell={shell !== false}
+        stage={String(stage ?? "desktop")}
       />
     ),
     preview: { state: "ready" },
     hide: ["children", "toolbar", "pagination", "bulk", "empty", "error", "onRetry", "label", "loadingRows"],
     toggles: { shell: { label: "In the app frame", default: true } },
-    hint: "Switch between Table View, List View and Card View: the same records, laid out three ways. Tick rows and the bar over the list becomes what can be done to them. Search, set a filter, change the page size, and switch the state to see the loading, empty and failed lists. Turn the frame off to see the list on its own.",
+    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
+    hint: "Stage narrows the box the frame lives in, so watch the list on a phone. Switch between Table View, List View and Card View: the same records, laid out three ways. Tick rows and the bar over the list becomes what can be done to them. Search, set a filter, change the page size, and switch the state to see the loading, empty and failed lists. Turn the frame off to see the list on its own.",
     block: true,
     wide: true,
     page: <ListPageDemo state="ready" shell />,
@@ -984,17 +987,19 @@ export const registry: Record<string, Entry> = {
   Dashboard: {
     // The pattern in the frame, driven the way a screen would drive it: the dashboard, the open groups and
     // the filters live in the screen.
-    render: ({ state, shell, ...p }) => (
+    render: ({ state, shell, stage, ...p }) => (
       <DashboardDemo
         {...(p as Record<string, unknown>)}
         state={(state as "ready" | "loading" | "empty") ?? "ready"}
         shell={shell !== false}
+        stage={String(stage ?? "desktop")}
       />
     ),
     preview: { state: "ready" },
     hide: ["children", "toolbar", "name", "empty", "loadingTiles", "label"],
     toggles: { stickyToolbar: { label: "Bar stays put", default: true }, shell: { label: "In the app frame", default: true } },
-    hint: "Fold a group of numbers away, pick another saved dashboard from the bar, and scroll: the page header shrinks to one compact line and the bar stays under it. Switch the state to see the loading and empty dashboards. Turn the frame off to see the dashboard on its own.",
+    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
+    hint: "Stage narrows the box the frame lives in, so watch the numbers and the bar on a phone. Fold a group of numbers away, pick another saved dashboard from the bar, and scroll: the page header shrinks to one compact line and the bar stays under it. Switch the state to see the loading and empty dashboards. Turn the frame off to see the dashboard on its own.",
     block: true,
     wide: true,
     page: <DashboardDemo state="ready" shell />,
@@ -1314,11 +1319,12 @@ export const registry: Record<string, Entry> = {
   },
   RecordPage: {
     // The pattern in the frame, driven the way a screen would drive it: the tab and the notice live outside it.
-    render: ({ sticky, shell }) => <RecordPageDemo sticky={sticky !== false} shell={shell !== false} />,
+    render: ({ sticky, shell, stage }) => <RecordPageDemo sticky={sticky !== false} shell={shell !== false} stage={String(stage ?? "desktop")} />,
     preview: { sticky: true },
     hide: ["children", "header", "tabs", "notice", "toolbar", "summary", "onStickyChange", "label"],
     toggles: { sticky: { label: "Top stays put", default: true }, shell: { label: "In the app frame", default: true } },
-    hint: "Walk the record's tabs, fold a section of details away, dismiss the notice, and scroll: the name stays at the top and shrinks to one compact line whose trail ends in the record, while the tabs and the bar scroll away under it. Turn the frame off to see the record on its own.",
+    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
+    hint: "Stage narrows the box the frame lives in, so watch the record on a phone. Walk the record's tabs, fold a section of details away, dismiss the notice, and scroll: the name stays at the top and shrinks to one compact line whose trail ends in the record, while the tabs and the bar scroll away under it. Turn the frame off to see the record on its own.",
     block: true,
     wide: true,
     page: <RecordPageDemo sticky shell />,

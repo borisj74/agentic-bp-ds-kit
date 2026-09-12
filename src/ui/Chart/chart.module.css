@@ -2,6 +2,8 @@
 .chart {
   position: relative; display: flex; flex-direction: column; gap: var(--space-small);
   width: 100%; min-width: 0; margin: 0; font-family: var(--font-sans); border-radius: var(--radius-medium);
+  /* The chart answers to its own box, so a legend beside it gives way in a narrow tile as well as on a phone. */
+  container-type: inline-size;
 }
 .chart:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--space-xxsmall); }
 /* Figma data visualization 5410:112240: a title over each chart, with a quieter subtitle under it. */
@@ -13,6 +15,10 @@
 /* Legend in a column beside the chart. */
 .beside { display: flex; align-items: center; gap: var(--space-xlarge); min-width: 0; }
 .beside > :first-child { flex: 1 1 auto; min-width: 0; }
+/* Under 360px a chart and a legend side by side leave too little of each, so the legend drops under the chart. */
+@container (max-width: 360px) {
+  .beside { flex-direction: column; align-items: stretch; gap: var(--space-medium); }
+}
 .svg { display: block; overflow: visible; }
 
 /* Axes: 12px labels, faint horizontal grid lines. */

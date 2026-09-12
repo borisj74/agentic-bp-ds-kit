@@ -43,3 +43,18 @@
 }
 .chips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xsmall); min-width: 0; }
 .apply { display: inline-flex; align-items: center; }
+
+/* 640px = --grid-breakpoint-sm, the kit's mobile break: CSS vars cannot appear in container queries.
+   One line cannot hold the finding and the doing on a phone: the actions were taking the width and squeezing
+   the filters, the search and the views to nothing. Each group takes its own line, the search fills its line,
+   and the actions keep to the end of theirs, with the primary last as everywhere else. */
+@container (max-width: 640px) {
+  .bar { flex-wrap: wrap; }
+  .start, .end { flex: 1 1 100%; flex-wrap: wrap; }
+  .end { justify-content: flex-end; }
+  /* The search takes the first line whole, so what is left — filters, the view and refresh — shares the next
+     one instead of being pushed onto a third. The line between finding and viewing means nothing once they
+     are on separate lines, so it goes. */
+  .search { order: -1; width: 100%; }
+  .divider { display: none; }
+}
