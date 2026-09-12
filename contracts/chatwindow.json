@@ -2,13 +2,12 @@
   "name": "ChatWindow",
   "path": "src/patterns/ChatWindow/ChatWindow.tsx",
   "intent": "The assistant window: its header over the turns, the composer at the foot, and the saved chats coming in beside or over them.",
-  "usage": "Use ChatWindow for the assistant beside a screen, or for its full-screen view. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is shown. The box runs edge to edge at the foot of the window, with one line over it, rather than sitting in the body as a card of its own. Pass the turns as ChatMessage children, the box as composer, and the saved chats as panel. empty takes its place before anyone has asked anything, usually a kit Empty. notice writes the line about the assistant making mistakes, as a kit Alert people can dismiss. size panel is the 395 column beside the page; size full fills the screen and sets the chats beside the conversation instead of over it. The header props go straight to the kit ChatHeader. See contracts/chatwindow.json for the full contract.",
+  "usage": "Use ChatWindow for the assistant beside a screen, or for its full-screen view. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is shown. The box runs edge to edge at the foot of the window, with one line over it, rather than sitting in the body as a card of its own. Pass the turns as ChatMessage children, the box as composer, and the saved chats as panel. empty takes its place before anyone has asked anything, usually a kit Empty. notice writes the line about the assistant making mistakes: a quiet line at the foot of the turns, right over the box, with a close of its own when onNoticeDismiss is passed. size panel is the 395 column beside the page; size full fills the screen and sets the chats beside the conversation instead of over it. The header props go straight to the kit ChatHeader. See contracts/chatwindow.json for the full contract.",
   "composes": [
     "ChatHeader",
     "ChatMessage",
     "ChatComposer",
     "ChatList",
-    "Alert",
     "Empty"
   ],
   "props": {
@@ -49,11 +48,11 @@
     },
     "notice": {
       "type": "string",
-      "note": "The line about the assistant making mistakes, shown as a kit Alert above the box."
+      "note": "The line about the assistant making mistakes, shown quietly at the foot of the turns, over the box."
     },
     "onNoticeDismiss": {
       "type": "() => void",
-      "note": "The × on that line was pressed."
+      "note": "The close on that line was pressed. Without it the line has no close."
     },
     "onNewChat": {
       "type": "() => void",
@@ -110,8 +109,8 @@
   "a11y": [
     "The header is a kit ChatHeader, so its buttons and menu are named and reachable.",
     "Each turn is a kit ChatMessage, named after who said it.",
-    "The notice is a kit Alert people can dismiss.",
-    "The turns scroll on their own while the box at the foot stays put."
+    "The turns scroll on their own while the box at the foot stays put.",
+    "The notice is plain text with a named close button, not a warning to announce."
   ],
   "snippet": "<ChatWindow composer={<ChatComposer onSend={send} />} chatsCount={7} onClose={close}>{turns}</ChatWindow>",
   "examples": [

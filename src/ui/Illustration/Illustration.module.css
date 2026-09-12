@@ -1,0 +1,32 @@
+/* The art is square and keeps its own colors, so only its size changes. */
+.art { display: block; flex: none; }
+.sm { width: var(--illustration-sm); height: var(--illustration-sm); }
+.md { width: var(--illustration-md); height: var(--illustration-md); }
+.lg { width: var(--illustration-lg); height: var(--illustration-lg); }
+
+/* The glass walks over the message: up the left of the second line, across the first, and back to rest.
+   It pauses at each stop, so it reads as looking rather than spinning. The walk stays inside the square,
+   so the ring is never clipped at the top. The copy under the glass runs the
+   same walk backwards, which keeps the pale part matching the bubble the glass is over. */
+.sweep, .stay { transform-box: view-box; }
+.sweep { animation: sweep var(--motion-sweep-duration) var(--motion-sweep-easing) infinite; }
+.stay { animation: stay var(--motion-sweep-duration) var(--motion-sweep-easing) infinite; }
+
+@keyframes sweep {
+  0%, 8% { transform: translate(0, 0); }
+  25%, 33% { transform: translate(-52px, -40px); }
+  50%, 58% { transform: translate(-16px, -48px); }
+  75%, 83% { transform: translate(-52px, -48px); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes stay {
+  0%, 8% { transform: translate(0, 0); }
+  25%, 33% { transform: translate(52px, 40px); }
+  50%, 58% { transform: translate(16px, 48px); }
+  75%, 83% { transform: translate(52px, 48px); }
+  100% { transform: translate(0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sweep, .stay { animation: none; }
+}

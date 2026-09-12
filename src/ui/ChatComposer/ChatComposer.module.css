@@ -8,7 +8,10 @@
 .composer:focus-within { border-color: var(--border-brand); box-shadow: 0 0 0 var(--border-width-thin) var(--border-brand); }
 .disabled { opacity: var(--opacity-disabled); }
 
-.scope { padding: var(--space-xsmall) var(--space-medium); border-bottom: var(--border-width-thin) solid var(--border-neutral-faint); }
+.scope {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-xsmall);
+  padding: var(--space-xsmall) var(--space-medium); border-bottom: var(--border-width-thin) solid var(--border-neutral-faint);
+}
 
 .attachments {
   display: flex; flex-wrap: wrap; gap: var(--space-xxsmall); margin: 0; list-style: none;

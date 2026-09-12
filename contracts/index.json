@@ -1,81 +1,1009 @@
 {
   "version": 1,
   "components": [
-    {"name": "Accordion", "contract": "contracts/accordion.json", "category": "layout", "tags": ["disclosure", "collapse", "faq", "expand", "sections"]},
-    {"name": "Alert", "contract": "contracts/alert.json", "category": "feedback", "tags": ["callout", "banner", "notice", "message", "status"]},
-    {"name": "AlertDialog", "contract": "contracts/alertdialog.json", "category": "overlay", "tags": ["confirm", "dialog", "modal", "destructive", "are you sure"]},
-    {"name": "AnchorNav", "contract": "contracts/anchornav.json", "category": "navigation", "tags": ["anchor nav", "on this page", "section nav", "jump links", "in-page navigation", "table of contents", "scrollspy"]},
-    {"name": "AppHeader", "contract": "contracts/appheader.json", "category": "navigation", "tags": ["app header", "top bar", "shell", "global search", "environment", "user", "company", "logo"]},
-    {"name": "Avatar", "contract": "contracts/avatar.json", "category": "base", "tags": ["person", "user", "profile", "initials", "photo"]},
-    {"name": "AvatarGroup", "contract": "contracts/avatargroup.json", "category": "base", "tags": ["people", "assignees", "stack", "facepile"]},
-    {"name": "Badge", "contract": "contracts/badge.json", "category": "feedback", "tags": ["status", "tag", "chip", "label", "pill", "filter"]},
-    {"name": "BadgeAlt", "contract": "contracts/badgealt.json", "category": "feedback", "tags": ["status", "tag", "label", "bordered", "alternate badge"]},
-    {"name": "BarChart", "contract": "contracts/barchart.json", "category": "data", "tags": ["chart", "bar chart", "column chart", "stacked bar", "horizontal bar", "ranked", "compare", "graph", "dashboard"]},
-    {"name": "Breadcrumb", "contract": "contracts/breadcrumb.json", "category": "navigation", "tags": ["path", "trail", "navigation", "hierarchy"]},
-    {"name": "Button", "contract": "contracts/button.json", "category": "base", "tags": ["action", "cta", "submit"]},
-    {"name": "ButtonFilter", "contract": "contracts/buttonfilter.json", "category": "base", "tags": ["filter", "split button", "dropdown trigger", "menu button"]},
-    {"name": "ButtonGroup", "contract": "contracts/buttongroup.json", "category": "base", "tags": ["toolbar", "segmented", "view switch", "actions"]},
-    {"name": "Calendar", "contract": "contracts/calendar.json", "category": "data", "tags": ["calendar", "schedule", "events", "month view", "week view", "day view", "agenda", "shifts", "pto", "planner"]},
-    {"name": "Card", "contract": "contracts/card.json", "category": "data", "tags": ["card", "tile", "item", "product", "proposal", "line item", "plan", "selectable card", "grid"]},
-    {"name": "Carousel", "contract": "contracts/carousel.json", "category": "layout", "tags": ["carousel", "slider", "slides", "gallery", "featured", "paged", "swipe"]},
-    {"name": "Cascader", "contract": "contracts/cascader.json", "category": "form", "tags": ["cascader", "cascade select", "nested select", "field picker", "related fields", "multi-level", "columns", "path picker"]},
-    {"name": "Cell", "contract": "contracts/cell.json", "category": "data", "tags": ["table", "cell", "data table", "row", "td", "tree cell", "tree table", "tree grid", "nested rows", "expandable row"]},
-    {"name": "ChatComposer", "contract": "contracts/chatcomposer.json", "category": "form", "tags": ["chat", "composer", "message box", "prompt", "ask", "assistant", "ai", "attachments", "dictate", "send"]},
-    {"name": "ChatHeader", "contract": "contracts/chatheader.json", "category": "navigation", "tags": ["chat header", "assistant", "ai", "copilot", "panel header", "plan mode", "options"]},
-    {"name": "ChatList", "contract": "contracts/chatlist.json", "category": "navigation", "tags": ["chat list", "chats", "playbooks", "saved chats", "history", "assistant", "ai", "panel"]},
-    {"name": "ChatMessage", "contract": "contracts/chatmessage.json", "category": "data", "tags": ["chat", "message", "assistant", "ai", "copilot", "bubble", "conversation", "suggestions", "reasoning"]},
-    {"name": "Checkbox", "contract": "contracts/checkbox.json", "category": "form", "tags": ["form", "checkbox", "multi-select", "toggle", "select all"]},
-    {"name": "Command", "contract": "contracts/command.json", "category": "navigation", "tags": ["command", "search", "global search", "palette", "quick actions", "combobox"]},
-    {"name": "Conveyor", "contract": "contracts/conveyor.json", "category": "layout", "tags": ["conveyor", "scroller", "scroll arrows", "overflow", "row", "chips", "scorecards", "side scroll"]},
-    {"name": "Count", "contract": "contracts/count.json", "category": "feedback", "tags": ["counter", "notification", "number badge", "unread", "badge count"]},
-    {"name": "DataGrid", "contract": "contracts/datagrid.json", "category": "data", "tags": ["data grid", "editable table", "spreadsheet", "inline edit", "rows", "conditions", "line items", "rule builder"]},
-    {"name": "DatePicker", "contract": "contracts/datepicker.json", "category": "form", "tags": ["date", "calendar", "date range", "picker", "period", "form"]},
-    {"name": "Density", "contract": "contracts/density.json", "category": "layout", "tags": ["density", "size", "compact", "comfortable", "text size", "scale"]},
-    {"name": "Drawer", "contract": "contracts/drawer.json", "category": "overlay", "tags": ["drawer", "side panel", "sheet", "slide over", "detail panel", "edit panel", "flyout"]},
-    {"name": "DropdownMenu", "contract": "contracts/dropdownmenu.json", "category": "overlay", "tags": ["dropdown", "menu", "actions", "more", "context menu", "filter options"]},
-    {"name": "Empty", "contract": "contracts/empty.json", "category": "feedback", "tags": ["empty", "empty state", "no results", "no data", "blank slate", "first run", "placeholder"]},
-    {"name": "Form", "contract": "contracts/form.json", "category": "form", "tags": ["form", "fieldset", "settings", "group", "legend", "submit", "sections"]},
-    {"name": "FormDisplay", "contract": "contracts/formdisplay.json", "category": "form", "tags": ["read only", "display", "detail", "key value", "label value", "summary", "form"]},
-    {"name": "FormulaEditor", "contract": "contracts/formulaeditor.json", "category": "form", "tags": ["formula", "expression", "calculated field", "rule", "validation", "code", "editor", "form"]},
-    {"name": "HeaderCell", "contract": "contracts/headercell.json", "category": "data", "tags": ["table", "header", "th", "column", "sort", "select all"]},
-    {"name": "HelpPopover", "contract": "contracts/helppopover.json", "category": "overlay", "tags": ["help", "popover", "context info", "question mark", "info panel", "field help"]},
-    {"name": "Icon", "contract": "contracts/icon.json", "category": "base", "tags": ["glyph", "symbol"]},
-    {"name": "Input", "contract": "contracts/input.json", "category": "form", "tags": ["form", "text field", "input", "search", "email", "label", "hint", "error", "required"]},
-    {"name": "Legend", "contract": "contracts/legend.json", "category": "data", "tags": ["legend", "key", "chart key", "series", "swatch", "colour key", "data visualization"]},
-    {"name": "LineChart", "contract": "contracts/linechart.json", "category": "data", "tags": ["chart", "line chart", "area chart", "stacked area", "trend", "time series", "graph", "dashboard"]},
-    {"name": "Logo", "contract": "contracts/logo.json", "category": "brand", "tags": ["brand", "wordmark", "symbol", "header"]},
-    {"name": "LogoAI", "contract": "contracts/logoai.json", "category": "brand", "tags": ["ai", "brand", "assistant", "copilot"]},
-    {"name": "Lookup", "contract": "contracts/lookup.json", "category": "form", "tags": ["lookup", "record picker", "search dialog", "table picker", "reference field", "product picker", "account picker", "modal table"]},
-    {"name": "Modal", "contract": "contracts/modal.json", "category": "overlay", "tags": ["modal", "dialog", "overlay", "form", "command palette"]},
-    {"name": "PageHeader", "contract": "contracts/pageheader.json", "category": "navigation", "tags": ["page header", "content header", "title", "breadcrumb", "page actions", "sticky"]},
-    {"name": "Pagination", "contract": "contracts/pagination.json", "category": "navigation", "tags": ["pagination", "pager", "pages", "rows per page", "page size", "table footer", "next page"]},
-    {"name": "PieChart", "contract": "contracts/piechart.json", "category": "data", "tags": ["chart", "pie chart", "donut", "share", "part to whole", "graph", "dashboard"]},
-    {"name": "Progress", "contract": "contracts/progress.json", "category": "feedback", "tags": ["progress", "progress bar", "meter", "gauge", "ring", "donut", "percent", "thresholds", "completion", "usage"]},
-    {"name": "ProgressLegacy", "contract": "contracts/progresslegacy.json", "category": "feedback", "tags": ["progress", "progress bar", "legacy", "percent", "upload", "loading", "completion"]},
-    {"name": "RadioGroup", "contract": "contracts/radiogroup.json", "category": "form", "tags": ["form", "radio", "single select", "choice", "options"]},
-    {"name": "Scoreboard", "contract": "contracts/scoreboard.json", "category": "data", "tags": ["scoreboard", "kpi", "metrics", "stats", "scorecard", "summary", "trend", "sparkline", "dashboard"]},
-    {"name": "Section", "contract": "contracts/section.json", "category": "layout", "tags": ["section", "section header", "heading", "group", "block", "collapsible", "panel", "detail page"]},
-    {"name": "SegmentedControl", "contract": "contracts/segmentedcontrol.json", "category": "form", "tags": ["segmented", "toggle", "choice", "density", "view switch", "period", "radio buttons"]},
-    {"name": "Select", "contract": "contracts/select.json", "category": "form", "tags": ["select", "dropdown", "picker", "multi-select", "options", "form"]},
-    {"name": "ShimmerText", "contract": "contracts/shimmertext.json", "category": "feedback", "tags": ["shimmer", "shimmer text", "loading text", "generating", "thinking", "processing", "ai status"]},
-    {"name": "SideNav", "contract": "contracts/sidenav.json", "category": "navigation", "tags": ["side nav", "sidebar", "navigation", "rail", "flyout", "secondary navigation", "menu"]},
-    {"name": "Skeleton", "contract": "contracts/skeleton.json", "category": "feedback", "tags": ["skeleton", "loading", "placeholder", "shimmer", "content loader", "gray bars", "pulse"]},
-    {"name": "Spinner", "contract": "contracts/spinner.json", "category": "feedback", "tags": ["spinner", "loading", "loader", "busy", "wait", "activity indicator", "refresh"]},
-    {"name": "Stepper", "contract": "contracts/stepper.json", "category": "navigation", "tags": ["stepper", "steps", "wizard", "progress", "flow", "setup", "onboarding", "import"]},
-    {"name": "Switch", "contract": "contracts/switch.json", "category": "form", "tags": ["switch", "toggle", "on off", "setting", "preference"]},
-    {"name": "Table", "contract": "contracts/table.json", "category": "data", "tags": ["table", "data table", "rows", "columns", "list", "selection", "select all", "total"]},
-    {"name": "Tabs", "contract": "contracts/tabs.json", "category": "navigation", "tags": ["tabs", "tab strip", "sections", "views", "panels", "count"]},
-    {"name": "Textarea", "contract": "contracts/textarea.json", "category": "form", "tags": ["form", "textarea", "multi-line", "notes", "description", "code", "formula"]},
-    {"name": "Timeline", "contract": "contracts/timeline.json", "category": "data", "tags": ["timeline", "activity", "feed", "history", "audit log", "events", "notes", "record activity"]},
-    {"name": "Toast", "contract": "contracts/toast.json", "category": "feedback", "tags": ["toast", "snackbar", "notification", "confirmation", "undo", "timed", "flash message"]},
-    {"name": "Toolbar", "contract": "contracts/toolbar.json", "category": "navigation", "tags": ["toolbar", "filter bar", "filters", "search", "list view", "table actions", "refresh"]},
-    {"name": "Tooltip", "contract": "contracts/tooltip.json", "category": "overlay", "tags": ["tooltip", "hint", "help", "hover", "info", "icon button label"]},
-    {"name": "TreeView", "contract": "contracts/treeview.json", "category": "data", "tags": ["tree", "tree view", "hierarchy", "nested list", "folders", "files", "org chart", "checkbox tree", "drag and drop", "reorder"]}
+    {
+      "name": "Accordion",
+      "contract": "contracts/accordion.json",
+      "category": "layout",
+      "tags": [
+        "disclosure",
+        "collapse",
+        "faq",
+        "expand",
+        "sections"
+      ]
+    },
+    {
+      "name": "Alert",
+      "contract": "contracts/alert.json",
+      "category": "feedback",
+      "tags": [
+        "callout",
+        "banner",
+        "notice",
+        "message",
+        "status"
+      ]
+    },
+    {
+      "name": "AlertDialog",
+      "contract": "contracts/alertdialog.json",
+      "category": "overlay",
+      "tags": [
+        "confirm",
+        "dialog",
+        "modal",
+        "destructive",
+        "are you sure"
+      ]
+    },
+    {
+      "name": "AnchorNav",
+      "contract": "contracts/anchornav.json",
+      "category": "navigation",
+      "tags": [
+        "anchor nav",
+        "on this page",
+        "section nav",
+        "jump links",
+        "in-page navigation",
+        "table of contents",
+        "scrollspy"
+      ]
+    },
+    {
+      "name": "AppHeader",
+      "contract": "contracts/appheader.json",
+      "category": "navigation",
+      "tags": [
+        "app header",
+        "top bar",
+        "shell",
+        "global search",
+        "environment",
+        "user",
+        "company",
+        "logo"
+      ]
+    },
+    {
+      "name": "Avatar",
+      "contract": "contracts/avatar.json",
+      "category": "base",
+      "tags": [
+        "person",
+        "user",
+        "profile",
+        "initials",
+        "photo"
+      ]
+    },
+    {
+      "name": "AvatarGroup",
+      "contract": "contracts/avatargroup.json",
+      "category": "base",
+      "tags": [
+        "people",
+        "assignees",
+        "stack",
+        "facepile"
+      ]
+    },
+    {
+      "name": "Badge",
+      "contract": "contracts/badge.json",
+      "category": "feedback",
+      "tags": [
+        "status",
+        "tag",
+        "chip",
+        "label",
+        "pill",
+        "filter"
+      ]
+    },
+    {
+      "name": "BadgeAlt",
+      "contract": "contracts/badgealt.json",
+      "category": "feedback",
+      "tags": [
+        "status",
+        "tag",
+        "label",
+        "bordered",
+        "alternate badge"
+      ]
+    },
+    {
+      "name": "BarChart",
+      "contract": "contracts/barchart.json",
+      "category": "data",
+      "tags": [
+        "chart",
+        "bar chart",
+        "column chart",
+        "stacked bar",
+        "horizontal bar",
+        "ranked",
+        "compare",
+        "graph",
+        "dashboard"
+      ]
+    },
+    {
+      "name": "Breadcrumb",
+      "contract": "contracts/breadcrumb.json",
+      "category": "navigation",
+      "tags": [
+        "path",
+        "trail",
+        "navigation",
+        "hierarchy"
+      ]
+    },
+    {
+      "name": "Button",
+      "contract": "contracts/button.json",
+      "category": "base",
+      "tags": [
+        "action",
+        "cta",
+        "submit"
+      ]
+    },
+    {
+      "name": "ButtonFilter",
+      "contract": "contracts/buttonfilter.json",
+      "category": "base",
+      "tags": [
+        "filter",
+        "split button",
+        "dropdown trigger",
+        "menu button"
+      ]
+    },
+    {
+      "name": "ButtonGroup",
+      "contract": "contracts/buttongroup.json",
+      "category": "base",
+      "tags": [
+        "toolbar",
+        "segmented",
+        "view switch",
+        "actions"
+      ]
+    },
+    {
+      "name": "Calendar",
+      "contract": "contracts/calendar.json",
+      "category": "data",
+      "tags": [
+        "calendar",
+        "schedule",
+        "events",
+        "month view",
+        "week view",
+        "day view",
+        "agenda",
+        "shifts",
+        "pto",
+        "planner"
+      ]
+    },
+    {
+      "name": "Card",
+      "contract": "contracts/card.json",
+      "category": "data",
+      "tags": [
+        "card",
+        "tile",
+        "item",
+        "product",
+        "proposal",
+        "line item",
+        "plan",
+        "selectable card",
+        "grid"
+      ]
+    },
+    {
+      "name": "Carousel",
+      "contract": "contracts/carousel.json",
+      "category": "layout",
+      "tags": [
+        "carousel",
+        "slider",
+        "slides",
+        "gallery",
+        "featured",
+        "paged",
+        "swipe"
+      ]
+    },
+    {
+      "name": "Cascader",
+      "contract": "contracts/cascader.json",
+      "category": "form",
+      "tags": [
+        "cascader",
+        "cascade select",
+        "nested select",
+        "field picker",
+        "related fields",
+        "multi-level",
+        "columns",
+        "path picker"
+      ]
+    },
+    {
+      "name": "Cell",
+      "contract": "contracts/cell.json",
+      "category": "data",
+      "tags": [
+        "table",
+        "cell",
+        "data table",
+        "row",
+        "td",
+        "tree cell",
+        "tree table",
+        "tree grid",
+        "nested rows",
+        "expandable row"
+      ]
+    },
+    {
+      "name": "ChatComposer",
+      "contract": "contracts/chatcomposer.json",
+      "category": "form",
+      "tags": [
+        "chat",
+        "composer",
+        "message box",
+        "prompt",
+        "ask",
+        "assistant",
+        "ai",
+        "attachments",
+        "dictate",
+        "send"
+      ]
+    },
+    {
+      "name": "ChatHeader",
+      "contract": "contracts/chatheader.json",
+      "category": "navigation",
+      "tags": [
+        "chat header",
+        "assistant",
+        "ai",
+        "copilot",
+        "panel header",
+        "plan mode",
+        "options"
+      ]
+    },
+    {
+      "name": "ChatList",
+      "contract": "contracts/chatlist.json",
+      "category": "navigation",
+      "tags": [
+        "chat list",
+        "chats",
+        "playbooks",
+        "saved chats",
+        "history",
+        "assistant",
+        "ai",
+        "panel"
+      ]
+    },
+    {
+      "name": "ChatMessage",
+      "contract": "contracts/chatmessage.json",
+      "category": "data",
+      "tags": [
+        "chat",
+        "message",
+        "assistant",
+        "ai",
+        "copilot",
+        "bubble",
+        "conversation",
+        "suggestions",
+        "reasoning"
+      ]
+    },
+    {
+      "name": "Checkbox",
+      "contract": "contracts/checkbox.json",
+      "category": "form",
+      "tags": [
+        "form",
+        "checkbox",
+        "multi-select",
+        "toggle",
+        "select all"
+      ]
+    },
+    {
+      "name": "Command",
+      "contract": "contracts/command.json",
+      "category": "navigation",
+      "tags": [
+        "command",
+        "search",
+        "global search",
+        "palette",
+        "quick actions",
+        "combobox"
+      ]
+    },
+    {
+      "name": "Conveyor",
+      "contract": "contracts/conveyor.json",
+      "category": "layout",
+      "tags": [
+        "conveyor",
+        "scroller",
+        "scroll arrows",
+        "overflow",
+        "row",
+        "chips",
+        "scorecards",
+        "side scroll"
+      ]
+    },
+    {
+      "name": "Count",
+      "contract": "contracts/count.json",
+      "category": "feedback",
+      "tags": [
+        "counter",
+        "notification",
+        "number badge",
+        "unread",
+        "badge count"
+      ]
+    },
+    {
+      "name": "DataGrid",
+      "contract": "contracts/datagrid.json",
+      "category": "data",
+      "tags": [
+        "data grid",
+        "editable table",
+        "spreadsheet",
+        "inline edit",
+        "rows",
+        "conditions",
+        "line items",
+        "rule builder"
+      ]
+    },
+    {
+      "name": "DatePicker",
+      "contract": "contracts/datepicker.json",
+      "category": "form",
+      "tags": [
+        "date",
+        "calendar",
+        "date range",
+        "picker",
+        "period",
+        "form"
+      ]
+    },
+    {
+      "name": "Density",
+      "contract": "contracts/density.json",
+      "category": "layout",
+      "tags": [
+        "density",
+        "size",
+        "compact",
+        "comfortable",
+        "text size",
+        "scale"
+      ]
+    },
+    {
+      "name": "Drawer",
+      "contract": "contracts/drawer.json",
+      "category": "overlay",
+      "tags": [
+        "drawer",
+        "side panel",
+        "sheet",
+        "slide over",
+        "detail panel",
+        "edit panel",
+        "flyout"
+      ]
+    },
+    {
+      "name": "DropdownMenu",
+      "contract": "contracts/dropdownmenu.json",
+      "category": "overlay",
+      "tags": [
+        "dropdown",
+        "menu",
+        "actions",
+        "more",
+        "context menu",
+        "filter options"
+      ]
+    },
+    {
+      "name": "Empty",
+      "contract": "contracts/empty.json",
+      "category": "feedback",
+      "tags": [
+        "empty",
+        "empty state",
+        "no results",
+        "no data",
+        "blank slate",
+        "first run",
+        "placeholder"
+      ]
+    },
+    {
+      "name": "Form",
+      "contract": "contracts/form.json",
+      "category": "form",
+      "tags": [
+        "form",
+        "fieldset",
+        "settings",
+        "group",
+        "legend",
+        "submit",
+        "sections"
+      ]
+    },
+    {
+      "name": "FormDisplay",
+      "contract": "contracts/formdisplay.json",
+      "category": "form",
+      "tags": [
+        "read only",
+        "display",
+        "detail",
+        "key value",
+        "label value",
+        "summary",
+        "form"
+      ]
+    },
+    {
+      "name": "FormulaEditor",
+      "contract": "contracts/formulaeditor.json",
+      "category": "form",
+      "tags": [
+        "formula",
+        "expression",
+        "calculated field",
+        "rule",
+        "validation",
+        "code",
+        "editor",
+        "form"
+      ]
+    },
+    {
+      "name": "HeaderCell",
+      "contract": "contracts/headercell.json",
+      "category": "data",
+      "tags": [
+        "table",
+        "header",
+        "th",
+        "column",
+        "sort",
+        "select all"
+      ]
+    },
+    {
+      "name": "HelpPopover",
+      "contract": "contracts/helppopover.json",
+      "category": "overlay",
+      "tags": [
+        "help",
+        "popover",
+        "context info",
+        "question mark",
+        "info panel",
+        "field help"
+      ]
+    },
+    {
+      "name": "Icon",
+      "contract": "contracts/icon.json",
+      "category": "base",
+      "tags": [
+        "glyph",
+        "symbol"
+      ]
+    },
+    {
+      "name": "Illustration",
+      "contract": "contracts/illustration.json",
+      "category": "brand",
+      "tags": [
+        "illustration",
+        "artwork",
+        "picture",
+        "drawing",
+        "empty state",
+        "spot art"
+      ]
+    },
+    {
+      "name": "Input",
+      "contract": "contracts/input.json",
+      "category": "form",
+      "tags": [
+        "form",
+        "text field",
+        "input",
+        "search",
+        "email",
+        "label",
+        "hint",
+        "error",
+        "required"
+      ]
+    },
+    {
+      "name": "Legend",
+      "contract": "contracts/legend.json",
+      "category": "data",
+      "tags": [
+        "legend",
+        "key",
+        "chart key",
+        "series",
+        "swatch",
+        "colour key",
+        "data visualization"
+      ]
+    },
+    {
+      "name": "LineChart",
+      "contract": "contracts/linechart.json",
+      "category": "data",
+      "tags": [
+        "chart",
+        "line chart",
+        "area chart",
+        "stacked area",
+        "trend",
+        "time series",
+        "graph",
+        "dashboard"
+      ]
+    },
+    {
+      "name": "Logo",
+      "contract": "contracts/logo.json",
+      "category": "brand",
+      "tags": [
+        "brand",
+        "wordmark",
+        "symbol",
+        "header"
+      ]
+    },
+    {
+      "name": "LogoAI",
+      "contract": "contracts/logoai.json",
+      "category": "brand",
+      "tags": [
+        "ai",
+        "brand",
+        "assistant",
+        "copilot"
+      ]
+    },
+    {
+      "name": "Lookup",
+      "contract": "contracts/lookup.json",
+      "category": "form",
+      "tags": [
+        "lookup",
+        "record picker",
+        "search dialog",
+        "table picker",
+        "reference field",
+        "product picker",
+        "account picker",
+        "modal table"
+      ]
+    },
+    {
+      "name": "Modal",
+      "contract": "contracts/modal.json",
+      "category": "overlay",
+      "tags": [
+        "modal",
+        "dialog",
+        "overlay",
+        "form",
+        "command palette"
+      ]
+    },
+    {
+      "name": "PageHeader",
+      "contract": "contracts/pageheader.json",
+      "category": "navigation",
+      "tags": [
+        "page header",
+        "content header",
+        "title",
+        "breadcrumb",
+        "page actions",
+        "sticky"
+      ]
+    },
+    {
+      "name": "Pagination",
+      "contract": "contracts/pagination.json",
+      "category": "navigation",
+      "tags": [
+        "pagination",
+        "pager",
+        "pages",
+        "rows per page",
+        "page size",
+        "table footer",
+        "next page"
+      ]
+    },
+    {
+      "name": "PieChart",
+      "contract": "contracts/piechart.json",
+      "category": "data",
+      "tags": [
+        "chart",
+        "pie chart",
+        "donut",
+        "share",
+        "part to whole",
+        "graph",
+        "dashboard"
+      ]
+    },
+    {
+      "name": "Progress",
+      "contract": "contracts/progress.json",
+      "category": "feedback",
+      "tags": [
+        "progress",
+        "progress bar",
+        "meter",
+        "gauge",
+        "ring",
+        "donut",
+        "percent",
+        "thresholds",
+        "completion",
+        "usage"
+      ]
+    },
+    {
+      "name": "ProgressLegacy",
+      "contract": "contracts/progresslegacy.json",
+      "category": "feedback",
+      "tags": [
+        "progress",
+        "progress bar",
+        "legacy",
+        "percent",
+        "upload",
+        "loading",
+        "completion"
+      ]
+    },
+    {
+      "name": "RadioGroup",
+      "contract": "contracts/radiogroup.json",
+      "category": "form",
+      "tags": [
+        "form",
+        "radio",
+        "single select",
+        "choice",
+        "options"
+      ]
+    },
+    {
+      "name": "Scoreboard",
+      "contract": "contracts/scoreboard.json",
+      "category": "data",
+      "tags": [
+        "scoreboard",
+        "kpi",
+        "metrics",
+        "stats",
+        "scorecard",
+        "summary",
+        "trend",
+        "sparkline",
+        "dashboard"
+      ]
+    },
+    {
+      "name": "Section",
+      "contract": "contracts/section.json",
+      "category": "layout",
+      "tags": [
+        "section",
+        "section header",
+        "heading",
+        "group",
+        "block",
+        "collapsible",
+        "panel",
+        "detail page"
+      ]
+    },
+    {
+      "name": "SegmentedControl",
+      "contract": "contracts/segmentedcontrol.json",
+      "category": "form",
+      "tags": [
+        "segmented",
+        "toggle",
+        "choice",
+        "density",
+        "view switch",
+        "period",
+        "radio buttons"
+      ]
+    },
+    {
+      "name": "Select",
+      "contract": "contracts/select.json",
+      "category": "form",
+      "tags": [
+        "select",
+        "dropdown",
+        "picker",
+        "multi-select",
+        "options",
+        "form"
+      ]
+    },
+    {
+      "name": "ShimmerText",
+      "contract": "contracts/shimmertext.json",
+      "category": "feedback",
+      "tags": [
+        "shimmer",
+        "shimmer text",
+        "loading text",
+        "generating",
+        "thinking",
+        "processing",
+        "ai status"
+      ]
+    },
+    {
+      "name": "SideNav",
+      "contract": "contracts/sidenav.json",
+      "category": "navigation",
+      "tags": [
+        "side nav",
+        "sidebar",
+        "navigation",
+        "rail",
+        "flyout",
+        "secondary navigation",
+        "menu"
+      ]
+    },
+    {
+      "name": "Skeleton",
+      "contract": "contracts/skeleton.json",
+      "category": "feedback",
+      "tags": [
+        "skeleton",
+        "loading",
+        "placeholder",
+        "shimmer",
+        "content loader",
+        "gray bars",
+        "pulse"
+      ]
+    },
+    {
+      "name": "Spinner",
+      "contract": "contracts/spinner.json",
+      "category": "feedback",
+      "tags": [
+        "spinner",
+        "loading",
+        "loader",
+        "busy",
+        "wait",
+        "activity indicator",
+        "refresh"
+      ]
+    },
+    {
+      "name": "Stepper",
+      "contract": "contracts/stepper.json",
+      "category": "navigation",
+      "tags": [
+        "stepper",
+        "steps",
+        "wizard",
+        "progress",
+        "flow",
+        "setup",
+        "onboarding",
+        "import"
+      ]
+    },
+    {
+      "name": "Switch",
+      "contract": "contracts/switch.json",
+      "category": "form",
+      "tags": [
+        "switch",
+        "toggle",
+        "on off",
+        "setting",
+        "preference"
+      ]
+    },
+    {
+      "name": "Table",
+      "contract": "contracts/table.json",
+      "category": "data",
+      "tags": [
+        "table",
+        "data table",
+        "rows",
+        "columns",
+        "list",
+        "selection",
+        "select all",
+        "total"
+      ]
+    },
+    {
+      "name": "Tabs",
+      "contract": "contracts/tabs.json",
+      "category": "navigation",
+      "tags": [
+        "tabs",
+        "tab strip",
+        "sections",
+        "views",
+        "panels",
+        "count"
+      ]
+    },
+    {
+      "name": "Textarea",
+      "contract": "contracts/textarea.json",
+      "category": "form",
+      "tags": [
+        "form",
+        "textarea",
+        "multi-line",
+        "notes",
+        "description",
+        "code",
+        "formula"
+      ]
+    },
+    {
+      "name": "Timeline",
+      "contract": "contracts/timeline.json",
+      "category": "data",
+      "tags": [
+        "timeline",
+        "activity",
+        "feed",
+        "history",
+        "audit log",
+        "events",
+        "notes",
+        "record activity"
+      ]
+    },
+    {
+      "name": "Toast",
+      "contract": "contracts/toast.json",
+      "category": "feedback",
+      "tags": [
+        "toast",
+        "snackbar",
+        "notification",
+        "confirmation",
+        "undo",
+        "timed",
+        "flash message"
+      ]
+    },
+    {
+      "name": "Toolbar",
+      "contract": "contracts/toolbar.json",
+      "category": "navigation",
+      "tags": [
+        "toolbar",
+        "filter bar",
+        "filters",
+        "search",
+        "list view",
+        "table actions",
+        "refresh"
+      ]
+    },
+    {
+      "name": "Tooltip",
+      "contract": "contracts/tooltip.json",
+      "category": "overlay",
+      "tags": [
+        "tooltip",
+        "hint",
+        "help",
+        "hover",
+        "info",
+        "icon button label"
+      ]
+    },
+    {
+      "name": "TreeView",
+      "contract": "contracts/treeview.json",
+      "category": "data",
+      "tags": [
+        "tree",
+        "tree view",
+        "hierarchy",
+        "nested list",
+        "folders",
+        "files",
+        "org chart",
+        "checkbox tree",
+        "drag and drop",
+        "reorder"
+      ]
+    }
   ],
   "patterns": [
-    {"name": "ChatWindow", "contract": "contracts/chatwindow.json", "tags": ["chat window", "assistant", "ai", "copilot", "side panel", "full screen", "conversation"]}
+    {
+      "name": "ChatWindow",
+      "contract": "contracts/chatwindow.json",
+      "tags": [
+        "chat window",
+        "assistant",
+        "ai",
+        "copilot",
+        "side panel",
+        "full screen",
+        "conversation"
+      ]
+    }
   ],
   "foundations": [
-    {"name": "Layout", "contract": "contracts/layout.json", "tags": ["layout", "spacing", "padding", "gutter", "margin", "grid", "page", "layout-content", "section rhythm"]}
+    {
+      "name": "Layout",
+      "contract": "contracts/layout.json",
+      "tags": [
+        "layout",
+        "spacing",
+        "padding",
+        "gutter",
+        "margin",
+        "grid",
+        "page",
+        "layout-content",
+        "section rhythm"
+      ]
+    }
   ]
 }

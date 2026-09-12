@@ -271,3 +271,8 @@ chat/bubble-max|280px
 chat/tile|{ref/space/700}
 # The docked assistant column (Figma BP AI side panel 492:12892).
 chat/panel|395px
+
+# Illustration (Figma BP AI get started 476:7822): the drawn art comes at three sizes.
+illustration/sm|{ref/space/1300}
+illustration/md|120px
+illustration/lg|160px

@@ -15,7 +15,7 @@ import { ChatList, type ChatListProps } from "@/ui/ChatList/ChatList";
 import { ChatMessage, type ChatMessageActionId, type ChatMessageProps } from "@/ui/ChatMessage/ChatMessage";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
 import { Empty } from "@/ui/Empty/Empty";
-import { LogoAI } from "@/ui/LogoAI/LogoAI";
+import { Illustration } from "@/ui/Illustration/Illustration";
 import { ChatWindow, type ChatWindowProps } from "@/patterns/ChatWindow/ChatWindow";
 import { Density, type DensityValue } from "@/ui/Density/Density";
 import { Drawer, type DrawerProps } from "@/ui/Drawer/Drawer";
@@ -569,16 +569,18 @@ const ADD_MENU = [
 ];
 
 // Playground harness: the real ChatComposer wired up, so sending, attachments and the switches work. Not a kit piece.
-export function ChatComposerDemo({ selecting: askSelecting, dictating: askDictating, mode: askMode, ...p }: ChatComposerProps) {
+export function ChatComposerDemo({ selecting: askSelecting, dictating: askDictating, mode: askMode, scopeLabel, ...p }: ChatComposerProps) {
+  const [scoping, setScoping] = useState(true);
   const [files, setFiles] = useState([{ id: "raw", label: "Raw-Data.xls" }, { id: "photo", label: "Photo1.jpg" }]);
   const [selecting, setSelecting] = useState(Boolean(askSelecting));
   const [dictating, setDictating] = useState(Boolean(askDictating));
   const [mode, setMode] = useState<ChatComposerMode>(askMode ?? "quick");
   const [sent, setSent] = useState<string[]>([]);
   // The control panel sets the switches; pressing them in the box then carries on from there.
-  const [from, setFrom] = useState({ askSelecting, askDictating, askMode });
-  if (from.askSelecting !== askSelecting || from.askDictating !== askDictating || from.askMode !== askMode) {
-    setFrom({ askSelecting, askDictating, askMode });
+  const [from, setFrom] = useState({ askSelecting, askDictating, askMode, scopeLabel });
+  if (from.askSelecting !== askSelecting || from.askDictating !== askDictating || from.askMode !== askMode || from.scopeLabel !== scopeLabel) {
+    setFrom({ askSelecting, askDictating, askMode, scopeLabel });
+    setScoping(true);
     setSelecting(Boolean(askSelecting));
     setDictating(Boolean(askDictating));
     setMode(askMode ?? "quick");
@@ -589,7 +591,8 @@ export function ChatComposerDemo({ selecting: askSelecting, dictating: askDictat
         <p key={i} style={{ margin: 0, fontSize: "var(--font-size-xsmall)", color: "var(--text-neutral)" }}>{`Sent: ${t}`}</p>
       ))}
       <ChatComposer
-        {...p} hints={ASK_HINTS} addMenu={ADD_MENU} attachments={files} onAttachmentRemove={(id) => setFiles(files.filter((f) => f.id !== id))}
+        {...p} scopeLabel={scoping ? scopeLabel : undefined} onScopeClose={() => setScoping(false)}
+        hints={ASK_HINTS} addMenu={ADD_MENU} attachments={files} onAttachmentRemove={(id) => setFiles(files.filter((f) => f.id !== id))}
         selecting={selecting} onSelectingChange={setSelecting} dictating={dictating} onDictatingChange={setDictating}
         mode={mode} onModeChange={setMode} onSend={(text) => setSent([...sent, text].slice(-3))}
         onAdd={(id) => setFiles([...files, { id: `${id}-${files.length}`, label: id === "playbook" ? "Monthly close" : "New-file.csv" }])}
@@ -685,20 +688,33 @@ const START_SUGGESTIONS = [
   { id: "more", label: "View more suggestions" },
 ];
 
+// Whatever page the assistant is opened from: the scope row takes its name, or is gone when there is none.
+const SCOPE_PAGES: Record<string, string | undefined> = {
+  accounts: "Accounts page",
+  product: "Product page",
+  invoice: "Invoice page",
+  none: undefined,
+};
+
 // Playground harness: the ChatWindow pattern driven like a screen would drive it. Not a kit piece.
-export function ChatWindowDemo({ started = false, size: asked = "panel", ...p }: Omit<ChatWindowProps, "composer"> & { started?: boolean }) {
+export function ChatWindowDemo({ started = false, page = "accounts", size: asked = "panel", ...p }: Omit<ChatWindowProps, "composer"> & { started?: boolean; page?: string }) {
   const [turns, setTurns] = useState<{ id: string; author: "user" | "assistant"; text: string }[]>(
     started ? [{ id: "q1", author: "user", text: "How many accounts are inactive?" }, { id: "a1", author: "assistant", text: "42 accounts have had no activity for 90 days or more." }] : [],
   );
   const [view, setView] = useState<"chat" | "chats" | "playbooks">("chat");
   const [notice, setNotice] = useState(true);
   const [plan, setPlan] = useState(false);
+  const [scoping, setScoping] = useState(true);
+  // A new chat opens on the magnifier art; the first opening of the assistant on the AI chip.
+  const [freshChat, setFreshChat] = useState(false);
   // The screen owns the size, so the full-screen button in the header works like it does on its own.
   const [size, setSize] = useState(asked);
-  const [from, setFrom] = useState({ started, asked });
-  if (from.started !== started || from.asked !== asked) {
-    setFrom({ started, asked });
+  const [from, setFrom] = useState({ started, asked, page });
+  if (from.started !== started || from.asked !== asked || from.page !== page) {
+    setFrom({ started, asked, page });
     setSize(asked);
+    setScoping(true);
+    setFreshChat(false);
     setTurns(started ? [{ id: "q1", author: "user", text: "How many accounts are inactive?" }, { id: "a1", author: "assistant", text: "42 accounts have had no activity for 90 days or more." }] : []);
   }
   const ask = (text: string) => setTurns((old) => [
@@ -707,12 +723,13 @@ export function ChatWindowDemo({ started = false, size: asked = "panel", ...p }:
     { id: `a${old.length}`, author: "assistant" as const, text: "Here is what I found. 42 accounts have had no activity for 90 days or more." },
   ]);
   return (
-    <div style={{ height: 560, display: "flex", justifyContent: "center", background: "var(--bg-neutral-subtle)" }}>
+    // Tall enough to show the whole window, the way it stands beside a real screen (Figma panel 411 x 1044).
+    <div style={{ height: 800, display: "flex", justifyContent: "center", background: "var(--bg-neutral-subtle)" }}>
       <ChatWindow
         {...p}
         size={size} expanded={size === "full"} onExpandedChange={(full) => setSize(full ? "full" : "panel")}
         title="BP AI" chatsCount={7} playbooksCount={9} planMode={plan} onPlanModeChange={setPlan}
-        onNewChat={() => { setTurns([]); setView("chat"); }} onClose={() => setView("chat")}
+        onNewChat={() => { setTurns([]); setView("chat"); setFreshChat(true); }} onClose={() => setView("chat")}
         onMenuSelect={(id) => { if (id === "chats" || id === "playbooks") setView(view === id ? "chat" : id); }}
         notice={notice ? "AI can make mistakes, verify important information." : undefined}
         onNoticeDismiss={() => setNotice(false)}
@@ -730,15 +747,22 @@ export function ChatWindowDemo({ started = false, size: asked = "panel", ...p }:
           // Figma BP AI get started 476:7442: the mark and the name in the middle, the starters stacked
           // under them against the left edge of the window, in line with the notice and the box.
           <div style={{ display: "grid", gap: "var(--space-medium)" }}>
-            <Empty title="Get Started" description="Ask a question, or pick one to start." media={<LogoAI variant="symbol" tone="filled" label="BP AI" />} />
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--space-xsmall)" }}>
+            {/* The name is the biggest thing on an otherwise empty panel, so the title steps up one size.
+                Only the size the kit Empty reads for its title is swapped; the component is untouched. */}
+            <div style={{ ["--font-size-large" as string]: "var(--font-size-xxlarge)" }}>
+              <Empty title="Get Started" media={<Illustration name={freshChat ? "chat-search" : "ai-chip"} animated={freshChat} />} />
+            </div>
+            {/* The starters sit on the quiet grey rather than white paper, so they read as things to pick,
+                not as the buttons of a form. The kit Button is unchanged: only the surface under it is. */}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--space-xsmall)", ["--surface-raised" as string]: "var(--bg-neutral-subtle)" }}>
               {START_SUGGESTIONS.map((s) => (
                 <Button key={s.id} size="sm" onClick={() => ask(s.label)}>{s.label}</Button>
               ))}
             </div>
           </div>
         }
-        composer={<ChatComposerPiece scopeLabel="Accounts page" defaultScoped hints={ASK_HINTS} addMenu={ADD_MENU} onSend={ask} />}
+        // The scope row names whatever page the person is on, and is gone on a page with nothing to scope to.
+        composer={<ChatComposerPiece scopeLabel={scoping ? SCOPE_PAGES[page] : undefined} onScopeClose={() => setScoping(false)} defaultScoped hints={ASK_HINTS} addMenu={ADD_MENU} onSend={ask} />}
       >
         {turns.length > 0 ? turns.map((t) => <ChatMessage key={t.id} author={t.author} text={t.text} person={{ name: "Ana Petrovic" }} />) : null}
       </ChatWindow>

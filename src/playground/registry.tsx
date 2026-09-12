@@ -37,6 +37,7 @@ import { FormulaEditor, type FormulaEditorProps } from "@/ui/FormulaEditor/Formu
 import { HeaderCell } from "@/ui/HeaderCell/HeaderCell";
 import { HelpPopover, type HelpPopoverProps } from "@/ui/HelpPopover/HelpPopover";
 import { Icon } from "@/ui/Icon/Icon";
+import { Illustration, type IllustrationName, type IllustrationProps } from "@/ui/Illustration/Illustration";
 import { Input, type InputProps } from "@/ui/Input/Input";
 import { LineChart, type LineChartProps } from "@/ui/LineChart/LineChart";
 import { Logo } from "@/ui/Logo/Logo";
@@ -885,11 +886,12 @@ export const registry: Record<string, Entry> = {
   },
   ChatWindow: {
     // The pattern, driven the way a screen would drive it: the panel, the notice and the turns live outside it.
-    render: ({ started, ...p }) => <ChatWindowDemo {...(p as Record<string, unknown>)} started={Boolean(started)} />,
+    render: ({ started, page, ...p }) => <ChatWindowDemo {...(p as Record<string, unknown>)} started={Boolean(started)} page={String(page ?? "accounts")} />,
     preview: { size: "panel" },
     hide: ["composer", "children", "empty", "panel", "panelOpen", "title", "notice", "onNoticeDismiss", "onNewChat", "expanded", "onExpandedChange", "onClose", "chatsCount", "playbooksCount", "planMode", "onPlanModeChange", "menu", "onMenuSelect"],
     toggles: { started: { label: "Conversation started", default: false } },
-    hint: "Switch between the docked column and full screen. Pick a suggestion or type to start; open Chats or Playbooks from the options menu, and watch where the panel lands in each size.",
+    extras: { page: { values: ["accounts", "product", "invoice", "none"], default: "accounts" } },
+    hint: "Switch between the docked column and full screen. Change the page the assistant was opened from: the scope row takes its name, and goes when there is nothing to scope to. Pick a suggestion or type to start; open Chats or Playbooks from the options menu, and watch where the panel lands in each size.",
     block: true,
     wide: true,
     card: <div style={{ width: 300 }}><ChatHeader title="BP AI" chatsCount={7} onNewChat={() => {}} onClose={() => {}} /></div>,
@@ -1619,6 +1621,13 @@ export const registry: Record<string, Entry> = {
       message === "error" ? { ...p, error: "Select a billing cycle to continue." } : message === "hint" ? { ...p, hint: "You can change this later." } : p,
     hint: "Switch size, orientation, layout and message. Descriptions and badges show in card layout.",
     card: <RadioGroup legend="Billing cycle" defaultValue="annual" options={[{ value: "monthly", label: "Monthly" }, { value: "annual", label: "Annual" }]} />,
+  },
+  Illustration: {
+    render: (p) => <Illustration {...(p as unknown as IllustrationProps)} name={(p.name as IllustrationName) || "ai-chip"} />,
+    preview: { name: "ai-chip", size: "md" },
+    hide: ["label"],
+    hint: "Pick the artwork and how big it is drawn. Set it moving and the glass walks over the message; it holds still for anyone who asks for less motion. The colors belong to the drawing, so they stay put in light and dark.",
+    card: <Illustration name="ai-chip" size="sm" />,
   },
   Icon: {
     render: (p) => <Icon {...(p as object)} name={(p.name as string) || "search"} />,

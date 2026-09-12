@@ -79,8 +79,9 @@ export function ChatMessage({
   suggestions, onSuggestion, menu, onMenuSelect, person, label,
 }: ChatMessageProps) {
   const mine = author === "user";
-  // The person always speaks in a bubble; the assistant only for a short line or while it is working.
-  const inBubble = bubble ?? (mine || Boolean(status));
+  // Both sides speak in a bubble: grey for the person, brand faint for the assistant. Pass bubble false
+  // for a long answer that should run as plain text down the panel.
+  const inBubble = bubble ?? true;
   const body = status ?? text;
   // While it is working there is nothing to copy or vote on yet, so the buttons wait.
   const keys = actions ?? (mine || status ? [] : (["copy", "up", "down", "share", "speak"] as ChatMessageActionId[]));
@@ -101,12 +102,19 @@ export function ChatMessage({
         )}
         {!mine && <span className={styles.avatar}>{avatar}</span>}
         <div className={styles.body}>
-          {(body || children) && (
-            inBubble
-              ? <p className={[styles.bubble, status ? styles.working : ""].join(" ")}>{body}</p>
-              : <div className={styles.text}>{body && <p className={styles.paragraph}>{body}</p>}{children}</div>
-          )}
-          {!inBubble && sections && sections.length > 0 && (
+          {inBubble
+            ? (
+              <>
+                {body && <p className={[styles.bubble, status ? styles.working : ""].join(" ")}>{body}</p>}
+                {/* Anything richer than a line goes under the bubble, where it has the width for it. */}
+                {children && <div className={styles.text}>{children}</div>}
+              </>
+            )
+            : (body || children) && (
+              <div className={styles.text}>{body && <p className={styles.paragraph}>{body}</p>}{children}</div>
+            )}
+          {/* The workings open under the bubble, not inside it. */}
+          {sections && sections.length > 0 && (
             <div className={styles.sections}>{sections.map((s) => <Disclosure key={s.id} section={s} />)}</div>
           )}
           {suggestions && suggestions.length > 0 && (

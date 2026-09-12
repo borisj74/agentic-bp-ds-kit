@@ -1,0 +1,111 @@
+{
+  "name": "Illustration",
+  "path": "src/ui/Illustration/Illustration.tsx",
+  "intent": "A piece of drawn artwork from the product, like the picture over an empty page.",
+  "usage": "Use Illustration where a screen needs a drawn picture rather than an icon or a logo: the art over an Empty, or the opening of an assistant panel. It is one component: pass name for the artwork and size for how big it is drawn. animated sets the art moving where the movement says something, like the glass walking over the message while the assistant waits for a first question; it is still by default, and stops for anyone who asks for less motion. The art carries the brand colors of the drawing itself, so it does not change with the theme. It is decorative by default and hidden from screen readers; pass label only when the picture is the only thing saying what the block is about. New artwork joins the name list here; do not paste an SVG into a screen. See contracts/illustration.json for the full contract.",
+  "props": {
+    "name": {
+      "enum": [
+        "ai-chip",
+        "chat-search"
+      ],
+      "required": true,
+      "note": "Which artwork to draw. ai-chip is the AI chip with its branch, used to open the assistant. chat-search is the message under a magnifier, used when a new chat is started."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "How big the art is drawn: 56, 120 or 160."
+    },
+    "animated": {
+      "type": "boolean",
+      "default": false,
+      "note": "The art moves: on chat-search the magnifier walks over the message in a slow loop. ai-chip stands still. Off for a picture people read and move on from."
+    },
+    "label": {
+      "type": "string",
+      "note": "What the picture says, for people who cannot see it. Without it the art is decorative and hidden."
+    }
+  },
+  "useWhen": [
+    "The picture over an Empty block.",
+    "The opening of the assistant, before the first question.",
+    "A new chat, before anything has been asked in it."
+  ],
+  "doNot": [
+    "Do not paste an SVG into a screen or a pattern. Add the artwork here instead.",
+    "Do not use it for an icon. Use Icon.",
+    "Do not use it for the product mark. Use Logo or LogoAI.",
+    "Do not recolor the art with tokens; the drawing keeps its own colors.",
+    "Do not give it a label when the words beside it already say the same thing.",
+    "Do not turn the movement on for artwork people only glance at, or beside other moving things."
+  ],
+  "a11y": [
+    "The art is hidden from screen readers unless label is passed.",
+    "With label it is an image with that name.",
+    "The colors are part of the drawing, so it reads the same in light and dark.",
+    "The movement stops under prefers-reduced-motion, and it says nothing on its own."
+  ],
+  "snippet": "<Illustration name=\"ai-chip\" size=\"md\" />",
+  "examples": [
+    {
+      "title": "Artwork",
+      "usage": "The AI chip and the message under a magnifier.",
+      "items": [
+        {
+          "props": {
+            "name": "ai-chip",
+            "size": "md"
+          }
+        },
+        {
+          "props": {
+            "name": "chat-search",
+            "size": "md"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Sizes",
+      "usage": "Small, medium and large.",
+      "items": [
+        {
+          "props": {
+            "name": "ai-chip",
+            "size": "sm"
+          }
+        },
+        {
+          "props": {
+            "name": "ai-chip",
+            "size": "md"
+          }
+        },
+        {
+          "props": {
+            "name": "ai-chip",
+            "size": "lg"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Moving",
+      "usage": "The glass walking over the message.",
+      "items": [
+        {
+          "props": {
+            "name": "chat-search",
+            "size": "md",
+            "animated": true
+          }
+        }
+      ]
+    }
+  ]
+}

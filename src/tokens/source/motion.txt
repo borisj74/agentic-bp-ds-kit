@@ -35,3 +35,6 @@ motion/loading/duration|1600ms
 motion/loading/easing|{motion/ease/in-out}
 # Spinner: one turn of the ticks. Not in Figma.
 motion/spin/duration|1000ms
+# Illustration sweep: the magnifier walking over the message. One slow, unhurried loop. Not in Figma.
+motion/sweep/duration|6000ms
+motion/sweep/easing|{motion/ease/in-out}

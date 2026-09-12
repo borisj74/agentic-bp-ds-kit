@@ -1,6 +1,6 @@
 "use client";
 import type { ReactNode } from "react";
-import { Alert } from "@/ui/Alert/Alert";
+import { Button } from "@/ui/Button/Button";
 import { ChatHeader } from "@/ui/ChatHeader/ChatHeader";
 import type { DropdownMenuEntry } from "@/ui/DropdownMenu/DropdownMenu";
 import styles from "./ChatWindow.module.css";
@@ -51,9 +51,14 @@ export function ChatWindow({
         <div className={styles.column}>
           <div className={styles.body}>
             {turns ?? (empty && <div className={styles.blank}>{empty}</div>)}
+            {/* Figma BP AI get started 505:12204: the line about mistakes sits quietly at the foot of the
+                turns, right over the box, with its own close rather than a coloured band. */}
             {notice && (
               <div className={styles.notice}>
-                <Alert tone="info" dismissible onDismiss={onNoticeDismiss}>{notice}</Alert>
+                <p className={styles.noticeText}>{notice}</p>
+                {onNoticeDismiss && (
+                  <Button size="sm" variant="tertiary" iconOnly iconStart="close" onClick={onNoticeDismiss}>Dismiss</Button>
+                )}
               </div>
             )}
           </div>

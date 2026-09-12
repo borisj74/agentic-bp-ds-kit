@@ -1118,6 +1118,8 @@
   --motion-loading-duration: 1600ms;
   --motion-loading-easing: var(--motion-ease-in-out);
   --motion-spin-duration: 1000ms;
+  --motion-sweep-duration: 6000ms;
+  --motion-sweep-easing: var(--motion-ease-in-out);
   --opacity-0: 0;
   --opacity-100: 0.08;
   --opacity-200: 0.16;
@@ -1302,4 +1304,7 @@
   --chat-bubble-max: 280px;
   --chat-tile: var(--ref-space-700);
   --chat-panel: 395px;
+  --illustration-sm: var(--ref-space-1300);
+  --illustration-md: 120px;
+  --illustration-lg: 160px;
 }

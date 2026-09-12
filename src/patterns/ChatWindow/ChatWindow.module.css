@@ -11,12 +11,12 @@
 
 /* The turns, newest at the foot: the body scrolls and the composer stays put. */
 .body { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-medium); padding: var(--space-medium); }
-/* The turns sit at the foot. An auto margin does this without cutting the top off once they outgrow the window,
-   which justify-content would. */
-.body > :first-child { margin-block-start: auto; }
+/* The turns start under the header and run down, so the first question stays where it was asked. */
 /* Before the first question the get-started block sits in the middle instead. */
 .blank { margin-block: auto; }
-.notice { flex: none; }
+/* The notice keeps to the foot of the turns, right over the box, however few turns there are. */
+.notice { flex: none; margin-block-start: auto; display: flex; align-items: center; justify-content: center; gap: var(--space-xxsmall); }
+.noticeText { margin: 0; font-size: var(--font-size-xsmall); line-height: var(--line-height-normal); color: var(--text-neutral-subtle); }
 /* The box belongs to the window: it runs edge to edge at the foot, with one line over it,
    instead of sitting in the body as a card of its own. */
 .foot { flex: none; }

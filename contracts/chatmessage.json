@@ -2,7 +2,7 @@
   "name": "ChatMessage",
   "path": "src/ui/ChatMessage/ChatMessage.tsx",
   "intent": "One turn in a chat with the assistant: what the person asked, or what the assistant answered, with its workings, buttons and suggestions.",
-  "usage": "Use ChatMessage for each turn in an assistant panel. It is one component: pass author user or assistant. A person's turn sits on the right in a grey bubble with their avatar, and can carry a More menu for Edit and Copy. The assistant answers on the left under the AI mark: a short line sits in a brand bubble, a long answer runs as plain text, and status shows the bubble glowing while it works, like Analyzing your request. sections opens its workings, like Reasoning 1 and Tool References 2. actions draws the row of buttons at the very bottom of an answer (copy, good work, needs work, share, read aloud), after the workings and the suggestions, never above the answer, and pressed keeps the one that was picked lit. suggestions writes what to ask next, each one a kit Button that sends itself, lined up on the left under the answer. See contracts/chatmessage.json for the full contract.",
+  "usage": "Use ChatMessage for each turn in an assistant panel. It is one component: pass author user or assistant. A person's turn sits on the right in a grey bubble with their avatar, and can carry a More menu for Edit and Copy. The assistant answers on the left under the AI mark, in a brand bubble of its own; pass bubble false for a long answer that should run as plain text down the panel. status shows the bubble glowing while it works, like Analyzing your request. sections opens its workings, like Reasoning 1 and Tool References 2. actions draws the row of buttons at the very bottom of an answer (copy, good work, needs work, share, read aloud), after the workings and the suggestions, never above the answer, and pressed keeps the one that was picked lit. suggestions writes what to ask next, each one a kit Button that sends itself, lined up on the left under the answer. See contracts/chatmessage.json for the full contract.",
   "props": {
     "author": {
       "enum": [
@@ -22,7 +22,7 @@
     },
     "bubble": {
       "type": "boolean",
-      "note": "Overrides the default: a person always speaks in a bubble, the assistant only for a short line or while working."
+      "note": "Overrides where the words sit. Both sides speak in a bubble unless this is false, which runs the answer as plain text."
     },
     "status": {
       "type": "string",

@@ -25,6 +25,7 @@ export interface ChatComposerProps {
   scoped?: boolean;
   defaultScoped?: boolean;
   onScopedChange?: (scoped: boolean) => void;
+  onScopeClose?: () => void;
   attachments?: ChatComposerAttachment[];
   onAttachmentRemove?: (id: string) => void;
   addMenu?: DropdownMenuEntry[];
@@ -44,7 +45,7 @@ const MAX_ROWS = 6;
 
 export function ChatComposer({
   value, defaultValue = "", onChange, onSend, placeholder = "Ask questions", hints,
-  scopeLabel, scoped, defaultScoped = false, onScopedChange,
+  scopeLabel, scoped, defaultScoped = false, onScopedChange, onScopeClose,
   attachments, onAttachmentRemove, addMenu, onAdd,
   selecting = false, onSelectingChange, dictating = false, onDictatingChange,
   mode = "quick", onModeChange, disabled = false, label = "Ask BP AI",
@@ -101,6 +102,12 @@ export function ChatComposer({
             label={`Scope to ${scopeLabel}`} size="sm" checked={on} disabled={disabled}
             onChange={(next) => { if (scoped === undefined) setInnerScoped(next); onScopedChange?.(next); }}
           />
+          {/* The scope can be shut for good when the question is not about the page at all. */}
+          {onScopeClose && (
+            <Tooltip content={`Stop scoping to ${scopeLabel}`}>
+              <Button size="sm" variant="tertiary" iconOnly iconStart="close" disabled={disabled} onClick={onScopeClose}>{`Stop scoping to ${scopeLabel}`}</Button>
+            </Tooltip>
+          )}
         </div>
       )}
       {/* Attachments: the files and fields going with the message. The bar is gone when there are none. */}
