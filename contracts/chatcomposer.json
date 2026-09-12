@@ -1,0 +1,157 @@
+{
+  "name": "ChatComposer",
+  "path": "src/ui/ChatComposer/ChatComposer.tsx",
+  "intent": "The box people write to the assistant in: what the question is about, what is attached, the words, and the toolbar that sends it.",
+  "usage": "Use ChatComposer at the foot of an assistant panel or a full-screen chat. It is one component: the ask field grows to six lines and then scrolls, Enter sends and Shift plus Enter starts a new line. scopeLabel adds the Scope to this page checkbox on top. attachments shows the files and fields going with the message, each a kit Badge you can take off, and the bar is gone when there are none. The toolbar holds add (a kit DropdownMenu when you pass addMenu), select fields, dictate, Deep Thought and send; send is off until something is typed. Select fields and dictate are switches: while one is on it turns red and says how to stop. See contracts/chatcomposer.json for the full contract.",
+  "props": {
+    "value": {
+      "type": "string",
+      "note": "Controlled text. Leave it out to let the box keep its own."
+    },
+    "defaultValue": {
+      "type": "string",
+      "note": "What the box starts with."
+    },
+    "onChange": {
+      "type": "(value: string) => void",
+      "note": "The text changed."
+    },
+    "onSend": {
+      "type": "(value: string) => void",
+      "note": "The message was sent, by the button or by Enter. The box clears itself."
+    },
+    "placeholder": {
+      "type": "string",
+      "default": "Ask questions",
+      "note": "The grey line in an empty box."
+    },
+    "hints": {
+      "type": "string[]",
+      "note": "Lines that turn over while the box is empty, like Ask questions, Analyze data, Build dashboards. They stand still when the person prefers reduced motion."
+    },
+    "scopeLabel": {
+      "type": "string",
+      "note": "What the question can be scoped to, like Accounts page. Without it there is no scope row."
+    },
+    "scoped": {
+      "type": "boolean",
+      "note": "Controlled scope checkbox."
+    },
+    "defaultScoped": {
+      "type": "boolean",
+      "default": false,
+      "note": "Whether the scope starts ticked."
+    },
+    "onScopedChange": {
+      "type": "(scoped: boolean) => void"
+    },
+    "attachments": {
+      "type": "ChatComposerAttachment[]",
+      "itemShape": {
+        "id": "string",
+        "label": "string"
+      },
+      "note": "Files and fields going with the message, like Raw-Data.xls or Account Name."
+    },
+    "onAttachmentRemove": {
+      "type": "(id: string) => void",
+      "note": "The × on a chip was pressed."
+    },
+    "addMenu": {
+      "type": "DropdownMenuEntry[]",
+      "note": "What the add button offers, like Add file or image and Run playbook. Without it, add is a plain button."
+    },
+    "onAdd": {
+      "type": "(id: string) => void",
+      "note": "A pick from the add menu, or add with no menu."
+    },
+    "selecting": {
+      "type": "boolean",
+      "default": false,
+      "note": "The person is picking fields on the page. The button turns red and says Stop field selection."
+    },
+    "onSelectingChange": {
+      "type": "(selecting: boolean) => void"
+    },
+    "dictating": {
+      "type": "boolean",
+      "default": false,
+      "note": "The microphone is on. The button turns red and says Stop dictation."
+    },
+    "onDictatingChange": {
+      "type": "(dictating: boolean) => void"
+    },
+    "mode": {
+      "enum": [
+        "quick",
+        "deep"
+      ],
+      "default": "quick",
+      "note": "quick answers fast; deep thinks longer. The button stays lit on deep. It only shows when onModeChange is set."
+    },
+    "onModeChange": {
+      "type": "(mode: ChatComposerMode) => void"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "note": "Nothing can be typed or pressed, like while the assistant is answering."
+    },
+    "label": {
+      "type": "string",
+      "default": "Ask BP AI",
+      "note": "Names the field for screen readers."
+    }
+  },
+  "useWhen": [
+    "The foot of an assistant panel or a full-screen chat.",
+    "A question that can be scoped to a page, or carry files and fields."
+  ],
+  "doNot": [
+    "Do not build the box from Textarea and Buttons, or add a MessageBox, PromptInput or SendButton. Use this.",
+    "Do not use it for an ordinary form field. Use Textarea.",
+    "Do not leave the attachment bar showing when nothing is attached.",
+    "Do not add a second primary Button beside send.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The ask field has a hidden label, so it is announced even though the box shows none.",
+    "Enter sends and Shift plus Enter starts a new line.",
+    "Every toolbar button says what it does, with a kit Tooltip on hover and focus, and says how to stop while it is on.",
+    "Send is disabled until something is typed.",
+    "The hint lines stand still when the person prefers reduced motion."
+  ],
+  "snippet": "<ChatComposer scopeLabel=\"Accounts page\" onSend={(text) => {}} />",
+  "examples": [
+    {
+      "title": "Asking",
+      "usage": "The plain box, and the same box scoped to a page with a file on it.",
+      "items": [
+        {
+          "props": {
+            "placeholder": "Ask questions"
+          }
+        },
+        {
+          "props": {
+            "scopeLabel": "Accounts page",
+            "defaultScoped": true,
+            "attachments": "{files}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "While it works",
+      "usage": "Disabled until the answer lands.",
+      "items": [
+        {
+          "props": {
+            "defaultValue": "How many accounts are inactive?",
+            "disabled": true
+          }
+        }
+      ]
+    }
+  ]
+}

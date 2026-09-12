@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
-import { AlertDialogDemo, AnchorNavDemo, ChatMessageDemo, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatMessageDemo, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -17,6 +17,7 @@ import { Calendar, type CalendarEvent, type CalendarProps, type CalendarSource }
 import { Card, type CardProps } from "@/ui/Card/Card";
 import { Carousel, type CarouselProps } from "@/ui/Carousel/Carousel";
 import { Cell, type CellSize, type CellType } from "@/ui/Cell/Cell";
+import { ChatComposer, type ChatComposerProps } from "@/ui/ChatComposer/ChatComposer";
 import { ChatMessage, type ChatMessageProps } from "@/ui/ChatMessage/ChatMessage";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
 import { Command, type CommandGroup, type CommandProps } from "@/ui/Command/Command";
@@ -369,6 +370,7 @@ const CHART_SAMPLES: Record<string, unknown> = {
     { label: "Paid", value: 58, tone: "green" }, { label: "Sent", value: 21, tone: "mint" }, { label: "Overdue", value: 13, tone: "red" }, { label: "Draft", value: 8, tone: "gray" },
   ],
 };
+const CHAT_FILES = [{ id: "raw", label: "Raw-Data.xls" }, { id: "photo", label: "Photo1.jpg" }];
 const CHAT_TURN_MENU = [
   { id: "edit", label: "Edit message", icon: "edit" },
   { id: "copy", label: "Copy message", icon: "content_copy" },
@@ -824,6 +826,19 @@ export const registry: Record<string, Entry> = {
     normalize: (p) => ({ ...CELL_SAMPLES[(p.type as CellType) ?? "text"], ...p, ...(p.type !== "text" && p.label === "INV-1042" ? { label: CELL_SAMPLES[p.type as CellType]?.label } : {}) }),
     hint: "Pick a type, size and states. Each type fills in sample data.",
     card: <div style={{ display: "grid" }}><Cell type="avatar" size="sm" name="Maya Chen" label="maya@acme.com" src="/faces/maya-chen.jpg" /><Cell type="badge" size="sm" label="Paid" tone="success" /></div>,
+  },
+  ChatComposer: {
+    // The stage wires the box up, so sending, the attachments and the switches all work.
+    render: ({ wired, ...p }) => {
+      const props = { ...(p as unknown as ChatComposerProps), attachments: (p.attachments === "{files}" ? CHAT_FILES : p.attachments) as ChatComposerProps["attachments"] };
+      return wired ? <ChatComposerDemo {...props} /> : <div style={{ width: "100%", maxWidth: 460 }}><ChatComposer {...props} /></div>;
+    },
+    preview: { scopeLabel: "Accounts page", defaultScoped: true },
+    hide: ["value", "defaultValue", "scoped", "attachments", "addMenu", "onSend", "onChange", "onAdd", "onAttachmentRemove", "onScopedChange", "onSelectingChange", "onDictatingChange", "onModeChange", "label", "hints"],
+    toggles: { wired: { label: "Working box", default: true } },
+    hint: "Type and press Enter to send. Add a file, take a chip off, or turn on field selection and dictation: each one goes red and says how to stop. Deep Thought stays lit while it is on.",
+    block: true,
+    card: <div style={{ width: 300 }}><ChatComposer placeholder="Ask questions" /></div>,
   },
   ChatMessage: {
     // The stage runs a short conversation, so the vote, the menu and the suggestions all work.

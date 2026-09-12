@@ -8,6 +8,7 @@ import { AppHeader, type AppHeaderDensity, type AppHeaderProps } from "@/ui/AppH
 import { Button } from "@/ui/Button/Button";
 import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
 import { Cell, type CellSize } from "@/ui/Cell/Cell";
+import { ChatComposer, type ChatComposerMode, type ChatComposerProps } from "@/ui/ChatComposer/ChatComposer";
 import { ChatMessage, type ChatMessageActionId, type ChatMessageProps } from "@/ui/ChatMessage/ChatMessage";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
 import { Density, type DensityValue } from "@/ui/Density/Density";
@@ -551,6 +552,42 @@ export function ChatMessageDemo(p: Omit<ChatMessageProps, "author">) {
         sections={CHAT_SECTIONS} suggestions={CHAT_SUGGESTIONS} pressed={vote} onAction={act} onSuggestion={(_, labelText) => setSaid(`Asked: ${labelText}`)}
       />
       {said && <p style={{ margin: 0, fontSize: "var(--font-size-xsmall)", color: "var(--text-neutral)" }}>{said}</p>}
+    </div>
+  );
+}
+
+const ASK_HINTS = ["Ask questions", "Analyze data", "Build dashboards", "Create reports", "Develop widgets"];
+const ADD_MENU = [
+  { id: "file", label: "Add file or image", icon: "attach_file" },
+  { id: "playbook", label: "Run playbook", icon: "play_arrow" },
+];
+
+// Playground harness: the real ChatComposer wired up, so sending, attachments and the switches work. Not a kit piece.
+export function ChatComposerDemo({ selecting: askSelecting, dictating: askDictating, mode: askMode, ...p }: ChatComposerProps) {
+  const [files, setFiles] = useState([{ id: "raw", label: "Raw-Data.xls" }, { id: "photo", label: "Photo1.jpg" }]);
+  const [selecting, setSelecting] = useState(Boolean(askSelecting));
+  const [dictating, setDictating] = useState(Boolean(askDictating));
+  const [mode, setMode] = useState<ChatComposerMode>(askMode ?? "quick");
+  const [sent, setSent] = useState<string[]>([]);
+  // The control panel sets the switches; pressing them in the box then carries on from there.
+  const [from, setFrom] = useState({ askSelecting, askDictating, askMode });
+  if (from.askSelecting !== askSelecting || from.askDictating !== askDictating || from.askMode !== askMode) {
+    setFrom({ askSelecting, askDictating, askMode });
+    setSelecting(Boolean(askSelecting));
+    setDictating(Boolean(askDictating));
+    setMode(askMode ?? "quick");
+  }
+  return (
+    <div style={{ display: "grid", gap: "var(--space-small)", width: "100%", maxWidth: 460 }}>
+      {sent.map((t, i) => (
+        <p key={i} style={{ margin: 0, fontSize: "var(--font-size-xsmall)", color: "var(--text-neutral)" }}>{`Sent: ${t}`}</p>
+      ))}
+      <ChatComposer
+        {...p} hints={ASK_HINTS} addMenu={ADD_MENU} attachments={files} onAttachmentRemove={(id) => setFiles(files.filter((f) => f.id !== id))}
+        selecting={selecting} onSelectingChange={setSelecting} dictating={dictating} onDictatingChange={setDictating}
+        mode={mode} onModeChange={setMode} onSend={(text) => setSent([...sent, text].slice(-3))}
+        onAdd={(id) => setFiles([...files, { id: `${id}-${files.length}`, label: id === "playbook" ? "Monthly close" : "New-file.csv" }])}
+      />
     </div>
   );
 }
