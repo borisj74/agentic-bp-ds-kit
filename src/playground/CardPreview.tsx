@@ -61,3 +61,33 @@ function FitPreview({ children, crop = false }: { children: ReactNode; crop?: bo
     </div>
   );
 }
+
+// Pattern galleries show the whole screen, not one piece: the page renders at its own size and is scaled down
+// to the card's width, anchored at the top left, so what you see is the top of the real thing. The rest is
+// cropped and faded with the same mask the component cards use.
+export function PagePreview({ name, width = 1280, height = 900 }: { name: string; width?: number; height?: number }) {
+  const entry = registry[name];
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.3);
+
+  useLayoutEffect(() => {
+    const box = boxRef.current;
+    if (!box) return;
+    const measure = () => {
+      const w = box.clientWidth;
+      if (w) setScale(Math.round((w / width) * 1000) / 1000);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(box);
+    return () => ro.disconnect();
+  }, [width]);
+
+  if (!entry?.page) return <CardPreview name={name} />;
+  // Cropped at the bottom whenever the page is taller than the box, which it always is at this scale.
+  return (
+    <div ref={boxRef} className={styles.page} data-crop-y>
+      <div className={styles.pageInner} style={{ width, height, transform: `scale(${scale})` }}>{entry.page}</div>
+    </div>
+  );
+}

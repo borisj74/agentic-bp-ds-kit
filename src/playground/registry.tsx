@@ -107,6 +107,9 @@ export interface Entry {
   card: ReactNode;
   /** Gallery card shows the start of a wide bar at full size, cropped and fading at the end, instead of shrinking it. */
   cardCrop?: boolean;
+  /** Patterns only: the whole screen, rendered at page size and scaled down to the card. The patterns gallery
+   *  shows this instead of card, so a blueprint reads as the screen it builds. */
+  page?: ReactNode;
 }
 
 const STEPS = ["Setup", "Map Columns", "Billing IDs", "Usage IDs", "Activate"];
@@ -694,6 +697,7 @@ export const registry: Record<string, Entry> = {
     hint: "Every place under Settings, each tile its own color. Pick one and the side nav follows. Turn the notice on for a line that has to be read before the tiles, and the frame off to see the settings home on its own.",
     block: true,
     wide: true,
+    page: <SettingsPageDemo shell />,
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
         <Tile title="Security & Users" description="Roles, sharing groups and approvals." icon="shield_person" tone="red" href="#" />
@@ -728,12 +732,20 @@ export const registry: Record<string, Entry> = {
   },
   ListPage: {
     // The pattern, driven the way a screen would drive it: the filters, the ticks and the page live in the screen.
-    render: ({ state, ...p }) => <ListPageDemo {...(p as Record<string, unknown>)} state={(state as "ready" | "loading" | "empty" | "error") ?? "ready"} />,
+    render: ({ state, shell, ...p }) => (
+      <ListPageDemo
+        {...(p as Record<string, unknown>)}
+        state={(state as "ready" | "loading" | "empty" | "error") ?? "ready"}
+        shell={shell !== false}
+      />
+    ),
     preview: { state: "ready" },
     hide: ["children", "toolbar", "pagination", "bulk", "empty", "error", "onRetry", "label", "loadingRows"],
-    hint: "Switch between Table View, List View and Card View: the same records, laid out three ways. Tick rows and the bar over the list becomes what can be done to them. Search, set a filter, change the page size, and switch the state to see the loading, empty and failed lists.",
+    toggles: { shell: { label: "In the app frame", default: true } },
+    hint: "Switch between Table View, List View and Card View: the same records, laid out three ways. Tick rows and the bar over the list becomes what can be done to them. Search, set a filter, change the page size, and switch the state to see the loading, empty and failed lists. Turn the frame off to see the list on its own.",
     block: true,
     wide: true,
+    page: <ListPageDemo state="ready" shell />,
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
         <Toolbar label="Invoices" views={[{ id: "table", label: "Table View" }]} onRefresh={() => {}} actions={<Button size="sm" variant="primary" iconStart="add">New</Button>} />
@@ -909,6 +921,7 @@ export const registry: Record<string, Entry> = {
     hint: "Switch between the docked column and full screen. Change the page the assistant was opened from: the scope row takes its name, and goes when there is nothing to scope to. Pick a suggestion or type to start; open Chats or Playbooks from the options menu, and watch where the panel lands in each size.",
     block: true,
     wide: true,
+    page: <ChatWindowDemo started size="panel" />,
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
         <ChatHeader title="BP AI" chatsCount={7} onNewChat={() => {}} onClose={() => {}} />
@@ -984,6 +997,7 @@ export const registry: Record<string, Entry> = {
     hint: "Fold a group of numbers away, pick another saved dashboard from the bar, and scroll: the page header shrinks to one compact line and the bar stays under it. Switch the state to see the loading and empty dashboards. Turn the frame off to see the dashboard on its own.",
     block: true,
     wide: true,
+    page: <DashboardDemo state="ready" shell />,
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
         <Scoreboard items={TREND_KPIS.slice(0, 3)} label="Dashboard numbers" />
@@ -1127,6 +1141,7 @@ export const registry: Record<string, Entry> = {
     hint: "Open the menu button to widen the rail, walk the side nav, and press Ask BP AI to bring the assistant in beside the page. Scroll the page: the page header stays at the top and shrinks to one compact line whose trail ends in the page name. Stage narrows the box the frame lives in, so watch the rail go on a phone. Width caps the page to a reading column; it does not resize the frame.",
     block: true,
     wide: true,
+    page: <AppShellDemo assistant stage="desktop" width="full" />,
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
         <AppHeader search={false} />
@@ -1306,6 +1321,7 @@ export const registry: Record<string, Entry> = {
     hint: "Walk the record's tabs, fold a section of details away, dismiss the notice, and scroll: the name stays at the top and shrinks to one compact line whose trail ends in the record, while the tabs and the bar scroll away under it. Turn the frame off to see the record on its own.",
     block: true,
     wide: true,
+    page: <RecordPageDemo sticky shell />,
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
         <PageHeader icon="account_balance" title="Apex Digital Services" badge="Active" badgeTone="success" />

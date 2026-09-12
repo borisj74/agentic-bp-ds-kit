@@ -101,6 +101,10 @@
 .gridWide { grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); }
 .cardPreviewTall { height: 240px; }
 .fit { position: absolute; inset: var(--space-small); overflow: hidden; }
+/* A whole screen as the card's picture: edge to edge, no padding, scaled from the top left. */
+.page { position: absolute; inset: 0; overflow: hidden; background: var(--surface-flat); }
+.pageInner { position: absolute; top: 0; left: 0; transform-origin: top left; }
+.page[data-crop-y] { mask-image: linear-gradient(to bottom, black calc(100% - var(--space-xlarge)), transparent); }
 /* "safe" keeps a piece wider than the box starting at the left, so its full width can be measured and scaled. */
 .fitInner { position: absolute; width: 100%; display: flex; align-items: center; justify-content: safe center; transform-origin: top left; }
 /* Crop mode: the bar starts at the left at full size. */

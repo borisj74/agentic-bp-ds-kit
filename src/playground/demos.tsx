@@ -1047,7 +1047,11 @@ const LIST_COLUMNS: TableColumn[] = [
   { key: "actions", header: "", align: "end", width: "112px" },
 ];
 
-export function ListPageDemo({ state = "ready", ...p }: Omit<ListPageProps, "children"> & { state?: ListPageState }) {
+export function ListPageDemo({ state = "ready", shell = false, ...p }: Omit<ListPageProps, "children"> & { state?: ListPageState; shell?: boolean }) {
+  const [navOpen, setNavOpen] = useState(false);
+  const [section, setSection] = useState("billing-invoices");
+  const [dark, setDark] = useState(false);
+  const [density, setDensity] = useState<AppHeaderDensity>("default");
   const [values, setValues] = useState<Record<string, string | undefined>>(START);
   const [off, setOff] = useState<Record<string, boolean>>({});
   const [query, setQuery] = useState("");
@@ -1075,7 +1079,7 @@ export function ListPageDemo({ state = "ready", ...p }: Omit<ListPageProps, "chi
   const shown = LIST_ROWS.filter((r) => String(r.id).toLowerCase().includes(query.toLowerCase()));
   const start = (page - 1) * size;
 
-  return (
+  const list = (
     <ListPage
       {...p}
       state={state}
@@ -1135,6 +1139,33 @@ export function ListPageDemo({ state = "ready", ...p }: Omit<ListPageProps, "chi
         />
       )}
     </ListPage>
+  );
+
+  if (!shell) return list;
+  // In the frame, the way a screen would ship it.
+  return (
+    <div data-theme={dark ? "dark" : undefined} style={{ height: 900, border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden" }}>
+      <AppShell
+        header={
+          <AppHeader
+            navOpen={navOpen} onNavToggle={() => setNavOpen((o) => !o)}
+            environment="UAT-2" searchShortcut="Ctrl+K" searchGroups={SHELL_SEARCH} searchScopes={SHELL_SEARCH_SCOPES}
+            actions={SHELL_HEADER_ACTIONS} onAction={() => {}}
+            user={{ name: "Ana Petrovic" }} company={{ name: "Northwind Holdings" }}
+            darkMode={dark} onDarkModeChange={setDark}
+            density={density} onDensityChange={setDensity}
+            onUserSettings={() => {}} onLogout={() => {}}
+          />
+        }
+        nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        pageHeader={
+          // No actions on the bar: a list keeps them in its own Toolbar, which owns the one primary.
+          <PageHeader icon="receipt_long" title="Invoices" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />
+        }
+      >
+        {list}
+      </AppShell>
+    </div>
   );
 }
 
