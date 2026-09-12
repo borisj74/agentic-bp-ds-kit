@@ -35,8 +35,10 @@
 .two .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: var(--space-medium) var(--space-large); }
 .two .fields > :has(textarea) { grid-column: 1 / -1; }
 
-/* Back-to-back FormDisplays (the only dl in a Form) read as one list: close the field gap between them. */
-.form:not(.two) .fields > dl + dl { margin-top: calc(var(--space-medium) * -1); }
+/* A block of FormDisplays (the only dl in a Form) reads as one list: each row has its own line under it, so
+   a gap between the rows would break the list in two. Closed in one column and in two, where the rows stack
+   into one column on a narrow form. */
+.fields:has(> dl), .two .fields:has(> dl) { row-gap: 0; }
 @container (max-width: 560px) { .two .fields { grid-template-columns: minmax(0, 1fr); } }
 @container (max-width: 719px) { .two.start .fields { grid-template-columns: minmax(0, 1fr); } }
 

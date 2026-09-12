@@ -17,10 +17,19 @@
 
 .controls { flex: none; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--space-xsmall); }
 
-/* Sticky: stays at the top of the scroll area. shadow adds the Figma raised line under it. */
-.sticky { position: sticky; top: 0; z-index: 1; min-height: var(--page-header-height-sticky); }
-/* Figma draws the line and shadow under the 52px bar, so the line is a shadow too, not a border. */
-.shadow { box-shadow: 0 var(--border-width-thin) 0 var(--border-neutral-subtle), var(--elevation-card); }
+/* Sticky: stays at the top of the scroll area. shadow adds the Figma raised line under it. The page insets
+   its content by --layout-margin-md (contracts/layout.json), so the bar bleeds back out by that inset on
+   three sides: the line runs the full width of the page, nothing scrolls past it in the side gutters, and it
+   pins flush to the top edge instead of one inset below it. The inset comes back as padding, so the title
+   stays lined up with the Sections under it. */
+.sticky {
+  position: sticky; top: calc(-1 * var(--layout-margin-md)); z-index: 1; min-height: var(--page-header-height-sticky);
+  /* width auto, or the negative margins would shift the fixed 100% box instead of widening it. */
+  width: auto; margin-inline: calc(-1 * var(--layout-margin-md)); padding-inline: var(--layout-margin-md);
+}
+/* Figma draws the line and shadow under the 52px bar, so the line is a shadow too, not a border. The bar
+   elevation falls downward only: a card shadow would halo the top and the sides of a full-width bar. */
+.shadow { box-shadow: 0 var(--border-width-thin) 0 var(--border-neutral-subtle), var(--elevation-bar); }
 
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 

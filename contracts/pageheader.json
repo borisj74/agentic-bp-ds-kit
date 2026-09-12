@@ -2,7 +2,7 @@
   "name": "PageHeader",
   "path": "src/ui/PageHeader/PageHeader.tsx",
   "intent": "The top of a page's content: where it sits (breadcrumb), what it is (icon, title, badge) and the page actions. Below the AppHeader.",
-  "usage": "Put one PageHeader at the top of each page, under the AppHeader. It is one component: breadcrumbs are the parent sections (all links), then the title row with an optional icon and badge, and the page actions on the end. actions are kit Buttons, size sm, with the one primary last; moreActions puts less-used actions in a More menu before them. sticky is the compact bar for when the page scrolls: one line whose trail ends in the page title, with a raised shadow unless shadow is false. See contracts/pageheader.json for the full contract. The bar adds no side padding of its own: the page inset comes from the layout class around it (contracts/layout.json), so the title lines up with the Sections under it.",
+  "usage": "Put one PageHeader at the top of each page, under the AppHeader. It is one component: breadcrumbs are the parent sections (all links), then the title row with an optional icon and badge, and the page actions on the end. actions are kit Buttons, size sm, with the one primary last; moreActions puts less-used actions in a More menu before them. sticky is the compact bar for when the page scrolls: one line whose trail ends in the page title, with a raised shadow unless shadow is false. See contracts/pageheader.json for the full contract. The bar adds no side padding of its own: the page inset comes from the layout class around it (contracts/layout.json), so the title lines up with the Sections under it. The bar is the top of the page, so it sits flush against the frame's bar with no page inset above it; the pattern holding it (AppShell, RecordPage) takes care of that.",
   "props": {
     "title": {
       "type": "string",
@@ -49,12 +49,12 @@
     "sticky": {
       "type": "boolean",
       "default": false,
-      "note": "Compact 52px bar that sticks to the top of the scroll area: the trail ends in the title, no title row."
+      "note": "Compact 52px bar that sticks to the top of the scroll area: the trail ends in the title, no title row. The bar runs the full width of the page, bleeding back out through the page inset and paying it back as padding, so its line reaches both edges and nothing scrolls past it in the gutters while the title stays lined up with the Sections."
     },
     "shadow": {
       "type": "boolean",
       "default": true,
-      "note": "With sticky, a subtle line and raised shadow under the bar."
+      "note": "With sticky, a subtle line and a shadow that falls downward only, so the full-width bar does not read as a floating card."
     }
   },
   "useWhen": [

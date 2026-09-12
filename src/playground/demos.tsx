@@ -7,6 +7,8 @@ import { Avatar } from "@/ui/Avatar/Avatar";
 import { AppHeader, type AppHeaderDensity, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { AppShell, type AppShellProps } from "@/patterns/AppShell/AppShell";
 import { ListPage, type ListPageProps, type ListPageState } from "@/patterns/ListPage/ListPage";
+import { RecordPage } from "@/patterns/RecordPage/RecordPage";
+import { Badge } from "@/ui/Badge/Badge";
 import { Button } from "@/ui/Button/Button";
 import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
 import { Card } from "@/ui/Card/Card";
@@ -30,6 +32,7 @@ import { Legend, type LegendProps } from "@/ui/Legend/Legend";
 import { Lookup } from "@/ui/Lookup/Lookup";
 import { Modal, type ModalProps } from "@/ui/Modal/Modal";
 import { PageHeader } from "@/ui/PageHeader/PageHeader";
+import { Progress } from "@/ui/Progress/Progress";
 import { Pagination } from "@/ui/Pagination/Pagination";
 import { Scoreboard } from "@/ui/Scoreboard/Scoreboard";
 import { Section } from "@/ui/Section/Section";
@@ -40,6 +43,7 @@ import { Skeleton, type SkeletonProps } from "@/ui/Skeleton/Skeleton";
 import { Stepper, type StepperProps } from "@/ui/Stepper/Stepper";
 import { Switch } from "@/ui/Switch/Switch";
 import { Table, type TableColumn, type TableRow } from "@/ui/Table/Table";
+import { Tabs, type TabItem } from "@/ui/Tabs/Tabs";
 import { Textarea } from "@/ui/Textarea/Textarea";
 import { Toast, type ToastProps } from "@/ui/Toast/Toast";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
@@ -885,6 +889,8 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");
   const [chatOpen, setChatOpen] = useState(assistant);
+  // The screen holds whether the top of the page has scrolled away; the frame only reports the crossing.
+  const [compact, setCompact] = useState(false);
   const [turns, setTurns] = useState<{ id: string; author: "user" | "assistant"; text: string }[]>([]);
   const [from, setFrom] = useState(assistant);
   if (from !== assistant) { setFrom(assistant); setChatOpen(assistant); }
@@ -920,9 +926,11 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
           />
         }
         nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        onPageHeaderStick={setCompact}
         pageHeader={
           <PageHeader
             title="Invoices" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]}
+            sticky={compact}
             actions={
               <>
                 <Button size="sm" iconStart="auto_awesome" onClick={() => setChatOpen((o) => !o)}>Ask BP AI</Button>
@@ -954,6 +962,10 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
         </Section>
         <Section title="Invoices" collapsible actions={<Button size="sm" iconStart="download">Export</Button>}>
           <Table columns={SHELL_COLUMNS} rows={SHELL_ROWS} />
+        </Section>
+        {/* Enough page to scroll, so the page header can be watched staying at the top and shrinking. */}
+        <Section title="Billing settings" collapsible>
+          <RecordFields fields={BILLING_FIELDS} />
         </Section>
       </AppShell>
     </div>
@@ -1099,5 +1111,140 @@ export function ListPageDemo({ state = "ready", ...p }: Omit<ListPageProps, "chi
         />
       )}
     </ListPage>
+  );
+}
+
+// Playground harness: the RecordPage pattern in the AppShell frame, driven like a screen would drive it.
+// Not a kit piece. Follows the BP DS Hub record layout: name and actions, the record's tabs, a notice,
+// the bar, the numbers, then the details in folding sections of two-column pairs.
+const RECORD_TABS: TabItem[] = [
+  { id: "details", label: "Details" },
+  { id: "contacts", label: "Contacts", count: 4, countLabel: "contacts" },
+  { id: "invoices", label: "Invoices", count: 12, countLabel: "invoices" },
+  { id: "payments", label: "Payments" },
+  { id: "usage", label: "Usage" },
+  { id: "history", label: "History" },
+];
+const RECORD_NUMBERS = [
+  { id: "status", title: "Status", metric: "Active", trend: { value: "2.1", unit: "% YoY", status: "success" as const, direction: "up" as const } },
+  { id: "balance", title: "Current balance", metric: "$12,600.50", trend: { value: "4.8", unit: "% MoM", status: "success" as const, direction: "up" as const } },
+  { id: "next", title: "Next payment", metric: "05/26/2026", trend: { value: "0", unit: "", status: "neutral" as const, direction: "none" as const } },
+  { id: "since", title: "Customer since", metric: "12/02/2017", trend: { value: "8.4", unit: "% YoY", status: "success" as const, direction: "up" as const } },
+];
+// Each pair is a FormDisplay; the value is text unless the record says otherwise.
+const ACCOUNT_FIELDS: { label: string; value: ReactNode; help: string }[] = [
+  { label: "Account name", value: "Apex Digital Services", help: "The name on invoices and statements." },
+  { label: "Status", value: <Badge tone="success">Active</Badge>, help: "Whether the account can be billed." },
+  { label: "Account number", value: "ACC-10428", help: "Set when the account is created." },
+  { label: "Industry", value: "Software & Technology", help: "Used for reporting." },
+  { label: "Account type", value: "Customer", help: "Customer, prospect or partner." },
+  { label: "Account owner", value: "Jordan Ellis", help: "Who looks after this account." },
+  { label: "Parent account", value: "Apex Holdings", help: "The account this one rolls up to." },
+  { label: "Created on", value: "Mar 14, 2024", help: "When the record was created." },
+];
+const BILLING_FIELDS: { label: string; value: ReactNode; help: string }[] = [
+  { label: "Billing cycle", value: "Monthly", help: "How often invoices are raised." },
+  { label: "Invoice delivery", value: "Email + customer portal", help: "How invoices reach the account." },
+  { label: "Billing day", value: "1st of the month", help: "The day the cycle runs." },
+  { label: "Billing contact", value: "Priya Raman", help: "Who receives the invoice." },
+  { label: "Payment terms", value: "Net 30", help: "How long they have to pay." },
+  { label: "Billing address", value: "480 Harrison Street, Suite 220, Seattle, WA 98104", help: "Where invoices are addressed." },
+  { label: "Currency", value: "USD — US Dollar", help: "The currency invoices are raised in." },
+  { label: "Tax ID", value: "US-91-4820117", help: "Used on tax documents." },
+];
+const USAGE_FIELDS: { label: string; value: ReactNode; help: string }[] = [
+  { label: "API calls", value: <RecordMeter value={78} label="API calls used" of="3.9M of 5M" />, help: "Against the plan's monthly allowance." },
+  { label: "Seats", value: <RecordMeter value={92} label="Seats used" of="184 of 200" />, help: "Named users against the plan." },
+  { label: "Storage", value: <RecordMeter value={46} label="Storage used" of="920 GB of 2 TB" />, help: "Against the plan's storage." },
+  { label: "Sandbox environments", value: <RecordMeter value={33} label="Sandboxes used" of="1 of 3" />, help: "Against the plan's sandboxes." },
+];
+
+// A used-against-allowance value: the kit Progress with its percent, and the raw figures beside it.
+function RecordMeter({ value, label, of }: { value: number; label: string; of: string }) {
+  return (
+    <span style={{ display: "flex", alignItems: "center", gap: "var(--space-xsmall)", minWidth: 0 }}>
+      <span style={{ flex: "1 1 auto", minWidth: 0 }}><Progress value={value} label={label} size="sm" showValue /></span>
+      <span style={{ flex: "none", fontSize: "var(--font-size-xsmall)", color: "var(--text-neutral)" }}>{of}</span>
+    </span>
+  );
+}
+
+function RecordFields({ fields }: { fields: { label: string; value: ReactNode; help: string }[] }) {
+  return (
+    <Form columns={2} labelPosition="start">
+      {fields.map((f) => <FormDisplay key={f.label} label={f.label} value={f.value} help={f.help} />)}
+    </Form>
+  );
+}
+
+export function RecordPageDemo({ sticky = true, shell = true }: { sticky?: boolean; shell?: boolean }) {
+  const [tab, setTab] = useState("details");
+  const [notice, setNotice] = useState(true);
+  const [navOpen, setNavOpen] = useState(false);
+  const [section, setSection] = useState("accounts");
+  // The screen holds whether the top has scrolled away; the pattern only reports the crossing.
+  const [compact, setCompact] = useState(false);
+
+  const record = (
+    <RecordPage
+      label="Account" sticky={sticky} onStickyChange={setCompact}
+      header={
+        <PageHeader
+          breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]}
+          icon="account_balance" title="Apex Digital Services" badge="Active" badgeTone="success"
+          sticky={sticky && compact}
+          actions={<><Button size="sm">Clone</Button><Button size="sm" variant="primary">Edit</Button></>}
+        />
+      }
+      tabs={<Tabs label="What belongs to this account" items={RECORD_TABS} value={tab} onChange={setTab} />}
+      notice={
+        notice ? (
+          <Alert tone="warning" dismissible onDismiss={() => setNotice(false)} actionLabel="Review invoices" onAction={() => setTab("invoices")}>
+            This account has 2 invoices past due, totalling $22,940.00.
+          </Alert>
+        ) : undefined
+      }
+      toolbar={
+        <Toolbar
+          label="Account details" onRefresh={() => {}}
+          moreActions={[{ id: "print", label: "Print" }, { id: "export", label: "Export" }]} onMoreSelect={() => {}}
+          actions={<><Button size="sm">Record payment</Button><Button size="sm" variant="primary" iconStart="add">New invoice</Button></>}
+        />
+      }
+      summary={<Scoreboard items={RECORD_NUMBERS} />}
+    >
+      {tab === "details" ? (
+        <>
+          <Section title="Account information" collapsible><RecordFields fields={ACCOUNT_FIELDS} /></Section>
+          <Section title="Billing information" collapsible><RecordFields fields={BILLING_FIELDS} /></Section>
+          <Section title="Product utilization" collapsible><RecordFields fields={USAGE_FIELDS} /></Section>
+        </>
+      ) : (
+        <Section title={RECORD_TABS.find((t) => t.id === tab)?.label ?? "Details"}>
+          <Empty icon="folder_open" title={`${RECORD_TABS.find((t) => t.id === tab)?.label} go here`} description="Each tab holds its own list or details." />
+        </Section>
+      )}
+    </RecordPage>
+  );
+
+  if (!shell) return record;
+  // In the frame, the way a screen would ship it.
+  return (
+    <div style={{ height: 900, border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden" }}>
+      <AppShell
+        header={
+          <AppHeader
+            navOpen={navOpen} onNavToggle={() => setNavOpen((o) => !o)}
+            environment="UAT-2" searchShortcut="Ctrl+K" searchGroups={SHELL_SEARCH} searchScopes={SHELL_SEARCH_SCOPES}
+            actions={SHELL_HEADER_ACTIONS} onAction={() => {}}
+            user={{ name: "Ana Petrovic" }} company={{ name: "Northwind Holdings" }}
+            onUserSettings={() => {}} onLogout={() => {}}
+          />
+        }
+        nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+      >
+        {record}
+      </AppShell>
+    </div>
   );
 }

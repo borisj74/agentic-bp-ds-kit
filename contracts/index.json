@@ -1014,6 +1014,20 @@
         "bulk actions",
         "empty state"
       ]
+    },
+    {
+      "name": "RecordPage",
+      "contract": "contracts/recordpage.json",
+      "tags": [
+        "record",
+        "detail page",
+        "record page",
+        "account",
+        "tabs",
+        "details",
+        "sections",
+        "summary"
+      ]
     }
   ],
   "foundations": [

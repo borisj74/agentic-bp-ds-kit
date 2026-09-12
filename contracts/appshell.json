@@ -2,7 +2,7 @@
   "name": "AppShell",
   "path": "src/patterns/AppShell/AppShell.tsx",
   "intent": "The frame every product screen sits in: the bar across the top, the rail under it down the side, the page in the middle, and the assistant beside it.",
-  "usage": "Use AppShell as the outer frame of a screen. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is open. Pass the kit AppHeader as header: it runs the full width across the top, and the rail starts under it. Pass the kit SideNav as nav; its column hugs whatever width the nav is, so collapsed, expanded and pinned all work. pageHeader takes a kit PageHeader and sits above the scrolling page, so a sticky one sticks. children are the page itself, already inside the scrolling content area with its edge padding and the gap between Sections, so screens do not add their own. assistant takes a kit ChatWindow and shows beside the page while assistantOpen is true. width caps the page to a reading column; it does not resize the frame. The frame answers to its own width rather than the window's, so under about 640 the rail goes and an open assistant takes the page's place, whether it is docked in a panel or filling a screen. See contracts/appshell.json for the full contract.",
+  "usage": "Use AppShell as the outer frame of a screen. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is open. Pass the kit AppHeader as header: it runs the full width across the top, and the rail starts under it. Pass the kit SideNav as nav; its column hugs whatever width the nav is, so collapsed, expanded and pinned all work. pageHeader takes a kit PageHeader and stays at the top of the page while the page scrolls under it, flush to the top edge; onPageHeaderStick says when the top of the page has scrolled away, so keep that boolean in the screen and pass it to the PageHeader as sticky to shrink it to the kit's compact 52px bar. stickyPageHeader false lets it scroll away instead. children are the page itself, already inside the scrolling content area with its edge padding and the gap between Sections, so screens do not add their own. assistant takes a kit ChatWindow and shows beside the page while assistantOpen is true. width caps the page to a reading column; it does not resize the frame. The frame answers to its own width rather than the window's, so under about 640 the rail goes and an open assistant takes the page's place, whether it is docked in a panel or filling a screen. See contracts/appshell.json for the full contract.",
   "composes": [
     "AppHeader",
     "SideNav",
@@ -26,7 +26,16 @@
     },
     "pageHeader": {
       "type": "ReactNode",
-      "note": "The page name and its actions. A kit PageHeader; a sticky one sticks to the top of the page as it scrolls."
+      "note": "The page name and its actions. A kit PageHeader. The frame keeps it at the top of the page as the page scrolls under it."
+    },
+    "stickyPageHeader": {
+      "type": "boolean",
+      "default": true,
+      "note": "The page header stays at the top while the page scrolls under it, pinned flush to the top edge so no strip of page shows above the bar. Off, it scrolls away with the page."
+    },
+    "onPageHeaderStick": {
+      "type": "(stuck: boolean) => void",
+      "note": "Says when the top of the page has scrolled away, so the screen can pass sticky to the kit PageHeader and swap it to its own compact 52px bar. The screen holds that boolean; the frame only reports the crossing."
     },
     "assistant": {
       "type": "ReactNode",
@@ -55,7 +64,7 @@
     "A screen the assistant can be opened beside."
   ],
   "doNot": [
-    "Do not add state to it; it is a blueprint. Keep which nav section, which page and whether the assistant is open in the screen.",
+    "Do not add state to it; it is a blueprint. Keep which nav section, which page, whether the assistant is open and whether the page header is compact in the screen.",
     "Do not build the bar, the rail or the page header inside it. Pass the kit pieces.",
     "Do not add page padding or a gap between Sections in the screen; the content area already has both.",
     "Do not invent a second frame or a per-page grid beside it. Read contracts/layout.json.",

@@ -1,0 +1,89 @@
+{
+  "name": "RecordPage",
+  "path": "src/patterns/RecordPage/RecordPage.tsx",
+  "intent": "One record: its name and actions at the top, the tabs of what belongs to it, the numbers that matter, and its details in sections underneath.",
+  "usage": "Use RecordPage for a single record: an account, an invoice, a quote. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the tab, the sections and what is open. Pass the kit PageHeader as header, with the trail, the record name, its status Badge and the record actions. tabs takes a kit Tabs of what belongs to the record, with counts. notice writes anything that needs saying about the record, as a kit Alert. toolbar takes a kit Toolbar for what acts on the tab that is showing. summary takes a kit Scoreboard of the few numbers people came for. children are the details: kit Sections, each holding a kit Form of FormDisplay pairs in two columns. Only the name stays put; the tabs, the notice and the bar scroll away under it. onStickyChange says when the top has scrolled away: keep that boolean in the screen and pass it to the PageHeader as sticky, so the name shrinks to the kit's compact 52px bar whose trail ends in the record name. It goes in the AppShell page, which owns the page padding. See contracts/recordpage.json for the full contract.",
+  "composes": [
+    "PageHeader",
+    "Tabs",
+    "Alert",
+    "Toolbar",
+    "Scoreboard",
+    "Section",
+    "Form",
+    "FormDisplay"
+  ],
+  "props": {
+    "children": {
+      "type": "ReactNode",
+      "required": true,
+      "note": "The record's details: kit Sections of FormDisplay pairs, each section able to fold away."
+    },
+    "header": {
+      "type": "ReactNode",
+      "note": "The record's name and its actions. A kit PageHeader with the trail, an icon, a status Badge and Buttons."
+    },
+    "tabs": {
+      "type": "ReactNode",
+      "note": "What belongs to the record: a kit Tabs, like Details, Contacts 4, Invoices 12. The screen swaps children to match."
+    },
+    "notice": {
+      "type": "ReactNode",
+      "note": "Anything that needs saying about the record, as a kit Alert people can dismiss, like invoices past due."
+    },
+    "toolbar": {
+      "type": "ReactNode",
+      "note": "What acts on the tab that is showing: a kit Toolbar."
+    },
+    "summary": {
+      "type": "ReactNode",
+      "note": "The few numbers people came for, as a kit Scoreboard."
+    },
+    "sticky": {
+      "type": "boolean",
+      "default": true,
+      "note": "The name stays at the top while everything under it scrolls away, on an opaque bar so nothing shows above or through it. Off, the whole page scrolls together."
+    },
+    "onStickyChange": {
+      "type": "(stuck: boolean) => void",
+      "note": "Says when the top of the record has scrolled away, so the screen can pass sticky to the kit PageHeader and swap it to its own compact 52px bar. The screen holds that boolean; the pattern only reports the crossing."
+    },
+    "label": {
+      "type": "string",
+      "note": "Names the record region for screen readers, like Account. Without it, the region is named Record."
+    }
+  },
+  "useWhen": [
+    "One record with its details in sections.",
+    "A record whose related lists live behind tabs."
+  ],
+  "doNot": [
+    "Do not add state to it; it is a blueprint. Keep the tab, the sections and the notice in the screen.",
+    "Do not build the header, the tabs or the bar inside it. Pass the kit pieces.",
+    "Do not put page padding around it. It sits in the AppShell page, which owns that.",
+    "Do not use it for a list of records. Use ListPage.",
+    "Do not stack more than one Alert over the record; say the one thing that matters.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The record is a region named after label, so a screen reader can jump to it.",
+    "The header keeps the record's h1 and the tabs their tab list, so the record name is read before its parts.",
+    "The sticky top is a real stack, not a fixed overlay, so nothing is covered when the page is zoomed.",
+    "In the compact bar the record's h1 stays, hidden, so the record is still named after the title line shrinks away.",
+    "Each section folds with a named button, so the details can be skipped."
+  ],
+  "snippet": "<RecordPage label=\"Account\" header={<PageHeader title=\"Apex Digital Services\" badge=\"Active\" />} tabs={<Tabs items={parts} />} summary={<Scoreboard items={numbers} />}>{sections}</RecordPage>",
+  "examples": [
+    {
+      "title": "A record",
+      "usage": "The name and actions, the tabs, the numbers, and the details under them.",
+      "items": [
+        {
+          "props": {
+            "sticky": true
+          }
+        }
+      ]
+    }
+  ]
+}

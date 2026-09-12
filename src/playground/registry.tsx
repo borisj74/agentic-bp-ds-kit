@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
-import { SIDE_NAV_SECTIONS, SIDE_NAV_END, AppShellDemo, ListPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { SIDE_NAV_SECTIONS, SIDE_NAV_END, AppShellDemo, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -1063,10 +1063,13 @@ export const registry: Record<string, Entry> = {
     // assistant is open all live in the screen.
     render: ({ assistant, stage, ...p }) => <AppShellDemo {...(p as Record<string, unknown>)} assistant={Boolean(assistant)} stage={String(stage ?? "desktop")} />,
     preview: { width: "full" },
-    hide: ["children", "header", "nav", "pageHeader", "assistant", "assistantOpen"],
-    toggles: { assistant: { label: "Assistant open", default: false } },
+    hide: ["children", "header", "nav", "pageHeader", "onPageHeaderStick", "assistant", "assistantOpen"],
+    toggles: {
+      assistant: { label: "Assistant open", default: false },
+      stickyPageHeader: { label: "Page header stays put", default: true },
+    },
     extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
-    hint: "Open the menu button to widen the rail, walk the side nav, and press Ask BP AI to bring the assistant in beside the page. Stage narrows the box the frame lives in, so watch the rail go on a phone. Width caps the page to a reading column; it does not resize the frame.",
+    hint: "Open the menu button to widen the rail, walk the side nav, and press Ask BP AI to bring the assistant in beside the page. Scroll the page: the page header stays at the top and shrinks to one compact line whose trail ends in the page name. Stage narrows the box the frame lives in, so watch the rail go on a phone. Width caps the page to a reading column; it does not resize the frame.",
     block: true,
     wide: true,
     card: <div style={{ width: 300 }}><AppHeader search={false} /></div>,
@@ -1233,6 +1236,17 @@ export const registry: Record<string, Entry> = {
     hint: "Click the field to open the list. Toggle multiple to pick several. Switch size, label position and message.",
     column: true,
     card: <div style={{ width: "80%" }}><Select size="sm" label="Status" defaultValue="paid" options={[{ value: "paid", label: "Paid" }, { value: "draft", label: "Draft" }]} /></div>,
+  },
+  RecordPage: {
+    // The pattern in the frame, driven the way a screen would drive it: the tab and the notice live outside it.
+    render: ({ sticky, shell }) => <RecordPageDemo sticky={sticky !== false} shell={shell !== false} />,
+    preview: { sticky: true },
+    hide: ["children", "header", "tabs", "notice", "toolbar", "summary", "onStickyChange", "label"],
+    toggles: { sticky: { label: "Top stays put", default: true }, shell: { label: "In the app frame", default: true } },
+    hint: "Walk the record's tabs, fold a section of details away, dismiss the notice, and scroll: the name stays at the top and shrinks to one compact line whose trail ends in the record, while the tabs and the bar scroll away under it. Turn the frame off to see the record on its own.",
+    block: true,
+    wide: true,
+    card: <div style={{ width: 300 }}><PageHeader icon="account_balance" title="Apex Digital Services" badge="Active" badgeTone="success" /></div>,
   },
   Scoreboard: {
     // Sample cards swap in for their {names}. Keyed so switching controls starts fresh.
