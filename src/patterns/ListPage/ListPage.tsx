@@ -30,6 +30,7 @@ export function ListPage({
     <section className={styles.list} aria-label={label ?? "List"} aria-busy={state === "loading" || undefined}>
       {/* While rows are ticked, what can be done to them takes the bar's place. */}
       {bulk ? <div className={styles.bulk}>{bulk}</div> : toolbar}
+      {/* The rows and their pages are one block: the page bar is the table's footer, flush under it. */}
       <div className={styles.body}>
         {rows && children}
         {state === "loading" && (
@@ -44,9 +45,9 @@ export function ListPage({
             <Alert tone="danger" actionLabel={onRetry ? "Try again" : undefined} onAction={onRetry}>{error}</Alert>
           </div>
         )}
+        {/* The pages go while something else is standing in for the rows. */}
+        {rows && pagination}
       </div>
-      {/* The pages stay under the rows, and go while something else is standing in for them. */}
-      {rows && pagination}
     </section>
   );
 }

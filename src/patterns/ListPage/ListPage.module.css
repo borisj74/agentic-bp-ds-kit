@@ -2,7 +2,8 @@
    contracts/layout.json, and the page padding belongs to the AppShell page around it. */
 .list { display: flex; flex-direction: column; gap: var(--space-medium); min-width: 0; font-family: var(--font-sans); }
 
-.body { min-width: 0; }
+/* The rows and their page bar as one block, nothing between them: the bar reads as the table's footer. */
+.body { display: flex; flex-direction: column; min-width: 0; }
 
 /* What stands in for the rows keeps them company in the same place: lines while loading, a block otherwise. */
 .loading { padding-block: var(--space-small); }

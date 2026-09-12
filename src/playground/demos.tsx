@@ -1047,7 +1047,7 @@ export function ListPageDemo({ state = "ready", ...p }: Omit<ListPageProps, "chi
       onRetry={() => {}}
     >
       <Table
-        columns={LIST_COLUMNS} rows={shown.slice(start, start + size)} caption="Invoices"
+        columns={LIST_COLUMNS} rows={shown.slice(start, start + size)}
         selectable selected={picked} onSelectionChange={setPicked} rowLabel="id"
       />
     </ListPage>
