@@ -36,7 +36,7 @@ export function PageHeader({
           <>
             {breadcrumbs.length > 0 && <Breadcrumb items={breadcrumbs} current={false} />}
             <div className={styles.titleRow}>
-              {icon && <Icon name={icon} size="xl" tone="brand" />}
+              {icon && <Icon name={icon} size="lg" tone="brand" />}
               <h1 className={styles.heading}>{title}</h1>
               {badge && <Badge tone={badgeTone}>{badge}</Badge>}
             </div>

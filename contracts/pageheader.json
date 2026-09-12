@@ -16,7 +16,7 @@
     },
     "icon": {
       "type": "string",
-      "note": "Material Symbols name before the title, 32px in the brand color, like folder_open."
+      "note": "Material Symbols name before the title, drawn by the kit Icon at size lg in the brand color, like folder_open."
     },
     "badge": {
       "type": "string",
