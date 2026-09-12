@@ -80,7 +80,8 @@ button.user:focus-visible { outline: var(--border-width-medium) solid var(--outl
 .company {
   box-sizing: border-box; display: inline-flex; align-items: center; height: var(--who-h); max-width: calc(var(--app-header-company-logo) + var(--space-xsmall) * 2);
   padding: var(--space-xxsmall) var(--space-xsmall); overflow: hidden;
-  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-small);
+  /* Same corners as the buttons it sits beside in the bar. */
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-medium);
 }
 .company img, .company svg { display: block; max-width: var(--app-header-company-logo); max-height: 100%; }
 .companyName { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--font-size-small); font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); }
