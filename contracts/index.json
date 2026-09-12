@@ -21,6 +21,7 @@
     {"name": "Cascader", "contract": "contracts/cascader.json", "category": "form", "tags": ["cascader", "cascade select", "nested select", "field picker", "related fields", "multi-level", "columns", "path picker"]},
     {"name": "Cell", "contract": "contracts/cell.json", "category": "data", "tags": ["table", "cell", "data table", "row", "td", "tree cell", "tree table", "tree grid", "nested rows", "expandable row"]},
     {"name": "ChatComposer", "contract": "contracts/chatcomposer.json", "category": "form", "tags": ["chat", "composer", "message box", "prompt", "ask", "assistant", "ai", "attachments", "dictate", "send"]},
+    {"name": "ChatList", "contract": "contracts/chatlist.json", "category": "navigation", "tags": ["chat list", "chats", "playbooks", "saved chats", "history", "assistant", "ai", "panel"]},
     {"name": "ChatMessage", "contract": "contracts/chatmessage.json", "category": "data", "tags": ["chat", "message", "assistant", "ai", "copilot", "bubble", "conversation", "suggestions", "reasoning"]},
     {"name": "Checkbox", "contract": "contracts/checkbox.json", "category": "form", "tags": ["form", "checkbox", "multi-select", "toggle", "select all"]},
     {"name": "Command", "contract": "contracts/command.json", "category": "navigation", "tags": ["command", "search", "global search", "palette", "quick actions", "combobox"]},

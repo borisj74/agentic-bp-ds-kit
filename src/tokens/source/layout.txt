@@ -267,3 +267,5 @@ timeline/node-sm|{ref/space/900}
 # Chat (Figma BP AI messages 487:9226): the avatar is 32; a person's bubble stops at about two thirds of the panel.
 chat/avatar|{ref/space/900}
 chat/bubble-max|280px
+# The icon tile on a saved chat or playbook row.
+chat/tile|{ref/space/700}

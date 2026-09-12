@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
-import { AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatMessageDemo, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatListDemo, ChatMessageDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -18,6 +18,7 @@ import { Card, type CardProps } from "@/ui/Card/Card";
 import { Carousel, type CarouselProps } from "@/ui/Carousel/Carousel";
 import { Cell, type CellSize, type CellType } from "@/ui/Cell/Cell";
 import { ChatComposer, type ChatComposerProps } from "@/ui/ChatComposer/ChatComposer";
+import { ChatList, type ChatListProps } from "@/ui/ChatList/ChatList";
 import { ChatMessage, type ChatMessageProps } from "@/ui/ChatMessage/ChatMessage";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
 import { Command, type CommandGroup, type CommandProps } from "@/ui/Command/Command";
@@ -839,6 +840,21 @@ export const registry: Record<string, Entry> = {
     hint: "Type and press Enter to send. Add a file, take a chip off, or turn on field selection and dictation: each one goes red and says how to stop. Deep Thought stays lit while it is on.",
     block: true,
     card: <div style={{ width: 300 }}><ChatComposer placeholder="Ask questions" /></div>,
+  },
+  ChatList: {
+    // Sample chats and playbooks swap in for their {names}; the stage wires the rows and their menus up.
+    render: ({ holds, ...p }) => {
+      const props = holds === "playbooks"
+        ? { title: "Playbooks", items: PLAYBOOK_ITEMS }
+        : { title: "Chats", groups: CHAT_GROUPS };
+      return <ChatListDemo {...(p as unknown as ChatListProps)} {...props} />;
+    },
+    preview: { title: "Chats" },
+    hide: ["title", "items", "groups", "selected", "query", "more", "createLabel", "closeLabel", "onSelect", "onQueryChange", "onCreate", "onClose", "onItemMenuSelect"],
+    extras: { holds: { values: ["chats", "playbooks"], default: "chats" } },
+    hint: "Switch between saved chats and playbooks. Open a row, fold a group away, search to narrow the rows, or use a row's menu.",
+    block: true,
+    card: <div style={{ width: 300, height: 180, overflow: "hidden", border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)" }}><ChatList title="Chats" groups={CHAT_GROUPS} searchable={false} selected="unpaid" /></div>,
   },
   ChatMessage: {
     // The stage runs a short conversation, so the vote, the menu and the suggestions all work.

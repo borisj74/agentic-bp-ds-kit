@@ -1,0 +1,53 @@
+/* Figma BP AI chats 484:8820: a title row, a search box, then rows with a tinted icon tile. */
+.list {
+  display: flex; flex-direction: column; width: 100%; min-width: 0; height: 100%;
+  background: var(--surface-flat); font-family: var(--font-sans);
+}
+
+.head {
+  display: flex; align-items: center; gap: var(--space-xsmall);
+  padding: var(--space-xsmall) var(--space-medium);
+  border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
+}
+.title { flex: 1 1 auto; min-width: 0; margin: 0; font-size: var(--font-size-regular); font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); }
+
+.search { padding: var(--space-small) var(--space-medium); border-bottom: var(--border-width-thin) solid var(--border-neutral-faint); }
+
+.body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--space-xsmall) var(--space-xsmall) var(--space-medium); }
+.empty { margin: 0; padding: var(--space-small); font-size: var(--font-size-small); color: var(--text-neutral); }
+
+.group { display: flex; flex-direction: column; }
+.groupHead {
+  display: flex; align-items: center; gap: var(--space-xxsmall);
+  margin: 0; padding: var(--space-xsmall); border: 0; background: none; cursor: pointer;
+  font: inherit; font-size: var(--font-size-small); font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); text-align: start;
+}
+.groupHead:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(var(--border-width-medium) * -1); border-radius: var(--radius-small); }
+.chevron { color: var(--icon-neutral); transition: transform var(--motion-expand-duration) var(--motion-expand-easing); }
+.chevron.shut { transform: rotate(-90deg); }
+@media (prefers-reduced-motion: reduce) { .chevron { transition: none; } }
+
+.rows { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.row { position: relative; display: flex; align-items: center; border-radius: var(--radius-medium); }
+.row:hover, .selected { background: var(--bg-neutral-faint); }
+.selected { background: var(--bg-neutral-min-selected); }
+
+/* A row: the tinted tile, then what the chat or playbook is called, on one line. */
+.open {
+  flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: var(--space-xsmall);
+  margin: 0; padding: var(--space-xsmall); border: 0; background: none; cursor: pointer;
+  font: inherit; font-size: var(--font-size-small); color: var(--text-neutral-strong); text-align: start;
+}
+.open:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(var(--border-width-medium) * -1); border-radius: var(--radius-medium); }
+.tile {
+  flex: none; display: grid; place-items: center; width: var(--chat-tile); height: var(--chat-tile);
+  border-radius: var(--radius-medium); background: var(--bg-brand-faint); color: var(--icon-brand);
+}
+.label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* The row's menu stays out of the way until the row is hovered or something in it has focus. */
+.rowMenu { flex: none; padding-inline-end: var(--space-xxsmall); opacity: 0; }
+.row:hover .rowMenu, .rowMenu:focus-within { opacity: 1; }
+
+/* The older-than row sits under a line, apart from the groups. */
+.more { width: 100%; margin-top: var(--space-xsmall); padding-top: var(--space-small); border-top: var(--border-width-thin) solid var(--border-neutral-faint); border-radius: 0; }

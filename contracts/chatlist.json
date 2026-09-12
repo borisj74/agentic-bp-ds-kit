@@ -1,0 +1,133 @@
+{
+  "name": "ChatList",
+  "path": "src/ui/ChatList/ChatList.tsx",
+  "intent": "The saved chats or playbooks beside the assistant: a titled panel with a search box and rows that open what they name.",
+  "usage": "Use ChatList for the panel of saved chats, or of playbooks, next to an assistant. It is one component: pass items for one plain list, or groups for named groups like Pinned Chats and Recent Chats, which people can fold away. Searching narrows the rows as it is typed, and empty groups drop out. Each row can carry its own menu, like Pin, Rename and Delete for a chat, or Edit and Delete for a playbook; it stays out of sight until the row is hovered or has focus. more adds the last row that reaches further back, like View chats older than 30 days. onCreate adds the button that starts a new one, and onClose the × that shuts the panel. See contracts/chatlist.json for the full contract.",
+  "props": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "note": "What the panel holds, like Chats or Playbooks. It names the panel for screen readers too."
+    },
+    "items": {
+      "type": "ChatListItem[]",
+      "itemShape": {
+        "id": "string",
+        "label": "string",
+        "icon": "string? Material Symbols name. Default forum.",
+        "menu": "DropdownMenuEntry[]? That row's menu."
+      },
+      "note": "One plain list, like playbooks. Use groups instead when the rows are sorted into named groups."
+    },
+    "groups": {
+      "type": "ChatListGroup[]",
+      "itemShape": {
+        "id": "string",
+        "label": "string",
+        "items": "ChatListItem[]",
+        "defaultOpen": "boolean?"
+      },
+      "note": "Named groups, like Pinned Chats and Recent Chats. Each one folds away."
+    },
+    "selected": {
+      "type": "string",
+      "note": "The row that is open, tinted and marked as current."
+    },
+    "onSelect": {
+      "type": "(id: string) => void",
+      "note": "A row was opened."
+    },
+    "searchable": {
+      "type": "boolean",
+      "default": true,
+      "note": "The search box over the rows."
+    },
+    "searchPlaceholder": {
+      "type": "string",
+      "note": "The grey line in the search box. Without it, Search in chats (Enter)."
+    },
+    "query": {
+      "type": "string",
+      "note": "Controlled search text, for searching on the server. Leave it out and the rows are narrowed here."
+    },
+    "onQueryChange": {
+      "type": "(query: string) => void"
+    },
+    "createLabel": {
+      "type": "string",
+      "note": "What the new button says, like Start new chat or Create playbook."
+    },
+    "onCreate": {
+      "type": "() => void",
+      "note": "Adds the button that starts a new chat or playbook."
+    },
+    "closeLabel": {
+      "type": "string",
+      "note": "What the × says, like Close chats."
+    },
+    "onClose": {
+      "type": "() => void",
+      "note": "Adds the × that shuts the panel."
+    },
+    "more": {
+      "type": "{ label: string; icon?: string; onClick?: () => void }",
+      "note": "The last row, under a line, like View chats older than 30 days."
+    },
+    "onItemMenuSelect": {
+      "type": "(itemId: string, actionId: string) => void",
+      "note": "A pick from a row's menu: the row, then what was picked."
+    },
+    "emptyLabel": {
+      "type": "string",
+      "default": "No matches.",
+      "note": "Shown when a search finds nothing."
+    }
+  },
+  "useWhen": [
+    "The saved chats beside an assistant panel.",
+    "The playbooks people can run.",
+    "Any short list of saved things that open in the panel beside it."
+  ],
+  "doNot": [
+    "Do not use it for app navigation. Use SideNav.",
+    "Do not use it for a list of records people sort and filter. Use Table.",
+    "Do not build the rows from your own divs, or add a ChatRow or PlaybookItem. Pass items.",
+    "Do not pass both items and groups; pick one.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The panel is a section named by its title.",
+    "Each row is a button, and the open one is marked as current.",
+    "A group head is a button with aria-expanded.",
+    "Each row menu is named after its row, like Actions for What invoices have not been paid, and is reachable with Tab.",
+    "The search box has a hidden label."
+  ],
+  "snippet": "<ChatList title=\"Chats\" groups={chats} selected={openChat} onSelect={(id) => {}} />",
+  "examples": [
+    {
+      "title": "Saved chats",
+      "usage": "Pinned and recent, with the older-than row at the end.",
+      "items": [
+        {
+          "props": {
+            "title": "Chats",
+            "groups": "{chats}",
+            "more": "{older}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Playbooks",
+      "usage": "One plain list, each row with Edit and Delete.",
+      "items": [
+        {
+          "props": {
+            "title": "Playbooks",
+            "items": "{playbooks}"
+          }
+        }
+      ]
+    }
+  ]
+}

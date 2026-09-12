@@ -9,6 +9,7 @@ import { Button } from "@/ui/Button/Button";
 import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
 import { Cell, type CellSize } from "@/ui/Cell/Cell";
 import { ChatComposer, type ChatComposerMode, type ChatComposerProps } from "@/ui/ChatComposer/ChatComposer";
+import { ChatList, type ChatListProps } from "@/ui/ChatList/ChatList";
 import { ChatMessage, type ChatMessageActionId, type ChatMessageProps } from "@/ui/ChatMessage/ChatMessage";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
 import { Density, type DensityValue } from "@/ui/Density/Density";
@@ -588,6 +589,60 @@ export function ChatComposerDemo({ selecting: askSelecting, dictating: askDictat
         mode={mode} onModeChange={setMode} onSend={(text) => setSent([...sent, text].slice(-3))}
         onAdd={(id) => setFiles([...files, { id: `${id}-${files.length}`, label: id === "playbook" ? "Monthly close" : "New-file.csv" }])}
       />
+    </div>
+  );
+}
+
+const CHAT_ROW_MENU = [
+  { id: "pin", label: "Pin", icon: "push_pin" },
+  { id: "rename", label: "Rename", icon: "edit" },
+  { id: "delete", label: "Delete", icon: "delete", danger: true },
+];
+const PINNED_MENU = [{ ...CHAT_ROW_MENU[0], id: "unpin", label: "Unpin" }, CHAT_ROW_MENU[1], CHAT_ROW_MENU[2]];
+export const CHAT_GROUPS = [
+  {
+    id: "pinned", label: "Pinned Chats",
+    items: [
+      { id: "unpaid", label: "What invoices have not been paid", menu: PINNED_MENU },
+      { id: "renew", label: "What customers renew in 30 days", menu: PINNED_MENU },
+      { id: "failed", label: "List customers with failed payments", menu: PINNED_MENU },
+    ],
+  },
+  {
+    id: "recent", label: "Recent Chats",
+    items: [
+      { id: "revenue", label: "How much is our total revenue", menu: CHAT_ROW_MENU },
+      { id: "invoice", label: "Create a $3450 invoice for Acme Corp", menu: CHAT_ROW_MENU },
+      { id: "reminders", label: "Send reminders on overdue invoices", menu: CHAT_ROW_MENU },
+      { id: "delinquent", label: "List all delinquent accounts", menu: CHAT_ROW_MENU },
+    ],
+  },
+];
+export const PLAYBOOK_ITEMS = [
+  { id: "entity", label: "Create Entity", icon: "play_circle" },
+  { id: "field", label: "Create Entity Field", icon: "play_circle" },
+  { id: "coupling", label: "Coupling Account & Billing Profile", icon: "play_circle" },
+  { id: "template", label: "Editing Invoice Template", icon: "play_circle" },
+  { id: "action", label: "Setup Workflow Action", icon: "play_circle" },
+  { id: "rule", label: "Setup Workflow Rule", icon: "play_circle" },
+  { id: "custom", label: "Custom User Playbook", icon: "play_circle", menu: [{ id: "edit", label: "Edit", icon: "edit" }, { id: "delete", label: "Delete", icon: "delete", danger: true }] },
+];
+
+// Playground harness: the real ChatList with the open row and its menus wired up. Not a kit piece.
+export function ChatListDemo(p: ChatListProps) {
+  const [open, setOpen] = useState(p.groups ? "unpaid" : "entity");
+  const [said, setSaid] = useState("");
+  return (
+    <div style={{ display: "grid", gap: "var(--space-xsmall)", width: 340 }}>
+      <div style={{ height: 420, border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden" }}>
+        <ChatList
+          {...p} selected={open} onSelect={(id) => { setOpen(id); setSaid(`Opened ${id}`); }}
+          onItemMenuSelect={(itemId, actionId) => setSaid(`${actionId} on ${itemId}`)}
+          onCreate={() => setSaid("Started a new one")} onClose={() => setSaid("Closed the panel")}
+          more={p.groups ? { label: "View chats older than 30 days", onClick: () => setSaid("Looked further back") } : undefined}
+        />
+      </div>
+      {said && <p style={{ margin: 0, fontSize: "var(--font-size-xsmall)", color: "var(--text-neutral)" }}>{said}</p>}
     </div>
   );
 }
