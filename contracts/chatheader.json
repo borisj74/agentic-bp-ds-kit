@@ -1,0 +1,97 @@
+{
+  "name": "ChatHeader",
+  "path": "src/ui/ChatHeader/ChatHeader.tsx",
+  "intent": "The bar at the top of the assistant: its mark and name, then start a new chat, go full screen, the options menu and close.",
+  "usage": "Use ChatHeader at the top of an assistant panel or its full-screen view. It is one component: pass the handlers for the buttons you want, and the ones you leave out do not show. The options menu is built for you: Chats and Playbooks with how many there are, Plan Mode with a tick while it is on, and Settings. chatsCount and playbooksCount leave the number off when there is none. menu replaces the whole menu when a screen needs different entries. Pair it with ChatList, ChatMessage and ChatComposer to make the window. See contracts/chatheader.json for the full contract.",
+  "props": {
+    "title": {
+      "type": "string",
+      "default": "BP AI",
+      "note": "The name beside the mark. It also names the bar and the close button."
+    },
+    "onNewChat": {
+      "type": "() => void",
+      "note": "Adds the start-a-new-chat button."
+    },
+    "expanded": {
+      "type": "boolean",
+      "default": false,
+      "note": "The full-screen view is showing, so the button offers the way back."
+    },
+    "onExpandedChange": {
+      "type": "(expanded: boolean) => void",
+      "note": "Adds the full-screen button. The screen decides what full screen means."
+    },
+    "onClose": {
+      "type": "() => void",
+      "note": "Adds the × that shuts the assistant."
+    },
+    "chatsCount": {
+      "type": "number",
+      "note": "How many saved chats. Nothing shows at zero."
+    },
+    "playbooksCount": {
+      "type": "number",
+      "note": "How many playbooks. Nothing shows at zero."
+    },
+    "planMode": {
+      "type": "boolean",
+      "default": false,
+      "note": "Plan Mode is on, so its row in the menu is ticked."
+    },
+    "onPlanModeChange": {
+      "type": "(planMode: boolean) => void",
+      "note": "Plan Mode was switched from the menu."
+    },
+    "menu": {
+      "type": "DropdownMenuEntry[]",
+      "note": "Replaces the built-in options menu. With this, Plan Mode is yours to handle through onMenuSelect."
+    },
+    "onMenuSelect": {
+      "type": "(id: string) => void",
+      "note": "A pick from the menu: chats, playbooks, planMode, settings, or your own ids."
+    },
+    "label": {
+      "type": "string",
+      "note": "Names the bar for screen readers. Without it, the title."
+    }
+  },
+  "useWhen": [
+    "The top of an assistant side panel.",
+    "The top of the assistant's full-screen view."
+  ],
+  "doNot": [
+    "Do not use it as the app's top bar. Use AppHeader.",
+    "Do not use it as a page title. Use PageHeader.",
+    "Do not build the bar from Buttons and a Logo, or add an AiHeader or CopilotBar. Use this.",
+    "Do not show a count of zero.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The bar is a header named after the assistant, holding a heading with its name.",
+    "Every button says what it does, with a kit Tooltip on hover and focus.",
+    "The options menu is a kit DropdownMenu, so it is reachable with the keyboard and Plan Mode reads as ticked."
+  ],
+  "snippet": "<ChatHeader chatsCount={7} playbooksCount={9} onNewChat={() => {}} onClose={() => {}} />",
+  "examples": [
+    {
+      "title": "The bar",
+      "usage": "With everything on, and with only the menu and close.",
+      "items": [
+        {
+          "props": {
+            "chatsCount": 7,
+            "playbooksCount": 9
+          }
+        },
+        {
+          "props": {
+            "title": "BP AI",
+            "chatsCount": 0,
+            "playbooksCount": 0
+          }
+        }
+      ]
+    }
+  ]
+}

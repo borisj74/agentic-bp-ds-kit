@@ -24,6 +24,7 @@ export interface DropdownMenuItem {
   disabled?: boolean;
   selected?: boolean;
   checkbox?: boolean;
+  count?: number;
 }
 export interface DropdownMenuDivider { divider: true }
 export type DropdownMenuEntry = DropdownMenuItem | DropdownMenuDivider;
@@ -239,6 +240,8 @@ export function DropdownMenu({
                   <span className={styles.label}>{entry.label}</span>
                   {entry.description && <span className={styles.description}>{entry.description}</span>}
                 </span>
+                {/* How many the row leads to, like Chats 7, in a kit Badge at the end. */}
+                {entry.count !== undefined && <span className={styles.end}><Badge>{String(entry.count)}</Badge></span>}
                 {trailing && <Icon name={entry.icon!} size="md" className={styles.end} />}
                 {entry.selected && !entry.checkbox && <Icon name="check" size="md" className={styles.end} />}
               </button>

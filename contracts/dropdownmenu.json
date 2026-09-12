@@ -20,7 +20,8 @@
         "danger": "boolean?",
         "disabled": "boolean?",
         "selected": "boolean? Light blue row (bg-neutral-min-selected) with a check. Any item with selected set becomes a radio item.",
-        "checkbox": "boolean? Shows a kit Checkbox that follows selected. For multi-select filters."
+        "checkbox": "boolean? Shows a kit Checkbox that follows selected. For multi-select filters.",
+        "count": "number? Shown as a kit Badge at the end of the row, like Chats 7."
       },
       "note": "Use { divider: true } as an entry to split groups."
     },

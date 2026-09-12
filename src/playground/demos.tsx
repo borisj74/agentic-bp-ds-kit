@@ -9,6 +9,7 @@ import { Button } from "@/ui/Button/Button";
 import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
 import { Cell, type CellSize } from "@/ui/Cell/Cell";
 import { ChatComposer, type ChatComposerMode, type ChatComposerProps } from "@/ui/ChatComposer/ChatComposer";
+import { ChatHeader, type ChatHeaderProps } from "@/ui/ChatHeader/ChatHeader";
 import { ChatList, type ChatListProps } from "@/ui/ChatList/ChatList";
 import { ChatMessage, type ChatMessageActionId, type ChatMessageProps } from "@/ui/ChatMessage/ChatMessage";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
@@ -641,6 +642,32 @@ export function ChatListDemo(p: ChatListProps) {
           onCreate={() => setSaid("Started a new one")} onClose={() => setSaid("Closed the panel")}
           more={p.groups ? { label: "View chats older than 30 days", onClick: () => setSaid("Looked further back") } : undefined}
         />
+      </div>
+      {said && <p style={{ margin: 0, fontSize: "var(--font-size-xsmall)", color: "var(--text-neutral)" }}>{said}</p>}
+    </div>
+  );
+}
+
+// Playground harness: the real ChatHeader with Plan Mode and full screen wired up. Not a kit piece.
+export function ChatHeaderDemo(p: ChatHeaderProps) {
+  const [plan, setPlan] = useState(Boolean(p.planMode));
+  const [full, setFull] = useState(Boolean(p.expanded));
+  const [said, setSaid] = useState("");
+  const [from, setFrom] = useState({ planMode: p.planMode, expanded: p.expanded });
+  if (from.planMode !== p.planMode || from.expanded !== p.expanded) {
+    setFrom({ planMode: p.planMode, expanded: p.expanded });
+    setPlan(Boolean(p.planMode));
+    setFull(Boolean(p.expanded));
+  }
+  return (
+    <div style={{ display: "grid", gap: "var(--space-xsmall)", width: "100%", maxWidth: 460 }}>
+      <div style={{ border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden" }}>
+        <ChatHeader
+          {...p} planMode={plan} onPlanModeChange={setPlan} expanded={full} onExpandedChange={setFull}
+          onNewChat={() => setSaid("Started a new chat")} onClose={() => setSaid("Closed the assistant")}
+          onMenuSelect={(id) => setSaid(id === "planMode" ? "Switched Plan Mode" : `Opened ${id}`)}
+        />
+        <div style={{ height: 96, background: "var(--surface-flat)" }} />
       </div>
       {said && <p style={{ margin: 0, fontSize: "var(--font-size-xsmall)", color: "var(--text-neutral)" }}>{said}</p>}
     </div>
