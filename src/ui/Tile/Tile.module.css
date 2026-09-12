@@ -4,7 +4,7 @@
   box-sizing: border-box; display: flex; align-items: flex-start; gap: var(--space-medium);
   width: 100%; min-width: 0; margin: 0; padding: var(--space-medium);
   background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-subtle);
-  border-radius: var(--radius-large); font-family: var(--font-sans); text-align: start; text-decoration: none;
+  border-radius: var(--radius-medium); font-family: var(--font-sans); text-align: start; text-decoration: none;
   transition: border-color var(--motion-interaction-duration) var(--motion-interaction-easing),
     box-shadow var(--motion-interaction-duration) var(--motion-interaction-easing);
 }
