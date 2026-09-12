@@ -31,7 +31,7 @@
     },
     "scopeLabel": {
       "type": "string",
-      "note": "What the question can be scoped to, like Accounts page. Without it there is no scope row."
+      "note": "What the question can be scoped to, like Accounts page. Pass it only on a screen there is something to scope to; without it there is no scope row."
     },
     "scoped": {
       "type": "boolean",
@@ -110,6 +110,7 @@
   "doNot": [
     "Do not build the box from Textarea and Buttons, or add a MessageBox, PromptInput or SendButton. Use this.",
     "Do not use it for an ordinary form field. Use Textarea.",
+    "Do not show the scope row on a screen with nothing to scope to, and do not name a page the person is not on.",
     "Do not leave the attachment bar showing when nothing is attached.",
     "Do not add a second primary Button beside send.",
     "Do not use raw hex."

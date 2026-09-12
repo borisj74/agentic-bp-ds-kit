@@ -109,6 +109,14 @@ export function ChatMessage({
           {!inBubble && sections && sections.length > 0 && (
             <div className={styles.sections}>{sections.map((s) => <Disclosure key={s.id} section={s} />)}</div>
           )}
+          {suggestions && suggestions.length > 0 && (
+            <div className={styles.suggestions}>
+              {suggestions.map((s) => (
+                <Button key={s.id} size="sm" onClick={() => onSuggestion?.(s.id, s.label)}>{s.label}</Button>
+              ))}
+            </div>
+          )}
+          {/* The buttons close the message: they come after the workings and the suggestions, never before the answer. */}
           {keys.length > 0 && (
             <div className={styles.actions}>
               {keys.map((k) => (
@@ -117,13 +125,6 @@ export function ChatMessage({
                     <Button size="sm" variant="tertiary" iconOnly iconStart={ACTIONS[k].icon} onClick={() => onAction?.(k)}>{ACTIONS[k].label}</Button>
                   </span>
                 </Tooltip>
-              ))}
-            </div>
-          )}
-          {suggestions && suggestions.length > 0 && (
-            <div className={styles.suggestions}>
-              {suggestions.map((s) => (
-                <Button key={s.id} size="sm" onClick={() => onSuggestion?.(s.id, s.label)}>{s.label}</Button>
               ))}
             </div>
           )}

@@ -1,10 +1,10 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { components, slug } from "./nav";
+import { components, patterns, slug } from "./nav";
 import type { Contract } from "./Master";
 
 export async function loadContract(s: string): Promise<Contract | null> {
-  const entry = components.find((c) => slug(c.name) === s);
+  const entry = [...components, ...patterns].find((c) => slug(c.name) === s);
   if (!entry) return null;
   // Scoped to contracts/ so the build traces only that folder, not the whole project.
   const raw = await readFile(path.join(process.cwd(), "contracts", path.basename(entry.contract)), "utf8");

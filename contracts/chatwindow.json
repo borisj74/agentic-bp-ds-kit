@@ -1,0 +1,130 @@
+{
+  "name": "ChatWindow",
+  "path": "src/patterns/ChatWindow/ChatWindow.tsx",
+  "intent": "The assistant window: its header over the turns, the composer at the foot, and the saved chats coming in beside or over them.",
+  "usage": "Use ChatWindow for the assistant beside a screen, or for its full-screen view. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is shown. The box runs edge to edge at the foot of the window, with one line over it, rather than sitting in the body as a card of its own. Pass the turns as ChatMessage children, the box as composer, and the saved chats as panel. empty takes its place before anyone has asked anything, usually a kit Empty. notice writes the line about the assistant making mistakes, as a kit Alert people can dismiss. size panel is the 395 column beside the page; size full fills the screen and sets the chats beside the conversation instead of over it. The header props go straight to the kit ChatHeader. See contracts/chatwindow.json for the full contract.",
+  "composes": [
+    "ChatHeader",
+    "ChatMessage",
+    "ChatComposer",
+    "ChatList",
+    "Alert",
+    "Empty"
+  ],
+  "props": {
+    "composer": {
+      "type": "ReactNode",
+      "required": true,
+      "note": "The box at the foot. A kit ChatComposer."
+    },
+    "children": {
+      "type": "ReactNode",
+      "note": "The turns, as kit ChatMessage pieces, oldest first."
+    },
+    "empty": {
+      "type": "ReactNode",
+      "note": "What stands in before the first question, like a kit Empty with the suggestions under it."
+    },
+    "panel": {
+      "type": "ReactNode",
+      "note": "The saved chats or playbooks, as a kit ChatList."
+    },
+    "panelOpen": {
+      "type": "boolean",
+      "default": false,
+      "note": "The panel is showing: beside the conversation on full, over it on panel."
+    },
+    "size": {
+      "enum": [
+        "panel",
+        "full"
+      ],
+      "default": "panel",
+      "note": "panel is the 395 column beside the page. full fills the space it is given."
+    },
+    "title": {
+      "type": "string",
+      "default": "BP AI",
+      "note": "The name in the header."
+    },
+    "notice": {
+      "type": "string",
+      "note": "The line about the assistant making mistakes, shown as a kit Alert above the box."
+    },
+    "onNoticeDismiss": {
+      "type": "() => void",
+      "note": "The × on that line was pressed."
+    },
+    "onNewChat": {
+      "type": "() => void",
+      "note": "Passed to the header: start a new chat."
+    },
+    "expanded": {
+      "type": "boolean",
+      "note": "Passed to the header: the full-screen view is showing."
+    },
+    "onExpandedChange": {
+      "type": "(expanded: boolean) => void",
+      "note": "Passed to the header. The screen swaps size itself."
+    },
+    "onClose": {
+      "type": "() => void",
+      "note": "Passed to the header: shut the assistant."
+    },
+    "chatsCount": {
+      "type": "number",
+      "note": "Passed to the header's options menu."
+    },
+    "playbooksCount": {
+      "type": "number",
+      "note": "Passed to the header's options menu."
+    },
+    "planMode": {
+      "type": "boolean",
+      "note": "Passed to the header."
+    },
+    "onPlanModeChange": {
+      "type": "(planMode: boolean) => void",
+      "note": "Passed to the header."
+    },
+    "menu": {
+      "type": "DropdownMenuEntry[]",
+      "note": "Replaces the header's options menu."
+    },
+    "onMenuSelect": {
+      "type": "(id: string) => void",
+      "note": "A pick from that menu: chats, playbooks, planMode or settings. Open the panel from here."
+    }
+  },
+  "useWhen": [
+    "The assistant docked beside a product screen.",
+    "The assistant's full-screen view, with the saved chats beside it."
+  ],
+  "doNot": [
+    "Do not add state to it; it is a blueprint. Keep the view, the turns and the panel in the screen.",
+    "Do not build the header, the turns or the box inside it. Pass the kit pieces.",
+    "Do not use it as an overlay dialog. Use Drawer or Modal.",
+    "Do not invent a second assistant layout beside it.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The header is a kit ChatHeader, so its buttons and menu are named and reachable.",
+    "Each turn is a kit ChatMessage, named after who said it.",
+    "The notice is a kit Alert people can dismiss.",
+    "The turns scroll on their own while the box at the foot stays put."
+  ],
+  "snippet": "<ChatWindow composer={<ChatComposer onSend={send} />} chatsCount={7} onClose={close}>{turns}</ChatWindow>",
+  "examples": [
+    {
+      "title": "Get started",
+      "usage": "Before anyone has asked: the empty block, the notice, and the box.",
+      "items": [
+        {
+          "props": {
+            "size": "panel"
+          }
+        }
+      ]
+    }
+  ]
+}

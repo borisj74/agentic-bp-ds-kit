@@ -9,10 +9,14 @@ import { Button } from "@/ui/Button/Button";
 import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
 import { Cell, type CellSize } from "@/ui/Cell/Cell";
 import { ChatComposer, type ChatComposerMode, type ChatComposerProps } from "@/ui/ChatComposer/ChatComposer";
+import { ChatComposer as ChatComposerPiece } from "@/ui/ChatComposer/ChatComposer";
 import { ChatHeader, type ChatHeaderProps } from "@/ui/ChatHeader/ChatHeader";
 import { ChatList, type ChatListProps } from "@/ui/ChatList/ChatList";
 import { ChatMessage, type ChatMessageActionId, type ChatMessageProps } from "@/ui/ChatMessage/ChatMessage";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
+import { Empty } from "@/ui/Empty/Empty";
+import { LogoAI } from "@/ui/LogoAI/LogoAI";
+import { ChatWindow, type ChatWindowProps } from "@/patterns/ChatWindow/ChatWindow";
 import { Density, type DensityValue } from "@/ui/Density/Density";
 import { Drawer, type DrawerProps } from "@/ui/Drawer/Drawer";
 import { DropdownMenu, type DropdownMenuProps } from "@/ui/DropdownMenu/DropdownMenu";
@@ -670,6 +674,77 @@ export function ChatHeaderDemo(p: ChatHeaderProps) {
         <div style={{ height: 96, background: "var(--surface-flat)" }} />
       </div>
       {said && <p style={{ margin: 0, fontSize: "var(--font-size-xsmall)", color: "var(--text-neutral)" }}>{said}</p>}
+    </div>
+  );
+}
+
+const START_SUGGESTIONS = [
+  { id: "learn", label: "Learn about BP AI" },
+  { id: "dashboard", label: "Build a dashboard" },
+  { id: "records", label: "Create or update records" },
+  { id: "draft", label: "Draft document" },
+  { id: "overview", label: "Review recent message overview" },
+  { id: "trends", label: "Review message volume trends" },
+  { id: "more", label: "View more suggestions" },
+];
+
+// Playground harness: the ChatWindow pattern driven like a screen would drive it. Not a kit piece.
+export function ChatWindowDemo({ started = false, size: asked = "panel", ...p }: Omit<ChatWindowProps, "composer"> & { started?: boolean }) {
+  const [turns, setTurns] = useState<{ id: string; author: "user" | "assistant"; text: string }[]>(
+    started ? [{ id: "q1", author: "user", text: "How many accounts are inactive?" }, { id: "a1", author: "assistant", text: "42 accounts have had no activity for 90 days or more." }] : [],
+  );
+  const [view, setView] = useState<"chat" | "chats" | "playbooks">("chat");
+  const [notice, setNotice] = useState(true);
+  const [plan, setPlan] = useState(false);
+  // The screen owns the size, so the full-screen button in the header works like it does on its own.
+  const [size, setSize] = useState(asked);
+  const [from, setFrom] = useState({ started, asked });
+  if (from.started !== started || from.asked !== asked) {
+    setFrom({ started, asked });
+    setSize(asked);
+    setTurns(started ? [{ id: "q1", author: "user", text: "How many accounts are inactive?" }, { id: "a1", author: "assistant", text: "42 accounts have had no activity for 90 days or more." }] : []);
+  }
+  const ask = (text: string) => setTurns((old) => [
+    ...old,
+    { id: `q${old.length}`, author: "user" as const, text },
+    { id: `a${old.length}`, author: "assistant" as const, text: "Here is what I found. 42 accounts have had no activity for 90 days or more." },
+  ]);
+  return (
+    <div style={{ height: 560, display: "flex", justifyContent: "center", background: "var(--bg-neutral-subtle)" }}>
+      <ChatWindow
+        {...p}
+        size={size} expanded={size === "full"} onExpandedChange={(full) => setSize(full ? "full" : "panel")}
+        title="BP AI" chatsCount={7} playbooksCount={9} planMode={plan} onPlanModeChange={setPlan}
+        onNewChat={() => { setTurns([]); setView("chat"); }} onClose={() => setView("chat")}
+        onMenuSelect={(id) => { if (id === "chats" || id === "playbooks") setView(view === id ? "chat" : id); }}
+        notice={notice ? "AI can make mistakes, verify important information." : undefined}
+        onNoticeDismiss={() => setNotice(false)}
+        panelOpen={view !== "chat"}
+        panel={
+          <ChatList
+            title={view === "playbooks" ? "Playbooks" : "Chats"}
+            groups={view === "playbooks" ? undefined : CHAT_GROUPS}
+            items={view === "playbooks" ? PLAYBOOK_ITEMS : undefined}
+            onClose={() => setView("chat")} onCreate={() => setView("chat")}
+            more={view === "playbooks" ? undefined : { label: "View chats older than 30 days" }}
+          />
+        }
+        empty={
+          // Figma BP AI get started 476:7442: the mark and the name in the middle, the starters stacked
+          // under them against the left edge of the window, in line with the notice and the box.
+          <div style={{ display: "grid", gap: "var(--space-medium)" }}>
+            <Empty title="Get Started" description="Ask a question, or pick one to start." media={<LogoAI variant="symbol" tone="filled" label="BP AI" />} />
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--space-xsmall)" }}>
+              {START_SUGGESTIONS.map((s) => (
+                <Button key={s.id} size="sm" onClick={() => ask(s.label)}>{s.label}</Button>
+              ))}
+            </div>
+          </div>
+        }
+        composer={<ChatComposerPiece scopeLabel="Accounts page" defaultScoped hints={ASK_HINTS} addMenu={ADD_MENU} onSend={ask} />}
+      >
+        {turns.length > 0 ? turns.map((t) => <ChatMessage key={t.id} author={t.author} text={t.text} person={{ name: "Ana Petrovic" }} />) : null}
+      </ChatWindow>
     </div>
   );
 }

@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
-import { AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -882,6 +882,17 @@ export const registry: Record<string, Entry> = {
     hint: "Switch the author for a person’s turn or the assistant’s. Turn on the whole conversation for a question and an answer with its workings, buttons and suggestions, where the vote and the menu work.",
     block: true,
     card: <div style={{ width: 300 }}><ChatMessage author="assistant" text="Summary of results" actions={[]} /></div>,
+  },
+  ChatWindow: {
+    // The pattern, driven the way a screen would drive it: the panel, the notice and the turns live outside it.
+    render: ({ started, ...p }) => <ChatWindowDemo {...(p as Record<string, unknown>)} started={Boolean(started)} />,
+    preview: { size: "panel" },
+    hide: ["composer", "children", "empty", "panel", "panelOpen", "title", "notice", "onNoticeDismiss", "onNewChat", "expanded", "onExpandedChange", "onClose", "chatsCount", "playbooksCount", "planMode", "onPlanModeChange", "menu", "onMenuSelect"],
+    toggles: { started: { label: "Conversation started", default: false } },
+    hint: "Switch between the docked column and full screen. Pick a suggestion or type to start; open Chats or Playbooks from the options menu, and watch where the panel lands in each size.",
+    block: true,
+    wide: true,
+    card: <div style={{ width: 300 }}><ChatHeader title="BP AI" chatsCount={7} onNewChat={() => {}} onClose={() => {}} /></div>,
   },
   Checkbox: {
     // The Checked switch sets the start value; the checkbox itself stays clickable. Keyed so switches re-apply.

@@ -269,3 +269,5 @@ chat/avatar|{ref/space/900}
 chat/bubble-max|280px
 # The icon tile on a saved chat or playbook row.
 chat/tile|{ref/space/700}
+# The docked assistant column (Figma BP AI side panel 492:12892).
+chat/panel|395px

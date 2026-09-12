@@ -1301,4 +1301,5 @@
   --chat-avatar: var(--ref-space-900);
   --chat-bubble-max: 280px;
   --chat-tile: var(--ref-space-700);
+  --chat-panel: 395px;
 }
