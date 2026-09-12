@@ -2,7 +2,7 @@
   "name": "AppHeader",
   "path": "src/ui/AppHeader/AppHeader.tsx",
   "intent": "The product's top bar: logo and environment on the start, global search in the centre, utility icons, the user and their company on the end. Not a page title.",
-  "usage": "Put one AppHeader at the top of the app shell, full width. onNavToggle adds the menu button that opens the side nav. It is one component: logo, environment, search, actions, user and company come from props, and it uses kit Logo, Badge, Button, Tooltip and Avatar inside. environment tags the instance (UAT-2, Sandbox) so people know where they are. With searchGroups, the search opens a kit Command in its place: one search box that grows down into the results (Recent items, scopes, arrow keys and Enter); otherwise it runs onSearch; searchShortcut only shows a hint. actions are icon buttons named by a Tooltip. The avatar opens an account menu with the name, User settings, Dark mode, Density & text size and Log out; each row shows only when its handler is passed. The header follows density: its bar, search and buttons shrink in compact and grow in comfortable. Under 800px it turns compact: the logo becomes the symbol and the search becomes an icon button beside the other icons. Page titles, breadcrumbs and page actions belong in the page, not here. See contracts/appheader.json for the full contract.",
+  "usage": "Put one AppHeader at the top of the app shell, full width. onNavToggle adds the menu button that opens the side nav. It is one component: logo, environment, search, actions, user and company come from props, and it uses kit Logo, Badge, Button, Tooltip and Avatar inside. environment tags the instance (UAT-2, Sandbox) so people know where they are. With searchGroups, the search opens a kit Command in its place: one search box that grows down into the results (Recent items, scopes, arrow keys and Enter); otherwise it runs onSearch; searchShortcut only shows a hint. actions are icon buttons named by a Tooltip. The avatar opens an account menu with the name, User settings, Dark mode, Density & text size and Log out; each row shows only when its handler is passed. The header follows density: its bar, search and buttons shrink in compact and grow in comfortable. Under 800px it turns compact: the logo becomes the symbol and the search becomes an icon button beside the other icons. Under 640px, the kit's mobile break, it turns phone-sized: the environment tag goes, and the row of icon actions becomes one more button holding the same actions, so onAction still tells you which was picked. Under 480px the company badge goes too; the avatar still says who is signed in. The bar answers to its own width, not the window's. Page titles, breadcrumbs and page actions belong in the page, not here. See contracts/appheader.json for the full contract.",
   "props": {
     "onNavToggle": {
       "type": "function",
@@ -95,7 +95,7 @@
     "actions": {
       "type": "AppHeaderAction[]",
       "itemShape": "{ id: string; label: string; icon: string }",
-      "note": "Utility icon buttons (36px, 20px icons), like Help, What's new and Feedback. label names the button and shows in its Tooltip. Three at most."
+      "note": "Up to three icon buttons, each named by a Tooltip. On a phone-width bar they move behind one more button; only one of the two is shown, so neither is reached twice by the keyboard."
     },
     "onAction": {
       "type": "function",
@@ -156,7 +156,8 @@
     "The menu button is a kit Button named Navigation with aria-expanded from navOpen.",
     "The search trigger is a button with visible text; with searchGroups it has aria-haspopup and aria-expanded, and focus moves into the dropdown search field. Escape (with an empty query) or a click outside closes it and returns focus to the trigger. The shortcut hint is hidden from screen readers.",
     "Icon actions are kit Buttons named by their label, which also shows in a Tooltip on hover and focus.",
-    "The avatar is a button named Account: {name} that opens the account menu (aria-haspopup, aria-expanded). Focus moves into the menu; Escape closes it and returns focus to the avatar; a click outside or tabbing away closes it."
+    "The avatar is a button named Account: {name} that opens the account menu (aria-haspopup, aria-expanded). Focus moves into the menu; Escape closes it and returns focus to the avatar; a click outside or tabbing away closes it.",
+    "On a phone-width bar the icon actions are one more menu button, so the same actions are still named and reachable."
   ],
   "snippet": "<AppHeader\n  onNavToggle={toggleNav}\n  navOpen={navOpen}\n  environment=\"UAT-2\"\n  searchShortcut=\"Ctrl+K\"\n  onSearch={openSearch}\n  actions={actions}\n  user={{ name: \"Maya Chen\" }}\n  company={{ name: \"Acme Inc.\" }}\n  onUserSettings={openSettings}\n  darkMode={dark}\n  onDarkModeChange={setDark}\n  density={density}\n  onDensityChange={setDensity}\n  onLogout={logOut}\n/>",
   "examples": [

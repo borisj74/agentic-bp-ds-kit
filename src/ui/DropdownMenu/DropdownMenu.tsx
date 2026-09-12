@@ -106,15 +106,23 @@ export function DropdownMenu({
       const panel = panelRef.current;
       if (!panel) return;
       const r = btn.getBoundingClientRect();
+      // The room the menu has: the app frame around the trigger when it marks itself as one (data-frame), else the
+      // window. A frame docked in a preview, a split view or a phone-width box is narrower than the window.
+      const frame = btn.closest("[data-frame]")?.getBoundingClientRect();
+      const x0 = Math.max(0, frame?.left ?? 0);
+      const x1 = Math.min(window.innerWidth, frame?.right ?? window.innerWidth);
+      const y1 = Math.min(window.innerHeight, frame?.bottom ?? window.innerHeight);
       const h = panel.offsetHeight;
-      const below = r.bottom + GAP + h <= window.innerHeight || r.top < h + GAP;
+      const below = r.bottom + GAP + h <= y1 || r.top < h + GAP;
       panel.style.top = `${below ? r.bottom + GAP : r.top - GAP - h}px`;
       // field: as wide as the trigger, for a narrow Select like rows per page. default: never under the menu minimum.
       panel.style.minWidth = menuWidth === "field" ? `${r.width}px` : `max(var(--dropdown-min-width), ${r.width}px)`;
-      // Line up with the trigger's start or end edge, then keep the whole panel inside the window.
+      // Narrower frame than the menu wants: the menu gives up width rather than leaving the frame.
+      panel.style.maxWidth = `${Math.max(0, x1 - x0 - GAP * 2)}px`;
+      // Line up with the trigger's start or end edge, then keep the whole panel inside the frame.
       const w = panel.offsetWidth;
       const want = align === "end" ? r.right - w : r.left;
-      const left = Math.min(Math.max(GAP, want), window.innerWidth - w - GAP);
+      const left = Math.min(Math.max(x0 + GAP, want), x1 - w - GAP);
       panel.style.left = `${left}px`;
       panel.style.visibility = "visible";
     };

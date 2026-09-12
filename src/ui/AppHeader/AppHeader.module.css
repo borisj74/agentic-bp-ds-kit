@@ -63,6 +63,9 @@ a.home:focus-visible { outline: var(--border-width-medium) solid var(--outline-b
 /* End: 36px icon buttons 4px apart, a divider with 12px each side, then user and company 4px apart. */
 .end { display: flex; align-items: center; justify-content: flex-end; min-width: 0; }
 .actions { display: flex; align-items: center; gap: var(--space-xxsmall); }
+/* The phone stand-in for the row of icons: one more button. Off until the bar is that narrow. */
+.actionsMenu { display: none; }
+.env { display: inline-flex; }
 .divider { flex: none; width: var(--border-width-thin); height: var(--control-small); margin: 0 var(--space-small); background: var(--border-neutral-subtle); }
 .dividerCompact { display: none; }
 .who { display: flex; align-items: center; gap: var(--space-xxsmall); }
@@ -118,6 +121,14 @@ button.user:focus-visible { outline: var(--border-width-medium) solid var(--outl
   .brandFull { display: none; }
   .brandSymbol, .searchCompact { display: inline-flex; }
   .dividerCompact { display: block; }
+}
+
+/* Phone bars (640px = --grid-breakpoint-sm, the kit's mobile break; CSS vars cannot appear in container
+   queries): the environment tag goes, and the row of utility icons becomes one more button. */
+@container (max-width: 640px) {
+  .env { display: none; }
+  .actions { display: none; }
+  .actionsMenu { display: flex; align-items: center; }
 }
 
 /* Very narrow: the company badge goes; the avatar still says who is signed in. */

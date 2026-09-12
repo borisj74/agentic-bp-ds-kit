@@ -9,6 +9,8 @@ export interface AppShellProps {
   children: ReactNode;
   header?: ReactNode;
   nav?: ReactNode;
+  navOpen?: boolean;
+  onNavClose?: () => void;
   pageHeader?: ReactNode;
   stickyPageHeader?: boolean;
   onPageHeaderStick?: (stuck: boolean) => void;
@@ -22,7 +24,7 @@ export interface AppShellProps {
 // Structure follows contracts/layout.json: the scrolling page is a .layout-content, so its edge padding
 // and the gap between Sections come from the layout tokens, not from the screen.
 export function AppShell({
-  children, header, nav, pageHeader, stickyPageHeader = true, onPageHeaderStick,
+  children, header, nav, navOpen = false, onNavClose, pageHeader, stickyPageHeader = true, onPageHeaderStick,
   assistant, assistantOpen = false, width = "full",
 }: AppShellProps) {
   // A reading column is the same container the layout classes use elsewhere.
@@ -31,12 +33,19 @@ export function AppShell({
   // the kit PageHeader to its own compact bar.
   const mark = useStickMark(onPageHeaderStick);
   return (
-    <div className={styles.shell}>
+    // data-frame says this is the frame: panels that float out of the bar or the rail (menus, tooltips, the search
+    // dropdown) keep inside it, so nothing hangs over what is beside a frame docked in a preview or a split view.
+    <div className={styles.shell} data-frame="">
       {/* The bar runs the full width; the rail starts under it. */}
       {header}
       <div className={styles.stage}>
-        {/* The rail column takes whatever width the nav is, so collapsed, expanded and pinned all work. */}
-        {nav && <aside className={styles.nav}>{nav}</aside>}
+        {/* The rail column takes whatever width the nav is, so collapsed, expanded and pinned all work.
+            On a phone there is no room for a column, so the nav opens over the page instead, and the page
+            behind it is covered by a sheet that closes it. */}
+        {nav && <aside className={[styles.nav, navOpen ? styles.navOpen : ""].join(" ")}>{nav}</aside>}
+        {nav && navOpen && onNavClose && (
+          <button type="button" className={styles.scrim} aria-label="Close navigation" onClick={onNavClose} />
+        )}
         {/* Only the page scrolls, so a sticky page header sticks and the bar and the rail stay put. */}
         <main className={["layout-content", styles.page].join(" ")}>
           {/* The page header stays at the top while the page scrolls under it. It pins flush to the top edge

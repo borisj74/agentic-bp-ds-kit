@@ -2,7 +2,7 @@
   "name": "Table",
   "path": "src/ui/Table/Table.tsx",
   "intent": "A semantic table of rows and columns, like invoices or accounts, with optional row selection, a caption and a total.",
-  "usage": "Use Table for lists of records. It is one component: pass columns and rows as data. Headers are kit HeaderCells; string and number values become text Cells, and anything richer is a kit Cell you put in the row (badge, avatar, link, actionMenu). Number columns take numeric, which aligns them to the end with even digits. selectable adds a checkbox column: each row gets a checkbox Cell and the header a select-all that shows a dash when only some rows are picked. The caption sits under the grid; footer holds a total in the last column. With no rows, one cell spans the columns and shows emptyLabel. Search, filters and actions belong in a Toolbar above it. For parent and child rows, put a Cell type tree in the first column and list only the rows whose parents are open. See contracts/table.json for the full contract.",
+  "usage": "Use Table for lists of records. It is one component: pass columns and rows as data. Headers are kit HeaderCells; string and number values become text Cells, and anything richer is a kit Cell you put in the row (badge, avatar, link, actionMenu). Number columns take numeric, which aligns them to the end with even digits. selectable adds a checkbox column: each row gets a checkbox Cell and the header a select-all that shows a dash when only some rows are picked. The caption sits under the grid; footer holds a total in the last column. With no rows, one cell spans the columns and shows emptyLabel. Search, filters and actions belong in a Toolbar above it. The table answers to the width of its own box: under 640px, the kit's mobile break, the columns stop sharing out the width and each cell keeps its content on one line, so the table scrolls sideways inside its box instead of breaking words down the cells. The first column is frozen against the start edge while the rest of the row slides under it; with selectable, the checkbox column is frozen with it, so a row can still be ticked while it is read. For parent and child rows, put a Cell type tree in the first column and list only the rows whose parents are open. See contracts/table.json for the full contract.",
   "props": {
     "columns": {
       "type": "TableColumn[]",
@@ -73,12 +73,14 @@
     "Do not invent TableHeader, TableRow, TableCell or a local grid of divs. Pass columns and rows.",
     "Do not draw cell content yourself. Use kit Cell types for badges, people, links and row actions.",
     "Do not put search or filters in the table. Use a Toolbar above it.",
-    "Do not use raw hex."
+    "Do not use raw hex.",
+    "Do not wrap it in your own scrolling box or set a width on it to make it fit a phone. It scrolls sideways and freezes its first column on its own."
   ],
   "a11y": [
     "A native table: caption, th scope=col headers (kit HeaderCell) and td cells.",
     "Row checkboxes are named Select plus the row label; the header one is Select all rows and is mixed when only some rows are selected. Selected rows set aria-selected.",
-    "The empty message is a real cell spanning the columns, so screen readers read it in place."
+    "The empty message is a real cell spanning the columns, so screen readers read it in place.",
+    "On a narrow box the sideways scroll is the table's own box, so the page never scrolls sideways and the frozen first column keeps the row's name in view."
   ],
   "snippet": "<Table\n  caption=\"A list of your recent invoices.\"\n  columns={[\n    { key: \"invoice\", header: \"Invoice\", emphasis: true },\n    { key: \"status\", header: \"Status\" },\n    { key: \"method\", header: \"Method\" },\n    { key: \"amount\", header: \"Amount\", numeric: true },\n  ]}\n  rows={invoices}\n  footer={{ label: \"Total\", value: \"$2,500.00\" }}\n/>",
   "examples": [

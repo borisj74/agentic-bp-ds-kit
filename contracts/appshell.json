@@ -2,7 +2,7 @@
   "name": "AppShell",
   "path": "src/patterns/AppShell/AppShell.tsx",
   "intent": "The frame every product screen sits in: the bar across the top, the rail under it down the side, the page in the middle, and the assistant beside it.",
-  "usage": "Use AppShell as the outer frame of a screen. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is open. Pass the kit AppHeader as header: it runs the full width across the top, and the rail starts under it. Pass the kit SideNav as nav; its column hugs whatever width the nav is, so collapsed, expanded and pinned all work. pageHeader takes a kit PageHeader and stays at the top of the page while the page scrolls under it, flush to the top edge; onPageHeaderStick says when the top of the page has scrolled away, so keep that boolean in the screen and pass it to the PageHeader as sticky to shrink it to the kit's compact 52px bar. stickyPageHeader false lets it scroll away instead. children are the page itself, already inside the scrolling content area with its edge padding and the gap between Sections, so screens do not add their own. assistant takes a kit ChatWindow and shows beside the page while assistantOpen is true. width caps the page to a reading column; it does not resize the frame. The frame answers to its own width rather than the window's, so under about 640 the rail goes and an open assistant takes the page's place, whether it is docked in a panel or filling a screen. See contracts/appshell.json for the full contract.",
+  "usage": "Use AppShell as the outer frame of a screen. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is open. Pass the kit AppHeader as header: it runs the full width across the top, and the rail starts under it. Pass the kit SideNav as nav; its column hugs whatever width the nav is, so collapsed, expanded and pinned all work. On a phone-width frame there is no room for a column, so the nav opens over the page: pass navOpen, the same boolean the AppHeader's menu button flips, and onNavClose, so tapping the page behind it closes it. pageHeader takes a kit PageHeader and stays at the top of the page while the page scrolls under it, flush to the top edge; onPageHeaderStick says when the top of the page has scrolled away, so keep that boolean in the screen and pass it to the PageHeader as sticky to shrink it to the kit's compact 52px bar. stickyPageHeader false lets it scroll away instead. children are the page itself, already inside the scrolling content area with its edge padding and the gap between Sections, so screens do not add their own. assistant takes a kit ChatWindow and shows beside the page while assistantOpen is true. width caps the page to a reading column; it does not resize the frame. The frame answers to its own width rather than the window's, so under about 640 the rail goes and an open assistant takes the page's place, whether it is docked in a panel or filling a screen. See contracts/appshell.json for the full contract. The frame marks itself, so panels that float out of the bar or the rail — menus, tooltips, the search dropdown — keep inside it rather than over whatever is beside it.",
   "composes": [
     "AppHeader",
     "SideNav",
@@ -23,6 +23,15 @@
     "nav": {
       "type": "ReactNode",
       "note": "The rail down the side. A kit SideNav. The column takes its width, whatever state it is in."
+    },
+    "navOpen": {
+      "type": "boolean",
+      "default": false,
+      "note": "Whether the side nav is open. The screen owns it: the same boolean it gives the AppHeader as navOpen and the SideNav as expanded. On a phone-width frame it is what shows the nav over the page."
+    },
+    "onNavClose": {
+      "type": "() => void",
+      "note": "Close the nav. On a phone-width frame the page behind the open nav is covered by a sheet, and tapping it calls this. Without it there is no sheet."
     },
     "pageHeader": {
       "type": "ReactNode",
@@ -75,7 +84,8 @@
     "The header is a kit AppHeader and the nav a kit SideNav, so their buttons and links are named and reachable.",
     "Only the page scrolls, so the bar, the rail and the assistant stay put.",
     "The page header keeps the page's h1.",
-    "Under about 640 of frame width the rail is dropped and an open assistant takes the page's place, so neither is squeezed to nothing."
+    "Under about 640 of frame width the rail is dropped and an open assistant takes the page's place, so neither is squeezed to nothing.",
+    "On a phone-width frame the sheet over the page is a real button named Close navigation, so the open nav can be closed by tap or keyboard."
   ],
   "snippet": "<AppShell header={<AppHeader />} nav={<SideNav items={sections} />} pageHeader={<PageHeader title=\"Accounts\" />}>{page}</AppShell>",
   "examples": [

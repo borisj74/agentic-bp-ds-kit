@@ -21,7 +21,7 @@
         "right"
       ],
       "default": "bottom",
-      "note": "Preferred side. Flips when there is no room and stays inside the window; the arrow keeps pointing at the trigger."
+      "note": "Preferred side. Flips when there is no room and stays inside the frame it is in — the app frame when the screen sits in one, else the window; the arrow keeps pointing at the trigger."
     },
     "delay": {
       "type": "number",
@@ -66,23 +66,50 @@
       "title": "With a title",
       "usage": "The title names what the text explains. Hover, Tab or click the ? icon.",
       "items": [
-        { "props": { "title": "Tax ID", "content": "The number on your tax registration, like EU123456789. We print it on every invoice." } }
+        {
+          "props": {
+            "title": "Tax ID",
+            "content": "The number on your tax registration, like EU123456789. We print it on every invoice."
+          }
+        }
       ]
     },
     {
       "title": "Body only",
       "usage": "Leave out title for a single short explanation.",
       "items": [
-        { "props": { "content": "Invoices that match this rule cannot be sent until someone approves them." } }
+        {
+          "props": {
+            "content": "Invoices that match this rule cannot be sent until someone approves them."
+          }
+        }
       ]
     },
     {
       "title": "Placement",
       "usage": "Below by default, like Figma. It flips when the preferred side has no room.",
       "items": [
-        { "props": { "title": "Below", "content": "The default side.", "placement": "bottom" } },
-        { "props": { "title": "Above", "content": "Use when the space below is taken.", "placement": "top" } },
-        { "props": { "title": "Right", "content": "Beside the trigger.", "placement": "right" } }
+        {
+          "props": {
+            "title": "Below",
+            "content": "The default side.",
+            "placement": "bottom"
+          }
+        },
+        {
+          "props": {
+            "title": "Above",
+            "content": "Use when the space below is taken.",
+            "placement": "top"
+          }
+        },
+        {
+          "props": {
+            "title": "Right",
+            "content": "Beside the trigger.",
+            "placement": "right"
+          }
+        }
       ]
     },
     {
@@ -90,7 +117,13 @@
       "usage": "Pass help on a kit field. Its label becomes the title.",
       "a11y": true,
       "items": [
-        { "props": { "title": "Tax ID", "content": "The number on your tax registration, like EU123456789.", "trigger": "field" } }
+        {
+          "props": {
+            "title": "Tax ID",
+            "content": "The number on your tax registration, like EU123456789.",
+            "trigger": "field"
+          }
+        }
       ]
     }
   ]

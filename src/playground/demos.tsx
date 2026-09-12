@@ -950,6 +950,7 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
           />
         }
         nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         onPageHeaderStick={setCompact}
         pageHeader={
           <PageHeader
@@ -1158,6 +1159,7 @@ export function ListPageDemo({ state = "ready", shell = false, ...p }: Omit<List
           />
         }
         nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         pageHeader={
           // No actions on the bar: a list keeps them in its own Toolbar, which owns the one primary.
           <PageHeader icon="receipt_long" title="Invoices" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />
@@ -1301,6 +1303,7 @@ export function RecordPageDemo({ sticky = true, shell = true }: { sticky?: boole
           />
         }
         nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        navOpen={navOpen} onNavClose={() => setNavOpen(false)}
       >
         {record}
       </AppShell>
@@ -1593,6 +1596,7 @@ export function DashboardDemo({ state = "ready", shell = true, ...p }: Omit<Dash
           />
         }
         nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         onPageHeaderStick={setCompact}
         pageHeader={
           <PageHeader
@@ -1669,6 +1673,7 @@ export function SettingsPageDemo({ shell = true, notice = false, ...p }: Omit<Se
           />
         }
         nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         pageHeader={
           <PageHeader
             title={chosen ? chosen.title : "Settings"}

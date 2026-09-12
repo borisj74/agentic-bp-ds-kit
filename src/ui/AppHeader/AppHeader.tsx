@@ -6,6 +6,7 @@ import { Badge, type BadgeTone } from "../Badge/Badge";
 import { Button } from "../Button/Button";
 import { Command, type CommandGroup, type CommandIconStyle, type CommandScope, type CommandVariant } from "../Command/Command";
 import { useDensity, type DensitySize } from "../Density/Density";
+import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
 import { Icon } from "../Icon/Icon";
 import { Logo } from "../Logo/Logo";
 import { SegmentedControl } from "../SegmentedControl/SegmentedControl";
@@ -185,7 +186,12 @@ export function AppHeader({
             </span>
           )}
           {homeHref ? <a href={homeHref} className={styles.home} aria-label="Home">{brand}</a> : <span className={styles.home}>{brand}</span>}
-          {environment && <Badge tone={environmentTone} emphasis="strong" size={density === "comfortable" ? "md" : "sm"}>{environment}</Badge>}
+          {/* The tag goes on a phone-width bar: the brand and the toggle come first there. */}
+          {environment && (
+            <span className={styles.env}>
+              <Badge tone={environmentTone} emphasis="strong" size={density === "comfortable" ? "md" : "sm"}>{environment}</Badge>
+            </span>
+          )}
         </div>
 
         {/* Centre: the global search trigger. It opens search; the shortcut label is shown, not bound (yet). */}
@@ -217,6 +223,17 @@ export function AppHeader({
                   <Button variant="tertiary" size={ctl} iconOnly iconStart={a.icon} onClick={() => onAction?.(a.id)}>{a.label}</Button>
                 </Tooltip>
               ))}
+            </div>
+          )}
+          {/* On a phone-width bar there is no room for a row of icons, so the same actions go behind one more
+              button. Only one of the two is ever shown, so neither adds a stop for the keyboard twice. */}
+          {actions.length > 0 && (
+            <div className={styles.actionsMenu}>
+              <DropdownMenu
+                label="More actions" icon="more_vert" iconOnly variant="tertiary" size={ctl} align="end"
+                items={actions.map((a) => ({ id: a.id, label: a.label, icon: a.icon }))}
+                onSelect={(id) => onAction?.(id)}
+              />
             </div>
           )}
           {actions.length > 0 && who && <span className={styles.divider} aria-hidden="true" />}

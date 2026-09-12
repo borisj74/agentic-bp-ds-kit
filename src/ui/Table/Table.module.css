@@ -1,5 +1,8 @@
-/* Wide tables scroll inside their own box; the page never scrolls sideways. */
-.wrap { max-width: 100%; overflow-x: auto; }
+/* Wide tables scroll inside their own box; the page never scrolls sideways. The box is the size container,
+   so the table answers to the room it actually has rather than to the window. */
+/* contain: paint keeps the sideways scroll to this box: without it a table wider than the page adds the page's
+   own sideways scrollbar as well. */
+.wrap { max-width: 100%; overflow-x: auto; contain: paint; container-type: inline-size; }
 
 .table {
   width: 100%; border-collapse: separate; border-spacing: 0;
@@ -35,4 +38,29 @@
 .caption {
   caption-side: bottom; padding-top: var(--space-xsmall);
   text-align: start; font-size: var(--font-size-small); color: var(--text-neutral);
+}
+
+/* 640px = --grid-breakpoint-sm: CSS vars cannot appear in container or media queries.
+   On a phone-width box there is no room to share out: squeezing the columns breaks words down the cell, so
+   every cell keeps its own width on one line and the table scrolls sideways instead. The first column is what
+   names the row, so it is frozen against the start edge and the rest of the row slides under it. */
+@container (max-width: 640px) {
+  .table { width: max-content; min-width: 100%; }
+  .table th, .table td { white-space: nowrap; }
+  /* The checkbox column is frozen with the name beside it, so a row can still be ticked while it is read.
+     Its width is pinned, since the next column is held exactly that far in. */
+  .select { width: var(--control-large); min-width: var(--control-large); max-width: var(--control-large); }
+  /* Only the header and the rows freeze: the empty line and the total row span the table, so there is
+     nothing in them to hold still. */
+  .table :is(thead, tbody) tr > :is(:first-child, .select + *):not(.empty) {
+    position: sticky; z-index: 1;
+    /* The frozen cell carries its own fill, since the row's fill scrolls away with the row. A line down its
+       far edge, drawn outside the cell, says the rest of the row passes under it. */
+    background: var(--surface-flat); box-shadow: var(--border-width-thin) 0 0 var(--border-neutral-faint);
+  }
+  .table :is(thead, tbody) tr > :first-child { inset-inline-start: 0; }
+  .table :is(thead, tbody) tr > .select + * { inset-inline-start: var(--control-large); }
+  .table tbody tr:hover > :is(:first-child, .select + *) { background: var(--bg-neutral-min-hover); }
+  .table tbody tr.selected > :is(:first-child, .select + *) { background: var(--bg-neutral-min-selected); }
+  .table tbody tr.selected:hover > :is(:first-child, .select + *) { background: var(--bg-neutral-min-selected-hover); }
 }

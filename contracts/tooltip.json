@@ -17,7 +17,7 @@
         "right"
       ],
       "default": "top",
-      "note": "Preferred side. It flips to the other side when there is no room, and stays inside the window."
+      "note": "Preferred side. It flips to the other side when there is no room, and stays inside the frame it is in: the app frame when the screen sits in one, else the window."
     },
     "delay": {
       "type": "number",
