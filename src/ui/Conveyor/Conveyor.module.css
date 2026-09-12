@@ -1,0 +1,24 @@
+/* Figma conveyor 21130:442: an arrow button, then a 4px soft fade where the content passes under it. */
+/* A grid, so the middle track can be narrower than its content and the run never widens the page. */
+.conveyor {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: stretch;
+  width: 100%; max-width: 100%; font-family: var(--font-sans);
+}
+.vertical { grid-template-columns: none; grid-template-rows: auto minmax(0, 1fr) auto; height: 100%; }
+
+.track { min-width: 0; scroll-behavior: smooth; scrollbar-width: none; }
+.horizontal .track { grid-column: 2; overflow-x: auto; overflow-y: hidden; }
+.vertical .track { grid-row: 2; min-height: 0; overflow-y: auto; overflow-x: hidden; }
+.track::-webkit-scrollbar { display: none; }
+.track:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(var(--border-width-medium) * -1); }
+@media (prefers-reduced-motion: reduce) { .track { scroll-behavior: auto; } }
+
+.end { flex: none; display: flex; align-items: center; }
+.vertical .end { flex-direction: column; justify-content: center; }
+
+/* The fade sits between the arrow and the content, and goes away at the end of the run. */
+.fade { flex: none; align-self: stretch; width: var(--space-xxsmall); background: linear-gradient(to right, var(--border-neutral), transparent); }
+.last .fade { background: linear-gradient(to left, var(--border-neutral), transparent); }
+.vertical .fade { width: auto; height: var(--space-xxsmall); background: linear-gradient(to bottom, var(--border-neutral), transparent); }
+.vertical .last .fade { background: linear-gradient(to top, var(--border-neutral), transparent); }
+.fade.clear { background: none; }

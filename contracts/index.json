@@ -21,6 +21,7 @@
     {"name": "Cell", "contract": "contracts/cell.json", "category": "data", "tags": ["table", "cell", "data table", "row", "td", "tree cell", "tree table", "tree grid", "nested rows", "expandable row"]},
     {"name": "Checkbox", "contract": "contracts/checkbox.json", "category": "form", "tags": ["form", "checkbox", "multi-select", "toggle", "select all"]},
     {"name": "Command", "contract": "contracts/command.json", "category": "navigation", "tags": ["command", "search", "global search", "palette", "quick actions", "combobox"]},
+    {"name": "Conveyor", "contract": "contracts/conveyor.json", "category": "layout", "tags": ["conveyor", "scroller", "scroll arrows", "overflow", "row", "chips", "scorecards", "side scroll"]},
     {"name": "Count", "contract": "contracts/count.json", "category": "feedback", "tags": ["counter", "notification", "number badge", "unread", "badge count"]},
     {"name": "DataGrid", "contract": "contracts/datagrid.json", "category": "data", "tags": ["data grid", "editable table", "spreadsheet", "inline edit", "rows", "conditions", "line items", "rule builder"]},
     {"name": "DatePicker", "contract": "contracts/datepicker.json", "category": "form", "tags": ["date", "calendar", "date range", "picker", "period", "form"]},

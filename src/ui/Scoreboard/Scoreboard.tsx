@@ -33,6 +33,7 @@ export interface ScoreboardProps {
   selected?: string | null;
   defaultSelected?: string | null;
   onSelectedChange?: (id: string | null) => void;
+  scroll?: boolean;
   label?: string;
 }
 
@@ -82,10 +83,10 @@ function Trend({ value, unit, status = "neutral", direction = "none" }: Scoreboa
   );
 }
 
-// Figma scoreboard 7295:12323 and scorecard 6175:426: cards side by side with a gap between them.
+// Figma scoreboard 7295:12323 and scorecard 6175:426: cards side by side, parted by a line, with no gap.
 // Hover and selected only show when the cards are buttons.
 export function Scoreboard({
-  items, selectable = false, selected: selectedProp, defaultSelected = null, onSelectedChange, label = "Key metrics",
+  items, selectable = false, selected: selectedProp, defaultSelected = null, onSelectedChange, scroll = true, label = "Key metrics",
 }: ScoreboardProps) {
   const [innerSelected, setInnerSelected] = useState(defaultSelected);
   const selected = selectedProp !== undefined ? selectedProp : innerSelected;
@@ -97,7 +98,7 @@ export function Scoreboard({
   };
 
   return (
-    <div className={styles.wrap}>
+    <div className={[styles.wrap, scroll ? styles.scrolls : ""].join(" ")}>
       <div role="group" aria-label={label} className={styles.scoreboard}>
         {items.map((item) => {
           const body = (

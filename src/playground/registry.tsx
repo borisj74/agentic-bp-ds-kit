@@ -18,6 +18,7 @@ import { Carousel, type CarouselProps } from "@/ui/Carousel/Carousel";
 import { Cell, type CellSize, type CellType } from "@/ui/Cell/Cell";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
 import { Command, type CommandGroup, type CommandProps } from "@/ui/Command/Command";
+import { Conveyor, type ConveyorProps } from "@/ui/Conveyor/Conveyor";
 import { Count } from "@/ui/Count/Count";
 import { ButtonFilter } from "@/ui/ButtonFilter/ButtonFilter";
 import { ButtonGroup } from "@/ui/ButtonGroup/ButtonGroup";
@@ -225,6 +226,15 @@ const SIX_KPIS: ScoreboardItem[] = [
   { id: "paid", title: "Paid", metric: "$210,300", trend: { value: "8.2%", unit: "YoY", status: "success", direction: "up" }, metadata: "This month" },
   { id: "disputed", title: "Disputed", metric: "6", trend: { value: "2", status: "success", direction: "down" }, metadata: "Needs review" },
   { id: "credits", title: "Credits", metric: "$4,800", metadata: "This month" },
+];
+const CHIPS = ["All", "Open", "Overdue", "Paid", "Disputed", "Credits", "Drafts", "Voided", "In review", "Scheduled", "Recurring", "One-off", "Metered", "Prepaid", "Trials", "Churned"];
+
+// Nine cards: more than a strip holds, which is what a Conveyor is for.
+const NINE_KPIS: ScoreboardItem[] = [
+  ...SIX_KPIS,
+  { id: "refunds", title: "Refunds", metric: "$1,240", trend: { value: "0.3%", unit: "MoM", status: "success", direction: "down" }, metadata: "This month" },
+  { id: "trials", title: "Trials", metric: "48", badge: "Week", metadata: "12 converting" },
+  { id: "usage", title: "Metered usage", metric: "4.2M", trend: { value: "6%", unit: "MoM", status: "success", direction: "up" }, metadata: "Events billed" },
 ];
 const SCORE_SAMPLES: Record<string, unknown> = { "{trendKpis}": TREND_KPIS, "{chartKpis}": CHART_KPIS, "{sixKpis}": SIX_KPIS };
 const scoreProps = (p: Props) =>
@@ -752,6 +762,26 @@ export const registry: Record<string, Entry> = {
         <Command groups={[{ items: [{ id: "invoices", label: "Invoices", icon: "receipt_long" }, { id: "customers", label: "Customers", icon: "group" }] }]} hints={false} />
       </div>
     ),
+  },
+  Conveyor: {
+    // The run inside is a Scoreboard with its own scrolling off, or a row of filter chips.
+    render: ({ content, ...p }) => {
+      const down = p.orientation === "vertical";
+      const run = content === "chips"
+        ? <div style={{ display: "flex", flexDirection: down ? "column" : "row", alignItems: down ? "flex-start" : "center", gap: "var(--space-xsmall)", padding: "var(--space-xxsmall)" }}>
+            {CHIPS.map((t) => <span key={t} style={{ flex: "none" }}><Badge tone="neutral">{t}</Badge></span>)}
+          </div>
+        : <Scoreboard items={NINE_KPIS} scroll={false} label="Key metrics" />;
+      const inside = <Conveyor {...(p as unknown as ConveyorProps)}>{run}</Conveyor>;
+      return down ? <div style={{ height: 220, maxWidth: 280 }}>{inside}</div> : inside;
+    },
+    preview: { label: "Key metrics" },
+    hide: ["children", "step"],
+    extras: { content: { values: ["scorecards", "chips"], default: "scorecards" } },
+    hint: "Switch what is inside and the direction. The arrows show only when there is something to scroll, and turn off at the ends.",
+    block: true,
+    wide: true,
+    card: <div style={{ width: 300 }}><Conveyor label="Key metrics"><Scoreboard items={NINE_KPIS.slice(0, 4)} scroll={false} /></Conveyor></div>,
   },
   Count: {
     render: (p) => <Count {...(p as object)} count={Number(p.count ?? 3)} />,

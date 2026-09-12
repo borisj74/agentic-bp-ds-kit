@@ -2,7 +2,7 @@
   "name": "Scoreboard",
   "path": "src/ui/Scoreboard/Scoreboard.tsx",
   "intent": "A strip of key numbers at the top of a screen, like open invoices, revenue or overdue amount, each with an optional trend and spark chart.",
-  "usage": "Use Scoreboard for the 3 to 6 numbers that sum up a screen. It is one component: pass items as data. Each item is a card with a title, the metric, and optional badge, metadata line, trend (arrow, value and unit, colored by status) and spark chart (a small line drawn from points). Cards share the width and sit side by side with a gap between them. selectable turns each card into a button: picking one marks it selected, like a filter for the list below, and picking it again clears it. See contracts/scoreboard.json for the full contract.",
+  "usage": "Use Scoreboard for the 3 to 6 numbers that sum up a screen. It is one component: pass items as data. Each item is a card with a title, the metric, and optional badge, metadata line, trend (arrow, value and unit, colored by status) and spark chart (a small line drawn from points). Cards share the width and run side by side with no gap, parted by a thin line. selectable turns each card into a button: picking one marks it selected, like a filter for the list below, and picking it again clears it. For more than six cards, put the Scoreboard in a Conveyor with scroll off, so the Conveyor moves the row with its arrows. See contracts/scoreboard.json for the full contract.",
   "props": {
     "items": {
       "type": "ScoreboardItem[]",
@@ -27,6 +27,11 @@
       "type": "function",
       "note": "(id: string | null) => void. Picking the selected card again passes null."
     },
+    "scroll": {
+      "type": "boolean",
+      "default": true,
+      "note": "The row scrolls sideways when it does not fit. Turn it off when the Scoreboard sits in a Conveyor, which does the scrolling."
+    },
     "label": {
       "type": "string",
       "default": "Key metrics",
@@ -35,13 +40,14 @@
   },
   "useWhen": [
     "The top of a list or dashboard screen, to sum it up in a few numbers.",
-    "Numbers that filter the list below: make it selectable."
+    "Numbers that filter the list below: make it selectable.",
+    "More than six numbers: keep them in one Conveyor instead of two strips."
   ],
   "doNot": [
     "Do not build a metric row from your own divs or cards, or add a MetricCard, ScoreCard or Sparkline. Pass items.",
     "Do not use the chart as a real chart; it only shows the shape of the trend. Use a chart for readable data.",
     "Do not pair direction none with a success or danger status.",
-    "Do not put more than 6 cards in one strip.",
+    "Do not put more than 6 cards in a strip that is not in a Conveyor.",
     "Do not use raw hex."
   ],
   "a11y": [
