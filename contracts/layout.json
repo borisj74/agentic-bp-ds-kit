@@ -1,0 +1,20 @@
+{
+  "name": "Layout",
+  "path": "src/tokens/layout.css",
+  "intent": "Page-level spacing and structure: layout pattern classes and layout tokens. Agents use these for content edge padding and vertical rhythm between sections — not per-component padding or raw px.",
+  "usage": "Spacing follows a 4px grid (`--ref-space-200` = 4px; named `--space-*` matches the same ladder). Wrap the scrollable page body in `.layout-content` (or an equivalent layout class from this file). Its `padding` uses `--layout-margin-md` (24px) for content edge inset. Its `gap` uses `--layout-gutter-lg` (24px) for space between stacked children, such as Section blocks. Section only spaces header to body inside itself (`--space-medium`, 16px); the page supplies side padding via the layout class. See contracts/layout.json for the full contract.",
+  "useWhen": [
+    "Setting page or content-area edge padding and vertical rhythm between sections.",
+    "Composing app screens with `.layout-app`, `.layout-canvas`, `.layout-workspace`, `.layout-content`, `.layout-metrics`, or `.layout-split`."
+  ],
+  "doNot": [
+    "Do not add outer padding or margin to Section for page inset or between-section gap. Use `.layout-content` (or the matching layout class).",
+    "Do not invent per-page grids, PageContent wrappers, or layout cousins.",
+    "Do not use raw px, magic numbers, or `--ref-space-*` / `--ui-*` primitives in components. Use layout tokens (`--layout-margin-*`, `--layout-gutter-*`) via layout classes, or semantic `--space-*` inside components.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "Layout classes are structural only; they do not replace landmarks or headings."
+  ],
+  "snippet": "<main className=\"layout-content\">\n  <Section title=\"Account information\">…</Section>\n  <Section title=\"Recent invoices\">…</Section>\n</main>"
+}

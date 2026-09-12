@@ -64,5 +64,8 @@
     {"name": "Tooltip", "contract": "contracts/tooltip.json", "category": "overlay", "tags": ["tooltip", "hint", "help", "hover", "info", "icon button label"]},
     {"name": "TreeView", "contract": "contracts/treeview.json", "category": "data", "tags": ["tree", "tree view", "hierarchy", "nested list", "folders", "files", "org chart", "checkbox tree", "drag and drop", "reorder"]}
   ],
-  "patterns": []
+  "patterns": [],
+  "foundations": [
+    {"name": "Layout", "contract": "contracts/layout.json", "tags": ["layout", "spacing", "padding", "gutter", "margin", "grid", "page", "layout-content", "section rhythm"]}
+  ]
 }

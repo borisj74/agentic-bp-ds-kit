@@ -16,6 +16,7 @@ If a pattern listed under `patterns` in `contracts/index.json` matches the scree
 If something is missing from the index, stop and ask — do not add a one-off.
 Never put hex in components; use semantic tokens from `src/tokens/semantic.css` (not primitive `--ref-*` / `--ui-*` ramps).
 One `variant="primary"` Button per view.
+Page spacing: 4px grid. Content edge padding and between-section gap come from layout classes in `src/tokens/layout.css` — `.layout-content` uses `--layout-margin-md` (24px) for inset and `--layout-gutter-lg` (24px) for gap between stacked children. Section does not own page padding; read `contracts/layout.json`.
 
 ## Stack
 

@@ -16,6 +16,7 @@
 .layout-workspace { display: grid; grid-template-columns: minmax(0, 1fr) auto; min-height: 0; }
 .layout-workspace > aside { width: var(--layout-rail); min-height: 0; overflow: auto; border-left: var(--border-divider) solid var(--border-neutral-subtle); }
 
+/* gap = between stacked sections/children (24px); padding = content edge inset (24px). */
 .layout-content { display: flex; flex-direction: column; gap: var(--layout-gutter-lg); padding: var(--layout-margin-md); min-width: 0; overflow: auto; }
 
 .layout-metrics { display: grid; gap: var(--layout-gutter-md); grid-template-columns: repeat(auto-fit, minmax(var(--layout-metrics-min), 1fr)); }
