@@ -1251,6 +1251,7 @@
   --data-grid-column-min: 160px;
   --data-grid-edit-min: 96px;
   --scoreboard-card-min: 196px;
+  --scoreboard-card-min-narrow: 160px;
   --scoreboard-chart-width: 64px;
   --scoreboard-chart-height: 20px;
   --carousel-vertical-height: 200px;

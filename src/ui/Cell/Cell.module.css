@@ -32,6 +32,13 @@
 .row { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--space-xxsmall); }
 /* Icon actions stay on one line, so a narrow actions column sizes to all its buttons. */
 .nowrap { flex-wrap: nowrap; }
+/* The row of icon buttons, and the one More button that stands in for it on a phone. 640px =
+   --grid-breakpoint-sm, the kit's mobile break: CSS vars cannot appear in container queries. */
+.actionsNarrow { display: none; }
+@container (max-width: 640px) {
+  .actionsWide { display: none; }
+  .actionsNarrow { display: inline-flex; align-items: center; }
+}
 
 .trend { display: inline-flex; align-items: center; gap: var(--space-xxsmall); font-weight: var(--font-weight-medium); }
 .up { color: var(--text-success-strong); }

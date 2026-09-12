@@ -1,6 +1,8 @@
 /* Figma scoreboard 7295:12323: cards share the width. Narrow screens scroll the row sideways. */
 .wrap { width: 100%; max-width: 100%; }
-.scrolls { overflow-x: auto; }
+/* contain: paint keeps the sideways scroll to this box, so a strip wider than the page never gives the page
+   a sideways scrollbar of its own. */
+.scrolls { overflow-x: auto; contain: paint; }
 /* Figma scoreboard container 29113:10807: cards run edge to edge, parted by a line, with no gap. */
 .scoreboard { display: flex; font-family: var(--font-sans); }
 
@@ -50,3 +52,19 @@
 .button:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(var(--border-width-medium) * -1); }
 
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* 640px = --grid-breakpoint-sm, the kit's mobile break: CSS vars cannot appear in container queries.
+   On a phone-width box a 196px card leaves one card and a sliver in view, which reads as a broken row. The
+   cards take the narrow minimum and less padding instead, so two are in view and the rest is a swipe away.
+   Each card snaps, so the strip always comes to rest on a whole card. */
+@container (max-width: 640px) {
+  /* With four cards or fewer the strip is this box's own scroller; past that it is the Conveyor's track,
+     which snaps on its own. */
+  .scrolls { scroll-snap-type: inline mandatory; }
+  .card { min-width: var(--scoreboard-card-min-narrow); padding: var(--space-small); scroll-snap-align: start; }
+  /* A narrow card has no room for a name beside a tag: the name takes the line and the tag drops under it,
+     rather than the name being squeezed to a few letters. A name longer than the card ends in a cut, so the
+     cards in a strip stay the same height. */
+  .header { flex-wrap: wrap; gap: var(--space-xsmall); }
+  .title { flex-basis: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}

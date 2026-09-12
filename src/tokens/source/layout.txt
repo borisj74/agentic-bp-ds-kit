@@ -175,6 +175,8 @@ data-grid/edit-min|96px
 
 # Scoreboard (Figma scoreboard 7295:12323, scorecard 6175:426, chart 6174:403): cards are at least 196 wide; the spark chart is 64 by 20.
 scoreboard/card-min|196px
+# On a phone-width box the cards are smaller, so two of them are in view and swiping moves the strip.
+scoreboard/card-min-narrow|160px
 scoreboard/chart-width|64px
 scoreboard/chart-height|20px
 

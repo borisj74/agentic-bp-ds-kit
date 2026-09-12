@@ -22,3 +22,13 @@
 .vertical .fade { width: auto; height: var(--space-xxsmall); background: linear-gradient(to bottom, var(--border-neutral), transparent); }
 .vertical .last .fade { background: linear-gradient(to top, var(--border-neutral), transparent); }
 .fade.clear { background: none; }
+
+/* 640px = --grid-breakpoint-sm, the kit's mobile break: CSS vars cannot appear in container queries.
+   On a phone-width box the two arrows take a third of the room, and there swiping is how the run is moved
+   anyway, so the arrows and their fades go and the track keeps the whole width. The track is still a focus
+   stop, so the arrow keys still move it. It comes to rest on a whole piece rather than half of one. */
+@container (max-width: 640px) {
+  .end { display: none; }
+  .horizontal .track { grid-column: 1 / -1; scroll-snap-type: inline mandatory; }
+  .vertical .track { grid-row: 1 / -1; scroll-snap-type: block mandatory; }
+}

@@ -137,26 +137,44 @@ export function Cell({
         </ButtonGroup>
       );
       break;
-    case "actionIcons":
+    case "actionIcons": {
+      // On a phone-width box a row of icons costs more than the values beside it, so the buttons fold into the
+      // More menu and the row keeps one button. Both are built; only one is in the layout, so neither is a
+      // second stop for the keyboard.
+      const shownActions = (actions ?? []).slice(0, 3);
+      const folded = [...shownActions, ...(menu ?? [])];
+      const item = (a: CellAction, i: number) => ({ id: String(i), label: a.label, icon: a.icon, danger: a.variant === "danger" });
       visual = (
-        <span className={[styles.row, styles.nowrap].join(" ")} role="group" aria-label={label ?? "Row actions"}>
-          {/* Icon-only, so each button shows its label in a kit Tooltip, like the AppHeader and Toolbar icons. */}
-          {(actions ?? []).slice(0, 3).map((a, i) => (
-            <Tooltip key={i} content={a.label} placement="top">
-              <Button size="sm" variant={a.variant ?? "tertiary"} iconOnly iconStart={a.icon ?? "more_horiz"} onClick={a.onClick}>{a.label}</Button>
-            </Tooltip>
-          ))}
-          {/* The rest of the row's actions, behind one More button at the end. */}
-          {menu && menu.length > 0 && (
-            <DropdownMenu
-              label="More row actions" iconOnly icon="more_vert" variant="tertiary" size="sm" align="end"
-              items={menu.map((a, i) => ({ id: String(i), label: a.label, icon: a.icon, danger: a.variant === "danger" }))}
-              onSelect={(id) => menu[Number(id)]?.onClick?.()}
-            />
+        <>
+          <span className={[styles.row, styles.nowrap, styles.actionsWide].join(" ")} role="group" aria-label={label ?? "Row actions"}>
+            {/* Icon-only, so each button shows its label in a kit Tooltip, like the AppHeader and Toolbar icons. */}
+            {shownActions.map((a, i) => (
+              <Tooltip key={i} content={a.label} placement="top">
+                <Button size="sm" variant={a.variant ?? "tertiary"} iconOnly iconStart={a.icon ?? "more_horiz"} onClick={a.onClick}>{a.label}</Button>
+              </Tooltip>
+            ))}
+            {/* The rest of the row's actions, behind one More button at the end. */}
+            {menu && menu.length > 0 && (
+              <DropdownMenu
+                label="More row actions" iconOnly icon="more_vert" variant="tertiary" size="sm" align="end"
+                items={menu.map(item)}
+                onSelect={(id) => menu[Number(id)]?.onClick?.()}
+              />
+            )}
+          </span>
+          {folded.length > 0 && (
+            <span className={styles.actionsNarrow}>
+              <DropdownMenu
+                label={label ?? "Row actions"} iconOnly icon="more_vert" variant="tertiary" size="sm" align="end"
+                items={folded.map(item)}
+                onSelect={(id) => folded[Number(id)]?.onClick?.()}
+              />
+            </span>
           )}
-        </span>
+        </>
       );
       break;
+    }
     case "actionMenu":
       // Aligned to the end so the menu stays inside the table.
       visual = (

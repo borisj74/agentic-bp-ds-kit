@@ -2,7 +2,7 @@
   "name": "Scoreboard",
   "path": "src/ui/Scoreboard/Scoreboard.tsx",
   "intent": "A strip of key numbers at the top of a screen, like open invoices, revenue or overdue amount, each with an optional trend and spark chart.",
-  "usage": "Use Scoreboard for the 3 to 6 numbers that sum up a screen. It is one component: pass items as data. Each item is a card with a title, the metric, and optional badge, metadata line, trend (arrow, value and unit, colored by status) and spark chart (a small line drawn from points). Cards share the width and run side by side with no gap; every card but the last has a thin line down its right side, the full height of the card. selectable turns each card into a button: picking one marks it selected, like a filter for the list below, and picking it again clears it. Past four cards the Scoreboard puts itself in a Conveyor, so arrows at both ends move the row; the arrows show only when the cards do not fit. See contracts/scoreboard.json for the full contract.",
+  "usage": "Use Scoreboard for the 3 to 6 numbers that sum up a screen. It is one component: pass items as data. Each item is a card with a title, the metric, and optional badge, metadata line, trend (arrow, value and unit, colored by status) and spark chart (a small line drawn from points). Cards share the width and run side by side with no gap; every card but the last has a thin line down its right side, the full height of the card. selectable turns each card into a button: picking one marks it selected, like a filter for the list below, and picking it again clears it. Past four cards the Scoreboard puts itself in a Conveyor, so arrows at both ends move the row; the arrows show only when the cards do not fit. See contracts/scoreboard.json for the full contract. On a box narrower than 640px, the kit's mobile break, the cards take a smaller minimum so two are in view, the strip snaps card by card, and the Conveyor's arrows give way to swiping.",
   "props": {
     "items": {
       "type": "ScoreboardItem[]",
@@ -54,7 +54,8 @@
     "A group named by label. Each card reads its title, metric, trend and metadata in order.",
     "The trend arrow is read as Up or Down before the value, so color is not the only signal.",
     "The spark chart is an image named by its direction, like Trend going up.",
-    "When selectable, each card is a button with aria-pressed and a visible focus ring."
+    "When selectable, each card is a button with aria-pressed and a visible focus ring.",
+    "On a phone-width box the arrows are gone but the strip is still a focus stop, so the arrow keys move it."
   ],
   "snippet": "<Scoreboard\n  items={[\n    { id: \"open\", title: \"Open invoices\", metric: \"128\", badge: \"This month\", trend: { value: \"12%\", unit: \"MoM\", status: \"success\", direction: \"up\" }, metadata: \"Updated today\" },\n    { id: \"revenue\", title: \"Revenue\", metric: \"$482,900\", chart: { points: [52, 58, 54, 66, 62, 74, 70, 82], status: \"success\" }, metadata: \"Last 8 weeks\" },\n    { id: \"overdue\", title: \"Overdue\", metric: \"$36,420\", trend: { value: \"4.1%\", unit: \"MoM\", status: \"danger\", direction: \"up\" }, metadata: \"14 accounts\" },\n  ]}\n/>",
   "examples": [
