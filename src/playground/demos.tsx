@@ -1440,6 +1440,16 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
   const [bucket, setBucket] = useState("");
   const [aging, setAging] = useState("table");
   const [agingQuery, setAgingQuery] = useState("");
+  // The assistant beside the dashboard: open or shut is the screen's, like everything else here.
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatNotice, setChatNotice] = useState(true);
+  const [scoping, setScoping] = useState(true);
+  const [turns, setTurns] = useState<{ id: string; author: "user" | "assistant"; text: string }[]>([]);
+  const ask = (text: string) => setTurns((old) => [
+    ...old,
+    { id: `q${old.length}`, author: "user" as const, text },
+    { id: `a${old.length}`, author: "assistant" as const, text: "Open AR is $1.2M, up 3.2% on last month. $312k of it is more than 60 days past due." },
+  ]);
   // The screen holds whether the top of the page has scrolled away; the frame only reports the crossing.
   const [compact, setCompact] = useState(false);
   const name = SAVED_DASHBOARDS.find((d) => d.id === saved)?.label ?? "Dashboard";
@@ -1622,8 +1632,30 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
           <PageHeader
             icon={place.icon ?? "dashboard"} title={place.page} breadcrumbs={[{ label: place.section, href: "#" }]}
             sticky={compact}
-            actions={<Button size="sm" variant="primary" iconStart="add">New dashboard</Button>}
+            actions={
+              <>
+                <Button size="sm" iconStart="auto_awesome" onClick={() => setChatOpen((o) => !o)}>Ask BP AI</Button>
+                <Button size="sm" variant="primary" iconStart="add">New dashboard</Button>
+              </>
+            }
           />
+        }
+        assistantOpen={chatOpen}
+        assistant={
+          <ChatWindow
+            title="BP AI" chatsCount={7} onClose={() => setChatOpen(false)} onNewChat={() => setTurns([])}
+            notice={chatNotice ? "AI can make mistakes, verify important information." : undefined}
+            onNoticeDismiss={() => setChatNotice(false)}
+            empty={<GetStarted onPick={ask} />}
+            composer={
+              <ChatComposerPiece
+                scopeLabel={scoping ? `${place.page} page` : undefined} onScopeClose={() => setScoping(false)}
+                defaultScoped hints={ASK_HINTS} addMenu={ADD_MENU} onSend={ask}
+              />
+            }
+          >
+            {turns.length > 0 ? turns.map((t) => <ChatMessage key={t.id} author={t.author} text={t.text} person={{ name: "Ana Petrovic" }} />) : null}
+          </ChatWindow>
         }
       >
         {dash}
