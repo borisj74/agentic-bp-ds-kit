@@ -10,7 +10,9 @@
 /* The rail column hugs the nav, since the kit SideNav sets its own width (56 collapsed, 170 expanded,
    wider again when a menu is pinned beside it). */
 .stage { display: flex; min-width: 0; min-height: 0; }
-.nav { flex: none; min-width: 0; min-height: 0; }
+/* The rail stacks above the page, so the menu that flies out of it covers the page header rather than
+   sliding under it. The frame decides the order of its own columns. */
+.nav { position: relative; z-index: 3; flex: none; min-width: 0; min-height: 0; }
 .page { position: relative; flex: 1 1 auto; min-width: 0; }
 
 /* The marker that says the top of the page has scrolled away. Out of the flow, so it adds neither height
@@ -20,12 +22,18 @@
 /* The page header only: the page scrolls under it. The bar is the top of the page, so it sits flush against
    the frame's bar: it pulls up through the page's own top inset (--layout-margin-md), which the bar's own
    block padding already stands in for. The inset still holds for everything under it. */
-.head { min-width: 0; margin-block-start: calc(-1 * var(--layout-margin-md)); background: var(--surface-flat); }
+/* The bar reads as the top of the page rather than a block in it, so it sits a smaller gutter above the
+   content than the sections keep between themselves: the page gap is pulled back to --layout-gutter-md. */
+.head {
+  min-width: 0; background: var(--surface-flat);
+  margin-block-start: calc(-1 * var(--layout-margin-md));
+  margin-block-end: calc(var(--layout-gutter-md) - var(--layout-gutter-lg));
+}
 /* Sticky rather than fixed, so nothing is covered when the page is zoomed. The negative offset is the page's
    own inset (--layout-margin-md): it pins the bar flush to the top edge of the scroll box rather than one
    inset below it, so no strip of page shows above the bar and the bar is only as tall as itself. It never
    moves the bar above where it sits unscrolled. The line and shadow under it are the PageHeader's own. */
-.stuck { position: sticky; top: calc(-1 * var(--layout-margin-md)); z-index: 1; }
+.stuck { position: sticky; top: calc(-1 * var(--layout-margin-md)); z-index: 2; }
 
 /* The assistant keeps its own width and its own line down its side, so the frame adds neither. */
 .assistant { flex: none; min-height: 0; }

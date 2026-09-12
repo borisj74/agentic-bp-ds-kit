@@ -179,7 +179,10 @@ export function AppHeader({
         {/* Start: the side-nav toggle, brand, then the environment tag (UAT, Sandbox...) so people know where they are. */}
         <div className={styles.start}>
           {onNavToggle && (
-            <Button variant="tertiary" size={ctl} iconOnly iconStart="menu" aria-expanded={navOpen} onClick={onNavToggle}>Navigation</Button>
+            // The toggle stands over the rail it opens, so it takes the rail's width and centres in it.
+            <span className={styles.toggle}>
+              <Button variant="tertiary" size={ctl} iconOnly iconStart="menu" aria-expanded={navOpen} onClick={onNavToggle}>Navigation</Button>
+            </span>
           )}
           {homeHref ? <a href={homeHref} className={styles.home} aria-label="Home">{brand}</a> : <span className={styles.home}>{brand}</span>}
           {environment && <Badge tone={environmentTone} emphasis="strong" size={density === "comfortable" ? "md" : "sm"}>{environment}</Badge>}

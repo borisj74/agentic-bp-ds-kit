@@ -24,6 +24,12 @@
 
 /* Start: nav toggle, logo and environment tag, 12px apart. */
 .start { display: flex; align-items: center; gap: var(--space-small); min-width: 0; }
+/* The toggle lines up with the rail it opens: it takes the collapsed SideNav's width and centres the icon
+   in it, reaching back through the bar's own side padding so the two share one centre line. */
+.toggle {
+  flex: none; display: flex; justify-content: center; width: var(--side-nav-rail);
+  margin-inline-start: calc(-1 * var(--space-large));
+}
 .home { display: inline-flex; align-items: center; border-radius: var(--radius-small); }
 a.home:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
 .brandFull, .brandSymbol { display: inline-flex; }

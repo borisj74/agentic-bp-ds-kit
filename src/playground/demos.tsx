@@ -8,6 +8,7 @@ import { AppHeader, type AppHeaderDensity, type AppHeaderProps } from "@/ui/AppH
 import { AppShell, type AppShellProps } from "@/patterns/AppShell/AppShell";
 import { ListPage, type ListPageProps, type ListPageState } from "@/patterns/ListPage/ListPage";
 import { RecordPage } from "@/patterns/RecordPage/RecordPage";
+import { Dashboard, type DashboardProps, type DashboardState } from "@/patterns/Dashboard/Dashboard";
 import { Badge } from "@/ui/Badge/Badge";
 import { Button } from "@/ui/Button/Button";
 import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
@@ -28,6 +29,9 @@ import { DropdownMenu, type DropdownMenuProps } from "@/ui/DropdownMenu/Dropdown
 import { Form, type FormProps } from "@/ui/Form/Form";
 import { FormDisplay } from "@/ui/FormDisplay/FormDisplay";
 import { Input } from "@/ui/Input/Input";
+import { BarChart } from "@/ui/BarChart/BarChart";
+import { LineChart } from "@/ui/LineChart/LineChart";
+import { PieChart } from "@/ui/PieChart/PieChart";
 import { Legend, type LegendProps } from "@/ui/Legend/Legend";
 import { Lookup } from "@/ui/Lookup/Lookup";
 import { Modal, type ModalProps } from "@/ui/Modal/Modal";
@@ -46,6 +50,7 @@ import { Table, type TableColumn, type TableRow } from "@/ui/Table/Table";
 import { Tabs, type TabItem } from "@/ui/Tabs/Tabs";
 import { Textarea } from "@/ui/Textarea/Textarea";
 import { Toast, type ToastProps } from "@/ui/Toast/Toast";
+import { Timeline } from "@/ui/Timeline/Timeline";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 
 export type ModalDemoContent = "text" | "form";
@@ -235,12 +240,15 @@ export function AppHeaderDemo(p: AppHeaderProps) {
   const [density, setDensity] = useState<AppHeaderDensity>(p.density ?? "default");
   const [navOpen, setNavOpen] = useState(Boolean(p.navOpen));
   // onNavToggle="{toggleNav}" in props turns on the menu button; here it flips a local open flag.
+  // Dark mode sets the theme on the block around it, so the switch changes what you are looking at.
   return (
-    <AppHeader
-      {...p} darkMode={darkMode} onDarkModeChange={setDarkMode} density={density} onDensityChange={setDensity}
-      onUserSettings={() => {}} onLogout={() => {}}
-      navOpen={navOpen} onNavToggle={p.onNavToggle ? () => setNavOpen((o) => !o) : undefined}
-    />
+    <div data-theme={darkMode ? "dark" : undefined}>
+      <AppHeader
+        {...p} darkMode={darkMode} onDarkModeChange={setDarkMode} density={density} onDensityChange={setDensity}
+        onUserSettings={() => {}} onLogout={() => {}}
+        navOpen={navOpen} onNavToggle={p.onNavToggle ? () => setNavOpen((o) => !o) : undefined}
+      />
+    </div>
   );
 }
 
@@ -806,6 +814,19 @@ export const SIDE_NAV_SECTIONS: SideNavEntry[] = [
   { id: "reports", label: "Reports", icon: "summarize", children: menu("reports", ["Reports Home", "AI Report Builder", "-", "Accounting", "Accounts & Insights", "AR", "Billing", "Financials", "Payments & Credits", "Products", "Revenue", "-", "All Reports"]) },
   { id: "settings", label: "Settings", icon: "settings", children: menu("settings", ["Settings Home", "Develop", "External Connectors", "Security & Users", "Monitoring & Logs", "System", "Configuration Deployment", "-", "AI Settings", "Billing", "Payments", "Financials & Revenue", "Collections"]) },
 ];
+// Where a nav id lands: the section it sits under and the page's own name, for the trail and the title.
+export function navPlace(id: string): { section: string; page: string; icon?: string } {
+  for (const entry of SIDE_NAV_SECTIONS) {
+    if ("divider" in entry) continue;
+    if (entry.id === id) return { section: entry.label, page: entry.label, icon: entry.icon };
+    for (const child of entry.children ?? []) {
+      if ("divider" in child) continue;
+      if (child.id === id) return { section: entry.label, page: child.label, icon: entry.icon };
+    }
+  }
+  const end = SIDE_NAV_END.find((e) => e.id === id);
+  return end ? { section: end.label, page: end.label, icon: end.icon } : { section: "Home", page: "Home", icon: "home" };
+}
 export const SIDE_NAV_END: SideNavItem[] = [
   { id: "recycle", label: "Recycle Bin", icon: "recycling" },
   { id: "processes", label: "Processes", icon: "tune" },
@@ -904,6 +925,7 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
     // Tall enough for the whole frame: the bar, the nav down to its end items, the page and the assistant.
     // The box narrows with the Stage control, and the frame answers to the box, not to the window.
     <div
+      data-theme={dark ? "dark" : undefined}
       style={{
         height: 900, width: STAGE_WIDTHS[stage] ?? "100%", maxWidth: "100%", marginInline: "auto",
         border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden",
@@ -1058,7 +1080,7 @@ export function ListPageDemo({ state = "ready", ...p }: Omit<ListPageProps, "chi
       label="Invoices"
       toolbar={
         <Toolbar
-          label="Invoices" filters={<>{chips}</>} defaultFiltersOpen
+          label="Invoices" filters={<>{chips}</>} filterCount={FILTER_SETS.filter((f) => values[f.id] && !off[f.id]).length} defaultFiltersOpen
           onReset={() => { setValues({}); setOff({}); }} onApply={() => {}}
           searchValue={query} onSearchChange={setQuery} searchPlaceholder="Search invoices"
           views={[{ id: "table", label: "Table View" }, { id: "list", label: "List View" }, { id: "card", label: "Card View" }]}
@@ -1179,6 +1201,8 @@ function RecordFields({ fields }: { fields: { label: string; value: ReactNode; h
 
 export function RecordPageDemo({ sticky = true, shell = true }: { sticky?: boolean; shell?: boolean }) {
   const [tab, setTab] = useState("details");
+  const [dark, setDark] = useState(false);
+  const [density, setDensity] = useState<AppHeaderDensity>("default");
   const [notice, setNotice] = useState(true);
   const [navOpen, setNavOpen] = useState(false);
   const [section, setSection] = useState("accounts");
@@ -1230,7 +1254,7 @@ export function RecordPageDemo({ sticky = true, shell = true }: { sticky?: boole
   if (!shell) return record;
   // In the frame, the way a screen would ship it.
   return (
-    <div style={{ height: 900, border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden" }}>
+    <div data-theme={dark ? "dark" : undefined} style={{ height: 900, border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden" }}>
       <AppShell
         header={
           <AppHeader
@@ -1238,12 +1262,314 @@ export function RecordPageDemo({ sticky = true, shell = true }: { sticky?: boole
             environment="UAT-2" searchShortcut="Ctrl+K" searchGroups={SHELL_SEARCH} searchScopes={SHELL_SEARCH_SCOPES}
             actions={SHELL_HEADER_ACTIONS} onAction={() => {}}
             user={{ name: "Ana Petrovic" }} company={{ name: "Northwind Holdings" }}
+            darkMode={dark} onDarkModeChange={setDark}
+            density={density} onDensityChange={setDensity}
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
         nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
       >
         {record}
+      </AppShell>
+    </div>
+  );
+}
+
+// Playground harness: the Dashboard pattern driven like a screen would drive it. Not a kit piece.
+// The numbers, charts and lists of an accounting home dashboard: what is owed, what is due, what closed.
+const AR_SCORES = [
+  { id: "open-ar", title: "Open AR", metric: "$1.2M", trend: { value: "3.2", unit: "% MoM", direction: "up" as const, status: "success" as const } },
+  { id: "credits", title: "Credits Applied", metric: "$84k", trend: { value: "11.2", unit: "% MoM", direction: "down" as const, status: "danger" as const } },
+  { id: "write-offs", title: "Write-offs", metric: "$12k", trend: { value: "2.8", unit: "% MoM", direction: "up" as const, status: "danger" as const } },
+  { id: "dso", title: "DSO", metric: "42", trend: { value: "5.2", unit: "% MoM", direction: "up" as const, status: "danger" as const } },
+  { id: "collection", title: "Collection Rate", metric: "96%", trend: { value: "2.1", unit: "% MoM", direction: "up" as const, status: "success" as const } },
+];
+const INVOICE_SCORES = [
+  { id: "cash", title: "Cash Position", metric: "$2.4M", trend: { value: "4.1", unit: "% MoM", direction: "up" as const, status: "success" as const } },
+  { id: "dso-2", title: "DSO", metric: "42", trend: { value: "5.2", unit: "% MoM", direction: "up" as const, status: "danger" as const } },
+  { id: "working", title: "Working Capital", metric: "$6.1M", trend: { value: "1.8", unit: "% MoM", direction: "down" as const, status: "danger" as const } },
+  { id: "balance", title: "Total AR Balance", metric: "$1.2M", trend: { value: "3.2", unit: "% MoM", direction: "up" as const, status: "success" as const } },
+];
+const CASH_SCORES = [
+  { id: "unapplied", title: "Unapplied Cash", metric: "$128k", trend: { value: "6.4", unit: "% MoM", direction: "down" as const, status: "success" as const } },
+  { id: "excess", title: "Excess Payments", metric: "$22k", trend: { value: "3.1", unit: "% MoM", direction: "up" as const, status: "danger" as const } },
+  { id: "unreconciled", title: "Unreconciled Payments", metric: "$41k", trend: { value: "8.7", unit: "% MoM", direction: "up" as const, status: "danger" as const } },
+  { id: "pending", title: "Credit Pending Approval", metric: "$18k", trend: { value: "2.4", unit: "% MoM", direction: "up" as const, status: "danger" as const } },
+];
+const REVENUE_SCORES = [
+  { id: "revenue", title: "Revenue | 30D", metric: "$4.9M", trend: { value: "6.8", unit: "% MoM", direction: "up" as const, status: "success" as const } },
+  { id: "payments", title: "Total Payments | 30D", metric: "$4.2M", trend: { value: "5.1", unit: "% MoM", direction: "up" as const, status: "success" as const } },
+  { id: "billed", title: "Invoice Billed | 30D", metric: "$5.1M", trend: { value: "4.4", unit: "% MoM", direction: "up" as const, status: "success" as const } },
+  { id: "gl", title: "GL Entries | 30D", metric: "128", trend: { value: "3.0", unit: "% MoM", direction: "up" as const, status: "success" as const } },
+];
+const GL_SCORES = [
+  { id: "entries", title: "GL Entries", metric: "128", trend: { value: "3.0", unit: "% MoM", direction: "up" as const, status: "success" as const } },
+  { id: "unposted", title: "Unposted Entries", metric: "7", trend: { value: "2", unit: " WoW", direction: "up" as const, status: "danger" as const } },
+  { id: "credits-total", title: "Total Credits", metric: "$2.4M", trend: { value: "0", unit: "% MoM", direction: "none" as const, status: "neutral" as const } },
+  { id: "debits-total", title: "Total Debits", metric: "$2.4M", trend: { value: "0", unit: "% MoM", direction: "none" as const, status: "neutral" as const } },
+];
+
+const AGING_BUCKETS = ["Current", "1-30", "31-60", "61-90", "91-120", "120+"];
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+
+const AGING_COLUMNS: TableColumn[] = [
+  { key: "account", header: "Account" },
+  { key: "current", header: "Current", numeric: true },
+  { key: "d30", header: "1-30", numeric: true },
+  { key: "d60", header: "31-60", numeric: true },
+  { key: "d90", header: "61-90", numeric: true },
+  { key: "d120", header: "91-120", numeric: true },
+  { key: "over", header: "120+", numeric: true },
+  { key: "total", header: "Total", numeric: true, emphasis: true },
+];
+const AGING_RECORDS = [
+  { id: "apex", account: "Apex Digital Services", current: "$84,200", d30: "$12,400", d60: "$4,100", d90: "$1,250", d120: "$0", over: "$0", total: "$101,950", overdue: "$17,750 overdue" },
+  { id: "bright", account: "Bright Future Labs", current: "$61,080", d30: "$8,220", d60: "$2,640", d90: "$980", d120: "$410", over: "$0", total: "$73,330", overdue: "$12,250 overdue" },
+  { id: "northwind", account: "Northwind Retail", current: "$44,500", d30: "$15,800", d60: "$6,200", d90: "$2,100", d120: "$1,050", over: "$420", total: "$70,070", overdue: "$25,570 overdue" },
+  { id: "helios", account: "Helios Cloud", current: "$38,120", d30: "$5,640", d60: "$1,880", d90: "$0", d120: "$0", over: "$0", total: "$45,640", overdue: "$7,520 overdue" },
+];
+// List View: one line per account with its balance beside it, the way the invoice list reads.
+const AGING_LIST_COLUMNS: TableColumn[] = [
+  { key: "account", header: "Account" },
+  { key: "aging", header: "Overdue" },
+  { key: "total", header: "Total", numeric: true, emphasis: true },
+];
+const LEDGER_COLUMNS: TableColumn[] = [
+  { key: "date", header: "Date" },
+  { key: "account", header: "Account" },
+  { key: "debit", header: "Debit", numeric: true },
+  { key: "credit", header: "Credit", numeric: true },
+];
+const LEDGER_ROWS: TableRow[] = [
+  { id: "gl1", date: "04/22/2026", account: "4000 — Product Revenue", debit: "—", credit: "$18,400.00" },
+  { id: "gl2", date: "04/21/2026", account: "1100 — Accounts Receivable", debit: "$12,250.00", credit: "—" },
+  { id: "gl3", date: "04/20/2026", account: "1200 — Unapplied Cash", debit: "—", credit: "$3,180.00" },
+  { id: "gl4", date: "04/18/2026", account: "5100 — Bad Debt Expense", debit: "$1,250.00", credit: "—" },
+];
+
+const CLOSE_TASKS = [
+  { id: "t1", title: "Review and approve invoices", timestamp: "Apr 12", subtitle: "Jordan Ellis", icon: "check_circle", tone: "success" as const },
+  { id: "t2", title: "Post recurring charges", timestamp: "Apr 14", subtitle: "Priya Raman", icon: "check_circle", tone: "success" as const },
+  { id: "t3", title: "Reconcile unapplied cash", timestamp: "Due Apr 28", subtitle: "Billing Operations", icon: "schedule", tone: "warning" as const },
+  { id: "t4", title: "Run revenue recognition", timestamp: "Due Apr 30", subtitle: "Finance", icon: "schedule", tone: "warning" as const },
+];
+const PRIOR_ADJUSTMENTS = [
+  { id: "a1", title: "Credit memo CM-10428", timestamp: "New", subtitle: "Apex Digital Services · $2,140.00", icon: "receipt_long", tone: "brand" as const },
+  { id: "a2", title: "Balance transfer BT-331", timestamp: "Posted", subtitle: "Bright Future Labs · $880.00", icon: "swap_horiz", tone: "neutral" as const },
+  { id: "a3", title: "Write-off WO-8821", timestamp: "Draft", subtitle: "Northwind Retail · $410.00", icon: "block", tone: "neutral" as const },
+  { id: "a4", title: "Late-fee reversal LF-19", timestamp: "Posted", subtitle: "Helios Cloud · $125.00", icon: "undo", tone: "neutral" as const },
+];
+const PERIODS = [
+  { id: "mtd", label: "Month to date" },
+  { id: "qtd", label: "Quarter to date" },
+  { id: "ytd", label: "Year to date" },
+];
+const BUCKET_FILTERS = [
+  { id: "all", label: "All buckets" },
+  { id: "over", label: "Overdue only" },
+];
+const SAVED_DASHBOARDS = [
+  { id: "accounting", label: "Accounting Dashboard" },
+  { id: "collections", label: "Collections Dashboard" },
+  { id: "revenue", label: "Revenue Dashboard" },
+];
+
+// Two tiles side by side, from the layout classes. Never a grid of its own.
+function Tiles({ children }: { children: ReactNode }) {
+  return <div className="layout-split">{children}</div>;
+}
+
+export function DashboardDemo({ state = "ready", shell = true, ...p }: Omit<DashboardProps, "children"> & { state?: DashboardState; shell?: boolean }) {
+  const [navOpen, setNavOpen] = useState(false);
+  const [section, setSection] = useState("home-home-dashboards");
+  const [saved, setSaved] = useState("accounting");
+  const [query, setQuery] = useState("");
+  const [dark, setDark] = useState(false);
+  const [density, setDensity] = useState<AppHeaderDensity>("default");
+  const [period, setPeriod] = useState("");
+  const [bucket, setBucket] = useState("");
+  const [aging, setAging] = useState("table");
+  const [agingQuery, setAgingQuery] = useState("");
+  // The screen holds whether the top of the page has scrolled away; the frame only reports the crossing.
+  const [compact, setCompact] = useState(false);
+  const name = SAVED_DASHBOARDS.find((d) => d.id === saved)?.label ?? "Dashboard";
+  const agingShown = AGING_RECORDS
+    .filter((r) => r.account.toLowerCase().includes(agingQuery.toLowerCase()))
+    .filter((r) => bucket !== "over" || r.overdue !== "$0 overdue");
+  // The side nav says which page is open: the header follows it, and the dashboard itself belongs to
+  // Home Dashboards, so anywhere else the page stands empty.
+  const place = navPlace(section);
+  const onDashboards = section === "home-home-dashboards";
+  const shown = shell && !onDashboards ? "empty" : state;
+
+  const dash = (
+    <Dashboard
+      {...p}
+      state={shown}
+      label={onDashboards ? name : place.page}
+      empty={onDashboards
+        ? <Empty icon="dashboard" title="No dashboard yet" description="Build one from the numbers your team watches every morning." actions={<Button size="sm" variant="primary" iconStart="add">New dashboard</Button>} />
+        : <Empty icon="construction" title={`${place.page} is not built here`} description="This playground only ships the Home Dashboards page. The frame, the bar and the page header are the kit's own." />}
+      toolbar={!onDashboards ? undefined : (
+        <Toolbar
+          label={name} searchValue={query} onSearchChange={setQuery} searchPlaceholder="Search"
+          filterCount={period ? 1 : 0}
+          filters={
+            <DropdownMenu
+              trigger="filter" size="sm" label="Period"
+              text={PERIODS.find((o) => o.id === period)?.label}
+              toggle={period ? "on" : undefined} onToggle={period ? () => setPeriod("") : undefined}
+              items={PERIODS.map((o) => ({ ...o, selected: o.id === period }))}
+              onSelect={(id) => setPeriod((was) => (was === id ? "" : id))}
+            />
+          }
+          views={SAVED_DASHBOARDS}
+          view={saved} onViewChange={setSaved} onRefresh={() => {}}
+        />
+      )}
+      name={onDashboards ? name : undefined}
+    >
+      <Section title="All" help="Every account, every period. Narrow it with the bar above." collapsible>
+        <Scoreboard items={AR_SCORES} selectable defaultSelected="open-ar" scroll label="Receivables summary" />
+        <Tiles>
+          <BarChart
+            label="AR aging by time" title="AR Aging By Time" showTitle categories={AGING_BUCKETS}
+            series={[{ name: "Balance", values: [230, 60, 22, 8, 3, 1], tone: "orange" }]}
+            height={220}
+          />
+          <LineChart
+            label="DSO by time" title="DSO By Time" showTitle categories={MONTHS}
+            series={[{ name: "DSO", values: [38, 51, 43, 57, 45, 42], tone: "cyan" }]}
+            showPoints height={220}
+          />
+        </Tiles>
+        <Section title="AR Aging By Account" collapsible>
+          <Toolbar
+            label="AR aging by account" onRefresh={() => {}}
+            searchValue={agingQuery} onSearchChange={setAgingQuery} searchPlaceholder="Search accounts"
+            filterCount={bucket ? 1 : 0}
+            filters={
+              <DropdownMenu
+                trigger="filter" size="sm" label="Aging"
+                text={BUCKET_FILTERS.find((o) => o.id === bucket)?.label}
+                toggle={bucket ? "on" : undefined} onToggle={bucket ? () => setBucket("") : undefined}
+                items={BUCKET_FILTERS.map((o) => ({ ...o, selected: o.id === bucket }))}
+                onSelect={(id) => setBucket((was) => (was === id ? "" : id))}
+              />
+            }
+            views={[{ id: "table", label: "Table View" }, { id: "list", label: "List View" }, { id: "card", label: "Card View" }]}
+            view={aging} onViewChange={setAging}
+            actions={<Button size="sm" iconStart="download">Export</Button>}
+          />
+          {aging === "card" ? (
+            // Card View: the same accounts as kit Cards, wrapped by the layout class rather than a new grid.
+            <div className="layout-metrics">
+              {agingShown.map((r) => (
+                <Card key={r.id} overline={r.overdue} title={r.account} amount={r.total} description={`${r.current} current`} />
+              ))}
+            </div>
+          ) : (
+            <Table
+              columns={aging === "list" ? AGING_LIST_COLUMNS : AGING_COLUMNS}
+              rows={agingShown.map((r) => (aging === "list"
+                ? { id: r.id, account: <Cell type="avatar" name={r.account} label={`${r.current} current`} />, aging: <Cell type="badge" tone={r.over === "$0" ? "warning" : "danger"} label={r.overdue} />, total: r.total }
+                : r))}
+            />
+          )}
+          <Button size="sm" variant="tertiary" iconEnd="arrow_forward">View AR Aging by Account Report</Button>
+        </Section>
+      </Section>
+
+      <Section title="Month-End Close" help="What has to happen before the period can close." collapsible>
+        <Tiles>
+          <Section title="Close Tasks | April 2026">
+            <Timeline items={CLOSE_TASKS} label="Close tasks" />
+          </Section>
+          <Section title="Prior Adjustments | 30D">
+            <Timeline items={PRIOR_ADJUSTMENTS} label="Prior adjustments" />
+          </Section>
+        </Tiles>
+      </Section>
+
+      <Section title="Invoices" help="Where this period's invoices stand." collapsible>
+        <Scoreboard items={INVOICE_SCORES} scroll label="Invoice summary" />
+        <BarChart
+          label="Invoices by status" title="Invoice By Status" showTitle orientation="horizontal"
+          categories={["Draft", "Waiting", "Open", "Approved", "Sent", "Paid"]}
+          series={[{ name: "Invoices", values: [8, 12, 25, 18, 15, 44], tone: "purple" }]}
+          showValues height={240}
+        />
+      </Section>
+
+      <Section title="Cash & Credits" help="Money in that is not yet applied to an invoice." collapsible>
+        <Scoreboard items={CASH_SCORES} scroll label="Cash summary" />
+        <Tiles>
+          <PieChart
+            label="Payments by method" title="Payment Methods" showTitle donut showTotal
+            data={[{ label: "Bank", value: 52 }, { label: "Credit Card", value: 28 }, { label: "Check", value: 12 }, { label: "Other", value: 8 }]}
+          />
+          <BarChart
+            label="Unapplied cash by time" title="Unapplied Cash By Time" showTitle categories={MONTHS}
+            series={[{ name: "Unapplied", values: [96, 112, 128, 140, 132, 128], tone: "mint" }]}
+            height={220}
+          />
+        </Tiles>
+      </Section>
+
+      <Section title="Revenue" help="What was earned, and what is still deferred." collapsible>
+        <Scoreboard items={REVENUE_SCORES} scroll label="Revenue summary" />
+        <Tiles>
+          <LineChart
+            label="Revenue by time" title="Revenue by Time" showTitle categories={MONTHS}
+            series={[{ name: "Revenue", values: [4300, 4400, 4600, 4500, 4800, 4900] }]}
+            area showPoints height={220}
+          />
+          <BarChart
+            label="Revenue recognition schedule" title="Revenue Recognition Schedule" showTitle categories={MONTHS}
+            series={[
+              { name: "Recognized", values: [3200, 3400, 3600, 3500, 3800, 3900] },
+              { name: "Deferred", values: [820, 780, 760, 800, 740, 720] },
+            ]}
+            showLegend legend="bottom" height={220}
+          />
+        </Tiles>
+      </Section>
+
+      <Section title="GL Entries" help="What posted to the ledger this period." collapsible>
+        <Scoreboard items={GL_SCORES} scroll label="Ledger summary" />
+        <Table columns={LEDGER_COLUMNS} rows={LEDGER_ROWS} />
+        <Button size="sm" variant="tertiary" iconEnd="arrow_forward">View GL Entries Report</Button>
+      </Section>
+    </Dashboard>
+  );
+
+  if (!shell) return dash;
+  // In the frame, the way a screen would ship it.
+  return (
+    <div data-theme={dark ? "dark" : undefined} style={{ height: 900, border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden" }}>
+      <AppShell
+        header={
+          <AppHeader
+            navOpen={navOpen} onNavToggle={() => setNavOpen((o) => !o)}
+            environment="UAT-2" searchShortcut="Ctrl+K" searchGroups={SHELL_SEARCH} searchScopes={SHELL_SEARCH_SCOPES}
+            actions={SHELL_HEADER_ACTIONS} onAction={() => {}}
+            user={{ name: "Ana Petrovic" }} company={{ name: "Northwind Holdings" }}
+            darkMode={dark} onDarkModeChange={setDark}
+            density={density} onDensityChange={setDensity}
+            onUserSettings={() => {}} onLogout={() => {}}
+          />
+        }
+        nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        onPageHeaderStick={setCompact}
+        pageHeader={
+          <PageHeader
+            icon={place.icon ?? "dashboard"} title={place.page} breadcrumbs={[{ label: place.section, href: "#" }]}
+            sticky={compact}
+            actions={<Button size="sm" variant="primary" iconStart="add">New dashboard</Button>}
+          />
+        }
+      >
+        {dash}
       </AppShell>
     </div>
   );

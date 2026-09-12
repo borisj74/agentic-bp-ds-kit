@@ -1,0 +1,26 @@
+/* The dashboard as one column: the bar, which dashboard is showing, then the groups. The gap is the section
+   rhythm from contracts/layout.json; the page padding belongs to the AppShell page around it. */
+.dash { display: flex; flex-direction: column; gap: var(--layout-gutter-lg); min-width: 0; font-family: var(--font-sans); }
+
+/* The bar stays under the page header while the groups scroll. The compact page header is what sits above it
+   once the page has scrolled, so that is the offset; it bleeds out to the page edges the way the header does,
+   so nothing scrolls past it in the side gutters, and pays the inset back as padding. No line or shadow of
+   its own: the page header above it already draws one, and two would read as a frame. */
+.bar { min-width: 0; background: var(--surface-flat); }
+.stuck {
+  /* Sticky offsets count from the page's padding box, one inset below the top edge, so the inset comes off
+     the header's height: the bar lands directly under the compact bar with nothing showing between them. */
+  /* A layer above the page's own blocks, so cards and charts scroll under it, and a layer below the page
+     header, so the header's line and shadow fall onto the bar rather than being painted over by it. */
+  position: sticky; top: calc(var(--page-header-height-sticky) - var(--layout-margin-md)); z-index: 1;
+  margin-inline: calc(-1 * var(--layout-margin-md));
+  padding: var(--space-xsmall) var(--layout-margin-md);
+}
+
+.name { margin: 0; min-width: 0; color: var(--text-neutral-intense); }
+/* Dark: text-neutral-intense stays dark in the BP palette, so use strong text on the dark surface. */
+:global([data-theme="dark"]) .name { color: var(--text-neutral-strong); }
+
+/* The blocks that stand in for the groups while the numbers load. */
+.loading { display: flex; flex-direction: column; gap: var(--layout-gutter-lg); min-width: 0; }
+.blank { min-width: 0; }

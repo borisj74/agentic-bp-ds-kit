@@ -11,6 +11,11 @@
   margin: 0; min-width: 0;
   font-size: var(--font-size-large); font-weight: var(--font-weight-bold); line-height: var(--line-height-tight); color: var(--text-neutral-strong);
 }
+/* A section inside a section is a block of a block, so its title steps down to text-heading-xs. */
+.body .title {
+  font: var(--text-heading-xs-weight) var(--text-heading-xs-size) / var(--text-heading-xs-lh) var(--font-sans);
+  letter-spacing: var(--text-heading-xs-ls);
+}
 .description { margin: 0; font-size: var(--font-size-small); line-height: var(--line-height-snug); color: var(--text-neutral); }
 
 /* Same ? button as the field help icons. */
@@ -24,6 +29,10 @@
 /* Actions sit at the end of the row. */
 .actions { display: flex; align-items: center; gap: var(--space-xsmall); margin-inline-start: auto; }
 
-.body { min-width: 0; }
+/* Blocks stacked in one section — a Scoreboard over its charts, a table over its report link — are one
+   gutter apart (--layout-gutter-md, the grid gutter), so the section reads as one block of its own. */
+.body { display: flex; flex-direction: column; gap: var(--layout-gutter-md); min-width: 0; }
+/* A class beats the browser's own rule for hidden, so folding the section away has to be said here. */
+.body[hidden] { display: none; }
 
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

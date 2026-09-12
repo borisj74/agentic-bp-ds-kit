@@ -1,0 +1,108 @@
+{
+  "name": "Dashboard",
+  "path": "src/patterns/Dashboard/Dashboard.tsx",
+  "intent": "The home screen of a job: the numbers that matter, grouped, with the charts and lists that explain them.",
+  "usage": "Use Dashboard for a home screen that reports rather than lists: accounting, billing, revenue. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns which dashboard is showing, which groups are open and what the filters are. Pass the kit Toolbar as toolbar, with the filters, the search, the view and refresh; it stays at the top under the page header while the groups scroll. name is the dashboard that is showing, written as a heading; it is a name, not a control, so switching between saved dashboards goes in the Toolbar's view menu. children are the groups: one kit Section each, collapsible, and the blocks inside a group are collapsible Sections too, titled like All, Invoices or Revenue, with a kit HelpPopover on the title where the group needs explaining. Inside a group, lead with a kit Scoreboard of that group's few numbers, then the tiles that explain them: kit BarChart, LineChart or PieChart, a kit Table with its own Toolbar over it, for the filters and the export that belong to that table alone, a kit Timeline of what happened. Two tiles side by side is the .layout-split class from contracts/layout.json, not a grid of your own. state swaps what stands in for the groups: loading draws kit Skeleton blocks in their shape and empty shows what you pass as empty. It goes in the AppShell page, under the PageHeader, which owns the page padding. See contracts/dashboard.json for the full contract.",
+  "composes": [
+    "Toolbar",
+    "DropdownMenu",
+    "Section",
+    "Scoreboard",
+    "BarChart",
+    "LineChart",
+    "PieChart",
+    "Legend",
+    "Table",
+    "Timeline",
+    "Empty",
+    "Skeleton"
+  ],
+  "props": {
+    "children": {
+      "type": "ReactNode",
+      "required": true,
+      "note": "The groups: kit Sections, each holding a Scoreboard and the tiles that explain it."
+    },
+    "toolbar": {
+      "type": "ReactNode",
+      "note": "The bar over the dashboard: a kit Toolbar with the filters, the search, the view and refresh."
+    },
+    "name": {
+      "type": "string",
+      "note": "Which dashboard this is, written as a heading at text-heading-xl. A name, not a control: switching between saved dashboards belongs in the Toolbar's view menu."
+    },
+    "stickyToolbar": {
+      "type": "boolean",
+      "default": true,
+      "note": "The bar stays under the page header while the groups scroll. Off, it scrolls away with them."
+    },
+    "state": {
+      "enum": [
+        "ready",
+        "loading",
+        "empty"
+      ],
+      "default": "ready",
+      "note": "What the dashboard is doing. ready shows the groups; the others stand in for them."
+    },
+    "empty": {
+      "type": "ReactNode",
+      "note": "Shown when state is empty, usually a kit Empty with the action that builds the first dashboard."
+    },
+    "loadingTiles": {
+      "type": "number",
+      "default": 3,
+      "note": "How many Skeleton blocks stand in while it loads. Match the groups so the page keeps its height."
+    },
+    "label": {
+      "type": "string",
+      "note": "Names the dashboard for screen readers, like Accounting dashboard. Without it, the region is named Dashboard."
+    }
+  },
+  "useWhen": [
+    "A home screen that reports on a job: what is owed, what is due, what closed.",
+    "Numbers that need grouping, each group with its own charts and lists.",
+    "A screen where people pick between saved dashboards."
+  ],
+  "doNot": [
+    "Do not add state to it; it is a blueprint. Keep the dashboard, the open groups and the filters in the screen.",
+    "Do not build the bar, the groups or the tiles inside it. Pass the kit pieces.",
+    "Do not invent a tile grid. Two tiles side by side is .layout-split; read contracts/layout.json.",
+    "Do not stack more than one primary Button across the whole dashboard.",
+    "Do not use it to list records. Use ListPage.",
+    "Do not add page padding around it. It sits in the AppShell page, which owns that.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The dashboard is a region named after label, so a screen reader can jump to it.",
+    "While it loads the region is marked busy, so a change is not announced as new numbers.",
+    "Each group is a kit Section, so its heading is real and it folds with a named button.",
+    "Every chart carries its own label, so its numbers are reachable without reading the picture.",
+    "The empty state replaces the groups in the same place, so focus stays where they were."
+  ],
+  "snippet": "<Dashboard label=\"Accounting dashboard\" name=\"Accounting Dashboard\" toolbar={<Toolbar views={saved} view={saved} />}>{groups}</Dashboard>",
+  "examples": [
+    {
+      "title": "A dashboard",
+      "usage": "The bar, the picker and the groups of numbers under them.",
+      "items": [
+        {
+          "props": {
+            "state": "ready"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Nothing yet",
+      "usage": "Before the first dashboard is built.",
+      "items": [
+        {
+          "props": {
+            "state": "empty"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "../Button/Button";
+import { Count } from "../Count/Count";
 import { Command, type CommandGroup } from "../Command/Command";
 import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
@@ -17,6 +18,7 @@ export interface ToolbarView { id: string; label: string }
 
 export interface ToolbarProps {
   filters?: ReactNode;
+  filterCount?: number;
   filtersOpen?: boolean;
   defaultFiltersOpen?: boolean;
   onFiltersOpenChange?: (open: boolean) => void;
@@ -41,7 +43,7 @@ export interface ToolbarProps {
 
 // Figma toolbar 6057:15099 and filters-bar 3579:30240. Controls are size sm (28px) in a 44px bar.
 export function Toolbar({
-  filters, filtersOpen: openProp, defaultFiltersOpen = false, onFiltersOpenChange, onReset, onApply, filterHelp,
+  filters, filterCount = 0, filtersOpen: openProp, defaultFiltersOpen = false, onFiltersOpenChange, onReset, onApply, filterHelp,
   searchValue, onSearchChange, searchPlaceholder = "Search in list", searchGroups, onSearchSelect, onSearchViewAll,
   views = [], view: viewProp, onViewChange, onRefresh, moreActions, onMoreSelect, actions, label = "List tools",
 }: ToolbarProps) {
@@ -112,7 +114,11 @@ export function Toolbar({
               size="sm" iconStart="filter_list" pressed={open}
               aria-expanded={open} aria-controls={barId} onClick={() => setOpen(!open)}
             >
+              {/* How many filters are on, so a folded filter bar still says the list is narrowed. */}
               Filters
+              {filterCount > 0 && (
+                <span className={styles.filterCount}><Count count={filterCount} size="sm" label="applied" /></span>
+              )}
             </Button>
           )}
           {searchGroups ? (

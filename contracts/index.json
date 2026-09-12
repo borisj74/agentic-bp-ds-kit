@@ -1002,6 +1002,20 @@
       ]
     },
     {
+      "name": "Dashboard",
+      "contract": "contracts/dashboard.json",
+      "tags": [
+        "dashboard",
+        "home",
+        "home dashboard",
+        "kpis",
+        "metrics",
+        "charts",
+        "groups",
+        "reporting"
+      ]
+    },
+    {
       "name": "ListPage",
       "contract": "contracts/listpage.json",
       "tags": [

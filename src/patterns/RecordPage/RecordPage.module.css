@@ -10,12 +10,18 @@
 /* The name only: the tabs, the notice and the bar scroll away under it. The bar is the top of the page, so
    it sits flush against the frame's bar: it pulls up through the page's own top inset (--layout-margin-md),
    which the bar's own block padding already stands in for. The inset still holds for everything under it. */
-.head { min-width: 0; margin-block-start: calc(-1 * var(--layout-margin-md)); background: var(--surface-flat); }
+.head {
+  min-width: 0; background: var(--surface-flat);
+  margin-block-start: calc(-1 * var(--layout-margin-md));
+  /* The bar reads as the top of the page, so it sits a smaller gutter above the record than the sections
+     keep between themselves. */
+  margin-block-end: calc(var(--layout-gutter-md) - var(--layout-gutter-lg));
+}
 /* Sticky rather than fixed, so nothing is covered when the page is zoomed. The negative offset is the page's
    own inset (--layout-margin-md): it pins the bar flush to the top edge of the scroll box rather than one
    inset below it, so there is no band above the bar to cover and the bar is only as tall as itself. It never
    moves the bar above where it sits unscrolled. The line and shadow under it are the PageHeader's own. */
-.stuck { position: sticky; top: calc(-1 * var(--layout-margin-md)); z-index: 1; }
+.stuck { position: sticky; top: calc(-1 * var(--layout-margin-md)); z-index: 2; }
 
 .tabs { min-width: 0; border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle); }
 .notice { min-width: 0; }

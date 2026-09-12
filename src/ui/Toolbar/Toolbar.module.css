@@ -4,6 +4,8 @@
   display: flex; flex-direction: column;
   background: var(--bg-neutral-subtle);
   border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
+  /* The fill is a block of its own, so its corners are rounded like the other filled blocks in the kit. */
+  border-radius: var(--radius-small);
 }
 
 .bar {
@@ -11,6 +13,8 @@
   padding: var(--space-xsmall) var(--space-small);
 }
 .start, .end { display: flex; align-items: center; gap: var(--space-xsmall); min-width: 0; }
+/* The count sits beside the word, not against it. */
+.filterCount { display: inline-flex; margin-inline-start: var(--space-xxsmall); }
 .start { flex-wrap: wrap; }
 .end { flex: none; }
 
