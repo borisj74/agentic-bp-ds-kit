@@ -2,7 +2,7 @@
   "name": "ChatHeader",
   "path": "src/ui/ChatHeader/ChatHeader.tsx",
   "intent": "The bar at the top of the assistant: its mark and name, then start a new chat, go full screen, the options menu and close.",
-  "usage": "Use ChatHeader at the top of an assistant panel or its full-screen view. It is one component: pass the handlers for the buttons you want, and the ones you leave out do not show. The options menu is built for you: Chats and Playbooks with how many there are, Plan Mode with a tick while it is on, and Settings. chatsCount and playbooksCount leave the number off when there is none. menu replaces the whole menu when a screen needs different entries. Pair it with ChatList, ChatMessage and ChatComposer to make the window. See contracts/chatheader.json for the full contract.",
+  "usage": "Use ChatHeader at the top of an assistant panel or its full-screen view. It is one component: pass the handlers for the buttons you want, and the ones you leave out do not show. The options menu is built for you: Chats and Playbooks with how many there are, Plan Mode with a tick while it is on, and Settings. While Plan Mode is on the bar also carries a Plan Mode badge beside the name, so it can be seen with the menu shut. chatsCount and playbooksCount leave the number off when there is none. menu replaces the whole menu when a screen needs different entries. Pair it with ChatList, ChatMessage and ChatComposer to make the window. See contracts/chatheader.json for the full contract.",
   "props": {
     "title": {
       "type": "string",
@@ -37,7 +37,7 @@
     "planMode": {
       "type": "boolean",
       "default": false,
-      "note": "Plan Mode is on, so its row in the menu is ticked."
+      "note": "Plan Mode is on: its row in the menu is ticked and a Plan Mode badge sits beside the name."
     },
     "onPlanModeChange": {
       "type": "(planMode: boolean) => void",

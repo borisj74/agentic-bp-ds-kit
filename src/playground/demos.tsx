@@ -665,14 +665,11 @@ export function ChatHeaderDemo(p: ChatHeaderProps) {
   }
   return (
     <div style={{ display: "grid", gap: "var(--space-xsmall)", width: "100%", maxWidth: 460 }}>
-      <div style={{ border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden" }}>
-        <ChatHeader
-          {...p} planMode={plan} onPlanModeChange={setPlan} expanded={full} onExpandedChange={setFull}
-          onNewChat={() => setSaid("Started a new chat")} onClose={() => setSaid("Closed the assistant")}
-          onMenuSelect={(id) => setSaid(id === "planMode" ? "Switched Plan Mode" : `Opened ${id}`)}
-        />
-        <div style={{ height: 96, background: "var(--surface-flat)" }} />
-      </div>
+      <ChatHeader
+        {...p} planMode={plan} onPlanModeChange={setPlan} expanded={full} onExpandedChange={setFull}
+        onNewChat={() => setSaid("Started a new chat")} onClose={() => setSaid("Closed the assistant")}
+        onMenuSelect={(id) => setSaid(id === "planMode" ? "Switched Plan Mode" : `Opened ${id}`)}
+      />
       {said && <p style={{ margin: 0, fontSize: "var(--font-size-xsmall)", color: "var(--text-neutral)" }}>{said}</p>}
     </div>
   );

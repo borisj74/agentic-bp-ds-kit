@@ -846,7 +846,7 @@ export const registry: Record<string, Entry> = {
     render: (p) => <ChatHeaderDemo {...(p as unknown as ChatHeaderProps)} />,
     preview: { chatsCount: 7, playbooksCount: 9 },
     hide: ["menu", "onNewChat", "onExpandedChange", "onClose", "onPlanModeChange", "onMenuSelect", "label", "chatsCount", "playbooksCount"],
-    hint: "Open the options menu for Chats 7, Playbooks 9, Plan Mode and Settings. Switch Plan Mode and it stays ticked; the full-screen button turns into the way back.",
+    hint: "Open the options menu for Chats 7, Playbooks 9, Plan Mode and Settings. Switch Plan Mode and it stays ticked, with a badge beside the name; the full-screen button turns into the way back.",
     block: true,
     card: <div style={{ width: 300, border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden" }}><ChatHeader chatsCount={7} playbooksCount={9} onNewChat={() => {}} onClose={() => {}} /></div>,
   },

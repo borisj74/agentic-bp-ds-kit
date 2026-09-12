@@ -1,4 +1,5 @@
 "use client";
+import { Badge } from "../Badge/Badge";
 import { Button } from "../Button/Button";
 import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
 import { LogoAI } from "../LogoAI/LogoAI";
@@ -48,6 +49,8 @@ export function ChatHeader({
     <header className={styles.header} aria-label={label ?? title}>
       <span className={styles.mark}><LogoAI variant="symbol" tone="filled" label={title} /></span>
       <h2 className={styles.title}>{title}</h2>
+      {/* While Plan Mode is on the bar says so, so the tick in the menu is not the only sign of it. */}
+      {planMode && <span className={styles.flag}><Badge tone="info" icon="checklist">Plan Mode</Badge></span>}
       <div className={styles.actions}>
         {onNewChat && (
           <Tooltip content="Start new chat">
