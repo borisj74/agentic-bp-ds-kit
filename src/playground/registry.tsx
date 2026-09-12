@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
-import { AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { SIDE_NAV_SECTIONS, SIDE_NAV_END, AppShellDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -58,7 +58,7 @@ import { Skeleton } from "@/ui/Skeleton/Skeleton";
 import { Spinner, type SpinnerProps } from "@/ui/Spinner/Spinner";
 import { Stepper, type StepperProps } from "@/ui/Stepper/Stepper";
 import { Select, type SelectProps } from "@/ui/Select/Select";
-import { SideNav, type SideNavEntry, type SideNavItem, type SideNavProps } from "@/ui/SideNav/SideNav";
+import { SideNav, type SideNavProps } from "@/ui/SideNav/SideNav";
 import { Switch, type SwitchProps } from "@/ui/Switch/Switch";
 import { Tabs, type TabItem, type TabsProps } from "@/ui/Tabs/Tabs";
 import { Table, type TableColumn, type TableProps, type TableRow } from "@/ui/Table/Table";
@@ -69,28 +69,6 @@ import { Tooltip, type TooltipProps } from "@/ui/Tooltip/Tooltip";
 import { TreeView, type TreeItem, type TreeViewProps } from "@/ui/TreeView/TreeView";
 
 export type Props = Record<string, unknown>;
-// SideNav sample: the app sections and menus from the Figma secondary navigation. "-" is a divider.
-const menu = (section: string, labels: string[]) =>
-  labels.map((l) => (l === "-" ? { divider: true as const } : { id: `${section}-${l.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, label: l }));
-const SIDE_NAV_SECTIONS: SideNavEntry[] = [
-  { id: "home", label: "Home", icon: "home", children: menu("home", ["Home Dashboards", "Approval Management", "Alert Groups", "Grouped Activity"]) },
-  { id: "accounts", label: "Accounts", icon: "group" },
-  { id: "products", label: "Products", icon: "inventory_2", children: menu("products", ["Products", "Product Categories", "Packages", "Rate Classes"]) },
-  { divider: true },
-  { id: "quotes", label: "Quotes", icon: "request_quote", children: menu("quotes", ["Quotes", "Quote Rules", "Product Relationships"]) },
-  { id: "orders", label: "Orders", icon: "shopping_cart" },
-  { id: "billing", label: "Billing", icon: "receipt_long", children: menu("billing", ["Invoices", "Invoice Management", "Statements", "Electronic Files", "Invoice Periods", "Tiered Pricing", "Bulk Actions"]) },
-  { id: "ar", label: "AR", icon: "account_balance", children: menu("ar", ["Account Ledgers", "Payments & Refunds", "BP Payouts", "Payouts", "Chargebacks", "Scheduled Payment Retries", "-", "Lockbox Files", "Lockbox Matching Rules", "Unreconciled Payments", "-", "Credit Memos", "Bulk Approve/Reject Credits"]) },
-  { id: "revenue", label: "Revenue", icon: "monetization_on", children: menu("revenue", ["Month-End Close Dashboard", "Chart of Accounts", "Chart of Account Categories", "General Ledger", "General Ledger Rules", "Journal Entries", "Ledger Accrual History", "-", "SSP Profiles", "Revenue Allocation Groups", "Revenue Allocation Routines", "-", "Accounting Period Configuration", "Legal Entities"]) },
-  { id: "mediation", label: "Mediation", icon: "speed", children: menu("mediation", ["Usage Collectors", "Usage Identifiers", "MDL Events", "Unaggregated Data Browser", "Usage Reload", "Usage Data"]) },
-  { divider: true },
-  { id: "reports", label: "Reports", icon: "summarize", children: menu("reports", ["Reports Home", "AI Report Builder", "-", "Accounting", "Accounts & Insights", "AR", "Billing", "Financials", "Payments & Credits", "Products", "Revenue", "-", "All Reports"]) },
-  { id: "settings", label: "Settings", icon: "settings", children: menu("settings", ["Settings Home", "Develop", "External Connectors", "Security & Users", "Monitoring & Logs", "System", "Configuration Deployment", "-", "AI Settings", "Billing", "Payments", "Financials & Revenue", "Collections"]) },
-];
-const SIDE_NAV_END: SideNavItem[] = [
-  { id: "recycle", label: "Recycle Bin", icon: "recycling" },
-  { id: "processes", label: "Processes", icon: "tune" },
-];
 // Contract examples name the sample as {sections} and {endSections}; swap in the real arrays.
 const sideNavProps = (p: Props) => ({
   ...p,
@@ -1069,6 +1047,19 @@ export const registry: Record<string, Entry> = {
     hint: "Switch the variant. Scroll the page beside it, or click a row: the caret and the strong line follow the section the page is at.",
     block: true,
     card: <div style={{ width: 220 }}><AnchorNav items={PAGE_SECTION_ITEMS.slice(0, 3)} defaultActive="demo-billing" spy={false} /></div>,
+  },
+  AppShell: {
+    // The pattern, driven the way a screen would drive it: which section, which page and whether the
+    // assistant is open all live in the screen.
+    render: ({ assistant, stage, ...p }) => <AppShellDemo {...(p as Record<string, unknown>)} assistant={Boolean(assistant)} stage={String(stage ?? "desktop")} />,
+    preview: { width: "full" },
+    hide: ["children", "header", "nav", "pageHeader", "assistant", "assistantOpen"],
+    toggles: { assistant: { label: "Assistant open", default: false } },
+    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
+    hint: "Open the menu button to widen the rail, walk the side nav, and press Ask BP AI to bring the assistant in beside the page. Stage narrows the box the frame lives in, so watch the rail go on a phone. Width caps the page to a reading column; it does not resize the frame.",
+    block: true,
+    wide: true,
+    card: <div style={{ width: 300 }}><AppHeader search={false} /></div>,
   },
   AppHeader: {
     // Full-width bar. AppHeaderDemo wires the account menu (dark mode and density in local state). Keyed so controls re-apply.

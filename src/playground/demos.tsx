@@ -5,6 +5,7 @@ import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
 import { AlertDialog, type AlertDialogProps } from "@/ui/AlertDialog/AlertDialog";
 import { Avatar } from "@/ui/Avatar/Avatar";
 import { AppHeader, type AppHeaderDensity, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
+import { AppShell, type AppShellProps } from "@/patterns/AppShell/AppShell";
 import { Button } from "@/ui/Button/Button";
 import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
 import { Cell, type CellSize } from "@/ui/Cell/Cell";
@@ -15,7 +16,7 @@ import { ChatList, type ChatListProps } from "@/ui/ChatList/ChatList";
 import { ChatMessage, type ChatMessageActionId, type ChatMessageProps } from "@/ui/ChatMessage/ChatMessage";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
 import { Empty } from "@/ui/Empty/Empty";
-import { Illustration } from "@/ui/Illustration/Illustration";
+import { Illustration, type IllustrationName } from "@/ui/Illustration/Illustration";
 import { ChatWindow, type ChatWindowProps } from "@/patterns/ChatWindow/ChatWindow";
 import { Density, type DensityValue } from "@/ui/Density/Density";
 import { Drawer, type DrawerProps } from "@/ui/Drawer/Drawer";
@@ -26,7 +27,11 @@ import { Input } from "@/ui/Input/Input";
 import { Legend, type LegendProps } from "@/ui/Legend/Legend";
 import { Lookup } from "@/ui/Lookup/Lookup";
 import { Modal, type ModalProps } from "@/ui/Modal/Modal";
+import { PageHeader } from "@/ui/PageHeader/PageHeader";
+import { Scoreboard } from "@/ui/Scoreboard/Scoreboard";
+import { Section } from "@/ui/Section/Section";
 import { SegmentedControl } from "@/ui/SegmentedControl/SegmentedControl";
+import { SideNav, type SideNavEntry, type SideNavItem } from "@/ui/SideNav/SideNav";
 import { Select } from "@/ui/Select/Select";
 import { Skeleton, type SkeletonProps } from "@/ui/Skeleton/Skeleton";
 import { Stepper, type StepperProps } from "@/ui/Stepper/Stepper";
@@ -696,6 +701,28 @@ const SCOPE_PAGES: Record<string, string | undefined> = {
   none: undefined,
 };
 
+// Figma BP AI get started 476:7442: the mark and the name in the middle, the starters stacked under them
+// against the left edge of the window, in line with the notice and the box. Shared, so the assistant opens
+// the same way whether it is shown on its own or beside a screen.
+function GetStarted({ art = "ai-chip", moving = false, onPick }: { art?: IllustrationName; moving?: boolean; onPick: (label: string) => void }) {
+  return (
+    <div style={{ display: "grid", gap: "var(--space-medium)" }}>
+      {/* The name is the biggest thing on an otherwise empty panel, so the title steps up one size.
+          Only the size the kit Empty reads for its title is swapped; the component is untouched. */}
+      <div style={{ ["--font-size-large" as string]: "var(--font-size-xxlarge)" }}>
+        <Empty title="Get Started" media={<Illustration name={art} animated={moving} />} />
+      </div>
+      {/* The starters sit on the quiet grey rather than white paper, so they read as things to pick,
+          not as the buttons of a form. The kit Button is unchanged: only the surface under it is. */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--space-xsmall)", ["--surface-raised" as string]: "var(--bg-neutral-subtle)" }}>
+        {START_SUGGESTIONS.map((s) => (
+          <Button key={s.id} size="sm" onClick={() => onPick(s.label)}>{s.label}</Button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // Playground harness: the ChatWindow pattern driven like a screen would drive it. Not a kit piece.
 export function ChatWindowDemo({ started = false, page = "accounts", size: asked = "panel", ...p }: Omit<ChatWindowProps, "composer"> & { started?: boolean; page?: string }) {
   const [turns, setTurns] = useState<{ id: string; author: "user" | "assistant"; text: string }[]>(
@@ -743,29 +770,189 @@ export function ChatWindowDemo({ started = false, page = "accounts", size: asked
             more={view === "playbooks" ? undefined : { label: "View chats older than 30 days" }}
           />
         }
-        empty={
-          // Figma BP AI get started 476:7442: the mark and the name in the middle, the starters stacked
-          // under them against the left edge of the window, in line with the notice and the box.
-          <div style={{ display: "grid", gap: "var(--space-medium)" }}>
-            {/* The name is the biggest thing on an otherwise empty panel, so the title steps up one size.
-                Only the size the kit Empty reads for its title is swapped; the component is untouched. */}
-            <div style={{ ["--font-size-large" as string]: "var(--font-size-xxlarge)" }}>
-              <Empty title="Get Started" media={<Illustration name={freshChat ? "chat-search" : "ai-chip"} animated={freshChat} />} />
-            </div>
-            {/* The starters sit on the quiet grey rather than white paper, so they read as things to pick,
-                not as the buttons of a form. The kit Button is unchanged: only the surface under it is. */}
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--space-xsmall)", ["--surface-raised" as string]: "var(--bg-neutral-subtle)" }}>
-              {START_SUGGESTIONS.map((s) => (
-                <Button key={s.id} size="sm" onClick={() => ask(s.label)}>{s.label}</Button>
-              ))}
-            </div>
-          </div>
-        }
+        empty={<GetStarted art={freshChat ? "chat-search" : "ai-chip"} moving={freshChat} onPick={ask} />}
         // The scope row names whatever page the person is on, and is gone on a page with nothing to scope to.
         composer={<ChatComposerPiece scopeLabel={scoping ? SCOPE_PAGES[page] : undefined} onScopeClose={() => setScoping(false)} defaultScoped hints={ASK_HINTS} addMenu={ADD_MENU} onSend={ask} />}
       >
         {turns.length > 0 ? turns.map((t) => <ChatMessage key={t.id} author={t.author} text={t.text} person={{ name: "Ana Petrovic" }} />) : null}
       </ChatWindow>
+    </div>
+  );
+}
+
+// Sample screen for the AppShell harness: the real app sections, two page blocks.
+// SideNav sample: the app sections and menus from the Figma secondary navigation. "-" is a divider.
+export const menu = (section: string, labels: string[]) =>
+  labels.map((l) => (l === "-" ? { divider: true as const } : { id: `${section}-${l.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, label: l }));
+export const SIDE_NAV_SECTIONS: SideNavEntry[] = [
+  { id: "home", label: "Home", icon: "home", children: menu("home", ["Home Dashboards", "Approval Management", "Alert Groups", "Grouped Activity"]) },
+  { id: "accounts", label: "Accounts", icon: "group" },
+  { id: "products", label: "Products", icon: "inventory_2", children: menu("products", ["Products", "Product Categories", "Packages", "Rate Classes"]) },
+  { divider: true },
+  { id: "quotes", label: "Quotes", icon: "request_quote", children: menu("quotes", ["Quotes", "Quote Rules", "Product Relationships"]) },
+  { id: "orders", label: "Orders", icon: "shopping_cart" },
+  { id: "billing", label: "Billing", icon: "receipt_long", children: menu("billing", ["Invoices", "Invoice Management", "Statements", "Electronic Files", "Invoice Periods", "Tiered Pricing", "Bulk Actions"]) },
+  { id: "ar", label: "AR", icon: "account_balance", children: menu("ar", ["Account Ledgers", "Payments & Refunds", "BP Payouts", "Payouts", "Chargebacks", "Scheduled Payment Retries", "-", "Lockbox Files", "Lockbox Matching Rules", "Unreconciled Payments", "-", "Credit Memos", "Bulk Approve/Reject Credits"]) },
+  { id: "revenue", label: "Revenue", icon: "monetization_on", children: menu("revenue", ["Month-End Close Dashboard", "Chart of Accounts", "Chart of Account Categories", "General Ledger", "General Ledger Rules", "Journal Entries", "Ledger Accrual History", "-", "SSP Profiles", "Revenue Allocation Groups", "Revenue Allocation Routines", "-", "Accounting Period Configuration", "Legal Entities"]) },
+  { id: "mediation", label: "Mediation", icon: "speed", children: menu("mediation", ["Usage Collectors", "Usage Identifiers", "MDL Events", "Unaggregated Data Browser", "Usage Reload", "Usage Data"]) },
+  { divider: true },
+  { id: "reports", label: "Reports", icon: "summarize", children: menu("reports", ["Reports Home", "AI Report Builder", "-", "Accounting", "Accounts & Insights", "AR", "Billing", "Financials", "Payments & Credits", "Products", "Revenue", "-", "All Reports"]) },
+  { id: "settings", label: "Settings", icon: "settings", children: menu("settings", ["Settings Home", "Develop", "External Connectors", "Security & Users", "Monitoring & Logs", "System", "Configuration Deployment", "-", "AI Settings", "Billing", "Payments", "Financials & Revenue", "Collections"]) },
+];
+export const SIDE_NAV_END: SideNavItem[] = [
+  { id: "recycle", label: "Recycle Bin", icon: "recycling" },
+  { id: "processes", label: "Processes", icon: "tune" },
+];
+
+const SHELL_SCORES = [
+  { id: "open", title: "Open invoices", metric: "1,284", trend: { value: "4.2", unit: "%", status: "success" as const, direction: "up" as const } },
+  // One card carries a badge and one a sparkline, so both show beside the plain ones.
+  { id: "overdue", title: "Overdue", metric: "312", badge: "Needs review", trend: { value: "1.8", unit: "%", status: "danger" as const, direction: "up" as const } },
+  {
+    id: "collected", title: "Collected", metric: "$4.1M", metadata: "Last 30 days",
+    trend: { value: "6.5", unit: "%", status: "success" as const, direction: "up" as const },
+    chart: { points: [12, 18, 15, 24, 22, 31, 29, 38], status: "success" as const, area: true },
+  },
+  { id: "disputed", title: "Disputed", metric: "48", trend: { value: "0.4", unit: "%", status: "success" as const, direction: "down" as const } },
+  { id: "credits", title: "Credit memos", metric: "$212K", trend: { value: "2.1", unit: "%", status: "neutral" as const, direction: "none" as const } },
+  { id: "dso", title: "Days sales outstanding", metric: "41", metadata: "Target 38", trend: { value: "3", unit: "days", status: "danger" as const, direction: "up" as const } },
+];
+const SHELL_COLUMNS: TableColumn[] = [
+  { key: "id", header: "Invoice", emphasis: true }, { key: "account", header: "Account" }, { key: "due", header: "Due" },
+  { key: "amount", header: "Amount", numeric: true }, { key: "actions", header: "", align: "end", width: "96px" },
+];
+// The row's own actions: the two it is used for as icon buttons, the rest behind More.
+const rowActions = (
+  <Cell
+    type="actionIcons" align="end"
+    actions={[
+      { label: "Send", icon: "send" },
+      { label: "Download PDF", icon: "download" },
+    ]}
+    menu={[
+      { label: "View invoice", icon: "open_in_new" },
+      { label: "Record payment", icon: "payments" },
+      { label: "Duplicate", icon: "content_copy" },
+      { label: "Credit memo", icon: "receipt_long" },
+      { label: "Void", icon: "block", variant: "danger" },
+    ]}
+  />
+);
+const SHELL_ROWS: TableRow[] = [
+  { id: "INV-4471", account: "Northwind Holdings", due: "12 Sep 2026", amount: "$18,400.00", actions: rowActions },
+  { id: "INV-4472", account: "Globex Corporation", due: "14 Sep 2026", amount: "$7,250.00", actions: rowActions },
+  { id: "INV-4473", account: "Initech Group", due: "18 Sep 2026", amount: "$2,980.00", actions: rowActions },
+  { id: "INV-4474", account: "Umbrella Health", due: "21 Sep 2026", amount: "$44,120.00", actions: rowActions },
+];
+
+// What the bar carries on a product screen: recent records in the search, the scopes it can search in,
+// and the three utility buttons.
+const SHELL_SEARCH = [
+  {
+    heading: "Recent",
+    items: [
+      { id: "r1", label: "Acme Inc. \u2014 renewal quote", icon: "description" },
+      { id: "r2", label: "Premium support plan", icon: "radio_button_unchecked" },
+      { id: "r3", label: "Q3 revenue report", icon: "bar_chart" },
+      { id: "r4", label: "INV-1042", icon: "description" },
+    ],
+  },
+];
+const SHELL_SEARCH_SCOPES = [
+  { value: "products", label: "Products" },
+  { value: "accounts", label: "Accounts" },
+  { value: "invoices", label: "Invoices" },
+];
+const SHELL_HEADER_ACTIONS = [
+  { id: "help", label: "Help", icon: "help" },
+  { id: "news", label: "What's new", icon: "campaign" },
+  { id: "feedback", label: "Feedback", icon: "chat_info" },
+];
+
+// Playground harness: the AppShell pattern driven like a screen would drive it. Not a kit piece.
+// How wide the preview box is, so the frame can be watched answering to its own width.
+const STAGE_WIDTHS: Record<string, number | undefined> = { desktop: undefined, laptop: 1024, tablet: 768, phone: 390 };
+
+export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omit<AppShellProps, "children" | "assistant"> & { assistant?: boolean; stage?: string }) {
+  const [navOpen, setNavOpen] = useState(false);
+  const [section, setSection] = useState("billing-invoices");
+  const [scope, setScope] = useState("invoices");
+  const [notice, setNotice] = useState(true);
+  const [scoping, setScoping] = useState(true);
+  const [dark, setDark] = useState(false);
+  const [density, setDensity] = useState<AppHeaderDensity>("default");
+  const [chatOpen, setChatOpen] = useState(assistant);
+  const [turns, setTurns] = useState<{ id: string; author: "user" | "assistant"; text: string }[]>([]);
+  const [from, setFrom] = useState(assistant);
+  if (from !== assistant) { setFrom(assistant); setChatOpen(assistant); }
+  const ask = (text: string) => setTurns((old) => [
+    ...old,
+    { id: `q${old.length}`, author: "user" as const, text },
+    { id: `a${old.length}`, author: "assistant" as const, text: "312 invoices are overdue, worth $1.2M in total." },
+  ]);
+
+  return (
+    // Tall enough for the whole frame: the bar, the nav down to its end items, the page and the assistant.
+    // The box narrows with the Stage control, and the frame answers to the box, not to the window.
+    <div
+      style={{
+        height: 900, width: STAGE_WIDTHS[stage] ?? "100%", maxWidth: "100%", marginInline: "auto",
+        border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden",
+      }}
+    >
+      <AppShell
+        {...p}
+        header={
+          <AppHeader
+            navOpen={navOpen} onNavToggle={() => setNavOpen((o) => !o)}
+            environment="UAT-2" environmentTone="success"
+            searchShortcut="Ctrl+K" searchGroups={SHELL_SEARCH} searchVariant="list" searchIconStyle="tile"
+            searchScopes={SHELL_SEARCH_SCOPES} searchScope={scope} onSearchScopeChange={setScope}
+            onSearchSelect={() => {}}
+            actions={SHELL_HEADER_ACTIONS} onAction={() => {}}
+            user={{ name: "Ana Petrovic" }} company={{ name: "Northwind Holdings" }}
+            darkMode={dark} onDarkModeChange={setDark}
+            density={density} onDensityChange={setDensity}
+            onUserSettings={() => {}} onLogout={() => {}}
+          />
+        }
+        nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        pageHeader={
+          <PageHeader
+            title="Invoices" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]}
+            actions={
+              <>
+                <Button size="sm" iconStart="auto_awesome" onClick={() => setChatOpen((o) => !o)}>Ask BP AI</Button>
+                <Button size="sm" variant="primary">New invoice</Button>
+              </>
+            }
+          />
+        }
+        assistantOpen={chatOpen}
+        assistant={
+          <ChatWindow
+            title="BP AI" chatsCount={7} onClose={() => setChatOpen(false)} onNewChat={() => setTurns([])}
+            notice={notice ? "AI can make mistakes, verify important information." : undefined}
+            onNoticeDismiss={() => setNotice(false)}
+            empty={<GetStarted onPick={ask} />}
+            composer={
+              <ChatComposerPiece
+                scopeLabel={scoping ? "Invoices page" : undefined} onScopeClose={() => setScoping(false)}
+                defaultScoped hints={ASK_HINTS} addMenu={ADD_MENU} onSend={ask}
+              />
+            }
+          >
+            {turns.length > 0 ? turns.map((t) => <ChatMessage key={t.id} author={t.author} text={t.text} person={{ name: "Ana Petrovic" }} />) : null}
+          </ChatWindow>
+        }
+      >
+        <Section title="Summary" description="Where billing stands this month." collapsible>
+          <Scoreboard items={SHELL_SCORES} selectable defaultSelected="overdue" scroll label="Billing summary" />
+        </Section>
+        <Section title="Invoices" collapsible actions={<Button size="sm" iconStart="download">Export</Button>}>
+          <Table columns={SHELL_COLUMNS} rows={SHELL_ROWS} />
+        </Section>
+      </AppShell>
     </div>
   );
 }

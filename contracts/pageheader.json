@@ -2,7 +2,7 @@
   "name": "PageHeader",
   "path": "src/ui/PageHeader/PageHeader.tsx",
   "intent": "The top of a page's content: where it sits (breadcrumb), what it is (icon, title, badge) and the page actions. Below the AppHeader.",
-  "usage": "Put one PageHeader at the top of each page, under the AppHeader. It is one component: breadcrumbs are the parent sections (all links), then the title row with an optional icon and badge, and the page actions on the end. actions are kit Buttons, size sm, with the one primary last; moreActions puts less-used actions in a More menu before them. sticky is the compact bar for when the page scrolls: one line whose trail ends in the page title, with a raised shadow unless shadow is false. See contracts/pageheader.json for the full contract.",
+  "usage": "Put one PageHeader at the top of each page, under the AppHeader. It is one component: breadcrumbs are the parent sections (all links), then the title row with an optional icon and badge, and the page actions on the end. actions are kit Buttons, size sm, with the one primary last; moreActions puts less-used actions in a More menu before them. sticky is the compact bar for when the page scrolls: one line whose trail ends in the page title, with a raised shadow unless shadow is false. See contracts/pageheader.json for the full contract. The bar adds no side padding of its own: the page inset comes from the layout class around it (contracts/layout.json), so the title lines up with the Sections under it.",
   "props": {
     "title": {
       "type": "string",
@@ -65,7 +65,8 @@
     "Do not invent ContentHeader, PageTitle, TitleBar or a local heading row.",
     "Do not put the app's logo, search or user in it. That is the AppHeader.",
     "Do not put more than one primary Button in actions, or more than five visible actions.",
-    "Do not use raw hex."
+    "Do not use raw hex.",
+    "Do not give it side padding to inset the page. Wrap the page in .layout-content, which owns that inset."
   ],
   "a11y": [
     "A header with the page's h1. In sticky the h1 stays, hidden, and the trail marks the title as the current page.",

@@ -39,6 +39,7 @@ export interface CellProps {
   badges?: CellBadge[];
   value?: string | number;
   actions?: CellAction[];
+  menu?: CellAction[];
   options?: SelectOption[];
   onValueChange?: (value: string) => void;
   checked?: boolean;
@@ -56,7 +57,7 @@ const score = (v?: string | number) => Math.max(0, Math.min(STARS, Math.round(Nu
 
 export function Cell({
   type = "text", size: ownSize, align = "start", text = true, checkbox = false, label, href, name, src, people, icon,
-  tone = "neutral", badges, value, actions, options, onValueChange, checked, defaultChecked, onCheckedChange,
+  tone = "neutral", badges, value, actions, menu, options, onValueChange, checked, defaultChecked, onCheckedChange,
   level = 1, expanded, onExpandedChange, showLines = true, onClick,
 }: CellProps) {
   const density = useDensity();
@@ -145,6 +146,14 @@ export function Cell({
               <Button size="sm" variant={a.variant ?? "tertiary"} iconOnly iconStart={a.icon ?? "more_horiz"} onClick={a.onClick}>{a.label}</Button>
             </Tooltip>
           ))}
+          {/* The rest of the row's actions, behind one More button at the end. */}
+          {menu && menu.length > 0 && (
+            <DropdownMenu
+              label="More row actions" iconOnly icon="more_vert" variant="tertiary" size="sm" align="end"
+              items={menu.map((a, i) => ({ id: String(i), label: a.label, icon: a.icon, danger: a.variant === "danger" }))}
+              onSelect={(id) => menu[Number(id)]?.onClick?.()}
+            />
+          )}
         </span>
       );
       break;

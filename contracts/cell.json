@@ -2,7 +2,7 @@
   "name": "Cell",
   "path": "src/ui/Cell/Cell.tsx",
   "intent": "Content for one table cell: text, a link, a person, a file, a status, a trend, progress, a rating, a select, row actions or a row menu, a tree row, with an optional row checkbox. Each cell is full width with a faint bottom border.",
-  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, link to open a record, avatar for a person, badge for status, trend for change, progress for how far along something is, actions for row buttons, actionMenu for a More menu, select to change a value in place, checkbox for a column with only the row Checkbox, tree for the first cell of parent and child rows (an indent per level, faint guide lines and a chevron to open and close its children). Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, DropdownMenu, Icon, Progress and Select; it never draws its own. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract.",
+  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, link to open a record, avatar for a person, badge for status, trend for change, progress for how far along something is, actions for row buttons, actionMenu for a More menu, select to change a value in place, checkbox for a column with only the row Checkbox, tree for the first cell of parent and child rows (an indent per level, faint guide lines and a chevron to open and close its children). Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, DropdownMenu, Icon, Progress and Select; it never draws its own. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract. With actionIcons, menu puts the row's remaining actions behind one More button at the end.",
   "props": {
     "type": {
       "enum": [
@@ -113,6 +113,10 @@
         "onClick": "function?"
       },
       "note": "For actions (labeled, up to 3), actionIcons (icon only, up to 3, label becomes the name and a kit Tooltip) and actionMenu (menu items, danger variant becomes a danger item). onClick runs when picked."
+    },
+    "menu": {
+      "type": "CellAction[]",
+      "note": "With actionIcons, the rest of the row's actions behind one More button at the end of the icons, as a kit DropdownMenu. Leave it out and there is no More button; a danger variant becomes a danger item."
     },
     "options": {
       "type": "SelectOption[]",

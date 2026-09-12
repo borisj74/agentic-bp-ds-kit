@@ -1,0 +1,25 @@
+/* The frame: the bar across the top, then the rail, the page and the assistant under it. */
+.shell {
+  display: grid; grid-template-rows: auto minmax(0, 1fr);
+  height: 100%; min-height: 0; background: var(--surface-flat); font-family: var(--font-sans);
+  /* The frame answers to its own width, not the window's, so it behaves the same docked in a preview,
+     a split view or a full page. */
+  container-type: inline-size;
+}
+
+/* The rail column hugs the nav, since the kit SideNav sets its own width (56 collapsed, 170 expanded,
+   wider again when a menu is pinned beside it). */
+.stage { display: flex; min-width: 0; min-height: 0; }
+.nav { flex: none; min-width: 0; min-height: 0; }
+.page { flex: 1 1 auto; min-width: 0; }
+
+/* The assistant keeps its own width and its own line down its side, so the frame adds neither. */
+.assistant { flex: none; min-height: 0; }
+
+/* 640px = --grid-breakpoint-sm: CSS vars cannot appear in container or media queries. */
+@container (max-width: 640px) {
+  /* No room for both: the rail goes, and the assistant takes the page's place while it is open. */
+  .nav { display: none; }
+  .stage:has(.assistant) .page { display: none; }
+  .assistant { flex: 1 1 auto; }
+}

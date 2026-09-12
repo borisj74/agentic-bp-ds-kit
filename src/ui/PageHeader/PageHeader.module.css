@@ -1,8 +1,10 @@
 /* Figma page / page-header (Content Header 1337:8913): a white bar with the trail and title on the start and
-   the page actions on the end, 40px apart. 12 / 24 padding gives 80px by default and 52px when sticky. */
+   the page actions on the end, 40px apart. 12 of block padding gives 80px by default and 52px when sticky.
+   The side inset belongs to the page, not to the bar (contracts/layout.json), so the title lines up with the
+   Sections under it instead of sitting 24 further in. */
 .header {
   box-sizing: border-box; display: flex; align-items: center; gap: var(--page-header-gap); width: 100%; min-height: var(--page-header-height);
-  padding: var(--space-small) var(--space-xlarge); background: var(--surface-flat); font-family: var(--font-sans);
+  padding-block: var(--space-small); background: var(--surface-flat); font-family: var(--font-sans);
 }
 
 .title { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }

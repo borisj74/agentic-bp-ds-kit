@@ -1,0 +1,85 @@
+{
+  "name": "AppShell",
+  "path": "src/patterns/AppShell/AppShell.tsx",
+  "intent": "The frame every product screen sits in: the bar across the top, the rail under it down the side, the page in the middle, and the assistant beside it.",
+  "usage": "Use AppShell as the outer frame of a screen. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is open. Pass the kit AppHeader as header: it runs the full width across the top, and the rail starts under it. Pass the kit SideNav as nav; its column hugs whatever width the nav is, so collapsed, expanded and pinned all work. pageHeader takes a kit PageHeader and sits above the scrolling page, so a sticky one sticks. children are the page itself, already inside the scrolling content area with its edge padding and the gap between Sections, so screens do not add their own. assistant takes a kit ChatWindow and shows beside the page while assistantOpen is true. width caps the page to a reading column; it does not resize the frame. The frame answers to its own width rather than the window's, so under about 640 the rail goes and an open assistant takes the page's place, whether it is docked in a panel or filling a screen. See contracts/appshell.json for the full contract.",
+  "composes": [
+    "AppHeader",
+    "SideNav",
+    "PageHeader",
+    "ChatWindow",
+    "Section"
+  ],
+  "props": {
+    "children": {
+      "type": "ReactNode",
+      "required": true,
+      "note": "The page: kit Sections and the pieces inside them."
+    },
+    "header": {
+      "type": "ReactNode",
+      "note": "The bar across the top. A kit AppHeader."
+    },
+    "nav": {
+      "type": "ReactNode",
+      "note": "The rail down the side. A kit SideNav. The column takes its width, whatever state it is in."
+    },
+    "pageHeader": {
+      "type": "ReactNode",
+      "note": "The page name and its actions. A kit PageHeader; a sticky one sticks to the top of the page as it scrolls."
+    },
+    "assistant": {
+      "type": "ReactNode",
+      "note": "The assistant beside the page. A kit ChatWindow at size panel."
+    },
+    "assistantOpen": {
+      "type": "boolean",
+      "default": false,
+      "note": "The assistant is showing. The screen opens and shuts it."
+    },
+    "width": {
+      "enum": [
+        "full",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl"
+      ],
+      "default": "full",
+      "note": "How wide the page runs inside the frame. full fills the space; the rest hold it to a reading column, centred. It caps the page only: the bar, the rail and the assistant keep their own widths."
+    }
+  },
+  "useWhen": [
+    "Any product screen: a list, a record, a dashboard.",
+    "A screen the assistant can be opened beside."
+  ],
+  "doNot": [
+    "Do not add state to it; it is a blueprint. Keep which nav section, which page and whether the assistant is open in the screen.",
+    "Do not build the bar, the rail or the page header inside it. Pass the kit pieces.",
+    "Do not add page padding or a gap between Sections in the screen; the content area already has both.",
+    "Do not invent a second frame or a per-page grid beside it. Read contracts/layout.json.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The page is a main landmark and the assistant a complementary one, so a screen reader can jump between them.",
+    "The header is a kit AppHeader and the nav a kit SideNav, so their buttons and links are named and reachable.",
+    "Only the page scrolls, so the bar, the rail and the assistant stay put.",
+    "The page header keeps the page's h1.",
+    "Under about 640 of frame width the rail is dropped and an open assistant takes the page's place, so neither is squeezed to nothing."
+  ],
+  "snippet": "<AppShell header={<AppHeader />} nav={<SideNav items={sections} />} pageHeader={<PageHeader title=\"Accounts\" />}>{page}</AppShell>",
+  "examples": [
+    {
+      "title": "A screen",
+      "usage": "The bar, the rail, a page header and the page under it.",
+      "items": [
+        {
+          "props": {
+            "width": "full"
+          }
+        }
+      ]
+    }
+  ]
+}
