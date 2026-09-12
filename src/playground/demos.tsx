@@ -395,7 +395,7 @@ export function ToolbarDemo(p: Record<string, unknown>) {
       onSearchViewAll={p.onSearchViewAll ? () => {} : undefined}
       views={p.views ? [{ id: "list", label: "List View" }, { id: "board", label: "Board View" }, { id: "calendar", label: "Calendar View" }] : undefined}
       onRefresh={p.onRefresh ? () => {} : undefined}
-      moreActions={p.moreActions ? [{ id: "import", label: "Import" }, { id: "columns", label: "Edit columns" }, { divider: true }, { id: "delete", label: "Delete all", danger: true }] : undefined}
+      moreActions={p.moreActions ? [{ id: "import", label: "Import", icon: "upload" }, { id: "columns", label: "Edit columns", icon: "view_column" }, { divider: true }, { id: "delete", label: "Delete all", icon: "delete", danger: true }] : undefined}
       onMoreSelect={() => {}}
       actions={p.actions ? <><Button size="sm">Export</Button><Button size="sm" variant="primary">Create</Button></> : undefined}
     />
@@ -1094,7 +1094,7 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
           searchValue={query} onSearchChange={setQuery} searchPlaceholder="Search invoices"
           views={[{ id: "table", label: "Table View" }, { id: "list", label: "List View" }, { id: "card", label: "Card View" }]}
           view={view} onViewChange={setView} onRefresh={() => {}}
-          moreActions={[{ id: "import", label: "Import" }, { id: "export", label: "Export all" }]} onMoreSelect={() => {}}
+          moreActions={[{ id: "import", label: "Import", icon: "upload" }, { id: "export", label: "Export all", icon: "download" }]} onMoreSelect={() => {}}
           actions={<Button size="sm" variant="primary" iconStart="add">New invoice</Button>}
         />
       }
@@ -1274,7 +1274,7 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" 
       toolbar={
         <Toolbar
           label="Account details" onRefresh={() => {}}
-          moreActions={[{ id: "print", label: "Print" }, { id: "export", label: "Export" }]} onMoreSelect={() => {}}
+          moreActions={[{ id: "print", label: "Print", icon: "print" }, { id: "export", label: "Export", icon: "download" }]} onMoreSelect={() => {}}
           actions={<><Button size="sm">Record payment</Button><Button size="sm" variant="primary" iconStart="add">New invoice</Button></>}
         />
       }

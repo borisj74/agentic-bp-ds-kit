@@ -83,8 +83,8 @@
     },
     "moreActions": {
       "type": "DropdownMenuEntry[]",
-      "itemShape": "{ id: string; label: string; danger?: boolean } | { divider: true }",
-      "note": "Adds a tertiary More menu before the actions for less-used ones. Delete goes last, as danger."
+      "itemShape": "{ id: string; label: string; icon?: string; danger?: boolean } | { divider: true }",
+      "note": "Adds a tertiary More menu before the actions for less-used ones. Delete goes last, as danger. Give each one its Material Symbols icon, as the row menus in a table do, so the menu reads at a glance."
     },
     "onMoreSelect": {
       "type": "function",

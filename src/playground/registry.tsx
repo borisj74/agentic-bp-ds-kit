@@ -1671,10 +1671,10 @@ export const registry: Record<string, Entry> = {
       title: "INV-1042",
       badge: "Draft",
       moreActions: [
-        { id: "duplicate", label: "Duplicate" },
-        { id: "pdf", label: "Download PDF" },
+        { id: "duplicate", label: "Duplicate", icon: "content_copy" },
+        { id: "pdf", label: "Download PDF", icon: "download" },
         { divider: true },
-        { id: "delete", label: "Delete", danger: true },
+        { id: "delete", label: "Delete", icon: "delete", danger: true },
       ],
     },
     snippet: { actions: "{actions}" },
