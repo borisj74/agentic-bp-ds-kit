@@ -56,6 +56,7 @@ import { Switch, type SwitchProps } from "@/ui/Switch/Switch";
 import { Tabs, type TabItem, type TabsProps } from "@/ui/Tabs/Tabs";
 import { Table, type TableColumn, type TableProps, type TableRow } from "@/ui/Table/Table";
 import { Textarea, type TextareaProps } from "@/ui/Textarea/Textarea";
+import { Timeline, type TimelineItem, type TimelineProps } from "@/ui/Timeline/Timeline";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 import { Tooltip, type TooltipProps } from "@/ui/Tooltip/Tooltip";
 import { TreeView, type TreeItem, type TreeViewProps } from "@/ui/TreeView/TreeView";
@@ -236,6 +237,42 @@ const NINE_KPIS: ScoreboardItem[] = [
   { id: "trials", title: "Trials", metric: "48", badge: "Week", metadata: "12 converting" },
   { id: "usage", title: "Metered usage", metric: "4.2M", trend: { value: "6%", unit: "MoM", status: "success", direction: "up" }, metadata: "Events billed" },
 ];
+const ACTIVITY_MENU = [
+  { id: "open", label: "Open record" },
+  { id: "pin", label: "Pin to top" },
+  { divider: true as const },
+  { id: "delete", label: "Delete", icon: "delete", danger: true },
+];
+const ACTIVITY: TimelineItem[] = [
+  {
+    id: "call", title: "Call with Maya Chen", timestamp: "2 hours ago", subtitle: "Logged by Ana Petrovic", icon: "call",
+    notes: "Walked through the March overage. Maya will send the usage export so we can rebill the metered lines before the run.",
+    links: [{ label: "INV-1042", href: "#" }, { label: "Acme Inc.", href: "#" }],
+    action: { label: "Add follow-up" }, menu: ACTIVITY_MENU,
+  },
+  {
+    id: "invoice", title: "Invoice sent", timestamp: "Yesterday, 16:20", subtitle: "Billing run 2027-03", icon: "receipt_long", tone: "success",
+    notes: "INV-1042 for $36,420 went out to billing@acme.com.", links: [{ label: "View invoice", href: "#" }], menu: ACTIVITY_MENU,
+  },
+  {
+    id: "note", title: "Note added", timestamp: "8 Jan 2027, 09:05", subtitle: "Ana Petrovic", icon: "edit_note",
+    notes: "Account moved to net 45 terms for the rest of the year.",
+  },
+];
+const TONES: TimelineItem[] = [
+  { id: "t1", title: "Payment received", timestamp: "Today", icon: "payments", tone: "success", notes: "$210,300 cleared." },
+  { id: "t2", title: "Credit limit reached", timestamp: "Yesterday", icon: "warning", tone: "warning", notes: "The account is at 98% of its limit." },
+  { id: "t3", title: "Payment failed", timestamp: "6 Jan 2027", icon: "error", tone: "danger", notes: "The card on file was declined." },
+  { id: "t4", title: "Account created", timestamp: "2 Jan 2027", icon: "add_business", tone: "brand" },
+];
+const SHORT: TimelineItem[] = [
+  { id: "s1", title: "Invoice sent", timestamp: "2 hours ago", icon: "receipt_long", tone: "success" },
+  { id: "s2", title: "Draft saved", timestamp: "Yesterday", icon: "edit_note" },
+];
+const TIMELINE_SAMPLES: Record<string, unknown> = { "{activity}": ACTIVITY, "{tones}": TONES, "{short}": SHORT };
+const timelineProps = (p: Props) =>
+  Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in TIMELINE_SAMPLES ? TIMELINE_SAMPLES[v] : v])) as unknown as TimelineProps;
+
 const SCORE_SAMPLES: Record<string, unknown> = { "{trendKpis}": TREND_KPIS, "{chartKpis}": CHART_KPIS, "{sixKpis}": SIX_KPIS };
 const scoreProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in SCORE_SAMPLES ? SCORE_SAMPLES[v] : v])) as unknown as ScoreboardProps;
@@ -1234,6 +1271,16 @@ export const registry: Record<string, Entry> = {
     card: (
       <Tabs label="Account sections" items={[{ id: "overview", label: "Overview" }, { id: "invoices", label: "Invoices", count: 5 }, { id: "payments", label: "Payments" }]} />
     ),
+  },
+  Timeline: {
+    render: (p) => <Timeline {...timelineProps(p)} />,
+    preview: { items: "{activity}" },
+    hide: ["items", "onMenuSelect"],
+    extras: { entries: { values: ["activity", "tones", "short"], default: "activity" } },
+    normalize: ({ entries, ...p }) => ({ ...p, items: entries === "tones" ? "{tones}" : entries === "short" ? "{short}" : "{activity}" }),
+    hint: "Switch the entries and the size. The line joins the entries and stops at the last one. Each entry can carry notes, links, one action and a More menu.",
+    block: true,
+    card: <div style={{ width: 300 }}><Timeline items={SHORT} size="sm" /></div>,
   },
   Toast: {
     // A kit Button shows the real Toast. duration is fixed at the 5 second default here; the Variants show null.

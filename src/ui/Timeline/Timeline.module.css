@@ -1,0 +1,49 @@
+/* Figma activity list 21290:7737: a 44 circled icon, a line down its middle joining the entries,
+   the activity beside it, and its notes, links and action under it. */
+.timeline { --node: var(--timeline-node-md); margin: 0; padding: 0; list-style: none; width: 100%; font-family: var(--font-sans); }
+.sm { --node: var(--timeline-node-sm); }
+
+.item { display: grid; grid-template-columns: var(--node) minmax(0, 1fr); column-gap: var(--space-medium); }
+
+/* The rail: line, circle, line, so the line meets the circle from both sides. */
+.rail { grid-column: 1; display: flex; flex-direction: column; align-items: center; align-self: stretch; }
+.line { flex: 1 1 0; width: var(--border-width-thin); min-height: 0; background: var(--border-neutral-subtle); }
+.first .line:first-child, .last .line:last-child { background: none; }
+
+.node {
+  flex: none; box-sizing: border-box; display: grid; place-items: center; width: var(--node); height: var(--node);
+  border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-full);
+  background: var(--surface-flat); color: var(--icon-neutral);
+}
+.node.brand { border-color: var(--border-brand-faint); background: var(--bg-brand-faint); color: var(--icon-brand); }
+.node.success { border-color: var(--border-success-faint); background: var(--bg-success-faint); color: var(--icon-success); }
+.node.warning { border-color: var(--border-warning-faint); background: var(--bg-warning-faint); color: var(--icon-warning); }
+.node.danger { border-color: var(--border-danger-faint); background: var(--bg-danger-faint); color: var(--icon-danger); }
+
+/* The head row: timestamp, name and subtitle, with the More menu at the end. */
+.head {
+  grid-column: 2; display: flex; align-items: center; gap: var(--space-xlarge);
+  min-height: calc(var(--node) + var(--space-medium) * 2); padding-block: var(--space-medium);
+}
+.heading { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--space-xxxsmall); }
+.time { font-size: var(--font-size-xsmall); line-height: var(--line-height-normal); color: var(--text-neutral); }
+.title { margin: 0; font-size: var(--font-size-regular); font-weight: var(--font-weight-semibold); line-height: var(--line-height-snug); color: var(--text-neutral-strong); }
+.subtitle { font-size: var(--font-size-small); line-height: var(--line-height-normal); color: var(--text-neutral); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* The line beside the notes, which stops at the last entry. */
+.under { grid-column: 1; justify-self: center; width: var(--border-width-thin); background: var(--border-neutral-subtle); }
+.under.last { background: none; }
+
+.detail { grid-column: 2; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-medium); padding-block-end: var(--space-medium); }
+.notes { margin: 0; font-size: var(--font-size-regular); line-height: var(--line-height-normal); color: var(--text-neutral-strong); }
+.sm .notes, .sm .title { font-size: var(--font-size-small); }
+
+.links { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-xxsmall); }
+.link { font: inherit; font-size: var(--font-size-regular); color: var(--link-brand); text-decoration: none; border-radius: var(--radius-small); }
+.sm .link { font-size: var(--font-size-small); }
+.link:hover { color: var(--link-brand-hover); text-decoration: underline; }
+.link:active { color: var(--link-brand-press); }
+.link:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--space-xxxsmall); }
+.linkButton { margin: 0; padding: 0; border: 0; background: none; text-align: start; cursor: pointer; }
+
+.action { display: inline-flex; }

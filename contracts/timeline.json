@@ -1,0 +1,97 @@
+{
+  "name": "Timeline",
+  "path": "src/ui/Timeline/Timeline.tsx",
+  "intent": "What happened on a record, newest first: a circled icon per entry joined by a line, with the note, links and action for each one.",
+  "usage": "Use Timeline for the activity on a record: calls, emails, notes, status changes, an audit trail. It is one component: pass items as data. Each item has a title, and optional timestamp, subtitle, icon, tone, notes, links and one action, plus a More menu of kit DropdownMenu entries. The line joins the entries and stops at the last one. Keep the order you want to show, usually newest first. For steps in a flow, use Stepper. For a list of records, use Table. See contracts/timeline.json for the full contract.",
+  "props": {
+    "items": {
+      "type": "TimelineItem[]",
+      "required": true,
+      "itemShape": {
+        "id": "string",
+        "title": "string",
+        "timestamp": "string? Small line above the title, like 2 hours ago or 8 Jan 2027, 14:02.",
+        "subtitle": "string? One line under the title, like who did it.",
+        "icon": "string? Material Symbols name. Default history.",
+        "tone": "neutral | brand | success | warning | danger? Tints the circle. Default neutral.",
+        "notes": "string? The body text under the head.",
+        "links": "{ label, href?, onClick? }[]? Related records, one per line.",
+        "action": "{ label, onClick? }? One secondary Button under the entry.",
+        "menu": "DropdownMenuEntry[]? A More menu at the end of the head."
+      },
+      "note": "One entry per thing that happened, in the order they are shown."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md"
+      ],
+      "default": "md",
+      "note": "md has a 44 circle; sm has a 32 circle and smaller text, for Drawers and side panels."
+    },
+    "label": {
+      "type": "string",
+      "default": "Activity",
+      "note": "Name of the list for screen readers, like Account activity."
+    },
+    "onMenuSelect": {
+      "type": "(itemId: string, actionId: string) => void",
+      "note": "A pick from an entry's More menu: the entry's id, then the menu item's id."
+    }
+  },
+  "useWhen": [
+    "The activity on a record: calls, emails, notes, status changes.",
+    "An audit trail of what changed and when.",
+    "A history panel in a Drawer beside a record."
+  ],
+  "doNot": [
+    "Do not build a feed from your own divs, or add a TimelineItem, ActivityCard or FeedRow. Pass items.",
+    "Do not use it for steps in a flow. Use Stepper.",
+    "Do not use it for a list of records people sort and filter. Use Table.",
+    "Do not put more than one action on an entry; extra ones go in the More menu.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "An ordered list with a label, so the number of entries is read.",
+    "The circles and the line are hidden from screen readers; the entry's text carries the meaning.",
+    "Links are real links when they have an href, and buttons when they do not.",
+    "Each More menu is named after its entry, like Actions for Call with Maya Chen."
+  ],
+  "snippet": "<Timeline label=\"Account activity\" items={activity} />",
+  "examples": [
+    {
+      "title": "Activity",
+      "usage": "A timestamp, name and subtitle per entry, with notes, links and one action.",
+      "items": [
+        {
+          "props": {
+            "items": "{activity}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Tones",
+      "usage": "The circle takes the tone of what happened.",
+      "items": [
+        {
+          "props": {
+            "items": "{tones}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Small",
+      "usage": "sm for a Drawer or a side panel.",
+      "items": [
+        {
+          "props": {
+            "size": "sm",
+            "items": "{short}"
+          }
+        }
+      ]
+    }
+  ]
+}

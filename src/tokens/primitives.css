@@ -1296,4 +1296,6 @@
   --stepper-step: 100px;
   --stepper-node-sm: var(--ref-space-700);
   --stepper-node-md: var(--ref-space-900);
+  --timeline-node-md: var(--ref-space-1200);
+  --timeline-node-sm: var(--ref-space-900);
 }
