@@ -628,8 +628,17 @@ export const registry: Record<string, Entry> = {
   BarChart: {
     // Sample data swaps in for its {names}; a white panel like a page. Keyed so switching a control plays the motion again.
     render: (p) => <div style={chartPanel}><BarChart key={JSON.stringify(p)} {...chartProps<BarChartProps>(p)} /></div>,
-    preview: { label: "Invoices by status by time", categories: "{weeks}", series: "{statuses}", format: "currency", stacked: true },
-    hint: "Switch orientation. Hover or use the arrow keys for the tooltip. Turn stacked, values, grid, legend and animate on and off.",
+    preview: {
+      label: "Invoices by status by time", title: "Invoices by status", subtitle: "Last 7 weeks, all accounts",
+      categories: "{weeks}", series: "{statuses}", format: "currency", stacked: true,
+    },
+    extras: { bars: { values: ["stacked", "ranked"], default: "stacked" } },
+    // Ranked: one series sorted longest first, with the top and bottom bars picked out, as in the Figma.
+    normalize: ({ bars, ...p }) =>
+      bars === "ranked"
+        ? { ...p, title: "Open balance by customer", subtitle: "Top six, this period", categories: "{customers}", series: "{balances}", orientation: "horizontal", stacked: false, highlight: [0, 5] }
+        : p,
+    hint: "Switch the bars and the orientation. Ranked picks out the top and bottom bar in the highlight tone. Turn the title, stacked, values, grid, legend and animate on and off.",
     block: true,
     card: <div style={{ width: "100%" }}><BarChart label="Invoices by status" categories={["W1", "W2", "W3", "W4"]} series={[{ name: "Paid", values: [3, 5, 4, 6] }, { name: "Sent", values: [2, 2, 3, 2] }]} stacked showLegend={false} height={96} animate={false} /></div>,
   },
@@ -676,8 +685,11 @@ export const registry: Record<string, Entry> = {
   LineChart: {
     // Sample data swaps in for its {names}; a white panel like a page. Keyed so switching a control plays the motion again.
     render: (p) => <div style={chartPanel}><LineChart key={JSON.stringify(p)} {...chartProps<LineChartProps>(p)} /></div>,
-    preview: { label: "Revenue by period", categories: "{months}", series: "{revenue}", format: "currency", area: true, showPoints: true, showValues: true },
-    hint: "Hover or use the arrow keys for the tooltip. Turn area, stacked, points, values, grid, legend and animate on and off.",
+    preview: {
+      label: "Revenue by period", title: "Revenue by period", subtitle: "Last 6 months, all accounts",
+      categories: "{months}", series: "{revenue}", format: "currency", area: true, showPoints: true, showValues: true,
+    },
+    hint: "Hover or use the arrow keys for the tooltip. Turn the title, area, stacked, points, values, grid, legend and animate on and off.",
     block: true,
     card: <div style={{ width: "100%" }}><LineChart label="Revenue" categories={["Jan", "Feb", "Mar", "Apr", "May"]} series={[{ name: "Revenue", values: [3, 3.4, 4.1, 4.3, 4.8] }]} area showLegend={false} height={96} animate={false} /></div>,
   },
@@ -1451,8 +1463,8 @@ export const registry: Record<string, Entry> = {
   PieChart: {
     // Sample data swaps in for its {names}; a white panel like a page. Keyed so switching a control plays the motion again.
     render: (p) => <div style={{ ...chartPanel, width: "auto" }}><PieChart key={JSON.stringify(p)} {...chartProps<PieChartProps>(p)} /></div>,
-    preview: { label: "Payments by method", data: "{payments}", format: "currency" },
-    hint: "Hover or use the arrow keys for each slice. Switch size and legend place; turn donut, total, legend and animate on and off.",
+    preview: { label: "Payments by method", title: "Payments by method", subtitle: "This period", data: "{payments}", format: "currency" },
+    hint: "Hover or use the arrow keys for each slice. Switch size and legend place; turn the title, donut, total, legend and animate on and off.",
     card: <PieChart label="Payments" data={[{ label: "Card", value: 5 }, { label: "ACH", value: 3 }, { label: "Wire", value: 2 }]} size="sm" showLegend={false} animate={false} />,
   },
   Progress: {

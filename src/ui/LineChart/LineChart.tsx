@@ -6,6 +6,9 @@ export type { ChartFormat, ChartSeries, ChartTone };
 
 export interface LineChartProps {
   label: string;
+  title?: string;
+  subtitle?: string;
+  showTitle?: boolean;
   categories: string[];
   series: ChartSeries[];
   area?: boolean;

@@ -7,9 +7,14 @@ export type BarChartOrientation = ChartOrientation;
 
 export interface BarChartProps {
   label: string;
+  title?: string;
+  subtitle?: string;
+  showTitle?: boolean;
   categories: string[];
   series: ChartSeries[];
   orientation?: BarChartOrientation;
+  highlight?: number | number[];
+  highlightTone?: ChartTone;
   stacked?: boolean;
   showValues?: boolean;
   showGrid?: boolean;

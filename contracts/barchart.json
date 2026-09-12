@@ -2,12 +2,25 @@
   "name": "BarChart",
   "path": "src/ui/BarChart/BarChart.tsx",
   "intent": "Values side by side as bars, one group or stack per category, like invoices by status for each week. Bars stand up, or run across with orientation horizontal.",
-  "usage": "Use BarChart to compare amounts across categories or periods. It is one component: pass categories and series. orientation vertical puts the categories along the bottom with bars standing up; horizontal lists them down the start with bars running across, best for long names or ranked lists like top customers. Bars sit side by side per category, or on top of each other with stacked, so the bar height is the total and the colors are its parts. showValues writes each value at the end of its bar. Hover or use the arrow keys for a tooltip with every series in that category. animate lets bars grow out from the baseline. Put the chart's title and report link in the Section or Card around it. ChartTone: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). See contracts/barchart.json for the full contract.",
+  "usage": "Use BarChart to compare amounts across categories or periods. It is one component: pass categories and series. orientation vertical puts the categories along the bottom with bars standing up; horizontal lists them down the start with bars running across, best for long names or ranked lists like top customers. Bars sit side by side per category, or on top of each other with stacked, so the bar height is the total and the colors are its parts. showValues writes each value at the end of its bar. Hover or use the arrow keys for a tooltip with every series in that category. animate lets bars grow out from the baseline. Put the chart's title and report link in the Section or Card around it. ChartTone: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). title and subtitle write a heading over the chart; showTitle turns it off when the Card around it already says the same. highlight picks out one or more bars in the highlight tone, like the biggest and smallest in a ranked list. See contracts/barchart.json for the full contract.",
   "props": {
     "label": {
       "type": "string",
       "required": true,
       "note": "Names the chart for screen readers and captions its data table, like Revenue by period."
+    },
+    "title": {
+      "type": "string",
+      "note": "Visible title over the chart, like Revenue by period. The screen-reader name still comes from label."
+    },
+    "subtitle": {
+      "type": "string",
+      "note": "A quieter line under the title, like Last 12 months, all accounts."
+    },
+    "showTitle": {
+      "type": "boolean",
+      "default": true,
+      "note": "Shows the title and subtitle. Off draws the chart alone, when the Card or Section around it already carries the title."
     },
     "categories": {
       "type": "string[]",
@@ -27,6 +40,26 @@
       ],
       "default": "vertical",
       "note": "vertical: categories along the bottom, bars standing up. horizontal: categories down the start, bars running across, values along the bottom."
+    },
+    "highlight": {
+      "type": "number | number[]",
+      "note": "Category numbers to pick out, counted from 0, like the top and bottom of a ranked chart. They take the highlight tone instead of their series color."
+    },
+    "highlightTone": {
+      "enum": [
+        "green",
+        "olive",
+        "cyan",
+        "orange",
+        "pink",
+        "gray",
+        "purple",
+        "yellow",
+        "red",
+        "mint"
+      ],
+      "default": "orange",
+      "note": "The color for picked-out bars."
     },
     "stacked": {
       "type": "boolean",
@@ -80,13 +113,15 @@
   "useWhen": [
     "Comparing amounts across categories or periods.",
     "Parts of a total per period, with stacked.",
-    "Long category names or a ranked list, like top customers by balance, with orientation horizontal."
+    "Long category names or a ranked list, like top customers by balance, with orientation horizontal.",
+    "A ranked list where one or two bars matter most: sort the data and pick them out with highlight."
   ],
   "doNot": [
     "Do not use it for a long, smooth trend. Use LineChart.",
     "Do not use it for one share of a total. Use PieChart.",
     "Do not draw charts with loose SVG or a chart library. Use the kit charts.",
-    "Do not use raw hex; pick a tone."
+    "Do not use raw hex; pick a tone.",
+    "Do not use highlight on every bar; pick out one or two, or use a series tone."
   ],
   "a11y": [
     "A figure named by label. The drawing is hidden from screen readers; a visually hidden table holds every value, with the categories as rows and the series as columns.",

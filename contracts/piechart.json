@@ -2,12 +2,25 @@
   "name": "PieChart",
   "path": "src/ui/PieChart/PieChart.tsx",
   "intent": "How a whole splits into a few parts, as a donut or a solid pie, like payments by method.",
-  "usage": "Use PieChart for the share of a total across a handful of parts. It is one component: pass data, one entry per slice. Slices go largest first from the top, clockwise; past maxSlices the rest merge into one grey Other slice. donut (the default) leaves a hole with the total in it; turn it off for a solid pie. The legend lists each part with its percent, beside the chart or under it. Hover or use the arrow keys for a tooltip with the value. animate sweeps the slices in. ChartTone: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). See contracts/piechart.json for the full contract.",
+  "usage": "Use PieChart for the share of a total across a handful of parts. It is one component: pass data, one entry per slice. Slices go largest first from the top, clockwise; past maxSlices the rest merge into one grey Other slice. donut (the default) leaves a hole with the total in it; turn it off for a solid pie. The legend lists each part with its percent, beside the chart or under it. Hover or use the arrow keys for a tooltip with the value. animate sweeps the slices in. ChartTone: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). title and subtitle write a heading over the chart; showTitle turns it off when the Card around it already says the same. See contracts/piechart.json for the full contract.",
   "props": {
     "label": {
       "type": "string",
       "required": true,
       "note": "Names the chart for screen readers and captions its data table."
+    },
+    "title": {
+      "type": "string",
+      "note": "Visible title over the chart, like Revenue by period. The screen-reader name still comes from label."
+    },
+    "subtitle": {
+      "type": "string",
+      "note": "A quieter line under the title, like Last 12 months, all accounts."
+    },
+    "showTitle": {
+      "type": "boolean",
+      "default": true,
+      "note": "Shows the title and subtitle. Off draws the chart alone, when the Card or Section around it already carries the title."
     },
     "data": {
       "type": "PieChartSlice[]",

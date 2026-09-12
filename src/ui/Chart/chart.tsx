@@ -95,16 +95,24 @@ export function ChartEmpty({ label, height }: { label: string; height: number })
   return <div className={styles.empty} style={{ height }}>{label}</div>;
 }
 
-export function ChartFrame({ label, animate, children, onKeyDown, onBlur, active }: {
-  label: string; animate: boolean; children: ReactNode; active: boolean;
+export function ChartFrame({ label, title, subtitle, showTitle = true, animate, children, onKeyDown, onBlur, active }: {
+  label: string; title?: string; subtitle?: string; showTitle?: boolean;
+  animate: boolean; children: ReactNode; active: boolean;
   onKeyDown?: (e: KeyboardEvent) => void; onBlur?: () => void;
 }) {
   // A focusable figure: arrow keys move through the data and show the tooltip, like pointing at it.
+  const heading = showTitle && (title || subtitle);
   return (
     <figure
       className={[styles.chart, animate ? styles.animated : "", active ? styles.active : ""].join(" ")}
       aria-label={label} tabIndex={0} onKeyDown={onKeyDown} onBlur={onBlur}
     >
+      {heading && (
+        <figcaption className={styles.heading}>
+          {title && <span className={styles.title}>{title}</span>}
+          {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
+        </figcaption>
+      )}
       {children}
     </figure>
   );

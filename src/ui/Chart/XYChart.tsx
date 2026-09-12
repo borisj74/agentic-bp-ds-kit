@@ -18,9 +18,14 @@ export type ChartOrientation = "vertical" | "horizontal";
 export interface XYChartProps {
   kind: "bar" | "line";
   label: string;
+  title?: string;
+  subtitle?: string;
+  showTitle?: boolean;
   categories: string[];
   series: ChartSeries[];
   orientation?: ChartOrientation;
+  highlight?: number | number[];
+  highlightTone?: ChartTone;
   stacked?: boolean;
   area?: boolean;
   showPoints?: boolean;
@@ -45,7 +50,8 @@ const LINE = 16;
 const ROW = 36;
 
 export function XYChart({
-  kind, label, categories, series, orientation = "vertical", stacked = false, area = false, showPoints = false, showValues = false,
+  kind, label, title, subtitle, showTitle = true, categories, series, orientation = "vertical", highlight, highlightTone = "orange",
+  stacked = false, area = false, showPoints = false, showValues = false,
   showGrid = true, showLegend = true, animate = true, format = "number", currency = "USD", height, emptyLabel = "No data for this range.",
 }: XYChartProps) {
   const plotRef = useRef<HTMLDivElement>(null);
@@ -60,7 +66,7 @@ export function XYChart({
   const full = formatter(format, currency, false);
 
   if (!n || !list.length) {
-    return <ChartFrame label={label} animate={false} active={false}><ChartEmpty label={emptyLabel} height={h} /></ChartFrame>;
+    return <ChartFrame label={label} title={title} subtitle={subtitle} showTitle={showTitle} animate={false} active={false}><ChartEmpty label={emptyLabel} height={h} /></ChartFrame>;
   }
 
   // Stacks: each series sits on the sum of the ones before it.
@@ -110,6 +116,8 @@ export function XYChart({
   const bw = stacked ? band : (band - gap * (list.length - 1)) / list.length;
   const mid = (k: number) => (stacked ? 0 : -band / 2 + k * (bw + gap) + bw / 2);
 
+  // Picked-out bars: the categories named in highlight take the highlight tone, like the first and last of a ranked chart.
+  const picked = new Set(highlight === undefined ? [] : Array.isArray(highlight) ? highlight : [highlight]);
   const bars = () => list.map((sr, k) => (
     <g key={sr.name} style={{ fill: toneVar(sr.tone) }}>
       {sr.vals.map((_, i) => {
@@ -120,7 +128,8 @@ export function XYChart({
         const t = Math.max(bw, 1);
         return len > 0 ? (
           <rect
-            key={i} className={horizontal ? s.growX : s.grow} style={{ animationDelay: `${i * 30}ms` }}
+            key={i} className={horizontal ? s.growX : s.grow}
+            style={{ animationDelay: `${i * 30}ms`, fill: picked.has(i) ? toneVar(highlightTone) : undefined }}
             {...(horizontal ? { x: a, y: side, width: len, height: t } : { x: side, y: b, width: t, height: len })}
           />
         ) : null;
@@ -175,7 +184,7 @@ export function XYChart({
   const px = (p: number) => Math.round(p) + 0.5;
 
   return (
-    <ChartFrame label={label} animate={animate} active={active !== null} onKeyDown={onKeyDown} onBlur={() => setActive(null)}>
+    <ChartFrame label={label} title={title} subtitle={subtitle} showTitle={showTitle} animate={animate} active={active !== null} onKeyDown={onKeyDown} onBlur={() => setActive(null)}>
       <div ref={plotRef} className={s.plot} style={{ height: h }} onPointerMove={pick} onPointerLeave={() => setActive(null)}>
         {width > 0 && (
           <svg className={s.svg} width={width} height={h} aria-hidden="true">
