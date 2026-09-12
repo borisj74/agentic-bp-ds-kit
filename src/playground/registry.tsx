@@ -1123,10 +1123,11 @@ export const registry: Record<string, Entry> = {
   FormPage: {
     // The pattern in the frame, driven the way a screen would drive it: the values, the folds and what has
     // been saved live in the screen.
-    render: ({ shell, notice, stage, ...p }) => (
+    render: ({ shell, notice, stage, labels, ...p }) => (
       <FormPageDemo
         {...(p as Record<string, unknown>)}
         shell={shell !== false} notice={notice !== false} stage={String(stage ?? "desktop")}
+        labels={labels === "top" ? "top" : "start"}
       />
     ),
     preview: {},
@@ -1137,8 +1138,11 @@ export const registry: Record<string, Entry> = {
       notice: { label: "Something to read first", default: true },
       shell: { label: "In the app frame", default: true },
     },
-    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
-    hint: "Fill in the new account: the name is the only field that has to be filled in, and Create in the bar saves every group at once. Fold a group away, open one of the three that start closed, and scroll: the name and the notice stay at the top while the fields pass under them. Stage narrows the box the frame lives in, so watch the two columns become one on a phone.",
+    extras: {
+      labels: { values: ["start", "top"], default: "start" },
+      stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" },
+    },
+    hint: "Fill in the new account: the name is the only field that has to be filled in, and Create in the bar saves every group at once. Fold a group away, open one of the three that start closed, and scroll: the name and the notice stay at the top while the fields pass under them. Labels switches the whole form between a label column at the start of each field and a label over it. Stage narrows the box the frame lives in, so watch the two columns become one on a phone.",
     block: true,
     wide: true,
     page: <FormPageDemo shell />,
