@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
-import { AlertDialogDemo, AnchorNavDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { AlertDialogDemo, AnchorNavDemo, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -36,6 +36,7 @@ import { Icon } from "@/ui/Icon/Icon";
 import { Input, type InputProps } from "@/ui/Input/Input";
 import { LineChart, type LineChartProps } from "@/ui/LineChart/LineChart";
 import { Logo } from "@/ui/Logo/Logo";
+import { Legend, type LegendProps } from "@/ui/Legend/Legend";
 import { Lookup, type LookupProps } from "@/ui/Lookup/Lookup";
 import { LogoAI } from "@/ui/LogoAI/LogoAI";
 import { PageHeader, type PageHeaderProps } from "@/ui/PageHeader/PageHeader";
@@ -367,6 +368,14 @@ const CHART_SAMPLES: Record<string, unknown> = {
     { label: "Paid", value: 58, tone: "green" }, { label: "Sent", value: 21, tone: "mint" }, { label: "Overdue", value: 13, tone: "red" }, { label: "Draft", value: 8, tone: "gray" },
   ],
 };
+const LEGEND_SERIES = [{ label: "Recurring" }, { label: "Non recurring" }, { label: "Credits" }];
+const LEGEND_WITH_VALUES = [
+  { label: "Recurring", value: "$3.2M" }, { label: "Non recurring", value: "$1.7M" }, { label: "Credits", value: "$0.4M" },
+];
+const LEGEND_SAMPLES: Record<string, unknown> = { "{series}": LEGEND_SERIES, "{seriesWithValues}": LEGEND_WITH_VALUES };
+const legendProps = (p: Props) =>
+  Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in LEGEND_SAMPLES ? LEGEND_SAMPLES[v] : v])) as unknown as LegendProps;
+
 // Charts sit on a white page panel: their faint grid lines are the stage gray.
 const chartPanel = { width: "100%", padding: "var(--space-medium)", background: "var(--surface-flat)", borderRadius: "var(--radius-medium)", boxSizing: "border-box" } as const;
 const chartProps = <T,>(p: Props) =>
@@ -681,6 +690,20 @@ export const registry: Record<string, Entry> = {
       children: [{ variant: "secondary", children: "Day" }, { variant: "secondary", children: "Week" }, { variant: "secondary", children: "Month" }],
     },
     card: <ButtonGroup label="Plan period"><Button>Day</Button><Button>Week</Button><Button>Month</Button></ButtonGroup>,
+  },
+  Legend: {
+    // On the stage the keys switch, so the toggling shows; Variants show the plain key.
+    render: ({ toggles, ...p }) => {
+      const props = legendProps(p);
+      return <div style={{ ...chartPanel, width: p.orientation === "column" ? "auto" : "100%" }}>
+        {toggles ? <LegendDemo {...props} /> : <Legend {...props} />}
+      </div>;
+    },
+    preview: { items: "{seriesWithValues}", orientation: "row", shape: "square" },
+    hide: ["items", "hidden", "defaultHidden", "onHiddenChange", "decorative"],
+    toggles: { toggles: { label: "Keys switch series", default: true } },
+    hint: "Switch the direction, shape, size and place. With the switch on, each key is a button: press one to drop that series, press it again to bring it back.",
+    card: <Legend size="sm" items={LEGEND_SERIES} />,
   },
   LineChart: {
     // Sample data swaps in for its {names}; a white panel like a page. Keyed so switching a control plays the motion again.

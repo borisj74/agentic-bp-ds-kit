@@ -15,6 +15,7 @@ import { DropdownMenu, type DropdownMenuProps } from "@/ui/DropdownMenu/Dropdown
 import { Form, type FormProps } from "@/ui/Form/Form";
 import { FormDisplay } from "@/ui/FormDisplay/FormDisplay";
 import { Input } from "@/ui/Input/Input";
+import { Legend, type LegendProps } from "@/ui/Legend/Legend";
 import { Lookup } from "@/ui/Lookup/Lookup";
 import { Modal, type ModalProps } from "@/ui/Modal/Modal";
 import { SegmentedControl } from "@/ui/SegmentedControl/SegmentedControl";
@@ -510,4 +511,10 @@ export function AnchorNavDemo(p: Omit<AnchorNavProps, "items">) {
       </div>
     </div>
   );
+}
+
+// Playground harness: the real Legend with its keys wired up, so switching one off shows. Not a kit piece.
+export function LegendDemo(p: LegendProps) {
+  const [hidden, setHidden] = useState<string[]>([]);
+  return <Legend {...p} hidden={hidden} onHiddenChange={setHidden} />;
 }

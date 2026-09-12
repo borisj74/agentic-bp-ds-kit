@@ -1,8 +1,8 @@
 "use client";
 import type { ChartFormat, ChartTone } from "../Chart/chart";
-import { XYChart, type ChartSeries } from "../Chart/XYChart";
+import { XYChart, type ChartLegendPlace, type ChartSeries } from "../Chart/XYChart";
 
-export type { ChartFormat, ChartSeries, ChartTone };
+export type { ChartFormat, ChartSeries, ChartTone, ChartLegendPlace };
 
 export interface LineChartProps {
   label: string;
@@ -17,6 +17,7 @@ export interface LineChartProps {
   showValues?: boolean;
   showGrid?: boolean;
   showLegend?: boolean;
+  legend?: ChartLegendPlace;
   animate?: boolean;
   format?: ChartFormat;
   currency?: string;

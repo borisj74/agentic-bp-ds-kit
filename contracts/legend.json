@@ -1,0 +1,136 @@
+{
+  "name": "Legend",
+  "path": "src/ui/Legend/Legend.tsx",
+  "intent": "The key to a drawing: a small colour mark per name, so people can read what each colour means.",
+  "usage": "Use Legend as the key to anything drawn in the chart colours. The kit charts already draw one inside, so reach for it on its own when the key sits somewhere else: over a group of charts that share their colours, beside a map, or under a colour-coded bar. It is one component: pass items. orientation runs the keys across or down, shape picks a square, a line or a dot, and value writes a number after each name. With onHiddenChange the keys become buttons that switch a series off, and it tells you which are off so you can drop them from your data. See contracts/legend.json for the full contract.",
+  "props": {
+    "items": {
+      "type": "LegendKey[]",
+      "required": true,
+      "itemShape": {
+        "id": "string? Used by hidden. Without it, the label.",
+        "label": "string",
+        "tone": "green | olive | cyan | orange | pink | gray | purple | yellow | red | mint? Without it, keys take the chart order: green, olive, cyan, orange, pink, gray, then the rest.",
+        "value": "string? A number after the name, like $482K or 32%."
+      },
+      "note": "One key per colour, in the same order as the drawing."
+    },
+    "orientation": {
+      "enum": [
+        "row",
+        "column"
+      ],
+      "default": "row",
+      "note": "row wraps the keys across, under or over a chart. column lists them down, beside one."
+    },
+    "align": {
+      "enum": [
+        "start",
+        "center",
+        "end"
+      ],
+      "default": "center",
+      "note": "Where the keys sit in the space they are given."
+    },
+    "shape": {
+      "enum": [
+        "square",
+        "line",
+        "dot"
+      ],
+      "default": "square",
+      "note": "square for bars and areas, line for a LineChart, dot for points on a map or a scatter."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md"
+      ],
+      "default": "md",
+      "note": "sm is the size the charts use inside themselves."
+    },
+    "hidden": {
+      "type": "string[]",
+      "note": "Controlled list of the keys that are off. Leave it out to let the Legend keep its own."
+    },
+    "defaultHidden": {
+      "type": "string[]",
+      "note": "Keys that start off."
+    },
+    "onHiddenChange": {
+      "type": "(hidden: string[]) => void",
+      "note": "A key was switched. Setting this makes every key a button; drop the named series from the data you pass the chart."
+    },
+    "label": {
+      "type": "string",
+      "default": "Legend",
+      "note": "Names the list for screen readers, like Revenue series."
+    },
+    "decorative": {
+      "type": "boolean",
+      "default": false,
+      "note": "Hides the keys from screen readers, for when the drawing beside it already reads out its own numbers. The kit charts use this inside."
+    }
+  },
+  "useWhen": [
+    "One key for several charts that share their colours.",
+    "The key to something the kit charts do not draw, like a map or a colour-coded bar.",
+    "Letting people switch a series off."
+  ],
+  "doNot": [
+    "Do not add a second legend under a kit chart; the chart draws its own. Use showLegend and legend to place it.",
+    "Do not use it as a list of filters or tags. Use Badge or ButtonFilter.",
+    "Do not write the colour yourself; pick a tone.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A list with a label, so it is reached as one group.",
+    "Switchable keys are real buttons with aria-pressed, and an off key stays in place, greyed out.",
+    "decorative hides it from screen readers, for a chart that already carries its own table of numbers."
+  ],
+  "snippet": "<Legend label=\"Revenue series\" items={[{ label: \"Recurring\" }, { label: \"One-off\" }]} />",
+  "examples": [
+    {
+      "title": "Keys",
+      "usage": "Across under a chart, or down beside one.",
+      "items": [
+        {
+          "props": {
+            "items": "{series}"
+          }
+        },
+        {
+          "props": {
+            "orientation": "column",
+            "align": "start",
+            "items": "{seriesWithValues}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Shapes",
+      "usage": "Square for bars, line for a LineChart, dot for points.",
+      "items": [
+        {
+          "props": {
+            "shape": "square",
+            "items": "{series}"
+          }
+        },
+        {
+          "props": {
+            "shape": "line",
+            "items": "{series}"
+          }
+        },
+        {
+          "props": {
+            "shape": "dot",
+            "items": "{series}"
+          }
+        }
+      ]
+    }
+  ]
+}

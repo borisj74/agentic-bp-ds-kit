@@ -1,0 +1,31 @@
+/* Figma data visualization 5410:112240: small colour keys with their names, in a row or a column. */
+.legend {
+  display: flex; flex-wrap: wrap; gap: var(--space-xsmall) var(--space-large);
+  margin: 0; padding: 0; list-style: none;
+  font-family: var(--font-sans); font-size: var(--font-size-xsmall); color: var(--text-neutral-strong);
+}
+.md { font-size: var(--font-size-small); }
+.sm { font-size: var(--font-size-xsmall); }
+.row { flex-direction: row; }
+.column { flex-direction: column; flex-wrap: nowrap; gap: var(--space-xsmall); }
+.start { justify-content: flex-start; align-items: flex-start; }
+.center { justify-content: center; align-items: center; }
+.end { justify-content: flex-end; align-items: flex-end; }
+.column.center { align-items: flex-start; justify-content: center; }
+.column.end { align-items: flex-end; }
+
+.item { display: inline-flex; align-items: center; gap: var(--space-xsmall); min-width: 0; }
+.text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.value { color: var(--text-neutral); font-variant-numeric: tabular-nums; }
+
+/* The key itself: a small square, a line like the chart's stroke, or a dot. */
+.mark { flex: none; width: var(--chart-swatch); height: var(--chart-swatch); border-radius: var(--radius-small); }
+.line { width: var(--space-medium); height: var(--border-width-medium); border-radius: var(--radius-full); }
+.dot { border-radius: var(--radius-full); }
+
+/* Keys that switch a series on and off. Off keeps its place, greyed out. */
+.button { display: inline-flex; align-items: center; gap: var(--space-xsmall); min-width: 0; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; }
+.button:hover .text { text-decoration: underline; }
+.button:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--space-xxxsmall); border-radius: var(--radius-small); }
+.off { color: var(--text-neutral-faint); }
+.off .mark { background: var(--bg-neutral-intense); }

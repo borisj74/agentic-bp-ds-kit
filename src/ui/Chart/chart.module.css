@@ -10,6 +10,9 @@
 .subtitle { font-size: var(--font-size-small); line-height: var(--line-height-normal); color: var(--text-neutral); }
 
 .plot { position: relative; width: 100%; }
+/* Legend in a column beside the chart. */
+.beside { display: flex; align-items: center; gap: var(--space-xlarge); min-width: 0; }
+.beside > :first-child { flex: 1 1 auto; min-width: 0; }
 .svg { display: block; overflow: visible; }
 
 /* Axes: 12px labels, faint horizontal grid lines. */

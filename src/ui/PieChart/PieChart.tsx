@@ -107,7 +107,7 @@ export function PieChart({
             </div>
           )}
         </div>
-        {showLegend && <Legend items={arcs.map((a) => ({ label: a.label, tone: a.tone, note: `${a.pct}%` }))} />}
+        {showLegend && <Legend orientation={legend === "end" ? "column" : "row"} align={legend === "end" ? "start" : "center"} items={arcs.map((a) => ({ label: a.label, tone: a.tone, note: `${a.pct}%` }))} />}
       </div>
       <SrTable caption={label} columns={["Value", "Share"]} rows={arcs.map((a) => ({ head: a.label, cells: [full(a.value), `${a.pct}%`] }))} />
     </ChartFrame>

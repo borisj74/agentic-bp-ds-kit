@@ -2,9 +2,11 @@
 // Shared parts for BarChart, LineChart and PieChart: colors, number formats, the axis scale, the legend,
 // the tooltip and the screen-reader table. Internal to the charts; screens use the chart components.
 import { useLayoutEffect, useState, type KeyboardEvent, type ReactNode, type RefObject } from "react";
+import { Legend as KitLegend, type LegendTone } from "../Legend/Legend";
 import styles from "./chart.module.css";
 
-export type ChartTone = "green" | "olive" | "cyan" | "orange" | "pink" | "gray" | "purple" | "yellow" | "red" | "mint";
+// The chart tones are the kit Legend keys, so a chart and its Legend always agree.
+export type ChartTone = LegendTone;
 export type ChartFormat = "number" | "currency" | "percent";
 
 // Figma Persona Homepages series order: green, olive, cyan, orange, pink, gray, then the rest of the category palette.
@@ -47,17 +49,16 @@ export function useWidth(ref: RefObject<HTMLElement | null>) {
   return width;
 }
 
-export function Legend({ items }: { items: { label: string; tone: ChartTone; note?: string }[] }) {
+// The kit Legend, in the chart: decorative, because the screen-reader table already carries the numbers.
+export function Legend({ items, orientation = "row", align = "center" }: {
+  items: { label: string; tone: ChartTone; note?: string }[];
+  orientation?: "row" | "column"; align?: "start" | "center" | "end";
+}) {
   return (
-    <ul className={styles.legend} aria-hidden="true">
-      {items.map((it) => (
-        <li key={it.label} className={styles.legendItem}>
-          <span className={styles.swatch} style={{ background: toneVar(it.tone) }} />
-          {it.label}
-          {it.note && <span className={styles.legendNote}>{it.note}</span>}
-        </li>
-      ))}
-    </ul>
+    <KitLegend
+      decorative size="sm" orientation={orientation} align={align}
+      items={items.map((it) => ({ label: it.label, tone: it.tone, value: it.note }))}
+    />
   );
 }
 

@@ -14,6 +14,7 @@ export interface ChartSeries {
 }
 
 export type ChartOrientation = "vertical" | "horizontal";
+export type ChartLegendPlace = "top" | "bottom" | "end";
 
 export interface XYChartProps {
   kind: "bar" | "line";
@@ -32,6 +33,7 @@ export interface XYChartProps {
   showValues?: boolean;
   showGrid?: boolean;
   showLegend?: boolean;
+  legend?: ChartLegendPlace;
   animate?: boolean;
   format?: ChartFormat;
   currency?: string;
@@ -52,7 +54,7 @@ const ROW = 36;
 export function XYChart({
   kind, label, title, subtitle, showTitle = true, categories, series, orientation = "vertical", highlight, highlightTone = "orange",
   stacked = false, area = false, showPoints = false, showValues = false,
-  showGrid = true, showLegend = true, animate = true, format = "number", currency = "USD", height, emptyLabel = "No data for this range.",
+  showGrid = true, showLegend = true, legend = "bottom", animate = true, format = "number", currency = "USD", height, emptyLabel = "No data for this range.",
 }: XYChartProps) {
   const plotRef = useRef<HTMLDivElement>(null);
   const width = useWidth(plotRef);
@@ -183,36 +185,47 @@ export function XYChart({
 
   const px = (p: number) => Math.round(p) + 0.5;
 
+  const keys = showLegend
+    ? <Legend items={list.map((sr) => ({ label: sr.name, tone: sr.tone }))} orientation={legend === "end" ? "column" : "row"} align={legend === "end" ? "start" : "center"} />
+    : null;
+
+  const plot = (
+    <div ref={plotRef} className={s.plot} style={{ height: h }} onPointerMove={pick} onPointerLeave={() => setActive(null)}>
+      {width > 0 && (
+        <svg className={s.svg} width={width} height={h} aria-hidden="true">
+          {ticks.map((t) => (
+            <g key={t}>
+              {showGrid && (horizontal
+                ? <line className={s.grid} x1={px(v(t))} x2={px(v(t))} y1={y0} y2={y1} />
+                : <line className={s.grid} x1={x0} x2={x1} y1={px(v(t))} y2={px(v(t))} />)}
+              {horizontal
+                ? <text className={s.tick} x={v(t)} y={y1 + 18} textAnchor="middle">{short(t)}</text>
+                : <text className={s.tick} x={x0 - 12} y={v(t)} dy="0.35em" textAnchor="end">{short(t)}</text>}
+            </g>
+          ))}
+          {active !== null && (kind === "bar"
+            ? (horizontal
+              ? <rect className={s.hoverBand} x={x0} y={c(active) - step / 2} width={x1 - x0} height={step} />
+              : <rect className={s.hoverBand} x={c(active) - step / 2} y={y0} width={step} height={y1 - y0} />)
+            : <line className={s.crosshair} x1={c(active)} x2={c(active)} y1={y0} y2={y1} />)}
+          {kind === "bar" ? bars() : lines()}
+          {marks()}
+          {categories.map((t, i) => i % every === 0 && (horizontal
+            ? <text key={t + i} className={s.tick} x={x0 - 12} y={c(i)} dy="0.35em" textAnchor="end">{catText(t)}</text>
+            : <text key={t + i} className={s.tick} x={c(i)} y={y1 + 18} textAnchor="middle">{t}</text>))}
+        </svg>
+      )}
+      {tip}
+    </div>
+  );
+
+  // Where the keys sit: under the chart, over it, or in a column beside it.
   return (
-    <ChartFrame label={label} title={title} subtitle={subtitle} showTitle={showTitle} animate={animate} active={active !== null} onKeyDown={onKeyDown} onBlur={() => setActive(null)}>
-      <div ref={plotRef} className={s.plot} style={{ height: h }} onPointerMove={pick} onPointerLeave={() => setActive(null)}>
-        {width > 0 && (
-          <svg className={s.svg} width={width} height={h} aria-hidden="true">
-            {ticks.map((t) => (
-              <g key={t}>
-                {showGrid && (horizontal
-                  ? <line className={s.grid} x1={px(v(t))} x2={px(v(t))} y1={y0} y2={y1} />
-                  : <line className={s.grid} x1={x0} x2={x1} y1={px(v(t))} y2={px(v(t))} />)}
-                {horizontal
-                  ? <text className={s.tick} x={v(t)} y={y1 + 18} textAnchor="middle">{short(t)}</text>
-                  : <text className={s.tick} x={x0 - 12} y={v(t)} dy="0.35em" textAnchor="end">{short(t)}</text>}
-              </g>
-            ))}
-            {active !== null && (kind === "bar"
-              ? (horizontal
-                ? <rect className={s.hoverBand} x={x0} y={c(active) - step / 2} width={x1 - x0} height={step} />
-                : <rect className={s.hoverBand} x={c(active) - step / 2} y={y0} width={step} height={y1 - y0} />)
-              : <line className={s.crosshair} x1={c(active)} x2={c(active)} y1={y0} y2={y1} />)}
-            {kind === "bar" ? bars() : lines()}
-            {marks()}
-            {categories.map((t, i) => i % every === 0 && (horizontal
-              ? <text key={t + i} className={s.tick} x={x0 - 12} y={c(i)} dy="0.35em" textAnchor="end">{catText(t)}</text>
-              : <text key={t + i} className={s.tick} x={c(i)} y={y1 + 18} textAnchor="middle">{t}</text>))}
-          </svg>
-        )}
-        {tip}
-      </div>
-      {showLegend && <Legend items={list.map((sr) => ({ label: sr.name, tone: sr.tone }))} />}
+    <ChartFrame
+      label={label} title={title} subtitle={subtitle} showTitle={showTitle} animate={animate} active={active !== null}
+      onKeyDown={onKeyDown} onBlur={() => setActive(null)}
+    >
+      {legend === "end" ? <div className={s.beside}>{plot}{keys}</div> : legend === "top" ? <>{keys}{plot}</> : <>{plot}{keys}</>}
       <SrTable caption={label} columns={list.map((sr) => sr.name)} rows={categories.map((t, i) => ({ head: t, cells: list.map((sr) => full(sr.vals[i])) }))} />
     </ChartFrame>
   );

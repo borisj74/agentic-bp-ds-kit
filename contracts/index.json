@@ -37,6 +37,7 @@
     {"name": "HelpPopover", "contract": "contracts/helppopover.json", "category": "overlay", "tags": ["help", "popover", "context info", "question mark", "info panel", "field help"]},
     {"name": "Icon", "contract": "contracts/icon.json", "category": "base", "tags": ["glyph", "symbol"]},
     {"name": "Input", "contract": "contracts/input.json", "category": "form", "tags": ["form", "text field", "input", "search", "email", "label", "hint", "error", "required"]},
+    {"name": "Legend", "contract": "contracts/legend.json", "category": "data", "tags": ["legend", "key", "chart key", "series", "swatch", "colour key", "data visualization"]},
     {"name": "LineChart", "contract": "contracts/linechart.json", "category": "data", "tags": ["chart", "line chart", "area chart", "stacked area", "trend", "time series", "graph", "dashboard"]},
     {"name": "Logo", "contract": "contracts/logo.json", "category": "brand", "tags": ["brand", "wordmark", "symbol", "header"]},
     {"name": "LogoAI", "contract": "contracts/logoai.json", "category": "brand", "tags": ["ai", "brand", "assistant", "copilot"]},

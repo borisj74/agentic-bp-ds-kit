@@ -2,7 +2,7 @@
   "name": "BarChart",
   "path": "src/ui/BarChart/BarChart.tsx",
   "intent": "Values side by side as bars, one group or stack per category, like invoices by status for each week. Bars stand up, or run across with orientation horizontal.",
-  "usage": "Use BarChart to compare amounts across categories or periods. It is one component: pass categories and series. orientation vertical puts the categories along the bottom with bars standing up; horizontal lists them down the start with bars running across, best for long names or ranked lists like top customers. Bars sit side by side per category, or on top of each other with stacked, so the bar height is the total and the colors are its parts. showValues writes each value at the end of its bar. Hover or use the arrow keys for a tooltip with every series in that category. animate lets bars grow out from the baseline. Put the chart's title and report link in the Section or Card around it. ChartTone: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). title and subtitle write a heading over the chart; showTitle turns it off when the Card around it already says the same. highlight picks out one or more bars in the highlight tone, like the biggest and smallest in a ranked list. See contracts/barchart.json for the full contract.",
+  "usage": "Use BarChart to compare amounts across categories or periods. It is one component: pass categories and series. orientation vertical puts the categories along the bottom with bars standing up; horizontal lists them down the start with bars running across, best for long names or ranked lists like top customers. Bars sit side by side per category, or on top of each other with stacked, so the bar height is the total and the colors are its parts. showValues writes each value at the end of its bar. Hover or use the arrow keys for a tooltip with every series in that category. animate lets bars grow out from the baseline. Put the chart's title and report link in the Section or Card around it. ChartTone: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). title and subtitle write a heading over the chart; showTitle turns it off when the Card around it already says the same. highlight picks out one or more bars in the highlight tone, like the biggest and smallest in a ranked list. The keys under the chart are the kit Legend; legend moves them over it or beside it. See contracts/barchart.json for the full contract.",
   "props": {
     "label": {
       "type": "string",
@@ -80,6 +80,15 @@
       "type": "boolean",
       "default": true,
       "note": "Colored squares with the series names under the chart."
+    },
+    "legend": {
+      "enum": [
+        "top",
+        "bottom",
+        "end"
+      ],
+      "default": "bottom",
+      "note": "Where the keys sit: under the chart, over it, or in a column beside it."
     },
     "animate": {
       "type": "boolean",
