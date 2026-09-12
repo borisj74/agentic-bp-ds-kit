@@ -16,7 +16,7 @@
   padding: var(--space-xlarge);
   background: var(--surface-floating);
   border: var(--border-width-thin) solid var(--border-neutral-subtle);
-  border-radius: var(--radius-large);
+  border-radius: var(--radius-medium);
   box-shadow: var(--elevation-modal);
   font-family: var(--font-sans);
   animation: rise var(--motion-modal-duration) var(--motion-modal-easing);

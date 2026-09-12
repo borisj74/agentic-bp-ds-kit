@@ -8,7 +8,7 @@
   width: 100%;
   padding: var(--space-xsmall) var(--space-small);
   border: var(--border-width-thin) solid;
-  border-radius: var(--radius-large);
+  border-radius: var(--radius-medium);
   font-family: var(--font-sans);
   font-size: var(--font-size-small);
   line-height: var(--line);

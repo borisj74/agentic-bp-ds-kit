@@ -36,7 +36,7 @@
 /* Card: a raised panel, like a settings block. Footer matches the Modal footer. */
 .card {
   gap: 0; overflow: hidden;
-  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-large);
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-medium);
 }
 .card .header { padding: var(--space-large) var(--space-large) 0; }
 .card .body { padding: var(--space-large); }

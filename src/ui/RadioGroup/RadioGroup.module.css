@@ -46,7 +46,7 @@
 .card .options { gap: var(--space-xsmall); }
 .card .option {
   display: flex; justify-content: space-between; gap: var(--space-medium); box-sizing: border-box; width: 100%;
-  padding: var(--space-medium); border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-large);
+  padding: var(--space-medium); border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-medium);
   background: var(--surface-raised);
   transition: border-color var(--motion-interaction-duration) var(--motion-interaction-easing);
 }

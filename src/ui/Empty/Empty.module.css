@@ -3,7 +3,7 @@
   box-sizing: border-box; display: grid; justify-items: center; gap: var(--space-medium);
   width: 100%; min-width: 0; padding: var(--space-xlarge); text-align: center; font-family: var(--font-sans);
 }
-.outlined { border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-large); background: var(--surface-flat); }
+.outlined { border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-medium); background: var(--surface-flat); }
 
 .media { display: flex; align-items: center; justify-content: center; }
 .well {
