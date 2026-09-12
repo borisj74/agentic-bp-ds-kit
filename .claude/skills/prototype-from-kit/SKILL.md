@@ -14,7 +14,7 @@ Invoke with `/prototype-from-kit <what you want to build>`.
 1. **Search the index** — Read `contracts/index.json`. Note the group: `foundations`, `components`, or `patterns`.
 2. **Open contracts** — Read only the 1–2 contract files in `contracts/` that match the UI you need.
 3. **Check patterns** — If a pattern listed under `patterns` in `contracts/index.json` matches the screen, import it from `@/patterns/` instead of hand-rolling the layout.
-4. **Compose from the kit** — `import { Button } from "@/ui/Button/Button"`. Match props exactly to contract enums; do not add variants. Page layout uses the classes in `src/tokens/layout.css` (`layout-app`, `layout-header`, `layout-canvas`, `layout-container`, `layout-workspace`, `layout-content`, `layout-metrics`, `layout-split`); never invent a per-page grid.
+4. **Compose from the kit** — `import { Button } from "@/ui/Button/Button"`. Match props exactly to contract enums; do not add variants. Page layout uses the classes in `src/tokens/layout.css` (`layout-app`, `layout-header`, `layout-canvas`, `layout-container`, `layout-workspace`, `layout-content`, `layout-metrics`, `layout-split`); never invent a per-page grid. Read `contracts/layout.json`: `.layout-content` owns edge padding (`--layout-margin-md`, 24px) and between-section gap (`--layout-gutter-lg`, 24px); Section does not.
 5. **Stop if missing** — If no contract or pattern covers what you need, stop and ask. Do not scaffold a one-off.
 
 ## Hard rules
