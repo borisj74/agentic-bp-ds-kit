@@ -276,3 +276,7 @@ chat/panel|395px
 illustration/sm|{ref/space/1300}
 illustration/md|120px
 illustration/lg|160px
+
+# ListPage (kit pattern): the bulk bar matches a toolbar row; the stand-in block keeps the list's height.
+list/bar|{ref/space/1100}
+list/blank-min|240px

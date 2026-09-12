@@ -1,0 +1,17 @@
+/* The bar, the rows and the pages as one block: the gap between them is the section rhythm from
+   contracts/layout.json, and the page padding belongs to the AppShell page around it. */
+.list { display: flex; flex-direction: column; gap: var(--space-medium); min-width: 0; font-family: var(--font-sans); }
+
+.body { min-width: 0; }
+
+/* What stands in for the rows keeps them company in the same place: lines while loading, a block otherwise. */
+.loading { padding-block: var(--space-small); }
+.blank { display: flex; flex-direction: column; justify-content: center; min-height: var(--list-blank-min); }
+
+/* The bulk bar sits where the toolbar was, tinted so it is clear the list is in a picking state. */
+.bulk {
+  display: flex; align-items: center; gap: var(--space-small); box-sizing: border-box; min-height: var(--list-bar);
+  padding: var(--space-xsmall) var(--space-small);
+  border: var(--border-width-thin) solid var(--border-brand-subtle); border-radius: var(--radius-medium);
+  background: var(--bg-brand-faint);
+}

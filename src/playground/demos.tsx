@@ -6,6 +6,7 @@ import { AlertDialog, type AlertDialogProps } from "@/ui/AlertDialog/AlertDialog
 import { Avatar } from "@/ui/Avatar/Avatar";
 import { AppHeader, type AppHeaderDensity, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { AppShell, type AppShellProps } from "@/patterns/AppShell/AppShell";
+import { ListPage, type ListPageProps, type ListPageState } from "@/patterns/ListPage/ListPage";
 import { Button } from "@/ui/Button/Button";
 import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
 import { Cell, type CellSize } from "@/ui/Cell/Cell";
@@ -28,6 +29,7 @@ import { Legend, type LegendProps } from "@/ui/Legend/Legend";
 import { Lookup } from "@/ui/Lookup/Lookup";
 import { Modal, type ModalProps } from "@/ui/Modal/Modal";
 import { PageHeader } from "@/ui/PageHeader/PageHeader";
+import { Pagination } from "@/ui/Pagination/Pagination";
 import { Scoreboard } from "@/ui/Scoreboard/Scoreboard";
 import { Section } from "@/ui/Section/Section";
 import { SegmentedControl } from "@/ui/SegmentedControl/SegmentedControl";
@@ -954,5 +956,100 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
         </Section>
       </AppShell>
     </div>
+  );
+}
+
+// Playground harness: the ListPage pattern driven like a screen would drive it. Not a kit piece.
+// A longer invoice list, so the pages and the ticked-row bar have something to work on.
+const LIST_ROWS: TableRow[] = Array.from({ length: 12 }, (_, i) => {
+  const accounts = ["Northwind Holdings", "Globex Corporation", "Initech Group", "Umbrella Health", "Stark Logistics"];
+  const status = ["Paid", "Pending", "Overdue"][i % 3];
+  return {
+    id: `INV-44${71 + i}`,
+    account: accounts[i % accounts.length],
+    status: <Cell type="badge" tone={status === "Paid" ? "success" : status === "Overdue" ? "danger" : "warning"} label={status} />,
+    due: `${12 + i} Sep 2026`,
+    amount: `$${(2_980 + i * 1_450).toLocaleString("en-US")}.00`,
+    actions: rowActions,
+  };
+});
+const LIST_COLUMNS: TableColumn[] = [
+  { key: "id", header: "Invoice", emphasis: true }, { key: "account", header: "Account" }, { key: "status", header: "Status" },
+  { key: "due", header: "Due" }, { key: "amount", header: "Amount", numeric: true },
+  { key: "actions", header: "", align: "end", width: "112px" },
+];
+
+export function ListPageDemo({ state = "ready", ...p }: Omit<ListPageProps, "children"> & { state?: ListPageState }) {
+  const [values, setValues] = useState<Record<string, string | undefined>>(START);
+  const [off, setOff] = useState<Record<string, boolean>>({});
+  const [query, setQuery] = useState("");
+  const [view, setView] = useState("list");
+  const [picked, setPicked] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
+  const [size, setSize] = useState(10);
+  // The control panel sets the state; clearing the ticks and the page then carries on from there.
+  const [from, setFrom] = useState(state);
+  if (from !== state) { setFrom(state); setPicked([]); setPage(1); }
+
+  const chips = FILTER_SETS.map((f) => {
+    const value = values[f.id];
+    return (
+      <DropdownMenu
+        key={f.id} trigger="filter" size="sm" label={f.label}
+        text={f.options.find((o) => o.id === value)?.label}
+        toggle={value ? (off[f.id] ? "off" : "on") : undefined}
+        onToggle={value ? () => setOff((o) => ({ ...o, [f.id]: !o[f.id] })) : undefined}
+        items={f.options.map((o) => ({ ...o, selected: o.id === value }))}
+        onSelect={(id) => { setValues((v) => ({ ...v, [f.id]: v[f.id] === id ? undefined : id })); setOff((o) => ({ ...o, [f.id]: false })); }}
+      />
+    );
+  });
+  const shown = LIST_ROWS.filter((r) => String(r.id).toLowerCase().includes(query.toLowerCase()));
+  const start = (page - 1) * size;
+
+  return (
+    <ListPage
+      {...p}
+      state={state}
+      label="Invoices"
+      toolbar={
+        <Toolbar
+          label="Invoices" filters={<>{chips}</>} defaultFiltersOpen
+          onReset={() => { setValues({}); setOff({}); }} onApply={() => {}}
+          searchValue={query} onSearchChange={setQuery} searchPlaceholder="Search invoices"
+          views={[{ id: "list", label: "List View" }, { id: "board", label: "Board View" }]}
+          view={view} onViewChange={setView} onRefresh={() => {}}
+          moreActions={[{ id: "import", label: "Import" }, { id: "export", label: "Export all" }]} onMoreSelect={() => {}}
+          actions={<Button size="sm" variant="primary" iconStart="add">New invoice</Button>}
+        />
+      }
+      bulk={
+        picked.length > 0 ? (
+          <>
+            <strong style={{ fontSize: "var(--font-size-small)" }}>{`${picked.length} selected`}</strong>
+            <Button size="sm" iconStart="send">Send</Button>
+            <Button size="sm" iconStart="download">Download</Button>
+            <Button size="sm" variant="danger" iconStart="block">Void</Button>
+            <span style={{ marginInlineStart: "auto" }}>
+              <Button size="sm" variant="tertiary" onClick={() => setPicked([])}>Clear</Button>
+            </span>
+          </>
+        ) : undefined
+      }
+      pagination={
+        <Pagination
+          total={shown.length} page={page} onPageChange={setPage}
+          pageSize={size} onPageSizeChange={(next) => { setSize(next); setPage(1); }} label="Invoices"
+        />
+      }
+      empty={<Empty icon="receipt_long" title="No invoices yet" description="Invoices appear here once a billing run completes." actions={<Button size="sm" variant="primary" iconStart="add">New invoice</Button>} />}
+      error="The invoice list could not be loaded."
+      onRetry={() => {}}
+    >
+      <Table
+        columns={LIST_COLUMNS} rows={shown.slice(start, start + size)} caption="Invoices"
+        selectable selected={picked} onSelectionChange={setPicked} rowLabel="id"
+      />
+    </ListPage>
   );
 }

@@ -1000,6 +1000,20 @@
         "full screen",
         "conversation"
       ]
+    },
+    {
+      "name": "ListPage",
+      "contract": "contracts/listpage.json",
+      "tags": [
+        "list",
+        "list page",
+        "table screen",
+        "records",
+        "filters",
+        "pagination",
+        "bulk actions",
+        "empty state"
+      ]
     }
   ],
   "foundations": [

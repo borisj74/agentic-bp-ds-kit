@@ -1307,4 +1307,6 @@
   --illustration-sm: var(--ref-space-1300);
   --illustration-md: 120px;
   --illustration-lg: 160px;
+  --list-bar: var(--ref-space-1100);
+  --list-blank-min: 240px;
 }

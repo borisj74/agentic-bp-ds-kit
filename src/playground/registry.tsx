@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
-import { SIDE_NAV_SECTIONS, SIDE_NAV_END, AppShellDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { SIDE_NAV_SECTIONS, SIDE_NAV_END, AppShellDemo, ListPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -703,6 +703,16 @@ export const registry: Record<string, Entry> = {
     hint: "Hover or use the arrow keys for the tooltip. Turn the title, area, stacked, points, values, grid, legend and animate on and off.",
     block: true,
     card: <div style={{ width: "100%" }}><LineChart label="Revenue" categories={["Jan", "Feb", "Mar", "Apr", "May"]} series={[{ name: "Revenue", values: [3, 3.4, 4.1, 4.3, 4.8] }]} area showLegend={false} height={96} animate={false} /></div>,
+  },
+  ListPage: {
+    // The pattern, driven the way a screen would drive it: the filters, the ticks and the page live in the screen.
+    render: ({ state, ...p }) => <ListPageDemo {...(p as Record<string, unknown>)} state={(state as "ready" | "loading" | "empty" | "error") ?? "ready"} />,
+    preview: { state: "ready" },
+    hide: ["children", "toolbar", "pagination", "bulk", "empty", "error", "onRetry", "label", "loadingRows"],
+    hint: "Tick rows and the bar over the list becomes what can be done to them. Search, set a filter, change the view or the page size, and switch the state to see the loading, empty and failed lists.",
+    block: true,
+    wide: true,
+    card: <div style={{ width: 300 }}><Pagination total={248} defaultPage={2} showPageSize={false} /></div>,
   },
   Logo: {
     render: (p) => <Logo {...(p as object)} />,
