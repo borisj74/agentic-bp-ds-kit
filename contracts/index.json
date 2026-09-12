@@ -4,6 +4,7 @@
     {"name": "Accordion", "contract": "contracts/accordion.json", "category": "layout", "tags": ["disclosure", "collapse", "faq", "expand", "sections"]},
     {"name": "Alert", "contract": "contracts/alert.json", "category": "feedback", "tags": ["callout", "banner", "notice", "message", "status"]},
     {"name": "AlertDialog", "contract": "contracts/alertdialog.json", "category": "overlay", "tags": ["confirm", "dialog", "modal", "destructive", "are you sure"]},
+    {"name": "AnchorNav", "contract": "contracts/anchornav.json", "category": "navigation", "tags": ["anchor nav", "on this page", "section nav", "jump links", "in-page navigation", "table of contents", "scrollspy"]},
     {"name": "AppHeader", "contract": "contracts/appheader.json", "category": "navigation", "tags": ["app header", "top bar", "shell", "global search", "environment", "user", "company", "logo"]},
     {"name": "Avatar", "contract": "contracts/avatar.json", "category": "base", "tags": ["person", "user", "profile", "initials", "photo"]},
     {"name": "AvatarGroup", "contract": "contracts/avatargroup.json", "category": "base", "tags": ["people", "assignees", "stack", "facepile"]},

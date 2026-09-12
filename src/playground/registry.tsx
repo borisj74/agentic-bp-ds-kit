@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
-import { AlertDialogDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
+import { AlertDialogDemo, AnchorNavDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -124,6 +125,14 @@ export interface Entry {
 }
 
 const STEPS = ["Setup", "Map Columns", "Billing IDs", "Usage IDs", "Activate"];
+
+const PAGE_SECTION_ITEMS = [
+  { id: "demo-details", label: "Details" },
+  { id: "demo-billing", label: "Billing" },
+  { id: "demo-usage", label: "Usage" },
+  { id: "demo-history", label: "History" },
+];
+const ANCHOR_SAMPLES: Record<string, unknown> = { "{sections}": PAGE_SECTION_ITEMS };
 
 const CELL_SAMPLES: Record<CellType, Props> = {
   text: { label: "INV-1042" },
@@ -937,6 +946,18 @@ export const registry: Record<string, Entry> = {
         </Form>
       </div>
     ),
+  },
+  AnchorNav: {
+    // The stage shows the nav beside a short scrolling page, so the caret follows as it moves.
+    render: ({ items, ...p }) =>
+      items && items !== "{sections}"
+        ? <AnchorNav {...(p as unknown as AnchorNavProps)} items={(ANCHOR_SAMPLES["{sections}"] as AnchorNavProps["items"])} />
+        : <AnchorNavDemo {...(p as unknown as AnchorNavProps)} />,
+    preview: { variant: "rail" },
+    hide: ["items", "active", "defaultActive", "offset"],
+    hint: "Switch the variant. Scroll the page beside it, or click a row: the caret and the strong line follow the section the page is at.",
+    block: true,
+    card: <div style={{ width: 220 }}><AnchorNav items={PAGE_SECTION_ITEMS.slice(0, 3)} defaultActive="demo-billing" spy={false} /></div>,
   },
   AppHeader: {
     // Full-width bar. AppHeaderDemo wires the account menu (dark mode and density in local state). Keyed so controls re-apply.

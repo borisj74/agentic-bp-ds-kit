@@ -1,0 +1,23 @@
+/* Figma anchor 5410:109926: a line down the side, 14 of padding per row, and a caret on the current row. */
+.nav { font-family: var(--font-sans); }
+.list { margin: 0; padding: 0; list-style: none; }
+
+.item {
+  display: flex; align-items: center; gap: var(--space-xsmall); box-sizing: border-box;
+  border-inline-start: var(--border-width-thin) solid var(--border-neutral-subtle);
+  padding-block: var(--space-small); padding-inline: 0;
+  font-size: var(--font-size-regular); line-height: var(--line-height-snug); color: var(--text-neutral);
+  text-decoration: none; cursor: pointer;
+}
+.item:hover { color: var(--text-neutral-strong); }
+.item:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(var(--border-width-medium) * -1); }
+/* The row the page is at: a strong line and the caret beside it. */
+.current { border-inline-start-color: var(--border-neutral-intense); color: var(--text-neutral-strong); }
+
+.caret { flex: none; display: inline-flex; visibility: hidden; color: var(--icon-neutral-strong); }
+.current .caret { visibility: visible; }
+.text { flex: 1 1 auto; min-width: 0; }
+
+/* Menu: the same rows inside a popover, where the whole row tints on hover. */
+.menu .item { padding-inline: var(--space-medium); }
+.menu .item:hover { background: var(--bg-neutral-faint); }

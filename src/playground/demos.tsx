@@ -1,6 +1,7 @@
 "use client";
 import { useId, useState, type ReactNode } from "react";
 import { Alert } from "@/ui/Alert/Alert";
+import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
 import { AlertDialog, type AlertDialogProps } from "@/ui/AlertDialog/AlertDialog";
 import { Avatar } from "@/ui/Avatar/Avatar";
 import { AppHeader, type AppHeaderDensity, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
@@ -482,6 +483,30 @@ export function StepperDemo({ current = 1, steps, ...p }: StepperProps) {
       <div style={{ display: "flex", justifyContent: "center", gap: "var(--space-xsmall)" }}>
         <Button size="sm" disabled={at <= 1} onClick={() => setAt(Math.max(at - 1, 1))}>Back</Button>
         <Button size="sm" variant="primary" disabled={at > last} onClick={() => setAt(at + 1)}>{at >= last ? "Finish" : "Next"}</Button>
+      </div>
+    </div>
+  );
+}
+
+const PAGE_SECTIONS = [
+  { id: "demo-details", label: "Details", body: "Name, owner and the account this record belongs to." },
+  { id: "demo-billing", label: "Billing", body: "Terms, the billing day and the invoice the run writes to." },
+  { id: "demo-usage", label: "Usage", body: "Metered lines, the rate they are billed at and this period's totals." },
+  { id: "demo-history", label: "History", body: "Every change on the record, newest first." },
+];
+
+// Playground harness: the real AnchorNav beside a short scrolling page, so the caret follows. Not a kit piece.
+export function AnchorNavDemo(p: Omit<AnchorNavProps, "items">) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "220px minmax(0, 1fr)", gap: "var(--space-xlarge)", alignItems: "start" }}>
+      <AnchorNav {...p} items={PAGE_SECTIONS.map(({ id, label }) => ({ id, label }))} />
+      <div style={{ height: 260, overflowY: "auto", display: "grid", gap: "var(--space-large)", padding: "var(--space-medium)", background: "var(--surface-flat)", border: "var(--border-width-thin) solid var(--border-neutral-faint)", borderRadius: "var(--radius-large)" }}>
+        {PAGE_SECTIONS.map((s) => (
+          <section key={s.id} id={s.id} style={{ display: "grid", gap: "var(--space-xsmall)", minHeight: 200 }}>
+            <h3 style={{ margin: 0, font: "var(--font-weight-semibold) var(--font-size-regular) / var(--line-height-snug) var(--font-sans)", color: "var(--text-neutral-strong)" }}>{s.label}</h3>
+            <p style={{ margin: 0, fontSize: "var(--font-size-small)", lineHeight: "var(--line-height-normal)", color: "var(--text-neutral)" }}>{s.body}</p>
+          </section>
+        ))}
       </div>
     </div>
   );
