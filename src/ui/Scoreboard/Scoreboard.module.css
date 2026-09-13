@@ -19,7 +19,9 @@
 
 .header { display: flex; align-items: center; gap: var(--space-medium); }
 .title { flex: 1 1 auto; min-width: 0; font-size: var(--font-size-regular); color: var(--text-neutral); }
-.text { display: flex; flex-direction: column; gap: var(--space-xxsmall); }
+/* The values (metric, trend, metadata) on the start; the spark chart on the end, level with their bottom line. */
+.text { display: flex; align-items: flex-end; gap: var(--space-xsmall); }
+.values { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--space-xxsmall); }
 .metricRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xsmall); min-height: var(--icon-size-medium); }
 .metric { font-size: var(--font-size-regular); font-weight: var(--font-weight-semibold); color: var(--text-neutral-intense); }
 .meta { font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); }
@@ -34,7 +36,8 @@
 .trend.danger .arrow { color: var(--icon-danger); }
 .trend.neutral .arrow { color: var(--icon-neutral); }
 
-/* Figma chart 6174:403: a 64 x 20 line with a fill under it. */
+/* Figma chart 6174:403: a 64 x 20 line with a fill under it. It sits at the end of the card, right-aligned, on the
+   bottom line of the values beside it. */
 .chart { flex: none; width: var(--scoreboard-chart-width); height: var(--scoreboard-chart-height); overflow: visible; }
 .line { fill: none; stroke-width: var(--border-width-medium); stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .chart.success .line { stroke: var(--border-success-strong); }

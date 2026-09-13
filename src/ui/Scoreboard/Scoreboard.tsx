@@ -123,12 +123,14 @@ export function Scoreboard({
                 {item.badge && <Badge>{item.badge}</Badge>}
               </span>
               <span className={styles.text}>
-                <span className={styles.metricRow}>
-                  <span className={styles.metric}>{item.metric}</span>
-                  {item.trend && <Trend {...item.trend} />}
-                  {item.chart && <Spark {...item.chart} status={item.chart.status ?? item.trend?.status} />}
+                <span className={styles.values}>
+                  <span className={styles.metricRow}>
+                    <span className={styles.metric}>{item.metric}</span>
+                    {item.trend && <Trend {...item.trend} />}
+                  </span>
+                  {item.metadata && <span className={styles.meta}>{item.metadata}</span>}
                 </span>
-                {item.metadata && <span className={styles.meta}>{item.metadata}</span>}
+                {item.chart && <Spark {...item.chart} status={item.chart.status ?? item.trend?.status} />}
               </span>
             </>
           );
