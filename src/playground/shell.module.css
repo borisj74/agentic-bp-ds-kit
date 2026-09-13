@@ -51,6 +51,29 @@
   background: var(--surface-raised); border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-medium);
   padding: 2px var(--space-xxsmall);
 }
+/* The menu button and the sheet behind the drawer only exist on narrow screens. */
+.menuButton { display: none; }
+.scrim { display: none; margin: 0; padding: 0; border: 0; }
+
+/* Under 768px the catalog menu leaves the page's side and becomes a drawer over it, under the top bar. */
+@media (max-width: 767px) {
+  .shell { grid-template-columns: minmax(0, 1fr); }
+  .topbar { padding: 0 var(--space-small); }
+  .menuButton { display: inline-flex; align-self: center; }
+  .brand { align-items: center; }
+  .brandTag { display: none; }
+  /* Closed, it sits off the start edge and hidden, so Tab and screen readers skip it. */
+  .sidebar {
+    position: fixed; top: 48px; bottom: 0; left: 0; z-index: 3; width: min(280px, 85vw); height: auto;
+    box-shadow: var(--elevation-popover); transform: translateX(-100%); visibility: hidden;
+    transition: transform var(--motion-expand-duration) var(--motion-expand-easing), visibility 0s linear var(--motion-expand-duration);
+  }
+  .sidebarOpen { transform: none; visibility: visible; transition: transform var(--motion-expand-duration) var(--motion-expand-easing); }
+  .scrim { display: block; position: fixed; inset: 48px 0 0; z-index: 2; background: var(--surface-backdrop); cursor: pointer; }
+  .main { padding: var(--space-large) var(--space-medium); }
+}
+@media (prefers-reduced-motion: reduce) { .sidebar, .sidebarOpen { transition: none; } }
+
 .pageTitle { margin: 0 0 var(--space-xxsmall); font-size: var(--font-size-xxlarge); color: var(--text-neutral-strong); }
 .pageMeta { margin: 0 0 var(--space-small); font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); }
 .pageMeta a { color: var(--link-brand); }

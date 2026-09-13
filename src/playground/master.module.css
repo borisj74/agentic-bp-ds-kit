@@ -19,8 +19,9 @@
   position: relative; display: grid; min-height: 544px;
   background: var(--stage); border-radius: var(--radius-large);
 }
+/* isolation: the preview's own layers (a sticky page header at z-index 1) stay under the floating control panel. */
 .canvas {
-  display: grid; place-items: center; min-width: 0;
+  display: grid; place-items: center; min-width: 0; isolation: isolate;
   padding: var(--space-medium) calc(var(--panel-w) + var(--space-medium) * 2) var(--space-medium) var(--space-medium);
 }
 .canvasFull { padding: var(--space-medium); }
@@ -30,6 +31,13 @@
   display: grid; align-content: start; gap: var(--space-medium); padding: var(--space-small);
   background: var(--surface-raised); border: var(--border-width-thin) solid var(--border-neutral-subtle);
   border-radius: var(--radius-large); box-shadow: var(--elevation-popover);
+}
+/* 720px: the stage is the container. Narrower than that, a floating panel beside the preview would squeeze the
+   preview to a sliver, so the preview takes the full stage and the panel drops under it. */
+.layout { container-type: inline-size; }
+@container (max-width: 720px) {
+  .canvas { padding: var(--space-medium); }
+  .panel { position: static; width: auto; max-height: none; margin: 0 var(--space-medium) var(--space-medium); }
 }
 .group { display: grid; gap: var(--space-xsmall); }
 .label { font-size: var(--font-size-xsmall); font-weight: var(--font-weight-medium); color: var(--text-neutral); }
@@ -77,7 +85,8 @@
 }
 /* minmax(0, 1fr) and min-width 0: a wide piece, like six Scoreboard cards, scrolls inside itself instead of stretching the page. */
 .exampleCanvas { display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; min-height: 192px; padding: var(--space-medium); background: var(--stage); border-radius: var(--radius-large); }
-.block { width: 100%; max-width: 720px; }
+/* min-width 0: a grid item grows to its content, so a staged frame (tablet 768) would spill out of a narrower stage. */
+.block { width: 100%; max-width: 720px; min-width: 0; }
 .stack { width: 100%; max-width: 720px; display: grid; gap: var(--space-small); }
 .stack > * { min-width: 0; }
 /* Full-width pieces like AppHeader use the whole stage. */

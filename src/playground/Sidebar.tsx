@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useId, useState } from "react";
+import { useId, useState, type Ref } from "react";
 import { Icon } from "@/ui/Icon/Icon";
 import styles from "./shell.module.css";
 import { componentNav, foundationPages, patterns, slug } from "./nav";
@@ -37,7 +37,8 @@ function Section({ title, open, onToggle, children }: { title: string; open: boo
   );
 }
 
-export function Sidebar() {
+// drawerOpen only matters under 768px, where the menu is a drawer the CatalogShell slides in.
+export function Sidebar({ id, ref, drawerOpen = false }: { id?: string; ref?: Ref<HTMLElement>; drawerOpen?: boolean }) {
   const path = usePathname();
   const [open, setOpen] = useState<Record<SectionKey, boolean>>({ start: true, foundations: true, components: true, patterns: true });
   // On navigation, open the section that holds the new page (adjusting state during render, no effect).
@@ -50,7 +51,7 @@ export function Sidebar() {
   const toggle = (key: SectionKey) => () => setOpen((o) => ({ ...o, [key]: !o[key] }));
 
   return (
-    <nav className={styles.sidebar} aria-label="Catalog">
+    <nav id={id} ref={ref} className={[styles.sidebar, drawerOpen ? styles.sidebarOpen : ""].join(" ")} aria-label="Catalog">
       <Section title="Start" open={open.start} onToggle={toggle("start")}>
         <NavLink href="/">Overview</NavLink>
         <NavLink href="/start/installation">Installation</NavLink>
