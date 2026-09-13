@@ -253,10 +253,20 @@ export function Cascader({
     el?.focus();
     el?.scrollIntoView({ block: "nearest", inline: "nearest" });
   });
-  // A new column scrolls into view when it opens.
+  // A new column scrolls into view when it opens. When not every column fits, start at the first column that
+  // still lets the newest one show in full, so the column at the left edge is whole rather than cut in half.
+  // Scrolling can stop there only if there is room after the last column, so a spare gap is added at the end.
   useLayoutEffect(() => {
     const el = colsRef.current;
-    if (el) el.scrollLeft = el.scrollWidth;
+    if (!el) return;
+    const box = el.getBoundingClientRect();
+    const rects = [...el.querySelectorAll<HTMLElement>(`.${styles.column}`)].map((c) => c.getBoundingClientRect());
+    if (!rects.length) return;
+    const starts = rects.map((r) => r.left - box.left + el.scrollLeft);
+    const content = rects[rects.length - 1].right - box.left + el.scrollLeft;
+    const target = starts.find((x) => content - x <= el.clientWidth) ?? starts[starts.length - 1];
+    el.style.setProperty("--cascader-spare", `${Math.max(0, Math.floor(target + el.clientWidth - content))}px`);
+    el.scrollLeft = target;
   }, [cols.length, open]);
 
   // A click outside closes the dropdown without moving focus; so does tabbing out of it.

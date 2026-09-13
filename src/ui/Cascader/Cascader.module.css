@@ -28,9 +28,13 @@
 /* The box is as wide as a first column, not the whole panel; the bar keeps its full-width background. */
 .search > div { max-width: var(--cascader-column-min); }
 
-/* Columns side by side; past the width they scroll sideways, newest column in view. */
-.columns { display: flex; align-items: stretch; min-width: 0; overflow-x: auto; }
+/* Columns side by side; past the width they scroll sideways, newest column in view. Scrolling settles on a
+   column's start, so the left edge shows a whole column. */
+.columns { display: flex; align-items: stretch; min-width: 0; overflow-x: auto; scroll-snap-type: x proximity; }
+/* The spare room after the last column, set in code, that lets scrolling stop at a whole column. */
+.columns::after { content: ""; flex: none; width: var(--cascader-spare, 0px); }
 .column {
+  scroll-snap-align: start;
   box-sizing: border-box; flex: none; display: flex; flex-direction: column;
   width: max-content; min-width: var(--cascader-column-min); max-width: var(--cascader-column-max); height: var(--list-h);
   padding: var(--space-xsmall) 0; overflow-y: auto; outline: none;
