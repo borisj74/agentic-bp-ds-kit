@@ -1004,6 +1004,19 @@
   ],
   "patterns": [
     {
+      "name": "AccountFlow",
+      "contract": "contracts/accountflow.json",
+      "tags": [
+        "account flow",
+        "accounts",
+        "account provisioning",
+        "list to record",
+        "new account",
+        "account products",
+        "create flow"
+      ]
+    },
+    {
       "name": "AppShell",
       "contract": "contracts/appshell.json",
       "tags": [

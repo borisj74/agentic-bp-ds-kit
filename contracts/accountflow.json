@@ -1,0 +1,99 @@
+{
+  "name": "AccountFlow",
+  "path": "src/patterns/AccountFlow/AccountFlow.tsx",
+  "intent": "The account provisioning flow: the accounts list, one account with its tabs, a new account, and a new product on an account, one page at a time.",
+  "usage": "Use AccountFlow for the screens people move between when they set up and look after accounts. It is a blueprint: each page is a kit pattern the screen builds, and the screen owns which one is showing, the records and what was just saved. list is a kit ListPage: a Toolbar with filters, search, the view picker and refresh, and a Table whose Account ID is a link Cell that opens the account, with Pagination under it; the page's New and Export go in the AppShell's kit PageHeader, not in the Toolbar. account is a kit RecordPage: a PageHeader with the account name, its status Badge, Copy and the one primary; Tabs for Details, Contract, Contacts, Account Products (with a count), Account Packages, Revenue Contract and Account Docs; a Scoreboard of the account's numbers; and on Details, the account's collapsible Sections of FormDisplay pairs in two columns beside a rail of Sections laid out with layout-split--primary. On Account Products the tab holds a Table of the account's products with Pagination, and the primary becomes New account product. newAccount is a kit FormPage: Cancel and Submit in the header, a Form with an id and collapsible sections of Inputs, Selects, Lookups, RadioGroups and Checkboxes. newProduct is a kit FormPage for one product on the account: Product and Contract Lookups, Start and End DatePickers and a Rating method Select, with Cancel and Next. Pass view, and the flow shows that page, starts it at its top and moves focus to its title so the change is heard. After a save, send people back to the account with a success Alert as the RecordPage notice. See contracts/accountflow.json for the full contract.",
+  "composes": [
+    "AppShell",
+    "PageHeader",
+    "ListPage",
+    "RecordPage",
+    "FormPage",
+    "Toolbar",
+    "Table",
+    "Cell",
+    "Pagination",
+    "Tabs",
+    "Scoreboard",
+    "Section",
+    "Form",
+    "FormDisplay",
+    "Input",
+    "Select",
+    "Lookup",
+    "RadioGroup",
+    "Checkbox",
+    "DatePicker",
+    "Alert",
+    "Badge",
+    "Empty"
+  ],
+  "props": {
+    "view": {
+      "enum": [
+        "list",
+        "account",
+        "newAccount",
+        "newProduct"
+      ],
+      "required": true,
+      "note": "The page showing. The screen keeps it and changes it from links, the header's buttons and a save."
+    },
+    "list": {
+      "type": "ReactNode",
+      "required": true,
+      "note": "The accounts list: a kit ListPage with its Toolbar, Table and Pagination. Its PageHeader goes in the AppShell."
+    },
+    "account": {
+      "type": "ReactNode",
+      "required": true,
+      "note": "One account: a kit RecordPage with its PageHeader, Tabs, Scoreboard and the tab's content."
+    },
+    "newAccount": {
+      "type": "ReactNode",
+      "required": true,
+      "note": "A new account: a kit FormPage whose header Submit sends its Form."
+    },
+    "newProduct": {
+      "type": "ReactNode",
+      "required": true,
+      "note": "A new product on the account: a kit FormPage whose header Next sends its Form."
+    }
+  },
+  "useWhen": [
+    "Prototyping account screens that link together: find an account, open it, add an account or a product.",
+    "Showing how a list, a record and its create forms hand over to each other."
+  ],
+  "doNot": [
+    "Do not put the list's New and Export in its Toolbar. Page actions go in the PageHeader; the Toolbar keeps filters, search, the view and refresh.",
+    "Do not show the Account ID as plain text. It is a link Cell, so people can tell it opens the account.",
+    "Do not use Inputs to show saved account values. Use FormDisplay.",
+    "Do not build a second list, record or form layout inside it. Use ListPage, RecordPage and FormPage.",
+    "Do not keep the view or the records in the pattern. The screen owns them.",
+    "Do not put page padding on it. The AppShell page owns that; read contracts/layout.json."
+  ],
+  "a11y": [
+    "Changing view moves focus to the new page's title, its h1, so a screen reader hears where it landed.",
+    "Each page keeps its own pattern's landmarks and headings.",
+    "Account IDs and products are link Cells, reachable with Tab.",
+    "The forms' save Buttons carry form, so they submit from the header."
+  ],
+  "snippet": "<AccountFlow\n  view={view}\n  list={<ListPage toolbar={toolbar} pagination={pagination}><Table columns={columns} rows={rows} /></ListPage>}\n  account={<RecordPage header={header} tabs={tabs} summary={scores}>{details}</RecordPage>}\n  newAccount={<FormPage header={newHeader}><Form id=\"account\" columns={2} sections={sections} onSubmit={create} /></FormPage>}\n  newProduct={<FormPage header={productHeader}><Form id=\"product\" columns={2} sections={productSections} onSubmit={add} /></FormPage>}\n/>",
+  "examples": [
+    {
+      "title": "Account provisioning",
+      "usage": "The list, an account, a new account and a new account product, linked.",
+      "items": [
+        {
+          "props": {
+            "view": "list",
+            "list": "{list}",
+            "account": "{account}",
+            "newAccount": "{newAccount}",
+            "newProduct": "{newProduct}"
+          }
+        }
+      ]
+    }
+  ]
+}

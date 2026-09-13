@@ -1,0 +1,3 @@
+/* The flow adds no box of its own: the page it shows lays itself out in the AppShell page as if it were there
+   alone. */
+.flow { display: contents; }

@@ -8,6 +8,8 @@ import { AppHeader, type AppHeaderDensity, type AppHeaderProps } from "@/ui/AppH
 import { AppShell, type AppShellProps } from "@/patterns/AppShell/AppShell";
 import { ListPage, type ListPageProps, type ListPageState } from "@/patterns/ListPage/ListPage";
 import { FormPage, type FormPageProps } from "@/patterns/FormPage/FormPage";
+import { AccountFlow, type AccountFlowView } from "@/patterns/AccountFlow/AccountFlow";
+import { RadioGroup } from "@/ui/RadioGroup/RadioGroup";
 import { GuidedProcessPage } from "@/patterns/GuidedProcessPage/GuidedProcessPage";
 import { GuidedProcess, type GuidedProcessAction, type GuidedProcessPanelProps, type GuidedProcessShade, type GuidedProcessStatus, type GuidedProcessStep } from "@/ui/GuidedProcess/GuidedProcess";
 import { RecordPage } from "@/patterns/RecordPage/RecordPage";
@@ -807,7 +809,7 @@ export const menu = (section: string, labels: string[]) =>
   labels.map((l) => (l === "-" ? { divider: true as const } : { id: `${section}-${l.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, label: l }));
 export const SIDE_NAV_SECTIONS: SideNavEntry[] = [
   { id: "home", label: "Home", icon: "home", children: menu("home", ["Home Dashboards", "Approval Management", "Alert Groups", "Grouped Activity"]) },
-  { id: "accounts", label: "Accounts", icon: "group" },
+  { id: "accounts", label: "Accounts", icon: "group", children: menu("accounts", ["Account", "Contract", "Contacts", "Account Products", "Account Packages", "Revenue Contract", "Account Docs", "-", "Orders", "Service Call"]) },
   { id: "products", label: "Products", icon: "inventory_2", children: menu("products", ["Products", "Product Categories", "Packages", "Rate Classes"]) },
   { divider: true },
   { id: "quotes", label: "Quotes", icon: "request_quote", children: menu("quotes", ["Quotes", "Quote Rules", "Product Relationships"]) },
@@ -2128,6 +2130,480 @@ export function GuidedProcessPageDemo({ shell = true, stage = "desktop", side = 
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
       >
         {page}
+      </AppShell>
+    </div>
+  );
+}
+
+// Playground harness: the AccountFlow pattern walked like a screen would walk it: the accounts list, one account,
+// a new account and a new product on the account. Not a kit piece. Figma Account Provisioning (76:5802, 91:3046,
+// 110:3696, 117:4403) and the accounts list in the product.
+type FlowAccount = { id: string; name: string; approval?: string };
+const FLOW_ACCOUNTS: FlowAccount[] = [
+  { id: "72097", name: "Chris Test Account" },
+  { id: "72093", name: "Andre60", approval: "Dismissed" },
+  { id: "72088", name: "Monthly Prepaid Test Account" },
+  { id: "72087", name: "Void Test Account 6969cc50" },
+  { id: "72086", name: "Void Test Account ae0f35e1" },
+  { id: "72085", name: "FX Test USD Acct - AllowDiffCurr OFF (Anton)" },
+  { id: "72084", name: "FX Test USD Acct - AllowDiffCurr ON (Anton)" },
+  { id: "72083", name: "Anton Testing Sam FIS" },
+  { id: "72082", name: "Anton Test BI Aug05" },
+  { id: "72081", name: "Anton Test Rob Sub 8" },
+  { id: "72080", name: "Anton-Rob-Demo" },
+  { id: "72079", name: "AntonTestRobPrep" },
+  { id: "72078", name: "Anton Test Usage Dec 7" },
+  { id: "72077", name: "Anton Test AH" },
+  { id: "72076", name: "Test Account Anton AH" },
+  { id: "72075", name: "Claude Test Account 2026-07-28 #2" },
+  { id: "72074", name: "Claude Test Account 2026-07-28" },
+  { id: "72073", name: "Anton Test Subscription 6" },
+];
+const FLOW_ACCOUNT_COLUMNS: TableColumn[] = [
+  { key: "accountId", header: "Account ID", width: "128px" }, { key: "name", header: "Account name" }, { key: "type", header: "Type" },
+  { key: "cycle", header: "Default billing cycle" }, { key: "status", header: "Status" }, { key: "approval", header: "Approval status" },
+  { key: "actions", header: "Actions", align: "end", width: "112px" },
+];
+
+type FlowProduct = { id: string; product: string; rc: string; contract: string; start: string; end: string; qty: string; rate: string; ssp: string; quote: string; discount: string };
+const FLOW_PRODUCTS: FlowProduct[] = [
+  { id: "105538", product: "BillingIdentifier Sam", rc: "—", contract: "—", start: "08/01/2026", end: "—", qty: "1", rate: "—", ssp: "—", quote: "—", discount: "—" },
+  { id: "105539", product: "Platform Access — Gold", rc: "RC-2041", contract: "ACME-2026", start: "08/01/2026", end: "07/31/2027", qty: "5", rate: "$120.00", ssp: "$150.00", quote: "Q-8841", discount: "10%" },
+  { id: "105540", product: "Usage — API Calls", rc: "—", contract: "ACME-2026", start: "08/01/2026", end: "—", qty: "1", rate: "$0.002", ssp: "—", quote: "—", discount: "—" },
+  { id: "105541", product: "Support — Premium", rc: "RC-2042", contract: "—", start: "09/01/2026", end: "08/31/2027", qty: "1", rate: "$500.00", ssp: "$500.00", quote: "Q-8850", discount: "—" },
+  { id: "105542", product: "Onboarding Services", rc: "—", contract: "—", start: "08/15/2026", end: "—", qty: "2", rate: "$2,000.00", ssp: "—", quote: "Q-8852", discount: "5%" },
+  { id: "105543", product: "Cloud Storage Pro", rc: "RC-2043", contract: "ACME-2026", start: "08/01/2026", end: "07/31/2027", qty: "10", rate: "$1,200.00", ssp: "$1,200.00", quote: "Q-8861", discount: "—" },
+  { id: "105544", product: "Data Egress", rc: "—", contract: "ACME-2026", start: "08/01/2026", end: "—", qty: "1", rate: "$0.09", ssp: "—", quote: "—", discount: "—" },
+  { id: "105545", product: "SSO Add-on", rc: "RC-2044", contract: "—", start: "08/01/2026", end: "07/31/2027", qty: "1", rate: "$300.00", ssp: "$300.00", quote: "Q-8863", discount: "—" },
+  { id: "105546", product: "Audit Log Retention", rc: "—", contract: "ACME-2026", start: "09/01/2026", end: "08/31/2027", qty: "1", rate: "$600.00", ssp: "$600.00", quote: "—", discount: "—" },
+  { id: "105547", product: "Sandbox Environment", rc: "—", contract: "—", start: "08/10/2026", end: "—", qty: "3", rate: "$150.00", ssp: "—", quote: "Q-8867", discount: "15%" },
+  { id: "105548", product: "Priority Routing", rc: "RC-2045", contract: "ACME-2026", start: "08/01/2026", end: "07/31/2027", qty: "1", rate: "$250.00", ssp: "$250.00", quote: "Q-8870", discount: "—" },
+  { id: "105549", product: "Extra Seats", rc: "—", contract: "ACME-2026", start: "08/01/2026", end: "—", qty: "25", rate: "$12.00", ssp: "$15.00", quote: "Q-8871", discount: "20%" },
+  { id: "105550", product: "Analytics Pack", rc: "RC-2046", contract: "—", start: "09/01/2026", end: "08/31/2027", qty: "1", rate: "$400.00", ssp: "$400.00", quote: "—", discount: "—" },
+  { id: "105551", product: "Backup Vault", rc: "—", contract: "—", start: "08/01/2026", end: "—", qty: "2", rate: "$80.00", ssp: "—", quote: "—", discount: "—" },
+  { id: "105552", product: "Custom Domain", rc: "—", contract: "ACME-2026", start: "08/20/2026", end: "—", qty: "1", rate: "$50.00", ssp: "—", quote: "Q-8874", discount: "—" },
+  { id: "105553", product: "Webhook Events", rc: "—", contract: "—", start: "08/01/2026", end: "—", qty: "1", rate: "$0.001", ssp: "—", quote: "—", discount: "—" },
+  { id: "105554", product: "Advanced Reporting", rc: "RC-2047", contract: "ACME-2026", start: "09/01/2026", end: "08/31/2027", qty: "1", rate: "$350.00", ssp: "$350.00", quote: "Q-8880", discount: "—" },
+  { id: "105555", product: "Premium SLA", rc: "RC-2048", contract: "—", start: "08/01/2026", end: "07/31/2027", qty: "1", rate: "$900.00", ssp: "$900.00", quote: "Q-8882", discount: "10%" },
+  { id: "105556", product: "Training Credits", rc: "—", contract: "—", start: "08/05/2026", end: "—", qty: "4", rate: "$250.00", ssp: "—", quote: "—", discount: "—" },
+  { id: "105557", product: "Dedicated IP", rc: "—", contract: "ACME-2026", start: "08/01/2026", end: "—", qty: "1", rate: "$75.00", ssp: "—", quote: "—", discount: "—" },
+];
+const FLOW_PRODUCT_COLUMNS: TableColumn[] = [
+  { key: "pid", header: "ID" }, { key: "product", header: "Product" }, { key: "rc", header: "Revenue contract" }, { key: "contract", header: "Contract" },
+  { key: "start", header: "Start date" }, { key: "end", header: "End date" }, { key: "qty", header: "Quantity", numeric: true },
+  { key: "rate", header: "Rate", numeric: true }, { key: "ssp", header: "SSP", numeric: true }, { key: "quote", header: "Quote" },
+  { key: "discount", header: "Discount", numeric: true }, { key: "actions", header: "Actions", align: "end", width: "112px" },
+];
+const FLOW_ROW_MENU = [{ label: "Copy", icon: "content_copy" }, { label: "Delete", icon: "delete", variant: "danger" as const }];
+const flowProductRow = (p: FlowProduct): TableRow => ({
+  id: p.id, pid: p.id,
+  product: <Cell type="link" label={p.product} onClick={() => {}} />,
+  rc: p.rc, contract: p.contract, start: p.start, end: p.end, qty: p.qty, rate: p.rate, ssp: p.ssp,
+  quote: p.quote === "—" ? "—" : <Cell type="link" label={p.quote} onClick={() => {}} />,
+  discount: p.discount,
+  actions: <Cell type="actionIcons" align="end" actions={[{ label: "Edit", icon: "edit" }]} menu={FLOW_ROW_MENU} />,
+});
+
+const FLOW_TIME_ZONES = [{ value: "asia-bangkok", label: "Asia/Bangkok" }, { value: "america-denver", label: "America/Denver" }, { value: "europe-london", label: "Europe/London" }];
+const FLOW_CURRENCIES = [{ value: "usd", label: "USD · US Dollar" }, { value: "eur", label: "EUR · Euro" }, { value: "gbp", label: "GBP · Pound sterling" }];
+const FLOW_CYCLES = [{ value: "monthly", label: "MONTHLY" }, { value: "quarterly", label: "QUARTERLY" }, { value: "annually", label: "ANNUALLY" }];
+const FLOW_NONE = [{ value: "none", label: "None" }];
+const FLOW_LEGAL_ENTITIES: TableRow[] = [
+  { id: "le-1", name: "Parent Co", country: "United States" },
+  { id: "le-2", name: "EU Subsidiary", country: "Ireland" },
+  { id: "le-3", name: "APAC Holdings", country: "Singapore" },
+];
+const FLOW_LEGAL_COLUMNS: TableColumn[] = [{ key: "name", header: "Legal entity" }, { key: "country", header: "Country" }];
+const FLOW_PRODUCT_LOOKUP: TableRow[] = [
+  { id: "pr-1", name: "On-Demand Virtual", category: "Usage" },
+  { id: "pr-2", name: "Platform Access — Gold", category: "Subscription" },
+  { id: "pr-3", name: "Support — Premium", category: "Service" },
+  { id: "pr-4", name: "Cloud Storage Pro", category: "Subscription" },
+  { id: "pr-5", name: "SSO Add-on", category: "Add-on" },
+];
+const FLOW_PRODUCT_LOOKUP_COLUMNS: TableColumn[] = [{ key: "name", header: "Product" }, { key: "category", header: "Category" }];
+const FLOW_CONTRACTS: TableRow[] = [{ id: "ct-1", name: "ACME-2026", term: "12 months" }, { id: "ct-2", name: "ACME-2027", term: "24 months" }];
+const FLOW_CONTRACT_COLUMNS: TableColumn[] = [{ key: "name", header: "Contract" }, { key: "term", header: "Term" }];
+const FLOW_TABS = ["Details", "Contract", "Contacts", "Account Products", "Account Packages", "Revenue Contract", "Account Docs"];
+const FLOW_QUICK_LINKS = ["Tax Related List", "Subscription Configuration", "Customer Portal", "Orders", "Document Information"];
+const flowUsDate = (iso: string) => (iso ? `${iso.slice(5, 7)}/${iso.slice(8, 10)}/${iso.slice(0, 4)}` : "—");
+// A column of Sections, the gap the page keeps between them.
+const flowStack = { display: "flex", flexDirection: "column", gap: "var(--layout-gutter-lg)", minWidth: 0 } as const;
+
+export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?: string; start?: AccountFlowView }) {
+  const [view, setView] = useState<AccountFlowView>(start);
+  const [from, setFrom] = useState(start);
+  const [dark, setDark] = useState(false);
+  const [density, setDensity] = useState<AppHeaderDensity>("default");
+  const [navOpen, setNavOpen] = useState(false);
+  const [accounts, setAccounts] = useState(FLOW_ACCOUNTS);
+  const [productsBy, setProductsBy] = useState<Record<string, FlowProduct[]>>({ "72082": FLOW_PRODUCTS });
+  const [accountId, setAccountId] = useState("72082");
+  const [tab, setTab] = useState("details");
+  const [notice, setNotice] = useState("");
+  const [query, setQuery] = useState("");
+  const [listPage, setListPage] = useState(1);
+  const [listSize, setListSize] = useState(10);
+  const [prodPage, setProdPage] = useState(1);
+  const [prodSize, setProdSize] = useState(10);
+  // The screen holds whether the top has scrolled away; each pattern only reports the crossing.
+  const [compact, setCompact] = useState(false);
+  const newAccountForm = useId();
+  const newProductForm = useId();
+
+  const go = (next: AccountFlowView) => { setCompact(false); setView(next); };
+  // The Start control in the playground jumps to a page.
+  if (from !== start) { setFrom(start); go(start); }
+  const account = accounts.find((a) => a.id === accountId) ?? accounts[0];
+  const products = productsBy[account.id] ?? [];
+  const toList = () => { setNotice(""); go("list"); };
+  const openAccount = (id: string, toTab = "details") => { setAccountId(id); setTab(toTab); setProdPage(1); setNotice(""); go("account"); };
+
+  // Accounts list.
+  const found = accounts.filter((a) => `${a.id} ${a.name}`.toLowerCase().includes(query.toLowerCase()));
+  const listStart = (listPage - 1) * listSize;
+  const listRows: TableRow[] = found.slice(listStart, listStart + listSize).map((a) => ({
+    id: a.id,
+    // The ID is a link Cell: blue, so it reads as the way into the account.
+    accountId: <Cell type="link" label={a.id} onClick={() => openAccount(a.id)} />,
+    name: a.name, type: "ACCOUNT", cycle: "MONTHLY",
+    status: <Cell type="badge" label="Active" tone="success" />,
+    approval: a.approval ? <Cell type="badge" label={a.approval} tone="neutral" /> : "—",
+    actions: <Cell type="actionIcons" align="end" actions={[{ label: "Edit", icon: "edit", onClick: () => openAccount(a.id) }]} menu={FLOW_ROW_MENU} />,
+  }));
+  const listHeader = (
+    // The page's own actions live here, not in the Toolbar, which keeps finding and viewing.
+    <PageHeader
+      icon="folder_open" title="Account" sticky={compact}
+      breadcrumbs={[{ label: "Accounts", onClick: toList }, { label: "Manage Accounts", onClick: toList }]}
+      actions={<><Button size="sm" iconStart="download">Export</Button><Button size="sm" variant="primary" iconStart="add" onClick={() => go("newAccount")}>New</Button></>}
+    />
+  );
+  const list = (
+    <ListPage
+      label="Accounts"
+      toolbar={
+        <Toolbar
+          label="Accounts"
+          filters={<DropdownMenu trigger="filter" size="sm" label="Status" items={[{ id: "active", label: "Active" }, { id: "inactive", label: "Inactive" }]} onSelect={() => {}} />}
+          searchValue={query} onSearchChange={(v) => { setQuery(v); setListPage(1); }} searchPlaceholder="Search in list"
+          views={[{ id: "list", label: "List View" }, { id: "table", label: "Table View" }]} onRefresh={() => {}}
+        />
+      }
+      pagination={<Pagination total={found.length} page={listPage} onPageChange={setListPage} pageSize={listSize} onPageSizeChange={(n) => { setListSize(n); setListPage(1); }} label="Accounts" />}
+    >
+      <Table columns={FLOW_ACCOUNT_COLUMNS} rows={listRows} emptyLabel="No accounts match the search." />
+    </ListPage>
+  );
+
+  // One account.
+  const tabs: TabItem[] = FLOW_TABS.map((label) => {
+    const id = label === "Details" ? "details" : label === "Account Products" ? "products" : label.toLowerCase().replace(/\s+/g, "-");
+    return id === "products" ? { id, label, count: products.length, countLabel: "products" } : { id, label };
+  });
+  const tabLabel = tabs.find((t) => t.id === tab)?.label ?? "Details";
+  const details = (
+    <div className="layout-split layout-split--primary">
+      <div style={flowStack}>
+        <Section title="Account information" collapsible>
+          <Form columns={2}>
+            <FormDisplay label="Account name" value={account.name} />
+            <FormDisplay label="Account type" value="ACCOUNT" />
+            <FormDisplay label="View recent invoices" value="Invoices" />
+            <FormDisplay label="Total due in collections" value="$0.00" />
+            <FormDisplay label="Account ledger number" value="65550" />
+            <FormDisplay label="Status" value={<Badge tone="success">Active</Badge>} />
+            <FormDisplay label="Legal entity" value="Parent Co" />
+            <FormDisplay label="Invoicing time zone" value="Asia/Bangkok" />
+            <FormDisplay label="Invoice currency" value="Dollars" />
+            <FormDisplay label="Reporting currency" value="USD" />
+          </Form>
+        </Section>
+        <Section title="Billing profile" collapsible defaultOpen={false}>
+          <Form columns={2}>
+            <FormDisplay label="Default billing cycle" value="MONTHLY" />
+            <FormDisplay label="Billing cycle closing day" value="31" />
+            <FormDisplay label="Payment terms (net)" value="30" />
+            <FormDisplay label="Payment method" value="Manual payment" />
+            <FormDisplay label="Invoice template" value="Standard invoice" />
+            <FormDisplay label="Dunning process" value="None" />
+          </Form>
+        </Section>
+        <Section title="Invoices" collapsible defaultOpen={false}>
+          <Table
+            columns={[{ key: "invoice", header: "Invoice" }, { key: "date", header: "Date" }, { key: "amount", header: "Amount", numeric: true }, { key: "status", header: "Status" }]}
+            rows={[
+              { id: "i1", invoice: <Cell type="link" label="INV-30211" onClick={() => {}} />, date: "08/31/2026", amount: "$10.15", status: <Cell type="badge" label="Open" tone="info" /> },
+              { id: "i2", invoice: <Cell type="link" label="INV-29874" onClick={() => {}} />, date: "07/31/2026", amount: "$1,240.00", status: <Cell type="badge" label="Paid" tone="success" /> },
+            ]}
+          />
+        </Section>
+        <Section title="Account products" collapsible defaultOpen={false}>
+          <Table columns={FLOW_PRODUCT_COLUMNS.slice(0, 5)} rows={products.slice(0, 5).map(flowProductRow)} emptyLabel="No products on this account yet." />
+        </Section>
+      </div>
+      <div style={flowStack}>
+        <Section title="System information">
+          <Form>
+            <FormDisplay label="Account ID" value={account.id} />
+            <FormDisplay label="Created by" value="Admin · 08/29/2022" />
+            <FormDisplay label="Modified by" value="Admin · 09/15/2024" />
+          </Form>
+        </Section>
+        <Section title="Payments & aging">
+          <Form labelPosition="start">
+            <FormDisplay label="Current" value="$10.15" />
+            <FormDisplay label="1–30" value="$0.00" />
+            <FormDisplay label="31–60" value="$0.00" />
+            <FormDisplay label="61–90" value="$0.00" />
+            <FormDisplay label="90+" value="$0.00" />
+            <FormDisplay label="Total balance" value="$10.15" />
+          </Form>
+        </Section>
+        <Section title="Shipping address">
+          <FormDisplay label="Address" value={<>{account.name}<br />123 Market Street, Suite 400<br />San Francisco, CA 94105<br />United States</>} />
+        </Section>
+        <Section title="Quick links">
+          <Table columns={[{ key: "link", header: "Page" }]} rows={FLOW_QUICK_LINKS.map((l) => ({ id: l, link: <Cell type="link" label={l} onClick={() => {}} /> }))} />
+        </Section>
+      </div>
+    </div>
+  );
+  const prodStart = (prodPage - 1) * prodSize;
+  const productList = (
+    <Section title="Account products" description={`${products.length} records on this account`}>
+      <Table columns={FLOW_PRODUCT_COLUMNS} rows={products.slice(prodStart, prodStart + prodSize).map(flowProductRow)} emptyLabel="No products on this account yet." />
+      <Pagination total={products.length} page={prodPage} onPageChange={setProdPage} pageSize={prodSize} onPageSizeChange={(n) => { setProdSize(n); setProdPage(1); }} label="Account products" />
+    </Section>
+  );
+  const record = (
+    <RecordPage
+      label="Account" onStickyChange={setCompact}
+      header={
+        <PageHeader
+          breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", onClick: toList }]}
+          title={account.name} badge="Active" badgeTone="success" sticky={compact}
+          moreActions={[{ id: "edit", label: "Edit", icon: "edit" }, { divider: true }, { id: "delete", label: "Delete", icon: "delete", danger: true }]} onMoreSelect={() => {}}
+          actions={
+            <>
+              <Button size="sm" iconStart="content_copy">Copy</Button>
+              {tab === "products"
+                ? <Button size="sm" variant="primary" iconStart="add" onClick={() => go("newProduct")}>New account product</Button>
+                : <Button size="sm" variant="primary" iconStart="add" onClick={() => go("newAccount")}>New</Button>}
+            </>
+          }
+        />
+      }
+      tabs={<Tabs label="What belongs to this account" items={tabs} value={tab} onChange={setTab} />}
+      notice={notice ? <Alert tone="success" dismissible onDismiss={() => setNotice("")}>{notice}</Alert> : undefined}
+      summary={
+        tab === "details" ? (
+          <Scoreboard
+            label="Account numbers"
+            items={[
+              { id: "name", title: "Name", metric: account.name, metadata: "Monthly" },
+              { id: "revenue", title: "Total revenue", metric: "$500,634.36", metadata: "Lifetime" },
+              { id: "balance", title: "Outstanding balance", metric: "$0.00", metadata: "Current" },
+              { id: "activated", title: "Activated", metric: "08/29/2022", metadata: "Since" },
+              { id: "next", title: "Next payment", metric: "08/29/2022" },
+            ]}
+          />
+        ) : undefined
+      }
+    >
+      {tab === "details" ? details : tab === "products" ? productList : (
+        <Section title={tabLabel}>
+          <Empty icon="folder_open" title={`No ${tabLabel.toLowerCase()} yet`} description={`${tabLabel} for this account show here.`} />
+        </Section>
+      )}
+    </RecordPage>
+  );
+
+  // New account.
+  const newAccountSections = [
+    {
+      title: "Account information", collapsible: true,
+      content: (
+        <>
+          <Input label="Account name" name="name" placeholder="e.g. Acme Corp" required />
+          <Select label="Account type" name="type" options={[{ value: "account", label: "ACCOUNT" }]} defaultValue="account" />
+          <Lookup label="Parent account" name="parent" columns={ACCOUNT_LOOKUP_COLUMNS} rows={PARENT_ACCOUNTS} clearable />
+          <Lookup label="Legal entity" name="legalEntity" columns={FLOW_LEGAL_COLUMNS} rows={FLOW_LEGAL_ENTITIES} clearable />
+          <Select label="Invoicing time zone" name="timeZone" options={FLOW_TIME_ZONES} defaultValue="asia-bangkok" />
+          <Select label="Invoice currency" name="currency" options={FLOW_CURRENCIES} defaultValue="usd" />
+          <Input label="External account ID" name="externalId" placeholder="Enter a value" />
+          <Input label="Tax ID" name="taxId" placeholder="Enter a value" />
+          <Input label="Customer characteristic" name="characteristic" placeholder="Enter a value" />
+          <Input label="Vendor customer number" name="vendorNumber" placeholder="Enter a value" />
+          <Checkbox label="Restrict rate hierarchy" name="restrictRates" />
+          <Checkbox label="Allow different currency" name="differentCurrency" />
+        </>
+      ),
+    },
+    {
+      title: "Billing profile", collapsible: true,
+      content: (
+        <>
+          <Select label="Default billing cycle" name="cycle" options={FLOW_CYCLES} defaultValue="monthly" />
+          <Select label="Billing cycle closing day" name="closingDay" options={CLOSING_DAYS} defaultValue="31" />
+          <Input label="Payment terms (net)" name="terms" placeholder="e.g. 30" />
+          <Lookup label="Invoice template" name="template" columns={TEMPLATE_COLUMNS} rows={INVOICE_TEMPLATES} clearable />
+          <RadioGroup legend="Payment method" name="paymentMethod" orientation="horizontal" defaultValue="manual" options={[{ value: "electronic", label: "Electronic payment" }, { value: "manual", label: "Manual payment" }]} />
+          <RadioGroup legend="Payment and credit allocation method" name="allocation" orientation="horizontal" defaultValue="invoice" options={[{ value: "invoice", label: "Allocate to invoice" }, { value: "detail", label: "Allocate to invoice detail" }]} />
+          <Select label="E-invoice profile" name="eInvoice" options={FLOW_NONE} defaultValue="none" />
+          <Select label="Dunning process" name="dunning" options={FLOW_NONE} defaultValue="none" />
+          <Select label="Tax engine" name="taxEngine" options={[{ value: "na", label: "N/A (not applicable)" }]} defaultValue="na" />
+          <Input label="PO number" name="po" placeholder="Enter a value" />
+          <Input label="Invoice file format" name="fileFormat" placeholder="Enter a value" />
+          <Checkbox label="Deliver invoices by email" name="deliverEmail" />
+          <Checkbox label="Deliver invoices by mail" name="deliverMail" />
+          <Checkbox label="Manual closing" name="manualClosing" defaultChecked />
+          <Checkbox label="Approve invoices before delivery" name="approve" defaultChecked />
+          <Checkbox label="Allow event based billing" name="eventBilling" />
+          <Checkbox label="Disable PDF generation on invoice close" name="noPdf" />
+        </>
+      ),
+    },
+    {
+      title: "Billing contact", collapsible: true,
+      content: (
+        <>
+          <Input label="Bill to" name="billTo" placeholder="Enter a value" />
+          <Input label="Attn" name="attn" placeholder="Enter a value" />
+          <Input label="Email" name="email" type="email" placeholder="Enter a value" />
+          <Input label="Phone" name="phone" placeholder="Enter a value" />
+          <Input label="Address 1" name="address1" placeholder="Enter a value" />
+          <Input label="Address 2" name="address2" placeholder="Enter a value" />
+          <Input label="City" name="city" placeholder="Enter a value" />
+          <Input label="State / Province" name="state" placeholder="Enter a value" />
+          <Input label="ZIP / Postal code" name="zip" placeholder="Enter a value" />
+          <Select label="Country" name="country" options={COUNTRIES} placeholder="Select a country" />
+          <Input label="Fax" name="fax" placeholder="Enter a value" />
+        </>
+      ),
+    },
+    {
+      title: "Shipping address", collapsible: true, defaultOpen: false,
+      content: (
+        <>
+          <Input label="Address 1" name="shipAddress1" placeholder="Enter a value" />
+          <Input label="Address 2" name="shipAddress2" placeholder="Enter a value" />
+          <Input label="City" name="shipCity" placeholder="Enter a value" />
+          <Input label="ZIP / Postal code" name="shipZip" placeholder="Enter a value" />
+        </>
+      ),
+    },
+    {
+      title: "Statement configuration", collapsible: true, defaultOpen: false,
+      content: (
+        <>
+          <Select label="Statement run" name="statementRun" options={STATEMENT_RUNS} defaultValue="monthly" />
+          <Checkbox label="Include zero balances" name="zeroBalance" />
+        </>
+      ),
+    },
+    {
+      title: "Locale information", collapsible: true, defaultOpen: false,
+      content: <Select label="Date format" name="dateFormat" options={DATE_FORMATS} defaultValue="mdy" />,
+    },
+  ];
+  const newAccount = (
+    <FormPage
+      label="New account" onStickyChange={setCompact}
+      header={
+        <PageHeader
+          breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", onClick: toList }]} title="New account" sticky={compact}
+          actions={<><Button size="sm" onClick={toList}>Cancel</Button><Button size="sm" variant="primary" type="submit" form={newAccountForm}>Submit</Button></>}
+        />
+      }
+      notice={<Alert tone="info">Use this form to manage general account information as well as the default billing information for the account.</Alert>}
+    >
+      <Form
+        id={newAccountForm} columns={2} sections={newAccountSections}
+        onSubmit={(data) => {
+          const name = String(data.get("name") || "").trim() || "New account";
+          const id = String(Math.max(...accounts.map((a) => Number(a.id))) + 1);
+          setAccounts((old) => [{ id, name }, ...old]);
+          setProductsBy((old) => ({ ...old, [id]: [] }));
+          openAccount(id);
+          setNotice(`Created account ${name}.`);
+        }}
+      />
+    </FormPage>
+  );
+
+  // New product on the account.
+  const newProduct = (
+    <FormPage
+      label="New account product" onStickyChange={setCompact}
+      header={
+        <PageHeader
+          breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", onClick: toList }, { label: account.name, onClick: () => openAccount(account.id, "products") }]}
+          title="New account product" badge="Active" badgeTone="success" sticky={compact}
+          actions={<><Button size="sm" onClick={() => openAccount(account.id, "products")}>Cancel</Button><Button size="sm" variant="primary" type="submit" form={newProductForm}>Next</Button></>}
+        />
+      }
+    >
+      <Form
+        id={newProductForm} columns={2}
+        sections={[{
+          title: "Product details", collapsible: true,
+          content: (
+            <>
+              <Lookup label="Product" name="product" columns={FLOW_PRODUCT_LOOKUP_COLUMNS} rows={FLOW_PRODUCT_LOOKUP} placeholder="On-Demand Virtual" required clearable />
+              <Lookup label="Look up contract" name="contract" columns={FLOW_CONTRACT_COLUMNS} rows={FLOW_CONTRACTS} clearable />
+              <DatePicker label="Start date" name="start" required />
+              <DatePicker label="End date" name="end" />
+              <Select label="Rating method" name="rating" options={[{ value: "default", label: "Use default rating method" }, { value: "tiered", label: "Tiered" }, { value: "flat", label: "Flat rate" }]} defaultValue="default" />
+            </>
+          ),
+        }]}
+        onSubmit={(data) => {
+          const picked = FLOW_PRODUCT_LOOKUP.find((r) => r.id === data.get("product"));
+          const contract = FLOW_CONTRACTS.find((r) => r.id === data.get("contract"));
+          const name = String(picked?.name ?? "On-Demand Virtual");
+          const all = Object.values(productsBy).flat();
+          const id = String(Math.max(105557, ...all.map((p) => Number(p.id))) + 1);
+          const row: FlowProduct = {
+            id, product: name, rc: "—", contract: String(contract?.name ?? "—"),
+            start: flowUsDate(String(data.get("start") ?? "")), end: flowUsDate(String(data.get("end") ?? "")),
+            qty: "1", rate: "—", ssp: "—", quote: "—", discount: "—",
+          };
+          setProductsBy((old) => ({ ...old, [account.id]: [row, ...(old[account.id] ?? [])] }));
+          openAccount(account.id, "products");
+          setNotice(`Added ${name} to ${account.name}.`);
+        }}
+      />
+    </FormPage>
+  );
+
+  return (
+    <div
+      data-theme={dark ? "dark" : undefined}
+      style={{
+        height: 900, width: STAGE_WIDTHS[stage] ?? "100%", maxWidth: "100%", marginInline: "auto",
+        border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden",
+      }}
+    >
+      <AppShell
+        header={
+          <AppHeader
+            navOpen={navOpen} onNavToggle={() => setNavOpen((o) => !o)}
+            environment="UAT-2" searchShortcut="Ctrl+K" searchGroups={SHELL_SEARCH} searchScopes={SHELL_SEARCH_SCOPES}
+            actions={SHELL_HEADER_ACTIONS} onAction={() => {}}
+            user={{ name: "Ana Petrovic" }} company={{ name: "Northwind Holdings" }}
+            darkMode={dark} onDarkModeChange={setDark}
+            density={density} onDensityChange={setDensity}
+            onUserSettings={() => {}} onLogout={() => {}}
+          />
+        }
+        nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current="accounts-account" onNavigate={(id) => { if (id === "accounts-account") toList(); }} expanded={navOpen} />}
+        navOpen={navOpen} onNavClose={() => setNavOpen(false)}
+        // Only the list's header sits in the frame; the record and the forms carry their own.
+        pageHeader={view === "list" ? listHeader : undefined}
+        onPageHeaderStick={view === "list" ? setCompact : undefined}
+      >
+        <AccountFlow view={view} list={list} account={record} newAccount={newAccount} newProduct={newProduct} />
       </AppShell>
     </div>
   );

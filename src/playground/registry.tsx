@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
-import { SIDE_NAV_SECTIONS, SIDE_NAV_END, AppShellDemo, DashboardDemo, FormPageDemo, GuidedProcessDemo, GuidedProcessPageDemo, SettingsPageDemo, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { SIDE_NAV_SECTIONS, SIDE_NAV_END, AppShellDemo, DashboardDemo, FormPageDemo, AccountFlowDemo, GuidedProcessDemo, GuidedProcessPageDemo, SettingsPageDemo, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -1164,6 +1164,38 @@ export const registry: Record<string, Entry> = {
         <PageHeader title="Create account" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]} actions={<><Button size="sm">Cancel</Button><Button size="sm" variant="primary">Create</Button></>} />
         <Input size="sm" label="Account name" labelPosition="start" placeholder="Enter a value" required />
         <Select size="sm" label="Status" labelPosition="start" options={[{ value: "active", label: "Active" }, { value: "pending", label: "Pending" }]} defaultValue="active" />
+      </div>
+    ),
+  },
+  AccountFlow: {
+    // The flow in the frame, walked the way a screen would walk it: which page is showing and what was saved
+    // live in the screen.
+    render: ({ stage, start }) => (
+      <AccountFlowDemo
+        stage={String(stage ?? "desktop")}
+        start={start === "account" || start === "newAccount" || start === "newProduct" ? start : "list"}
+      />
+    ),
+    preview: {},
+    hide: ["view", "list", "account", "newAccount", "newProduct"],
+    extras: {
+      start: { values: ["list", "account", "newAccount", "newProduct"], default: "list" },
+      stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" },
+    },
+    hint: "Walk the accounts flow: open an account from its blue Account ID, switch to Account Products and add one with New account product, or press New for a new account and Submit it. Cancel and the trail go back. Start jumps straight to a page; Stage narrows the box the frame lives in.",
+    block: true,
+    wide: true,
+    page: <AccountFlowDemo />,
+    card: (
+      <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
+        <PageHeader icon="folder_open" title="Account" actions={<><Button size="sm">Export</Button><Button size="sm" variant="primary">New</Button></>} />
+        <Table
+          size="sm" columns={[{ key: "accountId", header: "Account ID" }, { key: "name", header: "Account name" }]}
+          rows={[
+            { id: "72082", accountId: <Cell type="link" size="sm" label="72082" onClick={() => {}} />, name: "Anton Test BI Aug05" },
+            { id: "72081", accountId: <Cell type="link" size="sm" label="72081" onClick={() => {}} />, name: "Anton Test Rob Sub 8" },
+          ]}
+        />
       </div>
     ),
   },
