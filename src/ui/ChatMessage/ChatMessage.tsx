@@ -85,11 +85,11 @@ export function ChatMessage({
   const body = status ?? text;
   // While it is working there is nothing to copy or vote on yet, so the buttons wait.
   const keys = actions ?? (mine || status ? [] : (["copy", "up", "down", "share", "speak"] as ChatMessageActionId[]));
-  const who = label ?? (mine ? person?.name ?? "You" : "BP AI");
+  const who = label ?? (mine ? person?.name ?? "You" : "Assistant");
 
   const avatar = mine
     ? <Avatar shape="square" name={person?.name ?? "You"} src={person?.src} initials={person?.initials} />
-    : <span className={styles.aiMark}><LogoAI variant="symbol" tone="filled" label="BP AI" /></span>;
+    : <span className={styles.aiMark}><LogoAI variant="symbol" tone="filled" label="Assistant" /></span>;
 
   return (
     <article className={[styles.message, mine ? styles.mine : styles.theirs].join(" ")} aria-label={`${who} said`}>
@@ -129,9 +129,11 @@ export function ChatMessage({
             <div className={styles.actions}>
               {keys.map((k) => (
                 <Tooltip key={k} content={ACTIONS[k].label}>
-                  <span className={pressed.includes(k) ? styles.pressed : undefined}>
-                    <Button size="sm" variant="tertiary" iconOnly iconStart={ACTIONS[k].icon} onClick={() => onAction?.(k)}>{ACTIONS[k].label}</Button>
-                  </span>
+                  <Button
+                    size="sm" variant="tertiary" iconOnly iconStart={ACTIONS[k].icon} pressed={pressed.includes(k)} onClick={() => onAction?.(k)}
+                  >
+                    {ACTIONS[k].label}
+                  </Button>
                 </Tooltip>
               ))}
             </div>

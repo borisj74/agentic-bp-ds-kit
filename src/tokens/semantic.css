@@ -472,7 +472,7 @@
   --text-neutral-subtle: var(--ui-neutral-500);
   --text-neutral: var(--ui-neutral-700);
   --text-neutral-strong: var(--ui-neutral-900);
-  --text-neutral-intense: var(--ui-neutral-50);
+  --text-neutral-intense: var(--ui-neutral-900);
   --text-brand-faint: var(--ui-brand-300);
   --text-brand-subtle: var(--ui-brand-400);
   --text-brand: var(--ui-brand-600);

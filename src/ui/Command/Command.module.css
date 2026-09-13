@@ -85,7 +85,5 @@
 }
 .hint { display: inline-flex; align-items: center; gap: var(--space-xxsmall); }
 
-/* Dark: text-neutral-intense stays dark in the BP palette. */
-:global([data-theme="dark"]) .key { color: var(--text-neutral-strong); }
 
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

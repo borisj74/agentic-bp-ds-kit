@@ -25,10 +25,19 @@ export function GuidedProcessPage({
   view = "step", intro = [], header, children, footer, steps, side = "end", stepsOpen = false, onStepsClose, label,
 }: GuidedProcessPageProps) {
   const drawer = useRef<HTMLDivElement>(null);
-  // Where the steps are a drawer, focus moves into it as it opens, so the keyboard follows the eye.
+  const back = useRef<HTMLElement | null>(null);
+  // Where the steps are a drawer, focus moves into it as it opens, so the keyboard follows the eye. On close it goes
+  // back to what opened it, unless focus has already moved on to something else on the page.
   useEffect(() => {
     const el = drawer.current;
-    if (stepsOpen && el && getComputedStyle(el).position === "absolute") el.focus();
+    if (stepsOpen && el && getComputedStyle(el).position === "absolute") {
+      back.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      el.focus();
+    } else if (!stepsOpen && back.current) {
+      const active = document.activeElement;
+      if (!active || active === document.body || el?.contains(active)) back.current.focus();
+      back.current = null;
+    }
   }, [stepsOpen]);
 
   if (view === "intro") {

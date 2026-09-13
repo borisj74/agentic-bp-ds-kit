@@ -19,7 +19,6 @@
 .page:active { background: var(--bg-neutral-min-press); }
 .page:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--border-width-thin); }
 .page.current { background: var(--bg-neutral-min-selected); border-color: var(--border-brand); color: var(--text-brand-strong); }
-:global([data-theme="dark"]) .page:hover { color: var(--text-neutral-strong); }
 .gap { display: grid; place-items: center; width: var(--control-small); height: var(--control-small); font-size: var(--font-size-small); color: var(--text-neutral); }
 
 .end { display: flex; align-items: center; gap: var(--space-xsmall); }

@@ -964,7 +964,7 @@ export const registry: Record<string, Entry> = {
     page: <ChatWindowDemo started size="panel" />,
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
-        <ChatHeader title="BP AI" chatsCount={7} onNewChat={() => {}} onClose={() => {}} />
+        <ChatHeader title="Assistant" chatsCount={7} onNewChat={() => {}} onClose={() => {}} />
         <ChatMessage author="assistant" text="312 invoices are overdue, worth $1.2M in total." />
       </div>
     ),
@@ -1326,7 +1326,7 @@ export const registry: Record<string, Entry> = {
       stickyPageHeader: { label: "Page header stays put", default: true },
     },
     extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
-    hint: "Open the menu button to widen the rail, walk the side nav, and press Ask BP AI to bring the assistant in beside the page. Scroll the page: the page header stays at the top and shrinks to one compact line whose trail ends in the page name. Stage narrows the box the frame lives in, so watch the rail go on a phone. Width caps the page to a reading column; it does not resize the frame.",
+    hint: "Open the menu button to widen the rail, walk the side nav, and press Ask the assistant to bring the assistant in beside the page. Scroll the page: the page header stays at the top and shrinks to one compact line whose trail ends in the page name. Stage narrows the box the frame lives in, so watch the rail go on a phone. Width caps the page to a reading column; it does not resize the frame.",
     block: true,
     wide: true,
     page: <AppShellDemo assistant stage="desktop" width="full" />,

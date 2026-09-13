@@ -30,7 +30,7 @@ text/neutral/faint|{ui/neutral/300}|{ui/neutral/400}
 text/neutral/subtle|{ui/neutral/400}|{ui/neutral/500}
 text/neutral|{ui/neutral/600}|{ui/neutral/700}
 text/neutral/strong|{ui/neutral/700}|{ui/neutral/900}
-text/neutral/intense|{ui/neutral/800}|{ui/neutral/50}
+text/neutral/intense|{ui/neutral/800}|{ui/neutral/900}
 text/brand/faint|{ui/brand/300}|{ui/brand/300}
 text/brand/subtle|{ui/brand/400}|{ui/brand/400}
 text/brand|{ui/brand/600}|{ui/brand/600}

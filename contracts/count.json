@@ -5,7 +5,7 @@
   "usage": "Use Count for a number next to a nav item, tab, button or icon, like 3 unread. Use Badge for words. Counts above max show as max+ (99+). Pass label so screen readers hear 3 unread messages, not just 3. See contracts/count.json for the full contract.",
   "props": {
     "tone": { "enum": ["info", "danger", "neutral"], "default": "info", "note": "danger for items that need action now. neutral for plain totals." },
-    "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "Heights 16 / 20 / 24. sm and md are the BP Figma count; lg is kit-defined." },
+    "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "Heights 16 / 20 / 24. sm and md are the standard counts; lg is for larger controls." },
     "subtle": { "type": "boolean", "default": false, "note": "Lighter fill. Figma defines it for info and neutral; danger subtle is kit-defined." },
     "disabled": { "type": "boolean", "default": false, "note": "Gray with faint text." },
     "count": { "type": "number", "required": true },
@@ -21,7 +21,7 @@
       { "props": { "tone": "info", "count": 3 } }, { "props": { "tone": "danger", "count": 8 } }, { "props": { "tone": "neutral", "count": 24 } } ] },
     { "title": "Subtle", "usage": "Lighter fill for quieter counts, like totals in a list.", "items": [
       { "props": { "tone": "info", "subtle": true, "count": 3 } }, { "props": { "tone": "danger", "subtle": true, "count": 8 } }, { "props": { "tone": "neutral", "subtle": true, "count": 24 } } ] },
-    { "title": "Sizes", "usage": "sm 16px and md 20px match the BP count; lg 24px is for larger controls. The width grows with the number.", "items": [
+    { "title": "Sizes", "usage": "sm 16px and md 20px are the standard counts; lg 24px is for larger controls. The width grows with the number.", "items": [
       { "props": { "size": "sm", "count": 3 } }, { "props": { "size": "md", "count": 3 } }, { "props": { "size": "lg", "count": 3 } },
       { "props": { "size": "sm", "count": 150 } }, { "props": { "size": "md", "count": 150 } }, { "props": { "size": "lg", "count": 150 } } ] },
     { "title": "Max", "usage": "Counts above max show max+. The default max is 99.", "items": [

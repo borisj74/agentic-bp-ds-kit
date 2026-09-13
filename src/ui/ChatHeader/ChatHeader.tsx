@@ -35,7 +35,7 @@ function options(chats?: number, playbooks?: number, planMode?: boolean): Dropdo
 
 // Figma BP AI header 487:11110: the AI mark and the name, then new chat, full screen, options and close.
 export function ChatHeader({
-  title = "BP AI", onNewChat, expanded = false, onExpandedChange, onClose,
+  title = "Assistant", onNewChat, expanded = false, onExpandedChange, onClose,
   chatsCount, playbooksCount, planMode = false, onPlanModeChange, menu, onMenuSelect, label,
 }: ChatHeaderProps) {
   const items = menu ?? options(chatsCount, playbooksCount, planMode);

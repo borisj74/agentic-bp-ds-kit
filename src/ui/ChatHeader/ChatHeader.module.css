@@ -11,8 +11,6 @@
   flex: 0 1 auto; min-width: 0; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   font-size: var(--font-size-xlarge); font-weight: var(--font-weight-bold); color: var(--text-neutral-intense);
 }
-/* Dark: text-neutral-intense stays dark in the BP palette, so use strong text on the dark bar. */
-:global([data-theme="dark"]) .title { color: var(--text-neutral-strong); }
 
 .flag { flex: none; display: flex; }
 

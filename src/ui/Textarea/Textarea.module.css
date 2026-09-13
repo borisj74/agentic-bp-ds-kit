@@ -32,8 +32,6 @@
 .footer > p { flex: 1; }
 .count { margin-inline-start: auto; font-size: var(--font-size-xsmall); line-height: 1.4; color: var(--text-neutral); }
 
-/* Dark: text-neutral-intense stays dark in the BP palette, so use strong text on the dark field. */
-:global([data-theme="dark"]) .area { color: var(--text-neutral-strong); }
 
 @media (prefers-reduced-motion: reduce) {
   .area { transition: none; }

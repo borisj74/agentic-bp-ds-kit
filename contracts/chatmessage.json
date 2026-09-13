@@ -77,7 +77,7 @@
     },
     "label": {
       "type": "string",
-      "note": "Who the turn is from for screen readers. Without it, the person's name or BP AI."
+      "note": "Who the turn is from for screen readers. Without it, the person's name or Assistant."
     }
   },
   "useWhen": [

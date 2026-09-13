@@ -103,7 +103,7 @@
     },
     "label": {
       "type": "string",
-      "default": "Ask BP AI",
+      "default": "Ask the assistant",
       "note": "Names the field for screen readers."
     }
   },

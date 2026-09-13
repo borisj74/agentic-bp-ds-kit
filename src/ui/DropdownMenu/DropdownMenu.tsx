@@ -161,6 +161,8 @@ export function DropdownMenu({
   });
 
   const onTriggerKey = (e: KeyboardEvent) => {
+    // Keys pressed in the open menu bubble here through the portal; only the trigger's own keys open it.
+    if (panelRef.current?.contains(e.target as Node)) return;
     if (disabled || (e.key !== "ArrowDown" && e.key !== "ArrowUp")) return;
     e.preventDefault();
     focusLast.current = e.key === "ArrowUp";

@@ -21,13 +21,16 @@ export interface ToastProps {
 
 const ICONS: Record<ToastTone, string> = { info: "info", success: "check_circle", warning: "warning", danger: "error" };
 
-// Every Toast portals into one fixed stack at the bottom right, so several stack without a provider.
+// Every Toast portals into one fixed stack at the bottom right, so several stack without a provider. The stack is
+// the live region: it is in the page before any card arrives, so screen readers announce each card that joins it.
 function stack() {
   let el = document.getElementById("kit-toasts");
   if (!el) {
     el = document.createElement("div");
     el.id = "kit-toasts";
     el.className = styles.stack;
+    el.setAttribute("role", "status");
+    el.setAttribute("aria-live", "polite");
     document.body.appendChild(el);
   }
   return el;
@@ -65,7 +68,7 @@ function ToastCard({ onClose, title, description, tone = "info", actionLabel, on
 
   return (
     <div
-      className={[styles.toast, styles[tone]].join(" ")} role={tone === "danger" ? "alert" : "status"} aria-labelledby={titleId}
+      className={[styles.toast, styles[tone]].join(" ")} role={tone === "danger" ? "alert" : undefined} aria-labelledby={tone === "danger" ? titleId : undefined}
       onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={onBlur}
     >
       {duration != null && (

@@ -82,6 +82,8 @@ const addMonths = (d: Date, n: number) => {
   return new Date(d.getFullYear(), d.getMonth() + n, Math.min(d.getDate(), last));
 };
 const dayOf = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+// Laid out, hidden, while today is not known yet: the same on the server and in the first browser render.
+const PLACEHOLDER_DAY = new Date(2000, 0, 1);
 const sameDay = (a: Date, b: Date) => toISO(a) === toISO(b);
 const weekOf = (d: Date, start: CalendarWeekStart) => addDays(dayOf(d), -((d.getDay() - (start === "monday" ? 1 : 0) + 7) % 7));
 const hoursOf = (d: Date) => d.getHours() + d.getMinutes() / 60;
@@ -204,7 +206,8 @@ export function Calendar({
   const formId = useId();
   const now = useNow();
   const [viewState, setViewState] = useState<CalendarView>(defaultView);
-  const [dateState, setDateState] = useState(() => defaultDate ?? toISO(new Date()));
+  // No date given: the calendar opens on today, which is only known in the browser (see useNow).
+  const [dateState, setDateState] = useState<string | null>(defaultDate ?? null);
   const [eventsState, setEventsState] = useState<CalendarEvent[]>(defaultEvents ?? []);
   const [hidden, setHidden] = useState(() => new Set(calendars.filter((c) => c.hidden).map((c) => c.id)));
   const [panel, setPanel] = useState<"calendars" | "event" | null>(null);
@@ -215,9 +218,12 @@ export function Calendar({
   const focusDay = useRef(false);
 
   const view = viewProp ?? viewState;
-  const date = dateProp ?? dateState;
+  const date = dateProp ?? dateState ?? (now ? toISO(now) : "");
   const events = eventsProp ?? eventsState;
-  const focus = parse(date) ?? dayOf(new Date());
+  // Until today is known, lay out a fixed day so the server and the first browser render agree; the calendar stays
+  // hidden until then, so that placeholder day never shows.
+  const pending = !date;
+  const focus = parse(date) ?? PLACEHOLDER_DAY;
   const today = now ? dayOf(now) : null;
 
   const setView = (v: CalendarView) => { if (viewProp === undefined) setViewState(v); onViewChange?.(v); };
@@ -515,7 +521,7 @@ export function Calendar({
   );
 
   return (
-    <section className={styles.calendar} aria-label={label}>
+    <section className={[styles.calendar, pending ? styles.pending : ""].join(" ")} aria-label={label} aria-busy={pending || undefined}>
       <div className={styles.header}>
         <div className={styles.titleRow}>
           <h2 id={titleId} className={styles.title} aria-live="polite">{title}</h2>

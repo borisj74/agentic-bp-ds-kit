@@ -21,8 +21,6 @@
 .text { display: flex; flex-direction: column; gap: var(--space-xxsmall); }
 .metricRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xsmall); min-height: var(--icon-size-medium); }
 .metric { font-size: var(--font-size-regular); font-weight: var(--font-weight-semibold); color: var(--text-neutral-intense); }
-/* Dark: text-neutral-intense stays dark in the BP palette, so use strong text on the dark card. */
-:global([data-theme="dark"]) .metric { color: var(--text-neutral-strong); }
 .meta { font-size: var(--font-size-xsmall); color: var(--text-neutral-faint); }
 
 /* Figma trend 6173:412: arrow and value, then the unit, colored by status. */

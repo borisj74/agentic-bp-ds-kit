@@ -41,7 +41,6 @@
   background: var(--surface-floating); color: var(--text-neutral-intense);
   font-size: var(--font-size-xsmall); line-height: var(--line-height-tight); white-space: nowrap;
 }
-:global([data-theme="dark"]) .tip { color: var(--text-neutral-strong); }
 
 .value { flex: none; font-size: var(--font-size-xsmall); line-height: var(--line-height-tight); color: var(--text-neutral-strong); font-variant-numeric: tabular-nums; }
 

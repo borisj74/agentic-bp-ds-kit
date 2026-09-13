@@ -14,7 +14,7 @@ Invoke with `/prototype-from-kit <what you want to build>`.
 1. **Search the index** — Read `contracts/index.json`. Note the group: `foundations`, `components`, or `patterns`.
 2. **Open contracts** — Read only the 1–2 contract files in `contracts/` that match the UI you need.
 3. **Check patterns** — If a pattern listed under `patterns` in `contracts/index.json` matches the screen, import it from `@/patterns/` instead of hand-rolling the layout.
-4. **Compose from the kit** — `import { Button } from "@/ui/Button/Button"`. Match props exactly to contract enums; do not add variants. Page layout uses the classes in `src/tokens/layout.css` (`layout-app`, `layout-header`, `layout-canvas`, `layout-container`, `layout-workspace`, `layout-content`, `layout-metrics`, `layout-split`); never invent a per-page grid. Read `contracts/layout.json`: `.layout-content` owns edge padding (`--layout-margin-md`, 24px) and between-section gap (`--layout-gutter-lg`, 24px); Section does not.
+4. **Compose from the kit** — `import { Button } from "@/ui/Button/Button"`. Match props exactly to contract enums; do not add variants. Page layout uses the classes in `src/tokens/layout.css` (`layout-app`, `layout-header`, `layout-canvas`, `layout-container-sm` … `layout-container-2xl`, `layout-workspace`, `layout-content`, `layout-metrics`, `layout-split`); never invent a per-page grid. Read `contracts/layout.json`: `.layout-content` owns edge padding (`--layout-margin-md`, 24px) and between-section gap (`--layout-gutter-lg`, 24px); Section does not.
 5. **Stop if missing** — If no contract or pattern covers what you need, stop and ask. Do not scaffold a one-off.
 
 ## Hard rules
@@ -29,13 +29,11 @@ Invoke with `/prototype-from-kit <what you want to build>`.
 
 These pieces and patterns are planned but have no contract in this kit yet. If a screen needs one, stop and ask before going further.
 
-- Components: Chat, InsightCard, DataTable.
+- Components: InsightCard. (Tables are built: use `Table`, or `DataGrid` for editable cells.)
 - Patterns and what they will contain:
-  - `dashboard`
   - `list-detail`
-  - `settings-form` — settings pages: kit `Form` with `sections`, filled with kit `Input` fields (both exist already).
   - `invite-members` — invite / add-people screens (Empty + Modal + Form).
-  - `assistant-workspace` — assistant / insights screens (`layout-workspace` + Chat `radius="none"` rail + two-column InsightCards).
+  - `assistant-workspace` — assistant / insights screens (`layout-workspace` + a `ChatWindow` rail + two-column InsightCards).
   - `empty-first-run` — empty / first-run screens (PageHeader + Empty + one primary that opens a create Modal).
   - `activity` — activity screens (Scoreboard + task cards or list + tabbed DataTable feed).
   - `inbox` — inbox screens (Scoreboard + tabbed Table + detail Section + reply Drawer).

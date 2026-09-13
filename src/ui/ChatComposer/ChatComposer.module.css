@@ -34,7 +34,4 @@
 }
 .spacer { flex: 1 1 auto; }
 
-/* Deep Thought stays lit while it is on. */
-.on { display: inline-flex; border-radius: var(--radius-medium); background: var(--bg-brand-faint); }
-
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

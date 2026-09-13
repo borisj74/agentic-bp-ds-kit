@@ -709,7 +709,7 @@ export function ChatHeaderDemo(p: ChatHeaderProps) {
 }
 
 const START_SUGGESTIONS = [
-  { id: "learn", label: "Learn about BP AI" },
+  { id: "learn", label: "Learn about the assistant" },
   { id: "dashboard", label: "Build a dashboard" },
   { id: "records", label: "Create or update records" },
   { id: "draft", label: "Draft document" },
@@ -780,7 +780,7 @@ export function ChatWindowDemo({ started = false, page = "accounts", size: asked
       <ChatWindow
         {...p}
         size={size} expanded={size === "full"} onExpandedChange={(full) => setSize(full ? "full" : "panel")}
-        title="BP AI" chatsCount={7} playbooksCount={9} planMode={plan} onPlanModeChange={setPlan}
+        title="Assistant" chatsCount={7} playbooksCount={9} planMode={plan} onPlanModeChange={setPlan}
         onNewChat={() => { setTurns([]); setView("chat"); setFreshChat(true); }} onClose={() => setView("chat")}
         onMenuSelect={(id) => { if (id === "chats" || id === "playbooks") setView(view === id ? "chat" : id); }}
         notice={notice ? "AI can make mistakes, verify important information." : undefined}
@@ -966,7 +966,7 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
             sticky={compact}
             actions={
               <>
-                <Button size="sm" iconStart="auto_awesome" onClick={() => setChatOpen((o) => !o)}>Ask BP AI</Button>
+                <Button size="sm" iconStart="auto_awesome" onClick={() => setChatOpen((o) => !o)}>Ask the assistant</Button>
                 <Button size="sm" variant="primary">New invoice</Button>
               </>
             }
@@ -975,7 +975,7 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
         assistantOpen={chatOpen}
         assistant={
           <ChatWindow
-            title="BP AI" chatsCount={7} onClose={() => setChatOpen(false)} onNewChat={() => setTurns([])}
+            title="Assistant" chatsCount={7} onClose={() => setChatOpen(false)} onNewChat={() => setTurns([])}
             notice={notice ? "AI can make mistakes, verify important information." : undefined}
             onNoticeDismiss={() => setNotice(false)}
             empty={<GetStarted onPick={ask} />}
@@ -1281,7 +1281,7 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" 
         <Toolbar
           label="Account details" onRefresh={() => {}}
           moreActions={[{ id: "print", label: "Print", icon: "print" }, { id: "export", label: "Export", icon: "download" }]} onMoreSelect={() => {}}
-          actions={<><Button size="sm">Record payment</Button><Button size="sm" variant="primary" iconStart="add">New invoice</Button></>}
+          actions={<><Button size="sm">Record payment</Button><Button size="sm" iconStart="add">New invoice</Button></>}
         />
       }
       summary={<Scoreboard items={RECORD_NUMBERS} />}
@@ -1474,7 +1474,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
       state={shown}
       label={onDashboards ? name : place.page}
       empty={onDashboards
-        ? <Empty icon="dashboard" title="No dashboard yet" description="Build one from the numbers your team watches every morning." actions={<Button size="sm" variant="primary" iconStart="add">New dashboard</Button>} />
+        ? <Empty icon="dashboard" title="No dashboard yet" description="Build one from the numbers your team watches every morning." actions={<Button size="sm" iconStart="add">New dashboard</Button>} />
         : <Empty icon="construction" title={`${place.page} is not built here`} description="This playground only ships the Home Dashboards page. The frame, the bar and the page header are the kit's own." />}
       toolbar={!onDashboards ? undefined : (
         <Toolbar
@@ -1640,7 +1640,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
             sticky={compact}
             actions={
               <>
-                <Button size="sm" iconStart="auto_awesome" onClick={() => setChatOpen((o) => !o)}>Ask BP AI</Button>
+                <Button size="sm" iconStart="auto_awesome" onClick={() => setChatOpen((o) => !o)}>Ask the assistant</Button>
                 <Button size="sm" variant="primary" iconStart="add">New dashboard</Button>
               </>
             }
@@ -1649,7 +1649,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
         assistantOpen={chatOpen}
         assistant={
           <ChatWindow
-            title="BP AI" chatsCount={7} onClose={() => setChatOpen(false)} onNewChat={() => setTurns([])}
+            title="Assistant" chatsCount={7} onClose={() => setChatOpen(false)} onNewChat={() => setTurns([])}
             notice={chatNotice ? "AI can make mistakes, verify important information." : undefined}
             onNoticeDismiss={() => setChatNotice(false)}
             empty={<GetStarted onPick={ask} />}

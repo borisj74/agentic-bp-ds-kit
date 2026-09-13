@@ -38,7 +38,8 @@ export function useDialog(
     }
     if (e.key !== "Tab") return;
     const root = dialogRef.current;
-    if (!root) return;
+    // A dialog opened from this one (a Lookup in its form) is portaled outside it and keeps its own Tab.
+    if (!root || e.defaultPrevented || !root.contains(e.target as Node)) return;
     const items = [...root.querySelectorAll<HTMLElement>(FOCUSABLE)];
     if (!items.length) { e.preventDefault(); return; }
     const firstItem = items[0];

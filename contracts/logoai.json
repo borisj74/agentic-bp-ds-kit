@@ -1,16 +1,16 @@
 {
   "name": "LogoAI",
   "path": "src/ui/LogoAI/LogoAI.tsx",
-  "intent": "BillingPlatform AI logo for AI features: full logo or icon, in fixed brand colors.",
+  "intent": "AI logo for AI features: full logo or icon, in fixed brand colors.",
   "usage": "Use LogoAI to mark AI features, like an assistant panel header or an AI suggestion. Use Logo for the product brand itself. color is the default. Use white on dark or photo backgrounds, monochrome where color is not allowed, and filled for a stand-alone tile. In dark theme the AI text of the color logo switches to white. See contracts/logoai.json for the full contract.",
   "props": {
     "variant": { "enum": ["default", "symbol"], "default": "default", "note": "default = mark + AI text (55 x 28). symbol = mark only (33 x 28)." },
     "tone": { "enum": ["color", "monochrome", "white", "filled"], "default": "color", "note": "filled = white logo on the brand gradient tile (43 x 23, icon 23 x 23)." },
-    "label": { "type": "string", "default": "BillingPlatform AI", "note": "Accessible name." }
+    "label": { "type": "string", "default": "AI logo", "note": "Accessible name." }
   },
   "useWhen": ["Headers and entry points of AI features.", "Marking content an AI produced or suggested."],
   "doNot": ["Do not recolor, retint or tokenize the logo. Brand colors are fixed.", "Do not redraw it, use an image of it, or paste the SVG into a screen.", "Do not stretch or resize it with custom px.", "Do not use it as the product logo. Use Logo.", "Do not use the deprecated Copilot logo."],
-  "a11y": ["Renders role=img with aria-label (default BillingPlatform AI).", "The SVG inside is aria-hidden.", "When the logo is inside a button or link, the label names it."],
+  "a11y": ["Renders role=img with aria-label (default AI logo).", "The SVG inside is aria-hidden.", "When the logo is inside a button or link, the label names it."],
   "snippet": "<LogoAI />",
   "examples": [
     {

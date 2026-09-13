@@ -6,7 +6,7 @@
   "props": {
     "title": {
       "type": "string",
-      "default": "BP AI",
+      "default": "Assistant",
       "note": "The name beside the mark. It also names the bar and the close button."
     },
     "onNewChat": {
@@ -86,7 +86,7 @@
         },
         {
           "props": {
-            "title": "BP AI",
+            "title": "Assistant",
             "chatsCount": 0,
             "playbooksCount": 0
           }

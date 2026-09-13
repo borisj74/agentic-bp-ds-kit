@@ -2,7 +2,7 @@
   "name": "BadgeAlt",
   "path": "src/ui/BadgeAlt/BadgeAlt.tsx",
   "intent": "Alternate status or category label: tinted fill with a matching border, in three sizes.",
-  "usage": "BadgeAlt is the alternate badge style: a light tint, a matching border and tone-colored text, with a brand tone. Use Badge (the BP badge) by default; use BadgeAlt only where a screen already uses this style. Do not mix Badge and BadgeAlt on one screen. Only dismissible filters are removable. See contracts/badgealt.json for the full contract.",
+  "usage": "BadgeAlt is the alternate badge style: a light tint, a matching border and tone-colored text, with a brand tone. Use Badge by default; use BadgeAlt only where a screen already uses this style. Do not mix Badge and BadgeAlt on one screen. Only dismissible filters are removable. See contracts/badgealt.json for the full contract.",
   "props": {
     "tone": { "enum": ["neutral", "brand", "success", "warning", "danger", "info"], "default": "neutral" },
     "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "Heights about 24 / 28 / 36." },

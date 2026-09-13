@@ -37,8 +37,6 @@
 
 .success { margin: 0; font-size: var(--font-size-xsmall); line-height: 1.4; color: var(--text-success); }
 
-/* Dark: text-neutral-intense stays dark in the BP palette, so use strong text on the dark field. */
-:global([data-theme="dark"]) .area { color: var(--text-neutral-strong); }
 :global([data-theme="dark"]) .success { color: var(--text-success-strong); }
 
 @media (prefers-reduced-motion: reduce) {

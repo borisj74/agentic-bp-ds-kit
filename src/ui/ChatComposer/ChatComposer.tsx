@@ -48,7 +48,7 @@ export function ChatComposer({
   scopeLabel, scoped, defaultScoped = false, onScopedChange, onScopeClose,
   attachments, onAttachmentRemove, addMenu, onAdd,
   selecting = false, onSelectingChange, dictating = false, onDictatingChange,
-  mode = "quick", onModeChange, disabled = false, label = "Ask BP AI",
+  mode = "quick", onModeChange, disabled = false, label = "Ask the assistant",
 }: ChatComposerProps) {
   const uid = useId();
   const field = useRef<HTMLTextAreaElement>(null);
@@ -88,7 +88,8 @@ export function ChatComposer({
     onChange?.("");
   };
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
+    // Enter that confirms a word in an input method (Japanese, Chinese, Korean) is not a send.
+    if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); send(); }
   };
 
   const ask = hints && hints.length > 0 && !text ? hints[hint % hints.length] : placeholder;
@@ -153,14 +154,12 @@ export function ChatComposer({
         </Tooltip>
         {onModeChange && (
           <Tooltip content={mode === "deep" ? "Using Deep Thought" : "Use Deep Thought"}>
-            <span className={mode === "deep" ? styles.on : undefined}>
-              <Button
-                size="sm" variant="tertiary" iconOnly iconStart="psychology" disabled={disabled}
-                onClick={() => onModeChange(mode === "deep" ? "quick" : "deep")}
-              >
-                {mode === "deep" ? "Using Deep Thought" : "Use Deep Thought"}
-              </Button>
-            </span>
+            <Button
+              size="sm" variant="tertiary" iconOnly iconStart="psychology" disabled={disabled} pressed={mode === "deep"}
+              onClick={() => onModeChange(mode === "deep" ? "quick" : "deep")}
+            >
+              Deep Thought
+            </Button>
           </Tooltip>
         )}
         <Tooltip content="Send message">

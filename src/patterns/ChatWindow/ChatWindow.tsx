@@ -33,7 +33,7 @@ export interface ChatWindowProps {
 // the turns, with the ChatComposer at the foot and the ChatList coming in beside or over them.
 // A blueprint only: it composes kit pieces and keeps no state of its own.
 export function ChatWindow({
-  composer, children, empty, panel, panelOpen = false, size = "panel", title = "BP AI",
+  composer, children, empty, panel, panelOpen = false, size = "panel", title = "Assistant",
   notice, onNoticeDismiss, onNewChat, expanded, onExpandedChange, onClose,
   chatsCount, playbooksCount, planMode, onPlanModeChange, menu, onMenuSelect,
 }: ChatWindowProps) {

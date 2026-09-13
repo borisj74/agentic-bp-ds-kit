@@ -41,7 +41,7 @@ function Wordmark() {
   );
 }
 
-export function Logo({ variant = "default", label = "BillingPlatform" }: LogoProps) {
+export function Logo({ variant = "default", label = "Logo" }: LogoProps) {
   return (
     <span className={[styles.logo, styles[variant]].join(" ")} role="img" aria-label={label}>
       <Mark />

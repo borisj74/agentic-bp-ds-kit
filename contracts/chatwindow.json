@@ -43,7 +43,7 @@
     },
     "title": {
       "type": "string",
-      "default": "BP AI",
+      "default": "Assistant",
       "note": "The name in the header."
     },
     "notice": {

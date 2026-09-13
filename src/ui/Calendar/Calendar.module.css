@@ -3,6 +3,8 @@
   display: flex; flex-direction: column; gap: var(--space-medium); width: 100%; min-width: 0;
   font-family: var(--font-sans); color: var(--text-neutral-strong); container-type: inline-size;
 }
+/* Holds its space but draws nothing until the browser knows today (no date given). */
+.pending { visibility: hidden; }
 
 .header { display: flex; flex-direction: column; gap: var(--space-medium); }
 .titleRow { display: flex; align-items: center; gap: var(--space-xxsmall); }

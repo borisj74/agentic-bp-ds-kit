@@ -33,5 +33,3 @@
 
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-/* Dark: text-neutral-intense stays dark in the BP palette, so use strong text on the dark surface. */
-:global([data-theme="dark"]) .heading { color: var(--text-neutral-strong); }

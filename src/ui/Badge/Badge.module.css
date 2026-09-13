@@ -50,9 +50,8 @@
 /* Figma: icon-only strong and faint badges carry a 1px inverse border. */
 .iconOnly.strong:not(.hollow), .iconOnly.faint:not(.hollow) { border-color: var(--icon-neutral-min-static); }
 
-/* Dark theme: BP keeps text/neutral/intense dark, which disappears on dark fills. Light text on subtle, faint and hollow;
-   dark text on strong, whose dark-theme fills are light. Neutral subtle is mid-gray, so it takes dark text too. */
-:global([data-theme="dark"]) .subtle, :global([data-theme="dark"]) .faint, :global([data-theme="dark"]) .hollow { color: var(--text-neutral-strong); }
+/* Dark theme: subtle, faint and hollow keep the light intense text. Strong fills turn light in dark, so they take dark
+   text; neutral subtle is mid-gray, so it takes dark text too. */
 :global([data-theme="dark"]) .subtle.neutral, :global([data-theme="dark"]) .strong:not(.hollow) { color: var(--text-neutral-min); }
 
 /* Disabled looks the same in every tone and emphasis. */

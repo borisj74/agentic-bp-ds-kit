@@ -80,7 +80,7 @@ function Filled({ variant }: { variant: LogoAIVariant }) {
   );
 }
 
-export function LogoAI({ variant = "default", tone = "color", label = "BillingPlatform AI" }: LogoAIProps) {
+export function LogoAI({ variant = "default", tone = "color", label = "AI logo" }: LogoAIProps) {
   return (
     <span className={styles.logo} role="img" aria-label={label}>
       {tone === "filled" ? <Filled variant={variant} /> : <Outline variant={variant} tone={tone} />}

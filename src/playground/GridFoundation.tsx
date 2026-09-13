@@ -49,7 +49,7 @@ const primitiveRows: Section[] = [
   { title: "Widths", prefix: "--grid-width-*", rows: [640, 1024, 1280, 1440, 1920].map((px, i) => ({
     token: `grid-width-${["sm", "md", "lg", "xl", "2xl"][i]}`, value: `${px}px`, visual: "fraction" as const, frac: frac(px),
   })) },
-  { title: "Breakpoints", prefix: "--grid-breakpoint-*", note: "Laptop 1280, desktop 1440 and wide 1920 are the BP viewport widths.", rows: [640, 1024, 1280, 1440, 1920].map((px, i) => ({
+  { title: "Breakpoints", prefix: "--grid-breakpoint-*", note: "Laptop 1280, desktop 1440 and wide 1920 are the base viewport widths.", rows: [640, 1024, 1280, 1440, 1920].map((px, i) => ({
     token: `grid-breakpoint-${["sm", "md", "lg", "xl", "2xl"][i]}`, value: `${px}px`, visual: "fraction" as const, frac: frac(px),
   })) },
 ];

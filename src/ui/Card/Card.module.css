@@ -22,8 +22,6 @@
 .title { font-size: var(--font-size-large); font-weight: var(--font-weight-bold); line-height: var(--line-height-tight); color: var(--text-neutral-intense); }
 .description { font-size: var(--font-size-small); line-height: var(--line-height-tight); }
 .amount { margin: 0; font-size: var(--font-size-regular); font-weight: var(--font-weight-semibold); line-height: var(--line-height-tight); color: var(--text-neutral-intense); font-variant-numeric: tabular-nums; }
-/* Dark: text-neutral-intense stays dark in the BP palette, so use strong text on the dark card. */
-:global([data-theme="dark"]) .title, :global([data-theme="dark"]) .amount { color: var(--text-neutral-strong); }
 
 /* The 72 tile: Figma Avatar icon type, square. The icon tile is white on the brand color. */
 .tile { flex: none; width: var(--card-tile); height: var(--card-tile); border-radius: var(--radius-medium); object-fit: cover; }

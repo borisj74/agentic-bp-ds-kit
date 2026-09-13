@@ -48,9 +48,8 @@
   line-height: var(--line-height-normal); color: var(--text-neutral);
 }
 
-/* The buttons under an answer. A pressed one keeps a tint, like a vote that has been cast. */
+/* The buttons under an answer. A pressed one (Button pressed) keeps a tint, like a vote that has been cast. */
 .actions { display: flex; align-items: center; gap: var(--space-xsmall); }
-.pressed { display: inline-flex; border-radius: var(--radius-medium); background: var(--bg-neutral-intense); }
 
 /* Suggestions: what to ask next, each one a kit Button that sends itself. */
 .suggestions { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-xsmall); }

@@ -8,6 +8,8 @@
 /* min-height sets the row; small block padding keeps 32px content plus the 1px border inside 48 / 56. */
 .sm { --pad-y: var(--space-xxsmall); min-height: var(--cell-height-sm); padding: var(--pad-y) var(--space-small); }
 .md { --pad-y: var(--space-xsmall); min-height: var(--cell-height-md); padding: var(--pad-y) var(--space-small); }
+/* Names a cell drawn without text (file, payment, trend) for screen readers only. */
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 /* Same alignment options as HeaderCell: end for numbers and amounts, center for a checkbox-only column. */
 .start { justify-content: flex-start; text-align: start; }
 .center { justify-content: center; text-align: center; }

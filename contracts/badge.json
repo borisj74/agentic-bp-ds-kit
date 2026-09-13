@@ -2,7 +2,7 @@
   "name": "Badge",
   "path": "src/ui/Badge/Badge.tsx",
   "intent": "Short status or category label. Not a person and not a button.",
-  "usage": "Use Badge for status on rows and cards, and for category or filter labels. Pick the tone from meaning and the emphasis from how loud it should be: subtle is the default, strong for the one thing that must stand out, faint for quiet lists. Only dismissible filters are removable. sm (20px) is the BP Components badge and the default; md and lg are larger kit sizes for roomier layouts. See contracts/badge.json for the full contract.",
+  "usage": "Use Badge for status on rows and cards, and for category or filter labels. Pick the tone from meaning and the emphasis from how loud it should be: subtle is the default, strong for the one thing that must stand out, faint for quiet lists. Only dismissible filters are removable. sm (20px) is the default; md and lg are larger kit sizes for roomier layouts. See contracts/badge.json for the full contract.",
   "props": {
     "tone": {
       "enum": [
@@ -33,7 +33,7 @@
         "lg"
       ],
       "default": "sm",
-      "note": "sm 20px = the BP Figma badge (12px text). md 24px (12px text). lg 28px (14px text). md and lg are kit-defined."
+      "note": "sm 20px is the default (12px text). md 24px (12px text). lg 28px (14px text). md and lg are kit-defined."
     },
     "icon": {
       "type": "string",
@@ -246,7 +246,7 @@
     },
     {
       "title": "Sizes",
-      "usage": "sm is the BP badge and the default. Use md or lg only when the badge sits next to larger text or controls. Keep one size per row.",
+      "usage": "sm is the default. Use md or lg only when the badge sits next to larger text or controls. Keep one size per row.",
       "items": [
         {
           "props": {

@@ -1,15 +1,15 @@
 {
   "name": "Logo",
   "path": "src/ui/Logo/Logo.tsx",
-  "intent": "BillingPlatform brand logo: the full wordmark or the mark alone, in fixed brand colors.",
+  "intent": "Brand logo: the full wordmark or the mark alone, in fixed brand colors.",
   "usage": "Use the default wordmark in app headers and sign-in screens. Use the symbol alone where space is tight, like a collapsed sidebar. Brand colors are fixed and never follow the theme tokens. In dark theme the wordmark text switches to the white reverse; the mark never changes. See contracts/logo.json for the full contract.",
   "props": {
     "variant": { "enum": ["default", "symbol"], "default": "default", "note": "default = mark + wordmark (145 x 28). symbol = mark only (22 x 32 frame)." },
-    "label": { "type": "string", "default": "BillingPlatform", "note": "Accessible name." }
+    "label": { "type": "string", "default": "Logo", "note": "Accessible name." }
   },
   "useWhen": ["App header, sign-in and other brand moments.", "Collapsed navigation or tight spaces, using the symbol."],
   "doNot": ["Do not recolor, retint or tokenize the logo. Brand colors are fixed.", "Do not redraw it, use an image of it, or paste the SVG into a screen. Use this component.", "Do not stretch or resize it with custom px.", "Do not use the symbol where the full wordmark fits and reads better."],
-  "a11y": ["Renders role=img with aria-label (default BillingPlatform).", "The SVGs inside are aria-hidden.", "When the logo is inside a link, the label names the link."],
+  "a11y": ["Renders role=img with aria-label (default Logo).", "The SVGs inside are aria-hidden.", "When the logo is inside a link, the label names the link."],
   "snippet": "<Logo />",
   "examples": [
     {

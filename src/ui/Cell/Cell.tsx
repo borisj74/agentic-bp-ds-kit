@@ -211,8 +211,10 @@ export function Cell({
   );
 
   return (
-    <span className={[styles.cell, styles[size], styles[align], type === "tree" ? styles.tree : ""].join(" ")} aria-label={aria}>
+    <span className={[styles.cell, styles[size], styles[align], type === "tree" ? styles.tree : ""].join(" ")}>
       {lead}
+      {/* A plain span can't carry aria-label, so a cell drawn without text says what it shows in hidden text. */}
+      {aria && <span className={styles.srOnly}>{aria}</span>}
       {(checkbox || type === "checkbox") && (
         <Checkbox size="sm" hideLabel label={`Select ${label || name || "row"}`} checked={checked} defaultChecked={defaultChecked} onChange={onCheckedChange} />
       )}
