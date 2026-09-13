@@ -106,6 +106,7 @@
   ],
   "doNot": [
     "Do not invent a FilterBar, ListToolbar or a local row of controls above a table.",
+    "Do not open the filter bar when the screen loads. It starts closed; people open it with Filters, and filterCount still says the list is narrowed.",
     "Do not put more than one primary Button in actions.",
     "Do not put page titles or breadcrumbs in it. Those are the PageHeader.",
     "Do not use Tabs or ButtonGroup for the view picker. Pass views.",

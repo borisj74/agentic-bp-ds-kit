@@ -1061,7 +1061,7 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
       label="Invoices"
       toolbar={
         <Toolbar
-          label="Invoices" filters={<>{chips}</>} filterCount={FILTER_SETS.filter((f) => values[f.id] && !off[f.id]).length} defaultFiltersOpen
+          label="Invoices" filters={<>{chips}</>} filterCount={FILTER_SETS.filter((f) => values[f.id] && !off[f.id]).length}
           onReset={() => { setValues({}); setOff({}); }} onApply={() => {}}
           searchValue={query} onSearchChange={setQuery} searchPlaceholder="Search invoices"
           views={[{ id: "table", label: "Table View" }, { id: "list", label: "List View" }, { id: "card", label: "Card View" }]}
