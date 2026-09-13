@@ -1,0 +1,30 @@
+{
+  "name": "create-agentic-bp-ds",
+  "version": "0.1.0",
+  "description": "Start a new prototype from the Agentic BP DS kit in one command.",
+  "type": "module",
+  "bin": {
+    "create-agentic-bp-ds": "index.mjs"
+  },
+  "files": [
+    "index.mjs",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/borisj74/agentic-bp-ds-kit.git",
+    "directory": "packages/create-agentic-bp-ds"
+  },
+  "homepage": "https://github.com/borisj74/agentic-bp-ds-kit#readme",
+  "keywords": [
+    "create",
+    "design-system",
+    "prototype",
+    "nextjs"
+  ],
+  "author": "Boris Jovanovic",
+  "license": "MIT"
+}

@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Agentic BP DS
 
-## Getting Started
+A code-only design system and playground for prototyping product screens. Tokens, components, patterns and a catalog, built with Next.js, React and CSS Modules. Every piece has a JSON contract, so an AI assistant can build screens from the kit without inventing its own parts.
 
-First, run the development server:
+## Start a prototype
+
+You need [Node.js](https://nodejs.org) 20 or newer.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm create agentic-bp-ds@latest my-prototype
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This downloads the latest kit into `my-prototype` and installs it. Then:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cd my-prototype
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open http://localhost:3000 to browse the catalog: Foundations, Components and Patterns.
 
-## Learn More
+Other ways to get the kit:
 
-To learn more about Next.js, take a look at the following resources:
+- On GitHub, click **Use this template** to make your own copy of the repo.
+- Or clone it: `git clone https://github.com/borisj74/agentic-bp-ds-kit.git`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Build a screen
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Look up the piece in `contracts/index.json`, then read its contract in `contracts/`.
+2. If a pattern fits the screen, import it from `@/patterns/`.
+3. Compose kit components from `@/ui/`. Use only the options the contract lists.
+4. Use the layout classes in `src/tokens/layout.css` for page spacing, and semantic tokens for colour.
 
-## Deploy on Vercel
+Working with Claude Code? `CLAUDE.md` holds the kit rules, and `/prototype-from-kit <what to build>` walks through the steps above.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## What's inside
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Folder | What it holds |
+| --- | --- |
+| `contracts/` | One JSON contract per component and pattern, plus `index.json` |
+| `src/ui/` | Components, one folder each |
+| `src/patterns/` | Page blueprints composed from components |
+| `src/tokens/` | Primitive and semantic tokens, and layout classes |
+| `src/app/(playground)/` | The catalog you see at localhost:3000 |
+
+## Scripts
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start the catalog locally |
+| `npm run build` | Production build |
+| `npm run lint` | Lint |
+| `npm run tokens` | Rebuild token CSS from `src/tokens/source` |
+
+## License
+
+MIT
