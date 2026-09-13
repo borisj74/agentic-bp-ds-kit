@@ -29,9 +29,19 @@
 /* A block of FormDisplays (the only dl in a Form) reads as one list: each row has its own line under it, so
    a gap between the rows would break the list in two. Closed in one column and in two, where the rows stack
    into one column on a narrow form. */
-.fields:has(> dl), .two .fields:has(> dl) { row-gap: 0; }
+.fields:has(> dl), .two .fields:has(> dl), .three .fields:has(> dl) { row-gap: 0; }
 @container (max-width: 560px) { .two .fields { grid-template-columns: minmax(0, 1fr); } }
 @container (max-width: 719px) { .two.start .fields { grid-template-columns: minmax(0, 1fr); } }
+
+/* Three columns: for a long form on a wide page, fields fill left to right in threes. A Textarea spans the row.
+   A field needs about 220px to be typed in, so three give way to two under 720px with labels on top, and under
+   1080px with a 160px label column beside each field; then two give way to one where two columns would. */
+.three .fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; gap: var(--space-medium) var(--space-large); }
+.three .fields > :has(textarea) { grid-column: 1 / -1; }
+@container (max-width: 1079px) { .three.start .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@container (max-width: 719px) { .three .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@container (max-width: 560px) { .three .fields { grid-template-columns: minmax(0, 1fr); } }
+@container (max-width: 719px) { .three.start .fields { grid-template-columns: minmax(0, 1fr); } }
 
 /* Card: a raised panel, like a settings block. Footer matches the Modal footer. */
 .card {

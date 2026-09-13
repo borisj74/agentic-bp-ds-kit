@@ -7,7 +7,7 @@ import styles from "./Form.module.css";
 
 export type FormVariant = "plain" | "card";
 export type FormLabelPosition = FieldLabelPosition;
-export type FormColumns = 1 | 2;
+export type FormColumns = 1 | 2 | 3;
 
 export interface FormSection {
   title: string;
@@ -47,7 +47,7 @@ export function Form({
     onSubmit?.(new FormData(e.currentTarget));
   };
 
-  const cls = [styles.form, styles[variant], labelPosition === "start" ? styles.start : "", columns === 2 ? styles.two : ""];
+  const cls = [styles.form, styles[variant], labelPosition === "start" ? styles.start : "", columns === 2 ? styles.two : columns === 3 ? styles.three : ""];
   return (
     // Fields inside take the Form's labelPosition unless they set their own.
     <FormLayoutContext.Provider value={{ labelPosition }}>

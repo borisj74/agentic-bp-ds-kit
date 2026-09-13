@@ -31,10 +31,11 @@
     "columns": {
       "enum": [
         1,
-        2
+        2,
+        3
       ],
       "default": 1,
-      "note": "2 puts fields side by side, left to right. A Textarea spans both. Drops to one column when the form is narrow (under 560px, or 720px with start labels)."
+      "note": "2 puts fields side by side, left to right; 3 puts them in threes, for a long form on a wide page. A Textarea spans the row. Columns give way as the form narrows: three become two under 720px (1080px with start labels), and two become one under 560px (720px with start labels)."
     },
     "children": {
       "type": "ReactNode",

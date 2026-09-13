@@ -29,7 +29,7 @@ import { ChatWindow, type ChatWindowProps } from "@/patterns/ChatWindow/ChatWind
 import { Density, type DensityValue } from "@/ui/Density/Density";
 import { Drawer, type DrawerProps } from "@/ui/Drawer/Drawer";
 import { DropdownMenu, type DropdownMenuProps } from "@/ui/DropdownMenu/DropdownMenu";
-import { Form, type FormLabelPosition, type FormProps } from "@/ui/Form/Form";
+import { Form, type FormColumns, type FormLabelPosition, type FormProps } from "@/ui/Form/Form";
 import { FormDisplay } from "@/ui/FormDisplay/FormDisplay";
 import { Input } from "@/ui/Input/Input";
 import { BarChart } from "@/ui/BarChart/BarChart";
@@ -1807,8 +1807,8 @@ const TEMPLATE_COLUMNS: TableColumn[] = [
   { key: "name", header: "Template" }, { key: "use", header: "Used for" }, { key: "updated", header: "Updated" },
 ];
 
-export function FormPageDemo({ shell = true, notice = true, stage = "desktop", labels = "start", ...p }:
-  Omit<FormPageProps, "children"> & { shell?: boolean; notice?: boolean; stage?: string; labels?: FormLabelPosition }) {
+export function FormPageDemo({ shell = true, notice = true, stage = "desktop", labels = "start", columns = 2, ...p }:
+  Omit<FormPageProps, "children"> & { shell?: boolean; notice?: boolean; stage?: string; labels?: FormLabelPosition; columns?: FormColumns }) {
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");
   const [navOpen, setNavOpen] = useState(false);
@@ -1924,7 +1924,7 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
       }
     >
       <Form
-        id={formId} labelPosition={labels} columns={2} sections={sections}
+        id={formId} labelPosition={labels} columns={columns} sections={sections}
         onSubmit={(data) => setSaved(String(data.get("name") || "").trim() ? `Created ${String(data.get("name"))}.` : "Created the account.")}
       />
       {saved && <Alert tone="success">{saved}</Alert>}
