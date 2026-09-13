@@ -53,6 +53,22 @@ describe("Toast", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  // Regression: an Undo toast closed after 5 seconds, before keyboard and screen reader users could reach it.
+  it("waits to be closed when it has an action and no duration", () => {
+    const onClose = vi.fn();
+    render(<Toast open onClose={onClose} title="Deleted" actionLabel="Undo" onAction={() => {}} />);
+    act(() => { vi.advanceTimersByTime(60000); });
+    expect(onClose).not.toHaveBeenCalled();
+    expect(card()).toHaveTextContent("Undo");
+  });
+
+  it("still counts down with an action when a duration is set", () => {
+    const onClose = vi.fn();
+    render(<Toast open onClose={onClose} title="Deleted" actionLabel="Undo" duration={8000} />);
+    act(() => { vi.advanceTimersByTime(8000); });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
   it("runs its action and closes", () => {
     const onClose = vi.fn();
     const onAction = vi.fn();

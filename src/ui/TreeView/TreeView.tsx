@@ -1,7 +1,8 @@
 "use client";
-import { useLayoutEffect, useRef, useState, type DragEvent, type KeyboardEvent, type MouseEvent } from "react";
+import { useId, useLayoutEffect, useRef, useState, type DragEvent, type KeyboardEvent, type MouseEvent } from "react";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { useDensitySize } from "../Density/Density";
+import { DropdownMenu, type DropdownMenuItem } from "../DropdownMenu/DropdownMenu";
 import { Icon } from "../Icon/Icon";
 import styles from "./TreeView.module.css";
 
@@ -36,6 +37,7 @@ export interface TreeViewProps {
 
 type Where = "before" | "after" | "inside";
 type Check = "on" | "off" | "mixed";
+type MoveKind = "up" | "down" | "into" | "out";
 interface Row { item: TreeItem; level: number; parent: TreeItem | null; pos: number; count: number }
 
 /* ---------- Tree helpers ---------- */
@@ -104,6 +106,9 @@ export function TreeView({
   const [focusId, setFocusId] = useState<string | null>(null);
   const [drop, setDrop] = useState<{ id: string; where: Where } | null>(null);
   const [message, setMessage] = useState("");
+  const [menuFor, setMenuFor] = useState<string | null>(null);
+  const keysId = useId();
+  const treeRef = useRef<HTMLDivElement>(null);
   const dragId = useRef<string | null>(null);
   const rowRefs = useRef(new Map<string, HTMLLIElement>());
   const moveFocus = useRef(false);
@@ -141,6 +146,11 @@ export function TreeView({
   });
   const focusRow = (id: string) => { moveFocus.current = true; setFocusId(id); };
 
+  // A tree has one tab stop, so the Move buttons stay out of the tab order; keyboard users have Alt+arrows and Shift+F10.
+  useLayoutEffect(() => {
+    treeRef.current?.querySelectorAll<HTMLButtonElement>("[data-move] button").forEach((b) => { b.tabIndex = -1; });
+  });
+
   const toggleOpen = (item: TreeItem, force?: boolean) => {
     if (!isFolder(item)) return;
     const next = new Set(open);
@@ -171,7 +181,37 @@ export function TreeView({
     return true;
   };
 
+  // The moves a row can make without dragging: up or down among its siblings, into the folder just above it,
+  // or out of its folder. The Move menu and Alt with the arrow keys share them.
+  const neighbors = ({ item, parent }: Row) => {
+    const siblings = parent?.children ?? items;
+    const idx = siblings.indexOf(item);
+    return { siblings, idx, prev: siblings[idx - 1], next: siblings[idx + 1] };
+  };
+  const moveRow = (row: Row, kind: MoveKind) => {
+    const { item, parent } = row;
+    if (item.disabled) return false;
+    const { siblings, idx, prev, next } = neighbors(row);
+    if (kind === "up" && prev && reorder(item.id, prev.id, "before")) setMessage(`Moved ${item.label}, ${idx} of ${siblings.length}`);
+    else if (kind === "down" && next && reorder(item.id, next.id, "after")) setMessage(`Moved ${item.label}, ${idx + 2} of ${siblings.length}`);
+    else if (kind === "into" && prev && isFolder(prev) && reorder(item.id, prev.id, "inside")) setMessage(`Moved ${item.label} into ${prev.label}`);
+    else if (kind === "out" && parent && reorder(item.id, parent.id, "after")) setMessage(`Moved ${item.label} out of ${parent.label}`);
+    else return false;
+    return true;
+  };
+  const moveItems = (row: Row): DropdownMenuItem[] => {
+    const { prev, next } = neighbors(row);
+    return [
+      { id: "up", label: "Move up", description: "Alt+Up", icon: "arrow_upward", disabled: !prev },
+      { id: "down", label: "Move down", description: "Alt+Down", icon: "arrow_downward", disabled: !next },
+      ...(prev && isFolder(prev) ? [{ id: "into", label: `Move into ${prev.label}`, description: "Alt+Right", icon: "subdirectory_arrow_right" }] : []),
+      ...(row.parent ? [{ id: "out", label: `Move out of ${row.parent.label}`, description: "Alt+Left", icon: "subdirectory_arrow_left" }] : []),
+    ];
+  };
+
   const onKeyDown = (e: KeyboardEvent<HTMLUListElement>) => {
+    // Keys from an open Move menu bubble here through its portal, and its trigger opens with the arrows: leave both.
+    if (!e.currentTarget.contains(e.target as Node) || (e.target as HTMLElement).closest("[data-move]")) return;
     // The row that has focus, even if its focus has not rendered yet.
     const focused = (e.target as HTMLElement).closest<HTMLElement>("[role=treeitem]")?.dataset.id;
     const at = rows.find((r) => r.item.id === focused) ?? current;
@@ -180,18 +220,20 @@ export function TreeView({
     const { item, parent } = at;
     const go = (r?: Row) => { if (r) { e.preventDefault(); focusRow(r.item.id); } };
 
-    // Alt with up and down moves the row among its siblings.
-    if (reorderable && e.altKey && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
-      e.preventDefault();
-      if (item.disabled) return;
-      const siblings = parent?.children ?? items;
-      const idx = siblings.indexOf(item);
-      const other = siblings[idx + (e.key === "ArrowUp" ? -1 : 1)];
-      if (!other) return;
-      reorder(item.id, other.id, e.key === "ArrowUp" ? "before" : "after");
-      setMessage(`Moved ${item.label}, ${idx + (e.key === "ArrowUp" ? 0 : 2)} of ${siblings.length}`);
-      focusRow(item.id);
-      return;
+    if (reorderable) {
+      // Alt with the arrows moves the row: up and down among its siblings, right into the folder above, left out of its folder.
+      const kinds: Record<string, MoveKind> = { ArrowUp: "up", ArrowDown: "down", ArrowRight: "into", ArrowLeft: "out" };
+      if (e.altKey && kinds[e.key]) {
+        e.preventDefault();
+        if (moveRow(at, kinds[e.key])) focusRow(item.id);
+        return;
+      }
+      // Shift+F10 or the menu key opens the row's Move menu.
+      if ((e.shiftKey && e.key === "F10") || e.key === "ContextMenu") {
+        e.preventDefault();
+        if (!item.disabled) setMenuFor(item.id);
+        return;
+      }
     }
     switch (e.key) {
       case "ArrowDown": return go(rows[i + 1]);
@@ -273,16 +315,20 @@ export function TreeView({
   } : {});
 
   return (
-    <div className={[styles.tree, styles[size], showLines ? styles.lines : ""].join(" ")}>
-      <ul role="tree" aria-label={label} aria-multiselectable={selection === "multiple" || undefined} className={styles.list} onKeyDown={onKeyDown}>
+    <div ref={treeRef} className={[styles.tree, styles[size], showLines ? styles.lines : ""].join(" ")}>
+      <ul
+        role="tree" aria-label={label} aria-multiselectable={selection === "multiple" || undefined}
+        aria-describedby={reorderable ? keysId : undefined} className={styles.list} onKeyDown={onKeyDown}
+      >
         {rows.map((row) => {
           const { item, level } = row;
           const folder = isFolder(item);
           const expanded = folder && open.has(item.id);
           const check = checks?.get(item.id);
           const isSelected = selection === "single" && selectedIds.includes(item.id);
-          const onRow = (e: MouseEvent) => {
-            if ((e.target as HTMLElement).closest(`.${styles.toggle}`)) return;
+          const onRow = (e: MouseEvent<HTMLLIElement>) => {
+            // The chevron opens the folder, and clicks in the Move menu (portaled, but still bubbling here) only move.
+            if (!e.currentTarget.contains(e.target as Node) || (e.target as HTMLElement).closest(`.${styles.toggle}, [data-move]`)) return;
             setFocusId(item.id);
             activate(item);
             if (selection === "single" && folder) toggleOpen(item);
@@ -323,12 +369,26 @@ export function TreeView({
               )}
               {showIcons && <Icon name={item.icon ?? (folder ? (expanded ? "folder_open" : "folder") : "description")} size="sm" className={styles.icon} />}
               <span className={styles.label}>{item.label}</span>
-              {reorderable && <Icon name="drag_indicator" size="sm" className={styles.handle} />}
+              {reorderable && (
+                // The drag handle is also a button: its Move menu moves the row without dragging.
+                <span className={styles.move} data-move>
+                  <DropdownMenu
+                    label={`Move ${item.label}`} items={moveItems(row)} iconOnly icon="drag_indicator" variant="tertiary" size="sm"
+                    align="end" disabled={item.disabled} open={menuFor === item.id}
+                    onOpenChange={(o) => setMenuFor(o ? item.id : null)} onSelect={(kind) => moveRow(row, kind as MoveKind)}
+                  />
+                </span>
+              )}
               </span>
             </li>
           );
         })}
       </ul>
+      {reorderable && (
+        <p id={keysId} className={styles.srOnly}>
+          Alt with the arrow keys moves the row: up and down, right into the folder above, left out of its folder. Shift F10 opens the Move menu.
+        </p>
+      )}
       <p className={styles.srOnly} aria-live="polite">{message}</p>
     </div>
   );

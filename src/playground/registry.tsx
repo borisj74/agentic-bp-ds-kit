@@ -1707,12 +1707,12 @@ export const registry: Record<string, Entry> = {
     card: <div style={{ width: 300 }}><Timeline items={SHORT} size="sm" /></div>,
   },
   Toast: {
-    // A kit Button shows the real Toast. duration is fixed at the 5 second default here; the Variants show null.
+    // A kit Button shows the real Toast. With an action label it waits to be closed; clear the label for the 5 second countdown.
     render: (p) => <ToastDemo {...(p as { title: string })} />,
     preview: { title: "Saved successfully", description: "Your changes have been saved.", actionLabel: "Undo" },
     hide: ["open"],
     snippet: { open: "{saved}", onClose: "{close}", onAction: "{undo}" },
-    hint: "Click the button to show it. The top bar counts down 5 seconds; point at the toast to pause it. Switch the tone.",
+    hint: "Click the button to show it. With Undo it stays until closed, so people can reach the action; clear the action label and the top bar counts down 5 seconds (point at the toast to pause it). Switch the tone.",
     card: <Button>Show toast</Button>,
   },
   Toolbar: {
@@ -1755,7 +1755,7 @@ export const registry: Record<string, Entry> = {
     render: (p) => <div style={{ ...chartPanel, width: 400, maxWidth: "100%" }}><TreeView key={JSON.stringify(p)} {...treeProps(p)} /></div>,
     preview: { label: "Workspace", defaultItems: "{workspace}", defaultExpanded: "{open}", selection: "multiple", defaultSelected: "{checked}", showIcons: true, reorderable: true },
     snippet: { onItemsChange: "{setItems}" },
-    hint: "Simple: selection single, icons and drag off. Advanced: selection multiple, icons and reorderable on. Click chevrons to open folders; drag a handle above, below or onto a folder; Alt with the arrows moves a row.",
+    hint: "Simple: selection single, icons and drag off. Advanced: selection multiple, icons and reorderable on. Click chevrons to open folders; drag a row above, below or onto a folder, or click its handle for the Move menu; Alt with the arrows moves the focused row.",
     card: (
       <div style={{ width: "100%" }}>
         <TreeView label="Workspace" items={[{ id: "org", label: "Organization", children: [TREE_ITEMS[0].children![1]] }]} expanded={["org", "design"]} selection="multiple" selected={["sienna", "ammar"]} showIcons size="sm" />

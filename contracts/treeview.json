@@ -2,7 +2,7 @@
   "name": "TreeView",
   "path": "src/ui/TreeView/TreeView.tsx",
   "intent": "A nested list people open and close level by level, like teams in an organization, project folders or account hierarchies, to pick, check or reorder items.",
-  "usage": "Use TreeView for data that nests: folders and files, an org chart, parent and child accounts, product categories. It comes in two looks from one component: simple (chevrons and guide lines, one row selected) and advanced (selection multiple, showIcons and reorderable: checkboxes, folder icons and drag handles). It is one component: pass items, each with an id, a label and, for a folder, children. Chevrons open and close folders; faint guide lines join each level to its parent (showLines). selection single highlights one row (clicking a folder also opens it); multiple adds a checkbox to each row that checks a folder's whole branch and shows a dash when only part of it is checked; none only opens and closes. showIcons adds a folder or file icon (or the item's own). reorderable adds a drag handle: drag a row above or below another, or onto a folder to move it inside; Alt with the up and down arrows moves the focused row among its siblings. Items, selection and open folders can each be controlled or left to the tree. See contracts/treeview.json for the full contract.",
+  "usage": "Use TreeView for data that nests: folders and files, an org chart, parent and child accounts, product categories. It comes in two looks from one component: simple (chevrons and guide lines, one row selected) and advanced (selection multiple, showIcons and reorderable: checkboxes, folder icons and drag handles). It is one component: pass items, each with an id, a label and, for a folder, children. Chevrons open and close folders; faint guide lines join each level to its parent (showLines). selection single highlights one row (clicking a folder also opens it); multiple adds a checkbox to each row that checks a folder's whole branch and shows a dash when only part of it is checked; none only opens and closes. showIcons adds a folder or file icon (or the item's own). reorderable adds a drag handle: drag a row above or below another, or onto a folder to move it inside. The handle is also a button that opens a Move menu (up, down, into the folder above, out of its folder), so nothing needs dragging. Alt with the arrow keys makes the same moves on the focused row, and Shift+F10 opens the menu. Items, selection and open folders can each be controlled or left to the tree. See contracts/treeview.json for the full contract.",
   "props": {
     "label": {
       "type": "string",
@@ -21,7 +21,7 @@
     "onItemsChange": {
       "type": "function",
       "signature": "(items: TreeItem[]) => void",
-      "note": "Called with the new tree after a drag or an Alt+arrow move."
+      "note": "Called with the new tree after a drag, a Move menu pick or an Alt+arrow move."
     },
     "selection": {
       "enum": [
@@ -69,7 +69,7 @@
     "reorderable": {
       "type": "boolean",
       "default": false,
-      "note": "A drag handle on each row. Drag above, below or onto a folder; Alt with the up and down arrows moves among siblings."
+      "note": "A drag handle on each row that is also a Move menu button. Drag above, below or onto a folder, or pick Move up, Move down, Move into or Move out of. Alt with the arrows makes the same moves."
     },
     "size": {
       "enum": [
@@ -97,7 +97,8 @@
     "One row is in the tab order. Up and down move a row; Right opens a folder or goes to its first child; Left closes it or goes to its parent; Home and End go to the first and last row; * opens every folder at that level; typing a letter jumps to the next row that starts with it.",
     "Enter or Space selects the row (single), checks it (multiple) or opens and closes it (none).",
     "The checkbox in each row is the kit Checkbox, shown for the eye only: the row itself is the checked item, and a partly checked folder reads as mixed.",
-    "Alt with up and down moves the focused row when reorderable, and the move is announced. Disabled rows can be focused but not selected, checked or moved."
+    "Reorderable: dragging is never the only way. Each row's handle is a kit DropdownMenu named Move {label} with Move up, Move down, Move into the folder above and Move out of its folder (WCAG 2.5.7). It stays out of the tab order so the tree keeps one tab stop.",
+    "Keyboard moves: Alt with Up and Down moves among siblings, Alt+Right moves into the folder above, Alt+Left moves out of the folder; Shift+F10 or the menu key opens the Move menu. The tree's description lists these keys, and each move is announced. Disabled rows can be focused but not selected, checked or moved."
   ],
   "snippet": "<TreeView\n  label=\"Organization\"\n  items={teams}\n  selection=\"multiple\"\n  defaultExpanded={[\"org\"]}\n  onSelectedChange={setPeople}\n/>",
   "examples": [

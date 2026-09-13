@@ -44,7 +44,9 @@ export function Toast(props: ToastProps) {
   return createPortal(<ToastCard {...props} />, stack());
 }
 
-function ToastCard({ onClose, title, description, tone = "info", actionLabel, onAction, duration = 5000 }: ToastProps) {
+function ToastCard({ onClose, title, description, tone = "info", actionLabel, onAction, duration: durationProp }: ToastProps) {
+  // A toast with an action waits to be closed: keyboard and screen reader users need time to reach it (WCAG 2.2.1).
+  const duration = durationProp === undefined ? (actionLabel ? null : 5000) : durationProp;
   const titleId = useId();
   const [paused, setPaused] = useState(false);
   const remaining = useRef(duration ?? 0);
