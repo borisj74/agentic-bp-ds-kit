@@ -1123,7 +1123,7 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
           pageSize={size} onPageSizeChange={(next) => { setSize(next); setPage(1); }} label="Invoices"
         />
       }
-      empty={<Empty icon="receipt_long" title="No invoices yet" description="Invoices appear here once a billing run completes." actions={<Button size="sm" variant="primary" iconStart="add">New invoice</Button>} />}
+      empty={<Empty headingLevel={2} icon="receipt_long" title="No invoices yet" description="Invoices appear here once a billing run completes." actions={<Button size="sm" variant="primary" iconStart="add">New invoice</Button>} />}
       error="The invoice list could not be loaded."
       onRetry={() => {}}
     >

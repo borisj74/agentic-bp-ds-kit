@@ -3,6 +3,7 @@ import { Icon } from "../Icon/Icon";
 import styles from "./Empty.module.css";
 
 export type EmptyIconStyle = "well" | "plain";
+export type EmptyHeadingLevel = 2 | 3 | 4;
 
 export interface EmptyProps {
   title: string;
@@ -12,10 +13,13 @@ export interface EmptyProps {
   media?: ReactNode;
   actions?: ReactNode;
   outlined?: boolean;
+  headingLevel?: EmptyHeadingLevel;
 }
 
 // Reference kit empty: a round icon well (or a kit Avatar), a title, a line of help and the actions, centred.
-export function Empty({ title, description, icon, iconStyle = "well", media, actions, outlined = false }: EmptyProps) {
+export function Empty({ title, description, icon, iconStyle = "well", media, actions, outlined = false, headingLevel = 3 }: EmptyProps) {
+  // The title takes the next heading level where it sits: h2 straight under a page title, h3 inside a Section.
+  const Heading = `h${headingLevel}` as const;
   return (
     <div className={[styles.empty, outlined ? styles.outlined : ""].join(" ")}>
       {media ? <div className={styles.media}>{media}</div> : icon && iconStyle === "plain" ? (
@@ -25,7 +29,7 @@ export function Empty({ title, description, icon, iconStyle = "well", media, act
         <span className={styles.well} aria-hidden="true"><Icon name={icon} size="md" /></span>
       ) : null}
       <div className={styles.copy}>
-        <h3 className={styles.title}>{title}</h3>
+        <Heading className={styles.title}>{title}</Heading>
         {description && <p className={styles.description}>{description}</p>}
       </div>
       {actions && <div className={styles.actions}>{actions}</div>}

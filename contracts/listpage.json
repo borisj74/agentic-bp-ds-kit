@@ -42,7 +42,7 @@
     },
     "empty": {
       "type": "ReactNode",
-      "note": "Shown when state is empty, usually a kit Empty with the action that starts the first record."
+      "note": "Shown when state is empty, usually a kit Empty with the action that starts the first record. Give that Empty headingLevel 2, since it sits right under the page title."
     },
     "error": {
       "type": "string",

@@ -8,11 +8,12 @@
     "src": { "type": "string", "note": "Photo URL. Cropped to the shape." },
     "initials": { "type": "string", "note": "Overrides the initials from name. Two letters max." },
     "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "32 / 40 / 48 px." },
-    "shape": { "enum": ["circle", "square"], "default": "circle", "note": "square has small rounded corners (--radius-medium)." }
+    "shape": { "enum": ["circle", "square"], "default": "circle", "note": "square has small rounded corners (--radius-medium)." },
+    "decorative": { "type": "boolean", "default": false, "note": "The person's name is already written next to the avatar, like in a table cell or a list row, so screen readers skip the picture instead of reading the name twice." }
   },
   "useWhen": ["User menus.", "Assignee in a table row.", "Comment authors.", "Profile headers."],
   "doNot": ["Do not invent a local Avatar.", "Do not use for status or category labels.", "Do not make Avatar clickable. Wrap it in a Button or link only with a new contract.", "Do not put a status dot or count on Avatar.", "Do not mix circle and square in the same list.", "Do not use for logos or brands. Use Logo.", "Do not use raw hex."],
-  "a11y": ["With a photo, the img alt is the name.", "Without a photo, the circle is role=img with aria-label set to the name.", "The fallback person icon is decorative."],
+  "a11y": ["With a photo, the img alt is the name (empty when decorative).", "Without a photo, the circle is role=img with aria-label set to the name; decorative hides it from screen readers instead.", "The fallback person icon is decorative."],
   "snippet": "<Avatar name=\"Maya Chen\" src=\"/faces/maya-chen.jpg\" />",
   "examples": [
     {

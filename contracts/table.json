@@ -77,7 +77,7 @@
     "Do not wrap it in your own scrolling box or set a width on it to make it fit a phone. It scrolls sideways and freezes its first column on its own."
   ],
   "a11y": [
-    "A native table: caption, th scope=col headers (kit HeaderCell) and td cells.",
+    "A native table: caption, th scope=col headers (kit HeaderCell) and td cells. A column with no header, like row actions, gets a plain cell in the header row instead of an empty header.",
     "Row checkboxes are named Select plus the row label; the header one is Select all rows and is mixed when only some rows are selected. Selected rows set aria-selected.",
     "The empty message is a real cell spanning the columns, so screen readers read it in place.",
     "On a narrow box the sideways scroll is the table's own box, so the page never scrolls sideways and the frozen first column keeps the row's name in view."

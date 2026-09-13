@@ -77,6 +77,7 @@ export default function Installation() {
                   <li><code>npm run dev</code> starts the catalog and your screens.</li>
                   <li><code>npm run build</code> checks that everything builds, as it would before deploying.</li>
                   <li><code>npm run lint</code> checks the code for common mistakes.</li>
+                  <li><code>npm test</code> runs the unit, interaction and accessibility tests; <code>npm run test:watch</code> reruns them as files change.</li>
                   <li><code>npm run tokens</code> rebuilds the token CSS after editing <code>src/tokens/source</code>.</li>
                 </ul>
                 <p>Stop the server with <strong>Ctrl + C</strong> in the terminal.</p>

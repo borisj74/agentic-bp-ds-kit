@@ -14,7 +14,7 @@
    heights in one row still share one line. HeaderCell's 2px brand-faint line, then a 1px faint line per row.
    Each Cell gives up the line's height, so rows stay 48 / 56 and the header 40 / 48, as on their own. */
 .table th > *, .table td > * { border-bottom: 0; background: transparent; }
-.table thead th { border-bottom: var(--border-width-medium) solid var(--border-brand-faint); }
+.table thead th, .table thead td { border-bottom: var(--border-width-medium) solid var(--border-brand-faint); }
 .table tbody td { border-bottom: var(--border-width-thin) solid var(--border-neutral-faint); }
 .sm th > * { min-height: calc(var(--header-cell-height-sm) - var(--border-width-medium)); }
 .md th > * { min-height: calc(var(--header-cell-height-md) - var(--border-width-medium)); }

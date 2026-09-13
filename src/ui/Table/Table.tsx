@@ -75,10 +75,13 @@ export function Table({
                 />
               </th>
             )}
-            {columns.map((c) => (
+            {columns.map((c) => c.header ? (
               <th key={c.key} scope="col" style={c.width ? { width: c.width } : undefined}>
                 <HeaderCell size={size} align={alignOf(c)} label={c.header} />
               </th>
+            ) : (
+              // A column with nothing to name, like row actions: a plain cell, so screen readers meet no empty header.
+              <td key={c.key} style={c.width ? { width: c.width } : undefined} />
             ))}
           </tr>
         </thead>

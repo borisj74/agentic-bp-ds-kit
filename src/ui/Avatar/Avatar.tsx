@@ -12,6 +12,7 @@ export interface AvatarProps {
   initials?: string;
   size?: AvatarSize;
   shape?: AvatarShape;
+  decorative?: boolean;
 }
 
 const letters = (value: string) => Array.from(value).filter((ch) => /\p{L}/u.test(ch)).join("");
@@ -28,7 +29,8 @@ function initialsOf(name: string, override?: string) {
 
 const iconSize = { sm: "sm", md: "md", lg: "lg" } as const;
 
-export function Avatar({ name, src, initials, size = "md", shape = "circle" }: AvatarProps) {
+// decorative: the name is already written beside the avatar, so screen readers skip the picture instead of saying it twice.
+export function Avatar({ name, src, initials, size = "md", shape = "circle", decorative = false }: AvatarProps) {
   // Remember which src failed, so a new src gets a fresh try.
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const cls = [styles.avatar, styles[size], styles[shape]].join(" ");
@@ -37,14 +39,14 @@ export function Avatar({ name, src, initials, size = "md", shape = "circle" }: A
     return (
       <span className={cls}>
         {/* eslint-disable-next-line @next/next/no-img-element -- any photo URL, no size known up front */}
-        <img className={styles.image} src={src} alt={name} onError={() => setFailedSrc(src)} />
+        <img className={styles.image} src={src} alt={decorative ? "" : name} onError={() => setFailedSrc(src)} />
       </span>
     );
   }
 
   const label = initialsOf(name, initials);
   return (
-    <span className={[cls, styles.fallback].join(" ")} role="img" aria-label={name}>
+    <span className={[cls, styles.fallback].join(" ")} {...(decorative ? { "aria-hidden": true } : { role: "img", "aria-label": name })}>
       {label || <Icon name="person" size={iconSize[size]} />}
     </span>
   );

@@ -114,6 +114,8 @@ With `npm run dev` running, open **http://localhost:3000**. The page updates as 
 | `npm run dev` | Starts the catalog and your screens |
 | `npm run build` | Checks that everything builds, as it would before deploying |
 | `npm run lint` | Checks the code for common mistakes |
+| `npm test` | Runs the unit, interaction and accessibility tests |
+| `npm run test:watch` | Reruns the tests as files change |
 | `npm run tokens` | Rebuilds the token CSS after editing `src/tokens/source` |
 
 ### Work with the assistant

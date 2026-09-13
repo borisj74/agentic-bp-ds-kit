@@ -86,7 +86,7 @@ export function SrTable({ caption, columns, rows }: { caption: string; columns: 
   return (
     <table className={styles.srOnly}>
       <caption>{caption}</caption>
-      <thead><tr><th scope="col" />{columns.map((c) => <th key={c} scope="col">{c}</th>)}</tr></thead>
+      <thead><tr><td />{columns.map((c) => <th key={c} scope="col">{c}</th>)}</tr></thead>
       <tbody>{rows.map((r) => <tr key={r.head}><th scope="row">{r.head}</th>{r.cells.map((c, i) => <td key={i}>{c}</td>)}</tr>)}</tbody>
     </table>
   );

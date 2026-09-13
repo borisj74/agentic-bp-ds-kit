@@ -7,7 +7,7 @@
     "title": {
       "type": "string",
       "required": true,
-      "note": "What is empty, like No invoices yet. An h3."
+      "note": "What is empty, like No invoices yet. A heading: h3 unless headingLevel says otherwise."
     },
     "description": {
       "type": "string",
@@ -37,7 +37,8 @@
       "type": "boolean",
       "default": false,
       "note": "A border and a card fill around it."
-    }
+    },
+    "headingLevel": { "enum": [2, 3, 4], "default": 3, "note": "Which heading the title is. 2 when the empty state sits right under the page title (a ListPage with no records); 3 inside a Section." }
   },
   "useWhen": [
     "A list or table with no rows yet, or no results for a filter.",
@@ -50,7 +51,7 @@
     "Do not use raw hex."
   ],
   "a11y": [
-    "The title is an h3; the description is a paragraph under it.",
+    "The title is a heading, h3 by default; set headingLevel so it follows the headings around it (h2 right under the page title, h3 inside a Section). The description is a paragraph under it.",
     "The icon well is decorative.",
     "Actions are ordinary kit Buttons in reading order."
   ],

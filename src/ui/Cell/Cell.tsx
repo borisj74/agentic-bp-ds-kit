@@ -82,7 +82,8 @@ export function Cell({
       break;
     case "avatar":
       // Avatars stay 32px (sm) so rows keep their 48 / 56 px height.
-      visual = <Avatar name={who} src={src} size="sm" />;
+      // With text on, the name is written beside the picture, so the picture itself stays quiet for screen readers.
+      visual = <Avatar name={who} src={src} size="sm" decorative={Boolean(text && who)} />;
       break;
     case "avatarGroup":
       visual = <AvatarGroup items={people ?? []} size="sm" max={3} label={label} />;

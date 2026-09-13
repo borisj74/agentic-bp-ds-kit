@@ -219,7 +219,7 @@ export function SideNav({
     >
       <div className={styles.rail} onKeyDown={onRailKey}>
         <ul className={styles.list}>
-          {items.map((e, i) => (isEntry<SideNavItem>(e) ? renderSection(e) : <li key={`divider-${i}`} role="separator" className={styles.divider} />))}
+          {items.map((e, i) => (isEntry<SideNavItem>(e) ? renderSection(e) : <li key={`divider-${i}`} aria-hidden="true" className={styles.divider} />))}
         </ul>
         {endItems.length > 0 && <ul className={[styles.list, styles.end].join(" ")}>{endItems.map(renderSection)}</ul>}
       </div>
@@ -250,7 +250,7 @@ export function SideNav({
                     <button type="button" className={styles.link} aria-current={current === c.id ? "page" : undefined} onClick={onLinkClick(c)}>{c.label}</button>
                   )}
                 </li>
-              ) : <li key={`divider-${i}`} role="separator" className={styles.linkDivider} />)}
+              ) : <li key={`divider-${i}`} aria-hidden="true" className={styles.linkDivider} />)}
             </ul>
             <button type="button" tabIndex={-1} aria-hidden="true" className={[styles.overflow, styles.down].join(" ")} onClick={() => scrollList(1)}>
               <Icon name="expand_more" size="md" />
