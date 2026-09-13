@@ -25,6 +25,8 @@
 }
 
 .search { padding: var(--space-xsmall); background: var(--surface-flat); border-bottom: var(--border-width-thin) solid var(--border-neutral-faint); }
+/* The box is as wide as a first column, not the whole panel; the bar keeps its full-width background. */
+.search > div { max-width: var(--cascader-column-min); }
 
 /* Columns side by side; past the width they scroll sideways, newest column in view. */
 .columns { display: flex; align-items: stretch; min-width: 0; overflow-x: auto; }
