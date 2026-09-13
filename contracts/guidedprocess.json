@@ -1,0 +1,442 @@
+{
+  "name": "GuidedProcess",
+  "path": "src/ui/GuidedProcess/GuidedProcess.tsx",
+  "intent": "The pieces of a process walked one step at a time: a dark panel for a step, the dark list of every step beside the page, the header over a step, and the footer under it.",
+  "usage": "Use GuidedProcess for a process of a few steps done in order where each step is a page, like importing usage or registering a supplier. It is one component with four parts, picked by part, and each part takes only its own props. part panel (the default) is one step as a dark column: pass steps and current, the step number starting at 1, and it shows the number, the title and how the step went. Each step has a title, and can have a status (success, warning or error) with statusText, and tasks, the short list of what is done and left in it. Give the first column title and subtitle, and while the process has not started set started false with onStart and onCancel for Start and Cancel; shade 1 to 5 darkens columns further along. placement auto is a tall column from 1024 of box width and a band under it; side and band fix it. part steps is the dark panel beside the page once the process has started: the 4 | 6 counter at the top and every step at the foot, with a notch in the edge at the current step and its tasks under it. side is the page edge it sits on, so the notch points into the page; onClose shows a close button where it is a drawer, under 1024. part header goes over the step's fields: title is the process name, stepTitle the step's, and with total and onStepsOpen a 4 | 6 counter opens the steps where they are a drawer. part footer goes under the fields: updated is when the work was last saved and actions are the step's buttons in order. The last moves the process on: Continue, which is secondary, or Submit on the last step, which is primary and can be type submit with form set to the step's Form id; the rest are tertiary. onAction gets the id pressed. From 1024 every action is a Button, under 1024 all but the last fold into a More menu, and under 600 the saved time goes on its own line. Every dark part is dark in light and dark themes alike. Place the parts with the GuidedProcessPage pattern. See contracts/guidedprocess.json for the full contract.",
+  "props": {
+    "part": {
+      "enum": [
+        "panel",
+        "steps",
+        "header",
+        "footer"
+      ],
+      "default": "panel",
+      "note": "panel is one step as a dark column; steps is every step beside the page; header goes over the step; footer goes under it. Each part takes only its own props."
+    },
+    "title": {
+      "type": "string",
+      "note": "Panel: the process name, over the first column only. Header: required, the process name over the step title."
+    },
+    "subtitle": {
+      "type": "string",
+      "note": "Panel. One line under the process name saying what the process does."
+    },
+    "steps": {
+      "type": "GuidedProcessStep[]",
+      "itemShape": {
+        "title": "string",
+        "status": "\"success\" | \"warning\" | \"error\"? How the step went. success is a check, warning a triangle, error a no-entry sign.",
+        "statusText": "string? Words for the status. Defaults to Completed, Needs a look or Could not finish.",
+        "tasks": "{ label: string; done?: boolean }[]? What is done and still to do in the step. Listed under the current step in part steps."
+      },
+      "note": "Panel and steps: required. The steps in order."
+    },
+    "current": {
+      "type": "number",
+      "default": 1,
+      "note": "Panel, steps and header. The step, starting at 1. The panel shows it as 01; steps and header count it as 4 | 6."
+    },
+    "started": {
+      "type": "boolean",
+      "default": true,
+      "note": "Panel. Off before the process begins: the column shows Start and Cancel when onStart or onCancel is set."
+    },
+    "placement": {
+      "enum": [
+        "auto",
+        "side",
+        "band"
+      ],
+      "default": "auto",
+      "note": "Panel. auto is side from 1024 of box width and band under it. side is a tall column, 48 inset, with a 40 number and a three-line title; band is 24 inset with a 36 number, for columns stacked on a narrow page."
+    },
+    "shade": {
+      "enum": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "default": 1,
+      "note": "Panel. How dark the column is; columns further along are darker. Start again at 1 after 5."
+    },
+    "startLabel": {
+      "type": "string",
+      "default": "Start",
+      "note": "Panel. The words on the button that begins the process."
+    },
+    "onStart": {
+      "type": "() => void",
+      "note": "Panel. Begin the process. Shows the primary Start button while started is off."
+    },
+    "onCancel": {
+      "type": "() => void",
+      "note": "Panel. Leave before beginning. Shows Cancel while started is off."
+    },
+    "side": {
+      "enum": [
+        "start",
+        "end"
+      ],
+      "default": "end",
+      "note": "Steps. The page edge the panel sits on, so the notch at the current step points into the page. Match the GuidedProcessPage side."
+    },
+    "onClose": {
+      "type": "() => void",
+      "note": "Steps. Close the drawer. Shows a close button under 1024 of box width, where the steps are a drawer."
+    },
+    "stepTitle": {
+      "type": "string",
+      "note": "Header: required. The step's title, large, under the process name."
+    },
+    "total": {
+      "type": "number",
+      "note": "Header. How many steps there are, for the 4 | 6 counter."
+    },
+    "onStepsOpen": {
+      "type": "() => void",
+      "note": "Header. Open the steps drawer. With total, shows the 4 | 6 counter as a button under 1024 of box width."
+    },
+    "actions": {
+      "type": "GuidedProcessAction[]",
+      "itemShape": {
+        "id": "string",
+        "label": "string",
+        "variant": "\"primary\" | \"secondary\" | \"tertiary\"? Defaults to tertiary, and secondary for the last action.",
+        "type": "\"button\" | \"submit\"? submit with form sends the step's Form.",
+        "form": "string? The id of the Form a submit action sends.",
+        "disabled": "boolean?"
+      },
+      "note": "Footer. The step's buttons in order; the last moves the process on. Under 1024 of box width every one but the last goes in a More menu."
+    },
+    "onAction": {
+      "type": "(id: string) => void",
+      "note": "Footer. Called with the id of the action pressed, from a Button or the More menu."
+    },
+    "updated": {
+      "type": "string",
+      "note": "Footer. When the work was last saved, like Last updated on September 13, 12:43 PM."
+    }
+  },
+  "useWhen": [
+    "A process of a few steps done in order that takes a whole page per step, like an import, a registration or a setup.",
+    "The person needs to see which step they are on and how the earlier ones went while they fill one in."
+  ],
+  "doNot": [
+    "Do not use it for a short flow inside a Modal or a Drawer. Use Stepper.",
+    "Do not use it for page sections that can be visited in any order. Use Tabs or AnchorNav.",
+    "Do not invent GuidedProcessPanel, GuidedProcessSteps, GuidedProcessHeader, GuidedProcessFooter or a light version of the dark parts.",
+    "Do not put the step's fields in a dark part; they belong to the page between the header and the footer.",
+    "Do not show Start while the footer has a primary action. One primary per view.",
+    "Do not give two footer actions variant primary.",
+    "Do not use a PageHeader over the step; use part header.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A panel is a section named by the process name, or by its step's title.",
+    "Each step is read as Step 2 of 4 before its title; the big number is hidden from screen readers, and a change of step is announced.",
+    "Part steps is a navigation named Steps; the list is ordered and the current step has aria-current step.",
+    "Status icons carry their words as a label; on a panel the words are written out.",
+    "Done tasks say done to screen readers as well as showing a check.",
+    "The counter is read as Step 4 of 6; in the header it is a button that says show steps.",
+    "The header's step title is the page's h1.",
+    "The footer's actions are kit Buttons; under 1024 the folded ones are a kit DropdownMenu named More actions, and the hidden set is display none, so no action is reached twice."
+  ],
+  "snippet": "<GuidedProcess title=\"Import usage\" steps={steps} current={1} started={false} onStart={start} onCancel={leave} />\n<GuidedProcess part=\"steps\" steps={steps} current={2} />\n<GuidedProcess part=\"header\" title=\"Import usage\" stepTitle=\"Map the columns\" current={2} total={4} onStepsOpen={openSteps} />\n<GuidedProcess part=\"footer\" updated=\"Last updated on September 13, 12:43 PM\" actions={actions} onAction={handle} />",
+  "examples": [
+    {
+      "title": "Before the first step",
+      "usage": "The first column: the process name, the first step, and Start and Cancel.",
+      "items": [
+        {
+          "props": {
+            "title": "Import usage",
+            "subtitle": "Bring a month of metered usage in from a file.",
+            "steps": [
+              {
+                "title": "Choose the file"
+              },
+              {
+                "title": "Map the columns"
+              },
+              {
+                "title": "Check the rows"
+              },
+              {
+                "title": "Import"
+              }
+            ],
+            "current": 1,
+            "started": false
+          }
+        }
+      ]
+    },
+    {
+      "title": "Shades",
+      "usage": "Columns further along are darker.",
+      "items": [
+        {
+          "props": {
+            "placement": "band",
+            "shade": 1,
+            "steps": [
+              {
+                "title": "Choose the file"
+              },
+              {
+                "title": "Map the columns"
+              },
+              {
+                "title": "Check the rows"
+              },
+              {
+                "title": "Import"
+              }
+            ],
+            "current": 1
+          }
+        },
+        {
+          "props": {
+            "placement": "band",
+            "shade": 2,
+            "steps": [
+              {
+                "title": "Choose the file"
+              },
+              {
+                "title": "Map the columns"
+              },
+              {
+                "title": "Check the rows"
+              },
+              {
+                "title": "Import"
+              }
+            ],
+            "current": 2
+          }
+        },
+        {
+          "props": {
+            "placement": "band",
+            "shade": 3,
+            "steps": [
+              {
+                "title": "Choose the file"
+              },
+              {
+                "title": "Map the columns"
+              },
+              {
+                "title": "Check the rows"
+              },
+              {
+                "title": "Import"
+              }
+            ],
+            "current": 3
+          }
+        },
+        {
+          "props": {
+            "placement": "band",
+            "shade": 4,
+            "steps": [
+              {
+                "title": "Choose the file"
+              },
+              {
+                "title": "Map the columns"
+              },
+              {
+                "title": "Check the rows"
+              },
+              {
+                "title": "Import"
+              }
+            ],
+            "current": 4
+          }
+        },
+        {
+          "props": {
+            "placement": "band",
+            "shade": 5,
+            "steps": [
+              {
+                "title": "Choose the file"
+              },
+              {
+                "title": "Map the columns"
+              },
+              {
+                "title": "Check the rows"
+              },
+              {
+                "title": "Import"
+              }
+            ],
+            "current": 4
+          }
+        }
+      ]
+    },
+    {
+      "title": "Status",
+      "usage": "How a step went: done, needs a look, or could not finish.",
+      "items": [
+        {
+          "props": {
+            "placement": "band",
+            "steps": [
+              {
+                "title": "Choose the file",
+                "status": "success"
+              }
+            ],
+            "current": 1
+          }
+        },
+        {
+          "props": {
+            "placement": "band",
+            "steps": [
+              {
+                "title": "Map the columns",
+                "status": "warning",
+                "statusText": "2 columns not mapped"
+              }
+            ],
+            "current": 1
+          }
+        },
+        {
+          "props": {
+            "placement": "band",
+            "steps": [
+              {
+                "title": "Check the rows",
+                "status": "error",
+                "statusText": "14 rows have no account"
+              }
+            ],
+            "current": 1
+          }
+        }
+      ]
+    },
+    {
+      "title": "Steps",
+      "usage": "Every step beside the page, with a notch at the current one and what is left in it.",
+      "items": [
+        {
+          "props": {
+            "part": "steps",
+            "current": 2,
+            "steps": [
+              {
+                "title": "Choose the file",
+                "status": "success"
+              },
+              {
+                "title": "Map the columns",
+                "tasks": [
+                  {
+                    "label": "Account column",
+                    "done": true
+                  },
+                  {
+                    "label": "Quantity column",
+                    "done": true
+                  },
+                  {
+                    "label": "Date column"
+                  },
+                  {
+                    "label": "Rate plan column"
+                  }
+                ]
+              },
+              {
+                "title": "Check the rows"
+              },
+              {
+                "title": "Import"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Header",
+      "usage": "The process name over the step's title.",
+      "items": [
+        {
+          "props": {
+            "part": "header",
+            "title": "Import usage",
+            "stepTitle": "Map the columns",
+            "current": 2,
+            "total": 4
+          }
+        }
+      ]
+    },
+    {
+      "title": "Footer",
+      "usage": "When the work was saved, then Cancel, Save and Skip, and Continue to move on. On the last step, Submit is the primary.",
+      "items": [
+        {
+          "props": {
+            "part": "footer",
+            "updated": "Last updated on September 13, 12:43 PM",
+            "actions": [
+              {
+                "id": "cancel",
+                "label": "Cancel"
+              },
+              {
+                "id": "save",
+                "label": "Save"
+              },
+              {
+                "id": "skip",
+                "label": "Skip"
+              },
+              {
+                "id": "continue",
+                "label": "Continue"
+              }
+            ]
+          }
+        },
+        {
+          "props": {
+            "part": "footer",
+            "updated": "Last updated on September 13, 12:43 PM",
+            "actions": [
+              {
+                "id": "cancel",
+                "label": "Cancel"
+              },
+              {
+                "id": "save",
+                "label": "Save"
+              },
+              {
+                "id": "submit",
+                "label": "Submit",
+                "variant": "primary"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

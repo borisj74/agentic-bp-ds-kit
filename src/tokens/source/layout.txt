@@ -183,6 +183,14 @@ scoreboard/chart-height|20px
 # Carousel (reference kit carousel): a vertical track is 200 tall; its slides fill it.
 carousel/vertical-height|200px
 
+# GuidedProcess (Figma guided process panel 2183:44371, band 2204:43670): the side panel is 458 wide; the step
+# number is 40 tall beside the page and 36 in the band over it.
+guided-process/panel|458px
+guided-process/number|40px
+guided-process/number-narrow|36px
+# Figma guided process template 29120:95949: the step title over the form is 32.
+guided-process/step-title|32px
+
 # ProgressLegacy (Figma progress-bar 3013:5958): the bar is 20 tall.
 progress-legacy/height|{ref/space/600}
 

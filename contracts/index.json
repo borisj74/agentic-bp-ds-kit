@@ -492,6 +492,21 @@
       ]
     },
     {
+      "name": "GuidedProcess",
+      "contract": "contracts/guidedprocess.json",
+      "category": "navigation",
+      "tags": [
+        "guided process",
+        "wizard",
+        "steps",
+        "process panel",
+        "import",
+        "setup",
+        "onboarding",
+        "walkthrough"
+      ]
+    },
+    {
       "name": "HeaderCell",
       "contract": "contracts/headercell.json",
       "category": "data",
@@ -1038,6 +1053,19 @@
         "edit record",
         "create form",
         "field groups"
+      ]
+    },
+    {
+      "name": "GuidedProcessPage",
+      "contract": "contracts/guidedprocesspage.json",
+      "tags": [
+        "guided process",
+        "wizard page",
+        "step page",
+        "import flow",
+        "setup flow",
+        "onboarding",
+        "save and continue"
       ]
     },
     {

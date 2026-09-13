@@ -1,0 +1,99 @@
+{
+  "name": "GuidedProcessPage",
+  "path": "src/patterns/GuidedProcessPage/GuidedProcessPage.tsx",
+  "intent": "A process walked one page per step: a dark column per step before it starts, then each step's fields with every step on a dark panel at the start or end edge of the page.",
+  "usage": "Use GuidedProcessPage for a process of a few steps that each need a page, like importing usage, registering a supplier or setting up a billing run. It is a blueprint: it only places kit GuidedProcess parts and keeps no state of its own, so the screen owns whether it has started, which step is on, what has been saved and whether the steps drawer is open. view intro is before the process starts: pass intro, one GuidedProcess panel per step, with shade 1 to 5 along the way and the first carrying the process name, Start and Cancel; from 1024 of box width they stand as columns across the page and scroll sideways when there are more than fit, and under 1024 they stack. view step is once it has: pass a GuidedProcess part header as header, the step's fields as children (a kit Form, laid out in columns as the step needs), a GuidedProcess part footer as footer, and a GuidedProcess part steps as steps. side puts the steps panel at the end edge (the default) or the start edge from 1024 of box width; give the steps part the same side. Only the step scrolls; the footer stays under it. Under 1024 the steps leave the page for a drawer from the same edge: keep stepsOpen in the screen, open it from the header's onStepsOpen, and close it with onStepsClose, which the steps' own close button, the sheet behind it and Escape all call. It goes in the AppShell page without a page header and fills it edge to edge. See contracts/guidedprocesspage.json for the full contract.",
+  "composes": [
+    "GuidedProcess",
+    "Form",
+    "Alert"
+  ],
+  "props": {
+    "view": {
+      "enum": [
+        "intro",
+        "step"
+      ],
+      "default": "step",
+      "note": "intro is the columns before the process starts; step is a step's fields with the steps beside them."
+    },
+    "intro": {
+      "type": "ReactNode[]",
+      "note": "Intro: one kit GuidedProcess panel per step, in order."
+    },
+    "header": {
+      "type": "ReactNode",
+      "note": "Step: a kit GuidedProcess with part header, over the fields."
+    },
+    "children": {
+      "type": "ReactNode",
+      "note": "Step: the step's fields, usually a kit Form."
+    },
+    "footer": {
+      "type": "ReactNode",
+      "note": "Step: a kit GuidedProcess with part footer. It stays under the step."
+    },
+    "steps": {
+      "type": "ReactNode",
+      "note": "Step: a kit GuidedProcess with part steps, beside the page, or a drawer under 1024."
+    },
+    "side": {
+      "enum": [
+        "start",
+        "end"
+      ],
+      "default": "end",
+      "note": "Step: the page edge the steps panel sits on from 1024 of box width, and the edge the drawer comes from under it."
+    },
+    "stepsOpen": {
+      "type": "boolean",
+      "default": false,
+      "note": "Step: the steps drawer is open. Only shows under 1024 of box width; wider, the steps are always there."
+    },
+    "onStepsClose": {
+      "type": "() => void",
+      "note": "Step: close the steps drawer. Called by the sheet behind it and by Escape."
+    },
+    "label": {
+      "type": "string",
+      "default": "Step",
+      "note": "Names the step's content for screen readers, like Map the columns."
+    }
+  },
+  "useWhen": [
+    "A process of a few steps done in order where each step is a page of fields.",
+    "Work that can be saved and picked up again part way through."
+  ],
+  "doNot": [
+    "Do not invent WizardPage, StepPage, a steps panel or a footer bar of your own. The parts are GuidedProcess.",
+    "Do not put a PageHeader over it. The header part names the step.",
+    "Do not use it for a short flow; two or three fields belong in a Modal with a Stepper.",
+    "Do not put page padding on it. It fills the AppShell page; read contracts/layout.json.",
+    "Do not give the steps part a different side from the page.",
+    "Do not keep whether it has started, the current step, the saved time or the open drawer in the pattern. The screen owns them."
+  ],
+  "a11y": [
+    "The step's content is a section named by label, and the header's step title is the page's h1.",
+    "The steps panel is a navigation named Steps, after the step in reading order whichever edge it is drawn on.",
+    "Under 1024 the drawer is hidden while closed, so it is not a stop for the keyboard; opening it moves focus into it, and Escape closes it.",
+    "The intro columns are each a section named by their step, read in order."
+  ],
+  "snippet": "<GuidedProcessPage\n  view=\"step\" side=\"end\" stepsOpen={open} onStepsClose={close}\n  header={<GuidedProcess part=\"header\" title=\"Import usage\" stepTitle=\"Map the columns\" current={2} total={4} onStepsOpen={openSteps} />}\n  steps={<GuidedProcess part=\"steps\" steps={steps} current={2} onClose={close} />}\n  footer={<GuidedProcess part=\"footer\" updated=\"Last updated on September 13, 12:43 PM\" actions={actions} onAction={handle} />}\n>\n  <Form id=\"step\" columns={2} onSubmit={next}>{fields}</Form>\n</GuidedProcessPage>",
+  "examples": [
+    {
+      "title": "Importing usage",
+      "usage": "The columns before Start, then each step's fields with the steps beside them.",
+      "items": [
+        {
+          "props": {
+            "view": "step",
+            "header": "{header}",
+            "children": "{form}",
+            "footer": "{footer}",
+            "steps": "{steps}"
+          }
+        }
+      ]
+    }
+  ]
+}

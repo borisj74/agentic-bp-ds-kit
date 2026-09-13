@@ -8,6 +8,8 @@ import { AppHeader, type AppHeaderDensity, type AppHeaderProps } from "@/ui/AppH
 import { AppShell, type AppShellProps } from "@/patterns/AppShell/AppShell";
 import { ListPage, type ListPageProps, type ListPageState } from "@/patterns/ListPage/ListPage";
 import { FormPage, type FormPageProps } from "@/patterns/FormPage/FormPage";
+import { GuidedProcessPage } from "@/patterns/GuidedProcessPage/GuidedProcessPage";
+import { GuidedProcess, type GuidedProcessAction, type GuidedProcessPanelProps, type GuidedProcessShade, type GuidedProcessStatus, type GuidedProcessStep } from "@/ui/GuidedProcess/GuidedProcess";
 import { RecordPage } from "@/patterns/RecordPage/RecordPage";
 import { Dashboard, type DashboardProps, type DashboardState } from "@/patterns/Dashboard/Dashboard";
 import { SettingsPage, type SettingsPageProps } from "@/patterns/SettingsPage/SettingsPage";
@@ -1933,6 +1935,175 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
 
   if (!shell) return page;
   // In the frame, the way a screen would ship it.
+  return (
+    <div
+      data-theme={dark ? "dark" : undefined}
+      style={{
+        height: 900, width: STAGE_WIDTHS[stage] ?? "100%", maxWidth: "100%", marginInline: "auto",
+        border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden",
+      }}
+    >
+      <AppShell
+        header={
+          <AppHeader
+            navOpen={navOpen} onNavToggle={() => setNavOpen((o) => !o)}
+            environment="UAT-2" searchShortcut="Ctrl+K" searchGroups={SHELL_SEARCH} searchScopes={SHELL_SEARCH_SCOPES}
+            actions={SHELL_HEADER_ACTIONS} onAction={() => {}}
+            user={{ name: "Ana Petrovic" }} company={{ name: "Northwind Holdings" }}
+            darkMode={dark} onDarkModeChange={setDark}
+            density={density} onDensityChange={setDensity}
+            onUserSettings={() => {}} onLogout={() => {}}
+          />
+        }
+        nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        navOpen={navOpen} onNavClose={() => setNavOpen(false)}
+      >
+        {page}
+      </AppShell>
+    </div>
+  );
+}
+
+// Playground harness: the real GuidedProcess panel walked with Start, Back and Next. Earlier steps show as done. Not a kit piece.
+export function GuidedProcessDemo({ current = 1, started = false, steps, ...p }: GuidedProcessPanelProps) {
+  const [at, setAt] = useState(current);
+  const [on, setOn] = useState(started);
+  const start = `${current}-${started}`;
+  const [from, setFrom] = useState(start);
+  // New start values from the controls reset the walk.
+  if (from !== start) { setFrom(start); setAt(current); setOn(started); }
+  const shown = steps.map((s, i): GuidedProcessStep => (i + 1 < at ? { ...s, status: s.status ?? "success" } : s));
+  return (
+    <div style={{ display: "grid", justifyItems: "center", gap: "var(--space-medium)", width: "100%" }}>
+      {/* A grid with a minimum height, so a tall panel grows the box instead of spilling out of it. */}
+      <div style={{ display: "grid", width: 458, maxWidth: "100%", minHeight: p.placement === "band" ? undefined : 560 }}>
+        <GuidedProcess {...p} steps={shown} current={at} started={on} onStart={() => setOn(true)} onCancel={() => setAt(1)} />
+      </div>
+      {on && (
+        <div style={{ display: "flex", gap: "var(--space-xsmall)" }}>
+          <Button size="sm" onClick={() => (at <= 1 ? setOn(false) : setAt(at - 1))}>Back</Button>
+          <Button size="sm" disabled={at >= steps.length} onClick={() => setAt(at + 1)}>Next</Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const IMPORT_STEPS = [
+  { title: "Choose the file", tasks: ["Pick where it comes from", "Upload the file", "Pick the month"] },
+  { title: "Map the columns", tasks: ["Account column", "Quantity column", "Date column"] },
+  { title: "Check the rows", tasks: ["Look over the preview", "Decide on rows with errors"] },
+  { title: "Import", tasks: ["Name the batch", "Submit"] },
+];
+const USAGE_SOURCES = [{ value: "file", label: "A file from my computer" }, { value: "sftp", label: "The nightly SFTP drop" }];
+const USAGE_MONTHS = [{ value: "2026-08", label: "August 2026" }, { value: "2026-09", label: "September 2026" }];
+const USAGE_COLUMNS = [{ value: "a", label: "Column A" }, { value: "b", label: "Column B" }, { value: "c", label: "Column C" }, { value: "d", label: "Column D" }];
+
+// Playground harness: the GuidedProcessPage pattern driven the way a screen would drive it: whether it has
+// started, which step is on, what was skipped, when it was saved and whether the steps drawer is open live here.
+// Not a kit piece.
+export function GuidedProcessPageDemo({ shell = true, stage = "desktop", side = "end" }: { shell?: boolean; stage?: string; side?: "start" | "end" }) {
+  const [dark, setDark] = useState(false);
+  const [density, setDensity] = useState<AppHeaderDensity>("default");
+  const [navOpen, setNavOpen] = useState(false);
+  const [section, setSection] = useState("accounts");
+  const [started, setStarted] = useState(false);
+  const [at, setAt] = useState(1);
+  const [skipped, setSkipped] = useState<number[]>([]);
+  const [done, setDone] = useState(false);
+  const [stepsOpen, setStepsOpen] = useState(false);
+  const [updated, setUpdated] = useState("Last updated on September 13, 12:43 PM");
+  // The Submit on the last step sits in the footer and sends the step's form by id.
+  const formId = useId();
+  const last = IMPORT_STEPS.length;
+  const reset = () => { setStarted(false); setAt(1); setSkipped([]); setDone(false); setStepsOpen(false); };
+
+  const steps = IMPORT_STEPS.map((s, i): GuidedProcessStep => {
+    const n = i + 1;
+    const past = done || n < at;
+    const status: GuidedProcessStatus | undefined = past ? (skipped.includes(n) ? "warning" : "success") : undefined;
+    return {
+      title: s.title, status, statusText: status === "warning" ? "Skipped" : undefined,
+      tasks: s.tasks.map((label, j) => ({ label, done: past || (n === at && started && j === 0) })),
+    };
+  });
+
+  const fields: Record<number, ReactNode> = {
+    1: (
+      <>
+        <Select label="Where it comes from" name="source" options={USAGE_SOURCES} defaultValue="file" />
+        <Select label="Month" name="month" options={USAGE_MONTHS} defaultValue="2026-09" />
+        <Input label="Usage file" name="file" type="file" />
+      </>
+    ),
+    2: (
+      <>
+        <Select label="Account column" name="account" options={USAGE_COLUMNS} defaultValue="a" />
+        <Select label="Quantity column" name="quantity" options={USAGE_COLUMNS} defaultValue="c" />
+        <Select label="Date column" name="date" options={USAGE_COLUMNS} defaultValue="d" />
+      </>
+    ),
+    3: (
+      <>
+        <Input label="Rows to preview" name="preview" type="number" defaultValue="25" />
+        <Checkbox label="Skip rows with errors" name="skipErrors" defaultChecked />
+      </>
+    ),
+    4: (
+      <>
+        <Input label="Batch name" name="batch" placeholder="Enter a value" required />
+        <Checkbox label="Email me when it finishes" name="email" defaultChecked />
+      </>
+    ),
+  };
+
+  const actions: GuidedProcessAction[] = done ? [] : [
+    { id: "cancel", label: "Cancel" },
+    { id: "save", label: "Save" },
+    ...(at < last
+      ? [{ id: "skip", label: "Skip" }, { id: "continue", label: "Continue" }]
+      : [{ id: "submit", label: "Submit", variant: "primary" as const, type: "submit" as const, form: formId }]),
+  ];
+  const onAction = (id: string) => {
+    if (id === "cancel") reset();
+    if (id === "save") setUpdated(`Last updated on ${new Date().toLocaleString("en-US", { month: "long", day: "numeric", hour: "numeric", minute: "2-digit" })}`);
+    if (id === "skip") { setSkipped((s) => [...s, at]); setAt(at + 1); }
+    if (id === "continue") setAt(at + 1);
+  };
+
+  // Before Start: a column per step, darker along the way; the first carries the name, Start and Cancel.
+  const intro = steps.map((s, i) => (
+    <GuidedProcess
+      key={s.title} steps={steps} current={i + 1} started={false} shade={((i % 5) + 1) as GuidedProcessShade}
+      title={i === 0 ? "Import usage" : undefined} subtitle={i === 0 ? "Bring a month of metered usage in from a file." : undefined}
+      onStart={i === 0 ? () => setStarted(true) : undefined} onCancel={i === 0 ? reset : undefined}
+    />
+  ));
+
+  const page = (
+    <GuidedProcessPage
+      view={started ? "step" : "intro"} intro={intro} side={side} label={IMPORT_STEPS[at - 1].title}
+      stepsOpen={stepsOpen} onStepsClose={() => setStepsOpen(false)}
+      header={<GuidedProcess part="header" title="Import usage" stepTitle={IMPORT_STEPS[at - 1].title} current={at} total={last} onStepsOpen={() => setStepsOpen(true)} />}
+      steps={<GuidedProcess part="steps" steps={steps} current={at} side={side} onClose={() => setStepsOpen(false)} />}
+      footer={<GuidedProcess part="footer" updated={updated} actions={actions} onAction={onAction} />}
+    >
+      {done ? (
+        <Alert tone="success" actionLabel="Import another" onAction={reset}>Imported the September 2026 usage.</Alert>
+      ) : (
+        <Form key={at} id={formId} columns={2} onSubmit={() => setDone(true)}>{fields[at]}</Form>
+      )}
+    </GuidedProcessPage>
+  );
+
+  // Out of the frame, a padded page box of its own, since the pattern fills the page it is given.
+  if (!shell) {
+    return (
+      <div className="layout-content" style={{ height: 720, border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)" }}>
+        {page}
+      </div>
+    );
+  }
   return (
     <div
       data-theme={dark ? "dark" : undefined}

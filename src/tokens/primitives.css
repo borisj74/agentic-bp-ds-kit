@@ -1255,6 +1255,10 @@
   --scoreboard-chart-width: 64px;
   --scoreboard-chart-height: 20px;
   --carousel-vertical-height: 200px;
+  --guided-process-panel: 458px;
+  --guided-process-number: 40px;
+  --guided-process-number-narrow: 36px;
+  --guided-process-step-title: 32px;
   --progress-legacy-height: var(--ref-space-600);
   --progress-bar-sm: var(--ref-space-200);
   --progress-bar-md: var(--ref-space-300);

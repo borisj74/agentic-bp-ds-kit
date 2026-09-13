@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
-import { SIDE_NAV_SECTIONS, SIDE_NAV_END, AppShellDemo, DashboardDemo, FormPageDemo, SettingsPageDemo, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { SIDE_NAV_SECTIONS, SIDE_NAV_END, AppShellDemo, DashboardDemo, FormPageDemo, GuidedProcessDemo, GuidedProcessPageDemo, SettingsPageDemo, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -31,6 +31,7 @@ import { DataGrid, type DataGridColumn, type DataGridProps, type DataGridRow } f
 import { DatePicker, type DatePickerProps } from "@/ui/DatePicker/DatePicker";
 import { DropdownMenu, type DropdownMenuEntry, type DropdownMenuProps } from "@/ui/DropdownMenu/DropdownMenu";
 import { Form, type FormProps } from "@/ui/Form/Form";
+import { GuidedProcess, type GuidedProcessAction, type GuidedProcessPanelProps, type GuidedProcessStep } from "@/ui/GuidedProcess/GuidedProcess";
 import { FormDisplay, type FormDisplayProps } from "@/ui/FormDisplay/FormDisplay";
 import { Empty, type EmptyProps } from "@/ui/Empty/Empty";
 import { FormulaEditor, type FormulaEditorProps } from "@/ui/FormulaEditor/FormulaEditor";
@@ -113,6 +114,16 @@ export interface Entry {
 }
 
 const STEPS = ["Setup", "Map Columns", "Billing IDs", "Usage IDs", "Activate"];
+
+const GUIDED_STEPS: GuidedProcessStep[] = [
+  { title: "Choose the file", tasks: [{ label: "Pick where it comes from", done: true }, { label: "Upload the file" }, { label: "Pick the month" }] },
+  { title: "Map the columns", tasks: [{ label: "Account column", done: true }, { label: "Quantity column" }, { label: "Date column" }] },
+  { title: "Check the rows", tasks: [{ label: "Look over the preview" }, { label: "Decide on rows with errors" }] },
+  { title: "Import", tasks: [{ label: "Name the batch" }, { label: "Submit" }] },
+];
+const GUIDED_ACTIONS: GuidedProcessAction[] = [
+  { id: "cancel", label: "Cancel" }, { id: "save", label: "Save" }, { id: "skip", label: "Skip" }, { id: "continue", label: "Continue" },
+];
 
 const PAGE_SECTION_ITEMS = [
   { id: "demo-details", label: "Details" },
@@ -1153,6 +1164,84 @@ export const registry: Record<string, Entry> = {
         <PageHeader title="Create account" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]} actions={<><Button size="sm">Cancel</Button><Button size="sm" variant="primary">Create</Button></>} />
         <Input size="sm" label="Account name" labelPosition="start" placeholder="Enter a value" required />
         <Select size="sm" label="Status" labelPosition="start" options={[{ value: "active", label: "Active" }, { value: "pending", label: "Pending" }]} defaultValue="active" />
+      </div>
+    ),
+  },
+  GuidedProcess: {
+    // Part picks the piece. The panel stage walks the process with Start, Back and Next; Variants show each part
+    // alone at the size it has in a page.
+    render: ({ walk, ...p }) => {
+      const steps = (p.steps as GuidedProcessStep[] | undefined) ?? GUIDED_STEPS;
+      if (p.part === "footer") {
+        return (
+          <div style={{ width: "100%" }}>
+            <GuidedProcess part="footer" updated={String(p.updated ?? "Last updated on September 13, 12:43 PM")} actions={(p.actions as GuidedProcessAction[] | undefined) ?? GUIDED_ACTIONS} onAction={() => {}} />
+          </div>
+        );
+      }
+      if (p.part === "steps") {
+        return (
+          <div style={{ display: "grid", width: 458, maxWidth: "100%", minHeight: 560 }}>
+            <GuidedProcess part="steps" steps={steps} current={Number(p.current ?? 2)} side={p.side === "start" ? "start" : "end"} />
+          </div>
+        );
+      }
+      if (p.part === "header") {
+        return (
+          <div style={{ width: "100%" }}>
+            <GuidedProcess part="header" title={String(p.title ?? "Import usage")} stepTitle={String(p.stepTitle ?? "Map the columns")} current={Number(p.current ?? 2)} total={steps.length} />
+          </div>
+        );
+      }
+      const props = { ...(p as unknown as GuidedProcessPanelProps), part: "panel" as const, steps };
+      if (walk) return <GuidedProcessDemo {...props} />;
+      // Contract examples carry no handlers, so give a not-started panel its Start and Cancel.
+      const intro = props.started === false ? { onStart: () => {}, onCancel: () => {} } : {};
+      return (
+        // A grid with a minimum height, so a tall panel grows the box instead of spilling out of it.
+        <div style={{ display: "grid", width: 458, maxWidth: "100%", minHeight: props.placement === "band" ? undefined : 560 }}>
+          <GuidedProcess {...props} {...intro} />
+        </div>
+      );
+    },
+    toggles: { walk: { label: "Start, Back and Next", default: true } },
+    preview: { part: "panel", title: "Import usage", subtitle: "Bring a month of metered usage in from a file.", steps: GUIDED_STEPS, current: 1, started: false, placement: "side", shade: 1 },
+    hide: ["steps", "onStart", "onCancel", "actions", "onAction", "onClose", "onStepsOpen"],
+    block: true,
+    hint: "Part picks the piece: the panel for one step, the steps beside the page, the header over a step, or the footer under it. On the panel, press Start, then Next and Back; shade darkens columns further along, and placement band is the shorter panel that stacks on a narrow page. Side on the steps flips the notch for a panel on the start edge.",
+    card: (
+      <div style={{ width: 220 }}>
+        <GuidedProcess placement="band" title="Import usage" steps={[{ title: "Choose the file", status: "success" }, { title: "Map the columns" }]} current={1} />
+      </div>
+    ),
+  },
+  GuidedProcessPage: {
+    // The pattern in the frame, driven the way a screen would drive it.
+    render: ({ shell, stage, side }) => (
+      <GuidedProcessPageDemo shell={shell !== false} stage={String(stage ?? "desktop")} side={side === "start" ? "start" : "end"} />
+    ),
+    preview: { side: "end" },
+    hide: ["view", "intro", "header", "children", "footer", "steps", "stepsOpen", "onStepsClose", "label"],
+    toggles: { shell: { label: "In the app frame", default: true } },
+    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
+    hint: "Press Start in the first column, then walk the import: Continue moves on, Skip moves on and marks the step to look at again, Save writes the time in the footer, and Submit on the last step sends the batch. Cancel goes back to the columns. Side puts the steps panel at the end or the start of the page. Stage narrows the box: under 1024 the columns stack, the steps become a drawer opened by the 4 | 6 counter, and the quieter footer actions fold into the More menu.",
+    block: true,
+    wide: true,
+    page: <GuidedProcessPageDemo shell />,
+    card: (
+      <div style={{ width: 340, height: 180, display: "grid", gridTemplateColumns: "minmax(0, 1fr) 130px", border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden", background: "var(--surface-flat)" }}>
+        <div style={{ display: "grid", gridTemplateRows: "minmax(0, 1fr) auto", minWidth: 0 }}>
+          <div style={{ display: "grid", alignContent: "start", gap: "var(--space-xsmall)", padding: "var(--space-small)" }}>
+            <span style={{ font: "var(--font-weight-regular) var(--font-size-regular) / var(--line-height-tight) var(--font-sans)", color: "var(--text-neutral-strong)" }}>Map the columns</span>
+            <Input size="sm" label="Account column" placeholder="Column A" />
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end", padding: "var(--space-xsmall)", background: "var(--surface-sunken)", borderTop: "var(--border-width-thin) solid var(--border-neutral-faint)" }}>
+            <Button size="sm">Continue</Button>
+          </div>
+        </div>
+        <div style={{ display: "grid", minHeight: 0, overflow: "hidden" }}>
+          <GuidedProcess part="steps" steps={[{ title: "File", status: "success" }, { title: "Columns" }, { title: "Import" }]} current={2} />
+        </div>
       </div>
     ),
   },

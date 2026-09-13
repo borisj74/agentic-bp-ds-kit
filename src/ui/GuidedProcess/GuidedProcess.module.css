@@ -1,0 +1,154 @@
+/* Figma Guided Process (template 29102:2). Four parts, each answering to the box it sits in. CSS vars cannot
+   appear in container queries, so the breakpoints are written out. */
+
+/* Panel (2183:44371 side, 2204:43670 band): one step as a dark column. The values each placement changes are
+   set once here, so the rules under them are written once. */
+.panel {
+  --pad: calc(var(--space-xlarge) * 2); --gap: calc(var(--space-large) * 2);
+  --num: var(--guided-process-number); --name: var(--text-heading-lg-size);
+  --name-min: 3lh; --head-space: auto;
+  --pad-top: var(--pad); --pad-end: calc(var(--pad) + var(--gap));
+  box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--gap);
+  min-height: 100%; padding: var(--pad-top) var(--pad) var(--pad-end); overflow-wrap: anywhere;
+  background: var(--surface-raised); color: var(--text-neutral-strong); font-family: var(--font-sans);
+}
+/* A column without Start lifts its step by Start's height, so the numbers line up across the columns
+   (Figma 88 under the first column, 164 under the rest). */
+.panel:not(:has(.actions)) { --pad-end: calc(var(--pad) + var(--gap) * 2 + var(--control-medium)); }
+/* Band: 24 inset, a smaller number and title, 80 under the process name, and 48 over a step with no name. */
+.band, .band:not(:has(.actions)) {
+  --pad: var(--space-xlarge); --gap: var(--space-xlarge);
+  --num: var(--guided-process-number-narrow); --name: var(--font-size-regular);
+  --name-min: 0; --head-space: calc(var(--space-large) * 4 - var(--gap)); --pad-end: var(--pad);
+}
+.band:not(:has(.head)) { --pad-top: calc(var(--pad) * 2); }
+/* auto is a column from 1024 of box width and a band under it. */
+@container (max-width: 1023px) {
+  .auto, .auto:not(:has(.actions)) {
+    --pad: var(--space-xlarge); --gap: var(--space-xlarge);
+    --num: var(--guided-process-number-narrow); --name: var(--font-size-regular);
+    --name-min: 0; --head-space: calc(var(--space-large) * 4 - var(--gap)); --pad-end: var(--pad);
+  }
+  .auto:not(:has(.head)) { --pad-top: calc(var(--pad) * 2); }
+}
+
+/* Columns further along are darker (Figma neutral-general 1 to 5): the panel mixed toward the sunken surface. */
+.shade2 { background: color-mix(in srgb, var(--surface-raised), var(--surface-sunken) 20%); }
+.shade3 { background: color-mix(in srgb, var(--surface-raised), var(--surface-sunken) 40%); }
+.shade4 { background: color-mix(in srgb, var(--surface-raised), var(--surface-sunken) 60%); }
+.shade5 { background: color-mix(in srgb, var(--surface-raised), var(--surface-sunken) 80%); }
+
+/* The process name at the top; the step is pushed to the foot of the column. */
+.head { display: flex; flex-direction: column; gap: var(--space-xxsmall); margin-block-end: var(--head-space); }
+.title { margin: 0; font-size: var(--text-heading-xl-size); font-weight: var(--font-weight-regular); line-height: var(--line-height-snug); }
+.subtitle { margin: 0; font-size: var(--text-body-lg-size); line-height: var(--line-height-normal); color: var(--text-neutral); }
+
+.current { display: flex; flex-direction: column; gap: var(--space-xsmall); }
+.number { margin: 0; font-size: var(--num); font-weight: var(--font-weight-regular); line-height: var(--line-height-tight); color: var(--text-neutral); font-variant-numeric: tabular-nums; }
+/* Three lines tall in a column, so a short title keeps its status on the same line as its neighbours'. */
+.name { margin: 0; min-block-size: var(--name-min); font-size: var(--name); font-weight: var(--font-weight-bold); line-height: var(--line-height-snug); }
+.status {
+  display: flex; align-items: center; gap: var(--space-xxsmall); margin: var(--space-xxsmall) 0 0;
+  font-size: var(--text-caption-size); line-height: var(--line-height-tight);
+}
+.success { color: var(--icon-success-subtle); }
+.warning { color: var(--icon-warning-subtle); }
+.error { color: var(--icon-danger-subtle); }
+
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-medium); }
+
+/* Steps (template 29120:95981): the counter at the top, the steps at the foot. The notch colour is read here,
+   before the inner panel turns dark, so it matches the page the notch points into. */
+.toc { --notch: var(--surface-flat); display: grid; min-height: 100%; font-family: var(--font-sans); }
+.tocInner {
+  --pad: calc(var(--space-xlarge) * 2);
+  box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-xlarge);
+  min-width: 0; padding: var(--space-xlarge) 0 calc(var(--space-large) * 4); overflow-wrap: anywhere;
+  background: var(--surface-raised); color: var(--text-neutral-strong);
+}
+.tocTop { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-medium); padding-inline: var(--pad) var(--space-xlarge); }
+.close { display: none; }
+@container (max-width: 1023px) {
+  .close { display: flex; }
+}
+
+.steps { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.step { position: relative; margin-inline: var(--pad); padding-block: var(--space-medium); border-block-end: var(--border-width-thin) solid var(--border-neutral-faint); }
+.row { display: flex; align-items: flex-start; gap: var(--space-medium); }
+.stepTitle { flex: 1; min-width: 0; font-size: var(--text-heading-lg-size); font-weight: var(--font-weight-bold); line-height: var(--line-height-snug); }
+/* The notch: a 12 by 40 wedge of the page cut into the panel's edge, level with the current step's top. */
+.on::before {
+  content: ""; position: absolute; inset-block-start: 0; inset-inline-start: calc(-1 * var(--pad));
+  border-block: var(--space-large) solid transparent; border-inline-start: var(--space-small) solid var(--notch);
+}
+.tocStart .on::before {
+  inset-inline-start: auto; inset-inline-end: calc(-1 * var(--pad));
+  border-inline-start: 0; border-inline-end: var(--space-small) solid var(--notch);
+}
+
+.tasks { display: flex; flex-direction: column; margin: var(--space-xsmall) 0 0; padding: 0; list-style: none; }
+.task {
+  display: flex; align-items: flex-start; gap: var(--space-xsmall); padding-block: var(--space-xxsmall);
+  font-size: var(--text-caption-size); line-height: var(--line-height-tight); color: var(--text-neutral-strong);
+}
+/* A small dot for a task still to do, in the same 16 box the check takes. */
+.dot { display: grid; place-items: center; flex: none; width: var(--icon-size-small); height: var(--icon-size-small); }
+.dot::before { content: ""; width: var(--space-xxsmall); height: var(--space-xxsmall); border-radius: var(--radius-full); background: currentColor; }
+
+/* 4 | 6: the current step large, a rule, then the count a size smaller, on one baseline. */
+.counter { display: inline-flex; align-items: flex-end; gap: var(--space-xsmall); font-weight: var(--font-weight-regular); line-height: var(--line-height-tight); }
+.at { font-size: var(--guided-process-step-title); }
+.of { font-size: var(--text-heading-xl-size); }
+.bar { align-self: stretch; width: var(--border-width-thin); background: currentColor; }
+
+/* Header (29120:102574): the process name over the step title. */
+.header { display: flex; align-items: flex-start; gap: calc(var(--space-medium) * 2); min-width: 0; font-family: var(--font-sans); }
+.headText { display: flex; flex-direction: column; gap: var(--space-medium); flex: 1; min-width: 0; }
+.process { margin: 0; font-size: var(--font-size-regular); line-height: var(--line-height-snug); color: var(--text-neutral-strong); }
+.stepTitle1 { margin: 0; font-size: var(--guided-process-step-title); font-weight: var(--font-weight-regular); line-height: var(--line-height-tight); color: var(--text-neutral-strong); overflow-wrap: anywhere; }
+/* The counter opens the steps, and only where the steps are a drawer (Figma 29120:95872). */
+.counterButton {
+  display: none; flex: none; margin: 0; padding: var(--space-xxsmall); border: 0; border-radius: var(--radius-medium);
+  background: none; color: var(--text-brand); font: inherit; cursor: pointer;
+}
+.counterButton:hover { background: var(--bg-neutral-min-hover); }
+.counterButton:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
+@container (max-width: 1023px) {
+  .counterButton { display: inline-flex; }
+}
+
+/* Footer (2530:87948): when it was last saved at the start, the actions at the end. 1024-1439 (2530:88254) is
+   28 by 24 inset. */
+.footer {
+  box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xlarge); min-width: 0;
+  padding: var(--space-xxlarge) var(--space-xlarge);
+  background: var(--surface-sunken); border-block-start: var(--border-width-thin) solid var(--border-neutral-faint);
+  font-family: var(--font-sans);
+}
+.updated {
+  flex: 1; min-width: 0; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: var(--text-caption-size); line-height: var(--line-height-normal); color: var(--text-neutral);
+}
+.buttons { display: flex; align-items: center; gap: var(--space-xsmall); margin-inline-start: auto; }
+.rest { display: flex; align-items: center; gap: var(--space-xsmall); }
+.more { display: none; }
+.last { display: flex; }
+
+/* 1440 and up (2370:68021): a 48 inset at the sides. */
+@container (min-width: 1440px) {
+  .footer { padding-inline: calc(var(--space-xlarge) * 2); }
+}
+/* 600-1023 (2530:87960): 24 all round, and the quieter actions fold into one menu beside the one that moves on. */
+@container (max-width: 1023px) {
+  .footer { padding: var(--space-xlarge); }
+  .rest { display: none; }
+  .more { display: flex; }
+}
+/* 599 (2530:88296): the time goes on a line of its own and the action that moves on takes the rest of the row. */
+@container (max-width: 599px) {
+  .footer { flex-direction: column; align-items: stretch; gap: var(--space-medium); padding: var(--space-medium); }
+  .buttons { margin-inline-start: 0; }
+  .last { flex: 1; }
+}
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

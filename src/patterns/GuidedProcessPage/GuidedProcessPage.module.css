@@ -1,0 +1,60 @@
+/* The frame measures the space the process has, so the parts answer to it rather than the window. It fills the
+   AppShell page edge to edge: it pulls out through the page's own inset, which the parts pay back as padding. */
+.frame {
+  container-type: inline-size;
+  box-sizing: border-box; min-width: 0; min-height: 0;
+  margin: calc(-1 * var(--layout-margin-md));
+  height: calc(100% + 2 * var(--layout-margin-md));
+}
+
+/* Intro (Figma 29120:95708): a column per step across the page, each one panel wide; more steps than fit scroll
+   sideways. */
+.intro { display: flex; height: 100%; min-height: 0; overflow: auto; background: var(--surface-flat); }
+.column { display: grid; flex: none; width: var(--guided-process-panel); min-height: 100%; }
+
+/* Step (Figma 29120:95949): the step and its footer, and the steps on a panel at the end edge, or the start. */
+.page {
+  position: relative; display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--guided-process-panel); grid-template-areas: "main steps";
+  height: 100%; min-height: 0; overflow: hidden; background: var(--surface-flat); font-family: var(--font-sans);
+}
+.start { grid-template-columns: var(--guided-process-panel) minmax(0, 1fr); grid-template-areas: "steps main"; }
+/* Only the step scrolls; the footer stays under it. */
+.main { grid-area: main; display: grid; grid-template-rows: minmax(0, 1fr) auto; min-width: 0; min-height: 0; }
+.content {
+  display: flex; flex-direction: column; gap: calc(var(--space-xlarge) * 2);
+  min-width: 0; min-height: 0; overflow: auto; padding: calc(var(--space-xlarge) * 2);
+}
+.footer { min-width: 0; }
+.steps { grid-area: steps; display: grid; min-height: 0; overflow: auto; outline: none; }
+.scrim { display: none; margin: 0; padding: 0; border: 0; }
+
+/* 1023 (Figma 29120:95872 and 29120:95822): the columns stack as bands, and the steps leave the page for a
+   drawer from the same edge, opened by the counter in the header. */
+@container (max-width: 1023px) {
+  .intro { flex-direction: column; }
+  .column { width: auto; min-height: 0; }
+
+  .page, .start { grid-template-columns: minmax(0, 1fr); grid-template-areas: "main"; }
+  .content { padding: var(--space-xlarge); }
+  /* Away off its edge and hidden while closed, so it is not a stop for the keyboard; visibility waits for the
+     slide out to finish. */
+  .steps {
+    grid-area: auto; position: absolute; inset-block: 0; inset-inline-end: 0; z-index: 2;
+    width: min(var(--guided-process-panel), 100%);
+    transform: translateX(100%); visibility: hidden;
+    transition: transform var(--motion-expand-duration) var(--motion-expand-easing), visibility 0s linear var(--motion-expand-duration);
+  }
+  .steps:dir(rtl) { transform: translateX(-100%); }
+  .start .steps { inset-inline-end: auto; inset-inline-start: 0; transform: translateX(-100%); }
+  .start .steps:dir(rtl) { transform: translateX(100%); }
+  .open .steps, .open .steps:dir(rtl) {
+    transform: translateX(0); visibility: visible;
+    transition: transform var(--motion-expand-duration) var(--motion-expand-easing), visibility 0s;
+  }
+  .open .scrim { position: absolute; inset: 0; z-index: 1; display: block; background: var(--surface-backdrop-soft); cursor: pointer; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .steps, .open .steps { transition: none; }
+}
