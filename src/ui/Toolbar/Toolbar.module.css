@@ -49,15 +49,22 @@
 .measure { position: absolute; top: 0; left: 0; width: 0; height: 0; overflow: hidden; visibility: hidden; pointer-events: none; }
 .measureRow { width: max-content; }
 
-/* 640px = --grid-breakpoint-sm, the kit's mobile break: CSS vars cannot appear in container queries.
-   The search takes the first line whole. Everything else shares the next one: the filters, the view and refresh,
-   with the actions at its end. When the actions do not fit there, Toolbar folds them into one Actions menu;
-   --toolbar-fold is how it knows the bar is narrow. The line between finding and viewing means nothing once the
-   search has a line of its own, so it goes. */
-@container (max-width: 640px) {
-  .bar { --toolbar-fold: 1; flex-wrap: wrap; justify-content: flex-start; gap: var(--space-xsmall); }
-  .start { display: contents; }
+/* 1024px = --grid-breakpoint-md and 640px = --grid-breakpoint-sm: CSS vars cannot appear in container queries.
+   Under 1024px the toolbar keeps to one line: the filters, the search (it narrows first when space is short), the
+   view and refresh, with the actions at the end. When the actions do not fit there, Toolbar folds them into one
+   Actions menu; --toolbar-fold tells it which layout it is measuring. */
+@container (max-width: 1023px) {
+  .bar { --toolbar-fold: inline; gap: var(--space-xsmall); }
+  .start { flex: 1 1 auto; flex-wrap: nowrap; }
+  .search { flex: 0 1 var(--toolbar-search); width: auto; min-width: 0; }
   .end { margin-inline-start: auto; }
-  .search { order: -1; width: 100%; }
+}
+
+/* Under 640px the search takes the first line whole. Everything else shares the next one, the actions at its end.
+   The line between finding and viewing means nothing once the search has a line of its own, so it goes. */
+@container (max-width: 640px) {
+  .bar { --toolbar-fold: stacked; flex-wrap: wrap; justify-content: flex-start; }
+  .start { display: contents; }
+  .search { order: -1; flex: 1 1 100%; width: 100%; }
   .divider { display: none; }
 }

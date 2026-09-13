@@ -126,7 +126,8 @@ export function Toolbar({
   const viewing = views.length > 0 || Boolean(onRefresh);
   const hasEnd = Boolean(moreActions?.length) || Boolean(actions);
 
-  // Under 640px everything but the search shares one line. When the actions do not fit at its end, they fold into
+  // Under 1024px the controls keep to one line (under 640px the search takes a line of its own above it). When the
+  // actions do not fit at the end of that line, they fold into
   // one Actions menu, with More's items after them: the whole row of buttons or the one menu, never a wrapped row.
   // A hidden copy of the actions keeps their full width known, so they come back as soon as there is room.
   const folding = hasEnd && actions ? foldActions(actions) : null;
@@ -144,17 +145,32 @@ export function Toolbar({
     if (!canFold || !bar || !row || !menu) return;
     const check = () => {
       const css = getComputedStyle(bar);
-      // Set by the bar's own 640px container query, so the fold follows the same break as the layout.
-      if (css.getPropertyValue("--toolbar-fold").trim() !== "1") { setFold("row"); return; }
+      // Set by the bar's container queries, so the fold follows the same breaks as the layout: inline under 1024px
+      // (the search shares the line), stacked under 640px (the search has a line of its own above it).
+      const mode = css.getPropertyValue("--toolbar-fold").trim();
+      if (mode !== "inline" && mode !== "stacked") { setFold("row"); return; }
       const box = bar.getBoundingClientRect();
       const left = box.left + parseFloat(css.paddingLeft);
       const right = box.right - parseFloat(css.paddingRight);
       const gap = parseFloat(css.columnGap) || 0;
-      const shared = [...(startRef.current?.children ?? [])].filter(
-        (el) => !el.classList.contains(styles.search) && getComputedStyle(el).display !== "none",
+      const start = startRef.current;
+      const shared = [...(start?.children ?? [])].filter(
+        (el) => (mode === "inline" || !el.classList.contains(styles.search)) && getComputedStyle(el).display !== "none",
       );
-      const last = shared[shared.length - 1];
-      const used = last ? last.getBoundingClientRect().right - left + gap : 0;
+      let used = 0;
+      if (mode === "stacked") {
+        // The controls flow straight into the bar's line, so the last one's edge is where the room starts.
+        const last = shared[shared.length - 1];
+        used = last ? last.getBoundingClientRect().right - left + gap : 0;
+      } else if (start && shared.length > 0) {
+        // The search narrows to make room, so count it at its full width, not at whatever it has shrunk to.
+        const searchWidth = parseFloat(css.getPropertyValue("--toolbar-search"));
+        const startGap = parseFloat(getComputedStyle(start).columnGap) || 0;
+        const widths = shared.map((el) =>
+          el.classList.contains(styles.search) && searchWidth ? searchWidth : el.getBoundingClientRect().width,
+        );
+        used = widths.reduce((sum, w) => sum + w, 0) + startGap * (shared.length - 1) + gap;
+      }
       const room = right - left - used;
       setFold(row.offsetWidth <= room ? "row" : menu.offsetWidth <= room ? "menu" : "icon");
     };
@@ -163,6 +179,7 @@ export function Toolbar({
     watch.observe(bar);
     watch.observe(row);
     watch.observe(menu);
+    if (startRef.current) watch.observe(startRef.current);
     return () => watch.disconnect();
   }, [canFold]);
   const pickFolded = (id: string) => {
