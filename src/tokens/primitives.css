@@ -1223,6 +1223,7 @@
   --layout-split-third: 4;
   --z-overlay: 1000;
   --z-toast: 1100;
+  --target-min: var(--ref-space-700);
   --avatar-size-sm: var(--ref-space-900);
   --avatar-size-md: var(--ref-space-1100);
   --avatar-size-lg: var(--ref-space-1300);
@@ -1331,6 +1332,7 @@
   --chart-pie-lg: 240px;
   --calendar-hour: var(--ref-space-1100);
   --calendar-row: var(--ref-space-600);
+  --calendar-event: var(--target-min);
   --calendar-gutter: 56px;
   --calendar-month-row: 112px;
   --calendar-grid-height: 480px;

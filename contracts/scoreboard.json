@@ -55,7 +55,8 @@
     "The trend arrow is read as Up or Down before the value, so color is not the only signal.",
     "The spark chart is an image named by its direction, like Trend going up.",
     "When selectable, each card is a button with aria-pressed and a visible focus ring.",
-    "On a phone-width box the arrows are gone but the strip is still a focus stop, so the arrow keys move it."
+    "On a phone-width box the arrows are gone but the strip is still a focus stop, so the arrow keys move it.",
+    "When plain cards scroll sideways, the strip becomes a focus stop named by label, so the arrow keys scroll it (WCAG 2.1.1). Selectable cards are buttons, so the strip adds no stop."
   ],
   "snippet": "<Scoreboard\n  items={[\n    { id: \"open\", title: \"Open invoices\", metric: \"128\", badge: \"This month\", trend: { value: \"12%\", unit: \"MoM\", status: \"success\", direction: \"up\" }, metadata: \"Updated today\" },\n    { id: \"revenue\", title: \"Revenue\", metric: \"$482,900\", chart: { points: [52, 58, 54, 66, 62, 74, 70, 82], status: \"success\" }, metadata: \"Last 8 weeks\" },\n    { id: \"overdue\", title: \"Overdue\", metric: \"$36,420\", trend: { value: \"4.1%\", unit: \"MoM\", status: \"danger\", direction: \"up\" }, metadata: \"14 accounts\" },\n  ]}\n/>",
   "examples": [

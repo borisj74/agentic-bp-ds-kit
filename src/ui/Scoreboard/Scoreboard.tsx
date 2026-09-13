@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Badge } from "../Badge/Badge";
 import { Conveyor } from "../Conveyor/Conveyor";
 import { Icon } from "../Icon/Icon";
@@ -92,6 +92,20 @@ export function Scoreboard({
 }: ScoreboardProps) {
   const [innerSelected, setInnerSelected] = useState(defaultSelected);
   const selected = selectedProp !== undefined ? selectedProp : innerSelected;
+  // A strip that scrolls sideways becomes a focus stop, so keyboard users can scroll it with the arrow keys (WCAG 2.1.1).
+  // Selectable cards are buttons, and focusing them scrolls the strip already.
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [overflows, setOverflows] = useState(false);
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const measure = () => setOverflows(el.scrollWidth > el.clientWidth + 1);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [items.length]);
+  const scrollStop = overflows && !selectable;
 
   const pick = (id: string) => {
     const next = selected === id ? null : id;
@@ -136,5 +150,12 @@ export function Scoreboard({
   // Past four cards the strip no longer fits, so a Conveyor moves it along with its arrows.
   if (!scroll) return row;
   if (items.length > CONVEYOR_AT) return <Conveyor label={label}>{row}</Conveyor>;
-  return <div className={[styles.wrap, styles.scrolls].join(" ")}>{row}</div>;
+  return (
+    <div
+      ref={wrapRef} className={[styles.wrap, styles.scrolls].join(" ")}
+      tabIndex={scrollStop ? 0 : undefined} role={scrollStop ? "region" : undefined} aria-label={scrollStop ? label : undefined}
+    >
+      {row}
+    </div>
+  );
 }

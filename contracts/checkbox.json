@@ -74,7 +74,8 @@
     "hideLabel keeps the label for screen readers.",
     "Indeterminate reads as mixed.",
     "error sets aria-invalid.",
-    "Focus ring on the box for keyboard users."
+    "Focus ring on the box for keyboard users.",
+    "The clickable input reaches 24 by 24 around the 16 and 20 boxes, so a checkbox with hideLabel is still easy to hit (WCAG 2.5.8)."
   ],
   "snippet": "<Checkbox label=\"Send me product updates\" />",
   "examples": [

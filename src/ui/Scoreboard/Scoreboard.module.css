@@ -3,6 +3,7 @@
 /* contain: paint keeps the sideways scroll to this box, so a strip wider than the page never gives the page
    a sideways scrollbar of its own. */
 .scrolls { overflow-x: auto; contain: paint; }
+.scrolls:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(var(--border-width-medium) * -1); }
 /* Figma scoreboard container 29113:10807: cards run edge to edge, parted by a line, with no gap. */
 .scoreboard { display: flex; font-family: var(--font-sans); }
 

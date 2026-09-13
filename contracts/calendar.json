@@ -109,7 +109,8 @@
     "Every event is a button named by its title, time and calendar. +N more and the day numbers open Day view.",
     "Icon buttons are kit Buttons with a kit Tooltip: New event, Previous and Next name the step (month, week or day).",
     "The event form and the Calendars list open in a kit Drawer, which traps focus and gives it back on close. Fields are kit fields with labels and errors.",
-    "Color is never the only cue: events show their title and time, and the calendar name is in each event's name."
+    "Color is never the only cue: events show their title and time, and the calendar name is in each event's name.",
+    "Month events, +N more and day numbers are 24 tall. On a narrow calendar each event is still a 24-tall button with its color bar drawn in the middle (WCAG 2.5.8)."
   ],
   "snippet": "<Calendar\n  label=\"Team calendar\"\n  calendars={calendars}\n  events={events}\n  onEventsChange={setEvents}\n  defaultView=\"week\"\n/>",
   "examples": [

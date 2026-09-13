@@ -49,7 +49,7 @@ export function IconsFoundation() {
       <h2 className={styles.h2}>Usage</h2>
       <p className={styles.hint}>One Icon component. Names are Material Symbols ligatures.</p>
       <div className={styles.codeWrap}>
-        <pre className={styles.code}>{snippet}</pre>
+        <pre className={styles.code} tabIndex={0} role="region" aria-label="Code">{snippet}</pre>
         <span className={styles.codeCopy}>
           <Button size="sm" variant="tertiary" iconStart={c.copied === "snippet" ? "check" : "content_copy"} onClick={() => c.copy("snippet", snippet)}>
             {c.copied === "snippet" ? "Copied" : "Copy"}

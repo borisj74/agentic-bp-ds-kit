@@ -158,7 +158,8 @@
     "Focus shows a 2px brand ring around the field; red when invalid.",
     "The help icon is a button named About {label}; its text is linked to the button and the input with aria-describedby.",
     "Icons are decorative. Prefix and suffix are plain text next to the value.",
-    "type=\"file\" keeps the native picker: Space or Enter opens it, and the chosen file names are read with the label."
+    "type=\"file\" keeps the native picker: Space or Enter opens it, and the chosen file names are read with the label.",
+    "The help icon's hit area is 24 by 24 (WCAG 2.5.8). The number stepper halves are smaller, but typing and the Up and Down keys do the same job in the 24-plus field, which WCAG 2.5.8 allows."
   ],
   "snippet": "<Input label=\"Email\" type=\"email\" required placeholder=\"you@example.com\" hint=\"We never share your email.\" />",
   "examples": [

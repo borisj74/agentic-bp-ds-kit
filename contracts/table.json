@@ -80,7 +80,8 @@
     "A native table: caption, th scope=col headers (kit HeaderCell) and td cells. A column with no header, like row actions, gets a plain cell in the header row instead of an empty header.",
     "Row checkboxes are named Select plus the row label; the header one is Select all rows and is mixed when only some rows are selected. Selected rows set aria-selected.",
     "The empty message is a real cell spanning the columns, so screen readers read it in place.",
-    "On a narrow box the sideways scroll is the table's own box, so the page never scrolls sideways and the frozen first column keeps the row's name in view."
+    "On a narrow box the sideways scroll is the table's own box, so the page never scrolls sideways and the frozen first column keeps the row's name in view.",
+    "A table wider than its box scrolls sideways inside it; then the box is a focus stop named by caption (or Table), so the arrow keys scroll it (WCAG 2.1.1). When it fits, it adds no tab stop."
   ],
   "snippet": "<Table\n  caption=\"A list of your recent invoices.\"\n  columns={[\n    { key: \"invoice\", header: \"Invoice\", emphasis: true },\n    { key: \"status\", header: \"Status\" },\n    { key: \"method\", header: \"Method\" },\n    { key: \"amount\", header: \"Amount\", numeric: true },\n  ]}\n  rows={invoices}\n  footer={{ label: \"Total\", value: \"$2,500.00\" }}\n/>",
   "examples": [

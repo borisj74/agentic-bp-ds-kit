@@ -63,7 +63,8 @@
     "The countdown pauses while the pointer is over the toast or focus is inside it, so people can read it.",
     "A toast with an action does not close on its own unless duration is set, so keyboard and screen reader users can reach the action (WCAG 2.2.1).",
     "The close button is a kit Button named Dismiss. The icon and the bar are decorative.",
-    "It fades in unless the person prefers reduced motion."
+    "It fades in unless the person prefers reduced motion.",
+    "The action is at least 24 tall (WCAG 2.5.8)."
   ],
   "snippet": "<Toast\n  open={saved}\n  onClose={() => setSaved(false)}\n  title=\"Saved successfully\"\n  description=\"Your changes have been saved.\"\n  actionLabel=\"Undo\"\n  onAction={undo}\n/>",
   "examples": [

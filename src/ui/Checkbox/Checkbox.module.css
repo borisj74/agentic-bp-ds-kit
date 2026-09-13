@@ -7,8 +7,9 @@
 .lg { --box: var(--checkbox-size-lg); font-size: var(--font-size-regular); }
 
 .control { position: relative; display: inline-flex; flex: none; width: var(--box); height: var(--box); }
-/* Native input sits on top of the box, invisible, so clicks and keyboard work as usual. */
-.input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: inherit; z-index: 1; }
+/* Native input sits on top of the box, invisible, so clicks and keyboard work as usual. On the 16 and 20 boxes it
+   reaches past the box to 24 by 24, so a checkbox without a visible label is still big enough to hit (WCAG 2.5.8). */
+.input { position: absolute; inset: min(0px, calc((var(--box) - var(--target-min)) / 2)); margin: 0; opacity: 0; cursor: inherit; z-index: 1; }
 
 /* Resting outline uses --icon-neutral-subtle: 3:1 against the surroundings in light and dark (WCAG 1.4.11). */
 .box {

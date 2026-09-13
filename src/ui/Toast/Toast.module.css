@@ -35,7 +35,7 @@
 
 /* Same link-style action as Alert. */
 .action {
-  margin-top: var(--space-xsmall); padding: 0; border: 0; background: none; cursor: pointer; border-radius: var(--radius-small);
+  min-height: var(--target-min); margin-top: var(--space-xxsmall); padding: 0; border: 0; background: none; cursor: pointer; border-radius: var(--radius-small);
   font: inherit; font-size: var(--font-size-small); font-weight: var(--font-weight-medium); color: var(--link-brand);
 }
 .action:hover { color: var(--link-brand-hover); text-decoration: underline; }

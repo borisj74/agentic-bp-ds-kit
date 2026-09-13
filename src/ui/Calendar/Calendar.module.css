@@ -32,7 +32,7 @@
 
 /* All-day pill: a tinted bar with its calendar's border. Days it carries over square off. */
 .pill {
-  box-sizing: border-box; display: flex; align-items: center; width: 100%; min-width: 0; height: var(--calendar-row);
+  box-sizing: border-box; display: flex; align-items: center; width: 100%; min-width: 0; height: var(--calendar-event);
   padding: 0 var(--space-xxsmall); border: var(--border-width-thin) solid var(--tone-border); border-radius: var(--radius-small);
   background: var(--tone-bg); font-size: var(--font-size-small); line-height: 1; color: var(--text-neutral-strong);
 }
@@ -42,7 +42,7 @@
 
 /* Timed item in Month: a dot, its start time in the calendar color, then the title. */
 .item {
-  box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xxsmall); width: 100%; min-width: 0; height: var(--calendar-row);
+  box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xxsmall); width: 100%; min-width: 0; height: var(--calendar-event);
   padding: 0 var(--space-xxsmall); border-radius: var(--radius-small); font-size: var(--font-size-small); line-height: 1;
 }
 .item:hover { background: var(--bg-neutral-faint); }
@@ -69,7 +69,7 @@
 .day.canAdd:hover { background: var(--bg-neutral-faint); }
 .day.selected { background: var(--bg-info-faint); }
 .dayNumber {
-  align-self: flex-end; display: grid; place-items: center; min-width: var(--calendar-row); height: var(--calendar-row); padding: 0 var(--space-xxxsmall);
+  align-self: flex-end; display: grid; place-items: center; min-width: var(--calendar-event); height: var(--calendar-event); padding: 0 var(--space-xxxsmall);
   border-radius: var(--radius-full); font-size: var(--font-size-small); font-variant-numeric: tabular-nums; color: var(--text-neutral-strong);
 }
 .dayNumber:hover { background: var(--bg-neutral-subtle); }
@@ -77,7 +77,7 @@
 .dayNumber.today { background: var(--bg-brand); color: var(--text-neutral-min); font-weight: var(--font-weight-semibold); }
 .dayEvents { display: flex; flex-direction: column; gap: var(--space-xxxsmall); min-width: 0; }
 .more {
-  height: var(--calendar-row); padding: 0 var(--space-xxsmall); border-radius: var(--radius-small);
+  height: var(--calendar-event); padding: 0 var(--space-xxsmall); border-radius: var(--radius-small);
   font-size: var(--font-size-xsmall); font-weight: var(--font-weight-semibold); color: var(--text-neutral);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
@@ -180,11 +180,14 @@ section + section > .listDay { border-top: var(--border-width-thin) solid var(--
 /* Date and time side by side in the event form. */
 .pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: var(--space-small); align-items: start; }
 
-/* Narrow: Month events turn into bars of color, list times stack over titles. */
+/* Narrow: Month events turn into bars of color, list times stack over titles. Each bar is drawn 8 tall in the middle
+   of a full-height button, so it is still easy to tap (WCAG 2.5.8). */
 @container (max-width: 600px) {
   .item .itemTime, .item .chipTitle, .pill .chipTitle { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-  .item, .pill { height: var(--space-xsmall); padding: 0; }
-  .item { background: var(--tone-dot); }
+  .item, .pill { padding: 0; border: 0; background: linear-gradient(var(--bar), var(--bar)) center / 100% var(--space-xsmall) no-repeat; }
+  .item { --bar: var(--tone-dot); }
+  .pill { --bar: var(--tone-border); }
+  .item:hover, .pill:hover { filter: brightness(0.9); }
   .item .dot { display: none; }
   .listTime { width: auto; }
   .listRow { flex-wrap: wrap; row-gap: var(--space-xxxsmall); }

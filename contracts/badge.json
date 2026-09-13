@@ -82,7 +82,8 @@
     "Text carries the meaning; tone color is never the only signal.",
     "Icon-only badges keep children as visually hidden text.",
     "disabled sets aria-disabled.",
-    "The close control is a native button labeled Remove {children}, with a focus ring. When disabled, it is disabled too."
+    "The close control is a native button labeled Remove {children}, with a focus ring. When disabled, it is disabled too.",
+    "The remove button draws a small x but its hit area is at least 24 by 24 (WCAG 2.5.8)."
   ],
   "snippet": "<Badge tone=\"success\">Paid</Badge>",
   "examples": [

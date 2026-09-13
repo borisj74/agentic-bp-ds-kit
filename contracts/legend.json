@@ -86,7 +86,8 @@
   "a11y": [
     "A list with a label, so it is reached as one group.",
     "Switchable keys are real buttons with aria-pressed, and an off key stays in place, greyed out.",
-    "decorative hides it from screen readers, for a chart that already carries its own table of numbers."
+    "decorative hides it from screen readers, for a chart that already carries its own table of numbers.",
+    "Switchable keys are at least 24 tall (WCAG 2.5.8)."
   ],
   "snippet": "<Legend label=\"Revenue series\" items={[{ label: \"Recurring\" }, { label: \"One-off\" }]} />",
   "examples": [

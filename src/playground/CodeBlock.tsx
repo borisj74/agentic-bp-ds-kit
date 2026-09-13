@@ -11,7 +11,7 @@ export function CodeBlock({ code, wrap = false }: { code: string; wrap?: boolean
   const done = c.copied === "code";
   return (
     <div className={styles.codeWrap}>
-      <pre className={[styles.code, wrap ? docs.wrap : ""].join(" ")}>{code}</pre>
+      <pre className={[styles.code, wrap ? docs.wrap : ""].join(" ")} tabIndex={wrap ? undefined : 0} role={wrap ? undefined : "region"} aria-label={wrap ? undefined : "Code"}>{code}</pre>
       <span className={styles.copy}>
         <Button size="sm" variant="secondary" iconStart={done ? "check" : "content_copy"} onClick={() => c.copy("code", code)}>
           {done ? "Copied" : "Copy"}

@@ -20,6 +20,7 @@
 
 .codeWrap { position: relative; }
 .code { font-family: var(--font-mono); font-size: var(--font-size-xsmall); line-height: 1.6; background: var(--bg-neutral-subtle); padding: var(--space-medium); border-radius: var(--radius-large); overflow-x: auto; margin: 0; color: var(--text-neutral-strong); }
+.code:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
 .codeCopy { position: absolute; top: var(--space-xsmall); right: var(--space-xsmall); }
 
 .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-small); }

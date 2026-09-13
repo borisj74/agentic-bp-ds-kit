@@ -20,9 +20,11 @@
 
 /* Same ? button as the field help icons. */
 .help {
-  display: inline-flex; flex: none; margin: 0; padding: 0; border: 0; background: none;
+  position: relative; display: inline-flex; flex: none; margin: 0; padding: 0; border: 0; background: none;
   color: var(--icon-neutral); cursor: help; border-radius: var(--radius-small);
 }
+/* The icon stays 16; an invisible hit area around it makes the target 24 by 24 (WCAG 2.5.8). */
+.help::after { content: ""; position: absolute; inset: min(0px, calc((100% - var(--target-min)) / 2)); }
 .help:hover { color: var(--icon-neutral-strong); }
 .help:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
 

@@ -63,7 +63,7 @@ function Code({ code, id, c }: { code: string; id: string; c: Copy }) {
   const done = c.copied === id;
   return (
     <div className={styles.codeWrap}>
-      <pre className={styles.code}>{code}</pre>
+      <pre className={styles.code} tabIndex={0} role="region" aria-label="Code">{code}</pre>
       <span className={styles.copy}>
         <Button size="sm" variant="secondary" iconStart={done ? "check" : "content_copy"} onClick={() => c.copy(id, code)}>
           {done ? "Copied" : "Copy"}

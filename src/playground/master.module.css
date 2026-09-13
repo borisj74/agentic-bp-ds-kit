@@ -65,6 +65,8 @@
   background: var(--stage); border-radius: var(--radius-medium);
   padding: var(--space-medium) calc(var(--space-xxlarge) * 2) var(--space-medium) var(--space-medium);
 }
+/* Code scrolls sideways, so it is a focus stop: the arrow keys scroll it. */
+.code:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
 .copy { position: absolute; top: var(--space-xsmall); right: var(--space-xsmall); }
 
 /* Variants: one card per contract example. */

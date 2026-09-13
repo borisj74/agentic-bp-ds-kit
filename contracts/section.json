@@ -61,7 +61,8 @@
   "a11y": [
     "A section element named by its h2 title.",
     "The chevron is a kit Button named by the title, with aria-expanded and aria-controls pointing at the content. Collapsed content is hidden, so it is skipped by keyboard and screen readers.",
-    "The help icon is a button named About plus the title; the help text is also the heading's description."
+    "The help icon is a button named About plus the title; the help text is also the heading's description.",
+    "The help icon's hit area is 24 by 24 (WCAG 2.5.8)."
   ],
   "snippet": "<Section\n  title=\"Account information\"\n  help=\"Details from the account record. Edit them on the account.\"\n  collapsible\n  actions={<Button size=\"sm\" iconStart=\"edit\">Edit</Button>}\n>\n  <FormDisplay label=\"Account name\" value=\"Northwind Traders\" />\n</Section>",
   "examples": [

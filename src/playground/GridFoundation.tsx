@@ -139,7 +139,7 @@ export function GridFoundation() {
               </div>
             </div>
             <div className={styles.codeWrap}>
-              <pre className={styles.code}>{snippet}</pre>
+              <pre className={styles.code} tabIndex={0} role="region" aria-label="Code">{snippet}</pre>
               <span className={styles.codeCopy}>
                 <Button size="sm" variant="tertiary" iconStart={c.copied === "snippet" ? "check" : "content_copy"} onClick={() => c.copy("snippet", snippet)}>
                   {c.copied === "snippet" ? "Copied" : "Copy"}

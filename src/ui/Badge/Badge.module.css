@@ -58,10 +58,12 @@
 .badge.disabled, :global([data-theme="dark"]) .badge.disabled { background: var(--bg-neutral-subtle); border-color: transparent; color: var(--text-neutral-faint); }
 
 .remove {
-  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  position: relative; display: inline-flex; align-items: center; justify-content: center; flex: none;
   margin: 0; padding: 0; border: 0; border-radius: var(--radius-small);
   background: transparent; color: inherit; cursor: pointer; line-height: 0;
 }
+/* The x stays small; an invisible hit area around it makes the target at least 24 by 24 (WCAG 2.5.8). */
+.remove::after { content: ""; position: absolute; inset: min(0px, calc((100% - var(--target-min)) / 2)); }
 .remove:hover { background: var(--bg-neutral-min-hover); }
 .remove:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: 1px; }
 .remove:disabled { cursor: not-allowed; background: transparent; }

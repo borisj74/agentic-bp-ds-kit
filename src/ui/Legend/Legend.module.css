@@ -24,7 +24,7 @@
 .dot { border-radius: var(--radius-full); }
 
 /* Keys that switch a series on and off. Off keeps its place, greyed out. */
-.button { display: inline-flex; align-items: center; gap: var(--space-xsmall); min-width: 0; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; }
+.button { display: inline-flex; align-items: center; gap: var(--space-xsmall); min-width: 0; min-height: var(--target-min); margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; }
 .button:hover .text { text-decoration: underline; }
 .button:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--space-xxxsmall); border-radius: var(--radius-small); }
 .off { color: var(--text-neutral-subtle); }

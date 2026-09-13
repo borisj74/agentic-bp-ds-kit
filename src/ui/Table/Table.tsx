@@ -1,5 +1,5 @@
 "use client";
-import { isValidElement, useState, type ReactNode } from "react";
+import { isValidElement, useEffect, useRef, useState, type ReactNode } from "react";
 import { Cell, type CellAlign, type CellSize } from "../Cell/Cell";
 import { useDensity } from "../Density/Density";
 import { HeaderCell } from "../HeaderCell/HeaderCell";
@@ -43,6 +43,19 @@ export function Table({
   const size = ownSize ?? (density === "compact" ? "sm" : "md");
   const [innerSelected, setInnerSelected] = useState(defaultSelected);
   const selected = selectedProp ?? innerSelected;
+  // A table wider than its box scrolls sideways; then the box is a focus stop so the arrow keys scroll it (WCAG 2.1.1).
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [overflows, setOverflows] = useState(false);
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const measure = () => setOverflows(el.scrollWidth > el.clientWidth + 1);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    if (el.firstElementChild) ro.observe(el.firstElementChild);
+    return () => ro.disconnect();
+  }, []);
   const ids = rows.map(idOf);
   const picked = ids.filter((id) => selected.includes(id));
   const all = ids.length > 0 && picked.length === ids.length;
@@ -62,7 +75,10 @@ export function Table({
     isValidElement(v) ? v : <Cell size={size} align={alignOf(c)} label={v === null || v === undefined ? "" : String(v)} />;
 
   return (
-    <div className={styles.wrap}>
+    <div
+      ref={wrapRef} className={styles.wrap}
+      tabIndex={overflows ? 0 : undefined} role={overflows ? "region" : undefined} aria-label={overflows ? caption ?? "Table" : undefined}
+    >
       <table className={[styles.table, styles[size]].join(" ")}>
         {caption && <caption className={styles.caption}>{caption}</caption>}
         <thead>

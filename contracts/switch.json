@@ -67,7 +67,8 @@
     "A button with role=switch and aria-checked. Space and Enter flip it.",
     "Named by its label (visible or hidden); description is linked with aria-describedby.",
     "The off track reaches 3:1 against the page; on is the brand color. Focus shows the kit ring.",
-    "Disabled uses the native disabled attribute."
+    "Disabled uses the native disabled attribute.",
+    "The sm and md tracks have an invisible hit area 24 tall (WCAG 2.5.8)."
   ],
   "snippet": "<Switch label=\"Email notifications\" description=\"Get an email when an invoice is paid.\" defaultChecked />",
   "examples": [

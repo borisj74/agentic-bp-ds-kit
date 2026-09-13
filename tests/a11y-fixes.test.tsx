@@ -1,8 +1,9 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { Avatar } from "@/ui/Avatar/Avatar";
 import { Cell } from "@/ui/Cell/Cell";
 import { Empty } from "@/ui/Empty/Empty";
+import { Scoreboard } from "@/ui/Scoreboard/Scoreboard";
 import { Table } from "@/ui/Table/Table";
 
 // Small checks that pin the accessibility fixes the contract-driven axe run turned up.
@@ -43,6 +44,54 @@ describe("Cell avatar", () => {
   it("keeps the picture named when the text is off", () => {
     render(<Cell type="avatar" name="Maya Chen" src="/maya.jpg" text={false} />);
     expect(screen.getByRole("img", { name: "Maya Chen" })).toBeInTheDocument();
+  });
+});
+
+// Regression for WCAG 2.1.1: a strip of plain cards scrolled sideways but nothing in it could take focus.
+describe("Scoreboard scroll strip", () => {
+  const ITEMS = [
+    { id: "a", title: "Revenue", metric: "$1.2M" },
+    { id: "b", title: "Accounts", metric: "412" },
+  ];
+  const widths = (scroll: number, client: number) => {
+    vi.spyOn(HTMLElement.prototype, "scrollWidth", "get").mockReturnValue(scroll);
+    vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(client);
+  };
+  afterEach(() => vi.restoreAllMocks());
+
+  it("is a named focus stop when the cards overflow", () => {
+    widths(900, 400);
+    render(<Scoreboard items={ITEMS} label="Key metrics" />);
+    expect(screen.getByRole("region", { name: "Key metrics" })).toHaveAttribute("tabindex", "0");
+  });
+  it("stays out of the tab order when everything fits", () => {
+    widths(400, 400);
+    render(<Scoreboard items={ITEMS} label="Key metrics" />);
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
+  });
+  it("leaves focus to selectable cards, which are buttons", () => {
+    widths(900, 400);
+    render(<Scoreboard items={ITEMS} label="Key metrics" selectable />);
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
+  });
+});
+
+describe("Table scroll box", () => {
+  const COLUMNS = [{ key: "name", header: "Name" }, { key: "amount", header: "Amount", numeric: true }];
+  const ROWS = [{ id: "1", name: "Invoice 1", amount: "$10.00" }];
+  afterEach(() => vi.restoreAllMocks());
+
+  it("is a focus stop named by its caption when the table is wider than its box", () => {
+    vi.spyOn(HTMLElement.prototype, "scrollWidth", "get").mockReturnValue(900);
+    vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(400);
+    render(<Table columns={COLUMNS} rows={ROWS} caption="Invoices" />);
+    expect(screen.getByRole("region", { name: "Invoices" })).toHaveAttribute("tabindex", "0");
+  });
+  it("adds no tab stop when the table fits", () => {
+    vi.spyOn(HTMLElement.prototype, "scrollWidth", "get").mockReturnValue(400);
+    vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(400);
+    render(<Table columns={COLUMNS} rows={ROWS} caption="Invoices" />);
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
   });
 });
 
