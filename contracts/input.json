@@ -20,7 +20,7 @@
         "start"
       ],
       "default": "top",
-      "note": "start puts the label in a 160px column beside the field, for dense forms. The label is right-aligned, 8px from the field."
+      "note": "start puts the label in a 160px column beside the field, for dense forms. The label is right-aligned, 12px from the field."
     },
     "size": {
       "enum": [

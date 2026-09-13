@@ -15,7 +15,7 @@
 .top { flex-direction: column; gap: var(--space-xxsmall); padding-block: var(--space-xsmall); }
 
 /* Start: the label sits on a faint fill in the same 160px column as start-label inputs, right-aligned. */
-.start { align-items: stretch; gap: var(--space-xsmall); }
+.start { align-items: stretch; gap: var(--space-small); }
 .start .term {
   box-sizing: border-box; flex: none; justify-content: flex-end; width: var(--input-label-width); min-height: var(--control-medium);
   padding: var(--space-xsmall) var(--space-medium) var(--space-xsmall) var(--space-small);
