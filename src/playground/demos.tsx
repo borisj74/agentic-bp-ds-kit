@@ -1142,7 +1142,7 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         pageHeader={
           // No actions on the bar: a list keeps them in its own Toolbar, which owns the one primary.
-          <PageHeader icon="receipt_long" title="Invoices" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />
+          <PageHeader title="Invoices" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />
         }
       >
         {list}
@@ -1230,7 +1230,7 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" 
       header={
         <PageHeader
           breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]}
-          icon="account_balance" title="Apex Digital Services" badge="Active" badgeTone="success"
+          title="Apex Digital Services" badge="Active" badgeTone="success"
           sticky={sticky && compact}
           actions={<><Button size="sm">Clone</Button><Button size="sm" variant="primary">Edit</Button></>}
         />
@@ -1602,7 +1602,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
         onPageHeaderStick={setCompact}
         pageHeader={
           <PageHeader
-            icon={place.icon ?? "dashboard"} title={place.page} breadcrumbs={[{ label: place.section, href: "#" }]}
+            title={place.page} breadcrumbs={[{ label: place.section, href: "#" }]}
             sticky={compact}
             actions={
               <>
@@ -2271,7 +2271,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
   const listHeader = (
     // The page's own actions live here, not in the Toolbar, which keeps finding and viewing.
     <PageHeader
-      icon="folder_open" title="Account" sticky={compact}
+      title="Account" sticky={compact}
       breadcrumbs={[{ label: "Accounts", onClick: toList }, { label: "Manage Accounts", onClick: toList }]}
       actions={<><Button size="sm" iconStart="download">Export</Button><Button size="sm" variant="primary" iconStart="add" onClick={() => go("newAccount")}>New</Button></>}
     />

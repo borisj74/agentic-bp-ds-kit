@@ -1215,7 +1215,7 @@ export const registry: Record<string, Entry> = {
     page: <AccountFlowDemo />,
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
-        <PageHeader icon="folder_open" title="Account" actions={<><Button size="sm">Export</Button><Button size="sm" variant="primary">New</Button></>} />
+        <PageHeader title="Account" actions={<><Button size="sm">Export</Button><Button size="sm" variant="primary">New</Button></>} />
         <Table
           size="sm" columns={[{ key: "accountId", header: "Account ID" }, { key: "name", header: "Account name" }]}
           rows={[
@@ -1514,7 +1514,7 @@ export const registry: Record<string, Entry> = {
     page: <RecordPageDemo sticky shell />,
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
-        <PageHeader icon="account_balance" title="Apex Digital Services" badge="Active" badgeTone="success" />
+        <PageHeader title="Apex Digital Services" badge="Active" badgeTone="success" />
         <Tabs label="Record parts" items={[{ id: "details", label: "Details" }, { id: "contacts", label: "Contacts", count: 4 }, { id: "invoices", label: "Invoices", count: 12 }]} />
       </div>
     ),
@@ -1808,16 +1808,17 @@ export const registry: Record<string, Entry> = {
     card: <Button>Open modal</Button>,
   },
   PageHeader: {
-    // actionButtons is playground-only: it adds a secondary and the one primary Button as actions.
-    render: ({ actionButtons, ...p }) => (
+    // actionButtons and titleIcon are playground-only: one adds a secondary and the one primary Button as actions,
+    // the other puts the optional icon before the title. No icon by default.
+    render: ({ actionButtons, titleIcon, ...p }) => (
       <PageHeader
         {...(p as unknown as PageHeaderProps)} onMoreSelect={() => {}}
+        icon={titleIcon === "on" ? "folder_open" : (p as unknown as PageHeaderProps).icon}
         actions={actionButtons === "off" ? undefined : <><Button size="sm">Send</Button><Button size="sm" variant="primary">Approve</Button></>}
       />
     ),
     preview: {
       breadcrumbs: [{ label: "Billing", href: "#" }, { label: "Invoices", href: "#" }],
-      icon: "folder_open",
       title: "INV-1042",
       badge: "Draft",
       moreActions: [
@@ -1828,13 +1829,13 @@ export const registry: Record<string, Entry> = {
       ],
     },
     snippet: { actions: "{actions}" },
-    extras: { actionButtons: { values: ["on", "off"], default: "on" } },
-    hint: "Toggle sticky and shadow, pick a badge tone, and turn the action buttons off. More opens the overflow menu.",
+    extras: { titleIcon: { values: ["off", "on"], default: "off" }, actionButtons: { values: ["on", "off"], default: "on" } },
+    hint: "Toggle sticky and shadow, pick a badge tone, turn the title icon on, and turn the action buttons off. More opens the overflow menu.",
     block: true,
     wide: true,
     card: (
       <div style={{ width: 560 }}>
-        <PageHeader breadcrumbs={[{ label: "Billing", href: "#" }, { label: "Invoices", href: "#" }]} icon="folder_open" title="INV-1042" badge="Draft"
+        <PageHeader breadcrumbs={[{ label: "Billing", href: "#" }, { label: "Invoices", href: "#" }]} title="INV-1042" badge="Draft"
           actions={<><Button size="sm">Send</Button><Button size="sm" variant="primary">Approve</Button></>} />
       </div>
     ),

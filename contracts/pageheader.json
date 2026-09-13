@@ -1,8 +1,8 @@
 {
   "name": "PageHeader",
   "path": "src/ui/PageHeader/PageHeader.tsx",
-  "intent": "The top of a page's content: where it sits (breadcrumb), what it is (icon, title, badge) and the page actions. Below the AppHeader.",
-  "usage": "Put one PageHeader at the top of each page, under the AppHeader. It is one component: breadcrumbs are the parent sections (all links), then the title row with an optional icon and badge, and the page actions on the end. actions are kit Buttons, size sm, with the one primary last; moreActions puts less-used actions in a More menu before them. sticky is the compact bar for when the page scrolls: one line whose trail ends in the page title, with a raised shadow unless shadow is false. See contracts/pageheader.json for the full contract. The bar adds no side padding of its own: the page inset comes from the layout class around it (contracts/layout.json), so the title lines up with the Sections under it. The bar is the top of the page, so it sits flush against the frame's bar with no page inset above it; the pattern holding it (AppShell, RecordPage) takes care of that.",
+  "intent": "The top of a page's content: where it sits (breadcrumb), what it is (title, badge, and an optional icon) and the page actions. Below the AppHeader.",
+  "usage": "Put one PageHeader at the top of each page, under the AppHeader. It is one component: breadcrumbs are the parent sections (all links), then the title row with an optional badge, and an icon before the title only when you pass one (none by default), and the page actions on the end. actions are kit Buttons, size sm, with the one primary last; moreActions puts less-used actions in a More menu before them. sticky is the compact bar for when the page scrolls: one line whose trail ends in the page title, with a raised shadow unless shadow is false. See contracts/pageheader.json for the full contract. The bar adds no side padding of its own: the page inset comes from the layout class around it (contracts/layout.json), so the title lines up with the Sections under it. The bar is the top of the page, so it sits flush against the frame's bar with no page inset above it; the pattern holding it (AppShell, RecordPage) takes care of that.",
   "props": {
     "title": {
       "type": "string",
@@ -16,7 +16,7 @@
     },
     "icon": {
       "type": "string",
-      "note": "Material Symbols name before the title, drawn by the kit Icon at size lg in the brand color, like folder_open."
+      "note": "Optional. Leave it out by default: the title stands on its own. Pass a Material Symbols name, like folder_open, only when the page wants an icon before the title; the kit Icon draws it at size lg in the brand color."
     },
     "badge": {
       "type": "string",
@@ -73,11 +73,11 @@
     "The breadcrumb is the kit Breadcrumb (a nav named Breadcrumb). More is a kit DropdownMenu.",
     "The icon is decorative; the title names the page."
   ],
-  "snippet": "<PageHeader\n  breadcrumbs={[{ label: \"Billing\", href: \"/billing\" }, { label: \"Invoices\", href: \"/invoices\" }]}\n  icon=\"folder_open\"\n  title=\"INV-1042\"\n  badge=\"Draft\"\n  moreActions={moreActions}\n  actions={<>\n    <Button size=\"sm\">Send</Button>\n    <Button size=\"sm\" variant=\"primary\">Approve</Button>\n  </>}\n/>",
+  "snippet": "<PageHeader\n  breadcrumbs={[{ label: \"Billing\", href: \"/billing\" }, { label: \"Invoices\", href: \"/invoices\" }]}\n  title=\"INV-1042\"\n  badge=\"Draft\"\n  moreActions={moreActions}\n  actions={<>\n    <Button size=\"sm\">Send</Button>\n    <Button size=\"sm\" variant=\"primary\">Approve</Button>\n  </>}\n/>",
   "examples": [
     {
       "title": "Default",
-      "usage": "Trail, icon, title and badge, with More and two actions. The one primary is last.",
+      "usage": "Trail, title and badge, with More and two actions. The one primary is last.",
       "items": [
         {
           "props": {
@@ -91,7 +91,6 @@
                 "href": "#"
               }
             ],
-            "icon": "folder_open",
             "title": "INV-1042",
             "badge": "Draft",
             "moreActions": [
@@ -162,10 +161,29 @@
                 "href": "#"
               }
             ],
-            "icon": "bar_chart",
             "title": "Q3 revenue",
             "badge": "Final",
             "badgeTone": "success",
+            "actionButtons": "off"
+          }
+        }
+      ]
+    },
+    {
+      "title": "With icon",
+      "usage": "The icon is off by default. Pass icon to put one before the title.",
+      "items": [
+        {
+          "props": {
+            "breadcrumbs": [
+              {
+                "label": "Billing",
+                "href": "#"
+              }
+            ],
+            "icon": "folder_open",
+            "title": "INV-1042",
+            "badge": "Draft",
             "actionButtons": "off"
           }
         }

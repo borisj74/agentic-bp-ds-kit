@@ -21,7 +21,7 @@
     },
     "header": {
       "type": "ReactNode",
-      "note": "The record's name and its actions. A kit PageHeader with the trail, an icon, a status Badge and Buttons."
+      "note": "The record's name and its actions. A kit PageHeader with the trail, a status Badge and Buttons."
     },
     "tabs": {
       "type": "ReactNode",
