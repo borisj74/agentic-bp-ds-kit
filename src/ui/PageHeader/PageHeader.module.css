@@ -3,8 +3,25 @@
    The side inset belongs to the page, not to the bar (contracts/layout.json), so the title lines up with the
    Sections under it instead of sitting 24 further in. */
 .header {
-  box-sizing: border-box; display: flex; align-items: center; gap: var(--page-header-gap); width: 100%; min-height: var(--page-header-height);
+  box-sizing: border-box; display: flex; align-items: center; width: 100%; min-height: var(--page-header-height);
   padding-block: var(--space-small); background: var(--surface-flat); font-family: var(--font-sans);
+  container-type: inline-size;
+}
+.bar { flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--page-header-gap); }
+
+/* 640px = --grid-breakpoint-sm: CSS vars cannot appear in container queries. On a phone-width header the
+   actions beside the title squeeze it to a few letters, so the title row takes the full width and the actions
+   drop onto their own row under it. The compact sticky bar stays one 52px line: the patterns pin their own bars
+   directly under it at that height, and its trail already shortens. */
+@container (max-width: 640px) {
+  .header:not(.sticky) .bar { flex-direction: column; align-items: stretch; gap: var(--space-small); }
+  .header:not(.sticky) .controls { justify-content: flex-start; }
+  /* Beside the actions a wrapping trail would stack three lines tall. The compact bar keeps only the page's own
+     name, on one line that shortens with an ellipsis; the full trail is in the header above it. */
+  .sticky .title ol { flex-wrap: nowrap; }
+  .sticky .title li:not(:last-child) { display: none; }
+  .sticky .title li:last-child { min-width: 0; }
+  .sticky .title li:last-child > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 
 /* The trail and the title row are 4px apart, so the two lines of text don't touch; the bar stays 80 tall. */

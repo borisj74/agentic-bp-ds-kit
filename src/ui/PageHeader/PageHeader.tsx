@@ -25,6 +25,8 @@ export function PageHeader({
   const hasControls = Boolean(actions) || Boolean(moreActions?.length);
   return (
     <header className={[styles.header, sticky ? styles.sticky : "", sticky && shadow ? styles.shadow : ""].join(" ")}>
+      {/* The header measures its own width; the bar inside is what lays out to it, so a narrow header stacks. */}
+      <div className={styles.bar}>
       <div className={styles.title}>
         {sticky ? (
           // Sticky: one compact line. The trail ends in the page title; the heading stays for screen readers.
@@ -53,6 +55,7 @@ export function PageHeader({
           {actions}
         </div>
       )}
+      </div>
     </header>
   );
 }
