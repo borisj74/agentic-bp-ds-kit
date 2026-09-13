@@ -8,7 +8,7 @@
       "type": "SideNavEntry[]",
       "required": true,
       "itemShape": "{ id: string; label: string; icon: string; href?: string; children?: SideNavChild[] } | { divider: true }",
-      "note": "Rail sections, top to bottom. icon is a Material Symbols name. children is the second-level menu: { id, label, href? } links and { divider: true } lines."
+      "note": "Rail sections, top to bottom. In the app shell this is always the full app nav, APP_NAV from @/patterns/AppShell/appNav (with APP_NAV_END as endItems); never a shorter or made-up list. icon is a Material Symbols name. children is the second-level menu: { id, label, href? } links and { divider: true } lines."
     },
     "endItems": {
       "type": "SideNavItem[]",

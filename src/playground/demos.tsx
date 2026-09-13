@@ -6,6 +6,7 @@ import { AlertDialog, type AlertDialogProps } from "@/ui/AlertDialog/AlertDialog
 import { Avatar } from "@/ui/Avatar/Avatar";
 import { AppHeader, type AppHeaderDensity, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { AppShell, type AppShellProps } from "@/patterns/AppShell/AppShell";
+import { APP_NAV, APP_NAV_END, appNavPlace } from "@/patterns/AppShell/appNav";
 import { ListPage, type ListPageProps, type ListPageState } from "@/patterns/ListPage/ListPage";
 import { FormPage, type FormPageProps } from "@/patterns/FormPage/FormPage";
 import { AccountFlow, type AccountFlowView } from "@/patterns/AccountFlow/AccountFlow";
@@ -50,7 +51,7 @@ import { Pagination } from "@/ui/Pagination/Pagination";
 import { Scoreboard } from "@/ui/Scoreboard/Scoreboard";
 import { Section } from "@/ui/Section/Section";
 import { SegmentedControl } from "@/ui/SegmentedControl/SegmentedControl";
-import { SideNav, type SideNavEntry, type SideNavItem } from "@/ui/SideNav/SideNav";
+import { SideNav } from "@/ui/SideNav/SideNav";
 import { Select } from "@/ui/Select/Select";
 import { Skeleton, type SkeletonProps } from "@/ui/Skeleton/Skeleton";
 import { Stepper, type StepperProps } from "@/ui/Stepper/Stepper";
@@ -805,42 +806,7 @@ export function ChatWindowDemo({ started = false, page = "accounts", size: asked
   );
 }
 
-// Sample screen for the AppShell harness: the real app sections, two page blocks.
-// SideNav sample: the app sections and menus from the Figma secondary navigation. "-" is a divider.
-export const menu = (section: string, labels: string[]) =>
-  labels.map((l) => (l === "-" ? { divider: true as const } : { id: `${section}-${l.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, label: l }));
-export const SIDE_NAV_SECTIONS: SideNavEntry[] = [
-  { id: "home", label: "Home", icon: "home", children: menu("home", ["Home Dashboards", "Approval Management", "Alert Groups", "Grouped Activity"]) },
-  { id: "accounts", label: "Accounts", icon: "group", children: menu("accounts", ["Account", "Contract", "Contacts", "Account Products", "Account Packages", "Revenue Contract", "Account Docs", "-", "Orders", "Service Call"]) },
-  { id: "products", label: "Products", icon: "inventory_2", children: menu("products", ["Products", "Product Categories", "Packages", "Rate Classes"]) },
-  { divider: true },
-  { id: "quotes", label: "Quotes", icon: "request_quote", children: menu("quotes", ["Quotes", "Quote Rules", "Product Relationships"]) },
-  { id: "orders", label: "Orders", icon: "shopping_cart" },
-  { id: "billing", label: "Billing", icon: "receipt_long", children: menu("billing", ["Invoices", "Invoice Management", "Statements", "Electronic Files", "Invoice Periods", "Tiered Pricing", "Bulk Actions"]) },
-  { id: "ar", label: "AR", icon: "account_balance", children: menu("ar", ["Account Ledgers", "Payments & Refunds", "BP Payouts", "Payouts", "Chargebacks", "Scheduled Payment Retries", "-", "Lockbox Files", "Lockbox Matching Rules", "Unreconciled Payments", "-", "Credit Memos", "Bulk Approve/Reject Credits"]) },
-  { id: "revenue", label: "Revenue", icon: "monetization_on", children: menu("revenue", ["Month-End Close Dashboard", "Chart of Accounts", "Chart of Account Categories", "General Ledger", "General Ledger Rules", "Journal Entries", "Ledger Accrual History", "-", "SSP Profiles", "Revenue Allocation Groups", "Revenue Allocation Routines", "-", "Accounting Period Configuration", "Legal Entities"]) },
-  { id: "mediation", label: "Mediation", icon: "speed", children: menu("mediation", ["Usage Collectors", "Usage Identifiers", "MDL Events", "Unaggregated Data Browser", "Usage Reload", "Usage Data"]) },
-  { divider: true },
-  { id: "reports", label: "Reports", icon: "summarize", children: menu("reports", ["Reports Home", "AI Report Builder", "-", "Accounting", "Accounts & Insights", "AR", "Billing", "Financials", "Payments & Credits", "Products", "Revenue", "-", "All Reports"]) },
-  { id: "settings", label: "Settings", icon: "settings", children: menu("settings", ["Settings Home", "Develop", "External Connectors", "Security & Users", "Monitoring & Logs", "System", "Configuration Deployment", "-", "AI Settings", "Billing", "Payments", "Financials & Revenue", "Collections"]) },
-];
-// Where a nav id lands: the section it sits under and the page's own name, for the trail and the title.
-export function navPlace(id: string): { section: string; page: string; icon?: string } {
-  for (const entry of SIDE_NAV_SECTIONS) {
-    if ("divider" in entry) continue;
-    if (entry.id === id) return { section: entry.label, page: entry.label, icon: entry.icon };
-    for (const child of entry.children ?? []) {
-      if ("divider" in child) continue;
-      if (child.id === id) return { section: entry.label, page: child.label, icon: entry.icon };
-    }
-  }
-  const end = SIDE_NAV_END.find((e) => e.id === id);
-  return end ? { section: end.label, page: end.label, icon: end.icon } : { section: "Home", page: "Home", icon: "home" };
-}
-export const SIDE_NAV_END: SideNavItem[] = [
-  { id: "recycle", label: "Recycle Bin", icon: "recycling" },
-  { id: "processes", label: "Processes", icon: "tune" },
-];
+// Sample screens for the AppShell harness pass the kit's full app nav (src/patterns/AppShell/appNav.ts), like any screen.
 
 const SHELL_SCORES = [
   { id: "open", title: "Open invoices", metric: "1,284", trend: { value: "4.2", unit: "%", status: "success" as const, direction: "up" as const } },
@@ -957,7 +923,7 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         onPageHeaderStick={setCompact}
         pageHeader={
@@ -1172,7 +1138,7 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         pageHeader={
           // No actions on the bar: a list keeps them in its own Toolbar, which owns the one primary.
@@ -1322,7 +1288,7 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" 
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
       >
         {record}
@@ -1464,7 +1430,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
     .filter((r) => bucket !== "over" || r.overdue !== "$0 overdue");
   // The side nav says which page is open: the header follows it, and the dashboard itself belongs to
   // Home Dashboards, so anywhere else the page stands empty.
-  const place = navPlace(section);
+  const place = appNavPlace(section);
   const onDashboards = section === "home-home-dashboards";
   const shown = shell && !onDashboards ? "empty" : state;
 
@@ -1631,7 +1597,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         onPageHeaderStick={setCompact}
         pageHeader={
@@ -1736,7 +1702,7 @@ export function SettingsPageDemo({ shell = true, notice = false, stage = "deskto
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         pageHeader={
           <PageHeader
@@ -1959,7 +1925,7 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
       >
         {page}
@@ -2128,7 +2094,7 @@ export function GuidedProcessPageDemo({ shell = true, stage = "desktop", side = 
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
       >
         {page}
@@ -2629,7 +2595,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} current="accounts-account" onNavigate={(id) => { if (id === "accounts-account") toList(); }} expanded={navOpen} />}
+        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current="accounts-account" onNavigate={(id) => { if (id === "accounts-account") toList(); }} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         // Only the list's header sits in the frame; the record and the forms carry their own.
         pageHeader={view === "list" ? listHeader : undefined}

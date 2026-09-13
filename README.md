@@ -157,7 +157,7 @@ Patterns are blueprints for whole screens. Start every screen from one, and the 
 
 ### How to use a pattern
 
-1. **Frame the page with AppShell** when it is a full screen with the side navigation and top bar.
+1. **Frame the page with AppShell** when it is a full screen with the side navigation and top bar. Give its SideNav the full app navigation, `APP_NAV` and `APP_NAV_END` from `@/patterns/AppShell/appNav`, so every prototype has every link.
 2. **Pick the page pattern** that matches the screen, using the list below.
 3. **Read its contract** in `contracts/`: the slots, the options and the do-nots.
 4. **Fill the slots with the kit components** listed under "Built from".

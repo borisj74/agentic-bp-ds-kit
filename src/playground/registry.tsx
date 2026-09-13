@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
-import { SIDE_NAV_SECTIONS, SIDE_NAV_END, AppShellDemo, DashboardDemo, FormPageDemo, AccountFlowDemo, GuidedProcessDemo, GuidedProcessPageDemo, SettingsPageDemo, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { APP_NAV, APP_NAV_END } from "@/patterns/AppShell/appNav";
+import { AppShellDemo, DashboardDemo, FormPageDemo, AccountFlowDemo, GuidedProcessDemo, GuidedProcessPageDemo, SettingsPageDemo, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -76,8 +77,8 @@ export type Props = Record<string, unknown>;
 // Contract examples name the sample as {sections} and {endSections}; swap in the real arrays.
 const sideNavProps = (p: Props) => ({
   ...p,
-  items: typeof p.items === "string" || !p.items ? SIDE_NAV_SECTIONS : p.items,
-  endItems: typeof p.endItems === "string" ? SIDE_NAV_END : p.endItems,
+  items: typeof p.items === "string" || !p.items ? APP_NAV : p.items,
+  endItems: typeof p.endItems === "string" ? APP_NAV_END : p.endItems,
 }) as unknown as SideNavProps;
 
 export interface Entry {
@@ -1592,7 +1593,7 @@ export const registry: Record<string, Entry> = {
     card: (
       // The rail and the pinned menu's first items; the nav fills this height and the preview fades the rest.
       <div style={{ display: "flex", height: 200 }}>
-        <SideNav items={SIDE_NAV_SECTIONS} endItems={SIDE_NAV_END} defaultCurrent="revenue-general-ledger" defaultPinned />
+        <SideNav items={APP_NAV} endItems={APP_NAV_END} defaultCurrent="revenue-general-ledger" defaultPinned />
       </div>
     ),
   },

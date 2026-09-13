@@ -58,8 +58,9 @@ Page spacing: 4px grid. Content edge padding and between-section gap come from l
 1. Search the index.
 2. Open only the matching contracts.
 3. If a pattern matches the screen, use the pattern.
-4. Compose kit pieces. Match closed enums. Do not add variants that are not in the contract.
-5. If something is missing, stop and ask. Do not scaffold a one-off on the screen.
+4. Frame full screens with AppShell and the whole side nav: `items={APP_NAV}` and `endItems={APP_NAV_END}` from `@/patterns/AppShell/appNav`. Never trim or invent nav links; set `current` to the screen's page.
+5. Compose kit pieces. Match closed enums. Do not add variants that are not in the contract.
+6. If something is missing, stop and ask. Do not scaffold a one-off on the screen.
 
 ## Stay consistent
 

@@ -23,6 +23,7 @@ Invoke with `/prototype-from-kit <what you want to build>`.
 - Tokens load once, globally, in `src/app/layout.tsx`. Do not add a second tokens import.
 - Never use raw hex in component styles; semantic tokens from `src/tokens/semantic.css` only.
 - One `variant="primary"` Button per view.
+- Every full screen sits in `AppShell` with the whole side nav: `<SideNav items={APP_NAV} endItems={APP_NAV_END} current={pageId} />`, imported from `@/patterns/AppShell/appNav`. Never trim, reorder or invent nav links; set `current` to the screen's own page.
 - Fields that save together go in the kit `Form` (titled groups via `sections`). Never hand-roll a `<form>` or `<fieldset>` wrapper. For labels at the beginning use `labelPosition="start"` on the Form, and for side-by-side fields use `columns={2}`, never a custom grid. Inside a Modal, give the Form an `id` and put Save in the Modal footer with `form={id}`.
 
 ## Not built yet — stop and ask
