@@ -1,0 +1,32 @@
+/* The Start pages: long reading pages with a rail of their sections beside them. Playground chrome, like the
+   master and foundation pages, not a kit screen. */
+.page { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: var(--space-xxlarge); align-items: start; }
+.content { display: flex; flex-direction: column; gap: var(--space-xxlarge); max-width: 80ch; min-width: 0; }
+/* Clear of the 48px playground top bar. */
+.rail { position: sticky; top: calc(48px + var(--space-xlarge)); }
+@media (max-width: 1100px) {
+  .page { grid-template-columns: minmax(0, 1fr); }
+  .rail { display: none; }
+}
+
+/* Running text inside a Section. */
+.prose { display: flex; flex-direction: column; gap: var(--space-small); font-size: var(--font-size-small); line-height: 1.6; color: var(--text-neutral); }
+.prose p { margin: 0; }
+.prose ul, .prose ol { margin: 0; padding-inline-start: var(--space-xlarge); display: flex; flex-direction: column; gap: var(--space-xxsmall); }
+.prose li::marker { color: var(--text-neutral-subtle); }
+.prose strong { color: var(--text-neutral-strong); font-weight: var(--font-weight-semibold); }
+.prose code {
+  font-family: var(--font-mono); font-size: var(--font-size-xsmall); color: var(--text-neutral-strong);
+  background: var(--stage); padding: 0 var(--space-xxsmall); border-radius: var(--radius-small);
+}
+.label { margin: 0; font-size: var(--font-size-xsmall); font-weight: var(--font-weight-medium); color: var(--text-neutral-subtle); }
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-xxsmall); }
+
+/* A weaker prompt beside a better one; stacked when the page is narrow. */
+.compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-medium); }
+@media (max-width: 900px) { .compare { grid-template-columns: minmax(0, 1fr); } }
+.compareItem { display: flex; flex-direction: column; gap: var(--space-xsmall); min-width: 0; }
+
+/* A long prompt wraps instead of scrolling. pre.wrap outranks the code block's own white-space. Its lines stop
+   short of the Copy button in the top corner, so wrapped words never run under it. */
+pre.wrap { white-space: pre-wrap; overflow-wrap: anywhere; padding-inline-end: calc(var(--space-xxlarge) * 3 + var(--space-small)); }

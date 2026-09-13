@@ -17,7 +17,7 @@ cd my-prototype
 npm run dev
 ```
 
-Open http://localhost:3000 to browse the catalog: Foundations, Components and Patterns.
+Open http://localhost:3000 to browse the catalog: Foundations, Components and Patterns. Start with the **Start** pages in the sidebar: Overview, Installation, Using patterns and Prompting.
 
 Other ways to get the kit:
 

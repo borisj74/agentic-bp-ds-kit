@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useId, useState } from "react";
 import { Icon } from "@/ui/Icon/Icon";
 import styles from "./shell.module.css";
-import { componentNav, patterns, slug } from "./nav";
+import { componentNav, foundationPages, patterns, slug } from "./nav";
 
 type SectionKey = "start" | "foundations" | "components" | "patterns";
 
@@ -53,18 +53,12 @@ export function Sidebar() {
     <nav className={styles.sidebar} aria-label="Catalog">
       <Section title="Start" open={open.start} onToggle={toggle("start")}>
         <NavLink href="/">Overview</NavLink>
+        <NavLink href="/start/installation">Installation</NavLink>
+        <NavLink href="/start/patterns">Using patterns</NavLink>
+        <NavLink href="/start/prompting">Prompting</NavLink>
       </Section>
       <Section title="Foundations" open={open.foundations} onToggle={toggle("foundations")}>
-        <NavLink href="/foundations">Color</NavLink>
-        <NavLink href="/foundations/typography">Typography</NavLink>
-        <NavLink href="/foundations/icons">Icons</NavLink>
-        <NavLink href="/foundations/spacing">Spacing</NavLink>
-        <NavLink href="/foundations/grid">Grid systems</NavLink>
-        <NavLink href="/foundations/radius">Radius</NavLink>
-        <NavLink href="/foundations/border">Border</NavLink>
-        <NavLink href="/foundations/shadow">Shadow</NavLink>
-        <NavLink href="/foundations/motion">Motion</NavLink>
-        <NavLink href="/foundations/opacity">Opacity</NavLink>
+        {foundationPages.map((f) => <NavLink key={f.href} href={f.href}>{f.label}</NavLink>)}
       </Section>
       <Section title="Components" open={open.components} onToggle={toggle("components")}>
         <NavLink href="/components">Gallery</NavLink>

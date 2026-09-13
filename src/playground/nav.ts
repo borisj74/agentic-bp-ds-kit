@@ -4,6 +4,19 @@ export const slug = (name: string) => name.toLowerCase().replace(/\s+/g, "-");
 // Sidebar and gallery list components A to Z, whatever order the index uses.
 export const components = [...index.components].sort((a, b) => a.name.localeCompare(b.name));
 export const patterns = index.patterns as { name: string; contract: string }[];
+// Foundation pages in sidebar order. The Foundations landing page is the color page.
+export const foundationPages = [
+  { href: "/foundations", label: "Color" },
+  { href: "/foundations/typography", label: "Typography" },
+  { href: "/foundations/icons", label: "Icons" },
+  { href: "/foundations/spacing", label: "Spacing" },
+  { href: "/foundations/grid", label: "Grid systems" },
+  { href: "/foundations/radius", label: "Radius" },
+  { href: "/foundations/border", label: "Border" },
+  { href: "/foundations/shadow", label: "Shadow" },
+  { href: "/foundations/motion", label: "Motion" },
+  { href: "/foundations/opacity", label: "Opacity" },
+];
 
 // Sidebar entries: families like BarChart, LineChart and PieChart sit under one heading (Chart) with short names,
 // placed where the heading falls A to Z. The gallery keeps the full names.
