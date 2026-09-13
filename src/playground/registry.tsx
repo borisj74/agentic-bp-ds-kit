@@ -122,7 +122,7 @@ const GUIDED_STEPS: GuidedProcessStep[] = [
   { title: "Import", tasks: [{ label: "Name the batch" }, { label: "Submit" }] },
 ];
 const GUIDED_ACTIONS: GuidedProcessAction[] = [
-  { id: "cancel", label: "Cancel" }, { id: "save", label: "Save" }, { id: "skip", label: "Skip" }, { id: "continue", label: "Continue" },
+  { id: "cancel", label: "Cancel", icon: "close" }, { id: "save", label: "Save", icon: "save" }, { id: "skip", label: "Skip", icon: "skip_next" }, { id: "continue", label: "Continue" },
 ];
 
 const PAGE_SECTION_ITEMS = [
@@ -1224,7 +1224,7 @@ export const registry: Record<string, Entry> = {
     hide: ["view", "intro", "header", "children", "footer", "steps", "stepsOpen", "onStepsClose", "label"],
     toggles: { shell: { label: "In the app frame", default: true } },
     extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
-    hint: "Press Start in the first column, then walk the import: Continue moves on, Skip moves on and marks the step to look at again, Save writes the time in the footer, and Submit on the last step sends the batch. Cancel goes back to the columns. Side puts the steps panel at the end or the start of the page. Stage narrows the box: under 1024 the columns stack, the steps become a drawer opened by the 4 | 6 counter, and the quieter footer actions fold into the More menu.",
+    hint: "Press Start in the first column, then walk the import: Continue moves on, Skip moves on and marks the step to look at again, Save writes the time in the footer, and Submit on the last step sends the batch. Cancel goes back to the columns. Side puts the steps panel at the end or the start of the page. Stage narrows the box: under 1024 the columns stack, the steps become a drawer opened by the 4 | 6 counter, the quieter footer actions fold into the More menu, and on a phone they are icon buttons.",
     block: true,
     wide: true,
     page: <GuidedProcessPageDemo shell />,

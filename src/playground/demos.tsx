@@ -2058,10 +2058,10 @@ export function GuidedProcessPageDemo({ shell = true, stage = "desktop", side = 
   };
 
   const actions: GuidedProcessAction[] = done ? [] : [
-    { id: "cancel", label: "Cancel" },
-    { id: "save", label: "Save" },
+    { id: "cancel", label: "Cancel", icon: "close" },
+    { id: "save", label: "Save", icon: "save" },
     ...(at < last
-      ? [{ id: "skip", label: "Skip" }, { id: "continue", label: "Continue" }]
+      ? [{ id: "skip", label: "Skip", icon: "skip_next" }, { id: "continue", label: "Continue" }]
       : [{ id: "submit", label: "Submit", variant: "primary" as const, type: "submit" as const, form: formId }]),
   ];
   const onAction = (id: string) => {

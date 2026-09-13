@@ -24,6 +24,7 @@ export interface GuidedProcessStep {
 export interface GuidedProcessAction {
   id: string;
   label: string;
+  icon?: string;
   variant?: "primary" | "secondary" | "tertiary";
   type?: "button" | "submit";
   form?: string;
@@ -222,14 +223,25 @@ function Header({ title, stepTitle, current = 1, total, onStepsOpen }: GuidedPro
 function Footer({ actions = [], onAction, updated }: GuidedProcessFooterProps) {
   const rest = actions.slice(0, -1);
   const last = actions[actions.length - 1];
+  // On a phone an action with an icon is its own icon button; only those without one still need the menu.
+  const iconed = rest.filter((a) => a.icon);
+  const plain = rest.filter((a) => !a.icon);
+  const menu = (items: GuidedProcessAction[]) => (
+    <DropdownMenu
+      label="More actions" icon="more_horiz" iconOnly variant="tertiary" align="start"
+      items={items.map((a) => ({ id: a.id, label: a.label, icon: a.icon, disabled: a.disabled }))}
+      onSelect={(id) => onAction?.(id)}
+    />
+  );
 
   return (
     <footer className={styles.footer}>
       {updated && <p className={styles.updated}>{updated}</p>}
       {last && (
         <div className={styles.buttons}>
-          {/* Render both, show one: the quieter actions as Buttons from 1024 of box width, folded into one menu
-              under it. The hidden set is display none, so it is not a keyboard stop. */}
+          {/* Render all, show one: the quieter actions as Buttons from 1024 of box width, folded into one menu
+              under it, and as icon buttons on a phone. The hidden sets are display none, so no action is a
+              keyboard stop twice. */}
           {rest.length > 0 && (
             <>
               <div className={styles.rest}>
@@ -239,13 +251,17 @@ function Footer({ actions = [], onAction, updated }: GuidedProcessFooterProps) {
                   </Button>
                 ))}
               </div>
-              <div className={styles.more}>
-                <DropdownMenu
-                  label="More actions" icon="more_horiz" iconOnly variant="tertiary" align="start"
-                  items={rest.map((a) => ({ id: a.id, label: a.label, disabled: a.disabled }))}
-                  onSelect={(id) => onAction?.(id)}
-                />
-              </div>
+              <div className={styles.more}>{menu(rest)}</div>
+              {iconed.length > 0 && (
+                <div className={styles.icons}>
+                  {iconed.map((a) => (
+                    <Button key={a.id} variant="tertiary" size="lg" iconOnly iconStart={a.icon} iconSize="xl" type={a.type ?? "button"} form={a.form} disabled={a.disabled} onClick={() => onAction?.(a.id)}>
+                      {a.label}
+                    </Button>
+                  ))}
+                </div>
+              )}
+              {plain.length > 0 && <div className={styles.morePhone}>{menu(plain)}</div>}
             </>
           )}
           <span className={styles.last}>

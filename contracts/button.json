@@ -30,6 +30,15 @@
       "type": "string",
       "note": "Icon name shown after label."
     },
+    "iconSize": {
+      "enum": [
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ],
+      "note": "Icon size, 16 / 20 / 24 / 32. Leave out to follow the Button: 16 on sm, 20 on md and lg. Use a larger icon on an icon-only lg Button where the icon alone carries the action, like a phone footer."
+    },
     "iconOnly": {
       "type": "boolean",
       "default": false,
@@ -71,7 +80,8 @@
   "doNot": [
     "Do not use for in-text navigation (use Link).",
     "Do not put two primary Buttons in one view.",
-    "Do not invent extra variants."
+    "Do not invent extra variants.",
+    "Do not set iconSize larger than lg on a Button with a label; big icons are for icon-only Buttons."
   ],
   "a11y": [
     "Native <button>.",
@@ -253,6 +263,17 @@
             "iconOnly": true,
             "iconStart": "close",
             "children": "Close"
+          }
+        },
+        {
+          "caption": "Icon-only with an xl icon",
+          "props": {
+            "variant": "tertiary",
+            "size": "lg",
+            "iconOnly": true,
+            "iconStart": "save",
+            "iconSize": "xl",
+            "children": "Save"
           }
         }
       ]

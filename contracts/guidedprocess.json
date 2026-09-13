@@ -2,7 +2,7 @@
   "name": "GuidedProcess",
   "path": "src/ui/GuidedProcess/GuidedProcess.tsx",
   "intent": "The pieces of a process walked one step at a time: a dark panel for a step, the dark list of every step beside the page, the header over a step, and the footer under it.",
-  "usage": "Use GuidedProcess for a process of a few steps done in order where each step is a page, like importing usage or registering a supplier. It is one component with four parts, picked by part, and each part takes only its own props. part panel (the default) is one step as a dark column: pass steps and current, the step number starting at 1, and it shows the number, the title and how the step went. Each step has a title, and can have a status (success, warning or error) with statusText, and tasks, the short list of what is done and left in it. Give the first column title and subtitle, and while the process has not started set started false with onStart and onCancel for Start and Cancel; shade 1 to 5 darkens columns further along. placement auto is a tall column from 1024 of box width and a band under it; side and band fix it. part steps is the dark panel beside the page once the process has started: the 4 | 6 counter at the top and every step at the foot, with a notch in the edge at the current step and its tasks under it. side is the page edge it sits on, so the notch points into the page; onClose shows a close button where it is a drawer, under 1024. part header goes over the step's fields: title is the process name, stepTitle the step's, and with total and onStepsOpen a 4 | 6 counter opens the steps where they are a drawer. part footer goes under the fields: updated is when the work was last saved and actions are the step's buttons in order. The last moves the process on: Continue, which is secondary, or Submit on the last step, which is primary and can be type submit with form set to the step's Form id; the rest are tertiary. onAction gets the id pressed. From 1024 every action is a Button, under 1024 all but the last fold into a More menu, and under 600 the saved time goes on its own line. Every dark part is dark in light and dark themes alike. Place the parts with the GuidedProcessPage pattern. See contracts/guidedprocess.json for the full contract.",
+  "usage": "Use GuidedProcess for a process of a few steps done in order where each step is a page, like importing usage or registering a supplier. It is one component with four parts, picked by part, and each part takes only its own props. part panel (the default) is one step as a dark column: pass steps and current, the step number starting at 1, and it shows the number, the title and how the step went. Each step has a title, and can have a status (success, warning or error) with statusText, and tasks, the short list of what is done and left in it. Give the first column title and subtitle, and while the process has not started set started false with onStart and onCancel for Start and Cancel; shade 1 to 5 darkens columns further along. placement auto is a tall column from 1024 of box width and a band under it; side and band fix it. part steps is the dark panel beside the page once the process has started: the 4 | 6 counter at the top and every step at the foot, with a notch in the edge at the current step and its tasks under it. side is the page edge it sits on, so the notch points into the page; onClose shows a close button where it is a drawer, under 1024. part header goes over the step's fields: title is the process name, stepTitle the step's, and with total and onStepsOpen a 4 | 6 counter opens the steps where they are a drawer. part footer goes under the fields: updated is when the work was last saved and actions are the step's buttons in order. The last moves the process on: Continue, which is secondary, or Submit on the last step, which is primary and can be type submit with form set to the step's Form id; the rest are tertiary. onAction gets the id pressed. From 1024 every action is a Button, under 1024 all but the last fold into a More menu, and under 600 the saved time goes on its own line and the quieter actions show as a row of large icon buttons over the last one, so give them an icon. Every dark part is dark in light and dark themes alike. Place the parts with the GuidedProcessPage pattern. See contracts/guidedprocess.json for the full contract.",
   "props": {
     "part": {
       "enum": [
@@ -104,12 +104,13 @@
       "itemShape": {
         "id": "string",
         "label": "string",
+        "icon": "string? Material Symbols name. On a phone-width box the action shows as an icon button named by label; without one it goes in a More menu.",
         "variant": "\"primary\" | \"secondary\" | \"tertiary\"? Defaults to tertiary, and secondary for the last action.",
         "type": "\"button\" | \"submit\"? submit with form sends the step's Form.",
         "form": "string? The id of the Form a submit action sends.",
         "disabled": "boolean?"
       },
-      "note": "Footer. The step's buttons in order; the last moves the process on. Under 1024 of box width every one but the last goes in a More menu."
+      "note": "Footer. The step's buttons in order; the last moves the process on. From 600 to 1023 of box width every one but the last goes in a More menu; under 600 those with an icon are a row of lg icon-only Buttons with xl icons over the last action and the rest share a More menu."
     },
     "onAction": {
       "type": "(id: string) => void",
@@ -142,7 +143,7 @@
     "Done tasks say done to screen readers as well as showing a check.",
     "The counter is read as Step 4 of 6; in the header it is a button that says show steps.",
     "The header's step title is the page's h1.",
-    "The footer's actions are kit Buttons; under 1024 the folded ones are a kit DropdownMenu named More actions, and the hidden set is display none, so no action is reached twice."
+    "The footer's actions are kit Buttons; under 1024 the folded ones are a kit DropdownMenu named More actions, on a phone icon-only Buttons named by their label, and the hidden sets are display none, so no action is reached twice."
   ],
   "snippet": "<GuidedProcess title=\"Import usage\" steps={steps} current={1} started={false} onStart={start} onCancel={leave} />\n<GuidedProcess part=\"steps\" steps={steps} current={2} />\n<GuidedProcess part=\"header\" title=\"Import usage\" stepTitle=\"Map the columns\" current={2} total={4} onStepsOpen={openSteps} />\n<GuidedProcess part=\"footer\" updated=\"Last updated on September 13, 12:43 PM\" actions={actions} onAction={handle} />",
   "examples": [
@@ -398,15 +399,18 @@
             "actions": [
               {
                 "id": "cancel",
-                "label": "Cancel"
+                "label": "Cancel",
+                "icon": "close"
               },
               {
                 "id": "save",
-                "label": "Save"
+                "label": "Save",
+                "icon": "save"
               },
               {
                 "id": "skip",
-                "label": "Skip"
+                "label": "Skip",
+                "icon": "skip_next"
               },
               {
                 "id": "continue",
@@ -422,11 +426,13 @@
             "actions": [
               {
                 "id": "cancel",
-                "label": "Cancel"
+                "label": "Cancel",
+                "icon": "close"
               },
               {
                 "id": "save",
-                "label": "Save"
+                "label": "Save",
+                "icon": "save"
               },
               {
                 "id": "submit",

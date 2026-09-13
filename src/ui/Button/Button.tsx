@@ -1,18 +1,20 @@
 "use client";
 import { useContext, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { useDensitySize } from "../Density/Density";
-import { Icon } from "../Icon/Icon";
+import { Icon, type IconSize } from "../Icon/Icon";
 import { ButtonGroupContext } from "../ButtonGroup/context";
 import styles from "./Button.module.css";
 
 export type ButtonVariant = "primary" | "secondary" | "tertiary" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
+export type ButtonIconSize = Exclude<IconSize, "xs">;
 
 export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   iconStart?: string;
   iconEnd?: string;
+  iconSize?: ButtonIconSize;
   iconOnly?: boolean;
   loading?: boolean;
   pressed?: boolean;
@@ -25,6 +27,7 @@ export function Button({
   size: sizeProp,
   iconStart,
   iconEnd,
+  iconSize: iconSizeProp,
   iconOnly = false,
   loading = false,
   pressed,
@@ -41,7 +44,8 @@ export function Button({
   const own = useDensitySize(sizeProp);
   const size = group?.size ?? own;
   const off = Boolean(disabled || group?.disabled);
-  const iconSize = size === "sm" ? "sm" : "md";
+  // The icon follows the Button unless asked for: a bigger one suits an icon-only Button that stands alone.
+  const iconSize = iconSizeProp ?? (size === "sm" ? "sm" : "md");
   const cls = [
     styles.button,
     styles[variant],

@@ -131,7 +131,8 @@
 }
 .buttons { display: flex; align-items: center; gap: var(--space-xsmall); margin-inline-start: auto; }
 .rest { display: flex; align-items: center; gap: var(--space-xsmall); }
-.more { display: none; }
+.more, .icons, .morePhone { display: none; }
+.icons { align-items: center; gap: var(--space-xxsmall); }
 .last { display: flex; }
 
 /* 1440 and up (2370:68021): a 48 inset at the sides. */
@@ -144,11 +145,15 @@
   .rest { display: none; }
   .more { display: flex; }
 }
-/* 599 (2530:88296): the time goes on a line of its own and the action that moves on takes the rest of the row. */
+/* 599 (2530:88296): the time goes on a line of its own and the action that moves on takes the rest of the row.
+   The quieter actions are a row of icon buttons over it rather than a menu; any without an icon share a menu at
+   the end of that row. */
 @container (max-width: 599px) {
   .footer { flex-direction: column; align-items: stretch; gap: var(--space-medium); padding: var(--space-medium); }
-  .buttons { margin-inline-start: 0; }
-  .last { flex: 1; }
+  .buttons { flex-wrap: wrap; margin-inline-start: 0; }
+  .more { display: none; }
+  .icons, .morePhone { display: flex; }
+  .last { flex: 1 1 100%; }
 }
 
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
