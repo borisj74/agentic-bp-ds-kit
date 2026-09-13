@@ -38,7 +38,7 @@ export default function Installation() {
           </div>
 
           <div id="npm">
-            <Section title="Option 1: One command" description="Recommended. Makes a new folder with the latest kit and installs it.">
+            <Section title="Option 1: One command" description="Recommended. Makes a new folder with the latest release of the kit and installs it.">
               <div className={docs.prose}>
                 <p>Run this in the folder where you keep your projects. Change <code>my-prototype</code> to any name.</p>
                 <CodeBlock code="npm create agentic-bp-ds@latest my-prototype" />

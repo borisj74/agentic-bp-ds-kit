@@ -66,7 +66,7 @@ Counts are as of this README. The catalog's Overview page counts them live from 
 
 ### Option 1: One command (recommended)
 
-Makes a new folder with the latest kit and installs it. Run this in the folder where you keep your projects, and change `my-prototype` to any name:
+Makes a new folder with the latest release of the kit and installs it. Run this in the folder where you keep your projects, and change `my-prototype` to any name:
 
 ```bash
 npm create agentic-bp-ds@latest my-prototype

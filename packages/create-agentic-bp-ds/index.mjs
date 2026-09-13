@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // npm create agentic-bp-ds@latest [folder]
-// Copies the latest kit from GitHub into a new folder, installs it and tells you how to start. No dependencies:
-// it downloads the repo tarball with fetch and unpacks it with the system tar (macOS, Linux and Windows 10+).
+// Copies the kit release that matches this installer's version (git tag v<version>) from GitHub into a new folder,
+// installs it and tells you how to start. No dependencies: it downloads the tag's tarball with fetch and unpacks it
+// with the system tar (macOS, Linux and Windows 10+). To release: tag the kit v<version>, then publish this package.
 
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -10,7 +11,8 @@ import { basename, join, resolve } from "node:path";
 import { createInterface } from "node:readline/promises";
 
 const REPO = "borisj74/agentic-bp-ds-kit";
-const TARBALL = `https://codeload.github.com/${REPO}/tar.gz/refs/heads/main`;
+const { version: VERSION } = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8"));
+const TARBALL = `https://codeload.github.com/${REPO}/tar.gz/refs/tags/v${VERSION}`;
 // Files that belong to the kit's own repo, not to a prototype made from it.
 const DROP = ["packages", "LICENSE"];
 
