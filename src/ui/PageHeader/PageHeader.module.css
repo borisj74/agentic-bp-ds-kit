@@ -7,7 +7,8 @@
   padding-block: var(--space-small); background: var(--surface-flat); font-family: var(--font-sans);
 }
 
-.title { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+/* The trail and the title row are 4px apart, so the two lines of text don't touch; the bar stays 80 tall. */
+.title { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: var(--space-xxsmall); }
 /* Title row: the kit Icon at lg (24), 18px medium title, badge, 8px apart. */
 .titleRow { display: flex; align-items: center; gap: var(--space-xsmall); min-width: 0; }
 .heading {
