@@ -51,16 +51,21 @@
   background: var(--surface-raised); border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-medium);
   padding: 2px var(--space-xxsmall);
 }
-/* The menu button and the sheet behind the drawer only exist on narrow screens. */
-.menuButton { display: none; }
+/* The menu button is always there; the sheet behind the drawer only exists on narrow screens. */
+.menuButton { display: inline-flex; align-self: center; }
+.brand { align-items: center; }
 .scrim { display: none; margin: 0; padding: 0; border: 0; }
+
+/* At 768px and wider, a hidden menu gives its column back to the page. On a phone the drawer ignores it. */
+@media (min-width: 768px) {
+  .shellCollapsed { grid-template-columns: minmax(0, 1fr); }
+  .shellCollapsed .sidebar { display: none; }
+}
 
 /* Under 768px the catalog menu leaves the page's side and becomes a drawer over it, under the top bar. */
 @media (max-width: 767px) {
   .shell { grid-template-columns: minmax(0, 1fr); }
   .topbar { padding: 0 var(--space-small); }
-  .menuButton { display: inline-flex; align-self: center; }
-  .brand { align-items: center; }
   .brandTag { display: none; }
   /* Closed, it sits off the start edge and hidden, so Tab and screen readers skip it. */
   .sidebar {
