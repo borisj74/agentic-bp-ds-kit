@@ -2,7 +2,7 @@
   "name": "Tabs",
   "path": "src/ui/Tabs/Tabs.tsx",
   "intent": "A row of tabs that switches between related views in the same place. The selected tab has a brand label and underline.",
-  "usage": "Use Tabs to switch between two or more related views on one page, like the sections of a record or settings. One component: pass items with a label and, optionally, an icon, a count and content. With content, Tabs shows the selected panel under the strip; without it, it is a strip only and you show the view yourself from value and onChange. size sets the height (sm is the default, as in Figma); expand stretches the tabs across the row; border draws the line under the strip. For a small always-visible choice like density or a view switch, use SegmentedControl. See contracts/tabs.json for the full contract.",
+  "usage": "Use Tabs to switch between two or more related views on one page, like the sections of a record or settings. One component: pass items with a label and, optionally, an icon, a count and content. With content, Tabs shows the selected panel under the strip; without it, it is a strip only and you show the view yourself from value and onChange. size sets the height (sm is the default); expand stretches the tabs across the row; border draws the line under the strip. For a small always-visible choice like density or a view switch, use SegmentedControl. See contracts/tabs.json for the full contract.",
   "props": {
     "items": {
       "type": "TabItem[]",
@@ -33,7 +33,7 @@
         "lg"
       ],
       "default": "sm",
-      "note": "Tab height 32 / 40 / 48 px, label 12 / 14 / 16 px. sm is the Figma default."
+      "note": "Tab height 32 / 40 / 48 px, label 12 / 14 / 16 px. sm is the default."
     },
     "expand": {
       "type": "boolean",
@@ -67,7 +67,7 @@
   "examples": [
     {
       "title": "Default",
-      "usage": "Small tabs on a line, as in Figma. The first tab starts selected.",
+      "usage": "Small tabs on a line. The first tab starts selected.",
       "items": [
         { "props": { "label": "Account sections", "items": [{ "id": "overview", "label": "Overview" }, { "id": "invoices", "label": "Invoices" }, { "id": "payments", "label": "Payments" }] } }
       ]

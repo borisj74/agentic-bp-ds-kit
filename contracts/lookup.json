@@ -15,9 +15,9 @@
       "note": "The Modal table's columns, as in Table."
     },
     "rows": {
-      "type": "TableRow[]",
+      "type": "LookupRow[]",
       "required": true,
-      "note": "Every record, each with a unique id. The labelKey column must be text: it becomes the link that picks the row and the text in the field. Other columns can hold text or kit Cells, like a Badge for status."
+      "note": "Every record. LookupRow is a TableRow whose id is required; each id must be unique. The labelKey column must be text: it becomes the link that picks the row and the text in the field. Other columns can hold text or kit Cells, like a Badge for status."
     },
     "value": {
       "type": "string | null",

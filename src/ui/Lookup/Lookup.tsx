@@ -10,6 +10,9 @@ import { Input } from "../Input/Input";
 import { Modal } from "../Modal/Modal";
 import { Pagination } from "../Pagination/Pagination";
 import { Table, type TableColumn, type TableRow } from "../Table/Table";
+
+// A Table row whose id is required: the id is what value holds and what picking a row sends.
+export type LookupRow = TableRow & { id: string };
 // Label, help, hint, error and the field box share Input's styles so all form fields match.
 import field from "../Input/Input.module.css";
 import styles from "./Lookup.module.css";
@@ -20,7 +23,7 @@ export type LookupLabelPosition = "top" | "start";
 export interface LookupProps {
   label: string;
   columns: TableColumn[];
-  rows: TableRow[];
+  rows: LookupRow[];
   value?: string | null;
   defaultValue?: string | null;
   onChange?: (id: string | null, row: TableRow | null) => void;

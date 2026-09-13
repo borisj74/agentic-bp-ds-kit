@@ -1,10 +1,13 @@
 "use client";
-import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import {
+  Children, Fragment, isValidElement, useEffect, useId, useLayoutEffect, useRef, useState,
+  type KeyboardEvent, type ReactElement, type ReactNode,
+} from "react";
 import { createPortal } from "react-dom";
 import { Button } from "../Button/Button";
 import { Count } from "../Count/Count";
 import { Command, type CommandGroup } from "../Command/Command";
-import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
+import { DropdownMenu, type DropdownMenuEntry, type DropdownMenuItem } from "../DropdownMenu/DropdownMenu";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 import { Icon } from "../Icon/Icon";
 import { Input } from "../Input/Input";
@@ -39,6 +42,24 @@ export interface ToolbarProps {
   onMoreSelect?: (id: string) => void;
   actions?: ReactNode;
   label?: string;
+}
+
+// On a narrow bar the actions can fold into one Actions menu. That needs each action to be a kit Button with a
+// text label, so the menu can name it; anything else and the actions stay a row.
+interface FoldedAction { item: DropdownMenuItem; run?: () => void }
+function foldActions(actions: ReactNode): FoldedAction[] | null {
+  const flat = (node: ReactNode): ReactNode[] =>
+    Children.toArray(node).flatMap((child) =>
+      isValidElement(child) && child.type === Fragment ? flat((child as ReactElement<{ children?: ReactNode }>).props.children) : [child],
+    );
+  const out: FoldedAction[] = [];
+  for (const [i, child] of flat(actions).entries()) {
+    if (!isValidElement(child) || child.type !== Button) return null;
+    const p = child.props as { children?: ReactNode; iconStart?: string; disabled?: boolean; onClick?: () => void };
+    if (typeof p.children !== "string") return null;
+    out.push({ item: { id: `toolbar-action-${i}`, label: p.children, icon: p.iconStart, disabled: p.disabled }, run: p.onClick });
+  }
+  return out;
 }
 
 // Figma toolbar 6057:15099 and filters-bar 3579:30240. Controls are size sm (28px) in a 44px bar.
@@ -105,14 +126,74 @@ export function Toolbar({
   const viewing = views.length > 0 || Boolean(onRefresh);
   const hasEnd = Boolean(moreActions?.length) || Boolean(actions);
 
+  // Under 640px everything but the search shares one line. When the actions do not fit at its end, they fold into
+  // one Actions menu, with More's items after them: the whole row of buttons or the one menu, never a wrapped row.
+  // A hidden copy of the actions keeps their full width known, so they come back as soon as there is room.
+  const folding = hasEnd && actions ? foldActions(actions) : null;
+  const canFold = Boolean(folding);
+  const barRef = useRef<HTMLDivElement>(null);
+  const startRef = useRef<HTMLDivElement>(null);
+  const measureRef = useRef<HTMLDivElement>(null);
+  const menuMeasureRef = useRef<HTMLDivElement>(null);
+  // row: the buttons fit. menu: they fold into Actions. icon: even the word Actions does not fit, so its icon stands in.
+  const [fold, setFold] = useState<"row" | "menu" | "icon">("row");
+  useLayoutEffect(() => {
+    const bar = barRef.current;
+    const row = measureRef.current;
+    const menu = menuMeasureRef.current;
+    if (!canFold || !bar || !row || !menu) return;
+    const check = () => {
+      const css = getComputedStyle(bar);
+      // Set by the bar's own 640px container query, so the fold follows the same break as the layout.
+      if (css.getPropertyValue("--toolbar-fold").trim() !== "1") { setFold("row"); return; }
+      const box = bar.getBoundingClientRect();
+      const left = box.left + parseFloat(css.paddingLeft);
+      const right = box.right - parseFloat(css.paddingRight);
+      const gap = parseFloat(css.columnGap) || 0;
+      const shared = [...(startRef.current?.children ?? [])].filter(
+        (el) => !el.classList.contains(styles.search) && getComputedStyle(el).display !== "none",
+      );
+      const last = shared[shared.length - 1];
+      const used = last ? last.getBoundingClientRect().right - left + gap : 0;
+      const room = right - left - used;
+      setFold(row.offsetWidth <= room ? "row" : menu.offsetWidth <= room ? "menu" : "icon");
+    };
+    // A ResizeObserver reports once as it starts watching, so the first check needs no call of its own.
+    const watch = new ResizeObserver(check);
+    watch.observe(bar);
+    watch.observe(row);
+    watch.observe(menu);
+    return () => watch.disconnect();
+  }, [canFold]);
+  const pickFolded = (id: string) => {
+    const hit = folding?.find((a) => a.item.id === id);
+    if (hit) hit.run?.();
+    else onMoreSelect?.(id);
+  };
+  const actionsMenu = (iconOnly: boolean) => folding && (
+    <DropdownMenu
+      label="Actions" size="sm" align="end" iconOnly={iconOnly} onSelect={pickFolded}
+      items={[...folding.map((a) => a.item), ...(moreActions?.length ? [{ divider: true } as const, ...moreActions] : [])]}
+    />
+  );
+  // Same order as the PageHeader: More (overflow) first, then the actions with the one primary last.
+  const endControls = (
+    <>
+      {moreActions && moreActions.length > 0 && (
+        <DropdownMenu label="More" variant="tertiary" size="sm" align="end" items={moreActions} onSelect={onMoreSelect} />
+      )}
+      {actions}
+    </>
+  );
+
   return (
     <div className={styles.toolbar} role="group" aria-label={label}>
-      <div className={styles.bar}>
-        <div className={styles.start}>
+      <div ref={barRef} className={styles.bar}>
+        <div ref={startRef} className={styles.start}>
           {filters && (
             <Button
               size="sm" iconStart="filter_list" pressed={open}
-              aria-expanded={open} aria-controls={barId} onClick={() => setOpen(!open)}
+              aria-expanded={open} aria-controls={open ? barId : undefined} onClick={() => setOpen(!open)}
             >
               {/* How many filters are on, so a folded filter bar still says the list is narrowed. */}
               Filters
@@ -154,12 +235,15 @@ export function Toolbar({
           )}
         </div>
         {hasEnd && (
-          // Same order as the PageHeader: More (overflow) first, then the actions with the one primary last.
           <div className={styles.end}>
-            {moreActions && moreActions.length > 0 && (
-              <DropdownMenu label="More" variant="tertiary" size="sm" align="end" items={moreActions} onSelect={onMoreSelect} />
-            )}
-            {actions}
+            {fold !== "row" && folding ? actionsMenu(fold === "icon") : endControls}
+          </div>
+        )}
+        {canFold && (
+          // The actions and the Actions menu at full width, never seen or reached: measured to pick what fits on the line.
+          <div className={styles.measure} aria-hidden="true" inert>
+            <div ref={measureRef} className={[styles.end, styles.measureRow].join(" ")}>{endControls}</div>
+            <div ref={menuMeasureRef} className={styles.measureRow}>{actionsMenu(false)}</div>
           </div>
         )}
       </div>

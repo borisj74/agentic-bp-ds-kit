@@ -42,7 +42,7 @@ import { BarChart } from "@/ui/BarChart/BarChart";
 import { LineChart } from "@/ui/LineChart/LineChart";
 import { PieChart } from "@/ui/PieChart/PieChart";
 import { Legend, type LegendProps } from "@/ui/Legend/Legend";
-import { Lookup } from "@/ui/Lookup/Lookup";
+import { Lookup, type LookupRow } from "@/ui/Lookup/Lookup";
 import { Modal, type ModalProps } from "@/ui/Modal/Modal";
 import { PageHeader } from "@/ui/PageHeader/PageHeader";
 import { Progress } from "@/ui/Progress/Progress";
@@ -143,7 +143,7 @@ export function FormDemo({ content = "fields", ...p }: Omit<FormProps, "children
 }
 
 // Parent accounts for the Form demo's Lookup field.
-const PARENT_ACCOUNTS: TableRow[] = [
+const PARENT_ACCOUNTS: LookupRow[] = [
   { id: "ACC-1001", name: "Northwind Holdings", type: "Enterprise", region: "North America", owner: "Maya Chen" },
   { id: "ACC-1002", name: "Globex Corporation", type: "Enterprise", region: "Europe", owner: "Noah Williams" },
   { id: "ACC-1003", name: "Initech Group", type: "Mid-market", region: "North America", owner: "Iris Okafor" },
@@ -1804,7 +1804,7 @@ const DATE_FORMATS = [
   { value: "dmy", label: "DD/MM/YYYY" },
   { value: "iso", label: "YYYY-MM-DD" },
 ];
-const INVOICE_TEMPLATES: TableRow[] = [
+const INVOICE_TEMPLATES: LookupRow[] = [
   { id: "TPL-1", name: "Standard invoice", use: "Default", updated: "12 Aug 2026" },
   { id: "TPL-2", name: "Usage summary", use: "Metered accounts", updated: "02 Sep 2026" },
   { id: "TPL-3", name: "Credit memo", use: "Credits", updated: "28 Jul 2026" },
@@ -2209,13 +2209,13 @@ const FLOW_TIME_ZONES = [{ value: "asia-bangkok", label: "Asia/Bangkok" }, { val
 const FLOW_CURRENCIES = [{ value: "usd", label: "USD · US Dollar" }, { value: "eur", label: "EUR · Euro" }, { value: "gbp", label: "GBP · Pound sterling" }];
 const FLOW_CYCLES = [{ value: "monthly", label: "MONTHLY" }, { value: "quarterly", label: "QUARTERLY" }, { value: "annually", label: "ANNUALLY" }];
 const FLOW_NONE = [{ value: "none", label: "None" }];
-const FLOW_LEGAL_ENTITIES: TableRow[] = [
+const FLOW_LEGAL_ENTITIES: LookupRow[] = [
   { id: "le-1", name: "Parent Co", country: "United States" },
   { id: "le-2", name: "EU Subsidiary", country: "Ireland" },
   { id: "le-3", name: "APAC Holdings", country: "Singapore" },
 ];
 const FLOW_LEGAL_COLUMNS: TableColumn[] = [{ key: "name", header: "Legal entity" }, { key: "country", header: "Country" }];
-const FLOW_PRODUCT_LOOKUP: TableRow[] = [
+const FLOW_PRODUCT_LOOKUP: LookupRow[] = [
   { id: "pr-1", name: "On-Demand Virtual", category: "Usage" },
   { id: "pr-2", name: "Platform Access — Gold", category: "Subscription" },
   { id: "pr-3", name: "Support — Premium", category: "Service" },
@@ -2223,7 +2223,7 @@ const FLOW_PRODUCT_LOOKUP: TableRow[] = [
   { id: "pr-5", name: "SSO Add-on", category: "Add-on" },
 ];
 const FLOW_PRODUCT_LOOKUP_COLUMNS: TableColumn[] = [{ key: "name", header: "Product" }, { key: "category", header: "Category" }];
-const FLOW_CONTRACTS: TableRow[] = [{ id: "ct-1", name: "ACME-2026", term: "12 months" }, { id: "ct-2", name: "ACME-2027", term: "24 months" }];
+const FLOW_CONTRACTS: LookupRow[] = [{ id: "ct-1", name: "ACME-2026", term: "12 months" }, { id: "ct-2", name: "ACME-2027", term: "24 months" }];
 const FLOW_CONTRACT_COLUMNS: TableColumn[] = [{ key: "name", header: "Contract" }, { key: "term", header: "Term" }];
 const FLOW_TABS = ["Details", "Contract", "Contacts", "Account Products", "Account Packages", "Revenue Contract", "Account Docs"];
 const FLOW_QUICK_LINKS = ["Tax Related List", "Subscription Configuration", "Customer Portal", "Orders", "Document Information"];

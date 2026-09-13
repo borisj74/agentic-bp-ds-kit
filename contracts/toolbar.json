@@ -2,7 +2,7 @@
   "name": "Toolbar",
   "path": "src/ui/Toolbar/Toolbar.tsx",
   "intent": "The bar above a list or table: find and filter on the left, view and actions on the right, with a filter bar that opens under it.",
-  "usage": "Put one Toolbar right above a list or table, under the PageHeader. It is one component. Left: a Filters button (when filters are passed), carrying a kit Count of how many filters are on and a search field, which with searchGroups opens a kit Command dropdown of quick-navigation results; then, after a divider, the view picker and refresh. Right: a More menu and the actions, kit Buttons size sm with at most one primary, last. Filters toggles the filter bar under it: the filter chips (kit DropdownMenu trigger filter), then Reset and Apply filters, and an optional help icon at the end. Every part is optional; leave out what the list does not need. See contracts/toolbar.json for the full contract. Under 640px, the kit's mobile break, one line cannot hold the finding and the doing: the search takes the first line whole, the filters, the view and refresh share the next, and the actions keep to the end of their own, with the one primary last.",
+  "usage": "Put one Toolbar right above a list or table, under the PageHeader. It is one component. Left: a Filters button (when filters are passed), carrying a kit Count of how many filters are on and a search field, which with searchGroups opens a kit Command dropdown of quick-navigation results; then, after a divider, the view picker and refresh. Right: a More menu and the actions, kit Buttons size sm with at most one primary, last. Filters toggles the filter bar under it: the filter chips (kit DropdownMenu trigger filter), then Reset and Apply filters, and an optional help icon at the end. Every part is optional; leave out what the list does not need. See contracts/toolbar.json for the full contract. Under 640px, the kit's mobile break, the search takes the first line whole and everything else shares one line: the filters, the view and refresh, with the actions at its end. When the actions do not fit on that line they fold into one Actions menu that lists them, then More's items after a divider. It is either the whole row of buttons or the one menu, never a wrapped row. If even the Actions button does not fit, it shows as an icon-only more button, still named Actions.",
   "props": {
     "filters": {
       "type": "ReactNode",
@@ -92,7 +92,7 @@
     },
     "actions": {
       "type": "ReactNode",
-      "note": "Kit Buttons size sm: secondary first, one primary last. At most five visible actions including More."
+      "note": "Kit Buttons size sm: secondary first, one primary last. At most five visible actions including More. To fold into the Actions menu on a narrow bar, each must be a kit Button whose children are its text label (an icon-only Button already passes its name that way); picked from the menu, its onClick runs with no event. Anything else and the actions stay a row that wraps."
     },
     "label": {
       "type": "string",
@@ -115,7 +115,8 @@
     "A group named by label. Filters is a kit Button with aria-expanded and aria-controls pointing at the filter bar, and shows pressed while it is open.",
     "The search is a kit Input named by its placeholder. With searchGroups it is a button (aria-haspopup=dialog) that opens a kit Command combobox over it; Escape clears, then closes and returns focus. The view picker, More and filter chips are kit DropdownMenus.",
     "Refresh and the help icon are icon buttons named by a kit Tooltip or HelpPopover.",
-    "The filter bar is a group named Filters. Tab order runs left to right, then into the filter bar."
+    "The filter bar is a group named Filters. Tab order runs left to right, then into the filter bar.",
+    "On a narrow bar the folded actions are one kit DropdownMenu named Actions, icon-only when space is tightest. The hidden copy the Toolbar measures is aria-hidden and inert, so it is never read or reached."
   ],
   "snippet": "<Toolbar\n  filters={filterChips}\n  onReset={resetFilters}\n  onApply={applyFilters}\n  onSearchChange={setQuery}\n  views={[{ id: \"list\", label: \"List View\" }, { id: \"board\", label: \"Board View\" }]}\n  onRefresh={reload}\n  actions={<>\n    <Button size=\"sm\">Export</Button>\n    <Button size=\"sm\" variant=\"primary\">Create</Button>\n  </>}\n/>",
   "examples": [

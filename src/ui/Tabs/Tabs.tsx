@@ -63,7 +63,7 @@ export function Tabs({ items, label = "Tabs", value, defaultValue, onChange, siz
           return (
             <button
               key={item.id} id={tabId(item.id)} type="button" role="tab" aria-selected={on}
-              aria-controls={hasPanels ? panelId(item.id) : undefined} tabIndex={on ? 0 : -1} disabled={item.disabled}
+              aria-controls={hasPanels && on ? panelId(item.id) : undefined} tabIndex={on ? 0 : -1} disabled={item.disabled}
               className={[styles.tab, on ? styles.on : ""].join(" ")} onClick={() => select(item.id)}
             >
               {item.icon && <Icon name={item.icon} size={size === "lg" ? "lg" : "md"} />}

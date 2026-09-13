@@ -9,7 +9,7 @@
 }
 
 .bar {
-  display: flex; align-items: center; justify-content: space-between; gap: var(--space-medium);
+  position: relative; display: flex; align-items: center; justify-content: space-between; gap: var(--space-medium);
   padding: var(--space-xsmall) var(--space-small);
 }
 .start, .end { display: flex; align-items: center; gap: var(--space-xsmall); min-width: 0; }
@@ -44,17 +44,20 @@
 .chips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xsmall); min-width: 0; }
 .apply { display: inline-flex; align-items: center; }
 
+/* The hidden copy of the actions Toolbar measures: a zero-size clip out of the flow, so it takes no room and
+   never widens the page, holding a row at its full width. */
+.measure { position: absolute; top: 0; left: 0; width: 0; height: 0; overflow: hidden; visibility: hidden; pointer-events: none; }
+.measureRow { width: max-content; }
+
 /* 640px = --grid-breakpoint-sm, the kit's mobile break: CSS vars cannot appear in container queries.
-   One line cannot hold the finding and the doing on a phone: the actions were taking the width and squeezing
-   the filters, the search and the views to nothing. Each group takes its own line, the search fills its line,
-   and the actions keep to the end of theirs, with the primary last as everywhere else. */
+   The search takes the first line whole. Everything else shares the next one: the filters, the view and refresh,
+   with the actions at its end. When the actions do not fit there, Toolbar folds them into one Actions menu;
+   --toolbar-fold is how it knows the bar is narrow. The line between finding and viewing means nothing once the
+   search has a line of its own, so it goes. */
 @container (max-width: 640px) {
-  .bar { flex-wrap: wrap; }
-  .start, .end { flex: 1 1 100%; flex-wrap: wrap; }
-  .end { justify-content: flex-end; }
-  /* The search takes the first line whole, so what is left — filters, the view and refresh — shares the next
-     one instead of being pushed onto a third. The line between finding and viewing means nothing once they
-     are on separate lines, so it goes. */
+  .bar { --toolbar-fold: 1; flex-wrap: wrap; justify-content: flex-start; gap: var(--space-xsmall); }
+  .start { display: contents; }
+  .end { margin-inline-start: auto; }
   .search { order: -1; width: 100%; }
   .divider { display: none; }
 }

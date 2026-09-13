@@ -87,7 +87,7 @@
     },
     {
       "title": "Placement",
-      "usage": "Below by default, like Figma. It flips when the preferred side has no room.",
+      "usage": "Below by default. It flips when the preferred side has no room.",
       "items": [
         {
           "props": {

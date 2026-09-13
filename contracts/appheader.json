@@ -35,7 +35,7 @@
         "neutral"
       ],
       "default": "success",
-      "note": "Solid Badge color for the environment tag. Green by default, as in Figma."
+      "note": "Solid Badge color for the environment tag. Green by default."
     },
     "search": {
       "type": "boolean",
@@ -65,7 +65,7 @@
         "tabs"
       ],
       "default": "list",
-      "note": "Command variant for the search dropdown. tabs adds All and one tab per group heading, like the Figma global search (Records / Reports / Sections)."
+      "note": "Command variant for the search dropdown. tabs adds All and one tab per group heading (Records / Reports / Sections)."
     },
     "searchIconStyle": {
       "enum": [

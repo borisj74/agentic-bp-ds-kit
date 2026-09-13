@@ -10,7 +10,7 @@ export function generateStaticParams() {
 
 export default async function PatternPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug: s } = await params;
-  const contract = await loadContract(s);
+  const contract = await loadContract(s, "patterns");
   if (!contract) notFound();
   return (
     <>

@@ -45,7 +45,7 @@ import { Logo } from "@/ui/Logo/Logo";
 import { Legend, type LegendProps } from "@/ui/Legend/Legend";
 import { Link } from "@/ui/Link/Link";
 import { LinkList, type LinkListItem } from "@/ui/LinkList/LinkList";
-import { Lookup, type LookupProps } from "@/ui/Lookup/Lookup";
+import { Lookup, type LookupProps, type LookupRow } from "@/ui/Lookup/Lookup";
 import { LogoAI } from "@/ui/LogoAI/LogoAI";
 import { PageHeader, type PageHeaderProps } from "@/ui/PageHeader/PageHeader";
 import { PieChart, type PieChartProps } from "@/ui/PieChart/PieChart";
@@ -513,11 +513,11 @@ const PRODUCT_COLUMNS: TableColumn[] = [
   { key: "rate", header: "Rate", numeric: true },
   { key: "created", header: "Created" },
 ];
-const product = (id: string, name: string, method: string, type: string, level: string, active: boolean, rate: string, created: string): TableRow => ({
+const product = (id: string, name: string, method: string, type: string, level: string, active: boolean, rate: string, created: string): LookupRow => ({
   id, name, method, type, level, rate, created,
   status: <Cell size="sm" type="badge" label={active ? "Active" : "Deactivated"} tone={active ? "success" : "neutral"} />,
 });
-const PRODUCTS: TableRow[] = [
+const PRODUCTS: LookupRow[] = [
   product("13980", "On-Demand Virtual Training - Gold", "One Time Charge", "Training", "Gold", false, "$3,000.00", "06/04/2022"),
   product("13981", "On-Demand Virtual Training - Silver", "One Time Charge", "Training", "Silver", false, "$2,000.00", "06/04/2022"),
   product("13982", "On-Demand Virtual Training - Bronze", "One Time Charge", "Training", "Bronze", false, "$1,000.00", "06/04/2022"),
@@ -864,7 +864,7 @@ export const registry: Record<string, Entry> = {
       ...(showMessage ? { message } : {}),
       ...(showImage ? { icon } : {}),
     }),
-    hint: "Turn each part of the card on and off, like the Figma switches. Click the card to pick it; switch the message tone and disabled.",
+    hint: "Turn each part of the card on and off. Click the card to pick it; switch the message tone and disabled.",
     card: (
       <div style={{ width: 300 }}>
         <Card badge="New" title="Alpha Logic wireless mouse" amount="$49.00" selectable defaultSelected />

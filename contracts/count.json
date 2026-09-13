@@ -6,7 +6,7 @@
   "props": {
     "tone": { "enum": ["info", "danger", "neutral"], "default": "info", "note": "danger for items that need action now. neutral for plain totals." },
     "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "Heights 16 / 20 / 24. sm and md are the standard counts; lg is for larger controls." },
-    "subtle": { "type": "boolean", "default": false, "note": "Lighter fill. Figma defines it for info and neutral; danger subtle is kit-defined." },
+    "subtle": { "type": "boolean", "default": false, "note": "Lighter fill. Defined for info, neutral and danger." },
     "disabled": { "type": "boolean", "default": false, "note": "Gray with faint text." },
     "count": { "type": "number", "required": true },
     "max": { "type": "number", "default": 99, "note": "Above max the Count shows max+." },

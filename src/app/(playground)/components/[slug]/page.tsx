@@ -10,7 +10,7 @@ export function generateStaticParams() {
 
 export default async function ComponentPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug: s } = await params;
-  const contract = await loadContract(s);
+  const contract = await loadContract(s, "components");
   if (!contract) notFound();
   return (
     <>
