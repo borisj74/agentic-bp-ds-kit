@@ -44,11 +44,11 @@
 .field {
   box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xxsmall);
   height: var(--h); padding: 0 var(--space-xsmall);
-  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-medium);
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-field); border-radius: var(--radius-medium);
   color: var(--text-neutral-strong); font-size: var(--fs); cursor: text;
   transition: border-color var(--motion-interaction-duration) var(--motion-interaction-easing);
 }
-.field:hover { border-color: var(--border-neutral-strong); }
+.field:hover { border-color: var(--border-neutral-field-hover); }
 .field:focus-within { border-color: var(--border-brand); outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset-field); }
 
 .native {

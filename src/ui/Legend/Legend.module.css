@@ -27,5 +27,5 @@
 .button { display: inline-flex; align-items: center; gap: var(--space-xsmall); min-width: 0; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; }
 .button:hover .text { text-decoration: underline; }
 .button:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--space-xxxsmall); border-radius: var(--radius-small); }
-.off { color: var(--text-neutral-faint); }
+.off { color: var(--text-neutral-subtle); }
 .off .mark { background: var(--bg-neutral-intense); }

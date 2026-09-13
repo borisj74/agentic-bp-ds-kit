@@ -32,6 +32,17 @@ ref/brand/500|#0073e5|#790ed8|#8fc91d|#1193d4
 ref/brand/600|#005cb8|#610bad|#73a117|#0e76aa
 ref/brand/700|#004488|#490881|#567811|#0a587f
 ref/brand/800|#012b56|#2e0651|#364b0c|#07374f
+# Brand roles: per brand, the palette step that keeps text readable (WCAG AA 4.5:1). Aliases only, no new colors.
+# action = a fill under white text; ink = brand text and links on light surfaces; ink/dark = the same on dark surfaces.
+ref/brand/action|{ref/brand/500}|{ref/brand/500}|{ref/brand/700}|{ref/brand/600}
+ref/brand/action/hover|{ref/brand/600}|{ref/brand/600}|{ref/brand/800}|{ref/brand/700}
+ref/brand/action/press|{ref/brand/700}|{ref/brand/700}|{ref/brand/800}|{ref/brand/800}
+ref/brand/ink|{ref/brand/600}|{ref/brand/600}|{ref/brand/700}|{ref/brand/600}
+ref/brand/ink/hover|{ref/brand/700}|{ref/brand/700}|{ref/brand/800}|{ref/brand/700}
+ref/brand/ink/press|{ref/brand/800}|{ref/brand/800}|{ref/brand/800}|{ref/brand/800}
+ref/brand/ink/dark|{ref/brand/300}|{ref/brand/200}|{ref/brand/300}|{ref/brand/300}
+ref/brand/ink/dark/hover|{ref/brand/200}|{ref/brand/100}|{ref/brand/200}|{ref/brand/200}
+ref/brand/ink/dark/press|{ref/brand/100}|{ref/brand/50}|{ref/brand/100}|{ref/brand/100}
 ref/olive/50|#f5fce9|#f3fce9|#f9fce9|#f7fce9
 ref/olive/100|#ecf9d2|#e7f9d2|#f4f9d2|#eef9d2
 ref/olive/200|#e0f5b8|#d8f5b8|#edf5b8|#e4f5b8

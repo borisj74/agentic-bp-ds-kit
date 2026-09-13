@@ -5,10 +5,10 @@
 
 .editor {
   display: flex; flex-direction: column; min-width: 0;
-  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-medium);
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-field); border-radius: var(--radius-medium);
   transition: border-color var(--motion-interaction-duration) var(--motion-interaction-easing);
 }
-.editor:hover { border-color: var(--border-neutral-strong); }
+.editor:hover { border-color: var(--border-neutral-field-hover); }
 .editor:has(.area:focus-visible) { border-color: var(--border-brand); outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset-field); }
 
 /* Figma toolbar: neutral subtle fill, 8px padding and gap, kit Buttons size sm. */

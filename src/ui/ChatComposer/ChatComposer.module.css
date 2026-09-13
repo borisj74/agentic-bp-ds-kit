@@ -2,7 +2,7 @@
    the ask field, and the toolbar on a faint footer. */
 .composer {
   display: flex; flex-direction: column; width: 100%; min-width: 0; box-sizing: border-box;
-  border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-medium);
+  border: var(--border-width-thin) solid var(--border-neutral-field); border-radius: var(--radius-medium);
   background: var(--surface-flat); font-family: var(--font-sans);
 }
 .composer:focus-within { border-color: var(--border-brand); box-shadow: 0 0 0 var(--border-width-thin) var(--border-brand); }

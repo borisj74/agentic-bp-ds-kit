@@ -11,7 +11,7 @@
 .fill .step { flex: 1 1 0; }
 
 /* Each step sets its tone; the circle and the line into it use it. */
-.step { --tone: var(--icon-neutral-subtle); --ink: var(--text-neutral-faint); position: relative; flex: none; width: var(--stepper-step); min-width: 0; }
+.step { --tone: var(--icon-neutral-subtle); --ink: var(--text-neutral-subtle); position: relative; flex: none; width: var(--stepper-step); min-width: 0; }
 .complete { --tone: var(--bg-success-strong); --ink: var(--text-success); }
 .current { --tone: var(--bg-brand); --ink: var(--text-brand); }
 

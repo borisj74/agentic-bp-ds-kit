@@ -32,6 +32,12 @@ ui/brand/500|{ref/brand/500}|{ref/brand/500}
 ui/brand/600|{ref/brand/600}|{ref/brand/300}
 ui/brand/700|{ref/brand/700}|{ref/brand/200}
 ui/brand/800|{ref/brand/800}|{ref/brand/100}
+ui/brand/action|{ref/brand/action}|{ref/brand/action}
+ui/brand/action/hover|{ref/brand/action/hover}|{ref/brand/action/hover}
+ui/brand/action/press|{ref/brand/action/press}|{ref/brand/action/press}
+ui/brand/ink|{ref/brand/ink}|{ref/brand/ink/dark}
+ui/brand/ink/hover|{ref/brand/ink/hover}|{ref/brand/ink/dark/hover}
+ui/brand/ink/press|{ref/brand/ink/press}|{ref/brand/ink/dark/press}
 ui/status/danger/50|{ref/ruby/50}|{ref/ruby/700}
 ui/status/danger/100|{ref/ruby/100}|{ref/ruby/600}
 ui/status/danger/200|{ref/ruby/200}|{ref/ruby/600}

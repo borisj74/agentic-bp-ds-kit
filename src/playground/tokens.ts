@@ -17,9 +17,12 @@ export function loadColorTokens(brand = 0) {
   const ui = read("ui.txt");         // name | light | dark
   const sem = read("semantic.txt");  // name | light | dark
 
-  const refHex = new Map(ref.map(([n, ...v]) => [n, v[brand]]));
-  const uiMap = new Map(ui.map(([n, l, d]) => [n, { l, d }]));
   const strip = (s: string) => s.replace(/[{}]/g, "");
+  // Brand role rows (ref/brand/action, ink) alias a palette step; follow them to the hex.
+  const refRaw = new Map(ref.map(([n, ...v]) => [n, v[brand]]));
+  const resolve = (v: string): string => (v.startsWith("{") ? resolve(refRaw.get(strip(v)) ?? "") : v);
+  const refHex = new Map(ref.map(([n, ...v]) => [n, resolve(v[brand])]));
+  const uiMap = new Map(ui.map(([n, l, d]) => [n, { l, d }]));
   const uiHex = (aliasUi: string, mode: "l" | "d") => {
     const u = uiMap.get(strip(aliasUi)); if (!u) return "";
     return refHex.get(strip(u[mode])) ?? "";
@@ -28,6 +31,7 @@ export function loadColorTokens(brand = 0) {
   // Primitives: group ref/* by family
   const families = new Map<string, Ramp["steps"]>();
   for (const [n, ...v] of ref) {
+    if (v[brand].startsWith("{")) continue; // role rows are not palette steps
     const parts = n.split("/"); // ref, family, [alpha], step
     const fam = parts.length === 2 ? "singles" : parts.slice(1, -1).join("/");
     const step = parts.length === 2 ? parts[1] : parts[parts.length - 1];

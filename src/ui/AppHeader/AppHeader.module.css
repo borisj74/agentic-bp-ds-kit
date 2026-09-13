@@ -40,11 +40,11 @@ a.home:focus-visible { outline: var(--border-width-medium) solid var(--outline-b
 .search {
   box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xsmall); width: 100%; height: var(--search-h);
   margin: 0; padding: 0 var(--space-small);
-  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-medium);
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-field); border-radius: var(--radius-medium);
   box-shadow: var(--elevation-card); font: inherit; color: var(--text-neutral-strong); text-align: start; cursor: pointer;
   transition: border-color var(--motion-interaction-duration) var(--motion-interaction-easing);
 }
-.search:hover { border-color: var(--border-neutral-strong); }
+.search:hover { border-color: var(--border-neutral-field-hover); }
 .search:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset-field); }
 .searchIcon { color: var(--icon-neutral); }
 .searchText { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--font-size-small); font-weight: var(--font-weight-medium); }

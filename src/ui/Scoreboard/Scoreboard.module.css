@@ -21,7 +21,7 @@
 .text { display: flex; flex-direction: column; gap: var(--space-xxsmall); }
 .metricRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xsmall); min-height: var(--icon-size-medium); }
 .metric { font-size: var(--font-size-regular); font-weight: var(--font-weight-semibold); color: var(--text-neutral-intense); }
-.meta { font-size: var(--font-size-xsmall); color: var(--text-neutral-faint); }
+.meta { font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); }
 
 /* Figma trend 6173:412: arrow and value, then the unit, colored by status. */
 .trend { display: inline-flex; align-items: center; gap: var(--space-xxsmall); font-size: var(--font-size-small); white-space: nowrap; }

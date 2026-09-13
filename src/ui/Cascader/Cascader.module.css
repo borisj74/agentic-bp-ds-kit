@@ -55,8 +55,8 @@
 .item.disabled:hover { background: none; }
 
 .text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-.path { color: var(--text-neutral-faint); }
-.item:hover .path, .item.selected .path { color: var(--text-neutral-subtle); }
+.path { color: var(--text-neutral-subtle); }
+.item:hover .path, .item.selected .path { color: var(--text-neutral); }
 /* The end slot keeps 40 so badges and marks line up down the column. */
 .end { flex: none; display: flex; align-items: center; justify-content: flex-end; gap: var(--space-xxsmall); min-width: var(--cascader-end); }
 .chevron { color: var(--icon-neutral); }
