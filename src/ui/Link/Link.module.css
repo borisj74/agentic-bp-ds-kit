@@ -1,0 +1,23 @@
+/* Inline link. It takes the size of the text around it, so it sits in a sentence or a value without a size of its
+   own. Brand is the default; neutral is for links inside quiet text, and keeps its underline so it still reads as
+   one. */
+.link {
+  display: inline; min-width: 0; overflow-wrap: anywhere;
+  font: inherit; text-decoration: none; border-radius: var(--radius-small); cursor: pointer;
+}
+.brand { color: var(--link-brand); }
+.brand:hover { color: var(--link-brand-hover); text-decoration: underline; }
+.brand:active { color: var(--link-brand-press); }
+.neutral { color: var(--link-neutral); text-decoration: underline; }
+.neutral:hover { color: var(--link-neutral-hover); }
+.link:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
+
+/* No href: a button that keeps the look of the text around it. */
+.button { margin: 0; padding: 0; border: 0; background: none; text-align: start; }
+
+/* The new-tab mark sits on the text's line, a hair after the last word. */
+.icon { margin-inline-start: var(--space-xxxsmall); vertical-align: text-bottom; }
+
+.disabled, .disabled:hover { color: var(--text-neutral-subtle); text-decoration: none; cursor: not-allowed; }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

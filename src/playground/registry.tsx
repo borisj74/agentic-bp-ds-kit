@@ -43,6 +43,8 @@ import { Input, type InputProps } from "@/ui/Input/Input";
 import { LineChart, type LineChartProps } from "@/ui/LineChart/LineChart";
 import { Logo } from "@/ui/Logo/Logo";
 import { Legend, type LegendProps } from "@/ui/Legend/Legend";
+import { Link } from "@/ui/Link/Link";
+import { LinkList, type LinkListItem } from "@/ui/LinkList/LinkList";
 import { Lookup, type LookupProps } from "@/ui/Lookup/Lookup";
 import { LogoAI } from "@/ui/LogoAI/LogoAI";
 import { PageHeader, type PageHeaderProps } from "@/ui/PageHeader/PageHeader";
@@ -114,6 +116,11 @@ export interface Entry {
 }
 
 const STEPS = ["Setup", "Map Columns", "Billing IDs", "Usage IDs", "Activate"];
+
+const QUICK_LINK_ITEMS: LinkListItem[] = [
+  { id: "tax", label: "Tax Related List" }, { id: "subscription", label: "Subscription Configuration" },
+  { id: "portal", label: "Customer Portal" }, { id: "orders", label: "Orders" }, { id: "documents", label: "Document Information" },
+];
 
 const GUIDED_STEPS: GuidedProcessStep[] = [
   { title: "Choose the file", tasks: [{ label: "Pick where it comes from", done: true }, { label: "Upload the file" }, { label: "Pick the month" }] },
@@ -766,6 +773,25 @@ export const registry: Record<string, Entry> = {
         <Pagination total={248} defaultPage={2} showPageSize={false} />
       </div>
     ),
+  },
+  Link: {
+    // Examples without href act in place, so the page does not jump.
+    render: ({ children, ...p }) => <Link {...(p as object)}>{(children as string) || "View recent invoices"}</Link>,
+    preview: { children: "View recent invoices" },
+    hide: ["onClick"],
+    hint: "Switch tone, external and disabled. Without href the link acts in place, as a button that looks like a link.",
+    card: <span style={{ fontSize: "var(--font-size-small)", color: "var(--text-neutral)" }}>Legal entity: <Link>Parent Co</Link></span>,
+  },
+  LinkList: {
+    render: (p) => (
+      <div style={{ width: 320, maxWidth: "100%" }}>
+        <LinkList {...(p as object)} items={(p.items as LinkListItem[] | undefined) ?? QUICK_LINK_ITEMS} />
+      </div>
+    ),
+    preview: { label: "Quick links", items: QUICK_LINK_ITEMS },
+    hide: ["items"],
+    hint: "A record's quick links. Each row is one link with a chevron; Variants show icons, descriptions and links that open in a new tab.",
+    card: <div style={{ width: 220 }}><LinkList label="Quick links" items={QUICK_LINK_ITEMS.slice(0, 3)} /></div>,
   },
   Logo: {
     render: (p) => <Logo {...(p as object)} />,

@@ -600,6 +600,32 @@
       ]
     },
     {
+      "name": "Link",
+      "contract": "contracts/link.json",
+      "category": "navigation",
+      "tags": [
+        "link",
+        "text link",
+        "anchor",
+        "inline link",
+        "hyperlink",
+        "external link"
+      ]
+    },
+    {
+      "name": "LinkList",
+      "contract": "contracts/linklist.json",
+      "category": "navigation",
+      "tags": [
+        "link list",
+        "quick links",
+        "related links",
+        "links",
+        "shortcuts",
+        "rail links"
+      ]
+    },
+    {
       "name": "Logo",
       "contract": "contracts/logo.json",
       "category": "brand",

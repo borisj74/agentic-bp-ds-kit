@@ -1,0 +1,101 @@
+{
+  "name": "Link",
+  "path": "src/ui/Link/Link.tsx",
+  "intent": "Inline text that takes people somewhere: a record, a list or another page.",
+  "usage": "Use Link for text that navigates, inside a sentence or as a value, like a ledger number, a parent account or View recent invoices. It is one component: children is the text, href is where it goes. It takes the size of the text around it. tone brand is the blue that says this is a link; neutral is for links inside quiet text and keeps an underline. external opens it in a new tab and adds the new-tab mark. Without href it acts in place, as a button that looks like a link, like opening a tab on the same page. disabled shows it in faint text that goes nowhere. For a column of links use LinkList; for a link in a table use a link Cell; for anything that changes data use Button. See contracts/link.json for the full contract.",
+  "props": {
+    "children": {
+      "type": "ReactNode",
+      "required": true,
+      "note": "The link text. Say where it goes, like Parent Co or View recent invoices, not Click here."
+    },
+    "href": {
+      "type": "string",
+      "note": "Where the link goes. Leave it out and the link is a button that acts in place."
+    },
+    "onClick": {
+      "type": "(event) => void",
+      "note": "Runs on click. Without href it is the link's whole job."
+    },
+    "tone": {
+      "enum": [
+        "brand",
+        "neutral"
+      ],
+      "default": "brand",
+      "note": "brand is link blue, underlined on hover. neutral is body text grey with an underline, for links inside quiet text."
+    },
+    "external": {
+      "type": "boolean",
+      "default": false,
+      "note": "Opens in a new tab, with the new-tab mark after the text."
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "note": "Faint text that goes nowhere and cannot be focused."
+    }
+  },
+  "useWhen": [
+    "A value that opens its record, like a ledger number or a parent account.",
+    "A link inside a sentence or a notice."
+  ],
+  "doNot": [
+    "Do not use Link for an action that changes data, like Delete or Save. Use Button.",
+    "Do not use Link in a table cell. Use a link Cell.",
+    "Do not stack Links into a list yourself. Use LinkList.",
+    "Do not write Click here or More; the text says where it goes.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A real a element with href, or a button when it acts in place, so the keyboard and screen readers treat it for what it does.",
+    "A visible focus ring in the brand outline.",
+    "external adds opens in a new tab for screen readers, and rel noopener.",
+    "Neutral links keep an underline, so colour is not the only sign of a link."
+  ],
+  "snippet": "<FormDisplay label=\"Legal entity\" value={<Link href=\"/legal-entities/parent-co\">Parent Co</Link>} />",
+  "examples": [
+    {
+      "title": "Tones",
+      "usage": "brand is the default link blue; neutral sits in quiet text and keeps its underline.",
+      "items": [
+        {
+          "props": {
+            "children": "View recent invoices"
+          }
+        },
+        {
+          "props": {
+            "tone": "neutral",
+            "children": "View recent invoices"
+          }
+        }
+      ]
+    },
+    {
+      "title": "External",
+      "usage": "Opens in a new tab, with the new-tab mark.",
+      "items": [
+        {
+          "props": {
+            "external": true,
+            "href": "https://example.com",
+            "children": "Customer portal"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Disabled",
+      "usage": "Faint text for a link that goes nowhere right now.",
+      "items": [
+        {
+          "props": {
+            "disabled": true,
+            "children": "View recent invoices"
+          }
+        }
+      ]
+    }
+  ]
+}

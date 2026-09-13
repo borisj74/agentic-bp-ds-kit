@@ -10,6 +10,8 @@ import { ListPage, type ListPageProps, type ListPageState } from "@/patterns/Lis
 import { FormPage, type FormPageProps } from "@/patterns/FormPage/FormPage";
 import { AccountFlow, type AccountFlowView } from "@/patterns/AccountFlow/AccountFlow";
 import { RadioGroup } from "@/ui/RadioGroup/RadioGroup";
+import { Link } from "@/ui/Link/Link";
+import { LinkList } from "@/ui/LinkList/LinkList";
 import { GuidedProcessPage } from "@/patterns/GuidedProcessPage/GuidedProcessPage";
 import { GuidedProcess, type GuidedProcessAction, type GuidedProcessPanelProps, type GuidedProcessShade, type GuidedProcessStatus, type GuidedProcessStep } from "@/ui/GuidedProcess/GuidedProcess";
 import { RecordPage } from "@/patterns/RecordPage/RecordPage";
@@ -2194,14 +2196,13 @@ const FLOW_PRODUCT_COLUMNS: TableColumn[] = [
   { key: "rate", header: "Rate", numeric: true }, { key: "ssp", header: "SSP", numeric: true }, { key: "quote", header: "Quote" },
   { key: "discount", header: "Discount", numeric: true }, { key: "actions", header: "Actions", align: "end", width: "112px" },
 ];
-const FLOW_ROW_MENU = [{ label: "Copy", icon: "content_copy" }, { label: "Delete", icon: "delete", variant: "danger" as const }];
 const flowProductRow = (p: FlowProduct): TableRow => ({
   id: p.id, pid: p.id,
   product: <Cell type="link" label={p.product} onClick={() => {}} />,
   rc: p.rc, contract: p.contract, start: p.start, end: p.end, qty: p.qty, rate: p.rate, ssp: p.ssp,
   quote: p.quote === "—" ? "—" : <Cell type="link" label={p.quote} onClick={() => {}} />,
   discount: p.discount,
-  actions: <Cell type="actionIcons" align="end" actions={[{ label: "Edit", icon: "edit" }]} menu={FLOW_ROW_MENU} />,
+  actions: <Cell type="actionIcons" align="end" actions={[{ label: "Edit", icon: "edit" }, { label: "Delete", icon: "delete" }]} />,
 });
 
 const FLOW_TIME_ZONES = [{ value: "asia-bangkok", label: "Asia/Bangkok" }, { value: "america-denver", label: "America/Denver" }, { value: "europe-london", label: "Europe/London" }];
@@ -2226,6 +2227,11 @@ const FLOW_CONTRACTS: TableRow[] = [{ id: "ct-1", name: "ACME-2026", term: "12 m
 const FLOW_CONTRACT_COLUMNS: TableColumn[] = [{ key: "name", header: "Contract" }, { key: "term", header: "Term" }];
 const FLOW_TABS = ["Details", "Contract", "Contacts", "Account Products", "Account Packages", "Revenue Contract", "Account Docs"];
 const FLOW_QUICK_LINKS = ["Tax Related List", "Subscription Configuration", "Customer Portal", "Orders", "Document Information"];
+// What the accounts list can be narrowed by, and each account's value for it.
+type FlowFilterKey = "id" | "name" | "type" | "status" | "cycle";
+const FLOW_NO_FILTERS: Record<FlowFilterKey, string[]> = { id: [], name: [], type: [], status: [], cycle: [] };
+const flowValue = (a: FlowAccount, key: FlowFilterKey) =>
+  key === "id" ? a.id : key === "name" ? a.name : key === "type" ? "ACCOUNT" : key === "status" ? "Active" : "MONTHLY";
 const flowUsDate = (iso: string) => (iso ? `${iso.slice(5, 7)}/${iso.slice(8, 10)}/${iso.slice(0, 4)}` : "—");
 // A column of Sections, the gap the page keeps between them.
 const flowStack = { display: "flex", flexDirection: "column", gap: "var(--layout-gutter-lg)", minWidth: 0 } as const;
@@ -2242,6 +2248,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
   const [tab, setTab] = useState("details");
   const [notice, setNotice] = useState("");
   const [query, setQuery] = useState("");
+  const [picks, setPicks] = useState(FLOW_NO_FILTERS);
   const [listPage, setListPage] = useState(1);
   const [listSize, setListSize] = useState(10);
   const [prodPage, setProdPage] = useState(1);
@@ -2260,7 +2267,31 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
   const openAccount = (id: string, toTab = "details") => { setAccountId(id); setTab(toTab); setProdPage(1); setNotice(""); go("account"); };
 
   // Accounts list.
-  const found = accounts.filter((a) => `${a.id} ${a.name}`.toLowerCase().includes(query.toLowerCase()));
+  const filterSets: { key: FlowFilterKey; label: string; options: string[] }[] = [
+    { key: "id", label: "Account ID", options: accounts.map((a) => a.id) },
+    { key: "name", label: "Account name", options: accounts.map((a) => a.name) },
+    { key: "type", label: "Type", options: ["ACCOUNT"] },
+    { key: "status", label: "Status", options: ["Active", "Inactive"] },
+    { key: "cycle", label: "Billing cycle", options: ["MONTHLY", "QUARTERLY", "ANNUALLY"] },
+  ];
+  // Each filter lets several values be ticked; an account shows when it matches every filter that has any.
+  const found = accounts
+    .filter((a) => `${a.id} ${a.name}`.toLowerCase().includes(query.toLowerCase()))
+    .filter((a) => filterSets.every((f) => picks[f.key].length === 0 || picks[f.key].includes(flowValue(a, f.key))));
+  const chips = filterSets.map((f) => {
+    const on = picks[f.key];
+    return (
+      <DropdownMenu
+        key={f.key} trigger="filter" size="sm" label={f.label} multiple closeOnSelect={false}
+        text={on.length === 0 ? undefined : on.length === 1 ? on[0] : `${on.length} selected`}
+        items={f.options.map((o) => ({ id: o, label: o, selected: on.includes(o) }))}
+        onSelect={(id) => {
+          setPicks((old) => ({ ...old, [f.key]: old[f.key].includes(id) ? old[f.key].filter((x) => x !== id) : [...old[f.key], id] }));
+          setListPage(1);
+        }}
+      />
+    );
+  });
   const listStart = (listPage - 1) * listSize;
   const listRows: TableRow[] = found.slice(listStart, listStart + listSize).map((a) => ({
     id: a.id,
@@ -2269,7 +2300,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
     name: a.name, type: "ACCOUNT", cycle: "MONTHLY",
     status: <Cell type="badge" label="Active" tone="success" />,
     approval: a.approval ? <Cell type="badge" label={a.approval} tone="neutral" /> : "—",
-    actions: <Cell type="actionIcons" align="end" actions={[{ label: "Edit", icon: "edit", onClick: () => openAccount(a.id) }]} menu={FLOW_ROW_MENU} />,
+    actions: <Cell type="actionIcons" align="end" actions={[{ label: "Edit", icon: "edit", onClick: () => openAccount(a.id) }, { label: "Delete", icon: "delete", onClick: () => setAccounts((old) => old.filter((x) => x.id !== a.id)) }]} />,
   }));
   const listHeader = (
     // The page's own actions live here, not in the Toolbar, which keeps finding and viewing.
@@ -2285,14 +2316,15 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
       toolbar={
         <Toolbar
           label="Accounts"
-          filters={<DropdownMenu trigger="filter" size="sm" label="Status" items={[{ id: "active", label: "Active" }, { id: "inactive", label: "Inactive" }]} onSelect={() => {}} />}
+          filters={<>{chips}</>} filterCount={filterSets.filter((f) => picks[f.key].length > 0).length}
+          onReset={() => { setPicks(FLOW_NO_FILTERS); setListPage(1); }}
           searchValue={query} onSearchChange={(v) => { setQuery(v); setListPage(1); }} searchPlaceholder="Search in list"
           views={[{ id: "list", label: "List View" }, { id: "table", label: "Table View" }]} onRefresh={() => {}}
         />
       }
       pagination={<Pagination total={found.length} page={listPage} onPageChange={setListPage} pageSize={listSize} onPageSizeChange={(n) => { setListSize(n); setListPage(1); }} label="Accounts" />}
     >
-      <Table columns={FLOW_ACCOUNT_COLUMNS} rows={listRows} emptyLabel="No accounts match the search." />
+      <Table columns={FLOW_ACCOUNT_COLUMNS} rows={listRows} emptyLabel="No accounts match the search and filters." />
     </ListPage>
   );
 
@@ -2309,11 +2341,11 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
           <Form columns={2}>
             <FormDisplay label="Account name" value={account.name} />
             <FormDisplay label="Account type" value="ACCOUNT" />
-            <FormDisplay label="View recent invoices" value="Invoices" />
+            <FormDisplay label="View recent invoices" value={<Link onClick={() => {}}>Invoices</Link>} />
             <FormDisplay label="Total due in collections" value="$0.00" />
-            <FormDisplay label="Account ledger number" value="65550" />
+            <FormDisplay label="Account ledger number" value={<Link onClick={() => {}}>65550</Link>} />
             <FormDisplay label="Status" value={<Badge tone="success">Active</Badge>} />
-            <FormDisplay label="Legal entity" value="Parent Co" />
+            <FormDisplay label="Legal entity" value={<Link onClick={() => {}}>Parent Co</Link>} />
             <FormDisplay label="Invoicing time zone" value="Asia/Bangkok" />
             <FormDisplay label="Invoice currency" value="Dollars" />
             <FormDisplay label="Reporting currency" value="USD" />
@@ -2364,7 +2396,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
           <FormDisplay label="Address" value={<>{account.name}<br />123 Market Street, Suite 400<br />San Francisco, CA 94105<br />United States</>} />
         </Section>
         <Section title="Quick links">
-          <Table columns={[{ key: "link", header: "Page" }]} rows={FLOW_QUICK_LINKS.map((l) => ({ id: l, link: <Cell type="link" label={l} onClick={() => {}} /> }))} />
+          <LinkList label="Quick links" items={FLOW_QUICK_LINKS.map((l) => ({ id: l, label: l, onClick: () => {} }))} />
         </Section>
       </div>
     </div>

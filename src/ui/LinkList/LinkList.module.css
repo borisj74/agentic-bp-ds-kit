@@ -1,0 +1,27 @@
+/* A column of link rows. The rows reach a little past the text on each side for their hover fill, and the list
+   pulls back by the same amount, so the labels line up with the Section title above them. */
+.list {
+  display: flex; flex-direction: column; margin: 0 calc(-1 * var(--space-xsmall)); padding: 0; list-style: none;
+  font-family: var(--font-sans);
+}
+.item { min-width: 0; }
+
+.row {
+  box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xsmall);
+  width: 100%; min-height: var(--control-medium); padding: var(--space-xxsmall) var(--space-xsmall);
+  border-radius: var(--radius-medium); color: var(--link-brand);
+  font-size: var(--font-size-small); line-height: var(--line-height-snug); text-align: start; text-decoration: none; cursor: pointer;
+}
+/* No href: a button that keeps the row's look. */
+.button { margin: 0; border: 0; background: none; font-family: inherit; }
+.row:hover { background: var(--bg-neutral-min-hover); color: var(--link-brand-hover); }
+.row:hover .label { text-decoration: underline; }
+.row:active { color: var(--link-brand-press); }
+.row:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(-1 * var(--border-width-medium)); }
+
+.lead, .end { flex: none; color: var(--icon-brand); }
+.text { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.label { overflow-wrap: anywhere; }
+.description { font-size: var(--font-size-xsmall); color: var(--text-neutral); }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
