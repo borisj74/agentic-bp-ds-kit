@@ -370,6 +370,9 @@ const CHART_SAMPLES: Record<string, unknown> = {
   "{payments}": [
     { label: "Card", value: 182400 }, { label: "ACH", value: 96300 }, { label: "Wire", value: 41800 }, { label: "Check", value: 12600 },
   ],
+  "{paymentShare}": [
+    { label: "Card", value: 55 }, { label: "ACH", value: 29 }, { label: "Wire", value: 13 }, { label: "Check", value: 3 },
+  ],
   "{statusShare}": [
     { label: "Paid", value: 58, tone: "green" }, { label: "Sent", value: 21, tone: "mint" }, { label: "Overdue", value: 13, tone: "red" }, { label: "Draft", value: 8, tone: "gray" },
   ],
@@ -1854,8 +1857,13 @@ export const registry: Record<string, Entry> = {
     cardCrop: true,
   },
   PieChart: {
-    // Sample data swaps in for its {names}; a white panel like a page. Keyed so switching a control plays the motion again.
-    render: (p) => <div style={{ ...chartPanel, width: "auto" }}><PieChart key={JSON.stringify(p)} {...chartProps<PieChartProps>(p)} /></div>,
+    // Sample data swaps in for its {names}; a white panel like a page, wide enough for the legend beside the pie.
+    // Percent reads each value as a share, so it gets shares that add up to 100 rather than dollar amounts.
+    // Keyed so switching a control plays the motion again.
+    render: (p) => {
+      const data = p.format === "percent" && p.data === "{payments}" ? "{paymentShare}" : p.data;
+      return <div style={{ ...chartPanel, maxWidth: 520 }}><PieChart key={JSON.stringify(p)} {...chartProps<PieChartProps>({ ...p, data })} /></div>;
+    },
     preview: { label: "Payments by method", title: "Payments by method", subtitle: "This period", data: "{payments}", format: "currency" },
     hint: "Hover or use the arrow keys for each slice. Switch size and legend place; turn the title, donut, total, legend and animate on and off.",
     card: <PieChart label="Payments" data={[{ label: "Card", value: 5 }, { label: "ACH", value: 3 }, { label: "Wire", value: 2 }]} size="sm" showLegend={false} animate={false} />,

@@ -44,6 +44,7 @@ export function PieChart({
   label, title, subtitle, showTitle = true, data, donut = true, size = "md", showTotal = true, totalLabel = "Total", showLegend = true, legend = "end",
   maxSlices = 6, otherLabel = "Other", animate = true, format = "number", currency = "USD", emptyLabel = "No data for this range.",
 }: PieChartProps) {
+  const frame = { sm: styles.frameSm, md: styles.frameMd, lg: styles.frameLg }[size];
   const [active, setActive] = useState<number | null>(null);
   const short = formatter(format, currency, true);
   const full = formatter(format, currency, false);
@@ -56,7 +57,7 @@ export function PieChart({
   const total = slices.reduce((s, d) => s + d.value, 0);
 
   if (!slices.length || !(total > 0)) {
-    return <ChartFrame label={label} title={title} subtitle={subtitle} showTitle={showTitle} animate={false} active={false}><ChartEmpty label={emptyLabel} height={160} /></ChartFrame>;
+    return <ChartFrame className={frame} label={label} title={title} subtitle={subtitle} showTitle={showTitle} animate={false} active={false}><ChartEmpty label={emptyLabel} height={160} /></ChartFrame>;
   }
 
   const r = donut ? 40 : 24;
@@ -79,7 +80,7 @@ export function PieChart({
   const cur = active !== null ? arcs[active] : null;
 
   return (
-    <ChartFrame label={label} title={title} subtitle={subtitle} showTitle={showTitle} animate={animate} active={active !== null} onKeyDown={onKeyDown} onBlur={() => setActive(null)}>
+    <ChartFrame className={frame} label={label} title={title} subtitle={subtitle} showTitle={showTitle} animate={animate} active={active !== null} onKeyDown={onKeyDown} onBlur={() => setActive(null)}>
       <div className={[styles.layout, styles[legend]].join(" ")}>
         <div className={[styles.pie, styles[size]].join(" ")} onPointerLeave={() => setActive(null)}>
           <svg className={styles.svg} viewBox="0 0 100 100" aria-hidden="true">

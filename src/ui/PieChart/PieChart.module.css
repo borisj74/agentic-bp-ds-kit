@@ -1,3 +1,11 @@
+/* The chart frame measures its own width for the legend rule below, so it has no width of its own to offer a
+   parent that sizes to its content. Without a floor, such a parent squeezes the pie to nothing; the floor is the
+   pie's own width, so the pie always fits and the legend drops under it when there is no more room. */
+/* figure: one step more specific than the shared .chart rule's min-width 0, whatever order the two sheets load in. */
+figure.frameSm { min-inline-size: var(--chart-pie-sm); }
+figure.frameMd { min-inline-size: var(--chart-pie-md); }
+figure.frameLg { min-inline-size: var(--chart-pie-lg); }
+
 /* Legend beside the pie (end) or under it (bottom). */
 .layout { display: flex; align-items: center; gap: var(--space-xlarge); }
 /* Under 360px the pie and its legend leave too little of each side by side, so the legend drops under the pie.

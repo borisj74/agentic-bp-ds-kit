@@ -96,16 +96,18 @@ export function ChartEmpty({ label, height }: { label: string; height: number })
   return <div className={styles.empty} style={{ height }}>{label}</div>;
 }
 
-export function ChartFrame({ label, title, subtitle, showTitle = true, animate, children, onKeyDown, onBlur, active }: {
+export function ChartFrame({ label, title, subtitle, showTitle = true, animate, children, onKeyDown, onBlur, active, className }: {
   label: string; title?: string; subtitle?: string; showTitle?: boolean;
   animate: boolean; children: ReactNode; active: boolean;
   onKeyDown?: (e: KeyboardEvent) => void; onBlur?: () => void;
+  // A chart that needs a floor width of its own, like a pie that must never be narrower than itself.
+  className?: string;
 }) {
   // A focusable figure: arrow keys move through the data and show the tooltip, like pointing at it.
   const heading = showTitle && (title || subtitle);
   return (
     <figure
-      className={[styles.chart, animate ? styles.animated : "", active ? styles.active : ""].join(" ")}
+      className={[styles.chart, animate ? styles.animated : "", active ? styles.active : "", className ?? ""].join(" ")}
       aria-label={label} tabIndex={0} onKeyDown={onKeyDown} onBlur={onBlur}
     >
       {heading && (

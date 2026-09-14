@@ -87,7 +87,7 @@
         "percent"
       ],
       "default": "number",
-      "note": "How values read."
+      "note": "How values read. percent reads each value as a percent already (55 is 55%), so use it only when the values are shares that add up to 100; for amounts use number or currency."
     },
     "currency": {
       "type": "string",
