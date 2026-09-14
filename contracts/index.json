@@ -1161,7 +1161,10 @@
         "grid",
         "page",
         "layout-content",
-        "section rhythm"
+        "layout-stack",
+        "section rhythm",
+        "stack",
+        "column"
       ]
     }
   ]

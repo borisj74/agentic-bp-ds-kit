@@ -16,7 +16,7 @@ If a pattern listed under `patterns` in `contracts/index.json` matches the scree
 If something is missing from the index, stop and ask — do not add a one-off.
 Never put hex in components; use semantic tokens from `src/tokens/semantic.css` (not primitive `--ref-*` / `--ui-*` ramps).
 One `variant="primary"` Button per view.
-Page spacing: 4px grid. Content edge padding and between-section gap come from layout classes in `src/tokens/layout.css` — `.layout-content` uses `--layout-margin-md` (24px) for inset and `--layout-gutter-lg` (24px) for gap between stacked children. Section does not own page padding; read `contracts/layout.json`.
+Page spacing: 4px grid. Content edge padding and between-section gap come from layout classes in `src/tokens/layout.css` — `.layout-content` uses `--layout-margin-md` (24px) for inset and `--layout-gutter-lg` (24px) for gap between stacked children. A column of Sections inside another layout (for example a `.layout-split` side) uses `.layout-stack`: same gap, no padding. Section does not own page padding; read `contracts/layout.json`.
 
 ## Stack
 
@@ -29,7 +29,7 @@ Page spacing: 4px grid. Content edge padding and between-section gap come from l
 
 - `src/tokens/primitives.css` — raw values (colors only from the BP Foundations palette, spacing, radius, type scale).
 - `src/tokens/semantic.css` — roles (`--color-bg`, `--color-fg`, `--color-primary` ...). Light + dark via `[data-theme]`.
-- `src/tokens/layout.css` — layout pattern classes (`.layout-app`, `.layout-canvas`, `.layout-workspace`, `.layout-content`, `.layout-metrics`, `.layout-split`). Screens use these. Never invent per-page grids.
+- `src/tokens/layout.css` — layout pattern classes (`.layout-app`, `.layout-canvas`, `.layout-workspace`, `.layout-content`, `.layout-stack`, `.layout-metrics`, `.layout-split`). Screens use these. Never invent per-page grids.
 - `contracts/index.json` — catalog index. One JSON contract per piece in `contracts/`.
 - `src/ui/` — one folder per component. Implements its contract exactly.
 - `src/patterns/` — blueprints that only compose `src/ui` pieces.

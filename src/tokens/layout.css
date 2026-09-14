@@ -19,6 +19,10 @@
 /* gap = between stacked sections/children (24px); padding = content edge inset (24px). */
 .layout-content { display: flex; flex-direction: column; gap: var(--layout-gutter-lg); padding: var(--layout-margin-md); min-width: 0; overflow: auto; }
 
+/* A column of blocks inside another layout, such as a side of .layout-split: the same gap as .layout-content,
+   without its page inset or its own scrolling. */
+.layout-stack { display: flex; flex-direction: column; gap: var(--layout-gutter-lg); min-width: 0; }
+
 .layout-metrics { display: grid; gap: var(--layout-gutter-md); grid-template-columns: repeat(auto-fit, minmax(var(--layout-metrics-min), 1fr)); }
 .layout-metrics--fixed-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .layout-metrics--fixed-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }

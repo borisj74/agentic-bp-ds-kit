@@ -59,6 +59,7 @@ const patterns = [
   ["Canvas", "layout-canvas", "Header bar over a fill-height body. Lives in the app shell canvas column."],
   ["Workspace", "layout-workspace", "Primary content plus an optional context rail for an assistant, inspector, or detail."],
   ["Content", "layout-content", "Scrollable body with a section stack and page inset."],
+  ["Stack", "layout-stack", "A column of Sections inside another layout, such as a split side. Same gap, no inset."],
   ["Metrics", "layout-metrics", "KPI and summary card strip. Use --fixed-3 or --fixed-4 when the count is known."],
   ["Header", "layout-header", "Title cluster and actions row for the canvas top bar."],
 ] as const;
@@ -70,7 +71,10 @@ const snippet = `<div className="layout-app">
     <div className="layout-workspace">
       <main className="layout-content">
         <section className="layout-metrics layout-metrics--fixed-3">…</section>
-        <section className="layout-split layout-split--primary">…</section>
+        <section className="layout-split layout-split--primary">
+          <div className="layout-stack">…</div>
+          <div className="layout-stack">…</div>
+        </section>
       </main>
       <aside>{/* context rail */}</aside>
     </div>
@@ -192,6 +196,17 @@ export function GridFoundation() {
             <p className={styles.label}>.layout-split--thirds</p>
             <div className={styles.demo}>
               <div className="layout-split layout-split--thirds"><div className={styles.cell}>1</div><div className={styles.cell}>2</div><div className={styles.cell}>3</div></div>
+            </div>
+          </section>
+
+          <section className={styles.section}>
+            <Head title="Stack" prefix=".layout-stack" />
+            <p className={styles.lead}>A column of Sections inside another layout, such as the side of a split. The same 24px gap as <code>.layout-content</code>, without its page inset.</p>
+            <div className={styles.demo}>
+              <div className="layout-split layout-split--primary">
+                <div className="layout-stack"><div className={styles.cell}>Main · details</div><div className={styles.cell}>Main · products</div></div>
+                <div className="layout-stack"><div className={styles.cell}>Aside · quick links</div><div className={styles.cell}>Aside · primary contact</div></div>
+              </div>
             </div>
           </section>
 

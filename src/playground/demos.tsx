@@ -2199,9 +2199,6 @@ const FLOW_NO_FILTERS: Record<FlowFilterKey, string[]> = { id: [], name: [], typ
 const flowValue = (a: FlowAccount, key: FlowFilterKey) =>
   key === "id" ? a.id : key === "name" ? a.name : key === "type" ? "ACCOUNT" : key === "status" ? "Active" : "MONTHLY";
 const flowUsDate = (iso: string) => (iso ? `${iso.slice(5, 7)}/${iso.slice(8, 10)}/${iso.slice(0, 4)}` : "—");
-// A column of Sections, the gap the page keeps between them.
-const flowStack = { display: "flex", flexDirection: "column", gap: "var(--layout-gutter-lg)", minWidth: 0 } as const;
-
 export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?: string; start?: AccountFlowView }) {
   const [view, setView] = useState<AccountFlowView>(start);
   const [from, setFrom] = useState(start);
@@ -2302,7 +2299,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
   const tabLabel = tabs.find((t) => t.id === tab)?.label ?? "Details";
   const details = (
     <div className="layout-split layout-split--primary">
-      <div style={flowStack}>
+      <div className="layout-stack">
         <Section title="Account information" collapsible>
           <Form columns={2}>
             <FormDisplay label="Account name" value={account.name} />
@@ -2340,7 +2337,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
           <Table columns={FLOW_PRODUCT_COLUMNS.slice(0, 5)} rows={products.slice(0, 5).map(flowProductRow)} emptyLabel="No products on this account yet." />
         </Section>
       </div>
-      <div style={flowStack}>
+      <div className="layout-stack">
         <Section title="System information">
           <Form>
             <FormDisplay label="Account ID" value={account.id} />
