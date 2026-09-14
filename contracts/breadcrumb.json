@@ -34,7 +34,8 @@
   },
   "useWhen": [
     "Show where a page sits in the app, above its title.",
-    "Detail pages inside a list, like Invoices / INV-1042."
+    "Detail pages inside a list, like Invoices / INV-1042.",
+    "An app screen's trail: Home, the side-nav section, then the current page. Above a page title, pass the trail through PageHeader, which adds the title as the current crumb."
   ],
   "doNot": [
     "Do not invent a local Breadcrumb, BreadcrumbItem or BreadcrumbLink.",

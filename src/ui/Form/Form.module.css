@@ -30,6 +30,9 @@
    a gap between the rows would break the list in two. Closed in one column and in two, where the rows stack
    into one column on a narrow form. */
 .fields:has(> dl), .two .fields:has(> dl), .three .fields:has(> dl) { row-gap: 0; }
+/* Side by side, a pair whose label wraps is taller than its neighbour. Every display in the row stretches to the
+   tallest one, so the lines under a row sit level and no gap opens under the shorter pair. */
+.two .fields:has(> dl), .three .fields:has(> dl) { align-items: stretch; }
 @container (max-width: 560px) { .two .fields { grid-template-columns: minmax(0, 1fr); } }
 @container (max-width: 719px) { .two.start .fields { grid-template-columns: minmax(0, 1fr); } }
 

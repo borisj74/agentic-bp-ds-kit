@@ -1602,7 +1602,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
         onPageHeaderStick={setCompact}
         pageHeader={
           <PageHeader
-            title={place.page} breadcrumbs={[{ label: place.section, href: "#" }]}
+            title={place.page} breadcrumbs={[{ label: "Home", href: "#" }, { label: place.section, href: "#" }]}
             sticky={compact}
             actions={
               <>
@@ -2269,7 +2269,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
     // The page's own actions live here, not in the Toolbar, which keeps finding and viewing.
     <PageHeader
       title="Account" sticky={compact}
-      breadcrumbs={[{ label: "Accounts", onClick: toList }, { label: "Manage Accounts", onClick: toList }]}
+      breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", onClick: toList }]}
       actions={<><Button size="sm" iconStart="download">Export</Button><Button size="sm" variant="primary" iconStart="add" onClick={() => go("newAccount")}>New</Button></>}
     />
   );

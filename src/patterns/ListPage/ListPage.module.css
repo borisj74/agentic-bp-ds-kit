@@ -4,6 +4,8 @@
 
 /* The rows and their page bar as one block, nothing between them: the bar reads as the table's footer. */
 .body { display: flex; flex-direction: column; min-width: 0; }
+/* Cards are separate blocks, not rows, so the page bar sits one grid gutter under them instead of flush. */
+.body:has(> :global(.layout-split), > :global(.layout-metrics)) { gap: var(--layout-gutter-md); }
 
 /* What stands in for the rows keeps them company in the same place: lines while loading, a block otherwise. */
 .loading { padding-block: var(--space-small); }

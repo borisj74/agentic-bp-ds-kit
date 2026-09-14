@@ -36,7 +36,8 @@ export function PageHeader({
           </>
         ) : (
           <>
-            {breadcrumbs.length > 0 && <Breadcrumb items={breadcrumbs} current={false} />}
+            {/* The trail is Home, the section, then this page: the title closes it as the current crumb. */}
+            {breadcrumbs.length > 0 && <Breadcrumb items={[...breadcrumbs, { label: title }]} />}
             <div className={styles.titleRow}>
               {icon && <Icon name={icon} size="lg" tone="brand" />}
               <h1 className={styles.heading}>{title}</h1>

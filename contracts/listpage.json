@@ -24,7 +24,7 @@
     },
     "pagination": {
       "type": "ReactNode",
-      "note": "The page bar, flush under the rows as the table's footer. A kit Pagination."
+      "note": "The page bar, flush under a Table as its footer. Under a grid of Cards (laid out with a layout class) it sits one grid gutter below them. A kit Pagination."
     },
     "bulk": {
       "type": "ReactNode",

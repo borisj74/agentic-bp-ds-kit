@@ -13,6 +13,7 @@ export interface FormSection {
   title: string;
   description?: string;
   help?: string;
+  actions?: ReactNode;
   content: ReactNode;
   collapsible?: boolean;
   open?: boolean;
@@ -71,7 +72,7 @@ export function Form({
         {sections
           ? sections.map((s) => (
               <Section
-                key={s.title} title={s.title} description={s.description} help={s.help}
+                key={s.title} title={s.title} description={s.description} help={s.help} actions={s.actions}
                 collapsible={s.collapsible} open={s.open} defaultOpen={s.defaultOpen} onOpenChange={s.onOpenChange}
               >
                 <div className={styles.fields}>{s.content}</div>

@@ -214,15 +214,40 @@ const CONDITIONS: DataGridRow[] = [
 const LINE_ITEM_COLUMNS: DataGridColumn[] = [
   { key: "product", header: "Product" },
   { key: "sku", header: "SKU", readOnly: true, hug: true },
-  { key: "qty", header: "Qty", type: "number", hug: true },
+  { key: "qty", header: "Qty", type: "number", hug: true, setForAll: true },
   { key: "price", header: "Unit price", type: "number" },
 ];
 const LINE_ITEMS: DataGridRow[] = [
   { id: "l1", product: "Premium support", sku: "SUP-100", qty: "1", price: "1200.00" },
   { id: "l2", product: "Seat license", sku: "LIC-020", qty: "25", price: "40.00" },
 ];
+// Dates and details: subscriptions with date cells, each opening to its rate bands in a nested grid.
+const TERM_COLUMNS: DataGridColumn[] = [
+  { key: "product", header: "Product" },
+  { key: "start", header: "Start date", type: "date" },
+  { key: "end", header: "End date", type: "date" },
+  { key: "qty", header: "Qty", type: "number", hug: true },
+];
+const TERMS: DataGridRow[] = [
+  { id: "t1", product: "API calls (per 10K)", start: "2026-08-01", end: "", qty: "1" },
+  { id: "t2", product: "Seat license", start: "2026-08-01", end: "2027-07-31", qty: "25" },
+];
+const BAND_COLUMNS: DataGridColumn[] = [
+  { key: "currency", header: "Currency", type: "select", width: "140px", options: [{ value: "EUR", label: "EUR" }, { value: "USD", label: "USD" }, { value: "GBP", label: "GBP" }, { value: "JPY", label: "JPY" }] },
+  { key: "upper", header: "Upper band", type: "number", placeholder: "No limit" },
+  { key: "rate", header: "Rate", type: "number" },
+];
+const BANDS: DataGridRow[] = [
+  { id: "b1", currency: "EUR", upper: "10000", rate: "0.00" },
+  { id: "b2", currency: "EUR", upper: "100000", rate: "1.20" },
+  { id: "b3", currency: "EUR", upper: "", rate: "0.85" },
+];
+const bandDetail = (row: DataGridRow) => (
+  <DataGrid label={`Rate bands, ${row.product}`} size="sm" columns={BAND_COLUMNS} defaultRows={BANDS} rowNumbers={false} stickyFirstColumn={false} canAddRows canRemoveRows />
+);
 const GRID_SAMPLES: Record<string, unknown> = {
   "{conditionColumns}": CONDITION_COLUMNS, "{conditions}": CONDITIONS, "{lineItemColumns}": LINE_ITEM_COLUMNS, "{lineItems}": LINE_ITEMS,
+  "{termColumns}": TERM_COLUMNS, "{terms}": TERMS, "{bandDetail}": bandDetail,
 };
 const gridProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in GRID_SAMPLES ? GRID_SAMPLES[v] : v])) as unknown as DataGridProps;
@@ -1821,7 +1846,7 @@ export const registry: Record<string, Entry> = {
       />
     ),
     preview: {
-      breadcrumbs: [{ label: "Billing", href: "#" }, { label: "Invoices", href: "#" }],
+      breadcrumbs: [{ label: "Home", href: "#" }, { label: "Billing", href: "#" }, { label: "Invoices", href: "#" }],
       title: "INV-1042",
       badge: "Draft",
       moreActions: [
@@ -1838,7 +1863,7 @@ export const registry: Record<string, Entry> = {
     wide: true,
     card: (
       <div style={{ width: 560 }}>
-        <PageHeader breadcrumbs={[{ label: "Billing", href: "#" }, { label: "Invoices", href: "#" }]} title="INV-1042" badge="Draft"
+        <PageHeader breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }, { label: "Invoices", href: "#" }]} title="INV-1042" badge="Draft"
           actions={<><Button size="sm">Send</Button><Button size="sm" variant="primary">Approve</Button></>} />
       </div>
     ),

@@ -24,15 +24,18 @@ export interface CardProps {
   defaultSelected?: boolean;
   onSelectedChange?: (selected: boolean) => void;
   disabled?: boolean;
+  href?: string;
+  onClick?: () => void;
 }
 
 const MESSAGE_ICON: Record<CardMessageTone, string> = { success: "check_circle", warning: "warning", danger: "error", info: "info" };
 
 // Figma card 6290:315: header row (badge + overline), title, body, amount and an item message beside a 72 tile,
-// then a footer checkbox when selectable. States: default, hover, selected, disabled.
+// then a footer checkbox when selectable. States: default, hover, selected, disabled. With href or onClick the card
+// opens what it shows instead: its title is the one link, stretched over the whole card.
 export function Card({
   title, overline, badge, badgeTone = "neutral", description, amount, message, messageTone = "success", image, imageAlt, icon,
-  selectable = false, selected: selectedProp, defaultSelected = false, onSelectedChange, disabled = false,
+  selectable = false, selected: selectedProp, defaultSelected = false, onSelectedChange, disabled = false, href, onClick: onOpen,
 }: CardProps) {
   const titleId = useId();
   const [innerSelected, setInnerSelected] = useState(defaultSelected);
@@ -50,7 +53,13 @@ export function Card({
 
   // Without a title, the overline (or else the description) names the card and its checkbox.
   const name = title || overline || description || "item";
-  const cls = [styles.card, selectable && !disabled ? styles.selectable : "", selected ? styles.selected : "", disabled ? styles.disabled : ""].join(" ");
+  // A card that opens something is not also a choice: selectable wins, and a disabled card goes nowhere.
+  const opens = !selectable && !disabled && Boolean(href || onOpen);
+  // The one control: a real link with href, a button without. Its hit area stretches over the card.
+  const open = (text: string) => (href
+    ? <a className={styles.open} href={href} onClick={onOpen}>{text}</a>
+    : <button type="button" className={styles.open} onClick={onOpen}>{text}</button>);
+  const cls = [styles.card, selectable && !disabled ? styles.selectable : "", opens ? styles.opens : "", selected ? styles.selected : "", disabled ? styles.disabled : ""].join(" ");
   return (
     <article className={cls} aria-labelledby={title ? titleId : undefined} aria-label={title ? undefined : name} onClick={onClick}>
       <div className={styles.body}>
@@ -59,10 +68,10 @@ export function Card({
             {(badge || overline) && (
               <div className={styles.header}>
                 {badge && <Badge tone={badgeTone} disabled={disabled}>{badge}</Badge>}
-                {overline && <span className={styles.overline}>{overline}</span>}
+                {overline && <span className={styles.overline}>{opens && !title ? open(overline) : overline}</span>}
               </div>
             )}
-            {title && <h3 id={titleId} className={styles.title}>{title}</h3>}
+            {title && <h3 id={titleId} className={styles.title}>{opens ? open(title) : title}</h3>}
             {description && <p className={styles.description}>{description}</p>}
             {amount && <p className={styles.amount}>{amount}</p>}
           </div>
