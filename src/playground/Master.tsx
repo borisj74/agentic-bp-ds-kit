@@ -182,6 +182,8 @@ export function Master({ contract }: { contract: Contract }) {
             </aside>)}
           </div>
           <div className={styles.docs}>
+            {/* Usage on the start, Do's over Don'ts on the end, the same width. With no rules to show, Usage stands alone. */}
+            <div className={contract.useWhen?.length > 0 || contract.doNot?.length > 0 ? styles.usageBeside : styles.passThrough}>
             <div className={styles.detail}>
               <h3 className={styles.detailLabel}>Usage</h3>
               <p className={styles.detailText}>{contract.usage ?? contract.intent}</p>
@@ -207,6 +209,7 @@ export function Master({ contract }: { contract: Contract }) {
                 ))}
               </div>
             )}
+            </div>
             <Code code={snippet} id="preview" c={c} />
           </div>
         </div>

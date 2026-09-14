@@ -73,6 +73,14 @@
 /* Do's and Don'ts side by side; they stack once the column is too narrow for two readable lists. */
 .rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-medium) var(--space-xlarge); }
 .rules > .detail { max-width: none; align-content: start; }
+/* A contract with no rules: the wrapper adds no box, so Usage keeps its own reading width. */
+.passThrough { display: contents; }
+/* Usage on the start, Do's over Don'ts in a column on the end, each half the width. Under 900px there is no room
+   for two readable columns, so the rules drop under Usage. */
+.usageBeside { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-medium) var(--space-xxlarge); align-items: start; }
+.usageBeside > .detail { max-width: none; }
+.usageBeside .rules { grid-template-columns: minmax(0, 1fr); gap: var(--space-large); }
+@media (max-width: 900px) { .usageBeside { grid-template-columns: minmax(0, 1fr); } }
 .ruleList { display: grid; gap: var(--space-xsmall); margin: 0; padding: 0; list-style: none; }
 .rule { display: flex; align-items: flex-start; gap: var(--space-xsmall); font-size: var(--font-size-small); line-height: 1.5; color: var(--text-neutral-subtle); }
 /* The 16px icon sits on the first line's centre: (21px line - 16px icon) / 2. */
