@@ -59,8 +59,8 @@
   --border-neutral: var(--ui-neutral-150);
   --border-neutral-strong: var(--ui-neutral-200);
   --border-neutral-intense: var(--ui-neutral-300);
-  --border-neutral-field: var(--ui-neutral-400);
-  --border-neutral-field-hover: var(--ui-neutral-500);
+  --border-neutral-field: var(--ui-neutral-300);
+  --border-neutral-field-hover: var(--ui-neutral-400);
   --border-brand-faint: var(--ui-brand-100);
   --border-brand-subtle: var(--ui-brand-300);
   --border-brand: var(--ui-brand-400);
@@ -499,8 +499,8 @@
   --border-neutral: var(--ui-neutral-500);
   --border-neutral-strong: var(--ui-neutral-600);
   --border-neutral-intense: var(--ui-neutral-700);
-  --border-neutral-field: var(--ui-neutral-500);
-  --border-neutral-field-hover: var(--ui-neutral-600);
+  --border-neutral-field: var(--ui-neutral-400);
+  --border-neutral-field-hover: var(--ui-neutral-500);
   --border-brand-faint: var(--ui-brand-100);
   --border-brand-subtle: var(--ui-brand-300);
   --border-brand: var(--ui-brand-400);
