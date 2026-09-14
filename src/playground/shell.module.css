@@ -37,6 +37,8 @@
   color: var(--text-neutral); text-decoration: none; font-size: var(--font-size-small);
 }
 .link:hover { background: var(--bg-neutral-min-hover); color: var(--text-neutral-strong); }
+/* The kit focus ring, like the section toggles. Without it the browser draws its own, in the system accent color. */
+.link:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); }
 .linkActive { background: var(--bg-neutral-min-selected); color: var(--text-brand); }
 .sub { padding-left: var(--space-large); }
 /* A family heading like Chart is not a link; its members sit one step further in. */
@@ -51,6 +53,7 @@
   background: var(--surface-raised); border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-medium);
   padding: 2px var(--space-xxsmall);
 }
+.select:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--border-width-thin); }
 /* The menu button is always there; the sheet behind the drawer only exists on narrow screens. */
 .menuButton { display: inline-flex; align-self: center; }
 .brand { align-items: center; }
