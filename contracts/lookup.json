@@ -2,7 +2,7 @@
   "name": "Lookup",
   "path": "src/ui/Lookup/Lookup.tsx",
   "intent": "A form field for picking one record from a long list, like a product or an account, through a searchable table in a wide Modal.",
-  "usage": "Use Lookup when the choice is a record from a list too long or too detailed for a Select: products, accounts, contracts, users. It is one component: pass label, the table's columns and rows, and value with onChange. The field shows the picked record's name, a × to clear it and a lookup button at the end; clicking the field or the button opens a Modal (xl) titled Lookup: label, with a folder icon, a search box with a Search button, the kit Table and Pagination under it. Clicking a row, or its name, picks it and closes the Modal; the × on the Modal closes it without a change. Search looks through every text value of each row. See contracts/lookup.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 480px, since a 160px label column would leave too little of the field to type in.",
+  "usage": "Use Lookup when the choice is a record from a list too long or too detailed for a Select: products, accounts, contracts, users. It is one component: pass label, the table's columns and rows, and value with onChange. The field shows the picked record's name, a × to clear it and a lookup button at the end; clicking the field or the button opens a Modal (xl) titled Lookup: label, with a folder icon, a search box with a Search button, the kit Table and Pagination under it. Clicking a row, or its name, picks it and closes the Modal; the × on the Modal closes it without a change. Search looks through every text value of each row. See contracts/lookup.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 480px, since a 160px label column would leave too little of the field to type in. multiple turns the same dialog into a picker for many records: rows get checkboxes, clicking a row ticks it, ticks stay while people search and page, and the footer's primary hands them all to onConfirm. With trigger button a kit Button opens it instead of a field, for adding a batch of records to a list or grid.",
   "props": {
     "label": {
       "type": "string",
@@ -43,7 +43,7 @@
     "icon": {
       "type": "string",
       "default": "folder_open",
-      "note": "Material Symbols name before the Modal title."
+      "note": "Material Symbols name before the Modal title. Pass an empty string for a title with no icon."
     },
     "searchPlaceholder": {
       "type": "string",
@@ -112,24 +112,55 @@
     "help": {
       "type": "string",
       "note": "Opens a HelpPopover from a help icon next to the label, like other fields."
+    },
+    "multiple": {
+      "type": "boolean",
+      "default": false,
+      "note": "Pick many rows at once: each row gets a checkbox (ticks are kept across pages and searches), and the dialog gets a footer with Cancel and the one primary, confirmLabel with the count. Picks go to onConfirm; the Lookup holds no value of its own."
+    },
+    "trigger": {
+      "enum": [
+        "field",
+        "button"
+      ],
+      "default": "field",
+      "note": "field is the form field. button is a kit Button, size sm, named by label with buttonIcon before it, for adding records to a list, like Add batch above a grid."
+    },
+    "buttonIcon": {
+      "type": "string",
+      "note": "Material Symbols name before the label when trigger is button."
+    },
+    "confirmLabel": {
+      "type": "string",
+      "default": "Add selected",
+      "note": "With multiple: the footer's primary, shown with the count, like Add selected (3). Disabled until a row is ticked."
+    },
+    "onConfirm": {
+      "type": "function",
+      "signature": "(ids: string[], rows: TableRow[]) => void",
+      "note": "With multiple: runs with every ticked row when the primary is pressed; the dialog then closes."
     }
   },
   "useWhen": [
     "Picking one record from a long list that people need to search and compare: products, accounts, contracts.",
-    "The choice needs more than a name to tell records apart, like an ID, type, level or status."
+    "The choice needs more than a name to tell records apart, like an ID, type, level or status.",
+    "Adding several records at once to a list or grid, like a batch of products: multiple with trigger button."
   ],
   "doNot": [
     "Do not use it for a short list of plain options. Use Select.",
     "Do not use it for a path through nested levels. Use Cascader.",
     "Do not build a local lookup dialog, table picker or search field with a button. Use Lookup.",
-    "Do not use raw hex."
+    "Do not use raw hex.",
+    "Do not build a Modal with a selectable Table, or a Drawer of checkboxes, to pick many records. Use Lookup with multiple."
   ],
   "a11y": [
     "The field is a button named by its label, with aria-haspopup dialog; it opens the Modal on click, Enter or Space. The lookup button beside it does the same for the pointer and stays out of the tab order.",
     "The × is a kit Button named Clear and the label.",
     "The Modal traps focus, starts in the search box and gives focus back to the field on close. Enter in the search box searches.",
     "Each row's name is a link-styled button that picks the row, so rows can be picked from the keyboard; clicking anywhere on a row is a pointer shortcut. The picked row is highlighted.",
-    "Pagination announces the rows shown and the page."
+    "Pagination announces the rows shown and the page.",
+    "With multiple, each row's checkbox is named Select plus the row's name and is the keyboard stop; the footer's Cancel and primary are kit Buttons, and the primary says how many are ticked.",
+    "With trigger button, the kit Button is named by label and gives focus back when the dialog closes."
   ],
   "snippet": "<Lookup\n  label=\"Product\"\n  columns={productColumns}\n  rows={products}\n  value={productId}\n  onChange={setProductId}\n  required\n/>",
   "examples": [
@@ -157,6 +188,22 @@
             "columns": "{productColumns}",
             "rows": "{products}",
             "defaultValue": "13984"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Pick many",
+      "usage": "trigger button with multiple: tick products across pages and searches, then Add selected hands them all over.",
+      "items": [
+        {
+          "props": {
+            "label": "Add batch",
+            "trigger": "button",
+            "buttonIcon": "library_add",
+            "multiple": true,
+            "columns": "{productColumns}",
+            "rows": "{products}"
           }
         }
       ]

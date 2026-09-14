@@ -8,6 +8,18 @@
 .selectable { cursor: pointer; }
 .selectable:hover { background: var(--bg-neutral-faint); border-color: var(--border-neutral); }
 .card.selected { background: var(--bg-neutral-min-selected); border-color: var(--border-brand); }
+
+/* A card that opens something: the title is the link, and its hit area stretches over the whole card, so the card
+   is one tab stop and one click target. The ring goes round the card when the link has keyboard focus. */
+.opens { position: relative; cursor: pointer; }
+.opens:hover { background: var(--bg-neutral-faint); border-color: var(--border-neutral); }
+.opens:has(.open:focus-visible) { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
+.open {
+  display: inline; margin: 0; padding: 0; border: 0; background: none; appearance: none;
+  font: inherit; color: inherit; text-align: inherit; text-decoration: none; cursor: pointer;
+}
+.open::after { content: ""; position: absolute; inset: 0; }
+.open:focus-visible { outline: none; }
 .card.disabled { background: var(--bg-neutral-faint); border-color: var(--border-neutral-subtle); }
 
 /* The body grows, so in a grid row of cards the footers line up at the bottom. */

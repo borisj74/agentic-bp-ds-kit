@@ -19,6 +19,7 @@ import styles from "./Lookup.module.css";
 
 export type LookupSize = "sm" | "md" | "lg";
 export type LookupLabelPosition = "top" | "start";
+export type LookupTrigger = "field" | "button";
 
 export interface LookupProps {
   label: string;
@@ -45,18 +46,24 @@ export interface LookupProps {
   error?: string;
   hint?: string;
   help?: string;
+  multiple?: boolean;
+  trigger?: LookupTrigger;
+  buttonIcon?: string;
+  confirmLabel?: string;
+  onConfirm?: (ids: string[], rows: TableRow[]) => void;
 }
 
 // Text a search can match: plain values only; kit Cells and other elements are skipped.
 const text = (v: unknown) => (typeof v === "string" || typeof v === "number" ? String(v) : "");
 
 // Figma lookup field 1059:33521 (a field with × and a lookup button) and the lookup dialog 138:5591
-// (search, table, pagination in a wide Modal).
+// (search, table, pagination in a wide Modal). With multiple, the same dialog picks many rows with checkboxes and
+// hands them over from its footer; with trigger button, a kit Button opens it, for adding records to a list.
 export function Lookup({
   label, columns, rows, value, defaultValue = null, onChange, labelKey: labelKeyProp, title, icon = "folder_open",
   searchPlaceholder, pageSize: initialPageSize = 10, clearable = true, placeholder, emptyLabel = "No matches.",
   size: ownSize, labelPosition: ownLabelPosition, hideLabel = false, name, required = false, disabled = false,
-  invalid = false, error, hint, help,
+  invalid = false, error, hint, help, multiple = false, trigger = "field", buttonIcon, confirmLabel = "Add selected", onConfirm,
 }: LookupProps) {
   const size = useDensitySize(ownSize);
   const labelPosition = useLabelPosition(ownLabelPosition);
@@ -73,6 +80,8 @@ export function Lookup({
   const [applied, setApplied] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(initialPageSize);
+  // The rows ticked in this visit to the dialog, across every page of it.
+  const [picks, setPicks] = useState<string[]>([]);
 
   const labelKey = labelKeyProp ?? columns[0]?.key;
   const picked = rows.find((r) => r.id === current) ?? null;
@@ -91,11 +100,17 @@ export function Lookup({
     setQuery("");
     setApplied("");
     setPage(1);
+    setPicks([]);
     setOpen(true);
   };
-  // The Modal gives focus back to the field when it closes.
+  // The Modal gives focus back to what opened it when it closes.
   const close = () => setOpen(false);
   const pick = (row: TableRow) => { emit(row); close(); };
+  const togglePick = (id: string) => setPicks((old) => (old.includes(id) ? old.filter((x) => x !== id) : [...old, id]));
+  const confirm = () => {
+    onConfirm?.(picks, rows.filter((r) => picks.includes(r.id)));
+    close();
+  };
 
   // Search runs on the Search button or Enter, as in Figma, over every plain value of each row.
   const search = () => { setApplied(query.trim()); setPage(1); };
@@ -104,11 +119,65 @@ export function Lookup({
   const found = q ? rows.filter((r) => columns.some((c) => text(r[c.key]).toLowerCase().includes(q))) : rows;
   const pages = Math.max(Math.ceil(found.length / pageSize), 1);
   const at = Math.min(page, pages);
-  // Each row's name becomes the link that picks it, so rows can be picked from the keyboard too.
-  const pageRows = found.slice((at - 1) * pageSize, at * pageSize).map((r) => ({
+  const slice = found.slice((at - 1) * pageSize, at * pageSize);
+  // Picking one: each row's name becomes the link that picks it, so rows can be picked from the keyboard too.
+  // Picking many: each row's checkbox is the keyboard stop, so the name stays plain text.
+  const pageRows = multiple ? slice : slice.map((r) => ({
     ...r,
     [labelKey]: <Cell type="link" size="sm" label={text(r[labelKey])} onClick={() => pick(r)} />,
   }));
+
+  const dialog = (
+    <Modal
+      open={open} title={title ?? `Lookup: ${label}`} icon={icon} size="xl" onClose={close}
+      footer={multiple ? (
+        <>
+          <Button size="sm" onClick={close}>Cancel</Button>
+          <Button size="sm" variant="primary" disabled={picks.length === 0} onClick={confirm}>{`${confirmLabel} (${picks.length})`}</Button>
+        </>
+      ) : undefined}
+    >
+      <div className={styles.content}>
+        <div className={styles.search} onKeyDown={onSearchKey}>
+          <span className={styles.searchField}>
+            <Input
+              label={searchPlaceholder ?? `Search ${label.toLowerCase()}`} hideLabel size="sm" type="search"
+              placeholder={searchPlaceholder ?? `Search ${label.toLowerCase()}`} value={query} onChange={setQuery}
+            />
+          </span>
+          {/* With many to pick, the footer holds the one primary, so Search steps down. */}
+          <Button size="sm" variant={multiple ? "secondary" : "primary"} onClick={search}>Search</Button>
+        </div>
+        {multiple ? (
+          <Table
+            size="sm" columns={columns} rows={pageRows} emptyLabel={emptyLabel} rowLabel={labelKey}
+            selectable selected={picks} onSelectionChange={setPicks} onRowClick={togglePick}
+          />
+        ) : (
+          <Table
+            size="sm" columns={columns} rows={pageRows} emptyLabel={emptyLabel} rowLabel={labelKey}
+            selected={current ? [current] : []} onRowClick={(id) => { const r = rows.find((x) => x.id === id); if (r) pick(r); }}
+          />
+        )}
+        {found.length > 0 && (
+          <Pagination
+            total={found.length} page={at} onPageChange={setPage} pageSize={pageSize}
+            onPageSizeChange={(n) => { setPageSize(n); setPage(1); }} label={`${label} pages`}
+          />
+        )}
+      </div>
+    </Modal>
+  );
+
+  // A button that opens the dialog, for adding records to a list rather than filling in a field.
+  if (trigger === "button") {
+    return (
+      <>
+        <Button size="sm" iconStart={buttonIcon} disabled={disabled} onClick={openLookup}>{label}</Button>
+        {dialog}
+      </>
+    );
+  }
 
   const cls = [field.input, field[size], hideLabel ? "" : field[labelPosition], bad ? field.invalid : "", disabled ? field.disabled : ""];
   return (
@@ -146,30 +215,7 @@ export function Lookup({
         {message && <p id={messageId} className={error ? field.error : field.hint}>{message}</p>}
       </div>
       {name && <input type="hidden" name={name} value={current ?? ""} />}
-
-      <Modal open={open} title={title ?? `Lookup: ${label}`} icon={icon} size="xl" onClose={close}>
-        <div className={styles.content}>
-          <div className={styles.search} onKeyDown={onSearchKey}>
-            <span className={styles.searchField}>
-              <Input
-                label={searchPlaceholder ?? `Search ${label.toLowerCase()}`} hideLabel size="sm" type="search"
-                placeholder={searchPlaceholder ?? `Search ${label.toLowerCase()}`} value={query} onChange={setQuery}
-              />
-            </span>
-            <Button size="sm" variant="primary" onClick={search}>Search</Button>
-          </div>
-          <Table
-            size="sm" columns={columns} rows={pageRows} emptyLabel={emptyLabel} rowLabel={labelKey}
-            selected={current ? [current] : []} onRowClick={(id) => { const r = rows.find((x) => x.id === id); if (r) pick(r); }}
-          />
-          {found.length > 0 && (
-            <Pagination
-              total={found.length} page={at} onPageChange={setPage} pageSize={pageSize}
-              onPageSizeChange={(n) => { setPageSize(n); setPage(1); }} label={`${label} pages`}
-            />
-          )}
-        </div>
-      </Modal>
+      {dialog}
     </div>
   );
 }

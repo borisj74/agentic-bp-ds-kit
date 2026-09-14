@@ -19,16 +19,18 @@
 /* Select and progress fill the rest of the row; a progress bar keeps a minimum so a hugging cell still shows it. */
 .fill { display: flex; flex: 1; min-width: 0; }
 .progress { min-width: var(--cell-progress-min); }
-.label { min-width: 0; overflow-wrap: anywhere; }
-.link { min-width: 0; overflow-wrap: anywhere; color: var(--link-brand); text-decoration: none; border-radius: var(--radius-small); }
+/* Values wrap only between words: an ID, a date or an amount never splits down the cell. When the columns cannot
+   all fit, the table grows and scrolls sideways inside its own box instead. */
+.label { min-width: 0; overflow-wrap: normal; }
+.link { min-width: 0; overflow-wrap: normal; color: var(--link-brand); text-decoration: none; border-radius: var(--radius-small); }
 .link:hover { color: var(--link-brand-hover); text-decoration: underline; }
 .link:active { color: var(--link-brand-press); }
 .linkButton { margin: 0; padding: 0; border: 0; background: none; font: inherit; text-align: start; cursor: pointer; }
 .link:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
 /* Tight line height so name + second line (about 31px) fit beside the 32px avatar and rows stay 48 / 56 px. */
 .copy { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; }
-.name { font-weight: var(--font-weight-medium); overflow-wrap: anywhere; }
-.support { font-size: var(--font-size-xsmall); color: var(--text-neutral); overflow-wrap: anywhere; }
+.name { font-weight: var(--font-weight-medium); overflow-wrap: normal; }
+.support { font-size: var(--font-size-xsmall); color: var(--text-neutral); overflow-wrap: normal; }
 
 .icon { display: flex; color: var(--icon-neutral-subtle); }
 .row { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--space-xxsmall); }

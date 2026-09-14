@@ -1,12 +1,13 @@
 /* Figma data-grid 4350:109705: a spreadsheet-like grid. Every body cell is boxed by a line, on a faint fill,
    so it reads as something to fill in. The header is the kit HeaderCell on white, with its brand-faint line. */
 .grid { display: flex; flex-direction: column; gap: var(--space-xsmall); min-width: 0; font-family: var(--font-sans); }
-.wrap { max-width: 100%; overflow-x: auto; }
+/* Positioned, so hidden labels inside (absolute) stay clipped by this scroll box instead of widening the page. */
+.wrap { position: relative; max-width: 100%; overflow-x: auto; }
 
 .table { width: 100%; border-collapse: separate; border-spacing: 0; }
 .table th, .table td { padding: 0; text-align: start; vertical-align: middle; }
-.table th { background: var(--surface-flat); border-right: var(--border-width-thin) solid var(--border-neutral-faint); }
-.table th:first-child { border-left: var(--border-width-thin) solid var(--border-neutral-faint); }
+/* Header cells have no side lines: only the HeaderCell line under the row. Body cells keep their boxes. */
+.table th { background: var(--surface-flat); }
 .table th > * { background: transparent; }
 .table td {
   background: var(--bg-neutral-faint);
@@ -59,6 +60,37 @@
 .control { display: block; padding: var(--space-xxsmall) var(--space-xsmall); }
 .formula { display: flex; flex-direction: column; gap: var(--space-xxsmall); padding: var(--space-xsmall); }
 .done { display: flex; justify-content: flex-end; }
+
+/* The first column (and # before it) stays in place while the grid scrolls sideways. Cell fills are opaque,
+   so rows scroll under it; its own end border, the same thin line as every cell, marks where scrolling starts. */
+.table .stickyToggle { position: sticky; inset-inline-start: 0; z-index: 1; }
+.table .stickyIndex { position: sticky; inset-inline-start: var(--data-grid-index-offset, 0); z-index: 1; }
+.table .sticky { position: sticky; inset-inline-start: var(--data-grid-sticky-offset, 0); z-index: 1; }
+.table th.stickyToggle, .table th.stickyIndex, .table th.sticky { z-index: 2; }
+
+/* Expandable rows: a toggle column at the start, and under an open row one cell across the grid that holds its
+   detail. The detail keeps to the visible width of the grid, so it stays in view while the columns scroll. */
+.table td.toggle { width: 1%; padding: 0 var(--space-xxsmall); text-align: center; }
+.table td.detail { height: auto; padding: 0; background: var(--surface-flat); }
+.detailBody {
+  box-sizing: border-box; position: sticky; inset-inline-start: 0;
+  /* The cell's own start and end lines sit outside this box, so they come off the visible width. */
+  width: calc(var(--data-grid-view-width, 100%) - 2 * var(--border-width-thin)); padding: var(--space-medium);
+}
+
+/* A header with Set for all: the kit HeaderCell title, then the menu under it, both above one header line. */
+/* th height 1px lets .head fill the whole header row (a table cell's height acts as its minimum), so every
+   title starts at the same top and every header line sits at the same bottom. */
+.table th:has(> .head) { height: 1px; vertical-align: top; }
+.head {
+  box-sizing: border-box; display: flex; flex-direction: column; align-items: stretch; height: 100%;
+  background: var(--surface-flat); border-bottom: var(--border-width-medium) solid var(--border-brand-faint);
+}
+.head > :first-child { border-bottom: 0; min-height: 0; padding-block-end: var(--space-xxsmall); }
+/* The Button's own side padding is smaller than the title's, so the gap makes up the difference and the
+   menu's text lines up under the title's. */
+.setAll { display: flex; padding: 0 calc(var(--space-small) - var(--space-xsmall)) var(--space-xxsmall); }
+.headEnd .setAll { justify-content: flex-end; }
 
 .table td.empty { padding: var(--space-medium); text-align: center; color: var(--text-neutral); }
 .add { display: flex; }

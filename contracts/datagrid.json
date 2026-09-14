@@ -2,13 +2,13 @@
   "name": "DataGrid",
   "path": "src/ui/DataGrid/DataGrid.tsx",
   "intent": "An editable table: people click a cell to add or change its content, like rule conditions, line items or mappings.",
-  "usage": "Use DataGrid when people enter or change data in rows, not just read it. It is one component: pass columns and rows as data. Each column has a type: text and number cells edit in place with a kit Input, select cells are a kit Select, formula cells open a kit FormulaEditor in the cell, and readOnly columns only show. Click a cell or press Enter to edit; Enter or leaving the cell saves, Escape cancels, Tab moves to the next cell. rowNumbers adds a # column. canAddRows adds an Add row button under the grid and canRemoveRows a remove button on each row. Columns are at least 160 wide unless they hug. For read-only lists use Table. See contracts/datagrid.json for the full contract.",
+  "usage": "Use DataGrid when people enter or change data in rows, not just read it. It is one component: pass columns and rows as data. Each column has a type: text and number cells edit in place with a kit Input, select cells are a kit Select, formula cells open a kit FormulaEditor in the cell, date cells are a kit DatePicker, and readOnly columns only show. Click a cell or press Enter to edit; Enter or leaving the cell saves, Escape cancels, Tab moves to the next cell. rowNumbers adds a # column. canAddRows adds an Add row button under the grid and canRemoveRows a remove button on each row. Columns are at least 160 wide unless they hug. The first column (and #) stays pinned when the grid scrolls sideways. setForAll on a column adds a Set for all menu under its title. detail makes rows expandable, with settings or sub-rows under each row. For read-only lists use Table. See contracts/datagrid.json for the full contract.",
   "props": {
     "columns": {
       "type": "DataGridColumn[]",
       "required": true,
-      "itemShape": "{ key: string; header: string; type?: \"text\" | \"number\" | \"select\" | \"formula\"; options?: SelectOption[]; placeholder?: string; readOnly?: boolean; hug?: boolean; width?: string; fields?: FormulaField[]; onCalculate?: (formula: string) => string }",
-      "note": "type defaults to text. options for select. fields and onCalculate for formula, passed to the FormulaEditor. hug makes the column only as wide as its content; otherwise it is at least 160 wide. width is a CSS width."
+      "itemShape": "{ key: string; header: string; type?: \"text\" | \"number\" | \"select\" | \"formula\" | \"date\"; options?: SelectOption[]; searchable?: boolean; searchPlaceholder?: string; placeholder?: string; readOnly?: boolean; hug?: boolean; width?: string; fields?: FormulaField[]; onCalculate?: (formula: string) => string; setForAll?: boolean }",
+      "note": "type defaults to text. options for select. date cells are always a kit DatePicker (size sm); their value is an ISO date, YYYY-MM-DD, shown formatted, and placeholder fills the empty field. fields and onCalculate for formula, passed to the FormulaEditor. hug makes the column only as wide as its content; otherwise it is at least 160 wide. width is a CSS width. searchable adds a search field at the top of a select column's list that filters options by label, for long lists like a product catalog; searchPlaceholder names it (default Search). setForAll adds a Set for all menu under the column title: Use row 1 value copies the first row's value to every row, Clear all rows empties the column."
     },
     "rows": {
       "type": "DataGridRow[]",
@@ -55,6 +55,28 @@
       "type": "string",
       "default": "Data grid",
       "note": "Names the grid for screen readers, and each cell's field, like Value, row 2."
+    },
+    "stickyFirstColumn": {
+      "type": "boolean",
+      "default": true,
+      "note": "The # column and the first column stay in place while the grid scrolls sideways; their end border is the same thin line as every cell. Put the column that names each row first."
+    },
+    "detail": {
+      "type": "function",
+      "note": "(row: DataGridRow) => ReactNode. Makes rows expandable: a toggle column comes first, and an open row shows this under it in one cell across the grid, kept to the grid's visible width. Put kit pieces in it: a Form of settings, or a nested DataGrid (size sm) for sub-rows like rate bands."
+    },
+    "expanded": {
+      "type": "string[]",
+      "note": "Controlled: ids of the rows whose detail is open."
+    },
+    "defaultExpanded": {
+      "type": "string[]",
+      "default": [],
+      "note": "Starting open rows when expanded is not controlled."
+    },
+    "onExpandedChange": {
+      "type": "function",
+      "note": "(ids: string[]) => void. Runs when a row opens or closes."
     }
   },
   "useWhen": [
@@ -64,6 +86,7 @@
   "doNot": [
     "Do not use it to show data people only read. Use Table.",
     "Do not invent an EditableCell, GridRow or a table of loose inputs. Pass columns with a type.",
+    "Do not build your own expand arrows or a second table under a row. Pass detail.",
     "Do not put a Form around each row. Save the rows from onRowsChange.",
     "Do not use raw hex."
   ],
@@ -71,7 +94,10 @@
     "A native table named by label, with kit HeaderCell headers.",
     "Each editable cell is a button named by its column and row with its value, like Value, row 2: 100. Enter or click opens a kit Input, Select or FormulaEditor named the same way, and focus moves into it.",
     "Enter saves and Escape cancels; focus goes back to the cell. Tab moves to the next cell.",
-    "Remove row buttons are named Remove row 2 and show that in a Tooltip."
+    "Remove row buttons are named Remove row 2 and show that in a Tooltip.",
+    "Set for all is a kit DropdownMenu under the column title; the header is still the kit HeaderCell.",
+    "With detail, each row starts with a kit Button named Show details, row 2 (Hide when open), with aria-expanded and aria-controls pointing at the open detail, a group named Details, row 2.",
+    "A date cell is a kit DatePicker named by its column and row, like Start date, row 2."
   ],
   "snippet": "<DataGrid\n  label=\"Conditions\"\n  columns={[\n    { key: \"field\", header: \"Field\", type: \"formula\", fields: accountFields },\n    { key: \"condition\", header: \"Condition\", type: \"select\", options: conditions, width: \"200px\" },\n    { key: \"value\", header: \"Value\" },\n  ]}\n  rows={rules}\n  onRowsChange={setRules}\n  canAddRows\n  canRemoveRows\n/>",
   "examples": [
@@ -92,7 +118,7 @@
     },
     {
       "title": "Line items",
-      "usage": "number cells align to the end. A readOnly column shows values people cannot change. Small size for denser rows.",
+      "usage": "number cells align to the end. A readOnly column shows values people cannot change. Small size for denser rows. Quantity has Set for all under its title.",
       "items": [
         {
           "props": {
@@ -100,6 +126,24 @@
             "size": "sm",
             "columns": "{lineItemColumns}",
             "defaultRows": "{lineItems}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Dates and details",
+      "usage": "Start and End are date cells. Each row opens to its rate bands, a nested grid with a Currency select; the first row starts open.",
+      "items": [
+        {
+          "props": {
+            "label": "Subscriptions",
+            "columns": "{termColumns}",
+            "defaultRows": "{terms}",
+            "detail": "{bandDetail}",
+            "defaultExpanded": [
+              "t1"
+            ],
+            "canRemoveRows": true
           }
         }
       ]

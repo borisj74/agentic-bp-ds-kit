@@ -10,6 +10,11 @@
   background: var(--surface-flat); font-family: var(--font-sans);
 }
 .table th, .table td { padding: 0; vertical-align: middle; text-align: start; }
+/* Every value stays on one line at any width: a name, a contract or a date never wraps down its cell. The table is
+   at least as wide as its box and grows past it when the columns need more room, and then scrolls sideways inside
+   the box. */
+.table { width: max-content; min-width: 100%; }
+.table th, .table td { white-space: nowrap; }
 
 /* The table cells carry the lines and the rows the fills, so the Cells inside drop theirs; cells of different
    heights in one row still share one line. HeaderCell's 2px brand-faint line, then a 1px faint line per row.
@@ -42,12 +47,9 @@
 }
 
 /* 640px = --grid-breakpoint-sm: CSS vars cannot appear in container or media queries.
-   On a phone-width box there is no room to share out: squeezing the columns breaks words down the cell, so
-   every cell keeps its own width on one line and the table scrolls sideways instead. The first column is what
-   names the row, so it is frozen against the start edge and the rest of the row slides under it. */
+   On a phone-width box the first column, which names the row, is frozen against the start edge and the rest of
+   the row slides under it as the table scrolls sideways. */
 @container (max-width: 640px) {
-  .table { width: max-content; min-width: 100%; }
-  .table th, .table td { white-space: nowrap; }
   /* The checkbox column is frozen with the name beside it, so a row can still be ticked while it is read.
      Its width is pinned, since the next column is held exactly that far in. */
   .select { width: var(--control-large); min-width: var(--control-large); max-width: var(--control-large); }

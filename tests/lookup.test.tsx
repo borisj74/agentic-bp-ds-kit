@@ -51,4 +51,32 @@ describe("Lookup", () => {
     await user.click(screen.getByRole("button", { name: "Clear Product" }));
     expect(onChange).toHaveBeenCalledWith(null, null);
   });
+
+  it("picks many from a button: ticks rows, then hands them over from the footer", async () => {
+    const user = userEvent.setup();
+    const onConfirm = vi.fn();
+    render(<Lookup label="Add batch" trigger="button" multiple columns={COLUMNS} rows={ROWS} labelKey="name" onConfirm={onConfirm} />);
+    await user.click(screen.getByRole("button", { name: "Add batch" }));
+    const dialog = await screen.findByRole("dialog", { name: "Lookup: Add batch" });
+    const add = within(dialog).getByRole("button", { name: "Add selected (0)" });
+    expect(add).toBeDisabled();
+    await user.click(within(dialog).getByRole("checkbox", { name: "Select Gold plan" }));
+    await user.click(within(dialog).getByText("Silver plan"));
+    await user.click(within(dialog).getByRole("button", { name: "Add selected (2)" }));
+    expect(onConfirm).toHaveBeenCalledWith(["p1", "p2"], [expect.objectContaining({ id: "p1" }), expect.objectContaining({ id: "p2" })]);
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+  });
+
+  it("starts a new batch empty each time it opens", async () => {
+    const user = userEvent.setup();
+    render(<Lookup label="Add batch" trigger="button" multiple columns={COLUMNS} rows={ROWS} labelKey="name" />);
+    await user.click(screen.getByRole("button", { name: "Add batch" }));
+    let dialog = await screen.findByRole("dialog", { name: "Lookup: Add batch" });
+    await user.click(within(dialog).getByRole("checkbox", { name: "Select Gold plan" }));
+    await user.click(within(dialog).getByRole("button", { name: "Cancel" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    await user.click(screen.getByRole("button", { name: "Add batch" }));
+    dialog = await screen.findByRole("dialog", { name: "Lookup: Add batch" });
+    expect(within(dialog).getByRole("button", { name: "Add selected (0)" })).toBeDisabled();
+  });
 });

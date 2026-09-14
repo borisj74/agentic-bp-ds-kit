@@ -2,7 +2,7 @@
   "name": "Card",
   "path": "src/ui/Card/Card.tsx",
   "intent": "One item in a grid or list of options people compare and pick, like a proposal line, product or plan: title, details, a price and a status note, with an optional image and a select checkbox.",
-  "usage": "Use Card for items people scan side by side and often pick from. It is one component: pass the parts you need as props; every part is optional (header, badge, overline, title, description, amount, message, image, footer). The header row holds a badge and an overline, like a request code. description is two lines at most. amount is the price or key number. message is a short status line with an icon, colored by messageTone. image shows a photo tile at the top right, or icon an icon tile. selectable adds a footer checkbox; clicking anywhere on the card toggles it, and the selected card turns blue. disabled greys the card out. Lay cards out with the layout grid classes. See contracts/card.json for the full contract.",
+  "usage": "Use Card for items people scan side by side and often pick from. It is one component: pass the parts you need as props; every part is optional (header, badge, overline, title, description, amount, message, image, footer). The header row holds a badge and an overline, like a request code. description is two lines at most. amount is the price or key number. message is a short status line with an icon, colored by messageTone. image shows a photo tile at the top right, or icon an icon tile. selectable adds a footer checkbox; clicking anywhere on the card toggles it, and the selected card turns blue. disabled greys the card out. href or onClick make the card open what it shows, like an account in a card view of a list: the title becomes the one link, its hit area covers the whole card, hover lifts the card and keyboard focus rings it. A card either opens something or is picked, not both. Lay cards out with the layout grid classes. See contracts/card.json for the full contract.",
   "props": {
     "title": {
       "type": "string",
@@ -77,24 +77,37 @@
       "type": "boolean",
       "default": false,
       "note": "Greys the card out and disables its checkbox."
+    },
+    "href": {
+      "type": "string",
+      "note": "Where the card goes, like the record it shows. The title becomes the link and the whole card is its click target. Leave it out with selectable."
+    },
+    "onClick": {
+      "type": "function",
+      "signature": "() => void",
+      "note": "Opens what the card shows in place, like switching the page to that record. Without href the title is a button that runs it; with href it runs before the link opens. Ignored when selectable or disabled."
     }
   },
   "useWhen": [
     "Proposal lines, products or plans people compare and pick, in a grid or a list.",
-    "Items that each need a title, a few details, a price and a status at a glance."
+    "Items that each need a title, a few details, a price and a status at a glance.",
+    "A card view of records where clicking a card opens that record: pass href or onClick."
   ],
   "doNot": [
     "Do not build a card from a div with a border, or add a ProductCard, ProposalCard or CardFooter. Use Card.",
     "Do not use it for page sections. Use Section.",
     "Do not use it for key numbers. Use Scoreboard.",
     "Do not put rows of records in cards when people need to sort or compare columns. Use Table.",
-    "Do not use raw hex."
+    "Do not use raw hex.",
+    "Do not make a card both selectable and open a record. Pick one: selectable for choosing, href or onClick for opening.",
+    "Do not put a Link or Button inside a card to open it. Pass href or onClick."
   ],
   "a11y": [
     "The title is an h3 that names the card. Without a title, the card and its checkbox are named by the overline, or else the description.",
     "When selectable, the footer Checkbox is the control, named Select plus the title. Clicking the card is a pointer shortcut for it; keyboard users tab to the Checkbox.",
     "The message icon is decorative; the message text says what it means.",
-    "The image uses imageAlt, or is decorative without it. The icon tile is decorative."
+    "The image uses imageAlt, or is decorative without it. The icon tile is decorative.",
+    "With href or onClick the title is a real link (or a button without href), named by the title or else the overline; its hit area stretches over the card, so the card is one tab stop, and focus shows a ring round the card."
   ],
   "snippet": "<Card\n  badge=\"New\"\n  overline=\"Req 6787686\"\n  title=\"Alpha Logic wireless ergonomic mouse\"\n  description=\"Rechargeable, 6 buttons, works with Windows and macOS.\"\n  amount=\"$49.00\"\n  message=\"In stock\"\n  icon=\"mouse\"\n  selectable\n/>",
   "examples": [
@@ -178,6 +191,33 @@
             "amount": "$1,200.00 / year",
             "message": "Renews on 1 March",
             "messageTone": "info"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Opens a record",
+      "usage": "href makes the whole card a link to what it shows; hover the card, or tab to it and press Enter.",
+      "items": [
+        {
+          "props": {
+            "badge": "Active",
+            "overline": "72082",
+            "title": "Brightwater Analytics",
+            "description": "Account · Monthly billing",
+            "href": "#"
+          }
+        },
+        {
+          "props": {
+            "badge": "Draft",
+            "badgeTone": "info",
+            "overline": "72074",
+            "title": "Lakeshore Clinics",
+            "description": "Account · Monthly billing",
+            "message": "Needs approval",
+            "messageTone": "warning",
+            "href": "#"
           }
         }
       ]
