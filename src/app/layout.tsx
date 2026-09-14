@@ -14,7 +14,7 @@ const themeInit = `(function(){try{var d=document.documentElement,t=localStorage
 
 export const metadata: Metadata = {
   title: "Agentic BP DS",
-  description: "Code-only design system and playground for prototyping product screens.",
+  description: "Code-first design system and playground for prototyping product screens.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

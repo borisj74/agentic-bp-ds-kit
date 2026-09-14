@@ -89,7 +89,7 @@ export function CatalogShell({ children }: { children: ReactNode }) {
             </Button>
           </span>
           <span className={styles.brandName}>Agentic BP DS</span>
-          <span className={styles.brandTag}>code-only design system</span>
+          <span className={styles.brandTag}>code-first design system</span>
         </div>
         <div className={styles.topbarRight}><ThemeControls /></div>
       </header>

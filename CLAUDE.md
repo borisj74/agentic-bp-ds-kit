@@ -2,7 +2,7 @@
 
 # Agentic BP DS
 
-Personal code-only design system and playground. Not BillingPlatform. Not PracticeFlow. Not Studio. No Figma, no Code Connect, no Storybook.
+Code-first design system and playground.
 
 Repo: https://github.com/borisj74/agentic-bp-ds-kit.git. Code is the only source of truth.
 

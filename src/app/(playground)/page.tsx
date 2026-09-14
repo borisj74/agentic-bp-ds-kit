@@ -21,7 +21,7 @@ export default function Overview() {
     <>
       <h1 className={shell.pageTitle}>Agentic BP DS</h1>
       <p className={shell.pageLead}>
-        A code-only design system for prototyping product screens with an AI assistant. Describe a screen, and the
+        A code-first design system for prototyping product screens with an AI assistant. Describe a screen, and the
         assistant builds it from the kit&apos;s own components and patterns.
       </p>
       <div className={docs.page}>

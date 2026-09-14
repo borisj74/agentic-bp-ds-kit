@@ -1,6 +1,6 @@
 # Agentic BP DS
 
-A code-only design system for prototyping product screens with an AI assistant. Describe a screen, and the assistant builds it from the kit's own components and patterns.
+A code-first design system for prototyping product screens with an AI assistant. Describe a screen, and the assistant builds it from the kit's own components and patterns.
 
 This README follows the **Start** pages in the catalog (Overview, Installation, Using patterns and Prompting). Run the kit and open them for the always-current version.
 
