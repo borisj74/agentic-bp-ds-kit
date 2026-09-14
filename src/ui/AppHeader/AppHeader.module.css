@@ -35,13 +35,15 @@ a.home:focus-visible { outline: var(--border-width-medium) solid var(--outline-b
 .brandFull, .brandSymbol { display: inline-flex; }
 .brandSymbol { display: none; }
 
-/* Figma global-search-trigger: 40px, white, neutral border, small shadow, 4px corners. */
+/* Figma global-search-trigger: 40px, white, a quiet neutral border, a light shadow that only falls downward, 4px
+   corners. The border can be quieter than a form field's: the search icon and its text already say what it is, so
+   its edge is not the only thing marking it out. Hover firms the border up to the field color. */
 .center { display: flex; justify-content: center; min-width: 0; }
 .search {
   box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xsmall); width: 100%; height: var(--search-h);
   margin: 0; padding: 0 var(--space-small);
-  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-field); border-radius: var(--radius-medium);
-  box-shadow: var(--elevation-card); font: inherit; color: var(--text-neutral-strong); text-align: start; cursor: pointer;
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-medium);
+  box-shadow: var(--elevation-bar); font: inherit; color: var(--text-neutral-strong); text-align: start; cursor: pointer;
   transition: border-color var(--motion-interaction-duration) var(--motion-interaction-easing);
 }
 .search:hover { border-color: var(--border-neutral-field-hover); }
