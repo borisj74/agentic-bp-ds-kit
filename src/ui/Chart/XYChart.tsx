@@ -13,6 +13,24 @@ export interface ChartSeries {
   tone?: ChartTone;
 }
 
+// LineChart only: projectedFrom is the first category that is a forecast. The line turns dashed where it starts.
+export interface ChartLineSeries extends ChartSeries {
+  projectedFrom?: number;
+}
+
+// LineChart only: a dashed line across the chart at a value, like a limit or a target.
+export interface ChartReferenceLine {
+  value: number;
+  label: string;
+  tone?: ChartTone;
+}
+
+// LineChart only: a thin line down the chart at one category, like today.
+export interface ChartMarker {
+  category: number;
+  label: string;
+}
+
 export type ChartOrientation = "vertical" | "horizontal";
 export type ChartLegendPlace = "top" | "bottom" | "end";
 
@@ -23,7 +41,7 @@ export interface XYChartProps {
   subtitle?: string;
   showTitle?: boolean;
   categories: string[];
-  series: ChartSeries[];
+  series: ChartLineSeries[];
   orientation?: ChartOrientation;
   highlight?: number | number[];
   highlightTone?: ChartTone;
@@ -39,6 +57,8 @@ export interface XYChartProps {
   currency?: string;
   height?: number;
   emptyLabel?: string;
+  referenceLines?: ChartReferenceLine[];
+  marker?: ChartMarker;
 }
 
 // Room around the plot: axis labels below, value labels past the bars, labels at the start (about 7px a character at 12px).
@@ -50,11 +70,14 @@ const POINT = 4;
 const LINE = 16;
 // Horizontal bars grow the chart by a row per category, unless a height is given.
 const ROW = 36;
+// Dashes for projections and reference lines: 6 on, 4 off.
+const DASH = "6 4";
 
 export function XYChart({
   kind, label, title, subtitle, showTitle = true, categories, series, orientation = "vertical", highlight, highlightTone = "orange",
   stacked = false, area = false, showPoints = false, showValues = false,
   showGrid = true, showLegend = true, legend = "bottom", animate = true, format = "number", currency = "USD", height, emptyLabel = "No data for this range.",
+  referenceLines = [], marker,
 }: XYChartProps) {
   const plotRef = useRef<HTMLDivElement>(null);
   const width = useWidth(plotRef);
@@ -74,7 +97,15 @@ export function XYChart({
   // Stacks: each series sits on the sum of the ones before it.
   const lower = list.map((_, k) => categories.map((__, i) => (stacked ? list.slice(0, k).reduce((sum, sr) => sum + sr.vals[i], 0) : 0)));
   const upper = list.map((sr, k) => sr.vals.map((v, i) => lower[k][i] + v));
-  const max = Math.max(...upper.flat(), 0);
+  // Reference lines and projections are line-chart ideas; bars ignore them.
+  const line = kind === "line";
+  const refs = line ? referenceLines : [];
+  const mark = line && marker && marker.category >= 0 && marker.category < n ? marker : undefined;
+  // The first forecast category of a series, or n when it has none.
+  const firstProjected = (sr: ChartLineSeries) => (line && sr.projectedFrom !== undefined ? Math.min(Math.max(Math.round(sr.projectedFrom), 0), n) : n);
+  const projected = (sr: ChartLineSeries, i: number) => i >= firstProjected(sr);
+  // A reference line above the data still sits inside the scale.
+  const max = Math.max(...upper.flat(), ...refs.map((r) => r.value), 0);
   const ticks = niceTicks(max);
   const top = ticks[ticks.length - 1];
   const tickW = Math.max(...ticks.map((t) => short(t).length)) * CHAR;
@@ -85,7 +116,7 @@ export function XYChart({
   // The plot box. Horizontal: category labels take up to 40% at the start; values or the last tick overhang the end.
   const x0 = horizontal ? Math.min(catW, Math.round(width * 0.4)) : tickW + 12;
   const x1 = Math.max(width - (horizontal ? (showValues ? valueW + 8 : Math.max(RIGHT, Math.ceil(tickW / 2))) : RIGHT), x0 + 1);
-  const y0 = !horizontal && showValues ? 20 : TOP;
+  const y0 = !horizontal && (showValues || mark) ? 20 : TOP;
   const y1 = h - BOTTOM;
 
   // c: the middle of category i's band. v: where a value lands on the value axis.
@@ -144,6 +175,10 @@ export function XYChart({
     return list.map((sr, k) => {
       const topPts = pts(k, upper);
       const floor = stacked ? pts(k, lower).reverse() : [`${c(n - 1).toFixed(1)},${y1}`, `${c(0).toFixed(1)},${y1}`];
+      // Actual values draw solid; from the last actual point on, the forecast draws dashed.
+      const p = firstProjected(sr);
+      const solid = topPts.slice(0, p);
+      const dashed = p < n ? topPts.slice(Math.max(p - 1, 0)) : [];
       return (
         <g key={sr.name}>
           {area && (
@@ -152,7 +187,8 @@ export function XYChart({
               style={{ fill: toneVar(sr.tone), fillOpacity: stacked ? 1 : "var(--opacity-muted)" }}
             />
           )}
-          <path className={s.draw} d={`M${topPts.join("L")}`} pathLength={1} fill="none" style={{ stroke: toneVar(sr.tone) }} strokeWidth={stacked ? 1 : 2} strokeLinejoin="round" strokeLinecap="round" />
+          {solid.length > 1 && <path className={s.draw} d={`M${solid.join("L")}`} pathLength={1} fill="none" style={{ stroke: toneVar(sr.tone) }} strokeWidth={stacked ? 1 : 2} strokeLinejoin="round" strokeLinecap="round" />}
+          {dashed.length > 1 && <path className={s.fade} data-projected="" d={`M${dashed.join("L")}`} fill="none" style={{ stroke: toneVar(sr.tone) }} strokeWidth={stacked ? 1 : 2} strokeDasharray={DASH} strokeLinejoin="round" />}
         </g>
       );
     });
@@ -174,9 +210,40 @@ export function XYChart({
     </g>
   ));
 
+  // Reference lines under the data, labelled at the end with their short value; the marker runs top to bottom.
+  const guides = () => (
+    <g className={s.fade}>
+      {refs.map((r) => (
+        <line
+          key={`${r.label}${r.value}`} className={s.reference} data-reference=""
+          x1={x0} x2={x1} y1={px(v(r.value))} y2={px(v(r.value))} strokeDasharray={DASH}
+          style={{ stroke: r.tone ? toneVar(r.tone) : undefined }}
+        />
+      ))}
+      {mark && <line className={s.marker} data-marker="" x1={px(c(mark.category))} x2={px(c(mark.category))} y1={y0} y2={y1} />}
+    </g>
+  );
+  // Their words go over everything else. A reference line at the very top puts its label under the line.
+  const guideLabels = () => (
+    <g className={s.fade}>
+      {refs.map((r) => {
+        const y = v(r.value);
+        return <text key={`${r.label}${r.value}`} className={s.referenceLabel} x={x1} y={y - y0 < 16 ? y + 14 : y - 6} textAnchor="end">{`${r.label} ${short(r.value)}`}</text>;
+      })}
+      {mark && (
+        <text
+          className={s.markerLabel} x={c(mark.category)} y={y0 - 8}
+          textAnchor={c(mark.category) - x0 < 40 ? "start" : x1 - c(mark.category) < 40 ? "end" : "middle"}
+        >
+          {mark.label}
+        </text>
+      )}
+    </g>
+  );
+
   const tip = active !== null && (() => {
     const end = Math.max(...upper.map((u) => u[active]));
-    const rows = [...list].reverse().map((sr) => ({ label: sr.name, value: full(sr.vals[active]), tone: sr.tone }));
+    const rows = [...list].reverse().map((sr) => ({ label: projected(sr, active) ? `${sr.name} (projected)` : sr.name, value: full(sr.vals[active]), tone: sr.tone }));
     // Horizontal: over the end of the bar, turned inward near the edge. Upright: over the top, turned inward at the ends.
     return horizontal
       ? <ChartTooltip x={v(end)} y={c(active) - band / 2} title={categories[active]} align={v(end) > x0 + (x1 - x0) * 0.7 ? "end" : "center"} rows={rows} />
@@ -208,8 +275,10 @@ export function XYChart({
               ? <rect className={s.hoverBand} x={x0} y={c(active) - step / 2} width={x1 - x0} height={step} />
               : <rect className={s.hoverBand} x={c(active) - step / 2} y={y0} width={step} height={y1 - y0} />)
             : <line className={s.crosshair} x1={c(active)} x2={c(active)} y1={y0} y2={y1} />)}
+          {line && guides()}
           {kind === "bar" ? bars() : lines()}
           {marks()}
+          {line && guideLabels()}
           {categories.map((t, i) => i % every === 0 && (horizontal
             ? <text key={t + i} className={s.tick} x={x0 - 12} y={c(i)} dy="0.35em" textAnchor="end">{catText(t)}</text>
             : <text key={t + i} className={s.tick} x={c(i)} y={y1 + 18} textAnchor="middle">{t}</text>))}
@@ -226,7 +295,13 @@ export function XYChart({
       onKeyDown={onKeyDown} onBlur={() => setActive(null)}
     >
       {legend === "end" ? <div className={s.beside}>{plot}{keys}</div> : legend === "top" ? <>{keys}{plot}</> : <>{plot}{keys}</>}
-      <SrTable caption={label} columns={list.map((sr) => sr.name)} rows={categories.map((t, i) => ({ head: t, cells: list.map((sr) => full(sr.vals[i])) }))} />
+      <SrTable caption={label} columns={list.map((sr) => sr.name)} rows={categories.map((t, i) => ({ head: t, cells: list.map((sr) => (projected(sr, i) ? `${full(sr.vals[i])} (projected)` : full(sr.vals[i]))) }))} />
+      {(refs.length > 0 || mark) && (
+        <ul className={s.srOnly}>
+          {refs.map((r) => <li key={`${r.label}${r.value}`}>{`${r.label}: ${full(r.value)}`}</li>)}
+          {mark && <li>{`${mark.label}: ${categories[mark.category]}`}</li>}
+        </ul>
+      )}
     </ChartFrame>
   );
 }

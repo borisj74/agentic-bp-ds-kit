@@ -2,7 +2,7 @@
   "name": "LineChart",
   "path": "src/ui/LineChart/LineChart.tsx",
   "intent": "How values change over time as lines or filled areas, one per series, like revenue by month or invoices approved by day.",
-  "usage": "Use LineChart for trends across ordered categories, usually time. It is one component: pass categories (the labels along the bottom) and series (one values array each). area fills under each line; stacked piles the areas on each other so the top edge is the total, like invoices by severity. showPoints marks each value with a dot and showValues writes it above. Hover or use the arrow keys for a tooltip with every series at that point. animate plays a subtle draw-in. Put the chart's title and report link in the Section or Card around it. ChartTone: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). title and subtitle write a heading over the chart; showTitle turns it off when the Card around it already says the same. The keys under the chart are the kit Legend; legend moves them over it or beside it. See contracts/linechart.json for the full contract. A legend beside the chart drops under it when the chart's own box is narrower than 360px.",
+  "usage": "Use LineChart for trends across ordered categories, usually time. It is one component: pass categories (the labels along the bottom) and series (one values array each). area fills under each line; stacked piles the areas on each other so the top edge is the total, like invoices by severity. showPoints marks each value with a dot and showValues writes it above. A limit or target goes in referenceLines, a dashed line across the chart with its label and value at the end. A forecast stays in the same series: projectedFrom names its first forecast category, and the line turns dashed from there. marker draws a thin line down the chart at one category, like Today. Hover or use the arrow keys for a tooltip with every series at that point. animate plays a subtle draw-in. Put the chart's title and report link in the Section or Card around it. ChartTone: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). title and subtitle write a heading over the chart; showTitle turns it off when the Card around it already says the same. The keys under the chart are the kit Legend; legend moves them over it or beside it. See contracts/linechart.json for the full contract. A legend beside the chart drops under it when the chart's own box is narrower than 360px.",
   "props": {
     "label": {
       "type": "string",
@@ -30,8 +30,8 @@
     "series": {
       "type": "ChartSeries[]",
       "required": true,
-      "itemShape": "{ name: string; values: number[]; tone?: ChartTone }",
-      "note": "One entry per line or bar color, with one value per category. tone picks the color; by default series take green, olive, cyan, orange, pink, gray, then purple, yellow, red and mint."
+      "itemShape": "{ name: string; values: number[]; tone?: ChartTone; projectedFrom?: number }",
+      "note": "One entry per line or bar color, with one value per category. tone picks the color; by default series take green, olive, cyan, orange, pink, gray, then purple, yellow, red and mint. projectedFrom is the first category that is a forecast, counted from 0: the line is dashed from the last actual point on, and the tooltip and table say projected."
     },
     "area": {
       "type": "boolean",
@@ -100,20 +100,36 @@
       "type": "string",
       "default": "No data for this range.",
       "note": "Shown when there are no categories or series."
+    },
+    "referenceLines": {
+      "type": "ChartReferenceLine[]",
+      "itemShape": "{ value: number; label: string; tone?: ChartTone }",
+      "note": "Dashed lines across the chart at a value, like a limit or a target. label names it, like Limit; the chart writes the short value after it, at the end of the line. Neutral gray unless tone picks a color. The scale always reaches the highest line."
+    },
+    "marker": {
+      "type": "ChartMarker",
+      "itemShape": "{ category: number; label: string }",
+      "note": "A thin line down the chart at one category, counted from 0, with its label over the top, like Today."
     }
   },
   "useWhen": [
     "Trends over time: revenue by month, approvals by day, a burndown.",
-    "Part-to-whole over time with stacked areas."
+    "Part-to-whole over time with stacked areas.",
+    "A limit, target or budget across a trend, like API calls against the plan limit: referenceLines.",
+    "Actual values and a forecast in one line: projectedFrom on the series, with a marker at today."
   ],
   "doNot": [
     "Do not use it for categories without an order, like regions. Use BarChart.",
     "Do not use it for one share of a total. Use PieChart.",
+    "Do not fake a limit or target with an extra series. It shows in the legend, the tooltip and the table as data. Use referenceLines.",
+    "Do not draw a forecast as a second series. Use projectedFrom, so actual and forecast stay one line with one name.",
+    "Do not use marker for ranges or several moments. It marks one category, like today.",
     "Do not draw charts with loose SVG or a chart library. Use the kit charts.",
     "Do not use raw hex; pick a tone."
   ],
   "a11y": [
     "A figure named by label. The drawing is hidden from screen readers; a visually hidden table holds every value, with the categories as rows and the series as columns.",
+    "Reference lines and the marker are listed after the table for screen readers, like Limit: 10,000 and Today: Sep 13. Forecast values say projected in the tooltip and the table.",
     "The chart takes focus: the arrow keys (and Home and End) move through the categories and show the same tooltip as pointing at them. Escape hides it.",
     "Colors come with a legend and the tooltip names each series, so color is not the only way to tell them apart.",
     "Motion is subtle and optional (animate), and never plays when the person prefers reduced motion."
@@ -162,6 +178,21 @@
             "format": "currency",
             "stacked": true,
             "showPoints": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Limit and forecast",
+      "usage": "Actual use turns into a dashed forecast after today, against a dashed limit line.",
+      "items": [
+        {
+          "props": {
+            "label": "API calls by day",
+            "categories": "{usageDays}",
+            "series": "{usageForecast}",
+            "referenceLines": "{usageLimit}",
+            "marker": "{today}"
           }
         }
       ]

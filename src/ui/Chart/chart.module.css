@@ -27,6 +27,11 @@
 .valueLabel { font-size: var(--font-size-xsmall); font-weight: var(--font-weight-semibold); fill: var(--text-neutral-strong); }
 .hoverBand { fill: var(--bg-neutral-faint); }
 .crosshair { stroke: var(--border-neutral); stroke-width: var(--border-width-thin); }
+/* Reference lines (a limit or a target) are dashed and neutral unless given a tone; the marker (like today) is a thin solid line. */
+.reference { stroke: var(--border-neutral-intense); stroke-width: var(--border-width-medium); }
+.referenceLabel { font-size: var(--font-size-xsmall); font-weight: var(--font-weight-semibold); fill: var(--text-neutral-strong); }
+.marker { stroke: var(--border-neutral-intense); stroke-width: var(--border-width-thin); }
+.markerLabel { font-size: var(--font-size-xsmall); font-weight: var(--font-weight-medium); fill: var(--text-neutral); }
 
 .legend {
   display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-xsmall) var(--space-large);

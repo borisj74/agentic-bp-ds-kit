@@ -1,8 +1,10 @@
 "use client";
 import type { ChartFormat, ChartTone } from "../Chart/chart";
-import { XYChart, type ChartLegendPlace, type ChartSeries } from "../Chart/XYChart";
+import { XYChart, type ChartLegendPlace, type ChartLineSeries, type ChartMarker, type ChartReferenceLine } from "../Chart/XYChart";
 
-export type { ChartFormat, ChartSeries, ChartTone, ChartLegendPlace };
+export type { ChartFormat, ChartTone, ChartLegendPlace, ChartMarker, ChartReferenceLine };
+// A LineChart series can turn into a forecast part way: projectedFrom.
+export type ChartSeries = ChartLineSeries;
 
 export interface LineChartProps {
   label: string;
@@ -23,6 +25,8 @@ export interface LineChartProps {
   currency?: string;
   height?: number;
   emptyLabel?: string;
+  referenceLines?: ChartReferenceLine[];
+  marker?: ChartMarker;
 }
 
 // Figma Persona Homepages 1205:14553 (lines), 1206:33138 (stacked area with points) and 996:22722 (area with values).

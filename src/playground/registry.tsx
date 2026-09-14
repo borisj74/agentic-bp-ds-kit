@@ -395,6 +395,11 @@ const CHART_SAMPLES: Record<string, unknown> = {
   "{payments}": [
     { label: "Card", value: 182400 }, { label: "ACH", value: 96300 }, { label: "Wire", value: 41800 }, { label: "Check", value: 12600 },
   ],
+  // A usage trend that turns into a forecast after today, against the plan limit.
+  "{usageDays}": ["Sep 1", "Sep 4", "Sep 7", "Sep 10", "Sep 13", "Sep 16", "Sep 19", "Sep 22", "Sep 25", "Sep 28"],
+  "{usageForecast}": [{ name: "API calls", values: [4200, 5100, 5600, 6300, 7000, 7600, 8300, 9000, 9700, 10400], tone: "cyan", projectedFrom: 5 }],
+  "{usageLimit}": [{ value: 10000, label: "Limit", tone: "red" }],
+  "{today}": { category: 4, label: "Today" },
   "{paymentShare}": [
     { label: "Card", value: 55 }, { label: "ACH", value: 29 }, { label: "Wire", value: 13 }, { label: "Check", value: 3 },
   ],
@@ -774,7 +779,7 @@ export const registry: Record<string, Entry> = {
       label: "Revenue by period", title: "Revenue by period", subtitle: "Last 6 months, all accounts",
       categories: "{months}", series: "{revenue}", format: "currency", area: true, showPoints: true, showValues: true,
     },
-    hint: "Hover or use the arrow keys for the tooltip. Turn the title, area, stacked, points, values, grid, legend and animate on and off.",
+    hint: "Hover or use the arrow keys for the tooltip. Turn the title, area, stacked, points, values, grid, legend and animate on and off. Variants has a limit line, a dashed forecast and a today marker.",
     block: true,
     card: <div style={{ width: "100%" }}><LineChart label="Revenue" categories={["Jan", "Feb", "Mar", "Apr", "May"]} series={[{ name: "Revenue", values: [3, 3.4, 4.1, 4.3, 4.8] }]} area showLegend={false} height={96} animate={false} /></div>,
   },
