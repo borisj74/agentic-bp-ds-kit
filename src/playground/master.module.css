@@ -102,6 +102,17 @@
 
 /* Gallery cards on /components. */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-medium); }
+/* Gallery head: the page title and lead on the start, the search on the end, tops level. When there is no room
+   beside the title, the search wraps under it and still keeps to the end. */
+.galleryHead {
+  display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between;
+  gap: var(--space-small) var(--space-xlarge); margin-bottom: var(--space-xlarge);
+}
+.galleryIntro { flex: 1 1 320px; min-width: 0; }
+.galleryIntro > p { margin-bottom: 0; }
+.gallerySearch { flex: 0 1 320px; min-width: 0; margin-inline-start: auto; display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-xxsmall); }
+.gallerySearch > :first-child { align-self: stretch; }
+.galleryCount { font-size: var(--font-size-small); color: var(--text-neutral-subtle); }
 .card { position: relative; display: block; border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-large); background: var(--surface-flat); overflow: hidden; }
 .card:hover { border-color: var(--border-neutral-strong); }
 .card:has(.cardTitle:focus-visible) { outline: var(--border-width-medium) solid var(--outline-brand); }
