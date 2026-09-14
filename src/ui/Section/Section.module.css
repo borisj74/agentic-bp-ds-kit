@@ -6,6 +6,8 @@
   display: flex; flex-direction: column; gap: var(--space-xxsmall);
   padding-bottom: var(--space-xsmall); border-bottom: var(--border-width-medium) solid var(--border-brand-faint);
 }
+/* line thin: a 1px rule. Only this section's own header, so a section inside keeps its own line. */
+.thin > .header { border-bottom-width: var(--border-width-thin); }
 .row { display: flex; align-items: center; gap: var(--space-xsmall); min-height: var(--control-small); }
 .title {
   margin: 0; min-width: 0;

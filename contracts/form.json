@@ -43,8 +43,8 @@
     },
     "sections": {
       "type": "FormSection[]",
-      "itemShape": "{ title: string; description?: string; help?: string; actions?: ReactNode; content: ReactNode; collapsible?: boolean; open?: boolean; defaultOpen?: boolean; onOpenChange?: (open: boolean) => void }",
-      "note": "Titled groups of fields. Each is a kit Section, so it brings the kit's heading row and line, takes help for the question mark beside its title, and folds away with collapsible. The screen can hold which ones are open. actions puts kit Buttons, size sm, at the end of the group's header, for things that act on that group, like Back to search or Override rate, instead of placing buttons among the fields."
+      "itemShape": "{ title: string; description?: string; help?: string; actions?: ReactNode; content: ReactNode; line?: \"medium\" | \"thin\"; collapsible?: boolean; open?: boolean; defaultOpen?: boolean; onOpenChange?: (open: boolean) => void }",
+      "note": "Titled groups of fields. Each is a kit Section, so it brings the kit's heading row and line, takes help for the question mark beside its title, and folds away with collapsible. The screen can hold which ones are open. actions puts kit Buttons, size sm, at the end of the group's header, for things that act on that group, like Back to search or Override rate, instead of placing buttons among the fields. line thin gives the group a 1px header line instead of 2px."
     },
     "actions": {
       "type": "ReactNode",

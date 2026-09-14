@@ -1,7 +1,7 @@
 "use client";
 import { useId, type FormEvent, type ReactNode } from "react";
 import { Alert } from "../Alert/Alert";
-import { Section } from "../Section/Section";
+import { Section, type SectionLine } from "../Section/Section";
 import { FormLayoutContext, type FieldLabelPosition } from "./FormContext";
 import styles from "./Form.module.css";
 
@@ -15,6 +15,7 @@ export interface FormSection {
   help?: string;
   actions?: ReactNode;
   content: ReactNode;
+  line?: SectionLine;
   collapsible?: boolean;
   open?: boolean;
   defaultOpen?: boolean;
@@ -72,7 +73,7 @@ export function Form({
         {sections
           ? sections.map((s) => (
               <Section
-                key={s.title} title={s.title} description={s.description} help={s.help} actions={s.actions}
+                key={s.title} title={s.title} description={s.description} help={s.help} actions={s.actions} line={s.line}
                 collapsible={s.collapsible} open={s.open} defaultOpen={s.defaultOpen} onOpenChange={s.onOpenChange}
               >
                 <div className={styles.fields}>{s.content}</div>

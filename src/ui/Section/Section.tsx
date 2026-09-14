@@ -5,12 +5,15 @@ import { HelpPopover } from "../HelpPopover/HelpPopover";
 import { Icon } from "../Icon/Icon";
 import styles from "./Section.module.css";
 
+export type SectionLine = "medium" | "thin";
+
 export interface SectionProps {
   title: string;
   description?: string;
   help?: string;
   actions?: ReactNode;
   children?: ReactNode;
+  line?: SectionLine;
   collapsible?: boolean;
   open?: boolean;
   defaultOpen?: boolean;
@@ -19,7 +22,7 @@ export interface SectionProps {
 
 // Figma COBALT section header 304:31917: chevron button, bold title, ? help, actions at the end, a brand-faint line under it.
 export function Section({
-  title, description, help, actions, children, collapsible = false, open: openProp, defaultOpen = true, onOpenChange,
+  title, description, help, actions, children, line = "medium", collapsible = false, open: openProp, defaultOpen = true, onOpenChange,
 }: SectionProps) {
   const uid = useId();
   const headingId = `${uid}-title`;
@@ -34,7 +37,7 @@ export function Section({
   };
 
   return (
-    <section className={styles.section} aria-labelledby={headingId}>
+    <section className={[styles.section, line === "thin" ? styles.thin : ""].join(" ")} aria-labelledby={headingId}>
       <header className={styles.header}>
         <div className={styles.row}>
           {collapsible && (

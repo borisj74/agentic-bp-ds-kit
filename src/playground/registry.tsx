@@ -336,6 +336,17 @@ const slides = (vertical: boolean) => Array.from({ length: 5 }, (_, i) => (
 const SECTION_SAMPLES: Record<string, ReactNode> = {
   "{editAction}": <Button size="sm" iconStart="edit">Edit</Button>,
   "{addAction}": <Button size="sm" iconStart="add">Add contact</Button>,
+  // Two subsections with thin lines, for the Thin lines example.
+  "{thinSubsections}": (
+    <>
+      <Section title="Payment method" line="thin">
+        <FormDisplay label="Card" value="Visa ending 4242" />
+      </Section>
+      <Section title="Invoice delivery" line="thin">
+        <FormDisplay label="Send to" value="billing@northwind.com" />
+      </Section>
+    </>
+  ),
   "{accountRows}": (
     <div>
       <FormDisplay label="Account name" value="Northwind Traders" />
@@ -1571,7 +1582,7 @@ export const registry: Record<string, Entry> = {
     hide: ["open"],
     extras: { content: { values: ["body", "header only"], default: "body" } },
     normalize: ({ content, children, ...p }) => (content === "header only" ? p : { ...p, children }),
-    hint: "Click the chevron to fold the section. Turn collapsible off for a static heading; content header only drops the body.",
+    hint: "Click the chevron to fold the section. Turn collapsible off for a static heading; content header only drops the body. Line thin makes the rule under the title 1px; Variants shows thin subsections.",
     block: true,
     card: (
       <div style={{ width: 380 }}>
