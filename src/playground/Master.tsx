@@ -1,6 +1,7 @@
 "use client";
 import { useState, type CSSProperties } from "react";
 import { Button } from "@/ui/Button/Button";
+import { Icon } from "@/ui/Icon/Icon";
 import { Switch } from "@/ui/Switch/Switch";
 import { Tabs } from "@/ui/Tabs/Tabs";
 import styles from "./master.module.css";
@@ -185,6 +186,27 @@ export function Master({ contract }: { contract: Contract }) {
               <h3 className={styles.detailLabel}>Usage</h3>
               <p className={styles.detailText}>{contract.usage ?? contract.intent}</p>
             </div>
+            {/* Do's and Don'ts come straight from the contract's useWhen and doNot, so the page and the agents read the same rules. */}
+            {(contract.useWhen?.length > 0 || contract.doNot?.length > 0) && (
+              <div className={styles.rules}>
+                {[
+                  { title: "Do's", items: contract.useWhen ?? [], icon: "check_circle", tone: "success" as const },
+                  { title: "Don'ts", items: contract.doNot ?? [], icon: "cancel", tone: "danger" as const },
+                ].filter((group) => group.items.length > 0).map((group) => (
+                  <div key={group.title} className={styles.detail}>
+                    <h3 className={styles.detailLabel}>{group.title}</h3>
+                    <ul className={styles.ruleList}>
+                      {group.items.map((rule) => (
+                        <li key={rule} className={styles.rule}>
+                          <Icon name={group.icon} size="sm" tone={group.tone} className={styles.ruleIcon} />
+                          <span>{rule}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
             <Code code={snippet} id="preview" c={c} />
           </div>
         </div>

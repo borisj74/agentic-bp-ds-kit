@@ -64,8 +64,19 @@
 /* Usage + code under a stage. */
 .docs { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-medium); }
 .detail { display: grid; gap: var(--space-xxsmall); max-width: 640px; }
-.detailLabel { margin: 0; font-size: var(--font-size-xsmall); font-weight: var(--font-weight-medium); color: var(--text-neutral-subtle); }
+/* text-heading-sm, a step above the 14px text under it, so Usage reads as a title rather than a caption. */
+.detailLabel {
+  margin: 0; font: var(--text-heading-sm-weight) var(--text-heading-sm-size) / var(--text-heading-sm-lh) var(--font-sans);
+  letter-spacing: var(--text-heading-sm-ls); color: var(--text-neutral-strong);
+}
 .detailText { margin: 0; font-size: var(--font-size-small); line-height: 1.5; color: var(--text-neutral-subtle); }
+/* Do's and Don'ts side by side; they stack once the column is too narrow for two readable lists. */
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-medium) var(--space-xlarge); }
+.rules > .detail { max-width: none; align-content: start; }
+.ruleList { display: grid; gap: var(--space-xsmall); margin: 0; padding: 0; list-style: none; }
+.rule { display: flex; align-items: flex-start; gap: var(--space-xsmall); font-size: var(--font-size-small); line-height: 1.5; color: var(--text-neutral-subtle); }
+/* The 16px icon sits on the first line's centre: (21px line - 16px icon) / 2. */
+.ruleIcon { flex: none; margin-top: calc((1.5em - var(--icon-size-small)) / 2); }
 .codeWrap { position: relative; }
 .code {
   margin: 0; overflow-x: auto; white-space: pre;
