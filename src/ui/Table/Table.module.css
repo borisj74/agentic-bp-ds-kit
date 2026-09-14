@@ -24,6 +24,10 @@
 .table tbody td { border-bottom: var(--border-width-thin) solid var(--border-neutral-faint); }
 .sm th > * { min-height: calc(var(--header-cell-height-sm) - var(--border-width-medium)); }
 .md th > * { min-height: calc(var(--header-cell-height-md) - var(--border-width-medium)); }
+/* line thin: a 1px header line, and the header cells give up 1px instead of 2, so the header keeps its height. */
+.thin thead th, .thin thead td { border-bottom-width: var(--border-width-thin); }
+.thin.sm th > * { min-height: calc(var(--header-cell-height-sm) - var(--border-width-thin)); }
+.thin.md th > * { min-height: calc(var(--header-cell-height-md) - var(--border-width-thin)); }
 .sm td > * { min-height: calc(var(--cell-height-sm) - var(--border-width-thin)); }
 .md td > * { min-height: calc(var(--cell-height-md) - var(--border-width-thin)); }
 .table tbody tr:hover { background: var(--bg-neutral-min-hover); }

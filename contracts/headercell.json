@@ -1,7 +1,7 @@
 {
   "name": "HeaderCell",
   "path": "src/ui/HeaderCell/HeaderCell.tsx",
-  "intent": "Column title for a data table: uppercase label, optional select-all checkbox, optional sort, with a 2px brand-faint bottom border.",
+  "intent": "Column title for a data table: uppercase label, optional select-all checkbox, optional sort, with a brand-faint bottom border, 2px or 1px.",
   "usage": "Use HeaderCell inside th scope=col, one per column, above Cell rows. Match its size to the Cell size so side padding lines up. Use align end for number columns and center for a checkbox-only or actions column. HeaderCell composes kit Checkbox and Icon. See contracts/headercell.json for the full contract.",
   "props": {
     "label": {
@@ -24,6 +24,14 @@
       ],
       "default": "start",
       "note": "end for numbers and amounts. center for a checkbox-only or actions column."
+    },
+    "line": {
+      "enum": [
+        "medium",
+        "thin"
+      ],
+      "default": "medium",
+      "note": "The line under the title: medium is 2px, thin is 1px, both brand-faint. Table and DataGrid take line and pass it to every header, so the row keeps one line."
     },
     "checkbox": {
       "type": "boolean",
@@ -75,6 +83,7 @@
     "Do not invent a local th, TableHeader, ColumnTitle or SortButton.",
     "Do not use Cell for column titles, or HeaderCell in body rows.",
     "Do not mix HeaderCell and Cell sizes in one table.",
+    "Do not mix line weights in one header row. Set line on the Table or DataGrid.",
     "Do not make a column sortable without a label.",
     "Do not use raw hex."
   ],
@@ -162,6 +171,25 @@
           "props": {
             "label": "Customer",
             "size": "md"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Line",
+      "usage": "medium draws the 2px line, thin a 1px one.",
+      "items": [
+        {
+          "caption": "medium",
+          "props": {
+            "label": "Customer"
+          }
+        },
+        {
+          "caption": "thin",
+          "props": {
+            "label": "Customer",
+            "line": "thin"
           }
         }
       ]

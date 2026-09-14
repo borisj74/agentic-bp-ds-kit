@@ -1,4 +1,4 @@
-/* Column title with a 2px brand-faint bottom border. Side padding matches Cell sizes so columns line up. */
+/* Column title with a 2px brand-faint bottom border (1px with line thin). Side padding matches Cell sizes so columns line up. */
 .cell {
   box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xsmall);
   width: 100%; min-width: 0;
@@ -6,6 +6,7 @@
   font-family: var(--font-sans); font-size: var(--font-size-xsmall); font-weight: var(--font-weight-bold);
   line-height: 1.2; text-transform: uppercase; color: var(--text-neutral);
 }
+.thin { border-bottom-width: var(--border-width-thin); }
 .sm { min-height: var(--header-cell-height-sm); padding: var(--space-xsmall) var(--space-small); }
 .md { min-height: var(--header-cell-height-md); padding: var(--space-xsmall) var(--space-small); }
 

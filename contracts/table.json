@@ -24,6 +24,14 @@
       "default": "md",
       "note": "Row height 48 / 56, header 40 / 48, same as Cell and HeaderCell. Without a size, a surrounding Density in compact makes it sm. Give Cells you pass the same size."
     },
+    "line": {
+      "enum": [
+        "medium",
+        "thin"
+      ],
+      "default": "medium",
+      "note": "The line under the header row: medium is 2px, thin is 1px. Every HeaderCell takes it, and the header keeps its height."
+    },
     "caption": {
       "type": "string",
       "note": "Describes the table. Sits under the grid, and names the table for screen readers."
@@ -96,6 +104,19 @@
             "columns": "{invoiceColumns}",
             "rows": "{invoices}",
             "footer": "{total}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Thin header line",
+      "usage": "line thin draws a 1px line under the column titles instead of 2px.",
+      "items": [
+        {
+          "props": {
+            "columns": "{invoiceColumns}",
+            "rows": "{invoices}",
+            "line": "thin"
           }
         }
       ]

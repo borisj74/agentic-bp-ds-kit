@@ -31,6 +31,14 @@
       "default": "md",
       "note": "Row height 48 / 56, header 40 / 48, same as Table. Without a size, a surrounding Density in compact makes it sm. Formula cells grow while they are edited."
     },
+    "line": {
+      "enum": [
+        "medium",
+        "thin"
+      ],
+      "default": "medium",
+      "note": "The line under the header row: medium is 2px, thin is 1px. Every header takes it, with or without Set for all."
+    },
     "rowNumbers": {
       "type": "boolean",
       "default": true,

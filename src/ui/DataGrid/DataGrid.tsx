@@ -5,7 +5,7 @@ import { DatePicker } from "../DatePicker/DatePicker";
 import { useDensity } from "../Density/Density";
 import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
 import { FormulaEditor, type FormulaField } from "../FormulaEditor/FormulaEditor";
-import { HeaderCell } from "../HeaderCell/HeaderCell";
+import { HeaderCell, type HeaderCellLine } from "../HeaderCell/HeaderCell";
 import { Input } from "../Input/Input";
 import { Select, type SelectOption } from "../Select/Select";
 import { Tooltip } from "../Tooltip/Tooltip";
@@ -36,6 +36,7 @@ export interface DataGridProps {
   defaultRows?: DataGridRow[];
   onRowsChange?: (rows: DataGridRow[]) => void;
   size?: DataGridSize;
+  line?: HeaderCellLine;
   rowNumbers?: boolean;
   canAddRows?: boolean;
   canRemoveRows?: boolean;
@@ -54,7 +55,7 @@ const spotSelector = (s: Spot) => `[data-cell="${CSS.escape(`${s.row}:${s.key}`)
 // Figma data-grid 4350:109705. A cell shows its value as a button; clicking it (or Enter) swaps in a kit editor.
 // Text and number save on Enter or when focus leaves; formula cells stay open until Done or Escape.
 export function DataGrid({
-  columns, rows: rowsProp, defaultRows = [], onRowsChange, size: ownSize, rowNumbers = true,
+  columns, rows: rowsProp, defaultRows = [], onRowsChange, size: ownSize, line = "medium", rowNumbers = true,
   canAddRows = false, canRemoveRows = false, emptyLabel = "No rows yet.", label = "Data grid", stickyFirstColumn = true,
   detail, expanded: expandedProp, defaultExpanded = [], onExpandedChange,
 }: DataGridProps) {
@@ -180,7 +181,7 @@ export function DataGrid({
   // space) under it, and one header line along the bottom, so titles and lines stay level across the row.
   const hasSetForAll = columns.some((c) => c.setForAll);
   const head = (title: ReactNode, menu?: ReactNode, end = false) => (hasSetForAll ? (
-    <div className={[styles.head, end ? styles.headEnd : ""].join(" ")}>
+    <div className={[styles.head, end ? styles.headEnd : "", line === "thin" ? styles.headThin : ""].join(" ")}>
       {title}
       {menu && <span className={styles.setAll}>{menu}</span>}
     </div>
@@ -259,15 +260,15 @@ export function DataGrid({
         >
           <thead>
             <tr>
-              {detail && <th ref={toggleRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyToggle : ""].join(" ")}>{head(<HeaderCell size={size} />)}<span className={styles.srOnly}>Details</span></th>}
-              {rowNumbers && <th ref={indexRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyIndex : ""].join(" ")}>{head(<HeaderCell size={size} align="center" label="#" />)}</th>}
+              {detail && <th ref={toggleRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyToggle : ""].join(" ")}>{head(<HeaderCell size={size} line={line} />)}<span className={styles.srOnly}>Details</span></th>}
+              {rowNumbers && <th ref={indexRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyIndex : ""].join(" ")}>{head(<HeaderCell size={size} line={line} align="center" label="#" />)}</th>}
               {columns.map((c) => (
                 <th
                   key={c.key} scope="col" className={[c.hug ? styles.hug : styles.fill, c.key === firstKey ? pin : ""].join(" ")}
                   style={c.width ? { width: c.width } : undefined}
                 >
                   {head(
-                    <HeaderCell size={size} align={c.type === "number" ? "end" : "start"} label={c.header} />,
+                    <HeaderCell size={size} line={line} align={c.type === "number" ? "end" : "start"} label={c.header} />,
                     c.setForAll ? (
                       <DropdownMenu
                         label="Set for all" variant="tertiary" size="sm" align={c.type === "number" ? "end" : "start"}
@@ -278,7 +279,7 @@ export function DataGrid({
                   )}
                 </th>
               ))}
-              {canRemoveRows && <th scope="col" className={styles.hug}>{head(<HeaderCell size={size} />)}<span className={styles.srOnly}>Remove</span></th>}
+              {canRemoveRows && <th scope="col" className={styles.hug}>{head(<HeaderCell size={size} line={line} />)}<span className={styles.srOnly}>Remove</span></th>}
             </tr>
           </thead>
           <tbody>

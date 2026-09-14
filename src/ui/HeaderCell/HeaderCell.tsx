@@ -7,11 +7,13 @@ import styles from "./HeaderCell.module.css";
 export type HeaderCellSize = "sm" | "md";
 export type HeaderCellAlign = "start" | "center" | "end";
 export type HeaderCellSort = "none" | "asc" | "desc";
+export type HeaderCellLine = "medium" | "thin";
 
 export interface HeaderCellProps {
   label?: string;
   size?: HeaderCellSize;
   align?: HeaderCellAlign;
+  line?: HeaderCellLine;
   checkbox?: boolean;
   checked?: boolean;
   defaultChecked?: boolean;
@@ -26,14 +28,14 @@ const SORT_ICON = { none: "unfold_more", asc: "arrow_upward", desc: "arrow_downw
 const NEXT_SORT = { none: "ascending", asc: "descending", desc: "off" } as const;
 
 export function HeaderCell({
-  label, size: ownSize, align = "start", checkbox = false, checked, defaultChecked, indeterminate,
+  label, size: ownSize, align = "start", line = "medium", checkbox = false, checked, defaultChecked, indeterminate,
   onCheckedChange, sortable = false, sort = "none", onSort,
 }: HeaderCellProps) {
   const density = useDensity();
   const size = ownSize ?? (density === "compact" ? "sm" : "md");
   const title = label ?? "column";
   return (
-    <span className={[styles.cell, styles[size], styles[align]].join(" ")}>
+    <span className={[styles.cell, styles[size], styles[align], line === "thin" ? styles.thin : ""].join(" ")}>
       {checkbox && (
         <Checkbox
           size="sm" hideLabel label={label ? `Select all ${label}` : "Select all rows"}

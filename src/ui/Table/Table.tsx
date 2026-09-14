@@ -2,7 +2,7 @@
 import { isValidElement, useEffect, useRef, useState, type ReactNode } from "react";
 import { Cell, type CellAlign, type CellSize } from "../Cell/Cell";
 import { useDensity } from "../Density/Density";
-import { HeaderCell } from "../HeaderCell/HeaderCell";
+import { HeaderCell, type HeaderCellLine } from "../HeaderCell/HeaderCell";
 import styles from "./Table.module.css";
 
 export interface TableColumn {
@@ -20,6 +20,7 @@ export interface TableProps {
   columns: TableColumn[];
   rows: TableRow[];
   size?: CellSize;
+  line?: HeaderCellLine;
   caption?: string;
   footer?: TableFooter;
   emptyLabel?: string;
@@ -36,7 +37,7 @@ const idOf = (row: TableRow, i: number) => row.id ?? String(i);
 // One table: headers are kit HeaderCells, values kit Cells. The rows carry the lines and the hover and selected
 // fills, so cells of different heights in one row still line up.
 export function Table({
-  columns, rows, size: ownSize, caption, footer, emptyLabel = "No results.",
+  columns, rows, size: ownSize, line = "medium", caption, footer, emptyLabel = "No results.",
   selectable = false, selected: selectedProp, defaultSelected = [], onSelectionChange, rowLabel, onRowClick,
 }: TableProps) {
   const density = useDensity();
@@ -79,21 +80,21 @@ export function Table({
       ref={wrapRef} className={styles.wrap}
       tabIndex={overflows ? 0 : undefined} role={overflows ? "region" : undefined} aria-label={overflows ? caption ?? "Table" : undefined}
     >
-      <table className={[styles.table, styles[size]].join(" ")}>
+      <table className={[styles.table, styles[size], line === "thin" ? styles.thin : ""].join(" ")}>
         {caption && <caption className={styles.caption}>{caption}</caption>}
         <thead>
           <tr>
             {selectable && (
               <th scope="col" className={styles.select}>
                 <HeaderCell
-                  size={size} align="center" checkbox checked={all} indeterminate={picked.length > 0 && !all}
+                  size={size} line={line} align="center" checkbox checked={all} indeterminate={picked.length > 0 && !all}
                   onCheckedChange={toggleAll}
                 />
               </th>
             )}
             {columns.map((c) => c.header ? (
               <th key={c.key} scope="col" style={c.width ? { width: c.width } : undefined}>
-                <HeaderCell size={size} align={alignOf(c)} label={c.header} />
+                <HeaderCell size={size} line={line} align={alignOf(c)} label={c.header} />
               </th>
             ) : (
               // A column with nothing to name, like row actions: a plain cell, so screen readers meet no empty header.
