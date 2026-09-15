@@ -4,8 +4,8 @@
   display: flex; flex-direction: column;
   background: var(--bg-neutral-subtle);
   border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
-  /* The fill is a block of its own, so its corners are rounded like the other filled blocks in the kit. */
-  border-radius: var(--radius-small);
+  /* The fill is a block of its own, so its corners are rounded: 4px, like the buttons and fields in it. */
+  border-radius: var(--radius-medium);
 }
 
 .bar {

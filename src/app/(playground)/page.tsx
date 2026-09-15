@@ -52,7 +52,6 @@ export default function Overview() {
                   <li><strong>Not a production library.</strong> It is for prototypes, tests and conversations, not for shipping.</li>
                   <li><strong>Not connected to real data.</strong> Screens use sample data. Buttons only do something when the prototype wires them up.</li>
                   <li><strong>Not a design tool file.</strong> The code is the source of truth.</li>
-                  <li><strong>Not a copy of an existing product.</strong> It is its own system, with its own look and rules.</li>
                   <li><strong>Not a place for one-off parts.</strong> When a screen needs something the kit does not have, it gets added to the kit properly, or the screen changes.</li>
                 </ul>
               </div>

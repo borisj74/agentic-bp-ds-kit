@@ -104,6 +104,10 @@
 .down { border-top: var(--border-width-thin) solid var(--border-neutral-subtle); }
 
 :global([data-theme="dark"]) .link[aria-current="page"] { color: var(--text-brand-intense); }
+/* Dark: the current row's fill stays a deep brand blue, where text-neutral-min (dark there) is hard to see.
+   Its icon, label and chevron take the light brand blue instead. */
+:global([data-theme="dark"]) .current, :global([data-theme="dark"]) .current:hover { color: var(--text-brand); }
+:global([data-theme="dark"]) .row:has(.current) .cascade { color: var(--icon-brand); }
 
 /* 640px = --grid-breakpoint-sm, the kit's mobile break: CSS vars cannot appear in container queries.
    On a phone there is no room for a rail beside the page, so the nav is either away or a drawer over it: it

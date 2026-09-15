@@ -30,7 +30,6 @@ A ready-made kit for building realistic, clickable screens quickly. Everything l
 - **Not a production library.** It is for prototypes, tests and conversations, not for shipping.
 - **Not connected to real data.** Screens use sample data. Buttons only do something when the prototype wires them up.
 - **Not a design tool file.** The code is the source of truth.
-- **Not a copy of an existing product.** It is its own system, with its own look and rules.
 - **Not a place for one-off parts.** When a screen needs something the kit does not have, it gets added to the kit properly, or the screen changes.
 
 ### What to expect
