@@ -134,7 +134,7 @@
     },
     "onDensityChange": {
       "type": "function",
-      "note": "(density) => void. Adds Density & text size (kit SegmentedControl). The menu stays open."
+      "note": "(density) => void. Adds Density & text size as kit radio buttons (RadioGroup): Compact, Default, Comfortable. The menu stays open."
     },
     "onLogout": {
       "type": "function",

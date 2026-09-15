@@ -9,7 +9,7 @@ import { useDensity, type DensitySize } from "../Density/Density";
 import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
 import { Icon } from "../Icon/Icon";
 import { Logo } from "../Logo/Logo";
-import { SegmentedControl } from "../SegmentedControl/SegmentedControl";
+import { RadioGroup } from "../RadioGroup/RadioGroup";
 import { Switch } from "../Switch/Switch";
 import { Tooltip } from "../Tooltip/Tooltip";
 import { useFloating, useInBrowser } from "../Tooltip/useFloating";
@@ -289,7 +289,7 @@ export function AppHeader({
           )}
           {onDensityChange && (
             <div className={styles.menuRow}>
-              <SegmentedControl label="Density & text size" size="sm" options={DENSITIES} value={density} onChange={(v) => onDensityChange(v as AppHeaderDensity)} fullWidth />
+              <RadioGroup legend="Density & text size" size="md" name={`${menuId}-density`} options={DENSITIES} value={density} onChange={(v) => onDensityChange(v as AppHeaderDensity)} />
             </div>
           )}
           {onLogout && (
