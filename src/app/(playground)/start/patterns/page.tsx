@@ -22,11 +22,13 @@ export default async function UsingPatterns() {
 
   return (
     <>
-      <h1 className={shell.pageTitle}>Using patterns</h1>
-      <p className={shell.pageLead}>
-        Patterns are blueprints for whole screens. Start every screen from one, and the layout, spacing and behavior
-        come with it.
-      </p>
+      <div className={docs.head}>
+        <h1 className={shell.pageTitle}>Using patterns</h1>
+        <p className={shell.pageLead}>
+          Patterns are blueprints for whole screens. Start every screen from one, and the layout, spacing and behavior
+          come with it.
+        </p>
+      </div>
       <div className={docs.page}>
         <div className={docs.content}>
           <div id="how">

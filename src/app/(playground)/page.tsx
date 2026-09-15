@@ -19,11 +19,13 @@ const SECTIONS = [
 export default function Overview() {
   return (
     <>
-      <h1 className={shell.pageTitle}>Agentic BP DS</h1>
-      <p className={shell.pageLead}>
-        A code-first design system for prototyping product screens with an AI assistant. Describe a screen, and the
-        assistant builds it from the kit&apos;s own components and patterns.
-      </p>
+      <div className={docs.head}>
+        <h1 className={shell.pageTitle}>Agentic BP DS</h1>
+        <p className={shell.pageLead}>
+          A code-first design system for prototyping product screens with an AI assistant. Describe a screen, and the
+          assistant builds it from the kit&apos;s own components and patterns.
+        </p>
+      </div>
       <div className={docs.page}>
         <div className={docs.content}>
           <div id="what-it-is">

@@ -4,10 +4,13 @@
    so on a wide screen the spare room is shared on both sides instead of piling up on the right. */
 .page { display: grid; grid-template-columns: minmax(0, 80ch) 200px; justify-content: center; gap: var(--space-xxlarge); align-items: start; }
 .content { display: flex; flex-direction: column; gap: var(--space-xxlarge); max-width: 80ch; min-width: 0; }
+/* The page title and intro take the same columns as the page under them, so they start where the text starts. */
+.head { display: grid; grid-template-columns: minmax(0, 80ch) 200px; justify-content: center; column-gap: var(--space-xxlarge); }
+.head > * { grid-column: 1; }
 /* Clear of the 48px playground top bar. */
 .rail { position: sticky; top: calc(48px + var(--space-xlarge)); }
 @media (max-width: 1100px) {
-  .page { grid-template-columns: minmax(0, 1fr); }
+  .page, .head { grid-template-columns: minmax(0, 1fr); }
   .rail { display: none; }
 }
 

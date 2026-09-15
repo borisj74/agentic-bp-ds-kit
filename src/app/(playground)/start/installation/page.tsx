@@ -19,10 +19,12 @@ const SECTIONS = [
 export default function Installation() {
   return (
     <>
-      <h1 className={shell.pageTitle}>Installation</h1>
-      <p className={shell.pageLead}>
-        Get your own copy of the kit running on your computer. Pick one of the three ways in; most people want the first.
-      </p>
+      <div className={docs.head}>
+        <h1 className={shell.pageTitle}>Installation</h1>
+        <p className={shell.pageLead}>
+          Get your own copy of the kit running on your computer. Pick one of the three ways in; most people want the first.
+        </p>
+      </div>
       <div className={docs.page}>
         <div className={docs.content}>
           <div id="before">

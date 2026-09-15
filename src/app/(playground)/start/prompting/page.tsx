@@ -42,11 +42,13 @@ const EXAMPLES = [
 export default function Prompting() {
   return (
     <>
-      <h1 className={shell.pageTitle}>Prompting</h1>
-      <p className={shell.pageLead}>
-        The assistant builds exactly what you describe, from the kit. The clearer the screen in your head, the better
-        the screen on the page.
-      </p>
+      <div className={docs.head}>
+        <h1 className={shell.pageTitle}>Prompting</h1>
+        <p className={shell.pageLead}>
+          The assistant builds exactly what you describe, from the kit. The clearer the screen in your head, the better
+          the screen on the page.
+        </p>
+      </div>
       <div className={docs.page}>
         <div className={docs.content}>
           <div id="first">
