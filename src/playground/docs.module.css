@@ -1,6 +1,8 @@
 /* The Start pages: long reading pages with a rail of their sections beside them. Playground chrome, like the
    master and foundation pages, not a kit screen. */
-.page { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: var(--space-xxlarge); align-items: start; }
+/* The text column stops at a reading width and the rail sits right beside it. The pair is centred in the page area,
+   so on a wide screen the spare room is shared on both sides instead of piling up on the right. */
+.page { display: grid; grid-template-columns: minmax(0, 80ch) 200px; justify-content: center; gap: var(--space-xxlarge); align-items: start; }
 .content { display: flex; flex-direction: column; gap: var(--space-xxlarge); max-width: 80ch; min-width: 0; }
 /* Clear of the 48px playground top bar. */
 .rail { position: sticky; top: calc(48px + var(--space-xlarge)); }
