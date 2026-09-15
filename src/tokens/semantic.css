@@ -59,7 +59,7 @@
   --border-neutral: var(--ui-neutral-150);
   --border-neutral-strong: var(--ui-neutral-200);
   --border-neutral-intense: var(--ui-neutral-300);
-  --border-neutral-field: var(--ui-neutral-300);
+  --border-neutral-field: var(--ui-neutral-100);
   --border-neutral-field-hover: var(--ui-neutral-400);
   --border-brand-faint: var(--ui-brand-100);
   --border-brand-subtle: var(--ui-brand-300);
