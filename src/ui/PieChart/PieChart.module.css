@@ -14,6 +14,8 @@ figure.frameLg { min-inline-size: var(--chart-pie-lg); }
   .layout { flex-direction: column; align-items: center; gap: var(--space-medium); }
 }
 .bottom { flex-direction: column; gap: var(--space-medium); }
+/* The pie and a legend beside it sit together in the middle of a wide box instead of hugging its start. */
+.center { justify-content: center; }
 
 .pie { position: relative; flex: none; }
 .sm { width: var(--chart-pie-sm); }

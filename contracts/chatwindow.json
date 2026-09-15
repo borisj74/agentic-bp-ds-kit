@@ -2,13 +2,15 @@
   "name": "ChatWindow",
   "path": "src/patterns/ChatWindow/ChatWindow.tsx",
   "intent": "The assistant window: its header over the turns, the composer at the foot, and the saved chats coming in beside or over them.",
-  "usage": "Use ChatWindow for the assistant beside a screen, or for its full-screen view. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is shown. The box runs edge to edge at the foot of the window, with one line over it, rather than sitting in the body as a card of its own. Pass the turns as ChatMessage children, the box as composer, and the saved chats as panel. empty takes its place before anyone has asked anything, usually a kit Empty. notice writes the line about the assistant making mistakes: a quiet line at the foot of the turns, right over the box, with a close of its own when onNoticeDismiss is passed. size panel is the 395 column beside the page; size full fills the screen and sets the chats beside the conversation instead of over it. The header props go straight to the kit ChatHeader. See contracts/chatwindow.json for the full contract. On a phone-width frame the panel gives up its 395 column and takes the whole width, since the assistant stands in for the page there rather than sitting beside it.",
+  "usage": "Use ChatWindow for the assistant beside a screen, or for its full-screen view. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is shown. The box runs edge to edge at the foot of the window, with one line over it, rather than sitting in the body as a card of its own. Pass the turns as ChatMessage children, the box as composer, and the saved chats as panel. Before anyone has asked anything the window shows its own Get Started block: the art and the name in the middle, and starters as a stacked list of Buttons against the start edge. onStarter says which one was picked. art is ai-chip for the first open and chat-search for a new chat; artAnimated plays it. empty replaces the whole block when a screen needs something else. autoFocus puts the caret in the box when the window opens, so a keyboard user can type straight away. notice writes the line about the assistant making mistakes: a quiet line at the foot of the turns, right over the box, with a close of its own when onNoticeDismiss is passed. size panel is the 395 column beside the page; size full fills the space it is given and sets the chats beside the conversation instead of over it; inside AppShell, pair it with assistantSize full. The header props go straight to the kit ChatHeader. See contracts/chatwindow.json for the full contract. On a phone-width frame the panel gives up its 395 column and takes the whole width, since the assistant stands in for the page there rather than sitting beside it.",
   "composes": [
     "ChatHeader",
     "ChatMessage",
     "ChatComposer",
     "ChatList",
-    "Empty"
+    "Empty",
+    "Illustration",
+    "Button"
   ],
   "props": {
     "composer": {
@@ -22,7 +24,34 @@
     },
     "empty": {
       "type": "ReactNode",
-      "note": "What stands in before the first question, like a kit Empty with the suggestions under it."
+      "note": "Replaces the built-in Get Started block before the first question. Leave it out to use starters and art."
+    },
+    "starters": {
+      "type": "ChatWindowStarter[]",
+      "itemShape": "{ id: string; label: string }",
+      "note": "Things to ask first, drawn under Get Started as a stacked, start-aligned list of kit Buttons."
+    },
+    "onStarter": {
+      "type": "(id: string, label: string) => void",
+      "note": "A starter was picked. Usually send its label as the first question."
+    },
+    "art": {
+      "enum": [
+        "ai-chip",
+        "chat-search"
+      ],
+      "default": "ai-chip",
+      "note": "The Get Started art: ai-chip the first time the assistant opens, chat-search for a new chat."
+    },
+    "artAnimated": {
+      "type": "boolean",
+      "default": false,
+      "note": "Plays the art's motion, like after a new chat. Never plays when the person prefers reduced motion."
+    },
+    "autoFocus": {
+      "type": "boolean",
+      "default": false,
+      "note": "Moves focus to the box when the window opens. Only on open, never on later renders."
     },
     "panel": {
       "type": "ReactNode",
@@ -39,7 +68,7 @@
         "full"
       ],
       "default": "panel",
-      "note": "panel is the 395 column beside the page. full fills the space it is given."
+      "note": "panel is the 395 column beside the page. full fills the space it is given; inside AppShell set assistantSize full with it."
     },
     "title": {
       "type": "string",
@@ -102,6 +131,7 @@
   "doNot": [
     "Do not add state to it; it is a blueprint. Keep the view, the turns and the panel in the screen.",
     "Do not build the header, the turns or the box inside it. Pass the kit pieces.",
+    "Do not build the Get Started block from Empty, Illustration and Buttons in the screen. Pass starters and art.",
     "Do not use it as an overlay dialog. Use Drawer or Modal.",
     "Do not invent a second assistant layout beside it.",
     "Do not use raw hex."
@@ -109,6 +139,8 @@
   "a11y": [
     "The header is a kit ChatHeader, so its buttons and menu are named and reachable.",
     "Each turn is a kit ChatMessage, named after who said it.",
+    "The starters are a list named Suggestions, each a kit Button with its own words.",
+    "autoFocus moves focus to the box once, when the window opens, so opening the assistant from a button does not leave focus behind on that button.",
     "The turns scroll on their own while the box at the foot stays put.",
     "The notice is plain text with a named close button, not a warning to announce."
   ],

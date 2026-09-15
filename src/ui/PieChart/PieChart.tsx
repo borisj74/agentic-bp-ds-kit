@@ -6,6 +6,7 @@ import styles from "./PieChart.module.css";
 export type { ChartFormat, ChartTone };
 export type PieChartSize = "sm" | "md" | "lg";
 export type PieChartLegend = "end" | "bottom";
+export type PieChartAlign = "start" | "center";
 
 export interface PieChartSlice {
   label: string;
@@ -25,6 +26,7 @@ export interface PieChartProps {
   totalLabel?: string;
   showLegend?: boolean;
   legend?: PieChartLegend;
+  align?: PieChartAlign;
   maxSlices?: number;
   otherLabel?: string;
   animate?: boolean;
@@ -41,7 +43,7 @@ const OVERLAP = 0.4;
 
 // Reference kit pie chart, in the colors of the Persona Homepages charts.
 export function PieChart({
-  label, title, subtitle, showTitle = true, data, donut = true, size = "md", showTotal = true, totalLabel = "Total", showLegend = true, legend = "end",
+  label, title, subtitle, showTitle = true, data, donut = true, size = "md", showTotal = true, totalLabel = "Total", showLegend = true, legend = "end", align = "start",
   maxSlices = 6, otherLabel = "Other", animate = true, format = "number", currency = "USD", emptyLabel = "No data for this range.",
 }: PieChartProps) {
   const frame = { sm: styles.frameSm, md: styles.frameMd, lg: styles.frameLg }[size];
@@ -81,7 +83,7 @@ export function PieChart({
 
   return (
     <ChartFrame className={frame} label={label} title={title} subtitle={subtitle} showTitle={showTitle} animate={animate} active={active !== null} onKeyDown={onKeyDown} onBlur={() => setActive(null)}>
-      <div className={[styles.layout, styles[legend]].join(" ")}>
+      <div className={[styles.layout, styles[legend], align === "center" ? styles.center : ""].join(" ")}>
         <div className={[styles.pie, styles[size]].join(" ")} onPointerLeave={() => setActive(null)}>
           <svg className={styles.svg} viewBox="0 0 100 100" aria-hidden="true">
             <g transform={`rotate(-90 ${C} ${C})`} fill="none" strokeWidth={width}>

@@ -58,6 +58,34 @@ describe("LineChart", () => {
     expect(screen.getByRole("listitem")).toHaveTextContent("Today: Sep 10");
   });
 
+  it("keeps a reference label clear of the marker's label and the last point", () => {
+    const CHAR = 7;
+    const values = [4000, 7000, 9500, 12000, 14500, 15800];
+    const { container } = render(
+      <LineChart
+        label="Credits by day" categories={days} series={[{ name: "Credits", values }]}
+        referenceLines={[{ value: 16000, label: "Plan credits" }]} marker={{ category: 5, label: "Today" }} animate={false}
+      />,
+    );
+    const texts = [...container.querySelectorAll("svg text")];
+    const ref = texts.find((t) => t.textContent === "Plan credits 16K")!;
+    const today = texts.find((t) => t.textContent === "Today")!;
+    const num = (el: Element, a: string) => Number(el.getAttribute(a));
+    const boxOf = (el: Element) => {
+      const x = num(el, "x");
+      const w = (el.textContent ?? "").length * CHAR;
+      const anchor = el.getAttribute("text-anchor");
+      const l = anchor === "end" ? x - w : anchor === "middle" ? x - w / 2 : x;
+      return { l, r: l + w, t: num(el, "y") - 11, b: num(el, "y") + 3 };
+    };
+    const hit = (a: ReturnType<typeof boxOf>, b: ReturnType<typeof boxOf>) => a.l < b.r && b.l < a.r && a.t < b.b && b.t < a.b;
+    expect(hit(boxOf(ref), boxOf(today))).toBe(false);
+    // The last point sits on the marker's line, just under the reference line (15,800 against 16,000).
+    const markerX = num(container.querySelector("line[data-marker]")!, "x1");
+    const refY = num(container.querySelector("line[data-reference]")!, "y1");
+    expect(hit(boxOf(ref), { l: markerX - 6, r: markerX + 6, t: refY - 6, b: refY + 12 })).toBe(false);
+  });
+
   it("ignores a marker outside the categories", () => {
     const { container } = render(
       <LineChart label="API calls by day" categories={days} series={usage} marker={{ category: 9, label: "Today" }} animate={false} />,

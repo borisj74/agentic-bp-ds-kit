@@ -2,7 +2,7 @@
   "name": "ChatHeader",
   "path": "src/ui/ChatHeader/ChatHeader.tsx",
   "intent": "The bar at the top of the assistant: its mark and name, then start a new chat, go full screen, the options menu and close.",
-  "usage": "Use ChatHeader at the top of an assistant panel or its full-screen view. It is one component: pass the handlers for the buttons you want, and the ones you leave out do not show. The options menu is built for you: Chats and Playbooks with how many there are, Plan Mode with a tick while it is on, and Settings. While Plan Mode is on the bar also carries a Plan Mode badge beside the name, so it can be seen with the menu shut. chatsCount and playbooksCount leave the number off when there is none. menu replaces the whole menu when a screen needs different entries. Pair it with ChatList, ChatMessage and ChatComposer to make the window. See contracts/chatheader.json for the full contract.",
+  "usage": "Use ChatHeader at the top of an assistant panel or its full-screen view. It is one component: pass the handlers for the buttons you want, and the ones you leave out do not show. The options menu is built for you: Chats and Playbooks with how many there are, Plan Mode with a tick while it is on, and Settings. While Plan Mode is on the bar also carries a Plan Mode badge beside the name, so it can be seen with the menu shut. On a narrow bar, like the side panel, the badge gives way first and shows its icon only, so the title is never cut short. chatsCount and playbooksCount leave the number off when there is none. menu replaces the whole menu when a screen needs different entries. Pair it with ChatList, ChatMessage and ChatComposer to make the window. See contracts/chatheader.json for the full contract.",
   "props": {
     "title": {
       "type": "string",
@@ -37,7 +37,7 @@
     "planMode": {
       "type": "boolean",
       "default": false,
-      "note": "Plan Mode is on: its row in the menu is ticked and a Plan Mode badge sits beside the name."
+      "note": "Plan Mode is on: its row in the menu is ticked and a Plan Mode badge sits beside the name. On a bar narrower than 480px the badge shows its icon only, still named Plan Mode, so the title stays whole."
     },
     "onPlanModeChange": {
       "type": "(planMode: boolean) => void",
@@ -70,7 +70,8 @@
   "a11y": [
     "The bar is a header named after the assistant, holding a heading with its name.",
     "Every button says what it does, with a kit Tooltip on hover and focus.",
-    "The options menu is a kit DropdownMenu, so it is reachable with the keyboard and Plan Mode reads as ticked."
+    "The options menu is a kit DropdownMenu, so it is reachable with the keyboard and Plan Mode reads as ticked.",
+    "The icon-only Plan Mode badge still carries the words Plan Mode for screen readers."
   ],
   "snippet": "<ChatHeader chatsCount={7} playbooksCount={9} onNewChat={() => {}} onClose={() => {}} />",
   "examples": [

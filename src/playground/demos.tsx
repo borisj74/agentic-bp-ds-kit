@@ -31,7 +31,6 @@ import { ChatMessage, type ChatMessageActionId, type ChatMessageProps } from "@/
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
 import { DatePicker } from "@/ui/DatePicker/DatePicker";
 import { Empty } from "@/ui/Empty/Empty";
-import { Illustration, type IllustrationName } from "@/ui/Illustration/Illustration";
 import { ChatWindow, type ChatWindowProps } from "@/patterns/ChatWindow/ChatWindow";
 import { Density, type DensityValue } from "@/ui/Density/Density";
 import { Drawer, type DrawerProps } from "@/ui/Drawer/Drawer";
@@ -727,28 +726,6 @@ const SCOPE_PAGES: Record<string, string | undefined> = {
   none: undefined,
 };
 
-// Figma BP AI get started 476:7442: the mark and the name in the middle, the starters stacked under them
-// against the left edge of the window, in line with the notice and the box. Shared, so the assistant opens
-// the same way whether it is shown on its own or beside a screen.
-function GetStarted({ art = "ai-chip", moving = false, onPick }: { art?: IllustrationName; moving?: boolean; onPick: (label: string) => void }) {
-  return (
-    <div style={{ display: "grid", gap: "var(--space-medium)" }}>
-      {/* The name is the biggest thing on an otherwise empty panel, so the title steps up one size.
-          Only the size the kit Empty reads for its title is swapped; the component is untouched. */}
-      <div style={{ ["--font-size-large" as string]: "var(--font-size-xxlarge)" }}>
-        <Empty title="Get Started" media={<Illustration name={art} animated={moving} />} />
-      </div>
-      {/* The starters sit on the quiet grey rather than white paper, so they read as things to pick,
-          not as the buttons of a form. The kit Button is unchanged: only the surface under it is. */}
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--space-xsmall)", ["--surface-raised" as string]: "var(--bg-neutral-subtle)" }}>
-        {START_SUGGESTIONS.map((s) => (
-          <Button key={s.id} size="sm" onClick={() => onPick(s.label)}>{s.label}</Button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 // Playground harness: the ChatWindow pattern driven like a screen would drive it. Not a kit piece.
 export function ChatWindowDemo({ started = false, page = "accounts", size: asked = "panel", ...p }: Omit<ChatWindowProps, "composer"> & { started?: boolean; page?: string }) {
   const [turns, setTurns] = useState<{ id: string; author: "user" | "assistant"; text: string }[]>(
@@ -796,7 +773,8 @@ export function ChatWindowDemo({ started = false, page = "accounts", size: asked
             more={view === "playbooks" ? undefined : { label: "View chats older than 30 days" }}
           />
         }
-        empty={<GetStarted art={freshChat ? "chat-search" : "ai-chip"} moving={freshChat} onPick={ask} />}
+        starters={START_SUGGESTIONS} onStarter={(_, label) => ask(label)}
+        art={freshChat ? "chat-search" : "ai-chip"} artAnimated={freshChat}
         // The scope row names whatever page the person is on, and is gone on a page with nothing to scope to.
         composer={<ChatComposerPiece scopeLabel={scoping ? SCOPE_PAGES[page] : undefined} onScopeClose={() => setScoping(false)} defaultScoped hints={ASK_HINTS} addMenu={ADD_MENU} onSend={ask} />}
       >
@@ -891,6 +869,10 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
   const [turns, setTurns] = useState<{ id: string; author: "user" | "assistant"; text: string }[]>([]);
   const [from, setFrom] = useState(assistant);
   if (from !== assistant) { setFrom(assistant); setChatOpen(assistant); }
+  // The screen owns the assistant's size, so its full-screen button and the Assistant size control both work.
+  const [chatSize, setChatSize] = useState(p.assistantSize ?? "panel");
+  const [fromSize, setFromSize] = useState(p.assistantSize);
+  if (fromSize !== p.assistantSize) { setFromSize(p.assistantSize); setChatSize(p.assistantSize ?? "panel"); }
   const ask = (text: string) => setTurns((old) => [
     ...old,
     { id: `q${old.length}`, author: "user" as const, text },
@@ -939,12 +921,16 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
           />
         }
         assistantOpen={chatOpen}
+        assistantSize={chatSize}
         assistant={
           <ChatWindow
             title="Assistant" chatsCount={7} onClose={() => setChatOpen(false)} onNewChat={() => setTurns([])}
+            size={chatSize} expanded={chatSize === "full"} onExpandedChange={(full) => setChatSize(full ? "full" : "panel")}
+            // Opened from the page's button, the caret goes straight into the box; open from the start, the page keeps focus.
+            autoFocus={!assistant}
             notice={notice ? "AI can make mistakes, verify important information." : undefined}
             onNoticeDismiss={() => setNotice(false)}
-            empty={<GetStarted onPick={ask} />}
+            starters={START_SUGGESTIONS} onStarter={(_, label) => ask(label)}
             composer={
               <ChatComposerPiece
                 scopeLabel={scoping ? "Invoices page" : undefined} onScopeClose={() => setScoping(false)}
@@ -1618,7 +1604,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
             title="Assistant" chatsCount={7} onClose={() => setChatOpen(false)} onNewChat={() => setTurns([])}
             notice={chatNotice ? "AI can make mistakes, verify important information." : undefined}
             onNoticeDismiss={() => setChatNotice(false)}
-            empty={<GetStarted onPick={ask} />}
+            starters={START_SUGGESTIONS} onStarter={(_, label) => ask(label)}
             composer={
               <ChatComposerPiece
                 scopeLabel={scoping ? `${place.page} page` : undefined} onScopeClose={() => setScoping(false)}

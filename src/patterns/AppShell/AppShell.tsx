@@ -4,6 +4,7 @@ import { useStickMark } from "../stick";
 import styles from "./AppShell.module.css";
 
 export type AppShellWidth = "full" | "sm" | "md" | "lg" | "xl" | "2xl";
+export type AppShellAssistantSize = "panel" | "full";
 
 export interface AppShellProps {
   children: ReactNode;
@@ -16,6 +17,7 @@ export interface AppShellProps {
   onPageHeaderStick?: (stuck: boolean) => void;
   assistant?: ReactNode;
   assistantOpen?: boolean;
+  assistantSize?: AppShellAssistantSize;
   width?: AppShellWidth;
 }
 
@@ -25,7 +27,7 @@ export interface AppShellProps {
 // and the gap between Sections come from the layout tokens, not from the screen.
 export function AppShell({
   children, header, nav, navOpen = false, onNavClose, pageHeader, stickyPageHeader = true, onPageHeaderStick,
-  assistant, assistantOpen = false, width = "full",
+  assistant, assistantOpen = false, assistantSize = "panel", width = "full",
 }: AppShellProps) {
   // A reading column is the same container the layout classes use elsewhere.
   const page = width === "full" ? children : <div className={`layout-container-${width}`}>{children}</div>;
@@ -38,7 +40,9 @@ export function AppShell({
     <div className={styles.shell} data-frame="">
       {/* The bar runs the full width; the rail starts under it. */}
       {header}
-      <div className={styles.stage}>
+      {/* A full assistant covers the page and its header, but the page stays mounted under it, and the assistant
+          is the same element at either size, so neither loses its state or focus when the size swaps. */}
+      <div className={[styles.stage, assistant && assistantOpen && assistantSize === "full" ? styles.fullAssistant : ""].join(" ")}>
         {/* The rail column takes whatever width the nav is, so collapsed, expanded and pinned all work.
             On a phone there is no room for a column, so the nav opens over the page instead, and the page
             behind it is covered by a sheet that closes it. */}

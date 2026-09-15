@@ -1,4 +1,6 @@
 /* Figma BP AI header 487:11110: a grey bar with the AI mark, the name in bold, and the buttons at the end. */
+/* The wrapper answers to the bar's own width, so the Plan Mode badge can give way before the name does. */
+.frame { container-type: inline-size; width: 100%; min-width: 0; }
 .header {
   display: flex; align-items: center; gap: var(--space-medium); box-sizing: border-box;
   width: 100%; min-width: 0; padding: var(--space-xxsmall) var(--space-medium);
@@ -13,5 +15,12 @@
 }
 
 .flag { flex: none; display: flex; }
+/* Only one Plan Mode badge shows: the worded one while there is room, the icon alone once the bar is narrow. */
+.flagIcon { display: none; }
+/* 480px: under this the name, the worded badge and all four buttons no longer fit on one line (the 395 side panel). */
+@container (max-width: 480px) {
+  .flagText { display: none; }
+  .flagIcon { display: flex; }
+}
 
 .actions { flex: none; margin-inline-start: auto; display: flex; align-items: center; gap: var(--space-xxsmall); }

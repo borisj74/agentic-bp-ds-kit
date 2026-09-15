@@ -14,6 +14,17 @@
 /* The turns start under the header and run down, so the first question stays where it was asked. */
 /* Before the first question the get-started block sits in the middle instead. */
 .blank { margin-block: auto; }
+/* Get started: the art and the name centred, the starters stacked under them against the start edge. */
+.start { display: grid; gap: var(--space-medium); }
+/* The name is the biggest thing on an otherwise empty window, so the kit Empty's title steps up one size here. */
+.startHead { --font-size-large: var(--font-size-xxlarge); }
+/* The starters sit on the quiet grey rather than white paper, so they read as things to pick, not the buttons
+   of a form. The kit Button is unchanged: only the surface it reads is. */
+.starters {
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-xsmall);
+  margin: 0; padding: 0; list-style: none; --surface-raised: var(--bg-neutral-subtle);
+}
+.starters > li { max-width: 100%; }
 /* The notice keeps to the foot of the turns, right over the box, however few turns there are. */
 .notice { flex: none; margin-block-start: auto; display: flex; align-items: center; justify-content: center; gap: var(--space-xxsmall); }
 .noticeText { margin: 0; font-size: var(--font-size-xsmall); line-height: var(--line-height-normal); color: var(--text-neutral-subtle); }

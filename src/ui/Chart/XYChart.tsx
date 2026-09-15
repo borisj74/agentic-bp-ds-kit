@@ -72,6 +72,8 @@ const LINE = 16;
 const ROW = 36;
 // Dashes for projections and reference lines: 6 on, 4 off.
 const DASH = "6 4";
+// The room a label or a point takes, for keeping guide labels clear of each other.
+type Box = { l: number; r: number; t: number; b: number };
 
 export function XYChart({
   kind, label, title, subtitle, showTitle = true, categories, series, orientation = "vertical", highlight, highlightTone = "orange",
@@ -223,21 +225,44 @@ export function XYChart({
       {mark && <line className={s.marker} data-marker="" x1={px(c(mark.category))} x2={px(c(mark.category))} y1={y0} y2={y1} />}
     </g>
   );
-  // Their words go over everything else. A reference line at the very top puts its label under the line.
+  // Their words go over everything else. A reference label sits at the end of its line, over it, or under it when
+  // the line is at the very top. When that spot is taken by the marker's word, another reference label or a point
+  // near the end of a line, it tries the other side, then slides left until it is clear.
+  const markX = mark ? c(mark.category) : 0;
+  const markAnchor = markX - x0 < 40 ? "start" : x1 - markX < 40 ? "end" : "middle";
+  const hit = (a: Box, b: Box) => a.l < b.r && b.l < a.r && a.t < b.b && b.t < a.b;
+  // A label's box from its end and its baseline: about 7px a character, 11px up from the baseline and 3px down.
+  const textBox = (right: number, base: number, text: string): Box => ({ l: right - text.length * CHAR, r: right, t: base - 11, b: base + 3 });
+  const taken: Box[] = [];
+  if (mark) {
+    const w = mark.label.length * CHAR;
+    const l = markAnchor === "start" ? markX : markAnchor === "end" ? markX - w : markX - w / 2;
+    taken.push({ l, r: l + w, t: y0 - 19, b: y0 - 5 });
+  }
+  const dots: Box[] = line && refs.length ? list.flatMap((_, k) => upper[k].map((val, i) => ({ l: c(i) - POINT - 2, r: c(i) + POINT + 2, t: v(val) - POINT - 2, b: v(val) + POINT + 2 }))) : [];
+  const refPlaces = refs.map((r) => {
+    const text = `${r.label} ${short(r.value)}`;
+    const y = v(r.value);
+    const sides = (y - y0 < 16 ? [y + 14, y - 6] : [y - 6, y + 14]).filter((base) => base - 11 >= 0 && base + 3 <= h);
+    const fits = sides.map((base) => {
+      let x = x1;
+      for (let tries = 0; tries < n + 2; tries++) {
+        const box = textBox(x, base, text);
+        const block = [...taken, ...dots].filter((o) => hit(box, o));
+        if (!block.length) break;
+        x = Math.min(...block.map((o) => o.l)) - 6;
+      }
+      return { base, x: Math.max(x, x0 + text.length * CHAR) };
+    });
+    // The side that needs the least sliding; the first side wins a tie.
+    const place = fits.reduce((best, f) => (f.x > best.x ? f : best), fits[0] ?? { base: y - 6, x: x1 });
+    taken.push(textBox(place.x, place.base, text));
+    return { key: `${r.label}${r.value}`, text, ...place };
+  });
   const guideLabels = () => (
     <g className={s.fade}>
-      {refs.map((r) => {
-        const y = v(r.value);
-        return <text key={`${r.label}${r.value}`} className={s.referenceLabel} x={x1} y={y - y0 < 16 ? y + 14 : y - 6} textAnchor="end">{`${r.label} ${short(r.value)}`}</text>;
-      })}
-      {mark && (
-        <text
-          className={s.markerLabel} x={c(mark.category)} y={y0 - 8}
-          textAnchor={c(mark.category) - x0 < 40 ? "start" : x1 - c(mark.category) < 40 ? "end" : "middle"}
-        >
-          {mark.label}
-        </text>
-      )}
+      {refPlaces.map((p) => <text key={p.key} className={s.referenceLabel} x={p.x} y={p.base} textAnchor="end">{p.text}</text>)}
+      {mark && <text className={s.markerLabel} x={markX} y={y0 - 8} textAnchor={markAnchor}>{mark.label}</text>}
     </g>
   );
 

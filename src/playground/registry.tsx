@@ -1007,7 +1007,7 @@ export const registry: Record<string, Entry> = {
     // The pattern, driven the way a screen would drive it: the panel, the notice and the turns live outside it.
     render: ({ started, page, ...p }) => <ChatWindowDemo {...(p as Record<string, unknown>)} started={Boolean(started)} page={String(page ?? "accounts")} />,
     preview: { size: "panel" },
-    hide: ["composer", "children", "empty", "panel", "panelOpen", "title", "notice", "onNoticeDismiss", "onNewChat", "expanded", "onExpandedChange", "onClose", "chatsCount", "playbooksCount", "planMode", "onPlanModeChange", "menu", "onMenuSelect"],
+    hide: ["composer", "children", "empty", "starters", "onStarter", "art", "artAnimated", "autoFocus", "panel", "panelOpen", "title", "notice", "onNoticeDismiss", "onNewChat", "expanded", "onExpandedChange", "onClose", "chatsCount", "playbooksCount", "planMode", "onPlanModeChange", "menu", "onMenuSelect"],
     toggles: { started: { label: "Conversation started", default: false } },
     extras: { page: { values: ["accounts", "product", "invoice", "none"], default: "accounts" } },
     hint: "Switch between the docked column and full screen. Change the page the assistant was opened from: the scope row takes its name, and goes when there is nothing to scope to. Pick a suggestion or type to start; open Chats or Playbooks from the options menu, and watch where the panel lands in each size.",

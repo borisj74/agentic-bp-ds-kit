@@ -38,6 +38,10 @@
 
 /* The assistant keeps its own width and its own line down its side, so the frame adds neither. */
 .assistant { flex: none; min-height: 0; }
+/* Full: the assistant takes the page's place edge to edge, beside the rail and under the bar. The page is hidden,
+   not removed, so it is where it was when the assistant goes back to the side. */
+.fullAssistant .page { display: none; }
+.fullAssistant .assistant { flex: 1 1 auto; min-width: 0; }
 
 /* The sheet over the page while the phone nav is open. It is a button, so a tap or Enter closes the nav;
    off on any bar wide enough to hold the rail beside the page. */
