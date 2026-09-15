@@ -1,0 +1,127 @@
+{
+  "name": "UsageList",
+  "path": "src/ui/UsageList/UsageList.tsx",
+  "intent": "A list of usage limits, one a row: the limit's name, how much is used of it, a bar, and a short note, like API calls, storage and seats on a plan.",
+  "usage": "Use UsageList to show how much of each limit is used, like a plan or account usage panel. It is one component: pass items, each with an id, a label, used and limit, and optionally a unit and a note. Each row writes used of limit, like 8,420 of 10,000 or 32 of 50 GB, over a kit Progress bar. The bar is blue, turns amber at 80% of the limit and red at 100%; at those points a warning or error icon sits before the numbers and screen readers hear Almost at limit or Limit reached. Use over the limit is shown as it is, like 12 of 10, with a full red bar. note adds a quieter line under the bar, like Resets on Oct 1. Put it in a Section or Card, which gives it its title; the list draws no box of its own. label names the list for screen readers, like Plan usage. See contracts/usagelist.json for the full contract.",
+  "props": {
+    "items": {
+      "type": "UsageListItem[]",
+      "required": true,
+      "itemShape": {
+        "id": "string",
+        "label": "string",
+        "used": "number How much is used.",
+        "limit": "number The most allowed.",
+        "unit": "string? Written after the numbers, like GB.",
+        "note": "string? A short line under the bar, like Resets on Oct 1."
+      },
+      "note": "The limits in order. Keep it short: one to eight."
+    },
+    "label": {
+      "type": "string",
+      "default": "Usage",
+      "note": "Names the list for screen readers, like Plan usage."
+    }
+  },
+  "useWhen": [
+    "A plan, account or billing page that shows usage against limits, like API calls, storage and seats.",
+    "A usage panel where people need to spot the limits that are nearly or fully used."
+  ],
+  "doNot": [
+    "Do not build usage rows from a Table with a Progress column, or from loose bars and text. Use UsageList.",
+    "Do not use it for task progress, like an upload or a setup checklist. Use Progress or Stepper.",
+    "Do not use it to compare records across columns. Use Table.",
+    "Do not pass a percent as used. Pass the real used and limit numbers; the list works out the percent.",
+    "Do not put it in a Card and a Section at once, or draw a box round it yourself.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A list named by label, so the number of limits is read.",
+    "Each bar is a progressbar named by the limit, its numbers and, from 80%, Almost at limit or Limit reached, so the state is never color alone.",
+    "The amber and red icons are decorative; their meaning is in the bar's name and in visually hidden text beside the numbers."
+  ],
+  "snippet": "<Section title=\"Plan usage\">\n  <UsageList\n    label=\"Plan usage\"\n    items={[\n      { id: \"api\", label: \"API calls\", used: 8420, limit: 10000, note: \"Resets on Oct 1\" },\n      { id: \"storage\", label: \"Storage\", used: 32, limit: 50, unit: \"GB\" },\n      { id: \"seats\", label: \"Seats\", used: 12, limit: 12, note: \"All seats in use\" },\n    ]}\n  />\n</Section>",
+  "examples": [
+    {
+      "title": "Plan usage",
+      "usage": "Three limits: one well under, one past 80% in amber, and one fully used in red.",
+      "items": [
+        {
+          "props": {
+            "label": "Plan usage",
+            "items": [
+              {
+                "id": "storage",
+                "label": "Storage",
+                "used": 32,
+                "limit": 50,
+                "unit": "GB"
+              },
+              {
+                "id": "api",
+                "label": "API calls",
+                "used": 8420,
+                "limit": 10000,
+                "note": "Resets on Oct 1"
+              },
+              {
+                "id": "seats",
+                "label": "Seats",
+                "used": 12,
+                "limit": 12,
+                "note": "All seats in use"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Over the limit",
+      "usage": "Use past the limit reads as it is, with a full red bar.",
+      "items": [
+        {
+          "props": {
+            "label": "Usage",
+            "items": [
+              {
+                "id": "invoices",
+                "label": "Invoices sent",
+                "used": 1240,
+                "limit": 1000,
+                "note": "Extra invoices are billed at the overage rate"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Under every limit",
+      "usage": "Blue bars with notes, when nothing is close to a limit.",
+      "items": [
+        {
+          "props": {
+            "label": "Workspace usage",
+            "items": [
+              {
+                "id": "projects",
+                "label": "Projects",
+                "used": 4,
+                "limit": 20
+              },
+              {
+                "id": "files",
+                "label": "File storage",
+                "used": 2.4,
+                "limit": 10,
+                "unit": "GB",
+                "note": "Shared across every project"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

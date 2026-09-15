@@ -1,0 +1,20 @@
+/* A column of usage rows, 20px apart. Each row: the name and used of limit on one line, the bar, then the note. */
+.list {
+  display: flex; flex-direction: column; gap: var(--space-large); margin: 0; padding: 0; list-style: none;
+  font-family: var(--font-sans);
+}
+.item { display: flex; flex-direction: column; gap: var(--space-xsmall); min-width: 0; }
+
+.head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-small);
+  font-size: var(--font-size-small); line-height: var(--line-height-snug);
+}
+.label { min-width: 0; overflow-wrap: anywhere; font-weight: var(--font-weight-medium); color: var(--text-neutral-strong); }
+/* The numbers keep their width as they change, and the state icon sits right before them. */
+.count {
+  display: inline-flex; align-items: center; gap: var(--space-xxsmall); flex: none;
+  color: var(--text-neutral); font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.note { margin: 0; font-size: var(--font-size-xsmall); line-height: var(--line-height-snug); color: var(--text-neutral); }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

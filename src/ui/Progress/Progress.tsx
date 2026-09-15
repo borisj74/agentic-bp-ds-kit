@@ -4,6 +4,7 @@ import styles from "./Progress.module.css";
 export type ProgressShape = "bar" | "circle" | "semicircle";
 export type ProgressSize = "sm" | "md" | "lg";
 export type ProgressThresholds = "none" | "bar" | "track" | "all";
+export type ProgressTone = "info" | "success" | "warning" | "danger";
 
 export interface ProgressProps {
   value: number;
@@ -11,6 +12,7 @@ export interface ProgressProps {
   shape?: ProgressShape;
   size?: ProgressSize;
   thresholds?: ProgressThresholds;
+  tone?: ProgressTone;
   referenceLines?: boolean;
   showValue?: boolean;
   datatip?: string;
@@ -29,13 +31,14 @@ const STROKE = 8;
 
 // Figma Meter Bar - Horizontal 6578:325 and Meter - Circle 6605:193.
 export function Progress({
-  value, label = "Progress", shape = "bar", size = "md", thresholds = "none", referenceLines = false, showValue = false, datatip,
+  value, label = "Progress", shape = "bar", size = "md", thresholds = "none", tone, referenceLines = false, showValue = false, datatip,
 }: ProgressProps) {
   const pct = Math.min(Math.max(Number.isFinite(value) ? value : 0, 0), 100);
   const rounded = Math.round(pct);
   const zone = zoneOf(pct);
   // The value is blue unless its own color shows the zone; the track shows the zone in track mode, the three bands in all.
-  const fillTone = thresholds === "bar" ? zone : "info";
+  // tone sets the value's color outright, for a meaning the screen decides, like a usage limit that is nearly reached.
+  const fillTone = tone ?? (thresholds === "bar" ? zone : "info");
   const trackTone = thresholds === "track" ? zone : "neutral";
   const a11y = {
     role: "progressbar", "aria-label": label, "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": rounded,

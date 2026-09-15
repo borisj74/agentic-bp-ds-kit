@@ -1032,6 +1032,23 @@
         "drag and drop",
         "reorder"
       ]
+    },
+    {
+      "name": "UsageList",
+      "contract": "contracts/usagelist.json",
+      "category": "data",
+      "tags": [
+        "usage",
+        "usage list",
+        "limits",
+        "plan limits",
+        "quota",
+        "allowance",
+        "meter",
+        "seats",
+        "storage",
+        "api calls"
+      ]
     }
   ],
   "patterns": [

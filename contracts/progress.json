@@ -42,6 +42,10 @@
       "default": "none",
       "note": "Zones are thirds: under 33 is red, under 67 amber, the rest green. none: blue value on a gray track. bar: the value takes its zone's color. track: the track takes the value's zone color under a blue value. all: the track shows all three bands under a blue value."
     },
+    "tone": {
+      "enum": ["info", "success", "warning", "danger"],
+      "note": "Sets the value's color outright, whatever thresholds says, when the screen knows what the value means, like amber for a limit that is nearly used up. Leave it out for the blue value or the threshold zones."
+    },
     "referenceLines": {
       "type": "boolean",
       "default": false,
@@ -59,12 +63,14 @@
   },
   "useWhen": [
     "Task completion with a known percent: uploads, imports, onboarding.",
-    "A measure against a range, like storage, budget or a score, where red, amber and green zones help people judge it."
+    "A measure against a range, like storage, budget or a score, where red, amber and green zones help people judge it.",
+    "A color the screen decides, like a usage limit going amber and red: set tone."
   ],
   "doNot": [
     "Do not use it for waits of unknown length. Show a spinner.",
     "Do not draw bars or rings from divs or SVG. Use Progress.",
     "Do not add a ProgressLabel, ProgressCircle or Meter. Pick shape.",
+    "Do not use tone and thresholds bar together. tone wins; pick one.",
     "Do not rely on the zone colors alone; say what the value means in the label, showValue or datatip.",
     "For screens that still use the older 20-tall bar, use ProgressLegacy.",
     "Do not use raw hex."

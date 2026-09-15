@@ -72,6 +72,7 @@ import { Timeline, type TimelineItem, type TimelineProps } from "@/ui/Timeline/T
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 import { Tooltip, type TooltipProps } from "@/ui/Tooltip/Tooltip";
 import { TreeView, type TreeItem, type TreeViewProps } from "@/ui/TreeView/TreeView";
+import { UsageList, type UsageListItem } from "@/ui/UsageList/UsageList";
 
 export type Props = Record<string, unknown>;
 // Contract examples name the sample as {sections} and {endSections}; swap in the real arrays.
@@ -118,6 +119,12 @@ export interface Entry {
 
 const STEPS = ["Setup", "Map Columns", "Billing IDs", "Usage IDs", "Activate"];
 
+// A plan's usage: one limit well under, one past 80%, one fully used.
+const USAGE_ITEMS: UsageListItem[] = [
+  { id: "storage", label: "Storage", used: 32, limit: 50, unit: "GB" },
+  { id: "api", label: "API calls", used: 8420, limit: 10000, note: "Resets on Oct 1" },
+  { id: "seats", label: "Seats", used: 12, limit: 12, note: "All seats in use" },
+];
 const QUICK_LINK_ITEMS: LinkListItem[] = [
   { id: "tax", label: "Tax Related List" }, { id: "subscription", label: "Subscription Configuration" },
   { id: "portal", label: "Customer Portal" }, { id: "orders", label: "Orders" }, { id: "documents", label: "Document Information" },
@@ -1806,6 +1813,18 @@ export const registry: Record<string, Entry> = {
         <TreeView label="Workspace" items={[{ id: "org", label: "Organization", children: [TREE_ITEMS[0].children![1]] }]} expanded={["org", "design"]} selection="multiple" selected={["sienna", "ammar"]} showIcons size="sm" />
       </div>
     ),
+  },
+  UsageList: {
+    // A white panel like a Section's content; examples pass their own items.
+    render: (p) => (
+      <div style={{ width: 420, maxWidth: "100%", padding: "var(--space-medium)", background: "var(--surface-flat)", borderRadius: "var(--radius-medium)" }}>
+        <UsageList {...(p as object)} items={(p.items as UsageListItem[] | undefined) ?? USAGE_ITEMS} />
+      </div>
+    ),
+    preview: { label: "Plan usage", items: USAGE_ITEMS },
+    hide: ["items"],
+    hint: "A plan's limits. Bars turn amber at 80% of a limit and red at 100%; Variants show use over a limit and a list with nothing close.",
+    card: <div style={{ width: 240 }}><UsageList label="Plan usage" items={USAGE_ITEMS.slice(1)} /></div>,
   },
   Textarea: {
     // Keyed so a changed default value applies again. The wrapper gives the full-width field a form-like width.

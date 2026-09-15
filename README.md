@@ -48,7 +48,7 @@ A ready-made kit for building realistic, clickable screens quickly. Everything l
 | | Count | Includes |
 | --- | --- | --- |
 | Foundation pages | 10 | Color, Typography, Icons, Spacing, Grid systems, Radius, Border, Shadow, Motion, Opacity |
-| Components | 75 | Controls, fields, data, navigation, feedback and charts |
+| Components | 76 | Controls, fields, data, navigation, feedback and charts |
 | Patterns | 9 | AccountFlow, AppShell, ChatWindow, Dashboard, FormPage, GuidedProcessPage, ListPage, RecordPage, SettingsPage |
 
 Counts are as of this README. The catalog's Overview page counts them live from `contracts/index.json`.
