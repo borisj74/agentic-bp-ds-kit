@@ -3,6 +3,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent
 import { useDensitySize } from "../Density/Density";
 import { createPortal } from "react-dom";
 import { Button } from "../Button/Button";
+import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
 import { useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
@@ -14,6 +15,7 @@ import styles from "./DatePicker.module.css";
 export type DatePickerMode = "single" | "range";
 export type DatePickerSize = "sm" | "md" | "lg";
 export type DatePickerLabelPosition = "top" | "start";
+export type DatePickerMonthYear = "title" | "menus";
 export interface DatePickerRange { start: string; end: string }
 export type DatePickerValue = string | DatePickerRange;
 
@@ -30,6 +32,7 @@ export interface DatePickerProps {
   minDate?: string;
   maxDate?: string;
   presets?: boolean;
+  monthYear?: DatePickerMonthYear;
   name?: string;
   id?: string;
   required?: boolean;
@@ -68,6 +71,9 @@ const weeksOf = (view: Date) => {
 const short = (s?: string | null) => parse(s)?.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) ?? "";
 const longName = (d: Date) => d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 const monthLabel = (d: Date) => d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+const monthName = (month: number) => new Date(2000, month, 1).toLocaleDateString("en-US", { month: "long" });
+// How far the year menu reaches when no limits are given: ten years either side of the month on show.
+const YEAR_SPAN = 10;
 const isRange = (v?: DatePickerValue): v is DatePickerRange => typeof v === "object" && v !== null;
 
 function presetRanges(today: Date) {
@@ -89,7 +95,7 @@ function presetRanges(today: Date) {
 
 export function DatePicker({
   label, mode = "single", hideLabel = false, labelPosition: ownLabelPosition, size: ownSize, placeholder, value, defaultValue, onChange,
-  minDate, maxDate, presets = true, name, id, required = false, disabled = false, invalid = false, error, hint, help,
+  minDate, maxDate, presets = true, monthYear = "title", name, id, required = false, disabled = false, invalid = false, error, hint, help,
 }: DatePickerProps) {
   const size = useDensitySize(ownSize);
   const labelPosition = useLabelPosition(ownLabelPosition);
@@ -176,6 +182,8 @@ export function DatePicker({
     if (!open) return;
     const onPointer = (e: PointerEvent) => {
       const t = e.target as Node;
+      // The month and year menus are portaled, so they are outside the panel: a pick in one must not shut the panel.
+      if (t instanceof Element && t.closest('[role="menu"]')) return;
       if (!rootRef.current?.contains(t) && !panelRef.current?.contains(t)) close(false);
     };
     document.addEventListener("pointerdown", onPointer);
@@ -205,6 +213,26 @@ export function DatePicker({
     setFocus(toISO(addMonths(parse(focus) ?? next, n)));
   };
 
+  // The month and year menus jump straight to a month. index says which of the months on show was changed,
+  // so the one the person picked stays where it was.
+  const jump = (index: number, month: number, year: number) => {
+    const first = new Date(year, month, 1);
+    setView(shiftMonth(first, -index));
+    setFocus(toISO(first));
+  };
+  // A month or a year is off when every day in it is outside the limits.
+  const monthOff = (year: number, month: number) => {
+    const first = toISO(new Date(year, month, 1));
+    const last = toISO(new Date(year, month + 1, 0));
+    return Boolean((minDate && last < minDate) || (maxDate && first > maxDate));
+  };
+  const years = () => {
+    const shown = view.getFullYear();
+    const from = minDate ? Number(minDate.slice(0, 4)) : shown - YEAR_SPAN;
+    const to = maxDate ? Number(maxDate.slice(0, 4)) : shown + YEAR_SPAN;
+    return Array.from({ length: Math.max(to - from + 1, 1) }, (_, i) => from + i);
+  };
+
   const pick = (d: Date) => {
     const s = toISO(d);
     if (blocked(s)) return;
@@ -231,7 +259,9 @@ export function DatePicker({
 
   // Escape closes the panel (marked handled so a Modal around it stays open); Tab stays inside.
   const onPanelKey = (e: KeyboardEvent) => {
-    if (e.key === "Escape") { e.preventDefault(); close(true); return; }
+    // A menu open over the panel handles Escape itself; only an unhandled one closes the panel.
+    if (e.key === "Escape" && !e.defaultPrevented) { e.preventDefault(); close(true); return; }
+    if (e.key === "Escape") return;
     if (e.key !== "Tab") return;
     const items = [...(panelRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])];
     if (!items.length) return;
@@ -251,7 +281,33 @@ export function DatePicker({
           {index === 0 ? (
             <Button variant="tertiary" size="sm" iconOnly iconStart="chevron_left" disabled={Boolean(minDate && toISO(addDays(view, -1)) < minDate)} onClick={() => turn(-1)}>Previous month</Button>
           ) : <span className={styles.spacer} />}
-          <h2 id={headingId} className={styles.heading} aria-live="polite">{monthLabel(m)}</h2>
+          {monthYear === "menus" ? (
+            /* The month and the year as dropdowns, so a far-off date takes one pick instead of many turns of the
+               arrows. The hidden words name each one; its value is what shows. */
+            <div className={styles.jump}>
+              <h2 id={headingId} className={styles.srOnly} aria-live="polite">{monthLabel(m)}</h2>
+              <span id={`${headingId}-month`} className={styles.srOnly}>Month</span>
+              <span id={`${headingId}-year`} className={styles.srOnly}>Year</span>
+              <span className={styles.jumpMonth}>
+                <DropdownMenu
+                  label="Month" trigger="field" size="sm" text={monthName(m.getMonth())} labelledBy={`${headingId}-month`}
+                  items={Array.from({ length: 12 }, (_, month) => ({
+                    id: String(month), label: monthName(month), selected: month === m.getMonth(), disabled: monthOff(m.getFullYear(), month),
+                  }))}
+                  onSelect={(month) => jump(index, Number(month), m.getFullYear())}
+                />
+              </span>
+              <span className={styles.jumpYear}>
+                <DropdownMenu
+                  label="Year" trigger="field" size="sm" text={String(m.getFullYear())} labelledBy={`${headingId}-year`}
+                  items={years().map((year) => ({ id: String(year), label: String(year), selected: year === m.getFullYear(), disabled: monthOff(year, m.getMonth()) }))}
+                  onSelect={(year) => jump(index, m.getMonth(), Number(year))}
+                />
+              </span>
+            </div>
+          ) : (
+            <h2 id={headingId} className={styles.heading} aria-live="polite">{monthLabel(m)}</h2>
+          )}
           {index === monthsShown - 1 ? (
             <Button variant="tertiary" size="sm" iconOnly iconStart="chevron_right" disabled={Boolean(maxDate && toISO(shiftMonth(view, monthsShown)) > maxDate)} onClick={() => turn(1)}>Next month</Button>
           ) : <span className={styles.spacer} />}

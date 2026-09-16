@@ -2,7 +2,7 @@
   "name": "DatePicker",
   "path": "src/ui/DatePicker/DatePicker.tsx",
   "intent": "A date field that opens a calendar to pick one date, or a range between two dates. Looks like Input.",
-  "usage": "Use DatePicker for dates in forms and filters. mode single picks one day; mode range picks a start and an end across two months, with quick ranges like Last week. Picks stay pending until Apply; Cancel, Escape or a click outside leave the value as it was. Dates are ISO strings (YYYY-MM-DD); a range is { start, end }. Label, hint, error, help and sizes work like Input. See contracts/datepicker.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page. A label set at the start goes back on top of the field when the box around it is narrower than 480px, since a 160px label column would leave too little of the field to type in.",
+  "usage": "Use DatePicker for dates in forms and filters. mode single picks one day; mode range picks a start and an end across two months, with quick ranges like Last week. monthYear menus turns the month and year over the days into two menus, for dates far from today, like a date of birth; the arrows stay beside them. Picks stay pending until Apply; Cancel, Escape or a click outside leave the value as it was. Dates are ISO strings (YYYY-MM-DD); a range is { start, end }. Label, hint, error, help and sizes work like Input. See contracts/datepicker.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page. A label set at the start goes back on top of the field when the box around it is narrower than 480px, since a 160px label column would leave too little of the field to type in.",
   "props": {
     "label": {
       "type": "string",
@@ -66,6 +66,14 @@
       "default": true,
       "note": "Range mode only: Today, Yesterday, This week, Last week, This month, Last month, This year, Last year."
     },
+    "monthYear": {
+      "enum": [
+        "title",
+        "menus"
+      ],
+      "default": "title",
+      "note": "title writes the month and year over the days, with the arrows either side. menus makes them two kit menus, so a far-off month takes one pick instead of many turns of the arrows; the arrows stay. The years on offer come from minDate and maxDate, or ten years either side of the month on show."
+    },
     "name": {
       "type": "string",
       "note": "Hidden input for forms. Range submits start/end, like 2027-01-08/2027-01-14."
@@ -112,7 +120,8 @@
     "The calendar is a dialog; each month is a grid named by its heading; days are buttons named like Friday, January 8, 2027, today, start of range.",
     "Opening moves focus to the picked day or today. Arrow keys move by day and week, Home and End to the week edges, Page Up and Page Down by month. Enter or Space picks.",
     "Tab stays inside the calendar. Escape and Cancel close and return focus to the field; a click outside cancels.",
-    "Days outside the month are hidden from screen readers. The picked range in the footer is announced politely."
+    "Days outside the month are hidden from screen readers. The picked range in the footer is announced politely.",
+    "With monthYear menus the month and year are kit menus named Month and Year, reachable with the keyboard, and the month on show is still announced for screen readers."
   ],
   "snippet": "<DatePicker label=\"Invoice date\" value={date} onChange={setDate} />",
   "examples": [
@@ -224,6 +233,19 @@
           "props": {
             "label": "Date",
             "size": "lg"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Month and year menus",
+      "usage": "monthYear menus: pick the month and the year straight from the head of the panel instead of turning the arrows.",
+      "items": [
+        {
+          "props": {
+            "label": "Date of birth",
+            "monthYear": "menus",
+            "presets": false
           }
         }
       ]
