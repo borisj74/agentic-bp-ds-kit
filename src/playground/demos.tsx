@@ -404,6 +404,7 @@ export function ToolbarDemo(p: Record<string, unknown>) {
       moreActions={p.moreActions ? [{ id: "import", label: "Import", icon: "upload" }, { id: "columns", label: "Edit columns", icon: "view_column" }, { divider: true }, { id: "delete", label: "Delete all", icon: "delete", danger: true }] : undefined}
       onMoreSelect={() => {}}
       actions={p.actions ? <><Button size="sm">Export</Button><Button size="sm" variant="primary">Create</Button></> : undefined}
+      buttons={p.buttons === "subtle" ? "subtle" : undefined}
     />
   );
 }

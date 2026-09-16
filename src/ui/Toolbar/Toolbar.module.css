@@ -8,6 +8,10 @@
   border-radius: var(--radius-medium);
 }
 
+/* Subtle buttons: the buttons on the bar take the bar's own grey instead of white paper, so the bar reads as one
+   block. The search field keeps its white box, since it is a field to type in. */
+.subtle button:not(.searchTrigger) { --surface-raised: var(--bg-neutral-subtle); }
+
 .bar {
   position: relative; display: flex; align-items: center; justify-content: space-between; gap: var(--space-medium);
   padding: var(--space-xsmall) var(--space-small);

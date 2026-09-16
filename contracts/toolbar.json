@@ -2,7 +2,7 @@
   "name": "Toolbar",
   "path": "src/ui/Toolbar/Toolbar.tsx",
   "intent": "The bar above a list or table: find and filter on the left, view and actions on the right, with a filter bar that opens under it.",
-  "usage": "Put one Toolbar right above a list or table, under the PageHeader. It is one component. Left: a Filters button (when filters are passed), carrying a kit Count of how many filters are on and a search field, which with searchGroups opens a kit Command dropdown of quick-navigation results; then, after a divider, the view picker and refresh. Right: a More menu and the actions, kit Buttons size sm with at most one primary, last. Filters toggles the filter bar under it: the filter chips (kit DropdownMenu trigger filter), then Reset and Apply filters, and an optional help icon at the end. Every part is optional; leave out what the list does not need. See contracts/toolbar.json for the full contract. Under 1024px the toolbar keeps to one line: the filters, the search (it narrows first when space is short), the view and refresh, with the actions at the end. Under 640px, the kit's mobile break, the search takes a line of its own and everything else shares the next. When the actions do not fit on that line they fold into one Actions menu that lists them, then More's items after a divider. It is either the whole row of buttons or the one menu, never a wrapped row. If even the Actions button does not fit, it shows as an icon-only more button, still named Actions.",
+  "usage": "Put one Toolbar right above a list or table, under the PageHeader. It is one component. Left: a Filters button (when filters are passed), carrying a kit Count of how many filters are on and a search field, which with searchGroups opens a kit Command dropdown of quick-navigation results; then, after a divider, the view picker and refresh. Right: a More menu and the actions, kit Buttons size sm with at most one primary, last. Filters toggles the filter bar under it: the filter chips (kit DropdownMenu trigger filter), then Reset and Apply filters, and an optional help icon at the end. Every part is optional; leave out what the list does not need. buttons subtle gives the buttons on the bar the bar's own grey instead of white paper, for a quieter bar; the search field keeps its white box either way. See contracts/toolbar.json for the full contract. Under 1024px the toolbar keeps to one line: the filters, the search (it narrows first when space is short), the view and refresh, with the actions at the end. Under 640px, the kit's mobile break, the search takes a line of its own and everything else shares the next. When the actions do not fit on that line they fold into one Actions menu that lists them, then More's items after a divider. It is either the whole row of buttons or the one menu, never a wrapped row. If even the Actions button does not fit, it shows as an icon-only more button, still named Actions.",
   "props": {
     "filters": {
       "type": "ReactNode",
@@ -94,6 +94,14 @@
       "type": "ReactNode",
       "note": "Kit Buttons size sm: secondary first, one primary last. At most five visible actions including More. To fold into the Actions menu on a narrow bar, each must be a kit Button whose children are its text label (an icon-only Button already passes its name that way); picked from the menu, its onClick runs with no event. Anything else and the actions stay a row that wraps."
     },
+    "buttons": {
+      "enum": [
+        "raised",
+        "subtle"
+      ],
+      "default": "raised",
+      "note": "raised gives the buttons on the bar their own white paper. subtle gives them the bar's grey, so the bar reads as one block; the search field keeps its white box."
+    },
     "label": {
       "type": "string",
       "default": "List tools",
@@ -167,6 +175,25 @@
           "props": {
             "onSearchChange": "{setQuery}",
             "actions": "{actions}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Subtle buttons",
+      "usage": "buttons subtle: the buttons take the bar's own grey instead of white paper, so the bar reads as one block. The search field keeps its white box.",
+      "items": [
+        {
+          "props": {
+            "filters": "{filterChips}",
+            "onSearchChange": "{setQuery}",
+            "views": "{views}",
+            "onRefresh": "{reload}",
+            "moreActions": "{moreActions}",
+            "actions": "{actions}",
+            "searchGroups": "{quickLinks}",
+            "onSearchViewAll": "{searchAll}",
+            "buttons": "subtle"
           }
         }
       ]

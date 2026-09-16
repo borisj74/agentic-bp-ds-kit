@@ -17,6 +17,8 @@ import { Tooltip } from "../Tooltip/Tooltip";
 import { useFloating, useInBrowser } from "../Tooltip/useFloating";
 import styles from "./Toolbar.module.css";
 
+export type ToolbarButtons = "raised" | "subtle";
+
 export interface ToolbarView { id: string; label: string }
 
 export interface ToolbarProps {
@@ -41,6 +43,7 @@ export interface ToolbarProps {
   moreActions?: DropdownMenuEntry[];
   onMoreSelect?: (id: string) => void;
   actions?: ReactNode;
+  buttons?: ToolbarButtons;
   label?: string;
 }
 
@@ -66,7 +69,7 @@ function foldActions(actions: ReactNode): FoldedAction[] | null {
 export function Toolbar({
   filters, filterCount = 0, filtersOpen: openProp, defaultFiltersOpen = false, onFiltersOpenChange, onReset, onApply, filterHelp,
   searchValue, onSearchChange, searchPlaceholder = "Search in list", searchGroups, onSearchSelect, onSearchViewAll,
-  views = [], view: viewProp, onViewChange, onRefresh, moreActions, onMoreSelect, actions, label = "List tools",
+  views = [], view: viewProp, onViewChange, onRefresh, moreActions, onMoreSelect, actions, buttons = "raised", label = "List tools",
 }: ToolbarProps) {
   const barId = useId();
   const [innerOpen, setInnerOpen] = useState(defaultFiltersOpen);
@@ -204,7 +207,7 @@ export function Toolbar({
   );
 
   return (
-    <div className={styles.toolbar} role="group" aria-label={label}>
+    <div className={[styles.toolbar, buttons === "subtle" ? styles.subtle : ""].join(" ")} role="group" aria-label={label}>
       <div ref={barRef} className={styles.bar}>
         <div ref={startRef} className={styles.start}>
           {filters && (
