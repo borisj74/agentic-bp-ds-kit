@@ -27,7 +27,8 @@
 .layout-metrics--fixed-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .layout-metrics--fixed-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
-.layout-split { display: grid; gap: var(--layout-gutter-md); grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr)); }
+/* Columns of Sections sit the same 24px apart as stacked ones, so a split reads as one grid of blocks. */
+.layout-split { display: grid; gap: var(--layout-gutter-lg); grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr)); }
 .layout-split > * { grid-column: span var(--layout-split-half); min-width: 0; }
 .layout-split--primary > :first-child { grid-column: span var(--layout-split-primary); }
 .layout-split--primary > :last-child { grid-column: span var(--layout-split-secondary); }

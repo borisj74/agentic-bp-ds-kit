@@ -4,6 +4,7 @@ import { Badge, type BadgeTone } from "../Badge/Badge";
 import { Breadcrumb, type BreadcrumbItem } from "../Breadcrumb/Breadcrumb";
 import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
 import { Icon } from "../Icon/Icon";
+import { titleCase } from "../titleCase";
 import styles from "./PageHeader.module.css";
 
 export interface PageHeaderProps {
@@ -22,6 +23,8 @@ export interface PageHeaderProps {
 export function PageHeader({
   title, breadcrumbs = [], icon, badge, badgeTone = "neutral", actions, moreActions, onMoreSelect, sticky = false, shadow = true,
 }: PageHeaderProps) {
+  // Kit headings read in title case, so a screen can pass its copy either way.
+  const heading = titleCase(title);
   const hasControls = Boolean(actions) || Boolean(moreActions?.length);
   return (
     <header className={[styles.header, sticky ? styles.sticky : "", sticky && shadow ? styles.shadow : ""].join(" ")}>
@@ -31,16 +34,16 @@ export function PageHeader({
         {sticky ? (
           // Sticky: one compact line. The trail ends in the page title; the heading stays for screen readers.
           <>
-            <Breadcrumb items={[...breadcrumbs, { label: title }]} />
-            <h1 className={styles.srOnly}>{title}</h1>
+            <Breadcrumb items={[...breadcrumbs, { label: heading }]} />
+            <h1 className={styles.srOnly}>{heading}</h1>
           </>
         ) : (
           <>
             {/* The trail is Home, the section, then this page: the title closes it as the current crumb. */}
-            {breadcrumbs.length > 0 && <Breadcrumb items={[...breadcrumbs, { label: title }]} />}
+            {breadcrumbs.length > 0 && <Breadcrumb items={[...breadcrumbs, { label: heading }]} />}
             <div className={styles.titleRow}>
               {icon && <Icon name={icon} size="lg" tone="brand" />}
-              <h1 className={styles.heading}>{title}</h1>
+              <h1 className={styles.heading}>{heading}</h1>
               {badge && <Badge tone={badgeTone}>{badge}</Badge>}
             </div>
           </>

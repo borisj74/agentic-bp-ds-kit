@@ -7,7 +7,7 @@
     "title": {
       "type": "string",
       "required": true,
-      "note": "The page name. It is the page's h1."
+      "note": "The page name. It is the page's h1. PageHeader writes it in title case, so pass the copy either way."
     },
     "breadcrumbs": {
       "type": "BreadcrumbItem[]",

@@ -7,7 +7,7 @@
     "title": {
       "type": "string",
       "required": true,
-      "note": "The heading, an h2."
+      "note": "The heading, an h2. Section writes it in title case, so pass the copy either way."
     },
     "description": {
       "type": "string",

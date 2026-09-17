@@ -3,6 +3,7 @@ import { useId, useState, type ReactNode } from "react";
 import { Button } from "../Button/Button";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 import { Icon } from "../Icon/Icon";
+import { titleCase } from "../titleCase";
 import styles from "./Section.module.css";
 
 export type SectionLine = "medium" | "thin";
@@ -30,6 +31,8 @@ export function Section({
   const helpId = `${uid}-help`;
   const [innerOpen, setInnerOpen] = useState(defaultOpen);
   const open = !collapsible || (openProp ?? innerOpen);
+  // Kit headings read in title case, so a screen can pass its copy either way.
+  const heading = titleCase(title);
 
   const toggle = () => {
     if (openProp === undefined) setInnerOpen(!open);
@@ -45,13 +48,13 @@ export function Section({
               variant="tertiary" size="sm" iconOnly iconStart={open ? "expand_more" : "chevron_right"}
               aria-expanded={open} aria-controls={children != null ? bodyId : undefined} onClick={toggle}
             >
-              {title}
+              {heading}
             </Button>
           )}
-          <h2 id={headingId} className={styles.title} aria-describedby={help ? helpId : undefined}>{title}</h2>
+          <h2 id={headingId} className={styles.title} aria-describedby={help ? helpId : undefined}>{heading}</h2>
           {help && (
-            <HelpPopover title={title} content={help}>
-              <button type="button" className={styles.help} aria-label={`About ${title}`}><Icon name="help_center" size="sm" /></button>
+            <HelpPopover title={heading} content={help}>
+              <button type="button" className={styles.help} aria-label={`About ${heading}`}><Icon name="help_center" size="sm" /></button>
             </HelpPopover>
           )}
           {help && <span id={helpId} className={styles.srOnly}>{help}</span>}
