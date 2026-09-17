@@ -22,7 +22,7 @@ import { Badge } from "@/ui/Badge/Badge";
 import { Button } from "@/ui/Button/Button";
 import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
 import { Card } from "@/ui/Card/Card";
-import { Cell, type CellSize } from "@/ui/Cell/Cell";
+import { Cell, type CellSize, type CellTreeToggle } from "@/ui/Cell/Cell";
 import { ChatComposer, type ChatComposerMode, type ChatComposerProps } from "@/ui/ChatComposer/ChatComposer";
 import { ChatComposer as ChatComposerPiece } from "@/ui/ChatComposer/ChatComposer";
 import { ChatHeader, type ChatHeaderProps } from "@/ui/ChatHeader/ChatHeader";
@@ -426,7 +426,7 @@ const ACCOUNT_TREE: AccountNode[] = [
   { id: "initech", name: "Initech", owner: "Noah Williams", mrr: "$9,800", icon: "store" },
 ];
 
-export function CellTreeDemo({ size, checkbox = false, showLines = true, icons = true }: { size?: CellSize; checkbox?: boolean; showLines?: boolean; icons?: boolean }) {
+export function CellTreeDemo({ size, checkbox = false, showLines = true, icons = true, treeToggle }: { size?: CellSize; checkbox?: boolean; showLines?: boolean; icons?: boolean; treeToggle?: CellTreeToggle }) {
   const [open, setOpen] = useState<string[]>(["acme", "acme-us"]);
   const rows: { id: string; account: ReactNode; owner: string; mrr: string }[] = [];
   const add = (list: AccountNode[], level: number) => list.forEach((a) => {
@@ -435,7 +435,7 @@ export function CellTreeDemo({ size, checkbox = false, showLines = true, icons =
       id: a.id, owner: a.owner, mrr: a.mrr,
       account: (
         <Cell
-          type="tree" size={size} label={a.name} level={level} checkbox={checkbox} showLines={showLines} icon={icons ? a.icon : undefined}
+          type="tree" size={size} label={a.name} level={level} checkbox={checkbox} showLines={showLines} treeToggle={treeToggle} icon={icons ? a.icon : undefined}
           expanded={a.children ? isOpen : undefined}
           onExpandedChange={(next) => setOpen((o) => (next ? [...o, a.id] : o.filter((id) => id !== a.id)))}
         />

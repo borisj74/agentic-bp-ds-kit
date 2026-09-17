@@ -19,6 +19,7 @@ export type CellType =
   | "trendPositive" | "trendNegative" | "progress" | "rating" | "select" | "actions" | "actionIcons" | "actionMenu" | "checkbox" | "tree";
 export type CellSize = "sm" | "md";
 export type CellAlign = "start" | "center" | "end";
+export type CellTreeToggle = "chevron" | "box";
 export interface CellPerson { name: string; src?: string }
 export interface CellBadge { label: string; tone?: BadgeTone }
 export interface CellAction { label: string; icon?: string; variant?: ButtonVariant; onClick?: () => void }
@@ -50,6 +51,7 @@ export interface CellProps {
   expanded?: boolean;
   onExpandedChange?: (expanded: boolean) => void;
   showLines?: boolean;
+  treeToggle?: CellTreeToggle;
 }
 
 const STARS = 5;
@@ -58,7 +60,7 @@ const score = (v?: string | number) => Math.max(0, Math.min(STARS, Math.round(Nu
 export function Cell({
   type = "text", size: ownSize, align = "start", text = true, checkbox = false, label, href, name, src, people, icon,
   tone = "neutral", badges, value, actions, menu, options, onValueChange, checked, defaultChecked, onCheckedChange,
-  level = 1, expanded, onExpandedChange, showLines = true, onClick,
+  level = 1, expanded, onExpandedChange, showLines = true, treeToggle = "chevron", onClick,
 }: CellProps) {
   const density = useDensity();
   const size = ownSize ?? (density === "compact" ? "sm" : "md");
@@ -199,13 +201,29 @@ export function Cell({
     <span className={[styles.treeLead, showLines ? styles.lines : ""].join(" ")}>
       {Array.from({ length: depth }, (_, k) => <span key={k} className={styles.guide} aria-hidden="true" />)}
       {parent ? (
-        <span className={styles.toggle}>
-          <Button
-            size="sm" variant="tertiary" iconOnly iconStart={expanded ? "expand_more" : "chevron_right"}
-            aria-expanded={expanded} onClick={() => onExpandedChange?.(!expanded)}
-          >
-            {`${expanded ? "Collapse" : "Expand"} ${label ?? "row"}`}
-          </Button>
+        <span
+          className={[styles.toggle, treeToggle === "box" ? styles.boxToggle : ""].join(" ")}
+          // Figma (+)/(-) expanded: the connector joins upward only on a nested row, and downward only while the
+          // row is open, so a top row's square has no line hanging over it.
+          data-above={depth > 0 || undefined} data-below={expanded || undefined}
+        >
+          {treeToggle === "box" ? (
+            // Figma .part/td-expandable: a 12px outlined square holding add or remove, with the guide line
+            // running through it, rather than a chevron.
+            <button
+              type="button" className={styles.box} aria-expanded={expanded} onClick={() => onExpandedChange?.(!expanded)}
+            >
+              <Icon name={expanded ? "remove" : "add"} size="xs" />
+              <span className={styles.srOnly}>{`${expanded ? "Collapse" : "Expand"} ${label ?? "row"}`}</span>
+            </button>
+          ) : (
+            <Button
+              size="sm" variant="tertiary" iconOnly iconStart={expanded ? "expand_more" : "chevron_right"}
+              aria-expanded={expanded} onClick={() => onExpandedChange?.(!expanded)}
+            >
+              {`${expanded ? "Collapse" : "Expand"} ${label ?? "row"}`}
+            </Button>
+          )}
         </span>
       ) : depth === 0 && <span className={styles.toggle} aria-hidden="true" />}
     </span>

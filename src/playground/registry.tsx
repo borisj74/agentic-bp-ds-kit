@@ -17,7 +17,7 @@ import { Cascader, type CascaderOption, type CascaderProps } from "@/ui/Cascader
 import { Calendar, type CalendarEvent, type CalendarProps, type CalendarSource } from "@/ui/Calendar/Calendar";
 import { Card, type CardProps } from "@/ui/Card/Card";
 import { Carousel, type CarouselProps } from "@/ui/Carousel/Carousel";
-import { Cell, type CellSize, type CellType } from "@/ui/Cell/Cell";
+import { Cell, type CellSize, type CellTreeToggle, type CellType } from "@/ui/Cell/Cell";
 import { ChatComposer, type ChatComposerProps } from "@/ui/ChatComposer/ChatComposer";
 import { ChatHeader, type ChatHeaderProps } from "@/ui/ChatHeader/ChatHeader";
 import { ChatList, type ChatListProps } from "@/ui/ChatList/ChatList";
@@ -939,7 +939,7 @@ export const registry: Record<string, Entry> = {
   Cell: {
     // tree previews in a real Table of parent and child accounts, so the chevrons open and close rows.
     render: (p) => (p.type === "tree"
-      ? <div style={{ width: 640, maxWidth: "100%" }}><CellTreeDemo size={p.size as CellSize | undefined} checkbox={Boolean(p.checkbox)} showLines={p.showLines !== false} /></div>
+      ? <div style={{ width: 640, maxWidth: "100%" }}><CellTreeDemo size={p.size as CellSize | undefined} checkbox={Boolean(p.checkbox)} showLines={p.showLines !== false} treeToggle={p.treeToggle as CellTreeToggle | undefined} /></div>
       : <Cell {...(p as object)} />),
     preview: { type: "text", label: "INV-1042" },
     // expanded belongs to each tree row; the tree preview keeps its own open rows.

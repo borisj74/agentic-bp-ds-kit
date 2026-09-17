@@ -2,7 +2,7 @@
   "name": "Cell",
   "path": "src/ui/Cell/Cell.tsx",
   "intent": "Content for one table cell: text, a link, a person, a file, a status, a trend, progress, a rating, a select, row actions or a row menu, a tree row, with an optional row checkbox. Each cell is full width with a faint bottom border.",
-  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, link to open a record, avatar for a person, badge for status, trend for change, progress for how far along something is, actions for row buttons, actionMenu for a More menu, select to change a value in place, checkbox for a column with only the row Checkbox, tree for the first cell of parent and child rows (an indent per level, faint guide lines and a chevron to open and close its children). Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, DropdownMenu, Icon, Progress and Select; it never draws its own. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract. With actionIcons, menu puts the row's remaining actions behind one More button at the end. In a box narrower than 640px, the kit's mobile break, the icon buttons fold into that More menu and the cell keeps one button, so the row's own values get the width; only one of the two is in the layout, so nothing is reached twice by the keyboard.",
+  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, link to open a record, avatar for a person, badge for status, trend for change, progress for how far along something is, actions for row buttons, actionMenu for a More menu, select to change a value in place, checkbox for a column with only the row Checkbox, tree for the first cell of parent and child rows (an indent per level, faint guide lines and a chevron to open and close its children; treeToggle box swaps that chevron for the outlined plus or minus square). Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, DropdownMenu, Icon, Progress and Select; it never draws its own. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract. With actionIcons, menu puts the row's remaining actions behind one More button at the end. In a box narrower than 640px, the kit's mobile break, the icon buttons fold into that More menu and the cell keeps one button, so the row's own values get the width; only one of the two is in the layout, so nothing is reached twice by the keyboard.",
   "props": {
     "type": {
       "enum": [
@@ -161,6 +161,14 @@
       "type": "boolean",
       "default": true,
       "note": "For tree. Faint lines under each open parent's chevron, joining its children from row to row."
+    },
+    "treeToggle": {
+      "enum": [
+        "chevron",
+        "box"
+      ],
+      "default": "chevron",
+      "note": "For tree. chevron opens and closes the row with a kit chevron button. box draws the outlined square with add or remove inside it, as in the Figma table part, with the guide line running through it."
     }
   },
   "useWhen": [
@@ -188,7 +196,7 @@
     "actionMenu is a kit DropdownMenu: an icon-only More button named by label, opening a role=menu.",
     "select is a small kit Select with a hidden label from label, named with its value.",
     "progress is a kit Progress: a progressbar named by label, read as its percent.",
-    "tree: the chevron is a kit Button named Expand or Collapse and the row label, with aria-expanded. The indent and guide lines are hidden from screen readers.",
+    "tree: the toggle (chevron or box) is named Expand or Collapse and the row label, with aria-expanded. The indent and guide lines are hidden from screen readers.",
     "On a phone-width box the folded More menu carries the icon actions as named rows, so every row action is still reachable."
   ],
   "snippet": "<Cell type=\"avatar\" name=\"Maya Chen\" label=\"maya@acme.com\" src=\"/faces/maya-chen.jpg\" />",
@@ -515,6 +523,21 @@
             "label": "Acme Holdings",
             "icon": "domain",
             "expanded": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Tree with box toggles",
+      "usage": "treeToggle box: the outlined plus or minus square from the Figma table part, with the guide line running through it.",
+      "items": [
+        {
+          "props": {
+            "type": "tree",
+            "label": "Acme Holdings",
+            "icon": "domain",
+            "expanded": true,
+            "treeToggle": "box"
           }
         }
       ]

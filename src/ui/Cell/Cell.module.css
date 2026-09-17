@@ -61,3 +61,27 @@
   border-inline-start: var(--border-width-thin) solid var(--border-neutral-subtle);
 }
 .toggle { display: grid; place-items: center; flex: none; width: var(--tree-indent); }
+/* Figma .part/td-expandable: the outlined square toggle. The guide line runs down the cell behind it, so the
+   square sits on the row's own surface and the line reads as joined above and below it. */
+.boxToggle { position: relative; }
+/* The connector reaches from the square to the edge of the row: up on a nested row, down while it is open. */
+.lines .boxToggle[data-above]::before, .lines .boxToggle[data-below]::after {
+  content: ""; position: absolute; inset-inline-start: 50%;
+  border-inline-start: var(--border-width-thin) solid var(--border-neutral-subtle);
+}
+/* The line stops at the edge of the square rather than running under it, so it never shows inside the outline. */
+.lines .boxToggle[data-above]::before { inset-block-start: calc(var(--pad-y) * -1); inset-block-end: calc(50% + var(--icon-size-xsmall) / 2); }
+.lines .boxToggle[data-below]::after { inset-block-start: calc(50% + var(--icon-size-xsmall) / 2); inset-block-end: calc((var(--pad-y) + var(--border-width-thin)) * -1); }
+.box {
+  /* Above the connector, which is drawn by the cell around it. */
+  position: relative; z-index: 1; display: block; box-sizing: border-box; overflow: hidden;
+  width: var(--icon-size-xsmall); height: var(--icon-size-xsmall); margin: 0; padding: 0;
+  border: var(--border-width-thin) solid var(--border-info-intense); background: var(--surface-flat);
+  color: var(--icon-info-intense); cursor: pointer;
+}
+/* The glyph is centred on the square itself, not on the 10px inside its outline. */
+.box > :first-child {
+  position: absolute; inset-inline-start: 50%; inset-block-start: 50%; transform: translate(-50%, -50%);
+}
+.box:hover { background: var(--bg-info-faint); }
+.box:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
