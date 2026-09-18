@@ -1,0 +1,42 @@
+/* The frame measures itself, so the split answers to the room it has, not the window: a list beside a pane from
+   640 up (the kit's small break), one at a time below. The page padding belongs to the AppShell page around it. */
+.frame { container-type: inline-size; min-width: 0; font-family: var(--font-sans); }
+
+.split {
+  position: relative; display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); min-width: 0; min-height: 100%;
+  border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-medium);
+  background: var(--surface-flat); overflow: hidden;
+}
+.list { min-width: 0; border-inline-end: var(--border-width-thin) solid var(--border-neutral-subtle); overflow: auto; }
+.pane { min-width: 0; overflow: auto; }
+
+.record { display: flex; flex-direction: column; min-width: 0; }
+.head {
+  display: flex; align-items: center; gap: var(--space-xsmall); min-height: calc(var(--control-large) + var(--space-xxsmall));
+  padding-inline: var(--layout-margin-md); border-bottom: var(--border-width-thin) solid var(--border-neutral-faint);
+}
+.title {
+  flex: 1; min-width: 0; margin: 0;
+  font: var(--text-heading-md-weight) var(--text-heading-md-size) / var(--text-heading-md-lh) var(--font-sans);
+  color: var(--text-neutral-strong); overflow-wrap: anywhere;
+}
+.actions { display: flex; align-items: center; gap: var(--space-xsmall); margin-inline-start: auto; }
+.body { display: flex; flex-direction: column; gap: var(--layout-gutter-lg); padding: var(--layout-margin-md); min-width: 0; }
+.empty { display: grid; place-items: center; min-height: 100%; padding: var(--layout-margin-md); box-sizing: border-box; }
+
+/* Wide: no Back, the list is beside the pane. */
+.back { display: none; }
+
+@container (max-width: 639px) {
+  .split { grid-template-columns: minmax(0, 1fr); }
+  .list { border-inline-end: 0; }
+  /* One at a time: the list until a record opens, then the record with Back. */
+  .pane { display: none; }
+  .open .list { display: none; }
+  .open .pane { display: block; }
+  .back { display: inline-flex; margin-inline-start: calc(-1 * var(--space-xsmall)); }
+  .head { padding-inline: var(--space-medium); }
+  .body { padding: var(--space-medium); }
+}
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

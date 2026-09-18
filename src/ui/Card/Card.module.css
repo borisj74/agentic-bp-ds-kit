@@ -48,6 +48,8 @@
 /* Footer: the select checkbox. It turns faint grey on the picked card, like Figma. */
 .footer { display: flex; align-items: center; padding: var(--space-small) var(--space-medium); }
 .selected .footer { background: var(--bg-neutral-faint); }
+/* Actions sit at the end of the footer, above the stretched link of a card that opens something. */
+.actions { position: relative; z-index: 1; display: flex; align-items: center; gap: var(--space-xxsmall); margin-inline-start: auto; }
 
 /* Disabled: every line turns faint and the tile goes grey. */
 .disabled .title, .disabled .description, .disabled .amount, .disabled .message { color: var(--text-neutral-faint); }

@@ -3,7 +3,7 @@ import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
 import { APP_NAV, APP_NAV_END } from "@/patterns/AppShell/appNav";
-import { AppShellDemo, DashboardDemo, FormPageDemo, AccountFlowDemo, GuidedProcessDemo, GuidedProcessPageDemo, SettingsPageDemo, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { AppShellDemo, DashboardDemo, FormPageDemo, AccountFlowDemo, GuidedProcessDemo, GuidedProcessPageDemo, SettingsPageDemo, ListDetailDemo, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -764,6 +764,31 @@ export const registry: Record<string, Entry> = {
     },
     card: <ButtonGroup label="Plan period"><Button>Day</Button><Button>Week</Button><Button>Month</Button></ButtonGroup>,
   },
+  ListDetail: {
+    // The pattern in the frame on Billing › Invoices, driven the way a screen would drive it: the open invoice lives in the screen.
+    render: ({ shell, stage, open, nested }) => (
+      <ListDetailDemo key={`${open}-${nested}`} shell={shell !== false} stage={String(stage ?? "desktop")} picked={open !== false} nested={Boolean(nested)} />
+    ),
+    // Open over the contract default, so the preview starts with an invoice showing.
+    preview: { open: true },
+    hide: ["list", "detail", "open", "title", "actions", "empty", "onBack", "backLabel", "label"],
+    toggles: { nested: { label: "Nested accounts", default: false }, shell: { label: "In the app frame", default: true } },
+    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
+    hint: "Pick invoices and the pane beside the list follows. Turn on Nested accounts: the list starts at the accounts, a click steps into one's invoices with Back to return, and an invoice opens beside it. Set the stage to phone: the list shows alone, a row opens the invoice over it, and Back returns. Turn the frame off to see the pattern on its own.",
+    block: true,
+    wide: true,
+    page: <ListDetailDemo shell />,
+    card: (
+      <div style={{ width: 340, display: "grid", gridTemplateColumns: "2fr 3fr", border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", background: "var(--surface-flat)", overflow: "hidden" }}>
+        <div style={{ borderInlineEnd: "var(--border-width-thin) solid var(--border-neutral-subtle)", padding: "var(--space-xsmall)", display: "flex", flexDirection: "column", gap: "var(--space-xsmall)" }}>
+          <Skeleton shape="text" /><Skeleton shape="text" /><Skeleton shape="text" />
+        </div>
+        <div style={{ padding: "var(--space-xsmall)", display: "flex", flexDirection: "column", gap: "var(--space-xsmall)" }}>
+          <Skeleton shape="text" width="60%" /><Skeleton shape="text" /><Skeleton shape="text" />
+        </div>
+      </div>
+    ),
+  },
   SettingsPage: {
     // The pattern in the frame, driven the way a screen would drive it: which place is chosen lives in the screen.
     render: ({ shell, notice, stage, ...p }) => (
@@ -872,6 +897,8 @@ export const registry: Record<string, Entry> = {
     hide: ["items", "groups", "selected", "collapsed"],
     toggles: { grouped: { label: "Groups", default: false } },
     block: true,
+    // Variants stack top to bottom, so each list has the width it would have on a page.
+    column: true,
     hint: "Switch selection and interaction: single picks one row, multiple adds checkboxes; drill opens a record, drag reorders by hand. Turn Groups on to split the list under headers, then try the header size, collapsible and sticky.",
     card: (
       <div style={{ width: "100%", background: "var(--surface-flat)" }}>

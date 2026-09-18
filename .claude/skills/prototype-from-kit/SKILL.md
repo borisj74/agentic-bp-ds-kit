@@ -33,7 +33,6 @@ These pieces and patterns are planned but have no contract in this kit yet. If a
 
 - Components: InsightCard. (Tables are built: use `Table`, or `DataGrid` for editable cells.)
 - Patterns and what they will contain:
-  - `list-detail`
   - `invite-members` — invite / add-people screens (Empty + Modal + Form).
   - `assistant-workspace` — assistant / insights screens (`layout-workspace` + a `ChatWindow` rail + two-column InsightCards).
   - `empty-first-run` — empty / first-run screens (PageHeader + Empty + one primary that opens a create Modal).

@@ -1148,6 +1148,20 @@
       ]
     },
     {
+      "name": "ListDetail",
+      "contract": "contracts/listdetail.json",
+      "tags": [
+        "list detail",
+        "master detail",
+        "list and detail",
+        "detail pane",
+        "inbox",
+        "queue",
+        "split view",
+        "side panel"
+      ]
+    },
+    {
       "name": "ListPage",
       "contract": "contracts/listpage.json",
       "tags": [

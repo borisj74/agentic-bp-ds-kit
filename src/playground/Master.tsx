@@ -228,7 +228,7 @@ export function Master({ contract }: { contract: Contract }) {
                 <h3 className={styles.h2}>{ex.title}</h3>
                 <div className={styles.exampleCanvas}>
                   {captioned ? (
-                    <div className={styles.cells}>
+                    <div className={[styles.cells, entry.column ? styles.stackedCells : ""].join(" ")}>
                       {ex.items.map((it, j) => (
                         <div key={j} className={styles.cell}>
                           <span className={styles.caption}>{it.caption}</span>

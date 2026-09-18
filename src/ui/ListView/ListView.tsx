@@ -4,7 +4,7 @@ import { Avatar } from "../Avatar/Avatar";
 import { Badge, type BadgeTone } from "../Badge/Badge";
 import { Button } from "../Button/Button";
 import { Checkbox } from "../Checkbox/Checkbox";
-import { DropdownMenu, type DropdownMenuItem } from "../DropdownMenu/DropdownMenu";
+import { DropdownMenu, type DropdownMenuEntry, type DropdownMenuItem } from "../DropdownMenu/DropdownMenu";
 import { Icon } from "../Icon/Icon";
 import styles from "./ListView.module.css";
 
@@ -35,7 +35,9 @@ export interface ListViewItem {
   message?: string;
   messageTone?: ListViewMessageTone;
   actions?: ListViewAction[];
+  menu?: DropdownMenuEntry[];
   disabled?: boolean;
+  children?: ListViewItem[];
 }
 
 export interface ListViewGroup {
@@ -61,6 +63,9 @@ export interface ListViewProps {
   interaction?: ListViewInteraction;
   onOpen?: (id: string) => void;
   onAction?: (itemId: string, actionId: string) => void;
+  path?: string[];
+  defaultPath?: string[];
+  onPathChange?: (ids: string[]) => void;
 }
 
 type MoveKind = "up" | "down" | "top" | "bottom";
@@ -68,6 +73,26 @@ type MoveKind = "up" | "down" | "top" | "bottom";
 const MESSAGE_ICON: Record<ListViewMessageTone, string> = {
   success: "check_circle", info: "info", warning: "warning", danger: "error",
 };
+
+// The rows at one level of a nested list: the root, or the children of the last id on the path.
+function levelAt(items: ListViewItem[], path: string[]) {
+  let rows = items;
+  const trail: ListViewItem[] = [];
+  for (const id of path) {
+    const next = rows.find((it) => it.id === id);
+    if (!next?.children) break;
+    trail.push(next);
+    rows = next.children;
+  }
+  return { rows, trail };
+}
+
+// A new tree with the rows at one level swapped for a new list.
+function withLevel(items: ListViewItem[], path: string[], rows: ListViewItem[]): ListViewItem[] {
+  if (path.length === 0) return rows;
+  const [id, ...rest] = path;
+  return items.map((it) => (it.id === id && it.children ? { ...it, children: withLevel(it.children, rest, rows) } : it));
+}
 
 // Moves one item to a new index, returning a new list.
 function moveTo(items: ListViewItem[], id: string, index: number) {
@@ -82,11 +107,12 @@ function moveTo(items: ListViewItem[], id: string, index: number) {
 // Figma List View: list item template 1912:18799, list item layout 6348:59887, group header 5384:55466.
 // Rows of a primary and secondary line with an avatar, icon or image before them, and badges, actions, a chevron
 // or a drag handle after. Picked one at a time (a blue band with brand lines) or with checkboxes, and grouped
-// under headers that can fold away and stay pinned while the list scrolls.
+// under headers that can fold away and stay pinned while the list scrolls. A row with children steps into its own
+// list in place, under a header with a Back button, one level at a time.
 export function ListView({
   label, items: itemsProp, onItemsChange, groups, groupSize = "md", collapsible = false, stickyGroups = false,
   collapsed: collapsedProp, defaultCollapsed, onCollapsedChange, selection = "none", selected: selectedProp, defaultSelected,
-  onSelectedChange, interaction = "none", onOpen, onAction,
+  onSelectedChange, interaction = "none", onOpen, onAction, path: pathProp, defaultPath, onPathChange,
 }: ListViewProps) {
   const uid = useId();
   const keysId = `${uid}-keys`;
@@ -94,8 +120,22 @@ export function ListView({
   const [ownItems, setOwnItems] = useState(itemsProp);
   const [seen, setSeen] = useState(itemsProp);
   if (itemsProp !== seen) { setSeen(itemsProp); setOwnItems(itemsProp); }
-  const items = onItemsChange ? itemsProp : ownItems;
-  const setItems = (next: ListViewItem[]) => { if (!onItemsChange) setOwnItems(next); onItemsChange?.(next); };
+  const tree = onItemsChange ? itemsProp : ownItems;
+
+  // Where the list is in a nested tree: the ids of the rows stepped into, top first.
+  const [pathState, setPathState] = useState<string[]>(defaultPath ?? []);
+  const { rows: items, trail } = levelAt(tree, pathProp ?? pathState);
+  const path = trail.map((t) => t.id);
+  const setPath = (ids: string[]) => { if (pathProp === undefined) setPathState(ids); onPathChange?.(ids); };
+  const parent = trail[trail.length - 1];
+  // Moves change only the level on screen; the rest of the tree comes along as it was.
+  const setItems = (level: ListViewItem[]) => {
+    const next = withLevel(tree, path, level);
+    if (!onItemsChange) setOwnItems(next);
+    onItemsChange?.(next);
+  };
+  // Groups split the top level only; a stepped-into list is one plain list.
+  const grouped = path.length === 0 ? groups : undefined;
 
   const [collapsedState, setCollapsedState] = useState<string[]>(defaultCollapsed ?? []);
   const shut = new Set(collapsedProp ?? collapsedState);
@@ -110,6 +150,8 @@ export function ListView({
   const [message, setMessage] = useState("");
   const dragId = useRef<string | null>(null);
   const focusAfterMove = useRef<string | null>(null);
+  const focusAfterStep = useRef<"back" | string | null>(null);
+  const levelRef = useRef<HTMLDivElement>(null);
   const rowRefs = useRef(new Map<string, HTMLLIElement>());
 
   // After a keyboard move the row renders somewhere else: give focus back to its main control.
@@ -119,12 +161,31 @@ export function ListView({
     focusAfterMove.current = null;
     rowRefs.current.get(id)?.querySelector<HTMLElement>("[data-main]")?.focus();
   });
+  // Stepping in puts focus on Back; stepping back puts it on the row that was opened.
+  useLayoutEffect(() => {
+    const to = focusAfterStep.current;
+    if (!to) return;
+    focusAfterStep.current = null;
+    if (to === "back") levelRef.current?.querySelector("button")?.focus();
+    else rowRefs.current.get(to)?.querySelector<HTMLElement>("[data-main]")?.focus();
+  });
+  const stepIn = (item: ListViewItem) => {
+    focusAfterStep.current = "back";
+    setPath([...path, item.id]);
+    setMessage(`${item.primary}, ${item.children?.length ?? 0} ${item.children?.length === 1 ? "item" : "items"}`);
+  };
+  const stepBack = () => {
+    if (!parent) return;
+    focusAfterStep.current = parent.id;
+    setPath(path.slice(0, -1));
+    setMessage(trail.length > 1 ? trail[trail.length - 2].primary : label);
+  };
 
   const draggable = interaction === "drag";
   const drill = interaction === "drill";
 
   // Moves stay inside the item's own group: the neighbours it can swap with are the ones under the same header.
-  const peers = (item: ListViewItem) => (groups ? items.filter((it) => it.group === item.group) : items);
+  const peers = (item: ListViewItem) => (grouped ? items.filter((it) => it.group === item.group) : items);
   const moveRow = (item: ListViewItem, kind: MoveKind) => {
     const list = peers(item);
     const at = list.indexOf(item);
@@ -151,6 +212,8 @@ export function ListView({
   };
   const pick = (item: ListViewItem) => {
     if (item.disabled) return;
+    // A row with its own rows steps into them rather than picking or opening.
+    if (item.children) { stepIn(item); return; }
     if (selection === "single") setSelected([item.id]);
     if (selection === "multiple" && !drill) toggleChecked(item);
     if (drill) onOpen?.(item.id);
@@ -182,7 +245,7 @@ export function ListView({
         const next = moveTo(items, moving.id, at);
         if (next !== items) {
           setItems(next);
-          const list = next.filter((it) => !groups || it.group === moving.group);
+          const list = next.filter((it) => !grouped || it.group === moving.group);
           setMessage(`Moved ${moving.primary}, ${list.indexOf(moving) + 1} of ${list.length}`);
         }
       }
@@ -222,8 +285,9 @@ export function ListView({
     );
     // The whole row picks or opens. Its main control is a button when a click picks one row or opens it;
     // with checkboxes and nothing to open, the checkbox is the control and the rest of the row toggles it.
-    const acts = selection !== "none" || drill;
-    const asButton = selection === "single" || drill;
+    const nests = Boolean(item.children);
+    const acts = selection !== "none" || drill || nests;
+    const asButton = selection === "single" || drill || nests;
     const content = (
       <>
         {item.unread && <span className={styles.dot}><span className={styles.srOnly}>Unread</span></span>}
@@ -251,7 +315,7 @@ export function ListView({
         aria-describedby={draggable ? keysId : undefined}
         {...dragProps(item)}
       >
-        {selection === "multiple" && (
+        {selection === "multiple" && !nests && (
           <span className={styles.selector} data-own>
             <Checkbox label={item.primary} hideLabel checked={isSelected} disabled={item.disabled} onChange={() => toggleChecked(item)} />
           </span>
@@ -260,8 +324,8 @@ export function ListView({
           {asButton ? (
             <button
               type="button" data-main className={styles.hit} disabled={item.disabled}
-              aria-pressed={selection === "single" && !drill ? isSelected : undefined}
-              aria-current={selection === "single" && drill && isSelected ? "true" : undefined}
+              aria-pressed={selection === "single" && !drill && !nests ? isSelected : undefined}
+              aria-current={selection === "single" && drill && !nests && isSelected ? "true" : undefined}
               onClick={() => pick(item)}
             >
               {content}
@@ -277,9 +341,9 @@ export function ListView({
           )}
         </span>
         {(item.badgePosition ?? "end") === "end" && badge && <span className={styles.end}>{badge}</span>}
-        {item.actions && item.actions.length > 0 && (
+        {((item.actions?.length ?? 0) > 0 || (item.menu?.length ?? 0) > 0) && (
           <span className={styles.actions} data-own>
-            {item.actions.map((a) => (
+            {item.actions?.map((a) => (
               <Button
                 key={a.id} variant="tertiary" size="lg" iconOnly iconStart={a.icon} disabled={item.disabled}
                 aria-label={`${a.label} ${item.primary}`} onClick={() => onAction?.(item.id, a.id)}
@@ -287,9 +351,16 @@ export function ListView({
                 {a.label}
               </Button>
             ))}
+            {/* The rest of the row's actions, behind one More button at the end, as in a Table row. */}
+            {item.menu && item.menu.length > 0 && (
+              <DropdownMenu
+                label={`More actions for ${item.primary}`} iconOnly icon="more_vert" variant="tertiary" size="lg" align="end"
+                items={item.menu} disabled={item.disabled} onSelect={(id) => onAction?.(item.id, id)}
+              />
+            )}
           </span>
         )}
-        {drill && <Icon name="chevron_right" size="lg" className={styles.chevron} />}
+        {(drill || nests) && <Icon name="chevron_right" size="lg" className={styles.chevron} />}
         {draggable && (
           // The drag handle is also a button: its Move menu moves the row without dragging.
           <span className={styles.move} data-move>
@@ -311,9 +382,20 @@ export function ListView({
   );
 
   return (
-    <div className={[styles.view, stickyGroups ? styles.sticky : ""].join(" ")} role={groups ? "group" : undefined} aria-label={groups ? label : undefined}>
-      {groups
-        ? groups.map((g, i) => {
+    <div className={[styles.view, stickyGroups ? styles.sticky : ""].join(" ")} role={grouped ? "group" : undefined} aria-label={grouped ? label : undefined}>
+      {parent && (
+        // A stepped-into list: Back to the level above, then the name of the row it belongs to.
+        <div ref={levelRef} className={[styles.header, styles[`head-${groupSize}`], styles.first, styles.level].join(" ")}>
+          <Button variant="tertiary" size="md" iconOnly iconStart="arrow_back" onClick={stepBack}>
+            {`Back to ${trail.length > 1 ? trail[trail.length - 2].primary : label}`}
+          </Button>
+          <h3 id={`${uid}-level`} className={styles.levelTitle}>{parent.primary}</h3>
+        </div>
+      )}
+      {parent
+        ? list(items, `${uid}-level`)
+        : grouped
+        ? grouped.map((g, i) => {
           const rows = items.filter((it) => it.group === g.id);
           const headId = `${uid}-${g.id}`;
           const bodyId = `${uid}-${g.id}-body`;

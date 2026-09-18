@@ -1,11 +1,19 @@
 "use client";
 import { useId, useState, type MouseEvent } from "react";
 import { Badge, type BadgeTone } from "../Badge/Badge";
+import { Button } from "../Button/Button";
 import { Checkbox } from "../Checkbox/Checkbox";
+import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
 import { Icon } from "../Icon/Icon";
 import styles from "./Card.module.css";
 
 export type CardMessageTone = "success" | "warning" | "danger" | "info";
+
+export interface CardAction {
+  id: string;
+  label: string;
+  icon: string;
+}
 
 export interface CardProps {
   title?: string;
@@ -26,6 +34,9 @@ export interface CardProps {
   disabled?: boolean;
   href?: string;
   onClick?: () => void;
+  actions?: CardAction[];
+  menu?: DropdownMenuEntry[];
+  onAction?: (id: string) => void;
 }
 
 const MESSAGE_ICON: Record<CardMessageTone, string> = { success: "check_circle", warning: "warning", danger: "error", info: "info" };
@@ -36,6 +47,7 @@ const MESSAGE_ICON: Record<CardMessageTone, string> = { success: "check_circle",
 export function Card({
   title, overline, badge, badgeTone = "neutral", description, amount, message, messageTone = "success", image, imageAlt, icon,
   selectable = false, selected: selectedProp, defaultSelected = false, onSelectedChange, disabled = false, href, onClick: onOpen,
+  actions, menu, onAction,
 }: CardProps) {
   const titleId = useId();
   const [innerSelected, setInnerSelected] = useState(defaultSelected);
@@ -47,12 +59,14 @@ export function Card({
   };
   // Clicking the card is a pointer shortcut for its checkbox; clicks on the checkbox itself are left to it.
   const onClick = (e: MouseEvent<HTMLElement>) => {
-    if (!selectable || disabled || (e.target as HTMLElement).closest("label, input, button, a")) return;
+    // Clicks from the More menu reach here through its portal; they are not on the card.
+    if (!selectable || disabled || !e.currentTarget.contains(e.target as Node) || (e.target as HTMLElement).closest("label, input, button, a")) return;
     setSelected(!selected);
   };
 
   // Without a title, the overline (or else the description) names the card and its checkbox.
   const name = title || overline || description || "item";
+  const hasActions = (actions?.length ?? 0) > 0 || (menu?.length ?? 0) > 0;
   // A card that opens something is not also a choice: selectable wins, and a disabled card goes nowhere.
   const opens = !selectable && !disabled && Boolean(href || onOpen);
   // The one control: a real link with href, a button without. Its hit area stretches over the card.
@@ -89,9 +103,22 @@ export function Card({
           </p>
         )}
       </div>
-      {selectable && (
+      {(selectable || hasActions) && (
         <div className={styles.footer}>
-          <Checkbox size="sm" hideLabel label={`Select ${name}`} checked={selected} disabled={disabled} onChange={setSelected} />
+          {selectable && <Checkbox size="sm" hideLabel label={`Select ${name}`} checked={selected} disabled={disabled} onChange={setSelected} />}
+          {hasActions && (
+            // The record's actions at the end of the footer: the ones it is used for as icon buttons, the rest behind More.
+            <span className={styles.actions}>
+              {actions?.map((a) => (
+                <Button key={a.id} size="sm" variant="tertiary" iconOnly iconStart={a.icon} disabled={disabled} aria-label={`${a.label} ${name}`} onClick={() => onAction?.(a.id)}>
+                  {a.label}
+                </Button>
+              ))}
+              {menu && menu.length > 0 && (
+                <DropdownMenu label={`More actions for ${name}`} iconOnly icon="more_vert" variant="tertiary" size="sm" align="end" items={menu} disabled={disabled} onSelect={(id) => onAction?.(id)} />
+              )}
+            </span>
+          )}
         </div>
       )}
     </article>

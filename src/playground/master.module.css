@@ -116,6 +116,8 @@
 /* Rows of one list, like FormDisplay details: stacked with no gap, the row lines do the separating. */
 .flush { display: flex; flex-direction: column; align-items: center; gap: 0; }
 .cells { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--space-medium); }
+/* column: captioned variants stack top to bottom, each at full width, for pieces that need the room, like lists. */
+.stackedCells { grid-template-columns: minmax(0, 1fr); gap: var(--space-xlarge); }
 .cell { display: grid; justify-items: center; align-content: start; gap: var(--space-xsmall); text-align: center; }
 .caption { font-size: var(--font-size-small); font-weight: var(--font-weight-medium); color: var(--text-neutral-subtle); }
 

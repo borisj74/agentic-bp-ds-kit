@@ -18,6 +18,8 @@ import { GuidedProcess, type GuidedProcessAction, type GuidedProcessPanelProps, 
 import { RecordPage } from "@/patterns/RecordPage/RecordPage";
 import { Dashboard, type DashboardProps, type DashboardState } from "@/patterns/Dashboard/Dashboard";
 import { SettingsPage, type SettingsPageProps } from "@/patterns/SettingsPage/SettingsPage";
+import { ListDetail } from "@/patterns/ListDetail/ListDetail";
+import { ListView, type ListViewItem } from "@/ui/ListView/ListView";
 import { Badge } from "@/ui/Badge/Badge";
 import { Button } from "@/ui/Button/Button";
 import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
@@ -804,21 +806,31 @@ const SHELL_COLUMNS: TableColumn[] = [
   { key: "id", header: "Invoice", emphasis: true }, { key: "account", header: "Account" }, { key: "due", header: "Due" },
   { key: "amount", header: "Amount", numeric: true }, { key: "actions", header: "", align: "end", width: "96px" },
 ];
-// The row's own actions: the two it is used for as icon buttons, the rest behind More.
+// An invoice's own actions, the same in every view: the two it is used for as icon buttons, the rest behind More.
+const INVOICE_ACTIONS = [
+  { id: "send", label: "Send", icon: "send" },
+  { id: "download", label: "Download PDF", icon: "download" },
+];
+const INVOICE_MENU = [
+  { id: "view", label: "View invoice", icon: "open_in_new" },
+  { id: "payment", label: "Record payment", icon: "payments" },
+  { id: "duplicate", label: "Duplicate", icon: "content_copy" },
+  { id: "credit", label: "Credit memo", icon: "receipt_long" },
+  { id: "void", label: "Void", icon: "block", danger: true },
+];
+// Table View and List View on the ListPage keep every action in the More menu; Card View keeps its buttons.
+const INVOICE_ALL_MENU = [...INVOICE_ACTIONS, ...INVOICE_MENU];
+const menuActions = (
+  <Cell
+    type="actionIcons" align="end"
+    menu={INVOICE_ALL_MENU.map(({ label, icon, ...a }) => ({ label, icon, variant: "danger" in a && a.danger ? "danger" as const : undefined }))}
+  />
+);
 const rowActions = (
   <Cell
     type="actionIcons" align="end"
-    actions={[
-      { label: "Send", icon: "send" },
-      { label: "Download PDF", icon: "download" },
-    ]}
-    menu={[
-      { label: "View invoice", icon: "open_in_new" },
-      { label: "Record payment", icon: "payments" },
-      { label: "Duplicate", icon: "content_copy" },
-      { label: "Credit memo", icon: "receipt_long" },
-      { label: "Void", icon: "block", variant: "danger" },
-    ]}
+    actions={INVOICE_ACTIONS.map(({ label, icon }) => ({ label, icon }))}
+    menu={INVOICE_MENU.map(({ label, icon, danger }) => ({ label, icon, variant: danger ? "danger" as const : undefined }))}
   />
 );
 const SHELL_ROWS: TableRow[] = [
@@ -981,32 +993,19 @@ const LIST_ROWS: TableRow[] = LIST_RECORDS.map((r) => ({
   status: <Cell type="badge" tone={paidTone(r.paid)} label={r.paid} />,
   due: r.due,
   amount: r.amount,
-  actions: rowActions,
+  actions: menuActions,
 }));
-// List View (BP DS Hub list view): the account is one two-line cell — its name over the record number and
-// how it is paid — then whether it is active, the balance, the date and the row's actions.
-const LIST_VIEW_COLUMNS: TableColumn[] = [
-  { key: "account", header: "Account" }, { key: "state", header: "Status" },
-  { key: "amount", header: "Balance", numeric: true }, { key: "due", header: "Date" },
-  { key: "actions", header: "Actions", align: "end", width: "112px" },
-];
-const LIST_VIEW_ROWS: TableRow[] = LIST_RECORDS.map((r) => ({
-  id: r.id,
-  account: <Cell type="avatar" name={r.account} label={`${r.id} \u00b7 ${r.paid}`} />,
-  state: <Cell type="badge" tone={r.active ? "success" : "neutral"} label={r.active ? "Active" : "Inactive"} />,
-  amount: r.amount,
-  due: r.due,
-  actions: (
-    <Cell
-      type="actionIcons" align="end" actions={[{ label: "Edit", icon: "edit" }]}
-      menu={[{ label: "Send", icon: "send" }, { label: "Download PDF", icon: "download" }, { label: "Void", icon: "block", variant: "danger" }]}
-    />
-  ),
-}));
+// List View: the same records as kit ListView rows. The account leads with its avatar, the invoice number,
+// due date and amount under it, and how it is paid as the badge; every action is in the More menu, as in the table.
+const listViewItem = (r: (typeof LIST_RECORDS)[number]): ListViewItem => ({
+  id: r.id, primary: r.account, secondary: `${r.id} \u00b7 Due ${r.due} \u00b7 ${r.amount}`, avatar: r.account,
+  badge: r.paid, badgeTone: paidTone(r.paid), menu: INVOICE_ALL_MENU,
+});
 const LIST_COLUMNS: TableColumn[] = [
   { key: "id", header: "Invoice", emphasis: true }, { key: "account", header: "Account" }, { key: "status", header: "Status" },
   { key: "due", header: "Due" }, { key: "amount", header: "Amount", numeric: true },
-  { key: "actions", header: "", align: "end", width: "112px" },
+  // One More button, so the column is only as wide as it.
+  { key: "actions", header: "", align: "end", width: "56px" },
 ];
 
 export function ListPageDemo({ state = "ready", shell = false, stage = "desktop", ...p }: Omit<ListPageProps, "children"> & { state?: ListPageState; shell?: boolean; stage?: string }) {
@@ -1090,15 +1089,20 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
               description={`Due ${String(r.due)}`}
               selectable selected={picked.includes(String(r.id))}
               onSelectedChange={(on) => setPicked((old) => (on ? [...old, String(r.id)] : old.filter((id) => id !== String(r.id))))}
+              actions={INVOICE_ACTIONS} menu={INVOICE_MENU} onAction={() => {}}
             />
           ))}
         </div>
       ) : (
-        <Table
-          columns={view === "list" ? LIST_VIEW_COLUMNS : LIST_COLUMNS}
-          rows={(view === "list" ? LIST_VIEW_ROWS : shown).slice(start, start + size)}
-          selectable selected={picked} onSelectionChange={setPicked} rowLabel="id"
-        />
+        view === "list" ? (
+          // List View: kit ListView rows with checkboxes, so ticking feeds the same bulk bar as the table.
+          <ListView
+            label="Invoices" selection="multiple" selected={picked} onSelectedChange={setPicked} onAction={() => {}}
+            items={LIST_RECORDS.filter((r) => shown.some((row) => row.id === r.id)).slice(start, start + size).map(listViewItem)}
+          />
+        ) : (
+          <Table columns={LIST_COLUMNS} rows={shown.slice(start, start + size)} selectable selected={picked} onSelectionChange={setPicked} rowLabel="id" />
+        )
       )}
     </ListPage>
   );
@@ -2586,6 +2590,110 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
         onPageHeaderStick={view === "list" ? setCompact : undefined}
       >
         <AccountFlow view={view} list={list} account={record} newAccount={newAccount} newProduct={newProduct} />
+      </AppShell>
+    </div>
+  );
+}
+
+// Playground harness: the ListDetail pattern in the AppShell frame, on Billing › Invoices. Not a kit piece. The
+// screen keeps which invoice is open; ListView picks it and the pane shows it, or covers the list on a phone.
+const LIST_DETAIL_INVOICES: (ListViewItem & { account: string; amount: string; due: string; period: string; status: string })[] = [
+  { id: "INV-1042", primary: "INV-1042", secondary: "Apex Digital Services · $4,820.00", badge: "Overdue", badgeTone: "danger", account: "Apex Digital Services", amount: "$4,820.00", due: "Sep 1, 2026", period: "August 2026", status: "Overdue" },
+  { id: "INV-1043", primary: "INV-1043", secondary: "Northwind Traders · $1,260.00", badge: "Paid", badgeTone: "success", account: "Northwind Traders", amount: "$1,260.00", due: "Sep 15, 2026", period: "August 2026", status: "Paid" },
+  { id: "INV-1044", primary: "INV-1044", secondary: "Globex Corporation · $980.00", badge: "Draft", account: "Globex Corporation", amount: "$980.00", due: "Oct 1, 2026", period: "September 2026", status: "Draft" },
+  { id: "INV-1045", primary: "INV-1045", secondary: "Initech · $2,150.00", badge: "Sent", badgeTone: "info", account: "Initech", amount: "$2,150.00", due: "Oct 5, 2026", period: "September 2026", status: "Sent" },
+  { id: "INV-1046", primary: "INV-1046", secondary: "Umbrella Corp · $3,400.00", badge: "Sent", badgeTone: "info", account: "Umbrella Corp", amount: "$3,400.00", due: "Oct 12, 2026", period: "September 2026", status: "Sent" },
+];
+
+// Nested: the same invoices under their accounts, one level at a time, with an older paid invoice each.
+type LDInvoice = (typeof LIST_DETAIL_INVOICES)[number];
+const LIST_DETAIL_HISTORY: LDInvoice[] = LIST_DETAIL_INVOICES.map((inv, i) => ({
+  ...inv, id: `INV-09${88 + i}`, primary: `INV-09${88 + i}`, secondary: `${inv.account} · ${inv.amount}`,
+  badge: "Paid", badgeTone: "success", period: "July 2026", due: "Aug 1, 2026", status: "Paid",
+}));
+const LIST_DETAIL_ALL = [...LIST_DETAIL_INVOICES, ...LIST_DETAIL_HISTORY];
+const LIST_DETAIL_ACCOUNTS: ListViewItem[] = LIST_DETAIL_INVOICES.map((inv) => {
+  const own = LIST_DETAIL_ALL.filter((i) => i.account === inv.account);
+  return {
+    id: `acct-${inv.id}`, primary: inv.account, secondary: `${own.length} invoices`, avatar: inv.account,
+    children: own.map((i) => ({ id: i.id, primary: i.primary, secondary: `${i.period} · ${i.amount}`, badge: i.badge, badgeTone: i.badgeTone })),
+  };
+});
+
+export function ListDetailDemo({ shell = true, stage = "desktop", picked = true, nested = false }: { shell?: boolean; stage?: string; picked?: boolean; nested?: boolean }) {
+  const [navOpen, setNavOpen] = useState(false);
+  const [section, setSection] = useState("billing-invoices");
+  const [dark, setDark] = useState(false);
+  const [density, setDensity] = useState<AppHeaderDensity>("default");
+  const [openId, setOpenId] = useState<string | null>(picked ? "INV-1042" : null);
+  // Nested opens on the first account, so its invoices and the open one show together.
+  const [path, setPath] = useState<string[]>(nested ? [LIST_DETAIL_ACCOUNTS[0].id] : []);
+  const invoice = LIST_DETAIL_ALL.find((i) => i.id === openId);
+
+  const view = (
+    <ListDetail
+      label="Invoices"
+      open={Boolean(invoice)}
+      onBack={() => setOpenId(null)}
+      backLabel="Back to invoices"
+      title={invoice?.primary}
+      actions={invoice && <Button size="sm" iconStart="download">Download</Button>}
+      list={nested ? (
+        // Accounts first; a click steps into that account's invoices, and a click on an invoice opens it beside the list.
+        <ListView
+          label="Accounts" selection="single" interaction="drill"
+          selected={openId ? [openId] : []} onOpen={(id) => setOpenId(id)}
+          items={LIST_DETAIL_ACCOUNTS} path={path} onPathChange={setPath}
+        />
+      ) : (
+        <ListView
+          label="Invoices" selection="single" interaction="drill"
+          selected={openId ? [openId] : []} onOpen={(id) => setOpenId(id)}
+          items={LIST_DETAIL_INVOICES}
+        />
+      )}
+      empty={<Empty icon="receipt_long" title="Pick an invoice" description="Its details show here." />}
+      detail={invoice && (
+        <Section title="Invoice Details">
+          {/* The rows stack flush: one plain box, so the label column reads as one fill and a Section's gap stays out. */}
+          <div>
+            <FormDisplay label="Account" value={invoice.account} labelPosition="start" />
+            <FormDisplay label="Amount" value={invoice.amount} labelPosition="start" />
+            <FormDisplay label="Billing period" value={invoice.period} labelPosition="start" />
+            <FormDisplay label="Due date" value={invoice.due} labelPosition="start" />
+            <FormDisplay label="Status" value={<Badge tone={invoice.badgeTone ?? "neutral"}>{invoice.status}</Badge>} labelPosition="start" />
+          </div>
+        </Section>
+      )}
+    />
+  );
+
+  if (!shell) return <div style={{ height: 560 }}>{view}</div>;
+  return (
+    <div
+      data-theme={dark ? "dark" : undefined}
+      style={{
+        height: 900, width: STAGE_WIDTHS[stage] ?? "100%", maxWidth: "100%", marginInline: "auto",
+        border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden",
+      }}
+    >
+      <AppShell
+        header={
+          <AppHeader
+            navOpen={navOpen} onNavToggle={() => setNavOpen((o) => !o)}
+            environment="UAT-2" searchShortcut="Ctrl+K" searchGroups={SHELL_SEARCH} searchScopes={SHELL_SEARCH_SCOPES}
+            actions={SHELL_HEADER_ACTIONS} onAction={() => {}}
+            user={{ name: "Ana Petrovic" }} company={{ name: "Northwind Holdings" }}
+            darkMode={dark} onDarkModeChange={setDark}
+            density={density} onDensityChange={setDensity}
+            onUserSettings={() => {}} onLogout={() => {}}
+          />
+        }
+        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        navOpen={navOpen} onNavClose={() => setNavOpen(false)}
+        pageHeader={<PageHeader title="Invoices" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />}
+      >
+        {view}
       </AppShell>
     </div>
   );

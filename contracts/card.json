@@ -2,7 +2,7 @@
   "name": "Card",
   "path": "src/ui/Card/Card.tsx",
   "intent": "One item in a grid or list of options people compare and pick, like a proposal line, product or plan: title, details, a price and a status note, with an optional image and a select checkbox.",
-  "usage": "Use Card for items people scan side by side and often pick from. It is one component: pass the parts you need as props; every part is optional (header, badge, overline, title, description, amount, message, image, footer). The header row holds a badge and an overline, like a request code. description is two lines at most. amount is the price or key number. message is a short status line with an icon, colored by messageTone. image shows a photo tile at the top right, or icon an icon tile. selectable adds a footer checkbox; clicking anywhere on the card toggles it, and the selected card turns blue. disabled greys the card out. href or onClick make the card open what it shows, like an account in a card view of a list: the title becomes the one link, its hit area covers the whole card, hover lifts the card and keyboard focus rings it. A card either opens something or is picked, not both. Lay cards out with the layout grid classes. See contracts/card.json for the full contract.",
+  "usage": "Use Card for items people scan side by side and often pick from. It is one component: pass the parts you need as props; every part is optional (header, badge, overline, title, description, amount, message, image, footer). The header row holds a badge and an overline, like a request code. description is two lines at most. amount is the price or key number. message is a short status line with an icon, colored by messageTone. image shows a photo tile at the top right, or icon an icon tile. selectable adds a footer checkbox; clicking anywhere on the card toggles it, and the selected card turns blue. disabled greys the card out. href or onClick make the card open what it shows, like an account in a card view of a list: the title becomes the one link, its hit area covers the whole card, hover lifts the card and keyboard focus rings it. A card either opens something or is picked, not both. Lay cards out with the layout grid classes. actions and menu put the record's actions at the end of the footer, beside the checkbox: the ones it is used for as icon buttons, the rest behind More. Give a Card the same actions as the record's Table row and ListView row, so switching views never changes what can be done. See contracts/card.json for the full contract.",
   "props": {
     "title": {
       "type": "string",
@@ -86,6 +86,20 @@
       "type": "function",
       "signature": "() => void",
       "note": "Opens what the card shows in place, like switching the page to that record. Without href the title is a button that runs it; with href it runs before the link opens. Ignored when selectable or disabled."
+    },
+    "actions": {
+      "type": "CardAction[]",
+      "itemShape": "{ id: string; label: string; icon: string }",
+      "note": "Icon buttons at the end of the footer, named by the action and the card. Two at most."
+    },
+    "menu": {
+      "type": "DropdownMenuEntry[]",
+      "note": "The rest of the record's actions, behind one More button after the icon buttons."
+    },
+    "onAction": {
+      "type": "function",
+      "signature": "(id: string) => void",
+      "note": "Called with the action's id when an action button or More menu item is picked."
     }
   },
   "useWhen": [
@@ -100,14 +114,16 @@
     "Do not put rows of records in cards when people need to sort or compare columns. Use Table.",
     "Do not use raw hex.",
     "Do not make a card both selectable and open a record. Pick one: selectable for choosing, href or onClick for opening.",
-    "Do not put a Link or Button inside a card to open it. Pass href or onClick."
+    "Do not put a Link or Button inside a card to open it. Pass href or onClick.",
+    "Do not give a record different actions in its Card, its Table row and its ListView row."
   ],
   "a11y": [
     "The title is an h3 that names the card. Without a title, the card and its checkbox are named by the overline, or else the description.",
     "When selectable, the footer Checkbox is the control, named Select plus the title. Clicking the card is a pointer shortcut for it; keyboard users tab to the Checkbox.",
     "The message icon is decorative; the message text says what it means.",
     "The image uses imageAlt, or is decorative without it. The icon tile is decorative.",
-    "With href or onClick the title is a real link (or a button without href), named by the title or else the overline; its hit area stretches over the card, so the card is one tab stop, and focus shows a ring round the card."
+    "With href or onClick the title is a real link (or a button without href), named by the title or else the overline; its hit area stretches over the card, so the card is one tab stop, and focus shows a ring round the card.",
+    "Action buttons are named by the action and the card, like Send INV-4471; the More button is named More actions for the card."
   ],
   "snippet": "<Card\n  badge=\"New\"\n  overline=\"Req 6787686\"\n  title=\"Alpha Logic wireless ergonomic mouse\"\n  description=\"Rechargeable, 6 buttons, works with Windows and macOS.\"\n  amount=\"$49.00\"\n  message=\"In stock\"\n  icon=\"mouse\"\n  selectable\n/>",
   "examples": [
@@ -139,6 +155,53 @@
             "icon": "keyboard",
             "selectable": true,
             "defaultSelected": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Actions",
+      "usage": "A record's actions in the footer: Send and Download as icon buttons, the rest behind More. The same actions as its Table row and ListView row.",
+      "items": [
+        {
+          "props": {
+            "overline": "INV-4471",
+            "title": "Northwind Holdings",
+            "badge": "Paid",
+            "badgeTone": "success",
+            "description": "Due 12 Sep 2026",
+            "amount": "$2,980.00",
+            "selectable": true,
+            "actions": [
+              {
+                "id": "send",
+                "label": "Send",
+                "icon": "send"
+              },
+              {
+                "id": "download",
+                "label": "Download PDF",
+                "icon": "download"
+              }
+            ],
+            "menu": [
+              {
+                "id": "view",
+                "label": "View invoice",
+                "icon": "open_in_new"
+              },
+              {
+                "id": "payment",
+                "label": "Record payment",
+                "icon": "payments"
+              },
+              {
+                "id": "void",
+                "label": "Void",
+                "icon": "block",
+                "danger": true
+              }
+            ]
           }
         }
       ]

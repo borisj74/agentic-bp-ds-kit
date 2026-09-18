@@ -1,8 +1,8 @@
 {
   "name": "ListView",
   "path": "src/ui/ListView/ListView.tsx",
-  "intent": "A list of records, one a row: a primary and a secondary line with an avatar, icon or image before them, and badges, actions, a chevron or a drag handle after, grouped under headers when the list is long.",
-  "usage": "Use ListView when each record reads best as a line or two of text rather than as columns: people, invoices, messages, tasks, files. It is one component: pass items, each with an id and primary text, and optional secondary text. avatar (a name, shown as initials in a square), icon or image goes before the text; badge adds a status Badge at the end, or before the text with badgePosition start; unread puts a brand dot at the start; message adds a status line under the text; actions adds icon buttons at the end. selection single makes a click pick one row (a light blue band between brand lines); multiple adds a checkbox to each row. interaction drill ends each row in a chevron and calls onOpen, for rows that go to a record page; drag adds a drag handle that is also a Move menu, and Alt with the arrows moves the focused row, calling onItemsChange with the new order. groups splits the list under headers: give each item a group id. groupSize sets the header text, collapsible lets headers fold their rows away, and stickyGroups keeps each header at the top of the scrolling box while its rows pass under it. The list measures its own width: rows inset 48 when it is 1440 wide or more, 24 from 600, and 16 below. For columns of values that people compare use Table; for a short set of links use LinkList. See contracts/listview.json for the full contract.",
+  "intent": "A list of records, one a row: a primary and a secondary line with an avatar, icon or image before them, and badges, actions, a chevron or a drag handle after, grouped under headers when the list is long, and stepping into nested lists in place.",
+  "usage": "Use ListView when each record reads best as a line or two of text rather than as columns: people, invoices, messages, tasks, files. It is one component: pass items, each with an id and primary text, and optional secondary text. avatar (a name, shown as initials in a square), icon or image goes before the text; badge adds a status Badge at the end, or before the text with badgePosition start; unread puts a brand dot at the start; message adds a status line under the text; actions adds icon buttons at the end and menu puts the rest behind a More button, so a row offers the same actions as the record's Table row and Card. selection single makes a click pick one row (a light blue band between brand lines); multiple adds a checkbox to each row. interaction drill ends each row in a chevron and calls onOpen, for rows that go to a record page; drag adds a drag handle that is also a Move menu, and Alt with the arrows moves the focused row, calling onItemsChange with the new order. groups splits the list under headers: give each item a group id. groupSize sets the header text, collapsible lets headers fold their rows away, and stickyGroups keeps each header at the top of the scrolling box while its rows pass under it. A row with children steps into its own list in place: a chevron at the end, and a click swaps the list for that row's children under a header with Back and the row's name, one level at a time, for records that hold records, like an account's invoices. path, defaultPath and onPathChange say which level is on screen. To show a picked record beside the list rather than going to its page, put the ListView in the ListDetail pattern. The list measures its own width: rows inset 48 when it is 1440 wide or more, 24 from 600, and 16 below. For columns of values that people compare use Table; for a short set of links use LinkList. See contracts/listview.json for the full contract.",
   "props": {
     "label": {
       "type": "string",
@@ -27,7 +27,9 @@
         "message": "string? A short status line under the text.",
         "messageTone": "'success' | 'info' | 'warning' | 'danger'? Defaults to info.",
         "actions": "{ id: string; label: string; icon: string }[]? Icon buttons at the end of the row. Two at most.",
-        "disabled": "boolean?"
+        "disabled": "boolean?",
+        "children": "ListViewItem[]? The row's own rows. The row ends in a chevron and a click steps into them.",
+        "menu": "DropdownMenuEntry[]? The rest of the row's actions, behind one More button after the action buttons, as in a Table row."
       },
       "note": "The rows in order. With interaction drag the list keeps its own order after a move unless onItemsChange takes it back."
     },
@@ -110,7 +112,20 @@
     "onAction": {
       "type": "function",
       "signature": "(itemId: string, actionId: string) => void",
-      "note": "Called when a row's action button is pressed."
+      "note": "Called when a row's action button or More menu item is picked, with the row's id and the action's id."
+    },
+    "path": {
+      "type": "string[]",
+      "note": "Controlled ids of the rows stepped into, top first. Empty shows the top level."
+    },
+    "defaultPath": {
+      "type": "string[]",
+      "note": "The level on screen at first."
+    },
+    "onPathChange": {
+      "type": "function",
+      "signature": "(ids: string[]) => void",
+      "note": "Called when a row is stepped into or Back is pressed."
     }
   },
   "useWhen": [
@@ -118,12 +133,13 @@
     "A list to pick one record from, or check several, before acting on them.",
     "Records that open their own page: interaction drill.",
     "An order people set by hand, like steps or priorities: interaction drag.",
-    "A long list split by status, date or owner: groups."
+    "A long list split by status, date or owner: groups.",
+    "Records that hold records, browsed one level at a time: items with children."
   ],
   "doNot": [
     "Do not use it for values people compare across columns. Use Table or DataGrid.",
     "Do not use it for a short set of links. Use LinkList.",
-    "Do not use it for nested records. Use TreeView.",
+    "Do not nest deeper than three levels, or use it for a tree people need to see at once. Use TreeView.",
     "Do not mix drill and drag in one list, or give a row more than two actions; put the rest in the record page.",
     "Do not build rows from Cards, Avatars and Buttons yourself. Use ListView.",
     "Do not use raw hex."
@@ -134,7 +150,8 @@
     "drill: each row is a button that opens the record, marked aria-current when it is the picked one.",
     "A collapsible header is a button with aria-expanded.",
     "drag: the handle is a Move menu button, Alt with Up, Down, Home or End moves the focused row, Shift+F10 opens the menu, and each move is announced.",
-    "Action buttons are named by the action and the row, like Share Rhea Walsh. The unread dot is read as Unread."
+    "Action buttons are named by the action and the row, like Share Rhea Walsh; the More button is named More actions for the row. The unread dot is read as Unread.",
+    "A row with children is a button; stepping in moves focus to Back, which is named after the level it returns to, and Back returns focus to the row that was opened. Each step is announced."
   ],
   "snippet": "<ListView\n  label=\"Invoices\"\n  selection=\"single\"\n  interaction=\"drill\"\n  onOpen={(id) => router.push(`/invoices/${id}`)}\n  items={[\n    { id: \"inv-1042\", primary: \"INV-1042\", secondary: \"Apex Digital Services · $4,820.00\", icon: \"receipt_long\", badge: \"Overdue\", badgeTone: \"danger\" },\n    { id: \"inv-1043\", primary: \"INV-1043\", secondary: \"Northwind Traders · $1,260.00\", icon: \"receipt_long\", badge: \"Paid\", badgeTone: \"success\" },\n  ]}\n/>",
   "examples": [
@@ -544,6 +561,157 @@
                 "secondary": "Account owner",
                 "avatar": "Sienna Cole",
                 "group": "members"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Nested",
+      "usage": "Rows with children step into their own list in place, with Back to return. Here accounts hold their invoices; the second list opens on Apex.",
+      "items": [
+        {
+          "caption": "Top level",
+          "props": {
+            "label": "Accounts",
+            "interaction": "drill",
+            "items": [
+              {
+                "id": "apex",
+                "primary": "Apex Digital Services",
+                "secondary": "3 invoices",
+                "avatar": "Apex Digital Services",
+                "children": [
+                  {
+                    "id": "inv-1042",
+                    "primary": "INV-1042",
+                    "secondary": "August · $4,820.00",
+                    "icon": "receipt_long",
+                    "badge": "Overdue",
+                    "badgeTone": "danger"
+                  },
+                  {
+                    "id": "inv-0990",
+                    "primary": "INV-0990",
+                    "secondary": "July · $4,820.00",
+                    "icon": "receipt_long",
+                    "badge": "Paid",
+                    "badgeTone": "success"
+                  },
+                  {
+                    "id": "inv-0935",
+                    "primary": "INV-0935",
+                    "secondary": "June · $4,610.00",
+                    "icon": "receipt_long",
+                    "badge": "Paid",
+                    "badgeTone": "success"
+                  }
+                ]
+              },
+              {
+                "id": "northwind",
+                "primary": "Northwind Traders",
+                "secondary": "2 invoices",
+                "avatar": "Northwind Traders",
+                "children": [
+                  {
+                    "id": "inv-1043",
+                    "primary": "INV-1043",
+                    "secondary": "August · $1,260.00",
+                    "icon": "receipt_long",
+                    "badge": "Paid",
+                    "badgeTone": "success"
+                  },
+                  {
+                    "id": "inv-0988",
+                    "primary": "INV-0988",
+                    "secondary": "July · $1,260.00",
+                    "icon": "receipt_long",
+                    "badge": "Paid",
+                    "badgeTone": "success"
+                  }
+                ]
+              },
+              {
+                "id": "globex",
+                "primary": "Globex Corporation",
+                "secondary": "No invoices yet",
+                "avatar": "Globex Corporation"
+              }
+            ]
+          }
+        },
+        {
+          "caption": "Stepped into Apex",
+          "props": {
+            "label": "Accounts",
+            "interaction": "drill",
+            "defaultPath": [
+              "apex"
+            ],
+            "items": [
+              {
+                "id": "apex",
+                "primary": "Apex Digital Services",
+                "secondary": "3 invoices",
+                "avatar": "Apex Digital Services",
+                "children": [
+                  {
+                    "id": "inv-1042",
+                    "primary": "INV-1042",
+                    "secondary": "August · $4,820.00",
+                    "icon": "receipt_long",
+                    "badge": "Overdue",
+                    "badgeTone": "danger"
+                  },
+                  {
+                    "id": "inv-0990",
+                    "primary": "INV-0990",
+                    "secondary": "July · $4,820.00",
+                    "icon": "receipt_long",
+                    "badge": "Paid",
+                    "badgeTone": "success"
+                  },
+                  {
+                    "id": "inv-0935",
+                    "primary": "INV-0935",
+                    "secondary": "June · $4,610.00",
+                    "icon": "receipt_long",
+                    "badge": "Paid",
+                    "badgeTone": "success"
+                  }
+                ]
+              },
+              {
+                "id": "northwind",
+                "primary": "Northwind Traders",
+                "secondary": "2 invoices",
+                "avatar": "Northwind Traders",
+                "children": [
+                  {
+                    "id": "inv-1043",
+                    "primary": "INV-1043",
+                    "secondary": "August · $1,260.00",
+                    "icon": "receipt_long",
+                    "badge": "Paid",
+                    "badgeTone": "success"
+                  },
+                  {
+                    "id": "inv-0988",
+                    "primary": "INV-0988",
+                    "secondary": "July · $1,260.00",
+                    "icon": "receipt_long",
+                    "badge": "Paid",
+                    "badgeTone": "success"
+                  }
+                ]
+              },
+              {
+                "id": "globex",
+                "primary": "Globex Corporation",
+                "secondary": "No invoices yet",
+                "avatar": "Globex Corporation"
               }
             ]
           }

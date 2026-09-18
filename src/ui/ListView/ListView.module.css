@@ -87,6 +87,11 @@ button.hit:focus-visible { outline: none; }
 .fold { flex: none; color: var(--icon-neutral-strong); transition: transform var(--motion-expand-duration) var(--motion-expand-easing); }
 .fold.open { transform: rotate(90deg); }
 @media (prefers-reduced-motion: reduce) { .fold { transition: none; } }
+/* A stepped-into list: Back, then the name of the row it belongs to. The back button sits where the chevron of a
+   group header would, so the title lines up with the rows' text edge less its own width. */
+.level { gap: var(--space-xsmall); padding-inline-start: calc(var(--inset) - var(--space-xsmall)); border-bottom: var(--border-width-thin) solid var(--border-neutral-faint); }
+.levelTitle { margin: 0; min-width: 0; font: inherit; overflow-wrap: anywhere; }
+
 /* Sticky: each header stays at the top of the scrolling box while its rows pass under it, on the gray band. */
 .sticky .header {
   position: sticky; top: 0; z-index: 2; border-top-color: transparent;

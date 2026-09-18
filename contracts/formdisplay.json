@@ -2,7 +2,7 @@
   "name": "FormDisplay",
   "path": "src/ui/FormDisplay/FormDisplay.tsx",
   "intent": "A read-only label and value, like a form field that shows data instead of editing it.",
-  "usage": "Use FormDisplay on detail and review screens to show saved values: account type, billing email, payment terms. One component per pair, with a faint line underneath so a stack reads as a list. labelPosition start puts the label on a faint fill in the same 160px column as start-label inputs, so displays and fields line up in one Form; top puts it above the value. It takes labelPosition from an enclosing Form. An empty value shows a dash. See contracts/formdisplay.json for the full contract.",
+  "usage": "Use FormDisplay on detail and review screens to show saved values: account type, billing email, payment terms. One component per pair, with a faint line underneath so a stack reads as a list. labelPosition start puts the label on a faint fill in the same 160px column as start-label inputs, so displays and fields line up in one Form; top puts it above the value. It takes labelPosition from an enclosing Form. Stack several in one plain box with no gap between them: the rows butt together, so the start labels read as one filled column and the lines divide the rows. Inside a Section, wrap the stack in one div, or the Section's gap spaces the rows apart. An empty value shows a dash. See contracts/formdisplay.json for the full contract.",
   "props": {
     "label": {
       "type": "string",
@@ -35,6 +35,7 @@
     "Read-only rows next to editable fields in the same Form."
   ],
   "doNot": [
+    "Do not put a gap or margin between stacked FormDisplays, or pass them to a Section one by one. Wrap the stack in one plain div.",
     "Do not invent DescriptionList, KeyValue, DetailRow, ReadOnlyField or a local label and value pair.",
     "Do not use a disabled or read-only Input to show a value people cannot change. Use FormDisplay.",
     "Do not put long paragraphs in value. Keep it to a short value.",
