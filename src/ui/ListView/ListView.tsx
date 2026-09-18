@@ -317,7 +317,8 @@ export function ListView({
       >
         {selection === "multiple" && !nests && (
           <span className={styles.selector} data-own>
-            <Checkbox label={item.primary} hideLabel checked={isSelected} disabled={item.disabled} onChange={() => toggleChecked(item)} />
+            {/* 16, as in a Table row's select cell and the Figma list item. */}
+            <Checkbox size="sm" label={item.primary} hideLabel checked={isSelected} disabled={item.disabled} onChange={() => toggleChecked(item)} />
           </span>
         )}
         <span className={styles.main}>

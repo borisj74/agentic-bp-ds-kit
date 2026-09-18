@@ -1,8 +1,8 @@
-/* Figma List View. The list measures its own width: rows inset 48 when wide, 24 in the middle and 16 when narrow,
-   the same three steps as the Figma breakpoints (1440+, 600-1439, 320-599), taken from the box the list sits in. */
+/* Figma List View, spaced like a kit Table: rows inset 12 at every width, the same as a Table cell's padding, so a
+   list and a table of the same records line up when a screen switches between them. */
 .view {
-  --inset: var(--space-medium);
-  container-type: inline-size; width: 100%; min-width: 0; font-family: var(--font-sans); color: var(--text-neutral-strong);
+  --inset: var(--space-small);
+  width: 100%; min-width: 0; font-family: var(--font-sans); color: var(--text-neutral-strong);
 }
 .list { margin: 0; padding: 0; list-style: none; }
 
@@ -29,8 +29,9 @@
 .drop-before::before { top: calc(var(--border-width-medium) / -2); }
 .drop-after::after { bottom: calc(var(--border-width-medium) / -2 - var(--border-width-thin)); }
 
-/* The checkbox sits in a 44 square, so the row keeps the same start edge whether it shows one or not. */
-.selector { flex: none; display: grid; place-items: center; width: var(--control-large); height: var(--control-large); margin-inline-end: calc(-1 * var(--space-medium)); }
+/* The checkbox takes only its own width, like a Table's select cell. Its text starts 24 after it (the row's 16 gap
+   plus 8), the same distance as a Table's select cell and the next cell's padding. */
+.selector { flex: none; display: inline-flex; align-items: center; margin-inline-end: calc(var(--space-small) * 2 - var(--space-medium)); }
 
 .main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-xsmall); }
 .hit {
@@ -100,5 +101,3 @@ button.hit:focus-visible { outline: none; }
 
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-@container (min-width: 600px) { .view > * { --inset: var(--layout-margin-md); } }
-@container (min-width: 1440px) { .view > * { --inset: calc(var(--layout-margin-md) * 2); } }
