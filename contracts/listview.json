@@ -1,0 +1,554 @@
+{
+  "name": "ListView",
+  "path": "src/ui/ListView/ListView.tsx",
+  "intent": "A list of records, one a row: a primary and a secondary line with an avatar, icon or image before them, and badges, actions, a chevron or a drag handle after, grouped under headers when the list is long.",
+  "usage": "Use ListView when each record reads best as a line or two of text rather than as columns: people, invoices, messages, tasks, files. It is one component: pass items, each with an id and primary text, and optional secondary text. avatar (a name, shown as initials in a square), icon or image goes before the text; badge adds a status Badge at the end, or before the text with badgePosition start; unread puts a brand dot at the start; message adds a status line under the text; actions adds icon buttons at the end. selection single makes a click pick one row (a light blue band between brand lines); multiple adds a checkbox to each row. interaction drill ends each row in a chevron and calls onOpen, for rows that go to a record page; drag adds a drag handle that is also a Move menu, and Alt with the arrows moves the focused row, calling onItemsChange with the new order. groups splits the list under headers: give each item a group id. groupSize sets the header text, collapsible lets headers fold their rows away, and stickyGroups keeps each header at the top of the scrolling box while its rows pass under it. The list measures its own width: rows inset 48 when it is 1440 wide or more, 24 from 600, and 16 below. For columns of values that people compare use Table; for a short set of links use LinkList. See contracts/listview.json for the full contract.",
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "note": "Names the list for screen readers, like Invoices."
+    },
+    "items": {
+      "type": "ListViewItem[]",
+      "required": true,
+      "itemShape": {
+        "id": "string",
+        "primary": "string",
+        "secondary": "string?",
+        "group": "string? The id of the group the row sits under, when groups is set.",
+        "avatar": "string? A person's name, shown as their initials in a square Avatar.",
+        "icon": "string? Material Symbols name before the text, when there is no avatar.",
+        "image": "string? An image URL before the text, when there is no avatar.",
+        "badge": "string? A status Badge.",
+        "badgeTone": "BadgeTone? Defaults to neutral.",
+        "badgePosition": "'start' | 'end'? Before the text or at the end of the row. Defaults to end.",
+        "unread": "boolean? A brand dot at the start of the row.",
+        "message": "string? A short status line under the text.",
+        "messageTone": "'success' | 'info' | 'warning' | 'danger'? Defaults to info.",
+        "actions": "{ id: string; label: string; icon: string }[]? Icon buttons at the end of the row. Two at most.",
+        "disabled": "boolean?"
+      },
+      "note": "The rows in order. With interaction drag the list keeps its own order after a move unless onItemsChange takes it back."
+    },
+    "onItemsChange": {
+      "type": "function",
+      "signature": "(items: ListViewItem[]) => void",
+      "note": "Called with the new order after a drag, a Move menu pick or an Alt+arrow move."
+    },
+    "groups": {
+      "type": "ListViewGroup[]",
+      "itemShape": "{ id: string; title: string }",
+      "note": "Headers in order. Each shows the items whose group is its id. Moves stay inside a group."
+    },
+    "groupSize": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "Header text: sm 14, md 16, lg 20. Headers are 48 tall at every size."
+    },
+    "collapsible": {
+      "type": "boolean",
+      "default": false,
+      "note": "A chevron on each header that folds its rows away."
+    },
+    "stickyGroups": {
+      "type": "boolean",
+      "default": false,
+      "note": "Each header stays at the top of the scrolling box, on a gray band, while its rows pass under it."
+    },
+    "collapsed": {
+      "type": "string[]",
+      "note": "Controlled ids of folded groups."
+    },
+    "defaultCollapsed": {
+      "type": "string[]",
+      "note": "Groups folded at first."
+    },
+    "onCollapsedChange": {
+      "type": "function",
+      "signature": "(ids: string[]) => void"
+    },
+    "selection": {
+      "enum": [
+        "none",
+        "single",
+        "multiple"
+      ],
+      "default": "none",
+      "note": "single: a click picks one row, shown light blue between brand lines. multiple: a checkbox on each row; checked rows are light blue. none: rows only show, open or move."
+    },
+    "selected": {
+      "type": "string[]",
+      "note": "Controlled selected ids."
+    },
+    "defaultSelected": {
+      "type": "string[]",
+      "note": "Selected at first."
+    },
+    "onSelectedChange": {
+      "type": "function",
+      "signature": "(ids: string[]) => void"
+    },
+    "interaction": {
+      "enum": [
+        "none",
+        "drill",
+        "drag"
+      ],
+      "default": "none",
+      "note": "drill: a chevron at the end; a click calls onOpen. drag: a drag handle that is also a Move menu."
+    },
+    "onOpen": {
+      "type": "function",
+      "signature": "(id: string) => void",
+      "note": "With interaction drill, called with the row's id."
+    },
+    "onAction": {
+      "type": "function",
+      "signature": "(itemId: string, actionId: string) => void",
+      "note": "Called when a row's action button is pressed."
+    }
+  },
+  "useWhen": [
+    "People, invoices, messages or tasks that read best as a line or two of text.",
+    "A list to pick one record from, or check several, before acting on them.",
+    "Records that open their own page: interaction drill.",
+    "An order people set by hand, like steps or priorities: interaction drag.",
+    "A long list split by status, date or owner: groups."
+  ],
+  "doNot": [
+    "Do not use it for values people compare across columns. Use Table or DataGrid.",
+    "Do not use it for a short set of links. Use LinkList.",
+    "Do not use it for nested records. Use TreeView.",
+    "Do not mix drill and drag in one list, or give a row more than two actions; put the rest in the record page.",
+    "Do not build rows from Cards, Avatars and Buttons yourself. Use ListView.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A list named by label; with groups, each header is an h3 that names its own list.",
+    "single: each row is a button with aria-pressed. multiple: each row has a real checkbox named by its primary text.",
+    "drill: each row is a button that opens the record, marked aria-current when it is the picked one.",
+    "A collapsible header is a button with aria-expanded.",
+    "drag: the handle is a Move menu button, Alt with Up, Down, Home or End moves the focused row, Shift+F10 opens the menu, and each move is announced.",
+    "Action buttons are named by the action and the row, like Share Rhea Walsh. The unread dot is read as Unread."
+  ],
+  "snippet": "<ListView\n  label=\"Invoices\"\n  selection=\"single\"\n  interaction=\"drill\"\n  onOpen={(id) => router.push(`/invoices/${id}`)}\n  items={[\n    { id: \"inv-1042\", primary: \"INV-1042\", secondary: \"Apex Digital Services · $4,820.00\", icon: \"receipt_long\", badge: \"Overdue\", badgeTone: \"danger\" },\n    { id: \"inv-1043\", primary: \"INV-1043\", secondary: \"Northwind Traders · $1,260.00\", icon: \"receipt_long\", badge: \"Paid\", badgeTone: \"success\" },\n  ]}\n/>",
+  "examples": [
+    {
+      "title": "Layout",
+      "usage": "What goes before the text: an avatar, an icon or an image, or nothing at all; and a badge at either end.",
+      "items": [
+        {
+          "caption": "Avatar",
+          "props": {
+            "label": "Team",
+            "items": [
+              {
+                "id": "rw",
+                "primary": "Rhea Walsh",
+                "secondary": "Billing admin",
+                "avatar": "Rhea Walsh"
+              },
+              {
+                "id": "am",
+                "primary": "Ammar Malik",
+                "secondary": "Finance lead",
+                "avatar": "Ammar Malik"
+              },
+              {
+                "id": "sc",
+                "primary": "Sienna Cole",
+                "secondary": "Account owner",
+                "avatar": "Sienna Cole"
+              }
+            ]
+          }
+        },
+        {
+          "caption": "Icon and end badge",
+          "props": {
+            "label": "Invoices",
+            "items": [
+              {
+                "id": "inv-1042",
+                "primary": "INV-1042",
+                "secondary": "Apex Digital Services · $4,820.00",
+                "icon": "receipt_long",
+                "badge": "Overdue",
+                "badgeTone": "danger"
+              },
+              {
+                "id": "inv-1043",
+                "primary": "INV-1043",
+                "secondary": "Northwind Traders · $1,260.00",
+                "icon": "receipt_long",
+                "badge": "Paid",
+                "badgeTone": "success"
+              },
+              {
+                "id": "inv-1044",
+                "primary": "INV-1044",
+                "secondary": "Globex Corporation · $980.00",
+                "icon": "receipt_long",
+                "badge": "Draft"
+              }
+            ]
+          }
+        },
+        {
+          "caption": "Start badge",
+          "props": {
+            "label": "Plans",
+            "items": [
+              {
+                "id": "p1",
+                "primary": "Enterprise",
+                "secondary": "Billed yearly",
+                "badge": "Current",
+                "badgeTone": "info",
+                "badgePosition": "start"
+              },
+              {
+                "id": "p2",
+                "primary": "Growth",
+                "secondary": "Billed monthly",
+                "badge": "Trial",
+                "badgePosition": "start"
+              }
+            ]
+          }
+        },
+        {
+          "caption": "Text only",
+          "props": {
+            "label": "Notes",
+            "items": [
+              {
+                "id": "n1",
+                "primary": "Renewal call booked",
+                "secondary": "Tuesday, 10:00"
+              },
+              {
+                "id": "n2",
+                "primary": "Tax exemption on file",
+                "secondary": "Expires March 2027"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Selection",
+      "usage": "single picks one row; multiple adds checkboxes.",
+      "items": [
+        {
+          "caption": "Single",
+          "props": {
+            "label": "Team",
+            "selection": "single",
+            "defaultSelected": [
+              "am"
+            ],
+            "items": [
+              {
+                "id": "rw",
+                "primary": "Rhea Walsh",
+                "secondary": "Billing admin",
+                "avatar": "Rhea Walsh"
+              },
+              {
+                "id": "am",
+                "primary": "Ammar Malik",
+                "secondary": "Finance lead",
+                "avatar": "Ammar Malik"
+              },
+              {
+                "id": "sc",
+                "primary": "Sienna Cole",
+                "secondary": "Account owner",
+                "avatar": "Sienna Cole"
+              }
+            ]
+          }
+        },
+        {
+          "caption": "Multiple",
+          "props": {
+            "label": "Team",
+            "selection": "multiple",
+            "defaultSelected": [
+              "rw",
+              "sc"
+            ],
+            "items": [
+              {
+                "id": "rw",
+                "primary": "Rhea Walsh",
+                "secondary": "Billing admin",
+                "avatar": "Rhea Walsh"
+              },
+              {
+                "id": "am",
+                "primary": "Ammar Malik",
+                "secondary": "Finance lead",
+                "avatar": "Ammar Malik"
+              },
+              {
+                "id": "sc",
+                "primary": "Sienna Cole",
+                "secondary": "Account owner",
+                "avatar": "Sienna Cole"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Interaction",
+      "usage": "drill ends each row in a chevron and opens the record; drag adds a handle to reorder by hand.",
+      "items": [
+        {
+          "caption": "Drill down",
+          "props": {
+            "label": "Invoices",
+            "interaction": "drill",
+            "selection": "single",
+            "defaultSelected": [
+              "inv-1043"
+            ],
+            "items": [
+              {
+                "id": "inv-1042",
+                "primary": "INV-1042",
+                "secondary": "Apex Digital Services · $4,820.00",
+                "icon": "receipt_long",
+                "badge": "Overdue",
+                "badgeTone": "danger"
+              },
+              {
+                "id": "inv-1043",
+                "primary": "INV-1043",
+                "secondary": "Northwind Traders · $1,260.00",
+                "icon": "receipt_long",
+                "badge": "Paid",
+                "badgeTone": "success"
+              },
+              {
+                "id": "inv-1044",
+                "primary": "INV-1044",
+                "secondary": "Globex Corporation · $980.00",
+                "icon": "receipt_long",
+                "badge": "Draft"
+              }
+            ]
+          }
+        },
+        {
+          "caption": "Draggable",
+          "props": {
+            "label": "Approval order",
+            "interaction": "drag",
+            "selection": "multiple",
+            "items": [
+              {
+                "id": "rw",
+                "primary": "Rhea Walsh",
+                "secondary": "Billing admin",
+                "avatar": "Rhea Walsh"
+              },
+              {
+                "id": "am",
+                "primary": "Ammar Malik",
+                "secondary": "Finance lead",
+                "avatar": "Ammar Malik"
+              },
+              {
+                "id": "sc",
+                "primary": "Sienna Cole",
+                "secondary": "Account owner",
+                "avatar": "Sienna Cole"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Template",
+      "usage": "Unread dots, actions and item-level messages for inbox-like lists.",
+      "items": [
+        {
+          "caption": "Actions and messages",
+          "props": {
+            "label": "Messages",
+            "items": [
+              {
+                "id": "m1",
+                "primary": "Payment received",
+                "secondary": "Northwind Traders paid INV-1043",
+                "unread": true,
+                "message": "Posted to the ledger",
+                "messageTone": "success",
+                "actions": [
+                  {
+                    "id": "open",
+                    "label": "Open",
+                    "icon": "open_in_new"
+                  },
+                  {
+                    "id": "share",
+                    "label": "Share",
+                    "icon": "share"
+                  }
+                ]
+              },
+              {
+                "id": "m2",
+                "primary": "Card declined",
+                "secondary": "Apex Digital Services, INV-1042",
+                "unread": true,
+                "message": "Retry scheduled for Friday",
+                "messageTone": "warning",
+                "actions": [
+                  {
+                    "id": "open",
+                    "label": "Open",
+                    "icon": "open_in_new"
+                  },
+                  {
+                    "id": "share",
+                    "label": "Share",
+                    "icon": "share"
+                  }
+                ]
+              },
+              {
+                "id": "m3",
+                "primary": "Usage export ready",
+                "secondary": "September, all accounts",
+                "message": "Link expires in 7 days",
+                "actions": [
+                  {
+                    "id": "open",
+                    "label": "Open",
+                    "icon": "open_in_new"
+                  },
+                  {
+                    "id": "share",
+                    "label": "Share",
+                    "icon": "share"
+                  }
+                ]
+              },
+              {
+                "id": "m4",
+                "primary": "Sync failed",
+                "secondary": "Tax service did not answer",
+                "message": "Try again later",
+                "messageTone": "danger",
+                "disabled": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Groups",
+      "usage": "Headers split a long list. Sizes sm, md and lg; collapsible headers fold their rows away.",
+      "items": [
+        {
+          "caption": "Collapsible, md",
+          "props": {
+            "label": "Invoices by status",
+            "collapsible": true,
+            "groups": [
+              {
+                "id": "due",
+                "title": "Due"
+              },
+              {
+                "id": "done",
+                "title": "Settled"
+              }
+            ],
+            "items": [
+              {
+                "id": "inv-1042",
+                "primary": "INV-1042",
+                "secondary": "Apex Digital Services · $4,820.00",
+                "icon": "receipt_long",
+                "badge": "Overdue",
+                "badgeTone": "danger",
+                "group": "due"
+              },
+              {
+                "id": "inv-1044",
+                "primary": "INV-1044",
+                "secondary": "Globex Corporation · $980.00",
+                "icon": "receipt_long",
+                "badge": "Draft",
+                "group": "due"
+              },
+              {
+                "id": "inv-1043",
+                "primary": "INV-1043",
+                "secondary": "Northwind Traders · $1,260.00",
+                "icon": "receipt_long",
+                "badge": "Paid",
+                "badgeTone": "success",
+                "group": "done"
+              }
+            ]
+          }
+        },
+        {
+          "caption": "Large headers",
+          "props": {
+            "label": "Team by role",
+            "groupSize": "lg",
+            "groups": [
+              {
+                "id": "admins",
+                "title": "Admins"
+              },
+              {
+                "id": "members",
+                "title": "Members"
+              }
+            ],
+            "items": [
+              {
+                "id": "rw",
+                "primary": "Rhea Walsh",
+                "secondary": "Billing admin",
+                "avatar": "Rhea Walsh",
+                "group": "admins"
+              },
+              {
+                "id": "am",
+                "primary": "Ammar Malik",
+                "secondary": "Finance lead",
+                "avatar": "Ammar Malik",
+                "group": "members"
+              },
+              {
+                "id": "sc",
+                "primary": "Sienna Cole",
+                "secondary": "Account owner",
+                "avatar": "Sienna Cole",
+                "group": "members"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

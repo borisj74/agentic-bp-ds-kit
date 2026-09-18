@@ -1,0 +1,99 @@
+/* Figma List View. The list measures its own width: rows inset 48 when wide, 24 in the middle and 16 when narrow,
+   the same three steps as the Figma breakpoints (1440+, 600-1439, 320-599), taken from the box the list sits in. */
+.view {
+  --inset: var(--space-medium);
+  container-type: inline-size; width: 100%; min-width: 0; font-family: var(--font-sans); color: var(--text-neutral-strong);
+}
+.list { margin: 0; padding: 0; list-style: none; }
+
+/* A row: 14 above and below, 16 between its parts, a faint line under it. */
+.row {
+  position: relative; box-sizing: border-box; display: flex; align-items: center; gap: var(--space-medium);
+  min-height: calc(var(--control-large) + var(--space-small) * 2 + var(--space-xxsmall));
+  padding: var(--space-small) var(--inset); border-bottom: var(--border-width-thin) solid var(--border-neutral-faint);
+}
+.acts { cursor: pointer; }
+.row.acts:hover { background: var(--bg-neutral-min-hover); }
+/* Single: the picked row is light blue between two brand lines. Multiple: checked rows are light blue only. */
+.row.selected, .row.checked { background: var(--bg-neutral-min-selected); }
+.row.selected:hover, .row.checked:hover { background: var(--bg-neutral-min-selected-hover); }
+.row.selected { box-shadow: inset 0 var(--border-width-thin) var(--border-brand); border-bottom-color: var(--border-brand); }
+.row.disabled { cursor: default; opacity: var(--opacity-disabled); }
+.row.disabled:hover { background: none; }
+
+/* A drop line above or below the row the drag is over. */
+.drop-before::before, .drop-after::after {
+  content: ""; position: absolute; inset-inline: 0; z-index: 1;
+  border-top: var(--border-width-medium) solid var(--border-brand);
+}
+.drop-before::before { top: calc(var(--border-width-medium) / -2); }
+.drop-after::after { bottom: calc(var(--border-width-medium) / -2 - var(--border-width-thin)); }
+
+/* The checkbox sits in a 44 square, so the row keeps the same start edge whether it shows one or not. */
+.selector { flex: none; display: grid; place-items: center; width: var(--control-large); height: var(--control-large); margin-inline-end: calc(-1 * var(--space-medium)); }
+
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-xsmall); }
+.hit {
+  display: flex; align-items: center; gap: var(--space-medium); min-width: 0; width: 100%;
+  margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: start;
+}
+button.hit { cursor: pointer; border-radius: var(--radius-small); }
+button.hit:disabled { cursor: default; }
+/* The ring goes round the whole row, not just its text. */
+button.hit:focus-visible { outline: none; }
+.row:has(button.hit:focus-visible) { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(-1 * var(--border-width-medium)); }
+
+.media { flex: none; display: inline-flex; }
+.image { display: block; width: var(--control-large); height: var(--control-large); object-fit: cover; border-radius: var(--radius-medium); }
+.iconBox { display: grid; place-items: center; width: var(--control-large); height: var(--control-large); color: var(--icon-neutral); }
+/* The unread mark: a small brand dot before the row. */
+.dot { flex: none; width: var(--space-xsmall); height: var(--space-xsmall); border-radius: 50%; background: var(--icon-brand); }
+
+.text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--space-xxsmall) / 2); padding-inline-end: var(--space-medium); }
+.primary {
+  font: var(--text-body-lg-weight) var(--font-size-regular) / var(--line-height-tight) var(--font-sans);
+  overflow-wrap: anywhere; font-variant-numeric: tabular-nums;
+}
+.secondary { font-size: var(--font-size-small); line-height: var(--line-height-tight); color: var(--text-neutral); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+
+/* An item-level message under the text, in its status colour. */
+.message { display: inline-flex; align-items: center; gap: var(--space-xxsmall); font-size: var(--font-size-xsmall); line-height: var(--line-height-snug); }
+.success { color: var(--text-success); }
+.info { color: var(--text-info); }
+.warning { color: var(--text-warning); }
+.danger { color: var(--text-danger); }
+
+.end, .move { flex: none; display: inline-flex; }
+.actions { flex: none; display: flex; gap: var(--space-xxsmall); }
+.chevron { flex: none; color: var(--icon-neutral-strong); }
+
+/* ---------- Group headers ---------- */
+
+/* 48 tall, bold. sm 14, md 16, lg 20. A line above every header but the first. */
+.header {
+  box-sizing: border-box; display: flex; align-items: center; min-height: calc(var(--control-large) + var(--space-xxsmall)); margin: 0;
+  padding-inline: var(--inset); border-top: var(--border-width-thin) solid var(--border-neutral-faint);
+  font-weight: var(--font-weight-bold); color: var(--text-neutral-strong);
+}
+.header.first { border-top-color: transparent; }
+.head-sm { font-size: var(--font-size-small); line-height: var(--line-height-snug); }
+.head-md { font-size: var(--font-size-regular); line-height: var(--line-height-normal); }
+.head-lg { font-size: var(--font-size-xlarge); line-height: var(--line-height-snug); }
+.headButton {
+  display: flex; align-items: center; align-self: stretch; gap: var(--space-medium); width: 100%; margin: 0; padding: 0;
+  border: 0; background: none; color: inherit; font: inherit; text-align: start; cursor: pointer;
+}
+.headButton:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(-1 * var(--border-width-medium)); }
+.fold { flex: none; color: var(--icon-neutral-strong); transition: transform var(--motion-expand-duration) var(--motion-expand-easing); }
+.fold.open { transform: rotate(90deg); }
+@media (prefers-reduced-motion: reduce) { .fold { transition: none; } }
+/* Sticky: each header stays at the top of the scrolling box while its rows pass under it, on the gray band. */
+.sticky .header {
+  position: sticky; top: 0; z-index: 2; border-top-color: transparent;
+  background: linear-gradient(var(--bg-neutral-hover), var(--bg-neutral-hover)), var(--surface-flat);
+}
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@container (min-width: 600px) { .view > * { --inset: var(--layout-margin-md); } }
+@container (min-width: 1440px) { .view > * { --inset: calc(var(--layout-margin-md) * 2); } }

@@ -46,6 +46,7 @@ import { Logo } from "@/ui/Logo/Logo";
 import { Legend, type LegendProps } from "@/ui/Legend/Legend";
 import { Link } from "@/ui/Link/Link";
 import { LinkList, type LinkListItem } from "@/ui/LinkList/LinkList";
+import { ListView, type ListViewItem } from "@/ui/ListView/ListView";
 import { Lookup, type LookupProps, type LookupRow } from "@/ui/Lookup/Lookup";
 import { LogoAI } from "@/ui/LogoAI/LogoAI";
 import { PageHeader, type PageHeaderProps } from "@/ui/PageHeader/PageHeader";
@@ -125,6 +126,16 @@ const USAGE_ITEMS: UsageListItem[] = [
   { id: "api", label: "API calls", used: 8420, limit: 10000, note: "Resets on Oct 1" },
   { id: "seats", label: "Seats", used: 12, limit: 12, note: "All seats in use" },
 ];
+// ListView sample rows: invoices with a status badge, split into two groups when the Groups switch is on.
+const LIST_VIEW_ITEMS: ListViewItem[] = [
+  { id: "inv-1042", primary: "INV-1042", secondary: "Apex Digital Services · $4,820.00", icon: "receipt_long", badge: "Overdue", badgeTone: "danger", group: "due" },
+  { id: "inv-1044", primary: "INV-1044", secondary: "Globex Corporation · $980.00", icon: "receipt_long", badge: "Draft", group: "due" },
+  { id: "inv-1045", primary: "INV-1045", secondary: "Initech · $2,150.00", icon: "receipt_long", badge: "Sent", badgeTone: "info", group: "due" },
+  { id: "inv-1043", primary: "INV-1043", secondary: "Northwind Traders · $1,260.00", icon: "receipt_long", badge: "Paid", badgeTone: "success", group: "done" },
+  { id: "inv-1041", primary: "INV-1041", secondary: "Umbrella Corp · $3,400.00", icon: "receipt_long", badge: "Paid", badgeTone: "success", group: "done" },
+];
+const LIST_VIEW_GROUPS = [{ id: "due", title: "Due" }, { id: "done", title: "Settled" }];
+
 const QUICK_LINK_ITEMS: LinkListItem[] = [
   { id: "tax", label: "Tax Related List" }, { id: "subscription", label: "Subscription Configuration" },
   { id: "portal", label: "Customer Portal" }, { id: "orders", label: "Orders" }, { id: "documents", label: "Document Information" },
@@ -844,6 +855,29 @@ export const registry: Record<string, Entry> = {
     hide: ["items"],
     hint: "A record's quick links. Each row is one link with a chevron; Variants show icons, descriptions and links that open in a new tab.",
     card: <div style={{ width: 220 }}><LinkList label="Quick links" items={QUICK_LINK_ITEMS.slice(0, 3)} /></div>,
+  },
+  ListView: {
+    // Keyed so switching a control starts fresh. The Groups switch splits the sample under two headers; examples pass their own items.
+    render: ({ grouped, ...p }) => (
+      // Full width up to 720, so two captioned lists share a row of Variants without spilling into each other.
+      <div style={{ width: "100%", maxWidth: 720, minWidth: 0, background: "var(--surface-flat)", textAlign: "start" }}>
+        <ListView
+          key={JSON.stringify(p) + String(grouped)} {...(p as object)} label={(p.label as string) ?? "Invoices"}
+          items={(p.items as ListViewItem[] | undefined) ?? LIST_VIEW_ITEMS}
+          groups={(p.groups as never) ?? (grouped ? LIST_VIEW_GROUPS : undefined)}
+        />
+      </div>
+    ),
+    preview: { label: "Invoices", selection: "single", interaction: "drill", items: LIST_VIEW_ITEMS },
+    hide: ["items", "groups", "selected", "collapsed"],
+    toggles: { grouped: { label: "Groups", default: false } },
+    block: true,
+    hint: "Switch selection and interaction: single picks one row, multiple adds checkboxes; drill opens a record, drag reorders by hand. Turn Groups on to split the list under headers, then try the header size, collapsible and sticky.",
+    card: (
+      <div style={{ width: "100%", background: "var(--surface-flat)" }}>
+        <ListView label="Invoices" selection="single" defaultSelected={["inv-1043"]} items={LIST_VIEW_ITEMS.slice(2, 4)} />
+      </div>
+    ),
   },
   Logo: {
     render: (p) => <Logo {...(p as object)} />,

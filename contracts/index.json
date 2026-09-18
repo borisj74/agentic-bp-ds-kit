@@ -632,6 +632,23 @@
       ]
     },
     {
+      "name": "ListView",
+      "contract": "contracts/listview.json",
+      "category": "data",
+      "tags": [
+        "list view",
+        "list",
+        "list item",
+        "records",
+        "people list",
+        "inbox",
+        "group header",
+        "drill down",
+        "reorder",
+        "selectable list"
+      ]
+    },
+    {
       "name": "Logo",
       "contract": "contracts/logo.json",
       "category": "brand",
