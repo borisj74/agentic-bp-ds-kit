@@ -1,6 +1,6 @@
 {
   "name": "agentic-bp-ds-kit",
-  "version": "0.2.34",
+  "version": "0.2.35",
   "private": true,
   "scripts": {
     "tokens": "node scripts/build-tokens.mjs",
