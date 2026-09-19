@@ -3,7 +3,8 @@ import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
 import { Alert } from "@/ui/Alert/Alert";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
 import { APP_NAV, APP_NAV_END } from "@/patterns/AppShell/appNav";
-import { AppShellDemo, DashboardDemo, FormPageDemo, AccountFlowDemo, GuidedProcessDemo, GuidedProcessPageDemo, SettingsPageDemo, ListDetailDemo, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import type { ListDetailLayout } from "@/patterns/ListDetail/ListDetail";
+import { AppShellDemo, DashboardDemo, FormPageDemo, AccountFlowDemo, GuidedProcessDemo, GuidedProcessPageDemo, SettingsPageDemo, ListDetailDemo, type ListDetailVariant, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import type { DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -766,15 +767,21 @@ export const registry: Record<string, Entry> = {
   },
   ListDetail: {
     // The pattern in the frame on Billing › Invoices, driven the way a screen would drive it: the open invoice lives in the screen.
-    render: ({ shell, stage, open, nested }) => (
-      <ListDetailDemo key={`${open}-${nested}`} shell={shell !== false} stage={String(stage ?? "desktop")} picked={open !== false} nested={Boolean(nested)} />
+    render: ({ shell, stage, open, variant, layout }) => (
+      <ListDetailDemo
+        key={`${open}-${variant}-${layout}`} shell={shell !== false} stage={String(stage ?? "desktop")} picked={open !== false}
+        variant={(variant as ListDetailVariant | undefined) ?? "plain"} layout={(layout as ListDetailLayout | undefined) ?? "side"}
+      />
     ),
     // Open over the contract default, so the preview starts with an invoice showing.
     preview: { open: true },
     hide: ["list", "detail", "open", "title", "actions", "empty", "onBack", "backLabel", "label"],
-    toggles: { nested: { label: "Nested accounts", default: false }, shell: { label: "In the app frame", default: true } },
-    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
-    hint: "Pick invoices and the pane beside the list follows. Turn on Nested accounts: the list starts at the accounts, a click steps into one's invoices with Back to return, and an invoice opens beside it. Set the stage to phone: the list shows alone, a row opens the invoice over it, and Back returns. Turn the frame off to see the pattern on its own.",
+    toggles: { shell: { label: "In the app frame", default: true } },
+    extras: {
+      variant: { values: ["plain", "groups", "template", "actions", "nested", "tree"], default: "plain" },
+      stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" },
+    },
+    hint: "Pick invoices and the pane beside the list follows. Switch the list: groups splits it by status under headers that fold, template adds avatars, unread dots and status lines, actions puts every invoice action in a More menu, nested starts at the accounts, where a click steps into one's invoices with Back to return, and tree opens an account's invoices right under it. Set layout to stacked for the record under the list, or inline for the record under its row. Set the stage to phone: the list shows alone, a row opens the invoice over it, and Back returns. Turn the frame off to see the pattern on its own.",
     block: true,
     wide: true,
     page: <ListDetailDemo shell />,

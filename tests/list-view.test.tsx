@@ -128,6 +128,30 @@ describe("ListView nested", () => {
     expect(next[1].id).toBe("globex");
   });
 
+  it("expand: a click opens the children right under the row, indented, without stepping in", () => {
+    const onPathChange = vi.fn();
+    render(<ListView label="Accounts" items={accounts} nesting="expand" onPathChange={onPathChange} />);
+    const apex = screen.getByRole("button", { name: /Apex/ });
+    expect(apex).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByText("INV-1042")).toBeNull();
+    fireEvent.click(apex);
+    expect(apex).toHaveAttribute("aria-expanded", "true");
+    expect(order()).toEqual(["Apex", "INV-1042", "INV-0990", "Globex"]);
+    expect(screen.getByText("INV-1042").closest("li")!.style.getPropertyValue("--depth")).toBe("1");
+    expect(onPathChange).not.toHaveBeenCalled();
+    fireEvent.click(apex);
+    expect(screen.queryByText("INV-1042")).toBeNull();
+  });
+
+  it("detail shows the picked record under its row, as a region named after the row", () => {
+    render(<ListView label="Invoices" items={items} selection="single" interaction="drill" selected={["b"]} detail={<p>Details</p>} />);
+    expect(screen.getByRole("region", { name: "Ammar Malik" })).toHaveTextContent("Details");
+    expect(screen.getByRole("button", { name: /Ammar Malik/ })).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("button", { name: /Rhea Walsh/ })).toHaveAttribute("aria-expanded", "false");
+    // Right under its row, before the next one.
+    expect(screen.getAllByRole("listitem")[2]).toHaveTextContent("Details");
+  });
+
   it("a leaf row still opens its record", () => {
     const onOpen = vi.fn();
     render(<ListView label="Accounts" items={accounts} interaction="drill" defaultPath={["apex"]} onOpen={onOpen} />);
@@ -152,6 +176,22 @@ describe("ListDetail", () => {
     expect(screen.getByRole("heading", { level: 2, name: "INV-1" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Back to invoices", hidden: true }));
     expect(onBack).toHaveBeenCalled();
+  });
+
+  it("inline: the record opens under its row inside the list, with no pane", () => {
+    const rows = <ListView label="Invoices" items={[{ id: "a", primary: "INV-1" }, { id: "b", primary: "INV-2" }]} selection="single" interaction="drill" selected={["a"]} />;
+    render(<ListDetail label="Invoices" layout="inline" list={rows} open title="INV-1" detail={<p>Details</p>} empty={<p>Pick an invoice</p>} onBack={() => {}} />);
+    const region = screen.getByRole("region", { name: "INV-1" });
+    expect(region.closest("li")).not.toBeNull();
+    expect(region).toHaveTextContent("Details");
+    expect(screen.queryByText("Pick an invoice")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Back to list", hidden: true })).toBeNull();
+  });
+
+  it("stacked: the record shows under the list, with no Back", () => {
+    render(<ListDetail label="Invoices" layout="stacked" list={list} open title="INV-1" detail={<p>Details</p>} onBack={() => {}} />);
+    expect(screen.getByRole("region", { name: "INV-1" })).toHaveTextContent("Details");
+    expect(screen.queryByRole("button", { name: "Back to list", hidden: true })).toBeNull();
   });
 });
 

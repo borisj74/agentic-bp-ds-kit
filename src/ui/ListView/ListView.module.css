@@ -101,3 +101,18 @@ button.hit:focus-visible { outline: none; }
 
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
+
+/* ---------- Opened in place ---------- */
+
+/* nesting expand: a row's children follow it, each level indented by the fold's width and the row's gap, so a
+   child's text starts under its parent's text. */
+.row { padding-inline-start: calc(var(--inset) + var(--depth, 0) * (var(--icon-size-large) + var(--space-medium))); }
+.foldGap { flex: none; width: var(--icon-size-large); }
+
+/* The picked record under its row, on the plain surface, closed by a brand line so the picked row's two brand
+   lines hold the row and its record together. */
+.detail {
+  padding: var(--space-medium) var(--inset) var(--layout-gutter-lg);
+  padding-inline-start: calc(var(--inset) + var(--depth, 0) * (var(--icon-size-large) + var(--space-medium)));
+  background: var(--surface-flat); border-bottom: var(--border-width-thin) solid var(--border-brand);
+}

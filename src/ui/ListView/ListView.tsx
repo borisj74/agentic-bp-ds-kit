@@ -1,5 +1,5 @@
 "use client";
-import { useId, useLayoutEffect, useRef, useState, type DragEvent, type KeyboardEvent, type MouseEvent } from "react";
+import { useId, useLayoutEffect, useRef, useState, type DragEvent, type KeyboardEvent, type CSSProperties, type MouseEvent, type ReactNode } from "react";
 import { Avatar } from "../Avatar/Avatar";
 import { Badge, type BadgeTone } from "../Badge/Badge";
 import { Button } from "../Button/Button";
@@ -13,6 +13,7 @@ export type ListViewInteraction = "none" | "drill" | "drag";
 export type ListViewGroupSize = "sm" | "md" | "lg";
 export type ListViewMessageTone = "success" | "info" | "warning" | "danger";
 export type ListViewBadgePosition = "start" | "end";
+export type ListViewNesting = "step" | "expand";
 
 export interface ListViewAction {
   id: string;
@@ -66,6 +67,11 @@ export interface ListViewProps {
   path?: string[];
   defaultPath?: string[];
   onPathChange?: (ids: string[]) => void;
+  nesting?: ListViewNesting;
+  expanded?: string[];
+  defaultExpanded?: string[];
+  onExpandedChange?: (ids: string[]) => void;
+  detail?: ReactNode;
 }
 
 type MoveKind = "up" | "down" | "top" | "bottom";
@@ -108,11 +114,13 @@ function moveTo(items: ListViewItem[], id: string, index: number) {
 // Rows of a primary and secondary line with an avatar, icon or image before them, and badges, actions, a chevron
 // or a drag handle after. Picked one at a time (a blue band with brand lines) or with checkboxes, and grouped
 // under headers that can fold away and stay pinned while the list scrolls. A row with children steps into its own
-// list in place, under a header with a Back button, one level at a time.
+// list in place, under a header with a Back button, one level at a time, or with nesting expand opens its children
+// right under it, indented, like a tree. detail shows the picked record under its row.
 export function ListView({
   label, items: itemsProp, onItemsChange, groups, groupSize = "md", collapsible = false, stickyGroups = false,
   collapsed: collapsedProp, defaultCollapsed, onCollapsedChange, selection = "none", selected: selectedProp, defaultSelected,
   onSelectedChange, interaction = "none", onOpen, onAction, path: pathProp, defaultPath, onPathChange,
+  nesting = "step", expanded: expandedProp, defaultExpanded, onExpandedChange, detail,
 }: ListViewProps) {
   const uid = useId();
   const keysId = `${uid}-keys`;
@@ -124,7 +132,9 @@ export function ListView({
 
   // Where the list is in a nested tree: the ids of the rows stepped into, top first.
   const [pathState, setPathState] = useState<string[]>(defaultPath ?? []);
-  const { rows: items, trail } = levelAt(tree, pathProp ?? pathState);
+  // Expanding rows open in place, so the list never steps in.
+  const expand = nesting === "expand";
+  const { rows: items, trail } = levelAt(tree, expand ? [] : pathProp ?? pathState);
   const path = trail.map((t) => t.id);
   const setPath = (ids: string[]) => { if (pathProp === undefined) setPathState(ids); onPathChange?.(ids); };
   const parent = trail[trail.length - 1];
@@ -144,6 +154,15 @@ export function ListView({
   const [selectedState, setSelectedState] = useState<string[]>(defaultSelected ?? []);
   const selectedIds = selectedProp ?? selectedState;
   const setSelected = (ids: string[]) => { if (selectedProp === undefined) setSelectedState(ids); onSelectedChange?.(ids); };
+
+  const [expandedState, setExpandedState] = useState<string[]>(defaultExpanded ?? []);
+  const openRows = new Set(expandedProp ?? expandedState);
+  const toggleRow = (item: ListViewItem) => {
+    const next = new Set(openRows);
+    if (next.has(item.id)) next.delete(item.id); else next.add(item.id);
+    if (expandedProp === undefined) setExpandedState([...next]);
+    onExpandedChange?.([...next]);
+  };
 
   const [drop, setDrop] = useState<{ id: string; where: "before" | "after" } | null>(null);
   const [menuFor, setMenuFor] = useState<string | null>(null);
@@ -213,7 +232,7 @@ export function ListView({
   const pick = (item: ListViewItem) => {
     if (item.disabled) return;
     // A row with its own rows steps into them rather than picking or opening.
-    if (item.children) { stepIn(item); return; }
+    if (item.children) { if (expand) toggleRow(item); else stepIn(item); return; }
     if (selection === "single") setSelected([item.id]);
     if (selection === "multiple" && !drill) toggleChecked(item);
     if (drill) onOpen?.(item.id);
@@ -268,7 +287,9 @@ export function ListView({
     }
   };
 
-  const renderRow = (item: ListViewItem) => {
+  // depth is how far a row sits under the top level when rows expand in place; branch says a row at its level
+  // opens, so rows without children keep a gap where the fold would be and every row's text lines up.
+  const renderRow = (item: ListViewItem, depth = 0, branch = false): ReactNode[] => {
     const isSelected = selectedIds.includes(item.id);
     const badge = item.badge && <Badge tone={item.badgeTone ?? "neutral"}>{item.badge}</Badge>;
     const media = item.avatar
@@ -288,8 +309,14 @@ export function ListView({
     const nests = Boolean(item.children);
     const acts = selection !== "none" || drill || nests;
     const asButton = selection === "single" || drill || nests;
+    const isOpen = expand && nests && openRows.has(item.id);
+    // The picked record under its row: single selection only, never on a row that holds rows.
+    const showsDetail = detail != null && selection === "single" && isSelected && !nests;
     const content = (
       <>
+        {expand && (nests
+          ? <Icon name="chevron_right" size="lg" className={[styles.fold, isOpen ? styles.open : ""].join(" ")} />
+          : branch && <span className={styles.foldGap} />)}
         {item.unread && <span className={styles.dot}><span className={styles.srOnly}>Unread</span></span>}
         {media && <span className={styles.media}>{media}</span>}
         {item.badgePosition === "start" && badge}
@@ -302,7 +329,7 @@ export function ListView({
       if (!e.currentTarget.contains(t) || t.closest("[data-main], [data-own], [data-move]")) return;
       if (acts) pick(item);
     };
-    return (
+    const row = (
       <li
         key={item.id}
         ref={(el) => { if (el) rowRefs.current.set(item.id, el); else rowRefs.current.delete(item.id); }}
@@ -311,9 +338,10 @@ export function ListView({
           item.disabled ? styles.disabled : "", acts ? styles.acts : "",
           drop?.id === item.id ? styles[`drop-${drop.where}`] : "",
         ].join(" ")}
+        style={depth > 0 ? ({ "--depth": depth } as CSSProperties) : undefined}
         onClick={onRowClick} onKeyDown={onRowKey(item)}
         aria-describedby={draggable ? keysId : undefined}
-        {...dragProps(item)}
+        {...(depth === 0 ? dragProps(item) : {})}
       >
         {selection === "multiple" && !nests && (
           <span className={styles.selector} data-own>
@@ -327,6 +355,7 @@ export function ListView({
               type="button" data-main className={styles.hit} disabled={item.disabled}
               aria-pressed={selection === "single" && !drill && !nests ? isSelected : undefined}
               aria-current={selection === "single" && drill && !nests && isSelected ? "true" : undefined}
+              aria-expanded={expand && nests ? isOpen : detail != null && selection === "single" && !nests ? showsDetail : undefined}
               onClick={() => pick(item)}
             >
               {content}
@@ -361,7 +390,10 @@ export function ListView({
             )}
           </span>
         )}
-        {(drill || nests) && <Icon name="chevron_right" size="lg" className={styles.chevron} />}
+        {/* Opened rows show their chevron at the start instead; a row with its record under it points down. */}
+        {(drill || nests) && !(expand && nests) && (
+          <Icon name="chevron_right" size="lg" className={[styles.chevron, styles.fold, showsDetail ? styles.open : ""].join(" ")} />
+        )}
         {draggable && (
           // The drag handle is also a button: its Move menu moves the row without dragging.
           <span className={styles.move} data-move>
@@ -374,11 +406,24 @@ export function ListView({
         )}
       </li>
     );
+    const out: ReactNode[] = [row];
+    if (showsDetail) {
+      out.push(
+        <li key={`${item.id}-detail`} className={styles.detail} style={depth > 0 ? ({ "--depth": depth } as CSSProperties) : undefined}>
+          <section aria-label={item.primary}>{detail}</section>
+        </li>,
+      );
+    }
+    if (isOpen && item.children) {
+      const kidsBranch = item.children.some((c) => c.children);
+      for (const child of item.children) out.push(...renderRow(child, depth + 1, kidsBranch));
+    }
+    return out;
   };
 
   const list = (rows: ListViewItem[], labelledBy?: string) => (
     <ul className={styles.list} aria-label={labelledBy ? undefined : label} aria-labelledby={labelledBy}>
-      {rows.map(renderRow)}
+      {rows.flatMap((it) => renderRow(it, 0, expand && rows.some((r) => r.children)))}
     </ul>
   );
 

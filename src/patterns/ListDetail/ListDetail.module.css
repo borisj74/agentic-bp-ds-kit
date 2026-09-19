@@ -40,3 +40,17 @@
 }
 
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Stacked: the list on top and the record under it, each the full width, at every size. */
+.stacked .split { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; }
+.stacked .list { border-inline-end: 0; border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle); }
+@container (max-width: 639px) {
+  .stacked .pane { display: block; }
+  .stacked.open .list { display: block; }
+}
+
+/* Inline: only the list; the record sits under its row, so it drops the pane's own edges and header line. */
+.single { grid-template-columns: minmax(0, 1fr); }
+.single .list { border-inline-end: 0; }
+.inline .head { min-height: 0; padding: 0 0 var(--space-small); }
+.inline .body { padding: 0; }

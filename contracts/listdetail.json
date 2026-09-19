@@ -2,7 +2,7 @@
   "name": "ListDetail",
   "path": "src/patterns/ListDetail/ListDetail.tsx",
   "intent": "A list with the picked record beside it: a ListView on one side and the record in a pane on the other, or one at a time on a phone.",
-  "usage": "Use ListDetail when people go through records one after another without leaving the list: an invoice queue, an inbox, approvals. It is a blueprint: it composes kit pieces and keeps no state of its own. list is a kit ListView, usually with selection single and interaction drill; its onOpen tells the screen which record is open. detail is that record, built from kit Sections, FormDisplay and Tables; title names it and actions puts its Buttons at the end of the pane's header. open says a record is open. empty shows in the pane when none is, usually a kit Empty. When records sit under other records, give the ListView items with children: the list steps into them in place, with Back, and a leaf opens beside it, like accounts that hold their invoices. The frame measures its own width: from 640 up the list and the pane sit side by side (two fifths and three fifths); below, the list shows until a record opens, then the pane covers it with a Back button that calls onBack, named by backLabel. The page's name and trail are the kit PageHeader in the AppShell page around it. See contracts/listdetail.json for the full contract.",
+  "usage": "Use ListDetail when people go through records one after another without leaving the list: an invoice queue, an inbox, approvals. It is a blueprint: it composes kit pieces and keeps no state of its own. list is a kit ListView, usually with selection single and interaction drill; its onOpen tells the screen which record is open. detail is that record, built from kit Sections, FormDisplay and Tables; title names it and actions puts its Buttons at the end of the pane's header. open says a record is open. empty shows in the pane when none is, usually a kit Empty. The list can be any ListView: grouped by status under headers that fold, the inbox template with avatars, unread dots and status lines, or rows with a More menu; the pane works the same. When records sit under other records, give the ListView items with children: the list steps into them in place, with Back, and a leaf opens beside it, like accounts that hold their invoices. layout sets where the record goes: side puts it in a pane beside the list, stacked puts it under the whole list, and inline opens it right under its row, inside the list. With side, the frame measures its own width: from 640 up the list and the pane sit side by side (two fifths and three fifths); below, the list shows until a record opens, then the pane covers it with a Back button that calls onBack, named by backLabel. The page's name and trail are the kit PageHeader in the AppShell page around it. See contracts/listdetail.json for the full contract.",
   "composes": [
     "ListView",
     "Section",
@@ -47,6 +47,15 @@
       "default": "Back to list",
       "note": "Names the Back button, like Back to invoices."
     },
+    "layout": {
+      "enum": [
+        "side",
+        "stacked",
+        "inline"
+      ],
+      "default": "side",
+      "note": "side: the list and the pane side by side, one at a time on a phone. stacked: the list on top and the record under it. inline: the record opens right under its row, inside the list; it needs a ListView with selection single, and empty does not show."
+    },
     "label": {
       "type": "string",
       "note": "Names the list and pane together for screen readers."
@@ -56,7 +65,9 @@
     "Going through records one after another: an invoice queue, an inbox, approvals.",
     "A record short enough to read in a pane beside the list.",
     "A list that must stay in view while its records are read.",
-    "Records under other records, like an account's invoices: a nested ListView steps in, and the leaf opens beside it."
+    "Records under other records, like an account's invoices: a nested ListView steps in, and the leaf opens beside it.",
+    "A long queue split by status: a grouped ListView keeps what needs attention on top.",
+    "Stacked when the list is short and the record needs the full width; inline when people read one record at a time and want the rest of the list to stay in place around it."
   ],
   "doNot": [
     "Do not add state to it; it is a blueprint. The screen keeps which record is open.",
@@ -93,16 +104,88 @@
       ]
     },
     {
+      "title": "Grouped by status",
+      "usage": "The queue split under Needs Attention, Open and Paid. Headers fold their rows away and stay on top while the list scrolls.",
+      "items": [
+        {
+          "props": {
+            "variant": "groups"
+          }
+        }
+      ],
+      "code": "<ListDetail\n  label=\"Invoices\" open={Boolean(invoice)} onBack={() => setOpenId(null)} backLabel=\"Back to invoices\"\n  title={invoice?.number}\n  list={\n    <ListView\n      label=\"Invoices\" selection=\"single\" interaction=\"drill\"\n      groups={[{ id: \"attention\", title: \"Needs Attention\" }, { id: \"open\", title: \"Open\" }, { id: \"paid\", title: \"Paid\" }]}\n      collapsible stickyGroups\n      items={invoices} selected={openId ? [openId] : []} onOpen={setOpenId}\n    />\n  }\n  detail={invoice && <Section title=\"Invoice Details\">…</Section>}\n/>"
+    },
+    {
+      "title": "Inbox template",
+      "usage": "Each row shows the account's avatar, an unread dot on what changed, and a status line under the text, so the queue reads like an inbox.",
+      "items": [
+        {
+          "props": {
+            "variant": "template"
+          }
+        }
+      ],
+      "code": "<ListDetail\n  label=\"Invoices\" open={Boolean(invoice)} onBack={() => setOpenId(null)} backLabel=\"Back to invoices\"\n  title={invoice?.number}\n  list={\n    <ListView\n      label=\"Invoices\" selection=\"single\" interaction=\"drill\"\n      items={[{ id: \"INV-1042\", primary: \"INV-1042\", secondary: \"Apex Digital Services · $4,820.00\", avatar: \"Apex Digital Services\", unread: true, message: \"Card declined, retry on Friday\", messageTone: \"danger\", badge: \"Overdue\", badgeTone: \"danger\" }, …]}\n      selected={openId ? [openId] : []} onOpen={setOpenId}\n    />\n  }\n  detail={invoice && <Section title=\"Invoice Details\">…</Section>}\n/>"
+    },
+    {
+      "title": "Row actions",
+      "usage": "Every invoice action sits behind one More button on its row, the same menu as the list on ListPage. View invoice opens it beside the list.",
+      "items": [
+        {
+          "props": {
+            "variant": "actions"
+          }
+        }
+      ],
+      "code": "<ListDetail\n  label=\"Invoices\" open={Boolean(invoice)} onBack={() => setOpenId(null)} backLabel=\"Back to invoices\"\n  title={invoice?.number}\n  list={\n    <ListView\n      label=\"Invoices\" selection=\"single\" interaction=\"drill\"\n      items={invoices.map((inv) => ({ ...inv, menu: invoiceMenu }))}\n      onAction={(id, action) => { if (action === \"view\") setOpenId(id); }}\n      selected={openId ? [openId] : []} onOpen={setOpenId}\n    />\n  }\n  detail={invoice && <Section title=\"Invoice Details\">…</Section>}\n/>"
+    },
+    {
       "title": "Nested list",
       "usage": "Accounts hold their invoices. A click on an account steps into its invoices in place, with Back to the accounts; a click on an invoice opens it beside the list. Here the list is stepped into Apex with INV-1042 open.",
       "items": [
         {
           "props": {
-            "nested": true
+            "variant": "nested"
           }
         }
       ],
       "code": "<ListDetail\n  label=\"Invoices\" open={Boolean(invoice)} onBack={() => setOpenId(null)} backLabel=\"Back to invoices\"\n  title={invoice?.number}\n  list={\n    <ListView\n      label=\"Accounts\" selection=\"single\" interaction=\"drill\"\n      items={accounts} path={path} onPathChange={setPath}\n      selected={openId ? [openId] : []} onOpen={setOpenId}\n    />\n  }\n  detail={invoice && <Section title=\"Invoice Details\">…</Section>}\n/>"
+    },
+    {
+      "title": "Invoices under their account",
+      "usage": "The list starts at the accounts. A click opens an account's invoices right under it, indented, and a click on an invoice opens it beside the list. Here Apex is open with INV-1042 showing.",
+      "items": [
+        {
+          "props": {
+            "variant": "tree"
+          }
+        }
+      ],
+      "code": "<ListDetail\n  label=\"Invoices\" open={Boolean(invoice)} onBack={() => setOpenId(null)} backLabel=\"Back to invoices\"\n  title={invoice?.number}\n  list={\n    <ListView\n      label=\"Invoices\" selection=\"single\" interaction=\"drill\"\n      nesting=\"expand\" items={accounts} expanded={expanded} onExpandedChange={setExpanded}\n      selected={openId ? [openId] : []} onOpen={setOpenId}\n    />\n  }\n  detail={invoice && <Section title=\"Invoice Details\">…</Section>}\n/>"
+    },
+    {
+      "title": "Record under the list",
+      "usage": "layout stacked: the whole list on top and the open record under it, each the full width.",
+      "items": [
+        {
+          "props": {
+            "layout": "stacked"
+          }
+        }
+      ],
+      "code": "<ListDetail\n  label=\"Invoices\" layout=\"stacked\" open={Boolean(invoice)} onBack={() => setOpenId(null)} backLabel=\"Back to invoices\"\n  title={invoice?.number}\n  list={\n    <ListView\n      label=\"Invoices\" selection=\"single\" interaction=\"drill\"\n      items={invoices} selected={openId ? [openId] : []} onOpen={setOpenId}\n    />\n  }\n  detail={invoice && <Section title=\"Invoice Details\">…</Section>}\n/>"
+    },
+    {
+      "title": "Record under its row",
+      "usage": "layout inline: the record opens right under the row that was picked, inside the list, and the rows after it move down. A click on the open row closes it.",
+      "items": [
+        {
+          "props": {
+            "layout": "inline"
+          }
+        }
+      ],
+      "code": "<ListDetail\n  label=\"Invoices\" layout=\"inline\" open={Boolean(invoice)} onBack={() => setOpenId(null)} backLabel=\"Back to invoices\"\n  title={invoice?.number}\n  list={\n    <ListView\n      label=\"Invoices\" selection=\"single\" interaction=\"drill\"\n      items={invoices} selected={openId ? [openId] : []}\n      onOpen={(id) => setOpenId(id === openId ? null : id)}\n    />\n  }\n  detail={invoice && <Section title=\"Invoice Details\">…</Section>}\n/>"
     }
   ]
 }

@@ -18,7 +18,7 @@ import { GuidedProcess, type GuidedProcessAction, type GuidedProcessPanelProps, 
 import { RecordPage } from "@/patterns/RecordPage/RecordPage";
 import { Dashboard, type DashboardProps, type DashboardState } from "@/patterns/Dashboard/Dashboard";
 import { SettingsPage, type SettingsPageProps } from "@/patterns/SettingsPage/SettingsPage";
-import { ListDetail } from "@/patterns/ListDetail/ListDetail";
+import { ListDetail, type ListDetailLayout } from "@/patterns/ListDetail/ListDetail";
 import { ListView, type ListViewItem } from "@/ui/ListView/ListView";
 import { Badge } from "@/ui/Badge/Badge";
 import { Button } from "@/ui/Button/Button";
@@ -2620,14 +2620,41 @@ const LIST_DETAIL_ACCOUNTS: ListViewItem[] = LIST_DETAIL_INVOICES.map((inv) => {
   };
 });
 
-export function ListDetailDemo({ shell = true, stage = "desktop", picked = true, nested = false }: { shell?: boolean; stage?: string; picked?: boolean; nested?: boolean }) {
+// The ListView variants the list can take: plain rows, grouped by status, the inbox template, a More menu per row,
+// nested (stepping into an account), or tree (an account's invoices opening right under it).
+export type ListDetailVariant = "plain" | "groups" | "template" | "actions" | "nested" | "tree";
+
+// Groups: the queue split by where each invoice stands. Headers fold, and stay on top while their rows scroll.
+const LIST_DETAIL_GROUPS = [{ id: "attention", title: "Needs Attention" }, { id: "open", title: "Open" }, { id: "paid", title: "Paid" }];
+const LIST_DETAIL_GROUP_OF: Record<string, string> = { Overdue: "attention", Draft: "open", Sent: "open", Paid: "paid" };
+const LIST_DETAIL_GROUPED: ListViewItem[] = LIST_DETAIL_INVOICES.map((inv) => ({ ...inv, group: LIST_DETAIL_GROUP_OF[inv.status] }));
+
+// Template: the inbox look. The account's avatar, an unread dot on what changed, and a short status line under each.
+const LIST_DETAIL_NOTES: Record<string, Pick<ListViewItem, "unread" | "message" | "messageTone">> = {
+  "INV-1042": { unread: true, message: "Card declined, retry on Friday", messageTone: "danger" },
+  "INV-1043": { message: "Payment posted to the ledger", messageTone: "success" },
+  "INV-1044": { message: "Waiting for approval", messageTone: "warning" },
+  "INV-1045": { unread: true, message: "Viewed by the customer" },
+  "INV-1046": { message: "Sent on Sep 12" },
+};
+const LIST_DETAIL_TEMPLATE: ListViewItem[] = LIST_DETAIL_INVOICES.map((inv) => ({ ...inv, avatar: inv.account, ...LIST_DETAIL_NOTES[inv.id] }));
+
+// Row actions: every invoice action behind one More button, the same menu as the list on ListPage.
+const LIST_DETAIL_WITH_MENU: ListViewItem[] = LIST_DETAIL_INVOICES.map((inv) => ({ ...inv, menu: INVOICE_ALL_MENU }));
+
+export function ListDetailDemo({ shell = true, stage = "desktop", picked = true, variant = "plain", layout = "side" }: { shell?: boolean; stage?: string; picked?: boolean; variant?: ListDetailVariant; layout?: ListDetailLayout }) {
+  const nested = variant === "nested" || variant === "tree";
+  // Tree starts with the first account open, so its invoices show under it.
+  const [expanded, setExpanded] = useState<string[]>([LIST_DETAIL_ACCOUNTS[0].id]);
+  // Under its row, a click on the open invoice closes it again.
+  const openInvoice = (id: string) => setOpenId((was) => (layout === "inline" && was === id ? null : id));
   const [navOpen, setNavOpen] = useState(false);
   const [section, setSection] = useState("billing-invoices");
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");
   const [openId, setOpenId] = useState<string | null>(picked ? "INV-1042" : null);
   // Nested opens on the first account, so its invoices and the open one show together.
-  const [path, setPath] = useState<string[]>(nested ? [LIST_DETAIL_ACCOUNTS[0].id] : []);
+  const [path, setPath] = useState<string[]>(variant === "nested" ? [LIST_DETAIL_ACCOUNTS[0].id] : []);
   const invoice = LIST_DETAIL_ALL.find((i) => i.id === openId);
 
   const view = (
@@ -2636,20 +2663,31 @@ export function ListDetailDemo({ shell = true, stage = "desktop", picked = true,
       open={Boolean(invoice)}
       onBack={() => setOpenId(null)}
       backLabel="Back to invoices"
+      layout={layout}
       title={invoice?.primary}
       actions={invoice && <Button size="sm" iconStart="download">Download</Button>}
       list={nested ? (
         // Accounts first; a click steps into that account's invoices, and a click on an invoice opens it beside the list.
         <ListView
           label="Accounts" selection="single" interaction="drill"
-          selected={openId ? [openId] : []} onOpen={(id) => setOpenId(id)}
+          selected={openId ? [openId] : []} onOpen={openInvoice}
           items={LIST_DETAIL_ACCOUNTS} path={path} onPathChange={setPath}
+          nesting={variant === "tree" ? "expand" : "step"} expanded={expanded} onExpandedChange={setExpanded}
         />
       ) : (
         <ListView
           label="Invoices" selection="single" interaction="drill"
-          selected={openId ? [openId] : []} onOpen={(id) => setOpenId(id)}
-          items={LIST_DETAIL_INVOICES}
+          selected={openId ? [openId] : []} onOpen={openInvoice}
+          items={
+            variant === "groups" ? LIST_DETAIL_GROUPED
+              : variant === "template" ? LIST_DETAIL_TEMPLATE
+              : variant === "actions" ? LIST_DETAIL_WITH_MENU
+              : LIST_DETAIL_INVOICES
+          }
+          groups={variant === "groups" ? LIST_DETAIL_GROUPS : undefined}
+          collapsible={variant === "groups"} stickyGroups={variant === "groups"}
+          // View invoice in the More menu opens it beside the list, like a click on the row.
+          onAction={(id, action) => { if (action === "view") setOpenId(id); }}
         />
       )}
       empty={<Empty icon="receipt_long" title="Pick an invoice" description="Its details show here." />}
