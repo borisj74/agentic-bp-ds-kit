@@ -58,6 +58,19 @@ describe("DataGrid", () => {
     expect(screen.queryByText("Bands for Gold plan")).not.toBeInTheDocument();
   });
 
+  it("adds an empty row under a row from its + button", async () => {
+    const user = userEvent.setup();
+    const onRowsChange = vi.fn();
+    render(<DataGrid label="Items" columns={COLUMNS} defaultRows={ROWS} onRowsChange={onRowsChange} canInsertRows canRemoveRows />);
+    await user.click(screen.getByRole("button", { name: "Add row below row 1" }));
+    const next = onRowsChange.mock.lastCall?.[0];
+    expect(next).toHaveLength(3);
+    expect(next[0].id).toBe("r1");
+    expect(next[1]).toMatchObject({ product: "", qty: "" });
+    expect(next[2].id).toBe("r2");
+    expect(screen.getByRole("button", { name: "Remove row 1" })).toBeInTheDocument();
+  });
+
   it("shows date cells as a date picker with the formatted value", () => {
     render(
       <DataGrid

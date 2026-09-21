@@ -40,6 +40,7 @@ export interface DataGridProps {
   rowNumbers?: boolean;
   canAddRows?: boolean;
   canRemoveRows?: boolean;
+  canInsertRows?: boolean;
   emptyLabel?: string;
   label?: string;
   stickyFirstColumn?: boolean;
@@ -56,7 +57,7 @@ const spotSelector = (s: Spot) => `[data-cell="${CSS.escape(`${s.row}:${s.key}`)
 // Text and number save on Enter or when focus leaves; formula cells stay open until Done or Escape.
 export function DataGrid({
   columns, rows: rowsProp, defaultRows = [], onRowsChange, size: ownSize, line = "medium", rowNumbers = true,
-  canAddRows = false, canRemoveRows = false, emptyLabel = "No rows yet.", label = "Data grid", stickyFirstColumn = true,
+  canAddRows = false, canRemoveRows = false, canInsertRows = false, emptyLabel = "No rows yet.", label = "Data grid", stickyFirstColumn = true,
   detail, expanded: expandedProp, defaultExpanded = [], onExpandedChange,
 }: DataGridProps) {
   const density = useDensity();
@@ -81,23 +82,27 @@ export function DataGrid({
   // Pinned columns sit one after another: the expand toggle, then #, then the first column, so each needs the
   // widths before it as its offset. An open detail is as wide as the visible grid, so it stays in view too.
   const wrapRef = useRef<HTMLDivElement>(null);
+  const insertRef = useRef<HTMLTableCellElement>(null);
   const toggleRef = useRef<HTMLTableCellElement>(null);
   const indexRef = useRef<HTMLTableCellElement>(null);
-  const [offsets, setOffsets] = useState({ index: 0, first: 0, view: 0 });
+  const [offsets, setOffsets] = useState({ toggle: 0, index: 0, first: 0, view: 0 });
   useLayoutEffect(() => {
     const wrap = wrapRef.current;
     const measure = () => {
+      // Pinned columns sit side by side: +, then the detail toggle, then #, then the first column.
+      const insert = insertRef.current?.getBoundingClientRect().width ?? 0;
       const toggle = toggleRef.current?.getBoundingClientRect().width ?? 0;
       const index = indexRef.current?.getBoundingClientRect().width ?? 0;
       const view = wrap?.clientWidth ?? 0;
-      setOffsets((old) => (old.index === toggle && old.first === toggle + index && old.view === view ? old : { index: toggle, first: toggle + index, view }));
+      const next = { toggle: insert, index: insert + toggle, first: insert + toggle + index, view };
+      setOffsets((old) => (old.toggle === next.toggle && old.index === next.index && old.first === next.first && old.view === next.view ? old : next));
     };
     measure();
     if (typeof ResizeObserver === "undefined") return;
     const observer = new ResizeObserver(measure);
-    [wrap, toggleRef.current, indexRef.current].forEach((el) => el && observer.observe(el));
+    [wrap, insertRef.current, toggleRef.current, indexRef.current].forEach((el) => el && observer.observe(el));
     return () => observer.disconnect();
-  }, [stickyFirstColumn, rowNumbers, detail]);
+  }, [stickyFirstColumn, rowNumbers, detail, canInsertRows]);
   const pin = stickyFirstColumn ? styles.sticky : "";
 
   const commit = (next: DataGridRow[]) => {
@@ -140,10 +145,11 @@ export function DataGrid({
     setEditing(null);
   };
 
-  const addRow = () => {
+  // A new row goes at the end (Add row) or just under a row (its + button).
+  const addRow = (after?: number) => {
     added.current += 1;
     const row = { id: `${uid}-new-${added.current}`, ...Object.fromEntries(columns.map((c) => [c.key, ""])) } as DataGridRow;
-    commit([...rows, row]);
+    commit(after === undefined ? [...rows, row] : [...rows.slice(0, after + 1), row, ...rows.slice(after + 1)]);
     // The first cell that edits in place opens, so typing can start at once.
     const first = columns.find((c) => !c.readOnly && c.type !== "select" && c.type !== "date");
     if (first) { setDraft(""); setEditing({ row: row.id, key: first.key }); }
@@ -165,7 +171,7 @@ export function DataGrid({
     close(true, false);
   };
 
-  const span = columns.length + (detail ? 1 : 0) + (rowNumbers ? 1 : 0) + (canRemoveRows ? 1 : 0);
+  const span = columns.length + (canInsertRows ? 1 : 0) + (detail ? 1 : 0) + (rowNumbers ? 1 : 0) + (canRemoveRows ? 1 : 0);
   const firstKey = columns[0]?.key;
 
   // Set for all: row 1's value goes to every row, or the column is cleared.
@@ -256,10 +262,11 @@ export function DataGrid({
       <div ref={wrapRef} className={styles.wrap}>
         <table
           ref={tableRef} className={[styles.table, styles[size]].join(" ")} aria-label={label}
-          style={{ "--data-grid-index-offset": `${offsets.index}px`, "--data-grid-sticky-offset": `${offsets.first}px`, "--data-grid-view-width": `${offsets.view}px` } as CSSProperties}
+          style={{ "--data-grid-toggle-offset": `${offsets.toggle}px`, "--data-grid-index-offset": `${offsets.index}px`, "--data-grid-sticky-offset": `${offsets.first}px`, "--data-grid-view-width": `${offsets.view}px` } as CSSProperties}
         >
           <thead>
             <tr>
+              {canInsertRows && <th ref={insertRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyInsert : ""].join(" ")}>{head(<HeaderCell size={size} line={line} />)}<span className={styles.srOnly}>Add row</span></th>}
               {detail && <th ref={toggleRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyToggle : ""].join(" ")}>{head(<HeaderCell size={size} line={line} />)}<span className={styles.srOnly}>Details</span></th>}
               {rowNumbers && <th ref={indexRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyIndex : ""].join(" ")}>{head(<HeaderCell size={size} line={line} align="center" label="#" />)}</th>}
               {columns.map((c) => (
@@ -291,6 +298,13 @@ export function DataGrid({
               return (
               <Fragment key={row.id}>
               <tr>
+                {canInsertRows && (
+                  <td className={[styles.insert, stickyFirstColumn ? styles.stickyInsert : ""].join(" ")}>
+                    <Tooltip content={`Add row below row ${i + 1}`} placement="right">
+                      <Button variant="tertiary" size="sm" iconOnly iconStart="add" onClick={() => addRow(i)}>{`Add row below row ${i + 1}`}</Button>
+                    </Tooltip>
+                  </td>
+                )}
                 {detail && (
                   <td className={[styles.toggle, stickyFirstColumn ? styles.stickyToggle : ""].join(" ")}>
                     <Button
@@ -326,7 +340,7 @@ export function DataGrid({
       </div>
       {canAddRows && (
         <div className={styles.add}>
-          <Button variant="tertiary" size="sm" iconStart="add" onClick={addRow}>Add row</Button>
+          <Button variant="tertiary" size="sm" iconStart="add" onClick={() => addRow()}>Add row</Button>
         </div>
       )}
     </div>

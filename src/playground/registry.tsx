@@ -1175,7 +1175,7 @@ export const registry: Record<string, Entry> = {
     hint: "Click a cell to edit it: Field opens the formula editor, Condition is a select, Value is text. Enter saves, Escape cancels. Add and remove rows.",
     block: true,
     wide: true,
-    card: <div style={{ width: 400 }}><DataGrid label="Conditions" columns={CONDITION_COLUMNS} defaultRows={CONDITIONS.slice(0, 2)} canRemoveRows /></div>,
+    card: <div style={{ width: 400 }}><DataGrid label="Conditions" columns={CONDITION_COLUMNS} defaultRows={CONDITIONS.slice(0, 2)} canInsertRows canRemoveRows /></div>,
   },
   DatePicker: {
     // Keyed so a changed default value applies again. The wrapper gives the full-width field a form-like width.

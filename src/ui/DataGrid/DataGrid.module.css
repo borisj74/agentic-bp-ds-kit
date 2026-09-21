@@ -34,6 +34,8 @@
 /* td.x so these win over the base ".table td" rule (no padding, text at the start). */
 .table td.index { width: 1%; padding: 0 var(--space-small); text-align: center; color: var(--text-neutral); font-variant-numeric: tabular-nums; }
 .table td.remove { width: 1%; padding: 0 var(--space-xxsmall); text-align: center; }
+/* Figma data grid: add sits at the start of the row, remove at the end. */
+.table td.insert { width: 1%; padding: 0 var(--space-xxsmall); text-align: center; }
 
 /* A cell at rest: its value as a button that fills the cell. Hover shows it can be edited. */
 .cellButton {
@@ -63,10 +65,11 @@
 
 /* The first column (and # before it) stays in place while the grid scrolls sideways. Cell fills are opaque,
    so rows scroll under it; its own end border, the same thin line as every cell, marks where scrolling starts. */
-.table .stickyToggle { position: sticky; inset-inline-start: 0; z-index: 1; }
+.table .stickyInsert { position: sticky; inset-inline-start: 0; z-index: 1; }
+.table .stickyToggle { position: sticky; inset-inline-start: var(--data-grid-toggle-offset, 0); z-index: 1; }
 .table .stickyIndex { position: sticky; inset-inline-start: var(--data-grid-index-offset, 0); z-index: 1; }
 .table .sticky { position: sticky; inset-inline-start: var(--data-grid-sticky-offset, 0); z-index: 1; }
-.table th.stickyToggle, .table th.stickyIndex, .table th.sticky { z-index: 2; }
+.table th.stickyInsert, .table th.stickyToggle, .table th.stickyIndex, .table th.sticky { z-index: 2; }
 
 /* Expandable rows: a toggle column at the start, and under an open row one cell across the grid that holds its
    detail. The detail keeps to the visible width of the grid, so it stays in view while the columns scroll. */

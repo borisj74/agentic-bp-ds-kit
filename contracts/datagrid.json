@@ -2,7 +2,7 @@
   "name": "DataGrid",
   "path": "src/ui/DataGrid/DataGrid.tsx",
   "intent": "An editable table: people click a cell to add or change its content, like rule conditions, line items or mappings.",
-  "usage": "Use DataGrid when people enter or change data in rows, not just read it. It is one component: pass columns and rows as data. Each column has a type: text and number cells edit in place with a kit Input, select cells are a kit Select, formula cells open a kit FormulaEditor in the cell, date cells are a kit DatePicker, and readOnly columns only show. Click a cell or press Enter to edit; Enter or leaving the cell saves, Escape cancels, Tab moves to the next cell. rowNumbers adds a # column. canAddRows adds an Add row button under the grid and canRemoveRows a remove button on each row. Columns are at least 160 wide unless they hug. The first column (and #) stays pinned when the grid scrolls sideways. setForAll on a column adds a Set for all menu under its title. detail makes rows expandable, with settings or sub-rows under each row. For read-only lists use Table. See contracts/datagrid.json for the full contract.",
+  "usage": "Use DataGrid when people enter or change data in rows, not just read it. It is one component: pass columns and rows as data. Each column has a type: text and number cells edit in place with a kit Input, select cells are a kit Select, formula cells open a kit FormulaEditor in the cell, date cells are a kit DatePicker, and readOnly columns only show. Click a cell or press Enter to edit; Enter or leaving the cell saves, Escape cancels, Tab moves to the next cell. rowNumbers adds a # column. canAddRows adds an Add row button under the grid, canInsertRows a + at the start of each row that adds a row under it, and canRemoveRows a remove button on each row. Columns are at least 160 wide unless they hug. The first column (and #) stays pinned when the grid scrolls sideways. setForAll on a column adds a Set for all menu under its title. detail makes rows expandable, with settings or sub-rows under each row. For read-only lists use Table. See contracts/datagrid.json for the full contract.",
   "props": {
     "columns": {
       "type": "DataGridColumn[]",
@@ -53,6 +53,11 @@
       "type": "boolean",
       "default": false,
       "note": "A remove button at the end of each row, named by a kit Tooltip."
+    },
+    "canInsertRows": {
+      "type": "boolean",
+      "default": false,
+      "note": "A + button at the start of each row, as in the Figma data grid, that adds an empty row just under it. Named by a kit Tooltip, like Add row below row 2. Pinned with # and the first column. Use it with canRemoveRows, whose button sits at the end of the row."
     },
     "emptyLabel": {
       "type": "string",
@@ -105,7 +110,8 @@
     "Remove row buttons are named Remove row 2 and show that in a Tooltip.",
     "Set for all is a kit DropdownMenu under the column title; the header is still the kit HeaderCell.",
     "With detail, each row starts with a kit Button named Show details, row 2 (Hide when open), with aria-expanded and aria-controls pointing at the open detail, a group named Details, row 2.",
-    "A date cell is a kit DatePicker named by its column and row, like Start date, row 2."
+    "A date cell is a kit DatePicker named by its column and row, like Start date, row 2.",
+    "With canInsertRows, each row's + is a kit Button named Add row below row N; the new row goes right under it."
   ],
   "snippet": "<DataGrid\n  label=\"Conditions\"\n  columns={[\n    { key: \"field\", header: \"Field\", type: \"formula\", fields: accountFields },\n    { key: \"condition\", header: \"Condition\", type: \"select\", options: conditions, width: \"200px\" },\n    { key: \"value\", header: \"Value\" },\n  ]}\n  rows={rules}\n  onRowsChange={setRules}\n  canAddRows\n  canRemoveRows\n/>",
   "examples": [
@@ -151,7 +157,8 @@
             "defaultExpanded": [
               "t1"
             ],
-            "canRemoveRows": true
+            "canRemoveRows": true,
+            "canInsertRows": true
           }
         }
       ]
