@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "tokens": "node scripts/build-tokens.mjs",
+    "audit:tokens": "node --env-file-if-exists=.env.local scripts/audit-tokens.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
