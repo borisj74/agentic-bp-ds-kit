@@ -143,11 +143,11 @@
 .blockShort { flex-direction: row; align-items: center; gap: var(--space-xxsmall); padding-block: 0; }
 .blockShort .blockTitle { order: -1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 
-/* The current time: a line with a dot at its start. */
-.now { position: absolute; inset-inline: 0; z-index: 1; height: 0; border-top: var(--border-width-medium) solid var(--border-danger); pointer-events: none; }
+/* The current time: a line with a dot at its start. Red marks "now", not an error, so it uses the red category, not danger. */
+.now { position: absolute; inset-inline: 0; z-index: 1; height: 0; border-top: var(--border-width-medium) solid var(--border-red); pointer-events: none; }
 .now::before {
   content: ""; position: absolute; inset-inline-start: 0; top: 0; width: var(--space-xsmall); height: var(--space-xsmall);
-  border-radius: 50%; background: var(--border-danger); transform: translate(-50%, calc(-50% - var(--border-width-thin)));
+  border-radius: 50%; background: var(--bg-red); transform: translate(-50%, calc(-50% - var(--border-width-thin)));
 }
 
 /* ---------- List ---------- */

@@ -14,7 +14,7 @@
 .danger { background: var(--bg-danger-strong); color: var(--text-neutral-min); }
 .neutral { background: var(--bg-neutral-strong); color: var(--text-neutral-intense); }
 
-.subtle.info { background: var(--bg-brand-subtle); color: var(--text-brand-strong); }
+.subtle.info { background: var(--bg-info-subtle); color: var(--text-info-strong); }
 /* not in Figma: danger subtle follows the info subtle pattern. */
 .subtle.danger { background: var(--bg-danger-subtle); color: var(--text-danger-strong); }
 .subtle.neutral { background: var(--bg-neutral); color: var(--text-neutral); }
