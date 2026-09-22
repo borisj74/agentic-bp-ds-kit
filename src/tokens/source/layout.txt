@@ -117,6 +117,9 @@ focus/offset-field|{ref/space/50}
 # DatePicker (Figma date-picker day 5631:42778, dropdown 5735:3748): 42px day cells, presets column. Past the ref scale.
 date-picker/day|42px
 date-picker/presets|160px
+# The month and year dropdowns in the panel's head.
+date-picker/month-menu|132px
+date-picker/year-menu|96px
 # Figma dropdown-panel body height: long menus scroll past 280.
 dropdown/list-height|280px
 

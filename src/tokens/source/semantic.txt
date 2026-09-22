@@ -44,7 +44,7 @@ icon/neutral/faint|{ui/neutral/300}|{ui/neutral/400}
 icon/neutral/subtle|{ui/neutral/400}|{ui/neutral/500}
 icon/neutral|{ui/neutral/600}|{ui/neutral/700}
 icon/neutral/strong|{ui/neutral/700}|{ui/neutral/900}
-icon/neutral/intense|{ui/neutral/800}|{ui/neutral/50}
+icon/neutral/intense|{ui/neutral/800}|{ui/neutral/900}
 icon/brand/faint|{ui/brand/300}|{ui/brand/300}
 icon/brand/subtle|{ui/brand/400}|{ui/brand/400}
 icon/brand|{ui/brand/ink}|{ui/brand/ink}
@@ -56,8 +56,8 @@ border/neutral|{ui/neutral/150}|{ui/neutral/500}
 border/neutral/strong|{ui/neutral/200}|{ui/neutral/600}
 border/neutral/intense|{ui/neutral/300}|{ui/neutral/700}
 # Edges of fields people type or pick in: 3:1 against the field and the page (WCAG 1.4.11).
-border/neutral/field|{ui/neutral/400}|{ui/neutral/500}
-border/neutral/field/hover|{ui/neutral/500}|{ui/neutral/600}
+border/neutral/field|{ui/neutral/100}|{ui/neutral/400}
+border/neutral/field/hover|{ui/neutral/400}|{ui/neutral/500}
 border/brand/faint|{ui/brand/100}|{ui/brand/100}
 border/brand/subtle|{ui/brand/300}|{ui/brand/300}
 border/brand|{ui/brand/400}|{ui/brand/400}

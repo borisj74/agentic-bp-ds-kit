@@ -1263,7 +1263,6 @@
   --focus-offset-field: var(--ref-space-50);
   --date-picker-day: 42px;
   --date-picker-presets: 160px;
-  /* The month and year dropdowns in the panel's head. */
   --date-picker-month-menu: 132px;
   --date-picker-year-menu: 96px;
   --dropdown-list-height: 280px;
