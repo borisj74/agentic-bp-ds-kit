@@ -411,6 +411,13 @@ const CHART_SAMPLES: Record<string, unknown> = {
     { name: "Void", values: [0.3 * M, 0.3 * M, 0.3 * M, 0.3 * M, 0.4 * M, 0.4 * M] },
     { name: "Draft", values: [0.1 * M, 0.1 * M, 0.1 * M, 0.1 * M, 0.1 * M, 0.15 * M] },
   ],
+  // A month of daily use split by balance: free credits run out on day 3, the plan on day 18, then the top-up takes over.
+  "{monthDays}": Array.from({ length: 21 }, (_, i) => `Sep ${i + 1}`),
+  "{creditsByBalance}": [
+    { name: "Free credits", values: [62, 58, 30, ...Array(18).fill(0)], tone: "green" },
+    { name: "AI Plan", values: [0, 0, 38, 70, 74, 66, 60, 72, 68, 70, 75, 68, 62, 70, 66, 64, 72, 5, 0, 0, 0], tone: "cyan" },
+    { name: "Top-up", values: [...Array(17).fill(0), 55, 38, 41, 42], tone: "orange" },
+  ],
   "{weeks}": ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6", "Week 7"],
   "{statuses}": [
     { name: "Current", values: [600000, 550000, 240000, 230000, 60000, 20000, 20000], tone: "pink" },
