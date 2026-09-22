@@ -33,6 +33,8 @@ export interface ChartMarker {
 
 export type ChartOrientation = "vertical" | "horizontal";
 export type ChartLegendPlace = "top" | "bottom" | "end";
+// BarChart only: wide bars fill most of their band; thin bars are a fixed 8px with rounded ends.
+export type ChartBarWidth = "wide" | "thin";
 
 export interface XYChartProps {
   kind: "bar" | "line";
@@ -46,6 +48,7 @@ export interface XYChartProps {
   highlight?: number | number[];
   highlightTone?: ChartTone;
   stacked?: boolean;
+  barWidth?: ChartBarWidth;
   area?: boolean;
   showPoints?: boolean;
   showValues?: boolean;
@@ -72,12 +75,15 @@ const LINE = 16;
 const ROW = 36;
 // Dashes for projections and reference lines: 6 on, 4 off.
 const DASH = "6 4";
+// Thin bars: as thick as a medium Progress bar (--progress-bar-md), with its corners (--radius-small).
+const THIN = 8;
+const ROUND = 2;
 // The room a label or a point takes, for keeping guide labels clear of each other.
 type Box = { l: number; r: number; t: number; b: number };
 
 export function XYChart({
   kind, label, title, subtitle, showTitle = true, categories, series, orientation = "vertical", highlight, highlightTone = "orange",
-  stacked = false, area = false, showPoints = false, showValues = false,
+  stacked = false, barWidth = "wide", area = false, showPoints = false, showValues = false,
   showGrid = true, showLegend = true, legend = "bottom", animate = true, format = "number", currency = "USD", height, emptyLabel = "No data for this range.",
   referenceLines = [], marker,
 }: XYChartProps) {
@@ -145,11 +151,29 @@ export function XYChart({
     setActive((a) => (a === null ? 0 : Math.min(Math.max(a + keys[e.key], 0), n - 1)));
   };
 
-  // Bars share a band per category: one stack, or the series side by side.
-  const band = step * (stacked ? 0.6 : 0.7);
+  // Bars share a band per category: one stack, or the series side by side. Wide bars fill most of the band; thin bars
+  // are 8px each (never wider than a wide one would be), centred in it, so a long run of days reads as a light rhythm.
   const gap = 2;
-  const bw = stacked ? band : (band - gap * (list.length - 1)) / list.length;
+  const wide = step * (stacked ? 0.6 : 0.7);
+  const wideBar = stacked ? wide : (wide - gap * (list.length - 1)) / list.length;
+  const thin = kind === "bar" && barWidth === "thin";
+  const bw = thin ? Math.min(THIN, wideBar) : wideBar;
+  const band = stacked ? bw : bw * list.length + gap * (list.length - 1);
   const mid = (k: number) => (stacked ? 0 : -band / 2 + k * (bw + gap) + bw / 2);
+
+  // Thin bars round their two ends, like a Progress bar. A stack rounds only its outer ends: the first part with a value
+  // at the baseline end and the last at the far end, so the joins between parts stay flat.
+  const hasValue = (k: number, i: number) => list[k].vals[i] > 0;
+  const isFirst = (k: number, i: number) => !stacked || !list.slice(0, k).some((_, j) => hasValue(j, i));
+  const isLast = (k: number, i: number) => !stacked || !list.slice(k + 1).some((_, j) => hasValue(k + 1 + j, i));
+  // A box with its own radius at each corner: top-left, top-right, bottom-right, bottom-left.
+  const roundBox = (x: number, y: number, w: number, hh: number, [tl, tr, br, bl]: number[]) => {
+    const r = (q: number) => Math.min(q, w / 2, hh / 2);
+    const [a, b, cc, d] = [r(tl), r(tr), r(br), r(bl)];
+    const f = (p: number) => p.toFixed(1);
+    return `M${f(x + a)},${f(y)}H${f(x + w - b)}Q${f(x + w)},${f(y)} ${f(x + w)},${f(y + b)}V${f(y + hh - cc)}Q${f(x + w)},${f(y + hh)} ${f(x + w - cc)},${f(y + hh)}`
+      + `H${f(x + d)}Q${f(x)},${f(y + hh)} ${f(x)},${f(y + hh - d)}V${f(y + a)}Q${f(x)},${f(y)} ${f(x + a)},${f(y)}Z`;
+  };
 
   // Picked-out bars: the categories named in highlight take the highlight tone, like the first and last of a ranked chart.
   const picked = new Set(highlight === undefined ? [] : Array.isArray(highlight) ? highlight : [highlight]);
@@ -161,13 +185,19 @@ export function XYChart({
         const len = Math.abs(b - a);
         const side = c(i) + mid(k) - bw / 2;
         const t = Math.max(bw, 1);
-        return len > 0 ? (
-          <rect
-            key={i} className={horizontal ? s.growX : s.grow}
-            style={{ animationDelay: `${i * 30}ms`, fill: picked.has(i) ? toneVar(highlightTone) : undefined }}
-            {...(horizontal ? { x: a, y: side, width: len, height: t } : { x: side, y: b, width: t, height: len })}
-          />
-        ) : null;
+        if (len <= 0) return null;
+        const style = { animationDelay: `${i * 30}ms`, fill: picked.has(i) ? toneVar(highlightTone) : undefined };
+        const className = horizontal ? s.growX : s.grow;
+        if (!thin) {
+          return <rect key={i} className={className} style={style} {...(horizontal ? { x: a, y: side, width: len, height: t } : { x: side, y: b, width: t, height: len })} />;
+        }
+        const start = isFirst(k, i) ? ROUND : 0;
+        const end = isLast(k, i) ? ROUND : 0;
+        // Upright bars grow up: the baseline end is the bottom. Horizontal bars grow right: the baseline end is the start.
+        const d = horizontal
+          ? roundBox(a, side, len, t, [start, end, end, start])
+          : roundBox(side, b, t, len, [end, end, start, start]);
+        return <path key={i} className={className} style={style} d={d} data-bar="thin" />;
       })}
     </g>
   ));
