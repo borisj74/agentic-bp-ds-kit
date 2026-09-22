@@ -488,7 +488,7 @@
   --icon-neutral-subtle: var(--ui-neutral-500);
   --icon-neutral: var(--ui-neutral-700);
   --icon-neutral-strong: var(--ui-neutral-900);
-  --icon-neutral-intense: var(--ui-neutral-50);
+  --icon-neutral-intense: var(--ui-neutral-900);
   --icon-brand-faint: var(--ui-brand-300);
   --icon-brand-subtle: var(--ui-brand-400);
   --icon-brand: var(--ui-brand-ink);
