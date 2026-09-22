@@ -52,9 +52,8 @@
 .tertiary:active:not(:disabled, .loading) { background: var(--bg-neutral-min-press); }
 
 /* Pressed toggle (secondary and tertiary): brand tint and border, like an applied ButtonFilter. */
-.pressed, .pressed:hover:not(:disabled, .loading) { background: var(--bg-brand-faint); border-color: var(--border-brand-subtle); color: var(--text-brand-strong); }
-.pressed:hover:not(:disabled, .loading) { background: var(--bg-brand-subtle); }
-:global([data-theme="dark"]) .pressed { color: var(--text-brand-intense); }
+.pressed, .pressed:hover:not(:disabled, .loading) { background: var(--bg-brand-faint); border-color: var(--border-brand-subtle); color: var(--text-brand-strong-contrast); }
+.pressed:hover:not(:disabled, .loading) { background: var(--bg-brand-subtle); color: var(--text-brand-strong); }
 
 .danger { background: var(--bg-danger); color: var(--text-neutral-min-static); }
 .danger:hover:not(:disabled, .loading) { background: var(--bg-danger-hover); }

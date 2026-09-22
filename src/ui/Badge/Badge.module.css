@@ -20,9 +20,11 @@
 
 /* Emphasis sets the text color; tone sets the fill. */
 .subtle, .faint { color: var(--text-neutral-intense); }
-.strong { color: var(--text-neutral-min-static); }
+/* Strong fills turn light in dark, so strong text turns dark there (text-neutral-min). */
+.strong { color: var(--text-neutral-min); }
 
-.subtle.neutral { background: var(--bg-neutral-strong); }
+/* Neutral subtle is mid-gray in dark, so its text turns dark there too. */
+.subtle.neutral { background: var(--bg-neutral-strong); color: var(--text-neutral-intense-contrast); }
 .strong.neutral { background: var(--bg-neutral-max); }
 .faint.neutral { background: var(--bg-neutral-faint); }
 
@@ -49,10 +51,6 @@
 
 /* Figma: icon-only strong and faint badges carry a 1px inverse border. */
 .iconOnly.strong:not(.hollow), .iconOnly.faint:not(.hollow) { border-color: var(--icon-neutral-min-static); }
-
-/* Dark theme: subtle, faint and hollow keep the light intense text. Strong fills turn light in dark, so they take dark
-   text; neutral subtle is mid-gray, so it takes dark text too. */
-:global([data-theme="dark"]) .subtle.neutral, :global([data-theme="dark"]) .strong:not(.hollow) { color: var(--text-neutral-min); }
 
 /* Disabled looks the same in every tone and emphasis. */
 .badge.disabled, :global([data-theme="dark"]) .badge.disabled { background: var(--bg-neutral-subtle); border-color: transparent; color: var(--text-neutral-faint); }

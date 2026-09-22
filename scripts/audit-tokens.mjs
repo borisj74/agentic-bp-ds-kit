@@ -27,6 +27,10 @@ export const FAMILIES = [
 ];
 // Modifier slots, in the order they must appear after the family.
 export const INTENSITIES = ["min", "faint", "subtle", "strong", "intense", "max", "field"];
+// "contrast": same color as the token without it in light; in dark it steps to another value so the text or fill keeps
+// 4.5:1 on what it sits on (text/danger/contrast is text/danger in light, text/danger/strong in dark). Used where a
+// component would otherwise need a [data-theme="dark"] override, so code and Figma both follow one paired token.
+export const CONTRASTS = ["contrast"];
 export const STATICS = ["static"]; // same value in light and dark
 export const SELECTIONS = ["selected"];
 export const INTERACTIONS = ["hover", "press"];
@@ -40,13 +44,13 @@ export function checkName(name) {
     return mods.length ? [`surface tokens take no modifiers`] : [];
   }
   if (!FAMILIES.includes(family)) return [`unknown family "${family}"`];
-  const slots = [INTENSITIES, STATICS, SELECTIONS, INTERACTIONS];
+  const slots = [INTENSITIES, CONTRASTS, STATICS, SELECTIONS, INTERACTIONS];
   const problems = [];
   let slot = 0;
   for (const m of mods) {
     const at = slots.findIndex((s) => s.includes(m));
     if (at === -1) problems.push(`unknown modifier "${m}"`);
-    else if (at < slot) problems.push(`modifier "${m}" is out of order (intensity, static, selected, then hover/press)`);
+    else if (at < slot) problems.push(`modifier "${m}" is out of order (intensity, contrast, static, selected, then hover/press)`);
     else slot = at + 1;
   }
   return problems;

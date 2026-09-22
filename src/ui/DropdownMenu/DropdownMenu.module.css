@@ -38,8 +38,9 @@
 .item[aria-disabled="true"] { color: var(--text-neutral-subtle); cursor: not-allowed; }
 .item[aria-disabled="true"] .tile { opacity: var(--opacity-disabled); }
 
-.selected { background: var(--bg-neutral-min-selected); color: var(--text-brand-strong); }
-.selected:hover:not([aria-disabled="true"]) { background: var(--bg-neutral-min-selected-hover); color: var(--text-brand-strong); }
+/* Contrast tokens: the Figma text roles drop under 4.5:1 on these fills in dark, so they step up there. */
+.selected { background: var(--bg-neutral-min-selected); color: var(--text-brand-strong-contrast); }
+.selected:hover:not([aria-disabled="true"]) { background: var(--bg-neutral-min-selected-hover); color: var(--text-brand-strong-contrast); }
 
 /* Long menus scroll past 280px. The 2px inset keeps item focus rings from being clipped. */
 .list {
@@ -50,15 +51,9 @@
 .search { padding: 0 var(--space-xxsmall) var(--space-xsmall); }
 .empty { padding: var(--space-small) var(--space-xsmall); font-size: var(--font-size-small); color: var(--text-neutral); }
 
-.danger { color: var(--text-danger); }
-.danger:hover:not([aria-disabled="true"]) { background: var(--bg-danger-subtle); color: var(--text-danger-intense); }
+.danger { color: var(--text-danger-contrast); }
+.danger:hover:not([aria-disabled="true"]) { background: var(--bg-danger-subtle-contrast); color: var(--text-danger-intense); }
 .danger:focus-visible { outline-color: var(--outline-danger); }
-
-/* Dark: the Figma text roles drop under 4.5:1 on these fills, so step them up. */
-:global([data-theme="dark"]) .selected,
-:global([data-theme="dark"]) .selected:hover:not([aria-disabled="true"]) { color: var(--text-brand-intense); }
-:global([data-theme="dark"]) .danger { color: var(--text-danger-strong); }
-:global([data-theme="dark"]) .danger:hover:not([aria-disabled="true"]) { background: var(--bg-danger-faint); color: var(--text-danger-intense); }
 
 /* Leading icon sits in a tinted 32px tile, as in Figma. */
 .tile {

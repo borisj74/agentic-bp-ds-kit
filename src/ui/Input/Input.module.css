@@ -93,7 +93,8 @@
 
 .hint, .error { margin: 0; font-size: var(--font-size-xsmall); line-height: 1.4; }
 .hint { color: var(--text-neutral); }
-.error { color: var(--text-danger); }
+/* Contrast token: text-danger drops under 4.5:1 on the surface in dark, so it steps up there. */
+.error { color: var(--text-danger-contrast); }
 
 .invalid .field, .invalid .field:hover { border-color: var(--border-danger-strong); }
 .invalid .field:focus-within { outline-color: var(--outline-danger); }
@@ -103,8 +104,6 @@
 }
 .disabled .native { cursor: not-allowed; }
 
-/* Dark: text-danger drops under 4.5:1 on the surface, so step it up. */
-:global([data-theme="dark"]) .error { color: var(--text-danger-strong); }
 
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 

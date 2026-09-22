@@ -26,10 +26,12 @@
   font: inherit; font-size: var(--font-size-regular); line-height: var(--line-height-tight); text-align: start; text-decoration: none;
   white-space: nowrap; cursor: pointer;
 }
-/* Rest rows keep white text on the brand fill in both themes. Hover, open and current fills turn light in dark,
+/* Rest rows keep white text on the brand fill in both themes. Hover and open fills turn light in dark,
    so their text takes text-neutral-min, which turns dark there. */
 .section:hover, .open { background: var(--bg-brand-hover); color: var(--text-neutral-min); }
-.current, .current:hover { background: var(--bg-brand-press); color: var(--text-neutral-min); }
+/* The current row's fill stays a deep brand blue in dark, where text-neutral-min (dark there) is hard to see.
+   Its icon, label and chevron take the contrast tokens, which turn light brand blue in dark. */
+.current, .current:hover { background: var(--bg-brand-press); color: var(--text-neutral-min-contrast); }
 /* The brand fill hides a brand ring, so rail rings take the row's text color, inset. */
 .section:focus-visible, .cascade:focus-visible {
   outline: var(--border-width-medium) solid currentColor; outline-offset: calc(var(--border-width-medium) * -1);
@@ -45,7 +47,8 @@
   width: var(--space-xlarge); margin: 0; padding: 0; border: 0;
   background: transparent; color: var(--icon-neutral-min-static); cursor: pointer;
 }
-.row:hover .cascade, .row:has(.open, .current) .cascade { color: var(--icon-neutral-min); }
+.row:hover .cascade, .row:has(.open) .cascade { color: var(--icon-neutral-min); }
+.row:has(.current) .cascade { color: var(--icon-neutral-min-contrast); }
 .nav:not(.expanded) .cascade { width: var(--space-medium); opacity: 0; }
 .nav:not(.expanded) .cascade:focus-visible { opacity: 1; }
 
@@ -86,7 +89,7 @@
   font: inherit; font-size: var(--font-size-small); line-height: var(--line-height-tight); text-align: start; text-decoration: none; cursor: pointer;
 }
 .link:hover { background: var(--bg-neutral-min-hover); }
-.link[aria-current="page"] { background: var(--bg-neutral-min-selected); color: var(--text-brand-strong); font-weight: var(--font-weight-medium); }
+.link[aria-current="page"] { background: var(--bg-neutral-min-selected); color: var(--text-brand-strong-contrast); font-weight: var(--font-weight-medium); }
 .link[aria-current="page"]:hover { background: var(--bg-neutral-min-selected-hover); }
 .link:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(var(--border-width-medium) * -1); }
 .linkDivider { height: var(--border-width-thin); background: var(--border-neutral); }
@@ -102,12 +105,6 @@
 .panel[data-up="true"] .up, .panel[data-down="true"] .down { display: flex; }
 .up { border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle); }
 .down { border-top: var(--border-width-thin) solid var(--border-neutral-subtle); }
-
-:global([data-theme="dark"]) .link[aria-current="page"] { color: var(--text-brand-intense); }
-/* Dark: the current row's fill stays a deep brand blue, where text-neutral-min (dark there) is hard to see.
-   Its icon, label and chevron take the light brand blue instead. */
-:global([data-theme="dark"]) .current, :global([data-theme="dark"]) .current:hover { color: var(--text-brand); }
-:global([data-theme="dark"]) .row:has(.current) .cascade { color: var(--icon-brand); }
 
 /* 640px = --grid-breakpoint-sm, the kit's mobile break: CSS vars cannot appear in container queries.
    On a phone there is no room for a rail beside the page, so the nav is either away or a drawer over it: it

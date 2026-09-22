@@ -12,17 +12,13 @@
 
 .info { background: var(--bg-info-intense); color: var(--text-neutral-min); }
 .danger { background: var(--bg-danger-strong); color: var(--text-neutral-min); }
-.neutral { background: var(--bg-neutral-strong); color: var(--text-neutral-intense); }
+.neutral { background: var(--bg-neutral-strong); color: var(--text-neutral-intense-contrast); }
 
-.subtle.info { background: var(--bg-info-subtle); color: var(--text-info-strong); }
+.subtle.info { background: var(--bg-info-subtle); color: var(--text-info-strong-contrast); }
 /* not in Figma: danger subtle follows the info subtle pattern. */
-.subtle.danger { background: var(--bg-danger-subtle); color: var(--text-danger-strong); }
-.subtle.neutral { background: var(--bg-neutral); color: var(--text-neutral); }
-
-/* Dark theme: BP dark fills turn light (strong) or saturated (subtle), so text flips to keep 4.5:1+. */
-:global([data-theme="dark"]) .neutral:not(.subtle) { color: var(--text-neutral-min); }
-:global([data-theme="dark"]) .subtle.info, :global([data-theme="dark"]) .subtle.danger { color: var(--text-neutral-strong); }
-:global([data-theme="dark"]) .subtle.neutral { background: var(--bg-neutral-subtle); color: var(--text-neutral-strong); }
+.subtle.danger { background: var(--bg-danger-subtle); color: var(--text-danger-strong-contrast); }
+.subtle.neutral { background: var(--bg-neutral-contrast); color: var(--text-neutral-contrast); }
+/* The contrast tokens flip in dark: BP dark fills turn light (strong) or saturated (subtle), so text flips to keep 4.5:1+. */
 
 .count.disabled, :global([data-theme="dark"]) .count.disabled { background: var(--bg-neutral-subtle); color: var(--text-neutral-faint); }
 

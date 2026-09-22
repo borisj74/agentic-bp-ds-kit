@@ -439,3 +439,16 @@ border/gray/strong|{ui/category/gray/500}|{ui/category/gray/600}
 border/gray/intense|{ui/category/gray/600}|{ui/category/gray/700}
 border/gray/hover|{ui/category/gray/500}|{ui/category/gray/600}
 border/gray/press|{ui/category/gray/600}|{ui/category/gray/700}
+# contrast: the token without /contrast in light; a stepped value in dark, so the color keeps 4.5:1 on its fill.
+# Replaces the [data-theme="dark"] overrides that used to live in component CSS.
+text/neutral/contrast|{ui/neutral/600}|{ui/neutral/900}
+text/neutral/min/contrast|{ui/neutral/0}|{ui/brand/ink}
+text/neutral/intense/contrast|{ui/neutral/800}|{ui/neutral/0}
+icon/neutral/min/contrast|{ui/neutral/0}|{ui/brand/ink}
+background/neutral/contrast|{ui/neutral/100}|{ui/neutral/300}
+text/brand/strong/contrast|{ui/brand/700}|{ui/brand/800}
+text/info/strong/contrast|{ui/status/info/700}|{ui/neutral/900}
+text/success/contrast|{ui/status/success/600}|{ui/status/success/700}
+text/danger/contrast|{ui/status/danger/600}|{ui/status/danger/700}
+text/danger/strong/contrast|{ui/status/danger/700}|{ui/neutral/900}
+background/danger/subtle/contrast|{ui/status/danger/200}|{ui/status/danger/50}

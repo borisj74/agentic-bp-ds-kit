@@ -441,6 +441,17 @@
   --border-gray-intense: var(--ui-category-gray-600);
   --border-gray-hover: var(--ui-category-gray-500);
   --border-gray-press: var(--ui-category-gray-600);
+  --text-neutral-contrast: var(--ui-neutral-600);
+  --text-neutral-min-contrast: var(--ui-neutral-0);
+  --text-neutral-intense-contrast: var(--ui-neutral-800);
+  --icon-neutral-min-contrast: var(--ui-neutral-0);
+  --bg-neutral-contrast: var(--ui-neutral-100);
+  --text-brand-strong-contrast: var(--ui-brand-700);
+  --text-info-strong-contrast: var(--ui-status-info-700);
+  --text-success-contrast: var(--ui-status-success-600);
+  --text-danger-contrast: var(--ui-status-danger-600);
+  --text-danger-strong-contrast: var(--ui-status-danger-700);
+  --bg-danger-subtle-contrast: var(--ui-status-danger-200);
 }
 [data-theme="dark"] {
   --bg-neutral-min: var(--ui-neutral-0);
@@ -881,4 +892,15 @@
   --border-gray-intense: var(--ui-category-gray-700);
   --border-gray-hover: var(--ui-category-gray-600);
   --border-gray-press: var(--ui-category-gray-700);
+  --text-neutral-contrast: var(--ui-neutral-900);
+  --text-neutral-min-contrast: var(--ui-brand-ink);
+  --text-neutral-intense-contrast: var(--ui-neutral-0);
+  --icon-neutral-min-contrast: var(--ui-brand-ink);
+  --bg-neutral-contrast: var(--ui-neutral-300);
+  --text-brand-strong-contrast: var(--ui-brand-800);
+  --text-info-strong-contrast: var(--ui-neutral-900);
+  --text-success-contrast: var(--ui-status-success-700);
+  --text-danger-contrast: var(--ui-status-danger-700);
+  --text-danger-strong-contrast: var(--ui-neutral-900);
+  --bg-danger-subtle-contrast: var(--ui-status-danger-50);
 }
