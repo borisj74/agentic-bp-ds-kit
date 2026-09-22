@@ -2,7 +2,7 @@
 .root {
   position: relative;
   --wave: calc(var(--motion-loading-duration) * var(--speed, 1));
-  display: inline-block; font-family: var(--font-sans); font-size: var(--font-size-regular); line-height: 1.5; color: var(--text-neutral-strong);
+  display: inline-block; font-family: var(--font-sans); font-size: var(--font-size-regular); line-height: var(--line-height-normal); color: var(--text-neutral-strong);
 }
 .sm { font-size: var(--font-size-small); }
 .lg { font-size: var(--font-size-large); font-weight: var(--font-weight-semibold); }

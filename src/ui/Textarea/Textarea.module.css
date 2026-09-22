@@ -6,7 +6,7 @@
   box-sizing: border-box; display: block; width: 100%; margin: 0; resize: vertical;
   padding: var(--space-small);
   background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-field); border-radius: var(--radius-medium);
-  font-family: var(--font-sans); font-size: var(--font-size-regular); line-height: 1.5; color: var(--text-neutral-intense);
+  font-family: var(--font-sans); font-size: var(--font-size-regular); line-height: var(--line-height-normal); color: var(--text-neutral-intense);
   transition: border-color var(--motion-interaction-duration) var(--motion-interaction-easing);
 }
 .sm { min-height: var(--textarea-height-sm); }

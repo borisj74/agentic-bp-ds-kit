@@ -29,7 +29,7 @@
   width: 100%; min-height: var(--menu-item-height); margin: 0;
   padding: var(--space-xxxsmall) var(--space-xsmall);
   border: 0; border-radius: var(--radius-small); background: var(--surface-flat);
-  font-family: var(--font-sans); font-size: var(--font-size-small); line-height: 1.2; text-align: start;
+  font-family: var(--font-sans); font-size: var(--font-size-small); line-height: var(--line-height-tight); text-align: start;
   color: var(--text-neutral); cursor: pointer;
 }
 /* Same hover as Command rows and tertiary Buttons. */

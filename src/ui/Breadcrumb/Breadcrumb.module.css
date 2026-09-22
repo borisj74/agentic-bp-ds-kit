@@ -1,7 +1,7 @@
 .list {
   display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xxsmall);
   margin: 0; padding: 0; list-style: none;
-  font-family: var(--font-sans); font-size: var(--font-size-small); line-height: 1.5;
+  font-family: var(--font-sans); font-size: var(--font-size-small); line-height: var(--line-height-normal);
 }
 .item { display: flex; align-items: center; min-width: 0; }
 

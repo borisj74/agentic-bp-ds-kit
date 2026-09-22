@@ -6,7 +6,7 @@
 
 .label {
   display: inline-flex; align-items: center; gap: var(--space-xxsmall);
-  font-size: var(--font-size-small); font-weight: var(--font-weight-medium); line-height: 1.2; color: var(--text-neutral-strong);
+  font-size: var(--font-size-small); font-weight: var(--font-weight-medium); line-height: var(--line-height-tight); color: var(--text-neutral-strong);
 }
 .required { color: var(--text-danger); }
 

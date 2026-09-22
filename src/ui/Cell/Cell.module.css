@@ -28,7 +28,7 @@
 .linkButton { margin: 0; padding: 0; border: 0; background: none; font: inherit; text-align: start; cursor: pointer; }
 .link:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
 /* Tight line height so name + second line (about 31px) fit beside the 32px avatar and rows stay 48 / 56 px. */
-.copy { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; }
+.copy { display: flex; flex-direction: column; min-width: 0; line-height: var(--line-height-tight); }
 .name { font-weight: var(--font-weight-medium); overflow-wrap: normal; }
 .support { font-size: var(--font-size-xsmall); color: var(--text-neutral); overflow-wrap: normal; }
 

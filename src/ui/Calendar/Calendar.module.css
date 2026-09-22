@@ -134,7 +134,7 @@
   position: absolute; box-sizing: border-box; display: flex; flex-direction: column; gap: var(--space-xxxsmall); overflow: hidden;
   margin-top: var(--border-width-thin); padding: var(--space-xxxsmall) var(--space-xxsmall);
   border: var(--border-width-thin) solid var(--tone-border); border-radius: var(--radius-small); background: var(--tone-bg);
-  box-shadow: 0 0 0 var(--border-width-thin) var(--surface-flat); font-size: var(--font-size-small); line-height: 1.2;
+  box-shadow: 0 0 0 var(--border-width-thin) var(--surface-flat); font-size: var(--font-size-small); line-height: var(--line-height-tight);
 }
 .block:hover { filter: brightness(0.97); z-index: 1; }
 .blockTime { font-size: var(--font-size-xsmall); color: var(--text-neutral); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

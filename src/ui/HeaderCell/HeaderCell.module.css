@@ -4,7 +4,7 @@
   width: 100%; min-width: 0;
   background: var(--surface-flat); border-bottom: var(--border-width-medium) solid var(--border-brand-faint);
   font-family: var(--font-sans); font-size: var(--font-size-xsmall); font-weight: var(--font-weight-bold);
-  line-height: 1.2; text-transform: uppercase; color: var(--text-neutral);
+  line-height: var(--line-height-tight); text-transform: uppercase; color: var(--text-neutral);
 }
 .thin { border-bottom-width: var(--border-width-thin); }
 .sm { min-height: var(--header-cell-height-sm); padding: var(--space-xsmall) var(--space-small); }
