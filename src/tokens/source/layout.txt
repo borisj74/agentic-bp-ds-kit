@@ -1,5 +1,7 @@
 # grid + layout. name|css value. {name} aliases resolve to var(--name).
 # From Figma: viewport widths 1280 / 1440 / 1920 (Helpers collection). Gutter and margin steps alias BP ref space.
+# Rule (A1d): component sizes (heights, widths, rows, nodes) alias ref/size and gaps/padding alias ref/space, like
+# Foundations controls and icons. Both follow [data-density]; Default values are the same on both ramps.
 # not in Figma: 12 columns, 640 / 1024 widths, and the layout roles.
 grid/columns|12
 grid/gutter/sm|{ref/space/400}
@@ -45,50 +47,51 @@ z/overlay|1000
 z/toast|1100
 
 # not in Figma: the smallest click or tap target (WCAG 2.5.8, 24 by 24). Small controls grow an invisible hit area to it.
-target/min|{ref/space/700}
+# Fixed 24 in every density, so Compact never goes under the WCAG minimum.
+target/min|24px
 
-# not in Figma: avatar sizes. Alias BP ref space (32 / 40 / 48).
-avatar/size/sm|{ref/space/900}
-avatar/size/md|{ref/space/1100}
-avatar/size/lg|{ref/space/1300}
+# not in Figma: avatar sizes. Alias BP ref size (32 / 40 / 48).
+avatar/size/sm|{ref/size/900}
+avatar/size/md|{ref/size/1100}
+avatar/size/lg|{ref/size/1300}
 
-# Badge heights. sm = Figma badge (ref/size/600 = 20px). md 24 and lg 28 are kit-defined, aliasing BP ref space.
-badge/height/sm|{ref/space/600}
-badge/height/md|{ref/space/700}
-badge/height/lg|{ref/space/800}
+# Badge heights. sm = Figma badge (ref/size/600 = 20px). md 24 and lg 28 are kit-defined, aliasing BP ref size.
+badge/height/sm|{ref/size/600}
+badge/height/md|{ref/size/700}
+badge/height/lg|{ref/size/800}
 
 # Count (Figma count 2004:19219): sm 16 / md 20 with 4 / 6 px side padding. md padding is Figma's border-r/6 (6px), no space step.
 # not in Figma: lg 24, same 6px padding so one digit stays square.
-count/height/sm|{ref/space/500}
-count/height/md|{ref/space/600}
-count/height/lg|{ref/space/700}
+count/height/sm|{ref/size/500}
+count/height/md|{ref/size/600}
+count/height/lg|{ref/size/700}
 count/padding/sm|{ref/space/200}
 count/padding/md|6px
 count/padding/lg|6px
 
-# not in Figma: checkbox box sizes 16 / 20 / 24, aliasing BP ref space.
-checkbox/size/sm|{ref/space/500}
-checkbox/size/md|{ref/space/600}
-checkbox/size/lg|{ref/space/700}
+# not in Figma: checkbox box sizes 16 / 20 / 24, aliasing BP ref size.
+checkbox/size/sm|{ref/size/500}
+checkbox/size/md|{ref/size/600}
+checkbox/size/lg|{ref/size/700}
 
-# not in Figma: radio circle sizes 16 / 20 / 24, aliasing BP ref space (same steps as checkbox).
-radio/size/sm|{ref/space/500}
-radio/size/md|{ref/space/600}
-radio/size/lg|{ref/space/700}
+# not in Figma: radio circle sizes 16 / 20 / 24, aliasing BP ref size (same steps as checkbox).
+radio/size/sm|{ref/size/500}
+radio/size/md|{ref/size/600}
+radio/size/lg|{ref/size/700}
 
-# not in Figma: table cell row heights. sm 48 aliases BP ref space; md 56 aliases ref/size/1500 so rows follow density.
-cell/height/sm|{ref/space/1300}
+# not in Figma: table cell row heights. sm 48 and md 56 alias BP ref size (1300 / 1500).
+cell/height/sm|{ref/size/1300}
 cell/height/md|{ref/size/1500}
 
-# Header cell (Figma .table / th 3559:106607): sm 40 is the Figma th height. md 48 matches the sm body row. Both alias BP ref space.
-header-cell/height/sm|{ref/space/1100}
-header-cell/height/md|{ref/space/1300}
+# Header cell (Figma .table / th 3559:106607): sm 40 is the Figma th height. md 48 matches the sm body row. Both alias BP ref size.
+header-cell/height/sm|{ref/size/1100}
+header-cell/height/md|{ref/size/1300}
 
 # Dropdown menu (Figma menu 2016:280599, menu-item 1270:25599, dropdown-panel 3736:12109).
-# Figma: menu width 200, item min height 28, icon tile 32. The top line is 1px (kit change from Figma 4px). Tile and height alias BP ref space; 200 is past the scale.
+# Figma: menu width 200, item min height 28, icon tile 32. The top line is 1px (kit change from Figma 4px). Tile and height alias BP ref size; 200 is past the scale.
 dropdown/min-width|200px
-menu-item/height|{ref/space/800}
-menu-item/tile|{ref/space/900}
+menu-item/height|{ref/size/800}
+menu-item/tile|{ref/size/900}
 
 # Input (Figma .form-field / label 3196:28121): start labels sit in a 120px column.
 input/label-width|160px
@@ -103,7 +106,7 @@ textarea/height/lg|260px
 
 # Command (Figma global-search 2316:609207): list body 280 tall (dropdown-panel default), key hints 20 tall.
 command/list-height|280px
-command/key|{ref/space/600}
+command/key|{ref/size/600}
 
 # Modal (Figma modal 1316:35956): widths xs 400 / sm 540 / md 768, here sm / md / lg. Past the ref scale.
 modal/width/sm|400px
@@ -123,13 +126,13 @@ date-picker/year-menu|96px
 # Figma dropdown-panel body height: long menus scroll past 280.
 dropdown/list-height|280px
 
-# not in Figma: Switch track 28x16 / 36x20 / 44x24 (heights match Checkbox), thumb inset 2. All BP ref space.
-switch/width/sm|{ref/space/800}
-switch/width/md|{ref/space/1000}
-switch/width/lg|{ref/space/1200}
-switch/height/sm|{ref/space/500}
-switch/height/md|{ref/space/600}
-switch/height/lg|{ref/space/700}
+# not in Figma: Switch track 28x16 / 36x20 / 44x24 (heights match Checkbox), thumb inset 2. Track sizes alias BP ref size, the inset BP ref space.
+switch/width/sm|{ref/size/800}
+switch/width/md|{ref/size/1000}
+switch/width/lg|{ref/size/1200}
+switch/height/sm|{ref/size/500}
+switch/height/md|{ref/size/600}
+switch/height/lg|{ref/size/700}
 switch/inset|{ref/space/100}
 
 # Reference kit tooltip: 16rem max width; text wraps past it.
@@ -143,7 +146,7 @@ app-header/height|56px
 app-header/search-width|450px
 app-header/company-logo|116px
 app-header/gap|{ref/space/900}
-app-header/search-height|{ref/space/1100}
+app-header/search-height|{ref/size/1100}
 app-header/menu-width|320px
 app-header/search-min|360px
 # Header density: compact 48 / comfortable 64 bars, with 32 / 48 search fields (default stays 56 / 40).
@@ -153,9 +156,9 @@ app-header/search-height-compact|32px
 app-header/search-height-comfortable|48px
 
 # Figma tabs 2302:381996: small tabs are 32px; medium and large follow the kit scale.
-tabs/height/sm|{ref/space/900}
-tabs/height/md|{ref/space/1100}
-tabs/height/lg|{ref/space/1300}
+tabs/height/sm|{ref/size/900}
+tabs/height/md|{ref/size/1100}
+tabs/height/lg|{ref/size/1300}
 
 # Figma page-header: 40px between the title and the page actions.
 page-header/gap|{ref/space/1100}
@@ -166,8 +169,8 @@ page-header/height-sticky|52px
 # 56 and 170 are past the ref scale. The panel fits its links between 160 and 280 wide.
 side-nav/rail|56px
 side-nav/rail-open|170px
-side-nav/row|{ref/space/1300}
-side-nav/panel-row|{ref/space/1100}
+side-nav/row|{ref/size/1300}
+side-nav/panel-row|{ref/size/1100}
 side-nav/panel-min|160px
 side-nav/panel-max|280px
 
@@ -198,12 +201,12 @@ guided-process/number-narrow|36px
 guided-process/step-title|32px
 
 # ProgressLegacy (Figma progress-bar 3013:5958): the bar is 20 tall.
-progress-legacy/height|{ref/space/600}
+progress-legacy/height|{ref/size/600}
 
 # Progress (Figma Meter Bar - Horizontal 6578:325, Meter - Circle 6605:193): bar track 4 / 8 / 12 tall; rings 56 / 96 / 196 wide.
-progress/bar-sm|{ref/space/200}
-progress/bar-md|{ref/space/300}
-progress/bar-lg|{ref/space/400}
+progress/bar-sm|{ref/size/200}
+progress/bar-md|{ref/size/300}
+progress/bar-lg|{ref/size/400}
 progress/circle-sm|56px
 progress/circle-md|96px
 progress/circle-lg|196px
@@ -221,15 +224,15 @@ drawer/wide|590px
 drawer/extended|1100px
 
 # Empty (reference kit empty): a 48 round icon well; text stays under 384 wide.
-empty/media|{ref/space/1300}
+empty/media|{ref/size/1300}
 empty/copy-max|384px
 
 # Toast: 400 wide, a 4px countdown bar on top.
 toast/width|400px
-toast/bar|{ref/space/200}
+toast/bar|{ref/size/200}
 
 # Pagination (Figma table footer 3187:39779): 40 tall.
-pagination/height|{ref/space/1100}
+pagination/height|{ref/size/1100}
 
 # Charts (Figma Persona Homepages charts): 10 square legend swatches; pies 160 / 200 / 240 wide (reference kit pie is 240).
 chart/swatch|10px
@@ -239,26 +242,26 @@ chart/pie-lg|240px
 
 # Calendar (Figma RDS calendar 29101:500): an hour is 40 tall (two 20 half-hour rows); events and all-day pills are 20 rows;
 # month rows 112 tall; the time grid scrolls in 480; the hour gutter is 56; calendar swatches 40 square. 56, 112 and 480 are past the ref scale.
-calendar/hour|{ref/space/1100}
-calendar/row|{ref/space/600}
+calendar/hour|{ref/size/1100}
+calendar/row|{ref/size/600}
 # not in Figma: Month events, +N more and day numbers are 24 tall, the smallest target (WCAG 2.5.8); three still fit a 112 row.
 calendar/event|{target/min}
 calendar/gutter|56px
 calendar/month-row|112px
 calendar/grid-height|480px
-calendar/swatch|{ref/space/1100}
+calendar/swatch|{ref/size/1100}
 
 # TreeView (Dunav DS tree 1448:76955): each level steps in 32, the width of the chevron cell; rows sm 28 / md 32 / lg 40.
-tree/indent|{ref/space/900}
-tree/row-sm|{ref/space/800}
-tree/row-md|{ref/space/900}
-tree/row-lg|{ref/space/1100}
+tree/indent|{ref/size/900}
+tree/row-sm|{ref/size/800}
+tree/row-md|{ref/size/900}
+tree/row-lg|{ref/size/1100}
 
 # Cascader (Figma BP cascader 3737:20806): 28 rows; columns start at 240 and grow with their content up to 400
 # (Figma's field picker uses 333 wide columns); the dropdown lists scroll in 320, the inline panel in 436 (Figma).
 # 240, 320, 400 and 436 are past the ref scale.
-cascader/row|{ref/space/800}
-cascader/end|{ref/space/1100}
+cascader/row|{ref/size/800}
+cascader/end|{ref/size/1100}
 cascader/column-min|240px
 cascader/column-max|400px
 cascader/height|320px
@@ -269,32 +272,32 @@ lookup/search|320px
 
 # Skeleton: a block placeholder is 96 tall by default; circles follow the avatar sizes (sm 32 / md 40 / lg 48).
 skeleton/block|96px
-skeleton/circle-sm|{ref/space/900}
-skeleton/circle-md|{ref/space/1100}
-skeleton/circle-lg|{ref/space/1300}
+skeleton/circle-sm|{ref/size/900}
+skeleton/circle-md|{ref/size/1100}
+skeleton/circle-lg|{ref/size/1300}
 
 # Stepper (Figma steps 2133:58431): each step is 100 wide; the circle is 32 (md) or 24 (sm).
 stepper/step|100px
-stepper/node-sm|{ref/space/700}
-stepper/node-md|{ref/space/900}
+stepper/node-sm|{ref/size/700}
+stepper/node-md|{ref/size/900}
 
 # Timeline (Figma activity list 21290:7737): the icon circle is 44 (md) or 32 (sm); the line runs down its middle.
-timeline/node-md|{ref/space/1200}
-timeline/node-sm|{ref/space/900}
+timeline/node-md|{ref/size/1200}
+timeline/node-sm|{ref/size/900}
 
 # Chat (Figma BP AI messages 487:9226): the avatar is 32; a person's bubble stops at about two thirds of the panel.
-chat/avatar|{ref/space/900}
+chat/avatar|{ref/size/900}
 chat/bubble-max|280px
 # The icon tile on a saved chat or playbook row.
-chat/tile|{ref/space/700}
+chat/tile|{ref/size/700}
 # The docked assistant column (Figma BP AI side panel 492:12892).
 chat/panel|395px
 
 # Illustration (Figma BP AI get started 476:7822): the drawn art comes at three sizes.
-illustration/sm|{ref/space/1300}
+illustration/sm|{ref/size/1300}
 illustration/md|120px
 illustration/lg|160px
 
 # ListPage (kit pattern): the bulk bar matches a toolbar row; the stand-in block keeps the list's height.
-list/bar|{ref/space/1100}
+list/bar|{ref/size/1100}
 list/blank-min|240px
