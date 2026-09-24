@@ -5,7 +5,7 @@
    set once here, so the rules under them are written once. */
 .panel {
   --pad: calc(var(--space-xlarge) * 2); --gap: calc(var(--space-large) * 2);
-  --num: var(--guided-process-number); --name: var(--text-heading-lg-size);
+  --num: var(--guided-process-number); --name: var(--text-title-lg-size);
   --name-min: 3lh; --head-space: auto;
   --pad-top: var(--pad); --pad-end: calc(var(--pad) + var(--gap));
   box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--gap);
@@ -18,7 +18,7 @@
 /* Band: 24 inset, a smaller number and title, 80 under the process name, and 48 over a step with no name. */
 .band, .band:not(:has(.actions)) {
   --pad: var(--space-xlarge); --gap: var(--space-xlarge);
-  --num: var(--guided-process-number-narrow); --name: var(--font-size-regular);
+  --num: var(--guided-process-number-narrow); --name: var(--text-title-sm-size);
   --name-min: 0; --head-space: calc(var(--space-large) * 4 - var(--gap)); --pad-end: var(--pad);
 }
 .band:not(:has(.head)) { --pad-top: calc(var(--pad) * 2); }
@@ -26,7 +26,7 @@
 @container (max-width: 1023px) {
   .auto, .auto:not(:has(.actions)) {
     --pad: var(--space-xlarge); --gap: var(--space-xlarge);
-    --num: var(--guided-process-number-narrow); --name: var(--font-size-regular);
+    --num: var(--guided-process-number-narrow); --name: var(--text-title-sm-size);
     --name-min: 0; --head-space: calc(var(--space-large) * 4 - var(--gap)); --pad-end: var(--pad);
   }
   .auto:not(:has(.head)) { --pad-top: calc(var(--pad) * 2); }
@@ -46,7 +46,7 @@
 .current { display: flex; flex-direction: column; gap: var(--space-xsmall); }
 .number { margin: 0; font-size: var(--num); font-weight: var(--font-weight-regular); line-height: var(--line-height-tight); color: var(--text-neutral); font-variant-numeric: tabular-nums; }
 /* Three lines tall in a column, so a short title keeps its status on the same line as its neighbours'. */
-.name { margin: 0; min-block-size: var(--name-min); font-size: var(--name); font-weight: var(--font-weight-bold); line-height: var(--line-height-snug); }
+.name { margin: 0; min-block-size: var(--name-min); font-size: var(--name); font-weight: var(--text-title-lg-weight); line-height: var(--text-title-lg-lh); }
 .status {
   display: flex; align-items: center; gap: var(--space-xxsmall); margin: var(--space-xxsmall) 0 0;
   font-size: var(--text-caption-size); line-height: var(--line-height-tight);
@@ -75,7 +75,7 @@
 .steps { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
 .step { position: relative; margin-inline: var(--pad); padding-block: var(--space-medium); border-block-end: var(--border-width-thin) solid var(--border-neutral-faint); }
 .row { display: flex; align-items: flex-start; gap: var(--space-medium); }
-.stepTitle { flex: 1; min-width: 0; font-size: var(--text-heading-lg-size); font-weight: var(--font-weight-bold); line-height: var(--line-height-snug); }
+.stepTitle { flex: 1; min-width: 0; font-size: var(--text-title-lg-size); font-weight: var(--text-title-lg-weight); line-height: var(--text-title-lg-lh); }
 /* The notch: a 12 by 40 wedge of the page cut into the panel's edge, level with the current step's top. */
 .on::before {
   content: ""; position: absolute; inset-block-start: 0; inset-inline-start: calc(-1 * var(--pad));

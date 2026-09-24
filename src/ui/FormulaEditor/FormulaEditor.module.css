@@ -35,7 +35,7 @@
 .disabled, .disabled:hover { background: var(--bg-neutral-subtle); border-color: var(--border-neutral-subtle); }
 .disabled .area { resize: none; cursor: not-allowed; color: var(--text-neutral-subtle); }
 
-.success { margin: 0; font-size: var(--font-size-xsmall); line-height: 1.4; color: var(--text-success-contrast); }
+.success { margin: 0; font-size: var(--font-size-xsmall); line-height: var(--line-height-snug); color: var(--text-success-contrast); }
 
 @media (prefers-reduced-motion: reduce) {
   .editor { transition: none; }

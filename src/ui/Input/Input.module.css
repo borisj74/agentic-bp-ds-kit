@@ -91,7 +91,7 @@
 .icon { color: var(--icon-neutral); }
 .count { flex: none; font-size: var(--font-size-xsmall); color: var(--text-neutral); }
 
-.hint, .error { margin: 0; font-size: var(--font-size-xsmall); line-height: 1.4; }
+.hint, .error { margin: 0; font-size: var(--font-size-xsmall); line-height: var(--line-height-snug); }
 .hint { color: var(--text-neutral); }
 /* Contrast token: text-danger drops under 4.5:1 on the surface in dark, so it steps up there. */
 .error { color: var(--text-danger-contrast); }

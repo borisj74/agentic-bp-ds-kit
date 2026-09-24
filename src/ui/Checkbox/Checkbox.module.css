@@ -32,7 +32,7 @@
 
 .disabled { cursor: not-allowed; opacity: var(--opacity-disabled); }
 
-.text { line-height: 1.4; }
+.text { line-height: var(--line-height-snug); }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 @media (prefers-reduced-motion: reduce) {

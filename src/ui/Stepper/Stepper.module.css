@@ -4,8 +4,8 @@
   display: flex; justify-content: center; gap: var(--gap); margin: 0; padding: 0; list-style: none;
   font-family: var(--font-sans);
 }
-.sm { --node: var(--stepper-node-sm); --num: var(--font-size-xsmall); --fs: var(--font-size-xsmall); }
-.md { --node: var(--stepper-node-md); --num: var(--font-size-regular); --fs: var(--font-size-small); }
+.sm { --node: var(--stepper-node-sm); --num: var(--text-title-xxs-size); --fs: var(--font-size-xsmall); }
+.md { --node: var(--stepper-node-md); --num: var(--text-title-sm-size); --fs: var(--font-size-small); }
 
 /* Fill: steps share the full width, so the lines grow. */
 .fill .step { flex: 1 1 0; }
@@ -33,7 +33,7 @@
 .node {
   display: grid; place-items: center; width: var(--node); height: var(--node); border-radius: var(--radius-full);
   background: var(--tone); color: var(--text-neutral-min-static);
-  font-size: var(--num); font-weight: var(--font-weight-bold); line-height: 1;
+  font-size: var(--num); font-weight: var(--text-title-sm-weight); line-height: 1;
 }
 .label { font-size: var(--fs); font-weight: var(--font-weight-medium); line-height: var(--line-height-snug); color: var(--ink); overflow-wrap: anywhere; }
 

@@ -8,7 +8,7 @@
 
 .header { display: flex; flex-direction: column; gap: var(--space-medium); }
 .titleRow { display: flex; align-items: center; gap: var(--space-xxsmall); }
-.title { margin: 0; font-size: var(--font-size-large); font-weight: var(--font-weight-bold); line-height: var(--line-height-tight); color: var(--text-neutral-strong); }
+.title { margin: 0; font-size: var(--text-title-md-size); font-weight: var(--text-title-md-weight); line-height: var(--text-title-md-lh); color: var(--text-neutral-strong); }
 .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-small); }
 .tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xsmall); }
 
@@ -78,7 +78,7 @@
 .dayEvents { display: flex; flex-direction: column; gap: var(--space-xxxsmall); min-width: 0; }
 .more {
   height: var(--calendar-event); padding: 0 var(--space-xxsmall); border-radius: var(--radius-small);
-  font-size: var(--font-size-xsmall); font-weight: var(--font-weight-semibold); color: var(--text-neutral);
+  font-size: var(--text-caption-strong-size); font-weight: var(--text-caption-strong-weight); color: var(--text-neutral);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .more:hover { background: var(--bg-neutral-subtle); color: var(--text-neutral-strong); }

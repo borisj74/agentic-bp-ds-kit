@@ -3,7 +3,7 @@
   box-sizing: border-box; display: flex; align-items: center; gap: var(--space-small);
   width: 100%; min-width: 0;
   background: var(--surface-flat); border-bottom: var(--border-width-thin) solid var(--border-neutral-faint);
-  font-family: var(--font-sans); font-size: var(--font-size-small); line-height: 1.4; color: var(--text-neutral-strong);
+  font-family: var(--font-sans); font-size: var(--font-size-small); line-height: var(--line-height-snug); color: var(--text-neutral-strong);
 }
 /* min-height sets the row; small block padding keeps 32px content plus the 1px border inside 48 / 56. */
 .sm { --pad-y: var(--space-xxsmall); min-height: var(--cell-height-sm); padding: var(--pad-y) var(--space-small); }

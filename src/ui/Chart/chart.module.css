@@ -24,14 +24,14 @@
 /* Axes: 12px labels, faint horizontal grid lines. */
 .tick { font-size: var(--font-size-xsmall); fill: var(--text-neutral-strong); }
 .grid { stroke: var(--border-neutral-faint); stroke-width: var(--border-width-thin); shape-rendering: crispEdges; }
-.valueLabel { font-size: var(--font-size-xsmall); font-weight: var(--font-weight-semibold); fill: var(--text-neutral-strong); }
+.valueLabel { font-size: var(--text-caption-strong-size); font-weight: var(--text-caption-strong-weight); fill: var(--text-neutral-strong); }
 .hoverBand { fill: var(--bg-neutral-faint); }
 .crosshair { stroke: var(--border-neutral); stroke-width: var(--border-width-thin); }
 /* Reference lines (a limit or a target) are dashed and neutral unless given a tone; the marker (like today) is a thin solid line. */
 .reference { stroke: var(--border-neutral-intense); stroke-width: var(--border-width-medium); }
-.referenceLabel { font-size: var(--font-size-xsmall); font-weight: var(--font-weight-semibold); fill: var(--text-neutral-strong); }
+.referenceLabel { font-size: var(--text-caption-strong-size); font-weight: var(--text-caption-strong-weight); fill: var(--text-neutral-strong); }
 .marker { stroke: var(--border-neutral-intense); stroke-width: var(--border-width-thin); }
-.markerLabel { font-size: var(--font-size-xsmall); font-weight: var(--font-weight-medium); fill: var(--text-neutral); }
+.markerLabel { font-size: var(--text-label-sm-size); font-weight: var(--text-label-sm-weight); fill: var(--text-neutral); }
 
 .legend {
   display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-xsmall) var(--space-large);
@@ -47,10 +47,10 @@
   border-radius: var(--radius-medium); background: var(--surface-floating); box-shadow: var(--elevation-popover);
   font-size: var(--font-size-xsmall); color: var(--text-neutral-strong);
 }
-.tooltipTitle { margin: 0; font-weight: var(--font-weight-semibold); }
+.tooltipTitle { margin: 0; font-weight: var(--text-caption-strong-weight); }
 .tooltipRow { display: flex; align-items: center; gap: var(--space-xsmall); margin: 0; }
 .tooltipLabel { flex: 1; color: var(--text-neutral); }
-.tooltipValue { font-weight: var(--font-weight-medium); font-variant-numeric: tabular-nums; }
+.tooltipValue { font-weight: var(--text-label-sm-weight); font-variant-numeric: tabular-nums; }
 
 .empty { display: grid; place-items: center; font-size: var(--font-size-small); color: var(--text-neutral); }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

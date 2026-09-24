@@ -11,7 +11,7 @@
 .mark { flex: none; display: grid; place-items: center; width: var(--chat-tile); height: var(--chat-tile); }
 .title {
   flex: 0 1 auto; min-width: 0; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  font-size: var(--font-size-xlarge); font-weight: var(--font-weight-bold); color: var(--text-neutral-intense);
+  font-size: var(--text-title-lg-size); font-weight: var(--text-title-lg-weight); color: var(--text-neutral-intense);
 }
 
 .flag { flex: none; display: flex; }

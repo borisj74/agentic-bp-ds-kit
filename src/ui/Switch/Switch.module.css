@@ -6,8 +6,8 @@
 .lg { --w: var(--switch-width-lg); --h: var(--switch-height-lg); font-size: var(--font-size-regular); }
 
 .copy { display: flex; flex-direction: column; gap: var(--space-xxxsmall); min-width: 0; }
-.label { line-height: 1.4; cursor: pointer; }
-.description { font-size: var(--font-size-xsmall); line-height: 1.4; color: var(--text-neutral); }
+.label { line-height: var(--line-height-snug); cursor: pointer; }
+.description { font-size: var(--font-size-xsmall); line-height: var(--line-height-snug); color: var(--text-neutral); }
 
 /* Off track uses --icon-neutral-subtle so it reaches 3:1 against the page, like Checkbox and Radio. */
 .track {

@@ -44,7 +44,7 @@
 
 .grid { display: flex; flex-direction: column; gap: var(--space-xxsmall); }
 .row { display: grid; grid-template-columns: repeat(7, var(--date-picker-day)); gap: var(--space-xxsmall); }
-.weekday { display: flex; align-items: center; justify-content: center; height: var(--control-small); font-size: var(--font-size-xsmall); font-weight: var(--font-weight-semibold); color: var(--text-neutral); }
+.weekday { display: flex; align-items: center; justify-content: center; height: var(--control-small); font-size: var(--text-caption-strong-size); font-weight: var(--text-caption-strong-weight); color: var(--text-neutral); }
 .cell { display: flex; }
 
 /* Figma day: 42px, 4px corners, 14px medium. */

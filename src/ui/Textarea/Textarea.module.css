@@ -30,7 +30,7 @@
 
 .footer { display: flex; align-items: flex-start; gap: var(--space-small); }
 .footer > p { flex: 1; }
-.count { margin-inline-start: auto; font-size: var(--font-size-xsmall); line-height: 1.4; color: var(--text-neutral); }
+.count { margin-inline-start: auto; font-size: var(--font-size-xsmall); line-height: var(--line-height-snug); color: var(--text-neutral); }
 
 
 @media (prefers-reduced-motion: reduce) {

@@ -30,7 +30,7 @@
 .option[data-checked]:hover:not([data-disabled]) .dot { background: var(--bg-brand-hover); }
 .option:has(.input:focus-visible) .control { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
 
-.label { font-weight: var(--font-weight-medium); line-height: 1.4; color: var(--text-neutral-strong); }
+.label { font-weight: var(--font-weight-medium); line-height: var(--line-height-snug); color: var(--text-neutral-strong); }
 
 .error .control, .error .option:hover:not([data-disabled]) .control { border-color: var(--border-danger); }
 .error .dot, .error .option[data-checked]:hover .dot { background: var(--bg-danger); }
@@ -38,7 +38,7 @@
 
 .option[data-disabled] { cursor: not-allowed; opacity: var(--opacity-disabled); }
 
-.message { clear: both; margin: var(--space-xsmall) 0 0; font-size: var(--font-size-xsmall); line-height: 1.4; color: var(--text-neutral-subtle); }
+.message { clear: both; margin: var(--space-xsmall) 0 0; font-size: var(--font-size-xsmall); line-height: var(--line-height-snug); color: var(--text-neutral-subtle); }
 .messageError { color: var(--text-danger-strong); }
 
 /* Card layout: bordered rows, radio on the right. */
@@ -55,7 +55,7 @@
 .copy { display: grid; gap: var(--space-xxsmall); min-width: 0; flex: 1; }
 .titleRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xsmall); }
 .card .label { font-weight: var(--font-weight-semibold); }
-.description { font-size: var(--font-size-small); line-height: 1.4; color: var(--text-neutral-subtle); }
+.description { font-size: var(--font-size-small); line-height: var(--line-height-snug); color: var(--text-neutral-subtle); }
 
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 

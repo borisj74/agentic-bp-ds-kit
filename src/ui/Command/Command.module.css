@@ -69,7 +69,7 @@
   box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; flex: none;
   min-width: var(--command-key); height: var(--command-key); padding: 0 var(--space-xxsmall);
   border: var(--border-width-thin) solid var(--border-neutral-strong); border-radius: var(--radius-medium); background: var(--surface-flat);
-  font: inherit; font-size: var(--font-size-xsmall); font-weight: var(--font-weight-semibold); line-height: 1; color: var(--text-neutral-intense);
+  font: inherit; font-size: var(--text-caption-strong-size); font-weight: var(--text-caption-strong-weight); line-height: 1; color: var(--text-neutral-intense);
 }
 
 .empty {

@@ -23,7 +23,7 @@
   background: var(--bg-neutral-faint); border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
   border-radius: var(--radius-small) var(--radius-small) 0 0;
 }
-.title { margin: 0; font-size: var(--font-size-regular); font-weight: var(--font-weight-bold); line-height: 1.25; color: var(--text-neutral-max); overflow-wrap: anywhere; }
+.title { margin: 0; font-size: var(--text-title-sm-size); font-weight: var(--text-title-sm-weight); line-height: 1.25; color: var(--text-neutral-max); overflow-wrap: anywhere; }
 
 /* Figma body: 14px on a 20px line, 12 / 16 padding, tabular numbers. */
 .body {

@@ -8,7 +8,7 @@
   box-sizing: border-box; width: max-content; max-width: var(--tooltip-max-width);
   padding: var(--space-xxsmall) var(--space-xsmall); border-radius: var(--radius-medium);
   background: var(--bg-neutral-max); color: var(--text-neutral-min); box-shadow: var(--elevation-popover);
-  font-family: var(--font-sans); font-size: var(--font-size-xsmall); font-weight: var(--font-weight-medium); line-height: 1.4;
+  font-family: var(--font-sans); font-size: var(--text-label-sm-size); font-weight: var(--text-label-sm-weight); line-height: var(--text-label-sm-lh);
   text-align: center; overflow-wrap: break-word;
   animation: appear var(--motion-overlay-duration) var(--motion-overlay-easing);
 }
