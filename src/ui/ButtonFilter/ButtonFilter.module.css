@@ -8,12 +8,12 @@
   display: inline-flex; align-items: stretch; height: var(--h);
   border: var(--border-width-thin) solid var(--line); border-radius: var(--radius-medium);
   background: var(--surface-raised); color: var(--text-neutral-strong);
-  font-family: var(--font-sans); font-weight: var(--font-weight-medium); line-height: 1; white-space: nowrap;
+  font-family: var(--font-sans); white-space: nowrap;
   transition: background-color var(--motion-interaction-duration) var(--motion-interaction-easing);
 }
-.sm { --h: var(--control-small); font-size: var(--font-size-xsmall); }
-.md { --h: var(--control-medium); font-size: var(--font-size-small); }
-.lg { --h: var(--control-large); font-size: var(--font-size-regular); }
+.sm { --h: var(--control-small); font-size: var(--text-button-small-size); font-weight: var(--text-button-small-weight); line-height: var(--text-button-small-lh); letter-spacing: var(--text-button-small-ls); }
+.md { --h: var(--control-medium); font-size: var(--text-button-medium-size); font-weight: var(--text-button-medium-weight); line-height: var(--text-button-medium-lh); letter-spacing: var(--text-button-medium-ls); }
+.lg { --h: var(--control-large); font-size: var(--text-button-large-size); font-weight: var(--text-button-large-weight); line-height: var(--text-button-large-lh); letter-spacing: var(--text-button-large-ls); }
 
 .main { display: inline-flex; align-items: center; gap: var(--space-xsmall); }
 .sm .main { padding: 0 var(--space-xsmall); }

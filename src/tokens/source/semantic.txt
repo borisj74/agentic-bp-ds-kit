@@ -65,11 +65,11 @@ border/brand/strong|{ui/brand/action}|{ui/brand/ink}
 border/brand/intense|{ui/brand/600}|{ui/brand/700}
 border/brand/hover|{ui/brand/action}|{ui/brand/ink}
 border/brand/press|{ui/brand/600}|{ui/brand/700}
-link/brand|{ui/brand/ink}|{ui/brand/ink}
-link/brand/hover|{ui/brand/ink/hover}|{ui/brand/ink/hover}
-link/brand/press|{ui/brand/ink/press}|{ui/brand/ink/press}
+link/brand|{ui/brand/link}|{ui/brand/link}
+link/brand/hover|{ui/brand/link/hover}|{ui/brand/link/hover}
+link/brand/press|{ui/brand/link/press}|{ui/brand/link/press}
 link/neutral|{ui/neutral/600}|{ui/neutral/700}
-link/neutral/hover|{ui/brand/ink}|{ui/brand/ink}
+link/neutral/hover|{ui/brand/link}|{ui/brand/link}
 surface/flat|{ui/neutral/0}|{ui/neutral/50}
 surface/sunken|{ui/neutral/25}|{ui/neutral/25}
 surface/raised|{ui/neutral/0}|{ui/neutral/150}

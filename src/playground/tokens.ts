@@ -18,7 +18,7 @@ export function loadColorTokens(brand = 0) {
   const sem = read("semantic.txt");  // name | light | dark
 
   const strip = (s: string) => s.replace(/[{}]/g, "");
-  // Brand role rows (ref/brand/action, ink) alias a palette step; follow them to the hex.
+  // Brand role rows (ref/brand/action, ink, link) alias a palette step; follow them to the hex.
   const refRaw = new Map(ref.map(([n, ...v]) => [n, v[brand]]));
   const resolve = (v: string): string => (v.startsWith("{") ? resolve(refRaw.get(strip(v)) ?? "") : v);
   const refHex = new Map(ref.map(([n, ...v]) => [n, resolve(v[brand])]));

@@ -38,6 +38,9 @@ ui/brand/action/press|{ref/brand/action/press}|{ref/brand/action/press}
 ui/brand/ink|{ref/brand/ink}|{ref/brand/ink/dark}
 ui/brand/ink/hover|{ref/brand/ink/hover}|{ref/brand/ink/dark/hover}
 ui/brand/ink/press|{ref/brand/ink/press}|{ref/brand/ink/dark/press}
+ui/brand/link|{ref/brand/link}|{ref/brand/ink/dark}
+ui/brand/link/hover|{ref/brand/link/hover}|{ref/brand/ink/dark/hover}
+ui/brand/link/press|{ref/brand/link/press}|{ref/brand/ink/dark/press}
 ui/status/danger/50|{ref/ruby/50}|{ref/ruby/700}
 ui/status/danger/100|{ref/ruby/100}|{ref/ruby/600}
 ui/status/danger/200|{ref/ruby/200}|{ref/ruby/600}

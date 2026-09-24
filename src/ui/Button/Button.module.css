@@ -7,8 +7,6 @@
   border: var(--border-width-thin) solid transparent;
   border-radius: var(--radius-medium);
   font-family: var(--font-sans);
-  font-weight: var(--font-weight-medium);
-  line-height: 1;
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
@@ -31,9 +29,9 @@
 .fullWidth { width: 100%; }
 
 /* sizes */
-.sm { height: var(--control-small); padding: 0 var(--space-xsmall); font-size: var(--font-size-xsmall); }
-.md { height: var(--control-medium); padding: 0 var(--space-small); font-size: var(--font-size-small); }
-.lg { height: var(--control-large); padding: 0 var(--space-medium); font-size: var(--font-size-regular); }
+.sm { height: var(--control-small); padding: 0 var(--space-xsmall); font-size: var(--text-button-small-size); font-weight: var(--text-button-small-weight); line-height: var(--text-button-small-lh); letter-spacing: var(--text-button-small-ls); }
+.md { height: var(--control-medium); padding: 0 var(--space-small); font-size: var(--text-button-medium-size); font-weight: var(--text-button-medium-weight); line-height: var(--text-button-medium-lh); letter-spacing: var(--text-button-medium-ls); }
+.lg { height: var(--control-large); padding: 0 var(--space-medium); font-size: var(--text-button-large-size); font-weight: var(--text-button-large-weight); line-height: var(--text-button-large-lh); letter-spacing: var(--text-button-large-ls); }
 .iconOnly.sm { width: var(--control-small); padding: 0; }
 .iconOnly.md { width: var(--control-medium); padding: 0; }
 .iconOnly.lg { width: var(--control-large); padding: 0; }

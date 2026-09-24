@@ -18,6 +18,10 @@
   --text-body-sm-size: var(--font-size-xsmall); --text-body-sm-weight: var(--font-weight-regular); --text-body-sm-lh: var(--line-height-normal); --text-body-sm-ls: var(--letter-spacing-normal);
   --text-label-size: var(--font-size-small); --text-label-weight: var(--font-weight-medium); --text-label-lh: var(--line-height-normal); --text-label-ls: var(--letter-spacing-normal);
   --text-label-sm-size: var(--font-size-xsmall); --text-label-sm-weight: var(--font-weight-medium); --text-label-sm-lh: var(--line-height-snug); --text-label-sm-ls: var(--letter-spacing-normal);
+  /* Button labels (Button, ButtonFilter). Semibold like BP Foundations Label/Button. Line height 1 centers the label in the fixed-height control. */
+  --text-button-small-size: var(--font-size-xsmall); --text-button-small-weight: var(--font-weight-semibold); --text-button-small-lh: 1; --text-button-small-ls: var(--letter-spacing-normal);
+  --text-button-medium-size: var(--font-size-small); --text-button-medium-weight: var(--font-weight-semibold); --text-button-medium-lh: 1; --text-button-medium-ls: var(--letter-spacing-normal);
+  --text-button-large-size: var(--font-size-regular); --text-button-large-weight: var(--font-weight-semibold); --text-button-large-lh: 1; --text-button-large-ls: var(--letter-spacing-normal);
   --text-caption-size: var(--font-size-xsmall); --text-caption-weight: var(--font-weight-regular); --text-caption-lh: var(--line-height-normal); --text-caption-ls: var(--letter-spacing-normal);
   --text-caption-strong-size: var(--font-size-xsmall); --text-caption-strong-weight: var(--font-weight-semibold); --text-caption-strong-lh: var(--line-height-normal); --text-caption-strong-ls: var(--letter-spacing-normal);
   --text-overline-size: var(--ref-font-size-100); --text-overline-weight: var(--font-weight-medium); --text-overline-lh: var(--line-height-normal); --text-overline-ls: var(--letter-spacing-wide);
@@ -41,6 +45,9 @@
 .text-body-sm { font: var(--text-body-sm-weight) var(--text-body-sm-size) / var(--text-body-sm-lh) var(--font-sans); letter-spacing: var(--text-body-sm-ls); }
 .text-label { font: var(--text-label-weight) var(--text-label-size) / var(--text-label-lh) var(--font-sans); letter-spacing: var(--text-label-ls); }
 .text-label-sm { font: var(--text-label-sm-weight) var(--text-label-sm-size) / var(--text-label-sm-lh) var(--font-sans); letter-spacing: var(--text-label-sm-ls); }
+.text-button-small { font: var(--text-button-small-weight) var(--text-button-small-size) / var(--text-button-small-lh) var(--font-sans); letter-spacing: var(--text-button-small-ls); }
+.text-button-medium { font: var(--text-button-medium-weight) var(--text-button-medium-size) / var(--text-button-medium-lh) var(--font-sans); letter-spacing: var(--text-button-medium-ls); }
+.text-button-large { font: var(--text-button-large-weight) var(--text-button-large-size) / var(--text-button-large-lh) var(--font-sans); letter-spacing: var(--text-button-large-ls); }
 .text-caption { font: var(--text-caption-weight) var(--text-caption-size) / var(--text-caption-lh) var(--font-sans); letter-spacing: var(--text-caption-ls); }
 .text-caption-strong { font: var(--text-caption-strong-weight) var(--text-caption-strong-size) / var(--text-caption-strong-lh) var(--font-sans); letter-spacing: var(--text-caption-strong-ls); }
 .text-overline { font: var(--text-overline-weight) var(--text-overline-size) / var(--text-overline-lh) var(--font-sans); letter-spacing: var(--text-overline-ls); text-transform: uppercase; }

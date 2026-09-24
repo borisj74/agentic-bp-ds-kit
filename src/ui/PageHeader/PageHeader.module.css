@@ -26,12 +26,12 @@
 
 /* The trail and the title row are 4px apart, so the two lines of text don't touch; the bar stays 80 tall. */
 .title { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: var(--space-xxsmall); }
-/* Title row: the kit Icon at lg (24), the title in text-heading-xl, badge, 8px apart. */
+/* Title row: the kit Icon at lg (24), the title in text-title-xl, badge, 8px apart. */
 .titleRow { display: flex; align-items: center; gap: var(--space-xsmall); min-width: 0; }
 .heading {
   margin: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  font: var(--text-heading-xl-weight) var(--text-heading-xl-size) / var(--text-heading-xl-lh) var(--font-sans);
-  letter-spacing: var(--text-heading-xl-ls); color: var(--text-neutral-intense);
+  font: var(--text-title-xl-weight) var(--text-title-xl-size) / var(--text-title-xl-lh) var(--font-sans);
+  letter-spacing: var(--text-title-xl-ls); color: var(--text-neutral-intense);
 }
 
 .controls { flex: none; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--space-xsmall); }

@@ -11,7 +11,7 @@
     "title": {
       "type": "string",
       "required": true,
-      "note": "24px bold. It names the drawer for screen readers."
+      "note": "20px bold (text-title-lg). It names the drawer for screen readers."
     },
     "description": {
       "type": "string",
