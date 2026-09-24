@@ -76,9 +76,9 @@ radio/size/sm|{ref/space/500}
 radio/size/md|{ref/space/600}
 radio/size/lg|{ref/space/700}
 
-# not in Figma: table cell row heights. sm 48 aliases BP ref space; md 56 is past the ref scale.
+# not in Figma: table cell row heights. sm 48 aliases BP ref space; md 56 aliases ref/size/1500 so rows follow density.
 cell/height/sm|{ref/space/1300}
-cell/height/md|56px
+cell/height/md|{ref/size/1500}
 
 # Header cell (Figma .table / th 3559:106607): sm 40 is the Figma th height. md 48 matches the sm body row. Both alias BP ref space.
 header-cell/height/sm|{ref/space/1100}

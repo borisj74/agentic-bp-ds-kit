@@ -2,7 +2,6 @@
 import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type FocusEvent, type KeyboardEvent, type ReactNode } from "react";
 import { Button } from "../Button/Button";
 import { DatePicker } from "../DatePicker/DatePicker";
-import { useDensity } from "../Density/Density";
 import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
 import { FormulaEditor, type FormulaField } from "../FormulaEditor/FormulaEditor";
 import { HeaderCell, type HeaderCellLine } from "../HeaderCell/HeaderCell";
@@ -60,8 +59,8 @@ export function DataGrid({
   canAddRows = false, canRemoveRows = false, canInsertRows = false, emptyLabel = "No rows yet.", label = "Data grid", stickyFirstColumn = true,
   detail, expanded: expandedProp, defaultExpanded = [], onExpandedChange,
 }: DataGridProps) {
-  const density = useDensity();
-  const size = ownSize ?? (density === "compact" ? "sm" : "md");
+  // A surrounding Density changes the row through the density tokens, not the size.
+  const size = ownSize ?? "md";
   const uid = useId();
   const added = useRef(0);
   const tableRef = useRef<HTMLTableElement>(null);

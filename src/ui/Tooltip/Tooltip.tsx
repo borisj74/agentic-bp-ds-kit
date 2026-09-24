@@ -3,6 +3,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type FocusEvent, t
 import { createPortal } from "react-dom";
 import { useFloating, useInBrowser, type FloatingSide } from "./useFloating";
 import styles from "./Tooltip.module.css";
+import { usePortalDensity } from "../Density/Density";
 
 export type TooltipPlacement = FloatingSide;
 
@@ -36,6 +37,7 @@ export function useDescribedBy(wrapRef: RefObject<HTMLElement | null>, id: strin
 
 export function Tooltip({ content, placement = "top", delay = 150, open: openProp, disabled = false, children }: TooltipProps) {
   const id = useId();
+  const density = usePortalDensity(); // the portalled popup keeps the surrounding Density
   const wrapRef = useRef<HTMLSpanElement>(null);
   const bubbleRef = useRef<HTMLDivElement>(null);
   const timer = useRef<number | undefined>(undefined);
@@ -84,7 +86,7 @@ export function Tooltip({ content, placement = "top", delay = 150, open: openPro
       {children}
       <span id={id} role="tooltip" className={styles.srOnly}>{content}</span>
       {open && createPortal(
-        <div ref={bubbleRef} className={styles.bubble} aria-hidden="true" onPointerEnter={clear} onPointerLeave={() => hide()}>
+        <div ref={bubbleRef} data-density={density} className={styles.bubble} aria-hidden="true" onPointerEnter={clear} onPointerLeave={() => hide()}>
           {content}
           <span className={styles.arrow} />
         </div>,

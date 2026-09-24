@@ -24,7 +24,7 @@
         "lg"
       ],
       "default": "md",
-      "note": "Field height 28 / 36 / 44, same as Input. The calendar has one size. Without a size, a surrounding Density picks it: compact sm, default md, comfortable lg."
+      "note": "Field height 28 / 36 / 44, same as Input. The calendar has one size. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown)."
     },
     "labelPosition": {
       "enum": [

@@ -77,7 +77,7 @@
         "md",
         "lg"
       ],
-      "note": "Row height: sm 28, md 32, lg 40. Follows Density when not set."
+      "note": "Row height: sm 28, md 32, lg 40. md when not set; a surrounding Density changes it through the density tokens."
     }
   },
   "useWhen": [

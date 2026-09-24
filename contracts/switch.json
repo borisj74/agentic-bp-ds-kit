@@ -25,7 +25,7 @@
         "lg"
       ],
       "default": "md",
-      "note": "Track 28x16 / 36x20 / 44x24 px. Label text 12 / 14 / 16 px. Without a size, a surrounding Density picks it: compact sm, default md, comfortable lg."
+      "note": "Track 28x16 / 36x20 / 44x24 px. Label text 12 / 14 / 16 px. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown)."
     },
     "checked": {
       "type": "boolean",

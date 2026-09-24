@@ -5,6 +5,7 @@ import { Button } from "../Button/Button";
 import { Icon } from "../Icon/Icon";
 import styles from "./Modal.module.css";
 import { useDialog } from "./useDialog";
+import { usePortalDensity } from "../Density/Density";
 
 export type ModalSize = "sm" | "md" | "lg" | "xl" | "full";
 
@@ -22,6 +23,7 @@ export interface ModalProps {
 
 export function Modal({ open, title, description, icon, size = "sm", showClose = true, onClose, children, footer }: ModalProps) {
   const titleId = useId();
+  const density = usePortalDensity(); // the portalled popup keeps the surrounding Density
   const descriptionId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -35,6 +37,7 @@ export function Modal({ open, title, description, icon, size = "sm", showClose =
   return createPortal(
     // Backdrop click closes, but only when the press also started on the backdrop (not a drag out of a field).
     <div
+      data-density={density}
       className={[styles.overlay, size === "full" ? styles.overlayFull : ""].join(" ")}
       onKeyDown={onKeyDown}
       onMouseDown={(e) => { downOnScrim.current = e.target === e.currentTarget; }}

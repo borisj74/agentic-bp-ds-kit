@@ -11,7 +11,7 @@
         "lg"
       ],
       "default": "md",
-      "note": "Circle 16 / 20 / 24 px, labels 12 / 14 / 16 px. Without a size, a surrounding Density picks it: compact sm, default md, comfortable lg."
+      "note": "Circle 16 / 20 / 24 px, labels 12 / 14 / 16 px. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown)."
     },
     "orientation": {
       "enum": [

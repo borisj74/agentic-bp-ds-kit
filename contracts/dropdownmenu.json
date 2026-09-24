@@ -51,7 +51,7 @@
         "lg"
       ],
       "default": "md",
-      "note": "Trigger size. The menu itself has one size. Without a size, a surrounding Density picks it: compact sm, default md, comfortable lg."
+      "note": "Trigger size. The menu itself has one size. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown)."
     },
     "icon": {
       "type": "string",

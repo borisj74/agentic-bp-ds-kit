@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 import { useDescribedBy } from "../Tooltip/Tooltip";
 import { useFloating, useInBrowser, type FloatingSide } from "../Tooltip/useFloating";
 import styles from "./HelpPopover.module.css";
+import { usePortalDensity } from "../Density/Density";
 
 export type HelpPopoverPlacement = FloatingSide;
 
@@ -24,6 +25,7 @@ const GAP = 14; // px between trigger and panel; the 12px arrow sits in it
 
 export function HelpPopover({ title, content, placement = "bottom", delay = 150, open: openProp, disabled = false, children }: HelpPopoverProps) {
   const id = useId();
+  const density = usePortalDensity(); // the portalled popup keeps the surrounding Density
   const wrapRef = useRef<HTMLSpanElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const timer = useRef<number | undefined>(undefined);
@@ -102,7 +104,7 @@ export function HelpPopover({ title, content, placement = "bottom", delay = 150,
       <span id={id} className={styles.srOnly}>{title ? `${title}: ${content}` : content}</span>
       {open && createPortal(
         <div
-          ref={panelRef} className={styles.panel} data-header={title ? "" : undefined} aria-hidden="true"
+          ref={panelRef} data-density={density} className={styles.panel} data-header={title ? "" : undefined} aria-hidden="true"
           onPointerEnter={clear} onPointerLeave={() => hide()}
         >
           <span className={styles.arrow} />

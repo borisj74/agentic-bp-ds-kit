@@ -1,7 +1,6 @@
 "use client";
 import { isValidElement, useEffect, useRef, useState, type ReactNode } from "react";
 import { Cell, type CellAlign, type CellSize } from "../Cell/Cell";
-import { useDensity } from "../Density/Density";
 import { HeaderCell, type HeaderCellLine } from "../HeaderCell/HeaderCell";
 import styles from "./Table.module.css";
 
@@ -40,8 +39,8 @@ export function Table({
   columns, rows, size: ownSize, line = "medium", caption, footer, emptyLabel = "No results.",
   selectable = false, selected: selectedProp, defaultSelected = [], onSelectionChange, rowLabel, onRowClick,
 }: TableProps) {
-  const density = useDensity();
-  const size = ownSize ?? (density === "compact" ? "sm" : "md");
+  // A surrounding Density changes the row through the density tokens, not the size.
+  const size = ownSize ?? "md";
   const [innerSelected, setInnerSelected] = useState(defaultSelected);
   const selected = selectedProp ?? innerSelected;
   // A table wider than its box scrolls sideways; then the box is a focus stop so the arrow keys scroll it (WCAG 2.1.1).

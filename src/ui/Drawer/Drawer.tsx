@@ -5,6 +5,7 @@ import { Button } from "../Button/Button";
 import { useDialog } from "../Modal/useDialog";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./Drawer.module.css";
+import { usePortalDensity } from "../Density/Density";
 
 export type DrawerSize = "narrow" | "medium" | "wide" | "extended";
 
@@ -22,6 +23,7 @@ export interface DrawerProps {
 // Figma drawer 2975:10337 and drawer-panel 2975:9762: a full-height panel at the right edge over a light backdrop.
 export function Drawer({ open, title, description, size = "narrow", showClose = true, onClose, children, footer }: DrawerProps) {
   const titleId = useId();
+  const density = usePortalDensity(); // the portalled popup keeps the surrounding Density
   const descriptionId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -35,6 +37,7 @@ export function Drawer({ open, title, description, size = "narrow", showClose = 
   return createPortal(
     // A click on the page behind closes it, but only when the press also started there (not a drag out of a field).
     <div
+      data-density={density}
       className={styles.overlay}
       onKeyDown={onKeyDown}
       onMouseDown={(e) => { downOnBackdrop.current = e.target === e.currentTarget; }}

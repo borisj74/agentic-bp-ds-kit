@@ -16,6 +16,7 @@ import field from "../Input/Input.module.css";
 import { Tooltip } from "../Tooltip/Tooltip";
 import { useFloating, useInBrowser } from "../Tooltip/useFloating";
 import styles from "./Toolbar.module.css";
+import { usePortalDensity } from "../Density/Density";
 
 export type ToolbarButtons = "raised" | "subtle";
 
@@ -72,6 +73,7 @@ export function Toolbar({
   views = [], view: viewProp, onViewChange, onRefresh, moreActions, onMoreSelect, actions, buttons = "raised", label = "List tools",
 }: ToolbarProps) {
   const barId = useId();
+  const density = usePortalDensity(); // the portalled popup keeps the surrounding Density
   const [innerOpen, setInnerOpen] = useState(defaultFiltersOpen);
   const [innerView, setInnerView] = useState(views[0]?.id);
   const open = Boolean(filters) && (openProp ?? innerOpen);
@@ -268,7 +270,7 @@ export function Toolbar({
         )}
       </div>
       {dropdown && searchGroups && createPortal(
-        <div ref={panelRef} role="dialog" aria-label={searchPlaceholder} className={styles.searchPanel} style={{ width: fit.width }} onKeyDown={onPanelKey}>
+        <div ref={panelRef} data-density={density} role="dialog" aria-label={searchPlaceholder} className={styles.searchPanel} style={{ width: fit.width }} onKeyDown={onPanelKey}>
           <Command
             groups={searchGroups} size="sm" iconStyle="plain" hints={false} autoFocus
             label={searchPlaceholder} placeholder={searchPlaceholder} defaultQuery={shown}

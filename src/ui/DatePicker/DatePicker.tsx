@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
-import { useDensitySize } from "../Density/Density";
+import { useDensitySize, usePortalDensity } from "../Density/Density";
 import { createPortal } from "react-dom";
 import { Button } from "../Button/Button";
 import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
@@ -100,6 +100,7 @@ export function DatePicker({
   const size = useDensitySize(ownSize);
   const labelPosition = useLabelPosition(ownLabelPosition);
   const uid = useId();
+  const density = usePortalDensity(); // the portalled popup keeps the surrounding Density
   const triggerId = id ?? `${uid}-field`;
   const panelId = `${uid}-panel`;
   const messageId = `${uid}-message`;
@@ -380,7 +381,7 @@ export function DatePicker({
       </div>
       {name && <input type="hidden" name={name} value={isRange(current) ? `${current.start}/${current.end}` : current ?? ""} />}
       {open && typeof document !== "undefined" && createPortal(
-        <div ref={panelRef} id={panelId} role="dialog" aria-modal="true" aria-label={range ? "Choose dates" : "Choose date"} className={styles.panel} onKeyDown={onPanelKey}>
+        <div ref={panelRef} data-density={density} id={panelId} role="dialog" aria-modal="true" aria-label={range ? "Choose dates" : "Choose date"} className={styles.panel} onKeyDown={onPanelKey}>
           <div className={styles.main}>
             {range && presets && (
               <div className={styles.presets} role="group" aria-label="Quick ranges">

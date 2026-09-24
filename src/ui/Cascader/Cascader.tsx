@@ -2,7 +2,7 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type FocusEvent, type KeyboardEvent } from "react";
 import { createPortal } from "react-dom";
 import { Badge } from "../Badge/Badge";
-import { useDensitySize } from "../Density/Density";
+import { useDensitySize, usePortalDensity } from "../Density/Density";
 import { useLabelPosition } from "../Form/FormContext";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 import { Icon } from "../Icon/Icon";
@@ -99,6 +99,7 @@ export function Cascader({
   const size = useDensitySize(ownSize);
   const labelPosition = useLabelPosition(ownLabelPosition);
   const uid = useId();
+  const density = usePortalDensity(); // the portalled popup keeps the surrounding Density
   const triggerId = `${uid}-field`;
   const popupId = `${uid}-popup`;
   const messageId = `${uid}-message`;
@@ -421,7 +422,7 @@ export function Cascader({
       </div>
       {name && <input type="hidden" name={name} value={committed.join(".")} />}
       {open && typeof document !== "undefined" && createPortal(
-        <div ref={popupRef} id={popupId} role="dialog" aria-label={label} className={styles.popup} onBlur={onPopupBlur}>
+        <div ref={popupRef} data-density={density} id={popupId} role="dialog" aria-label={label} className={styles.popup} onBlur={onPopupBlur}>
           {body}
         </div>,
         document.body,

@@ -175,7 +175,9 @@ export function AppHeader({
   const avatar = user && <Avatar name={user.name} src={user.src} size={density === "comfortable" ? "md" : "sm"} />;
 
   return (
-    <header className={[styles.header, density !== "default" ? styles[density] : ""].join(" ")}>
+    // The header sizes itself for its density (Figma 48 / 56 / 64 bars, sm / md / lg buttons), so it pins the
+    // density tokens to default inside; a surrounding Density would otherwise shrink it twice.
+    <header data-density="default" className={[styles.header, density !== "default" ? styles[density] : ""].join(" ")}>
       <div className={styles.bar}>
         {/* Start: the side-nav toggle, brand, then the environment tag (UAT, Sandbox...) so people know where they are. */}
         <div className={styles.start}>
@@ -266,7 +268,7 @@ export function AppHeader({
 
       {/* Search dropdown: the kit Command, fixed and portaled under the search trigger. Non-modal. */}
       {searchIsOpen && searchGroups && createPortal(
-        <div ref={searchPanelRef} role="dialog" aria-label={searchPlaceholder} className={styles.searchPanel} style={{ width: searchFit.width }} onKeyDown={onSearchKey}>
+        <div data-density="default" ref={searchPanelRef} role="dialog" aria-label={searchPlaceholder} className={styles.searchPanel} style={{ width: searchFit.width }} onKeyDown={onSearchKey}>
           <Command
             groups={searchGroups} variant={searchVariant} iconStyle={searchIconStyle} label={searchPlaceholder} scopes={searchScopes} scope={searchScope} onScopeChange={onSearchScopeChange} autoFocus
             onSelect={(id) => { closeSearch(true); onSearchSelect?.(id); }}
@@ -277,7 +279,7 @@ export function AppHeader({
 
       {/* Account menu: fixed and portaled like DropdownMenu. A non-modal panel, since it holds a switch and a choice. */}
       {open && user && createPortal(
-        <div ref={menuRef} id={menuId} role="dialog" aria-label={`Account: ${user.name}`} className={styles.menu} onKeyDown={onMenuKey} onBlur={onMenuBlur}>
+        <div data-density="default" ref={menuRef} id={menuId} role="dialog" aria-label={`Account: ${user.name}`} className={styles.menu} onKeyDown={onMenuKey} onBlur={onMenuBlur}>
           <p className={styles.menuName}>{user.name}</p>
           {onUserSettings && (
             <button type="button" className={styles.menuItem} onClick={() => { closeMenu(false); onUserSettings(); }}>

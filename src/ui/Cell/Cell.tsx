@@ -1,6 +1,5 @@
 "use client";
 import type { ReactNode } from "react";
-import { useDensity } from "../Density/Density";
 import { Avatar } from "../Avatar/Avatar";
 import { AvatarGroup } from "../AvatarGroup/AvatarGroup";
 import { Badge, type BadgeTone } from "../Badge/Badge";
@@ -62,8 +61,8 @@ export function Cell({
   tone = "neutral", badges, value, actions, menu, options, onValueChange, checked, defaultChecked, onCheckedChange,
   level = 1, expanded, onExpandedChange, showLines = true, treeToggle = "chevron", onClick,
 }: CellProps) {
-  const density = useDensity();
-  const size = ownSize ?? (density === "compact" ? "sm" : "md");
+  // A surrounding Density changes the row through the density tokens, not the size.
+  const size = ownSize ?? "md";
   const who = name || label || "";
   let visual: ReactNode = null;
   let side = ""; // text shown after the visual

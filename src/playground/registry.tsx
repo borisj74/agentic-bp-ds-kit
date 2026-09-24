@@ -5,7 +5,7 @@ import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
 import { APP_NAV, APP_NAV_END } from "@/patterns/AppShell/appNav";
 import type { ListDetailLayout } from "@/patterns/ListDetail/ListDetail";
 import { AppShellDemo, DashboardDemo, FormPageDemo, AccountFlowDemo, GuidedProcessDemo, GuidedProcessPageDemo, SettingsPageDemo, ListDetailDemo, type ListDetailVariant, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
-import type { DensityValue } from "@/ui/Density/Density";
+import { Density, type DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
 import { AvatarGroup, type AvatarGroupItem } from "@/ui/AvatarGroup/AvatarGroup";
@@ -1506,17 +1506,17 @@ export const registry: Record<string, Entry> = {
     ),
   },
   Density: {
-    // Real kit controls with no size set; the Density around them picks sm, md or lg.
+    // Real kit controls with no size set; the Density around them sets the density tokens.
     render: (p) => <DensityDemo value={p.value as DensityValue | undefined} />,
     preview: {},
     snippet: { children: "<App />" },
-    hint: "Switch the value: every control inside picks small, medium or large. A control's own size still wins.",
+    hint: "Switch the value: spacing, control heights, icons and text inside follow the Compact, Default or Comfortable tokens. Controls keep their own size.",
     column: true,
     card: (
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <Button size="sm">Compact</Button>
-        <Button size="md">Default</Button>
-        <Button size="lg">Comfortable</Button>
+        <Density value="compact"><Button>Compact</Button></Density>
+        <Density value="default"><Button>Default</Button></Density>
+        <Density value="comfortable"><Button>Comfortable</Button></Density>
       </div>
     ),
   },

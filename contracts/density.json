@@ -1,8 +1,8 @@
 {
   "name": "Density",
   "path": "src/ui/Density/Density.tsx",
-  "intent": "Sets how big the kit controls inside it are: compact = small, default = medium, comfortable = large.",
-  "usage": "Wrap the app content (or one area) in Density and pass the person's choice, usually from the AppHeader account menu. Controls inside that have no size of their own take it from Density: Button, ButtonGroup, ButtonFilter, DropdownMenu, Input, Select, DatePicker, Checkbox, RadioGroup, Switch and SegmentedControl use sm, md or lg; Cell and HeaderCell go sm in compact. AppHeader follows it too (bar, search and buttons). A size set on a control always wins. Badges, avatars, modals and text areas keep their own sizes. See contracts/density.json for the full contract.",
+  "intent": "Sets the density tokens for everything inside it: Compact, Default or Comfortable spacing, control and icon sizes, and font sizes, like the BP Foundations density modes.",
+  "usage": "Wrap the app content (or one area) in Density and pass the person's choice, usually from the AppHeader account menu. Density sets data-density on a wrapper with no box of its own (display: contents), and the kit tokens inside take that mode: space, control heights, icon sizes and font sizes. Controls keep their own size (md when not set); a medium Input is 32 / 36 / 36px tall and its text 14 / 16 / 18px in Compact / Default / Comfortable. Radius and border widths do not change. Menus, date pickers, modals and other popups opened from inside keep the same density. AppHeader keeps its own density sizes (its density prop, else the surrounding Density). See contracts/density.json for the full contract.",
   "props": {
     "value": {
       "enum": [
@@ -11,7 +11,7 @@
         "comfortable"
       ],
       "default": "default",
-      "note": "compact = sm, default = md, comfortable = lg."
+      "note": "The density mode. default is the same as no Density at all."
     },
     "children": {
       "type": "ReactNode",
@@ -26,16 +26,17 @@
   "doNot": [
     "Do not set size on every control to fake a density. Wrap them in Density.",
     "Do not invent DensityProvider, SizeProvider or a local size context.",
+    "Do not set data-density by hand on screens. Use Density.",
     "Do not size the AppHeader by hand. It follows its density prop, or the surrounding Density."
   ],
   "a11y": [
-    "Renders nothing of its own. Every size keeps the kit focus ring and a clickable target of at least 28px."
+    "Renders no box of its own. Every density keeps the kit focus ring; the smallest control is 24px in Compact (WCAG 2.5.8 target size minimum)."
   ],
   "snippet": "<Density value={density}>\n  <App />\n</Density>",
   "examples": [
     {
       "title": "Compact",
-      "usage": "Small controls, for dense data screens.",
+      "usage": "Tighter spacing, smaller controls and text, for dense data screens.",
       "items": [
         {
           "props": {
@@ -46,7 +47,7 @@
     },
     {
       "title": "Default",
-      "usage": "Medium controls. The same as no Density at all.",
+      "usage": "The kit's standard sizes. The same as no Density at all.",
       "items": [
         {
           "props": {
@@ -57,7 +58,7 @@
     },
     {
       "title": "Comfortable",
-      "usage": "Large controls, easier to read and click.",
+      "usage": "More space and larger text, easier to read and click.",
       "items": [
         {
           "props": {

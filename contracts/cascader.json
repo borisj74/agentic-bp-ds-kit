@@ -62,7 +62,7 @@
         "md",
         "lg"
       ],
-      "note": "Field height, like Select. Follows Density when not set. Columns keep 28 rows."
+      "note": "Field height, like Select. md when not set; a surrounding Density changes it through the density tokens. Columns keep 28 rows."
     },
     "labelPosition": {
       "enum": [

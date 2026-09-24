@@ -1,0 +1,2 @@
+/* Only carries data-density for the tokens; it adds no box of its own. */
+.root { display: contents; }

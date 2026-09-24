@@ -1356,7 +1356,7 @@
   --radio-size-md: var(--ref-space-600);
   --radio-size-lg: var(--ref-space-700);
   --cell-height-sm: var(--ref-space-1300);
-  --cell-height-md: 56px;
+  --cell-height-md: var(--ref-size-1500);
   --header-cell-height-sm: var(--ref-space-1100);
   --header-cell-height-md: var(--ref-space-1300);
   --dropdown-min-width: 200px;

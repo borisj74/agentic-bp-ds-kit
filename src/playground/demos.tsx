@@ -264,7 +264,7 @@ export function AppHeaderDemo(p: AppHeaderProps) {
   );
 }
 
-// Playground harness: real kit controls with no size set, so the Density around them decides. Not a kit piece.
+// Playground harness: real kit controls with no size set, so the Density tokens around them decide. Not a kit piece.
 export function DensityDemo({ value = "default" }: { value?: DensityValue }) {
   return (
     <Density value={value}>

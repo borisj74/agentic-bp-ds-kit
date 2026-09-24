@@ -74,7 +74,7 @@
         "md",
         "lg"
       ],
-      "note": "Field height, like Input. Follows Density when not set."
+      "note": "Field height, like Input. md when not set; a surrounding Density changes it through the density tokens."
     },
     "labelPosition": {
       "enum": [

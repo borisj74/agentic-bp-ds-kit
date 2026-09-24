@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
-import { useDensitySize } from "../Density/Density";
+import { useDensitySize, usePortalDensity } from "../Density/Density";
 import { createPortal } from "react-dom";
 import { Button, type ButtonSize, type ButtonVariant } from "../Button/Button";
 import { ButtonFilter, type ButtonFilterToggle } from "../ButtonFilter/ButtonFilter";
@@ -76,6 +76,7 @@ export function DropdownMenu({
   const size = useDensitySize(ownSize);
   const [query, setQuery] = useState("");
   const menuId = useId();
+  const density = usePortalDensity(); // the portalled popup keeps the surrounding Density
   const textId = `${menuId}-text`;
   const rootRef = useRef<HTMLSpanElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -222,7 +223,7 @@ export function DropdownMenu({
         </Button>
       )}
       {open && typeof document !== "undefined" && createPortal(
-        <div ref={panelRef} id={menuId} role="menu" aria-label={label} className={styles.panel} onKeyDown={onMenuKey}>
+        <div ref={panelRef} data-density={density} id={menuId} role="menu" aria-label={label} className={styles.panel} onKeyDown={onMenuKey}>
           {searchable && (
             <div className={styles.search}>
               <Input size="sm" hideLabel label={`Search ${label}`} type="search" iconStart="search" placeholder={searchPlaceholder} value={query} onChange={setQuery} />

@@ -1,6 +1,5 @@
 "use client";
 import { Checkbox } from "../Checkbox/Checkbox";
-import { useDensity } from "../Density/Density";
 import { Icon } from "../Icon/Icon";
 import styles from "./HeaderCell.module.css";
 
@@ -31,8 +30,8 @@ export function HeaderCell({
   label, size: ownSize, align = "start", line = "medium", checkbox = false, checked, defaultChecked, indeterminate,
   onCheckedChange, sortable = false, sort = "none", onSort,
 }: HeaderCellProps) {
-  const density = useDensity();
-  const size = ownSize ?? (density === "compact" ? "sm" : "md");
+  // A surrounding Density changes the row through the density tokens, not the size.
+  const size = ownSize ?? "md";
   const title = label ?? "column";
   return (
     <span className={[styles.cell, styles[size], styles[align], line === "thin" ? styles.thin : ""].join(" ")}>
