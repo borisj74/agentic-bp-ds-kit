@@ -15,7 +15,7 @@
 .tab {
   position: relative; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xxsmall);
   flex: none; height: var(--h); margin: 0; padding: var(--space-xxsmall); border: 0; background: transparent;
-  font: inherit; font-size: var(--fs); font-weight: var(--font-weight-semibold); line-height: 1.33; white-space: nowrap;
+  font: inherit; font-size: var(--fs); font-weight: var(--font-weight-semibold); line-height: var(--line-height-snug); white-space: nowrap;
   color: var(--text-neutral); cursor: pointer;
   transition: color var(--motion-interaction-duration) var(--motion-interaction-easing);
 }

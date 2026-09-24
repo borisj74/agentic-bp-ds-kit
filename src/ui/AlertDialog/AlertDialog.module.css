@@ -24,7 +24,7 @@
 .sm { max-width: 320px; }
 .md { max-width: 448px; }
 
-.title { margin: 0; font-size: var(--font-size-large); font-weight: var(--font-weight-semibold); line-height: 1.3; color: var(--text-neutral-strong); }
+.title { margin: 0; font-size: var(--text-heading-md-size); font-weight: var(--text-heading-md-weight); line-height: var(--text-heading-md-lh); color: var(--text-neutral-strong); }
 .description { margin: var(--space-xsmall) 0 0; font-size: var(--font-size-small); line-height: var(--line-height-normal); color: var(--text-neutral-subtle); }
 
 /* Two separate Buttons with a gap. Not a ButtonGroup. */

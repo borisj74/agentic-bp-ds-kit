@@ -6,7 +6,7 @@
 
 .list { margin: 0; padding: 0; list-style: none; }
 
-.row { position: relative; display: flex; align-items: stretch; min-height: var(--row); cursor: pointer; outline: none; user-select: none; line-height: 1.25; }
+.row { position: relative; display: flex; align-items: stretch; min-height: var(--row); cursor: pointer; outline: none; user-select: none; line-height: var(--line-height-snug); }
 .row.disabled { cursor: default; opacity: var(--opacity-disabled); }
 
 /* The row's content and its highlight: after the guide lines, with the same small inset at both ends. */

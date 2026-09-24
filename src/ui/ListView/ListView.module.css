@@ -78,7 +78,7 @@ button.hit:focus-visible { outline: none; }
 }
 .header.first { border-top-color: transparent; }
 .head-sm { font-size: var(--text-title-xs-size); font-weight: var(--text-title-xs-weight); line-height: var(--text-title-xs-lh); }
-.head-md { font-size: var(--text-title-sm-size); font-weight: var(--text-title-sm-weight); line-height: var(--line-height-normal); }
+.head-md { font-size: var(--text-title-sm-size); font-weight: var(--text-title-sm-weight); line-height: var(--text-title-sm-lh); }
 .head-lg { font-size: var(--text-title-lg-size); font-weight: var(--text-title-lg-weight); line-height: var(--text-title-lg-lh); }
 .headButton {
   display: flex; align-items: center; align-self: stretch; gap: var(--space-medium); width: 100%; margin: 0; padding: 0;

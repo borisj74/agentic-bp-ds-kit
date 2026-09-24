@@ -23,12 +23,12 @@
   background: var(--bg-neutral-faint); border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
   border-radius: var(--radius-small) var(--radius-small) 0 0;
 }
-.title { margin: 0; font-size: var(--text-title-sm-size); font-weight: var(--text-title-sm-weight); line-height: 1.25; color: var(--text-neutral-max); overflow-wrap: anywhere; }
+.title { margin: 0; font-size: var(--text-title-sm-size); font-weight: var(--text-title-sm-weight); line-height: var(--text-title-sm-lh); color: var(--text-neutral-max); overflow-wrap: anywhere; }
 
 /* Figma body: 14px on a 20px line, 12 / 16 padding, tabular numbers. */
 .body {
   margin: 0; padding: var(--space-small) var(--space-medium);
-  font-size: var(--font-size-small); line-height: 1.43; color: var(--text-neutral);
+  font-size: var(--text-body-size); line-height: var(--text-body-lh); color: var(--text-neutral);
   font-variant-numeric: lining-nums tabular-nums; overflow-wrap: break-word;
 }
 

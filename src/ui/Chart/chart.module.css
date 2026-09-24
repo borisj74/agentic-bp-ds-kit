@@ -50,7 +50,7 @@
 .tooltipTitle { margin: 0; font-weight: var(--text-caption-strong-weight); }
 .tooltipRow { display: flex; align-items: center; gap: var(--space-xsmall); margin: 0; }
 .tooltipLabel { flex: 1; color: var(--text-neutral); }
-.tooltipValue { font-weight: var(--text-label-sm-weight); font-variant-numeric: tabular-nums; }
+.tooltipValue { font-weight: var(--text-label-sm-weight); line-height: var(--text-label-sm-lh); font-variant-numeric: tabular-nums; }
 
 .empty { display: grid; place-items: center; font-size: var(--font-size-small); color: var(--text-neutral); }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

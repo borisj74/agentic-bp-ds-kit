@@ -99,7 +99,7 @@ button.user:focus-visible { outline: var(--border-width-medium) solid var(--outl
 }
 .menuName {
   margin: 0; padding: var(--space-xsmall) var(--space-small) var(--space-small);
-  font-size: var(--text-title-xs-size); font-weight: var(--text-title-xs-weight); letter-spacing: 0.02em; text-transform: uppercase;
+  font-size: var(--text-title-xs-size); font-weight: var(--text-title-xs-weight); line-height: var(--text-title-xs-lh); letter-spacing: 0.02em; text-transform: uppercase;
   color: var(--text-neutral-strong); overflow-wrap: anywhere;
 }
 .menuItem {

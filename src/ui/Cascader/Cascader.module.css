@@ -47,7 +47,7 @@
 .item {
   position: relative; box-sizing: border-box; flex: none; display: flex; align-items: center; gap: var(--space-xsmall);
   min-height: var(--cascader-row); padding: var(--space-xxsmall) var(--space-small);
-  font-size: var(--font-size-small); line-height: 1.25; color: var(--text-neutral); cursor: pointer; outline: none; white-space: nowrap;
+  font-size: var(--font-size-small); line-height: var(--line-height-snug); color: var(--text-neutral); cursor: pointer; outline: none; white-space: nowrap;
 }
 .item:hover { background: var(--bg-neutral-faint); }
 .item:focus-visible::after {
