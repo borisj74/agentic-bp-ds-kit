@@ -1,5 +1,6 @@
 /* Semantic text styles. Components and screens use these classes (or the vars) — never raw sizes. */
-:root {
+/* Also declared on [data-density], so the roles pick up the nearest density's font sizes. */
+:root, [data-density] {
   --text-display-size: var(--ref-font-size-900); --text-display-weight: var(--font-weight-semibold); --text-display-lh: var(--line-height-tight); --text-display-ls: var(--letter-spacing-tight);
   --text-metric-size: var(--ref-font-size-800); --text-metric-weight: var(--font-weight-medium); --text-metric-lh: var(--line-height-tight); --text-metric-ls: var(--letter-spacing-tight);
   --text-heading-xl-size: var(--font-size-xxlarge); --text-heading-xl-weight: var(--font-weight-semibold); --text-heading-xl-lh: var(--line-height-tight); --text-heading-xl-ls: var(--letter-spacing-tight);

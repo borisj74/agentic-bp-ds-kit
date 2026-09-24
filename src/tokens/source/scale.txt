@@ -1,12 +1,15 @@
-# non-color scale, Default density. name|value(px unless noted)
-space/xxxsmall|2
-space/xxsmall|4
-space/xsmall|8
-space/small|12
-space/medium|16
-space/large|20
-space/xlarge|24
-space/xxlarge|28
+# non-color scale. name|default|compact|comfortable (px unless noted). {name} aliases resolve to var(--name).
+# One value = the same in every density. Three values = Figma density modes (Foundations `Scale : density`, `Font : density`).
+# Roles alias the ref ramps like Foundations, so they follow [data-density].
+space/xxxsmall|{ref/space/100}
+space/xxsmall|{ref/space/200}
+space/xsmall|{ref/space/300}
+space/small|{ref/space/400}
+space/medium|{ref/space/500}
+space/large|{ref/space/600}
+space/xlarge|{ref/space/700}
+space/xxlarge|{ref/space/800}
+# radius and border width have no density in Foundations (`Scale`, Default only).
 radius/small|2
 radius/medium|4
 radius/large|8
@@ -14,35 +17,39 @@ radius/full|9999
 border/width/thin|1
 border/width/medium|2
 border/width/thick|3
-# not in Figma: xsmall 12 for Badge leading/close icons (Figma badge uses 12px glyphs).
+# not in Figma: xsmall 12 for Badge leading/close icons (Figma badge uses 12px glyphs). Fixed in every density.
 icon/size/xsmall|12
-icon/size/small|16
-icon/size/medium|20
-icon/size/large|24
-icon/size/xlarge|32
-control/small|28
-control/medium|36
-control/large|44
-font-size/xsmall|12
-font-size/small|14
-font-size/regular|16
-font-size/large|18
-font-size/xlarge|20
-font-size/xxlarge|24
-font-weight/regular|400
-font-weight/medium|500
-font-weight/semibold|600
-font-weight/bold|700
-# type scale primitives (ref/font-size from Figma, Default density)
-ref/font-size/100|10
-ref/font-size/200|12
-ref/font-size/300|14
-ref/font-size/400|16
-ref/font-size/500|18
-ref/font-size/600|20
-ref/font-size/700|22
-ref/font-size/800|24
-ref/font-size/900|26
+icon/size/small|{ref/size/500}
+icon/size/medium|{ref/size/600}
+icon/size/large|{ref/size/700}
+icon/size/xlarge|{ref/size/900}
+control/small|{ref/size/800}
+control/medium|{ref/size/1000}
+control/large|{ref/size/1200}
+font-size/xsmall|{ref/font-size/200}
+font-size/small|{ref/font-size/300}
+font-size/regular|{ref/font-size/400}
+font-size/large|{ref/font-size/500}
+font-size/xlarge|{ref/font-size/600}
+font-size/xxlarge|{ref/font-size/800}
+font-weight/regular|{ref/font-weight/400}
+font-weight/medium|{ref/font-weight/500}
+font-weight/semibold|{ref/font-weight/600}
+font-weight/bold|{ref/font-weight/700}
+# type scale primitives (Foundations `Font : density`)
+ref/font-size/100|10|10|12
+ref/font-size/200|12|10|14
+ref/font-size/300|14|12|16
+ref/font-size/400|16|14|18
+ref/font-size/500|18|16|20
+ref/font-size/600|20|18|22
+ref/font-size/700|22|20|24
+ref/font-size/800|24|22|26
+ref/font-size/900|26|24|28
+ref/font-weight/400|400
+ref/font-weight/500|500
+ref/font-weight/600|600
+ref/font-weight/700|700
 # not in Figma: kit-defined
 line-height/tight|1.2
 line-height/snug|1.35
@@ -51,22 +58,40 @@ line-height/relaxed|1.65
 letter-spacing/tight|-0.02em
 letter-spacing/normal|0
 letter-spacing/wide|0.04em
-# space primitives (ref/space from Figma, Default density)
+# space primitives (Foundations `Scale : density`)
 ref/space/0|0
 ref/space/50|1
-ref/space/100|2
-ref/space/200|4
-ref/space/300|8
-ref/space/400|12
-ref/space/500|16
-ref/space/600|20
-ref/space/700|24
-ref/space/800|28
-ref/space/900|32
-ref/space/1000|36
-ref/space/1100|40
-ref/space/1200|44
-ref/space/1300|48
+ref/space/100|2|1|4
+ref/space/200|4|4|8
+ref/space/300|8|4|12
+ref/space/400|12|8|16
+ref/space/500|16|12|20
+ref/space/600|20|16|24
+ref/space/700|24|20|28
+ref/space/800|28|24|32
+ref/space/900|32|28|36
+ref/space/1000|36|32|40
+ref/space/1100|40|36|44
+ref/space/1200|44|40|48
+ref/space/1300|48|44|52
+# size primitives (Foundations `Scale : density`). Controls and icon sizes alias these.
+ref/size/50|1
+ref/size/100|2
+ref/size/200|4
+ref/size/300|8
+ref/size/400|12|8|16
+ref/size/500|16|12|16
+ref/size/600|20|16|20
+ref/size/700|24|20|24
+ref/size/800|28|24|28
+ref/size/900|32|28|32
+ref/size/1000|36|32|36
+ref/size/1100|40|36|44
+ref/size/1200|44|40|48
+ref/size/1300|48|44|52
+ref/size/1400|52|48|56
+ref/size/1500|56|52|60
+ref/size/1600|60|56|64
 # not in Figma: kit-defined radius roles (map to Figma radius primitives)
 radius/control/small|2
 radius/control/medium|4

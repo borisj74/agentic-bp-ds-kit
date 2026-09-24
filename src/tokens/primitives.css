@@ -1054,16 +1054,16 @@
   --ui-category-gray-800: var(--ref-gray-100);
 }
 
-/* Scale (default density). */
-:root {
-  --space-xxxsmall: 2px;
-  --space-xxsmall: 4px;
-  --space-xsmall: 8px;
-  --space-small: 12px;
-  --space-medium: 16px;
-  --space-large: 20px;
-  --space-xlarge: 24px;
-  --space-xxlarge: 28px;
+/* Scale. Default density; [data-density] re-declares it so aliases follow the nearest density. */
+:root, [data-density] {
+  --space-xxxsmall: var(--ref-space-100);
+  --space-xxsmall: var(--ref-space-200);
+  --space-xsmall: var(--ref-space-300);
+  --space-small: var(--ref-space-400);
+  --space-medium: var(--ref-space-500);
+  --space-large: var(--ref-space-600);
+  --space-xlarge: var(--ref-space-700);
+  --space-xxlarge: var(--ref-space-800);
   --radius-small: 2px;
   --radius-medium: 4px;
   --radius-large: 8px;
@@ -1072,23 +1072,23 @@
   --border-width-medium: 2px;
   --border-width-thick: 3px;
   --icon-size-xsmall: 12px;
-  --icon-size-small: 16px;
-  --icon-size-medium: 20px;
-  --icon-size-large: 24px;
-  --icon-size-xlarge: 32px;
-  --control-small: 28px;
-  --control-medium: 36px;
-  --control-large: 44px;
-  --font-size-xsmall: 12px;
-  --font-size-small: 14px;
-  --font-size-regular: 16px;
-  --font-size-large: 18px;
-  --font-size-xlarge: 20px;
-  --font-size-xxlarge: 24px;
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
+  --icon-size-small: var(--ref-size-500);
+  --icon-size-medium: var(--ref-size-600);
+  --icon-size-large: var(--ref-size-700);
+  --icon-size-xlarge: var(--ref-size-900);
+  --control-small: var(--ref-size-800);
+  --control-medium: var(--ref-size-1000);
+  --control-large: var(--ref-size-1200);
+  --font-size-xsmall: var(--ref-font-size-200);
+  --font-size-small: var(--ref-font-size-300);
+  --font-size-regular: var(--ref-font-size-400);
+  --font-size-large: var(--ref-font-size-500);
+  --font-size-xlarge: var(--ref-font-size-600);
+  --font-size-xxlarge: var(--ref-font-size-800);
+  --font-weight-regular: var(--ref-font-weight-400);
+  --font-weight-medium: var(--ref-font-weight-500);
+  --font-weight-semibold: var(--ref-font-weight-600);
+  --font-weight-bold: var(--ref-font-weight-700);
   --ref-font-size-100: 10px;
   --ref-font-size-200: 12px;
   --ref-font-size-300: 14px;
@@ -1098,6 +1098,10 @@
   --ref-font-size-700: 22px;
   --ref-font-size-800: 24px;
   --ref-font-size-900: 26px;
+  --ref-font-weight-400: 400;
+  --ref-font-weight-500: 500;
+  --ref-font-weight-600: 600;
+  --ref-font-weight-700: 700;
   --line-height-tight: 1.2;
   --line-height-snug: 1.35;
   --line-height-normal: 1.5;
@@ -1120,6 +1124,23 @@
   --ref-space-1100: 40px;
   --ref-space-1200: 44px;
   --ref-space-1300: 48px;
+  --ref-size-50: 1px;
+  --ref-size-100: 2px;
+  --ref-size-200: 4px;
+  --ref-size-300: 8px;
+  --ref-size-400: 12px;
+  --ref-size-500: 16px;
+  --ref-size-600: 20px;
+  --ref-size-700: 24px;
+  --ref-size-800: 28px;
+  --ref-size-900: 32px;
+  --ref-size-1000: 36px;
+  --ref-size-1100: 40px;
+  --ref-size-1200: 44px;
+  --ref-size-1300: 48px;
+  --ref-size-1400: 52px;
+  --ref-size-1500: 56px;
+  --ref-size-1600: 60px;
   --radius-control-small: 2px;
   --radius-control-medium: 4px;
   --radius-control-large: 8px;
@@ -1132,9 +1153,83 @@
   --border-divider-strong: 2px;
   --border-focus: 2px;
 }
+[data-density="compact"] {
+  --ref-font-size-100: 10px;
+  --ref-font-size-200: 10px;
+  --ref-font-size-300: 12px;
+  --ref-font-size-400: 14px;
+  --ref-font-size-500: 16px;
+  --ref-font-size-600: 18px;
+  --ref-font-size-700: 20px;
+  --ref-font-size-800: 22px;
+  --ref-font-size-900: 24px;
+  --ref-space-100: 1px;
+  --ref-space-200: 4px;
+  --ref-space-300: 4px;
+  --ref-space-400: 8px;
+  --ref-space-500: 12px;
+  --ref-space-600: 16px;
+  --ref-space-700: 20px;
+  --ref-space-800: 24px;
+  --ref-space-900: 28px;
+  --ref-space-1000: 32px;
+  --ref-space-1100: 36px;
+  --ref-space-1200: 40px;
+  --ref-space-1300: 44px;
+  --ref-size-400: 8px;
+  --ref-size-500: 12px;
+  --ref-size-600: 16px;
+  --ref-size-700: 20px;
+  --ref-size-800: 24px;
+  --ref-size-900: 28px;
+  --ref-size-1000: 32px;
+  --ref-size-1100: 36px;
+  --ref-size-1200: 40px;
+  --ref-size-1300: 44px;
+  --ref-size-1400: 48px;
+  --ref-size-1500: 52px;
+  --ref-size-1600: 56px;
+}
+[data-density="comfortable"] {
+  --ref-font-size-100: 12px;
+  --ref-font-size-200: 14px;
+  --ref-font-size-300: 16px;
+  --ref-font-size-400: 18px;
+  --ref-font-size-500: 20px;
+  --ref-font-size-600: 22px;
+  --ref-font-size-700: 24px;
+  --ref-font-size-800: 26px;
+  --ref-font-size-900: 28px;
+  --ref-space-100: 4px;
+  --ref-space-200: 8px;
+  --ref-space-300: 12px;
+  --ref-space-400: 16px;
+  --ref-space-500: 20px;
+  --ref-space-600: 24px;
+  --ref-space-700: 28px;
+  --ref-space-800: 32px;
+  --ref-space-900: 36px;
+  --ref-space-1000: 40px;
+  --ref-space-1100: 44px;
+  --ref-space-1200: 48px;
+  --ref-space-1300: 52px;
+  --ref-size-400: 16px;
+  --ref-size-500: 16px;
+  --ref-size-600: 20px;
+  --ref-size-700: 24px;
+  --ref-size-800: 28px;
+  --ref-size-900: 32px;
+  --ref-size-1000: 36px;
+  --ref-size-1100: 44px;
+  --ref-size-1200: 48px;
+  --ref-size-1300: 52px;
+  --ref-size-1400: 56px;
+  --ref-size-1500: 60px;
+  --ref-size-1600: 64px;
+}
 
 /* Effects, motion, opacity, grid and layout. */
-:root {
+:root, [data-density] {
   --shadow-raised: 0 1px 2px 0 #0a121c0a, 0 2px 8px 0 #0a121c14;
   --shadow-floating: 0 4px 8px -2px #0a121c0f, 0 8px 24px -4px #0a121c1f;
   --shadow-inset: inset 0 1px 2px 0 #0a121c0f, inset 0 2px 4px 0 #0a121c0a;
