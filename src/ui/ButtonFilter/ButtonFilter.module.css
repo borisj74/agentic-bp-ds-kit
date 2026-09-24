@@ -11,7 +11,7 @@
   font-family: var(--font-sans); white-space: nowrap;
   transition: background-color var(--motion-interaction-duration) var(--motion-interaction-easing);
 }
-.sm { --h: var(--control-small); font-size: var(--text-button-small-size); font-weight: var(--text-button-small-weight); line-height: var(--text-button-small-lh); letter-spacing: var(--text-button-small-ls); }
+.sm { --h: var(--control-small); font-size: var(--text-ref-label-button-size); font-weight: var(--text-ref-label-button-weight); line-height: var(--text-ref-label-button-lh); letter-spacing: var(--text-ref-label-button-ls); }
 .md { --h: var(--control-medium); font-size: var(--text-button-medium-size); font-weight: var(--text-button-medium-weight); line-height: var(--text-button-medium-lh); letter-spacing: var(--text-button-medium-ls); }
 .lg { --h: var(--control-large); font-size: var(--text-button-large-size); font-weight: var(--text-button-large-weight); line-height: var(--text-button-large-lh); letter-spacing: var(--text-button-large-ls); }
 

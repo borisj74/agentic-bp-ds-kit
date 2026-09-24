@@ -3,8 +3,8 @@
   box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xsmall);
   width: 100%; min-width: 0;
   background: var(--surface-flat); border-bottom: var(--border-width-medium) solid var(--border-brand-faint);
-  font-family: var(--font-sans); font-size: var(--text-title-xxs-size); font-weight: var(--text-title-xxs-weight);
-  line-height: var(--text-title-xxs-lh); text-transform: uppercase; color: var(--text-neutral);
+  font-family: var(--font-sans); font-size: var(--text-ref-column-size); font-weight: var(--text-ref-column-weight);
+  line-height: var(--text-ref-column-lh); text-transform: uppercase; color: var(--text-neutral);
 }
 .thin { border-bottom-width: var(--border-width-thin); }
 .sm { min-height: var(--header-cell-height-sm); padding: var(--space-xsmall) var(--space-small); }

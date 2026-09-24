@@ -33,6 +33,26 @@ const roles = [
   ["text-code", "invoice.lines.reduce((s, l) => s + l.amount, 0)"],
 ] as const;
 
+// BP Foundations reference names (Reference/…), each an alias of a role above.
+const refs = [
+  ["text-ref-page", "title-xl", "Title/Page", "Page title"],
+  ["text-ref-modal", "title-lg", "Title/Modal", "Modal title"],
+  ["text-ref-drawer", "title-lg", "Title/Drawer", "Drawer title"],
+  ["text-ref-section", "title-md", "Title/Section", "Section title"],
+  ["text-ref-card", "title-md", "Title/Card", "Card title"],
+  ["text-ref-column", "title-xxs", "Title/Column", "Column header"],
+  ["text-ref-metric", "heading-sm", "Text/Metric", "$5,144,707.08"],
+  ["text-ref-form-value", "body-lg", "Text/Form-value", "Acme Corporation"],
+  ["text-ref-cell", "body", "Text/Cell", "Invoice INV-10482"],
+  ["text-ref-alert", "body", "Text/Alert", "Your changes were saved."],
+  ["text-ref-caption", "caption", "Text/Caption", "Caption under a control"],
+  ["text-ref-footnote", "caption", "Text/Footnote", "Prices exclude tax."],
+  ["text-ref-label-form", "label", "Label/Form", "Form label"],
+  ["text-ref-label-tab", "heading-xs", "Label/Tab", "Tab label"],
+  ["text-ref-label-button", "button-small", "Label/Button", "Button label"],
+  ["text-ref-label-badge", "caption-strong", "Label/Badge", "Badge label"],
+] as const;
+
 const sizes = [["ref-font-size-100", 10], ["ref-font-size-200", 12], ["ref-font-size-300", 14], ["ref-font-size-400", 16], ["ref-font-size-500", 18], ["ref-font-size-600", 20], ["ref-font-size-700", 22], ["ref-font-size-800", 24], ["ref-font-size-900", 26]] as const;
 const named = [["font-size-xsmall", 12], ["font-size-small", 14], ["font-size-regular", 16], ["font-size-large", 18], ["font-size-xlarge", 20], ["font-size-xxlarge", 24]] as const;
 const weights = [["font-weight-regular", 400], ["font-weight-medium", 500], ["font-weight-semibold", 600], ["font-weight-bold", 700]] as const;
@@ -90,6 +110,8 @@ export function TypographyFoundation() {
         <>
           <Head title="Roles" prefix="text-display → text-code" />
           {roles.map(([k, sample]) => <Row key={k} k={`.${k}`} value={k} className={k}>{sample}</Row>)}
+          <Head title="BP reference names" prefix="text-ref-* → role" />
+          {refs.map(([k, role, bp, sample]) => <Row key={k} k={`.${k} · ${bp} → ${role}`} value={k} className={k}>{sample}</Row>)}
         </>
       )}
     </>
