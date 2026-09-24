@@ -2,7 +2,7 @@
   "name": "Card",
   "path": "src/ui/Card/Card.tsx",
   "intent": "One item in a grid or list of options people compare and pick, like a proposal line, product or plan: title, details, a price and a status note, with an optional image and a select checkbox.",
-  "usage": "Use Card for items people scan side by side and often pick from. It is one component: pass the parts you need as props; every part is optional (header, badge, overline, title, description, amount, message, image, footer). The header row holds a badge and an overline, like a request code. description is two lines at most. amount is the price or key number. message is a short status line with an icon, colored by messageTone. image shows a photo tile at the top right, or icon an icon tile. selectable adds a footer checkbox; clicking anywhere on the card toggles it, and the selected card turns blue. disabled greys the card out. href or onClick make the card open what it shows, like an account in a card view of a list: the title becomes the one link, its hit area covers the whole card, hover lifts the card and keyboard focus rings it. A card either opens something or is picked, not both. Lay cards out with the layout grid classes. actions and menu put the record's actions at the end of the footer, beside the checkbox: the ones it is used for as icon buttons, the rest behind More. Give a Card the same actions as the record's Table row and ListView row, so switching views never changes what can be done. See contracts/card.json for the full contract.",
+  "usage": "Use Card for items people scan side by side and often pick from. It is one component: pass the parts you need as props; every part is optional (header, badge, overline, title, description, amount, message, image, footer). The header row holds a badge and an overline, like a request code. description is two lines at most. amount is the price or key number. message is a short status line with an icon, colored by messageIntent. image shows a photo tile at the top right, or icon an icon tile. selectable adds a footer checkbox; clicking anywhere on the card toggles it, and the selected card turns blue. disabled greys the card out. href or onClick make the card open what it shows, like an account in a card view of a list: the title becomes the one link, its hit area covers the whole card, hover lifts the card and keyboard focus rings it. A card either opens something or is picked, not both. Lay cards out with the layout grid classes. actions and menu put the record's actions at the end of the footer, beside the checkbox: the ones it is used for as icon buttons, the rest behind More. Give a Card the same actions as the record's Table row and ListView row, so switching views never changes what can be done. See contracts/card.json for the full contract.",
   "props": {
     "title": {
       "type": "string",
@@ -16,10 +16,10 @@
       "type": "string",
       "note": "A kit Badge at the start of the header row."
     },
-    "badgeTone": {
-      "type": "BadgeTone",
+    "badgeIntent": {
+      "type": "BadgeIntent",
       "default": "neutral",
-      "note": "The Badge tone."
+      "note": "The Badge intent."
     },
     "description": {
       "type": "string",
@@ -33,7 +33,7 @@
       "type": "string",
       "note": "A short status line under the text, like In stock or Needs approval."
     },
-    "messageTone": {
+    "messageIntent": {
       "enum": [
         "success",
         "warning",
@@ -151,7 +151,7 @@
             "description": "Quiet scissor keys, backlit, with a numeric pad.",
             "amount": "$89.00",
             "message": "Ships in 2 weeks",
-            "messageTone": "warning",
+            "messageIntent": "warning",
             "icon": "keyboard",
             "selectable": true,
             "defaultSelected": true
@@ -168,7 +168,7 @@
             "overline": "INV-4471",
             "title": "Northwind Holdings",
             "badge": "Paid",
-            "badgeTone": "success",
+            "badgeIntent": "success",
             "description": "Due 12 Sep 2026",
             "amount": "$2,980.00",
             "selectable": true,
@@ -218,7 +218,7 @@
             "description": "No longer offered on new proposals.",
             "amount": "$129.00",
             "message": "Out of stock",
-            "messageTone": "danger",
+            "messageIntent": "danger",
             "icon": "dock",
             "selectable": true,
             "disabled": true
@@ -237,7 +237,7 @@
             "description": "Two monitors and stands for the new design team, delivered to the Berlin office.",
             "amount": "$1,480.00",
             "message": "Needs approval",
-            "messageTone": "warning",
+            "messageIntent": "warning",
             "selectable": true
           }
         }
@@ -253,7 +253,7 @@
             "description": "Priority email and phone support, with a named account manager.",
             "amount": "$1,200.00 / year",
             "message": "Renews on 1 March",
-            "messageTone": "info"
+            "messageIntent": "info"
           }
         }
       ]
@@ -274,12 +274,12 @@
         {
           "props": {
             "badge": "Draft",
-            "badgeTone": "info",
+            "badgeIntent": "info",
             "overline": "72074",
             "title": "Lakeshore Clinics",
             "description": "Account · Monthly billing",
             "message": "Needs approval",
-            "messageTone": "warning",
+            "messageIntent": "warning",
             "href": "#"
           }
         }

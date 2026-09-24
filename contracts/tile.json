@@ -2,7 +2,7 @@
   "name": "Tile",
   "path": "src/ui/Tile/Tile.tsx",
   "intent": "A way in to somewhere: the name of a place, a line about what is in it, and a colored icon square. One of a grid of them on a landing page.",
-  "usage": "Use Tile for the doors on a landing page: a settings home, a reports home, the start of a job. It is one component: title names the place, description says in one line what is inside, icon and tone draw the 72px square, and href or onClick is where it goes. Give each tile in a grid its own tone so people learn the colors; tone takes the kit category colors, not a color of your own. Lay a set of them out with the .layout-metrics class from contracts/layout.json, never a grid of your own. It is a link, not a choice: if people are comparing options and picking one, that is a Card. See contracts/tile.json for the full contract.",
+  "usage": "Use Tile for the doors on a landing page: a settings home, a reports home, the start of a job. It is one component: title names the place, description says in one line what is inside, icon and intent draw the 72px square, and href or onClick is where it goes. Give each tile in a grid its own intent so people learn the colors; intent takes the kit category colors, not a color of your own. Lay a set of them out with the .layout-metrics class from contracts/layout.json, never a grid of your own. It is a link, not a choice: if people are comparing options and picking one, that is a Card. See contracts/tile.json for the full contract.",
   "props": {
     "title": {
       "type": "string",
@@ -17,7 +17,7 @@
       "type": "string",
       "note": "Material Symbols name, drawn white in the 72px square. Without it the square is left out."
     },
-    "tone": {
+    "intent": {
       "enum": [
         "brand",
         "green",
@@ -55,10 +55,10 @@
   "doNot": [
     "Do not use it to compare or pick options; that is Card.",
     "Do not put buttons or fields inside it. The whole tile is one link.",
-    "Do not give a grid of tiles one tone; give each its own so the colors mean something.",
+    "Do not give a grid of tiles one intent; give each its own so the colors mean something.",
     "Do not build a grid for them. Use .layout-metrics; read contracts/layout.json.",
     "Do not write a paragraph in description; one line, at most three.",
-    "Do not use raw hex; pick a tone."
+    "Do not use raw hex; pick an intent."
   ],
   "a11y": [
     "The tile is one link or button, so it is reached with one Tab and read as one thing.",
@@ -67,7 +67,7 @@
     "Focus draws the kit focus ring around the whole tile.",
     "A disabled tile is a real disabled button, so it is skipped rather than silently dead."
   ],
-  "snippet": "<Tile title=\"Security & Users\" description=\"Includes roles, sharing groups, approvals and user management.\" icon=\"shield_person\" tone=\"red\" href=\"/settings/security\" />",
+  "snippet": "<Tile title=\"Security & Users\" description=\"Includes roles, sharing groups, approvals and user management.\" icon=\"shield_person\" intent=\"red\" href=\"/settings/security\" />",
   "examples": [
     {
       "title": "Ways in",
@@ -78,7 +78,7 @@
             "title": "Develop",
             "description": "Includes entities, workflows, functions, data presentations, OAuth, and APIs.",
             "icon": "handyman",
-            "tone": "yellow",
+            "intent": "yellow",
             "href": "#"
           }
         },
@@ -87,7 +87,7 @@
             "title": "External Connectors",
             "description": "Includes application, data and tax connectors.",
             "icon": "account_tree",
-            "tone": "olive",
+            "intent": "olive",
             "href": "#"
           }
         },
@@ -96,7 +96,7 @@
             "title": "Security & Users",
             "description": "Includes roles, sharing groups, approvals, authentication, and user management.",
             "icon": "shield_person",
-            "tone": "red",
+            "intent": "red",
             "href": "#"
           }
         }
@@ -118,7 +118,7 @@
             "title": "Mediation",
             "description": "Not switched on for this company.",
             "icon": "speed",
-            "tone": "gray",
+            "intent": "gray",
             "disabled": true
           }
         }

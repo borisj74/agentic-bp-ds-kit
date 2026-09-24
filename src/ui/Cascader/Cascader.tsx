@@ -306,7 +306,7 @@ export function Cascader({
         </span>
         {(o.type || rel || opens(o)) && (
           <span className={styles.end}>
-            {o.type && <Badge size="sm" tone={inPath || hover === key ? "hollow" : "neutral"} emphasis="faint">{o.type}</Badge>}
+            {o.type && <Badge size="sm" intent={inPath || hover === key ? "hollow" : "neutral"} emphasis="faint">{o.type}</Badge>}
             {rel ? (
               <Icon name={rel.icon} size="sm" label={rel.name} className={styles[o.relation!]} />
             ) : opens(o) && !o.type && <Icon name="chevron_right" size="sm" className={styles.chevron} />}
@@ -370,7 +370,7 @@ export function Cascader({
                 {p.slice(0, -1).map((o) => <span key={o.value} className={styles.path}>{o.label} / </span>)}
                 <span className={styles.name}>{p[p.length - 1].label}</span>
               </span>
-              {p[p.length - 1].type && <span className={styles.end}><Badge size="sm" tone="neutral" emphasis="faint">{p[p.length - 1].type!}</Badge></span>}
+              {p[p.length - 1].type && <span className={styles.end}><Badge size="sm" intent="neutral" emphasis="faint">{p[p.length - 1].type!}</Badge></span>}
             </div>
           ))}
         </div>

@@ -2,9 +2,9 @@
   "name": "Badge",
   "path": "src/ui/Badge/Badge.tsx",
   "intent": "Short status or category label. Not a person and not a button.",
-  "usage": "Use Badge for status on rows and cards, and for category or filter labels. Pick the tone from meaning and the emphasis from how loud it should be: subtle is the default, strong for the one thing that must stand out, faint for quiet lists. Only dismissible filters are removable. sm (20px) is the default; md and lg are larger kit sizes for roomier layouts. See contracts/badge.json for the full contract.",
+  "usage": "Use Badge for status on rows and cards, and for category or filter labels. Pick the intent from meaning and the emphasis from how loud it should be: subtle is the default, strong for the one thing that must stand out, faint for quiet lists. Only dismissible filters are removable. sm (20px) is the default; md and lg are larger kit sizes for roomier layouts. See contracts/badge.json for the full contract.",
   "props": {
-    "tone": {
+    "intent": {
       "enum": [
         "neutral",
         "hollow",
@@ -52,7 +52,7 @@
     "disabled": {
       "type": "boolean",
       "default": false,
-      "note": "Gray with faint text in every tone. The close button does not fire."
+      "note": "Gray with faint text in every intent. The close button does not fire."
     },
     "children": {
       "type": "string",
@@ -79,13 +79,13 @@
     "Do not mix badge sizes in one row."
   ],
   "a11y": [
-    "Text carries the meaning; tone color is never the only signal.",
+    "Text carries the meaning; intent color is never the only signal.",
     "Icon-only badges keep children as visually hidden text.",
     "disabled sets aria-disabled.",
     "The close control is a native button labeled Remove {children}, with a focus ring. When disabled, it is disabled too.",
     "The remove button draws a small x but its hit area is at least 24 by 24 (WCAG 2.5.8)."
   ],
-  "snippet": "<Badge tone=\"success\">Paid</Badge>",
+  "snippet": "<Badge intent=\"success\">Paid</Badge>",
   "examples": [
     {
       "title": "Subtle",
@@ -93,43 +93,43 @@
       "items": [
         {
           "props": {
-            "tone": "neutral",
+            "intent": "neutral",
             "children": "Draft"
           }
         },
         {
           "props": {
-            "tone": "hollow",
+            "intent": "hollow",
             "children": "Archived"
           }
         },
         {
           "props": {
-            "tone": "info",
+            "intent": "info",
             "children": "In progress"
           }
         },
         {
           "props": {
-            "tone": "success",
+            "intent": "success",
             "children": "Paid"
           }
         },
         {
           "props": {
-            "tone": "warning",
+            "intent": "warning",
             "children": "Pending"
           }
         },
         {
           "props": {
-            "tone": "danger",
+            "intent": "danger",
             "children": "Overdue"
           }
         },
         {
           "props": {
-            "tone": "highlight",
+            "intent": "highlight",
             "children": "New"
           }
         }
@@ -141,49 +141,49 @@
       "items": [
         {
           "props": {
-            "tone": "neutral",
+            "intent": "neutral",
             "emphasis": "strong",
             "children": "Draft"
           }
         },
         {
           "props": {
-            "tone": "hollow",
+            "intent": "hollow",
             "emphasis": "strong",
             "children": "Archived"
           }
         },
         {
           "props": {
-            "tone": "info",
+            "intent": "info",
             "emphasis": "strong",
             "children": "In progress"
           }
         },
         {
           "props": {
-            "tone": "success",
+            "intent": "success",
             "emphasis": "strong",
             "children": "Paid"
           }
         },
         {
           "props": {
-            "tone": "warning",
+            "intent": "warning",
             "emphasis": "strong",
             "children": "Pending"
           }
         },
         {
           "props": {
-            "tone": "danger",
+            "intent": "danger",
             "emphasis": "strong",
             "children": "Overdue"
           }
         },
         {
           "props": {
-            "tone": "highlight",
+            "intent": "highlight",
             "emphasis": "strong",
             "children": "New"
           }
@@ -196,49 +196,49 @@
       "items": [
         {
           "props": {
-            "tone": "neutral",
+            "intent": "neutral",
             "emphasis": "faint",
             "children": "Draft"
           }
         },
         {
           "props": {
-            "tone": "hollow",
+            "intent": "hollow",
             "emphasis": "faint",
             "children": "Archived"
           }
         },
         {
           "props": {
-            "tone": "info",
+            "intent": "info",
             "emphasis": "faint",
             "children": "In progress"
           }
         },
         {
           "props": {
-            "tone": "success",
+            "intent": "success",
             "emphasis": "faint",
             "children": "Paid"
           }
         },
         {
           "props": {
-            "tone": "warning",
+            "intent": "warning",
             "emphasis": "faint",
             "children": "Pending"
           }
         },
         {
           "props": {
-            "tone": "danger",
+            "intent": "danger",
             "emphasis": "faint",
             "children": "Overdue"
           }
         },
         {
           "props": {
-            "tone": "highlight",
+            "intent": "highlight",
             "emphasis": "faint",
             "children": "New"
           }
@@ -251,28 +251,28 @@
       "items": [
         {
           "props": {
-            "tone": "info",
+            "intent": "info",
             "size": "sm",
             "children": "In progress"
           }
         },
         {
           "props": {
-            "tone": "info",
+            "intent": "info",
             "size": "md",
             "children": "In progress"
           }
         },
         {
           "props": {
-            "tone": "info",
+            "intent": "info",
             "size": "lg",
             "children": "In progress"
           }
         },
         {
           "props": {
-            "tone": "success",
+            "intent": "success",
             "size": "sm",
             "iconOnly": true,
             "icon": "check",
@@ -281,7 +281,7 @@
         },
         {
           "props": {
-            "tone": "success",
+            "intent": "success",
             "size": "md",
             "iconOnly": true,
             "icon": "check",
@@ -290,7 +290,7 @@
         },
         {
           "props": {
-            "tone": "success",
+            "intent": "success",
             "size": "lg",
             "iconOnly": true,
             "icon": "check",
@@ -305,7 +305,7 @@
       "items": [
         {
           "props": {
-            "tone": "neutral",
+            "intent": "neutral",
             "iconOnly": true,
             "icon": "description",
             "children": "Draft"
@@ -313,7 +313,7 @@
         },
         {
           "props": {
-            "tone": "hollow",
+            "intent": "hollow",
             "iconOnly": true,
             "icon": "inventory_2",
             "children": "Archived"
@@ -321,7 +321,7 @@
         },
         {
           "props": {
-            "tone": "info",
+            "intent": "info",
             "iconOnly": true,
             "icon": "info",
             "children": "Info"
@@ -329,7 +329,7 @@
         },
         {
           "props": {
-            "tone": "success",
+            "intent": "success",
             "iconOnly": true,
             "icon": "check",
             "children": "Paid"
@@ -337,7 +337,7 @@
         },
         {
           "props": {
-            "tone": "warning",
+            "intent": "warning",
             "iconOnly": true,
             "icon": "schedule",
             "children": "Pending"
@@ -345,7 +345,7 @@
         },
         {
           "props": {
-            "tone": "danger",
+            "intent": "danger",
             "iconOnly": true,
             "icon": "priority_high",
             "children": "Overdue"
@@ -353,7 +353,7 @@
         },
         {
           "props": {
-            "tone": "highlight",
+            "intent": "highlight",
             "iconOnly": true,
             "icon": "star",
             "children": "New"
@@ -367,21 +367,21 @@
       "items": [
         {
           "props": {
-            "tone": "success",
+            "intent": "success",
             "icon": "check",
             "children": "Paid"
           }
         },
         {
           "props": {
-            "tone": "info",
+            "intent": "info",
             "removable": true,
             "children": "This month"
           }
         },
         {
           "props": {
-            "tone": "hollow",
+            "intent": "hollow",
             "icon": "filter_list",
             "removable": true,
             "children": "Enterprise"
@@ -391,18 +391,18 @@
     },
     {
       "title": "Disabled",
-      "usage": "Gray with faint text in every tone and emphasis. If removable, the close button does not fire.",
+      "usage": "Gray with faint text in every intent and emphasis. If removable, the close button does not fire.",
       "items": [
         {
           "props": {
-            "tone": "neutral",
+            "intent": "neutral",
             "disabled": true,
             "children": "Draft"
           }
         },
         {
           "props": {
-            "tone": "success",
+            "intent": "success",
             "emphasis": "strong",
             "disabled": true,
             "children": "Paid"
@@ -410,7 +410,7 @@
         },
         {
           "props": {
-            "tone": "info",
+            "intent": "info",
             "disabled": true,
             "removable": true,
             "children": "This month"
@@ -418,7 +418,7 @@
         },
         {
           "props": {
-            "tone": "warning",
+            "intent": "warning",
             "disabled": true,
             "iconOnly": true,
             "icon": "schedule",

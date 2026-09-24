@@ -104,7 +104,7 @@ export default function Installation() {
           <div id="updates">
             <Section title="Getting updates">
               <div className={docs.prose}>
-                <Alert tone="warning" title="Prototypes do not update on their own">
+                <Alert intent="warning" title="Prototypes do not update on their own">
                   Each prototype is a copy of the kit from the day it was made. To use newer components, start a new
                   prototype with the command in Option 1 and move your screens across.
                 </Alert>

@@ -1,9 +1,9 @@
 "use client";
 import { useState, type KeyboardEvent } from "react";
-import { ChartEmpty, ChartFrame, ChartTooltip, Legend, SrTable, chartStyles as c, formatter, toneAt, toneVar, type ChartFormat, type ChartTone } from "../Chart/chart";
+import { ChartEmpty, ChartFrame, ChartTooltip, Legend, SrTable, chartStyles as c, formatter, intentAt, intentVar, type ChartFormat, type ChartIntent } from "../Chart/chart";
 import styles from "./PieChart.module.css";
 
-export type { ChartFormat, ChartTone };
+export type { ChartFormat, ChartIntent };
 export type PieChartSize = "sm" | "md" | "lg";
 export type PieChartLegend = "end" | "bottom";
 export type PieChartAlign = "start" | "center";
@@ -11,7 +11,7 @@ export type PieChartAlign = "start" | "center";
 export interface PieChartSlice {
   label: string;
   value: number;
-  tone?: ChartTone;
+  intent?: ChartIntent;
 }
 
 export interface PieChartProps {
@@ -52,10 +52,10 @@ export function PieChart({
   const full = formatter(format, currency, false);
 
   // Largest first; past maxSlices the rest merge into one grey Other slice.
-  const sorted = data.filter((d) => d.value > 0).map((d, i) => ({ ...d, tone: toneAt(i, d.tone) })).sort((a, b) => b.value - a.value);
+  const sorted = data.filter((d) => d.value > 0).map((d, i) => ({ ...d, intent: intentAt(i, d.intent) })).sort((a, b) => b.value - a.value);
   const kept = sorted.length > maxSlices ? sorted.slice(0, maxSlices - 1) : sorted;
   const rest = sorted.slice(kept.length);
-  const slices = rest.length ? [...kept, { label: otherLabel, value: rest.reduce((s, d) => s + d.value, 0), tone: "gray" as ChartTone }] : kept;
+  const slices = rest.length ? [...kept, { label: otherLabel, value: rest.reduce((s, d) => s + d.value, 0), intent: "gray" as ChartIntent }] : kept;
   const total = slices.reduce((s, d) => s + d.value, 0);
 
   if (!slices.length || !(total > 0)) {
@@ -91,7 +91,7 @@ export function PieChart({
                 <circle
                   key={a.label} className={c.sweep} cx={C} cy={C} r={r} pathLength={100}
                   strokeDasharray={`${Math.max(a.len + (arcs.length > 1 ? OVERLAP : 0), 0.01)} 100`} strokeDashoffset={-a.start}
-                  style={{ stroke: toneVar(a.tone), opacity: active !== null && active !== i ? "var(--opacity-muted)" : 1 }}
+                  style={{ stroke: intentVar(a.intent), opacity: active !== null && active !== i ? "var(--opacity-muted)" : 1 }}
                   onPointerEnter={() => setActive(i)}
                 />
               ))}
@@ -106,11 +106,11 @@ export function PieChart({
           {cur && (
             // Above the pie, so it never covers the total or the legend.
             <div className={styles.tipAnchor}>
-              <ChartTooltip x={0} y={0} title={cur.label} rows={[{ label: `${cur.pct}%`, value: full(cur.value), tone: cur.tone }]} />
+              <ChartTooltip x={0} y={0} title={cur.label} rows={[{ label: `${cur.pct}%`, value: full(cur.value), intent: cur.intent }]} />
             </div>
           )}
         </div>
-        {showLegend && <Legend orientation={legend === "end" ? "column" : "row"} align={legend === "end" ? "start" : "center"} items={arcs.map((a) => ({ label: a.label, tone: a.tone, note: `${a.pct}%` }))} />}
+        {showLegend && <Legend orientation={legend === "end" ? "column" : "row"} align={legend === "end" ? "start" : "center"} items={arcs.map((a) => ({ label: a.label, intent: a.intent, note: `${a.pct}%` }))} />}
       </div>
       <SrTable caption={label} columns={["Value", "Share"]} rows={arcs.map((a) => ({ head: a.label, cells: [full(a.value), `${a.pct}%`] }))} />
     </ChartFrame>

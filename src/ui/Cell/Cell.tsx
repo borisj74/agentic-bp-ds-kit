@@ -2,7 +2,7 @@
 import type { ReactNode } from "react";
 import { Avatar } from "../Avatar/Avatar";
 import { AvatarGroup } from "../AvatarGroup/AvatarGroup";
-import { Badge, type BadgeTone } from "../Badge/Badge";
+import { Badge, type BadgeIntent } from "../Badge/Badge";
 import { Button, type ButtonVariant } from "../Button/Button";
 import { ButtonGroup } from "../ButtonGroup/ButtonGroup";
 import { Checkbox } from "../Checkbox/Checkbox";
@@ -20,7 +20,7 @@ export type CellSize = "sm" | "md";
 export type CellAlign = "start" | "center" | "end";
 export type CellTreeToggle = "chevron" | "box";
 export interface CellPerson { name: string; src?: string }
-export interface CellBadge { label: string; tone?: BadgeTone }
+export interface CellBadge { label: string; intent?: BadgeIntent }
 export interface CellAction { label: string; icon?: string; variant?: ButtonVariant; onClick?: () => void }
 
 export interface CellProps {
@@ -35,7 +35,7 @@ export interface CellProps {
   src?: string;
   people?: CellPerson[];
   icon?: string;
-  tone?: BadgeTone;
+  intent?: BadgeIntent;
   badges?: CellBadge[];
   value?: string | number;
   actions?: CellAction[];
@@ -58,7 +58,7 @@ const score = (v?: string | number) => Math.max(0, Math.min(STARS, Math.round(Nu
 
 export function Cell({
   type = "text", size: ownSize, align = "start", text = true, checkbox = false, label, href, name, src, people, icon,
-  tone = "neutral", badges, value, actions, menu, options, onValueChange, checked, defaultChecked, onCheckedChange,
+  intent = "neutral", badges, value, actions, menu, options, onValueChange, checked, defaultChecked, onCheckedChange,
   level = 1, expanded, onExpandedChange, showLines = true, treeToggle = "chevron", onClick,
 }: CellProps) {
   // A surrounding Density changes the row through the density tokens, not the size.
@@ -97,10 +97,10 @@ export function Cell({
       if (!text) aria = label;
       break;
     case "badge":
-      visual = <Badge tone={tone}>{label ?? ""}</Badge>;
+      visual = <Badge intent={intent}>{label ?? ""}</Badge>;
       break;
     case "badges":
-      visual = <span className={styles.row}>{(badges ?? []).slice(0, 3).map((b, i) => <Badge key={i} tone={b.tone ?? "neutral"}>{b.label}</Badge>)}</span>;
+      visual = <span className={styles.row}>{(badges ?? []).slice(0, 3).map((b, i) => <Badge key={i} intent={b.intent ?? "neutral"}>{b.label}</Badge>)}</span>;
       break;
     case "trendPositive":
     case "trendNegative": {
@@ -117,7 +117,7 @@ export function Cell({
       const n = score(value);
       visual = (
         <span className={styles.row} role="img" aria-label={`${n} of ${STARS}`}>
-          {Array.from({ length: STARS }, (_, i) => <Icon key={i} name="star" size="sm" filled={i < n} tone={i < n ? "warning" : "subtle"} />)}
+          {Array.from({ length: STARS }, (_, i) => <Icon key={i} name="star" size="sm" filled={i < n} intent={i < n ? "warning" : "subtle"} />)}
         </span>
       );
       break;

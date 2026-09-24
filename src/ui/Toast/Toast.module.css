@@ -13,7 +13,7 @@
   animation: enter var(--motion-overlay-duration) var(--motion-overlay-easing);
 }
 
-/* Countdown: the tone's faint track, and its fill shrinking to nothing over the duration. */
+/* Countdown: the intent's faint track, and its fill shrinking to nothing over the duration. */
 .bar { display: block; height: var(--toast-bar); }
 .fill { display: block; height: 100%; animation: countdown var(--toast-duration) linear forwards; }
 .paused { animation-play-state: paused; }

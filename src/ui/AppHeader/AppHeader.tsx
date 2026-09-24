@@ -2,7 +2,7 @@
 import { useEffect, useId, useRef, useState, type FocusEvent, type KeyboardEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Avatar } from "../Avatar/Avatar";
-import { Badge, type BadgeTone } from "../Badge/Badge";
+import { Badge, type BadgeIntent } from "../Badge/Badge";
 import { Button } from "../Button/Button";
 import { Command, type CommandGroup, type CommandIconStyle, type CommandScope, type CommandVariant } from "../Command/Command";
 import { useDensity, type DensitySize } from "../Density/Density";
@@ -15,7 +15,7 @@ import { Tooltip } from "../Tooltip/Tooltip";
 import { useFloating, useInBrowser } from "../Tooltip/useFloating";
 import styles from "./AppHeader.module.css";
 
-export type AppHeaderEnvironmentTone = Exclude<BadgeTone, "hollow">;
+export type AppHeaderEnvironmentIntent = Exclude<BadgeIntent, "hollow">;
 export type AppHeaderDensity = "compact" | "default" | "comfortable";
 export interface AppHeaderAction { id: string; label: string; icon: string }
 export interface AppHeaderUser { name: string; src?: string }
@@ -27,7 +27,7 @@ export interface AppHeaderProps {
   logo?: ReactNode;
   homeHref?: string;
   environment?: string;
-  environmentTone?: AppHeaderEnvironmentTone;
+  environmentIntent?: AppHeaderEnvironmentIntent;
   search?: boolean;
   searchPlaceholder?: string;
   searchShortcut?: string;
@@ -62,7 +62,7 @@ const COMMAND_ROW = 44; // the kit Command search row is --control-large tall
 const CONTROL: Record<AppHeaderDensity, DensitySize> = { compact: "sm", default: "md", comfortable: "lg" };
 
 export function AppHeader({
-  onNavToggle, navOpen = false, logo, homeHref, environment, environmentTone = "success",
+  onNavToggle, navOpen = false, logo, homeHref, environment, environmentIntent = "success",
   search = true, searchPlaceholder = "Search", searchShortcut, onSearch,
   searchGroups, searchVariant = "list", searchIconStyle = "tile", onSearchSelect, searchScopes, searchScope, onSearchScopeChange,
   actions = [], onAction, user, company,
@@ -191,7 +191,7 @@ export function AppHeader({
           {/* The tag goes on a phone-width bar: the brand and the toggle come first there. */}
           {environment && (
             <span className={styles.env}>
-              <Badge tone={environmentTone} emphasis="strong" size={density === "comfortable" ? "md" : "sm"}>{environment}</Badge>
+              <Badge intent={environmentIntent} emphasis="strong" size={density === "comfortable" ? "md" : "sm"}>{environment}</Badge>
             </span>
           )}
         </div>

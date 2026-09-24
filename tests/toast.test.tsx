@@ -19,7 +19,7 @@ describe("Toast", () => {
   });
 
   it("makes a danger toast an alert, named by its title", () => {
-    render(<Toast open tone="danger" onClose={() => {}} title="Payment failed" />);
+    render(<Toast open intent="danger" onClose={() => {}} title="Payment failed" />);
     expect(screen.getByRole("alert", { name: "Payment failed" })).toBeInTheDocument();
   });
 

@@ -10,7 +10,7 @@
 .md { padding: var(--space-xxsmall) var(--space-xsmall); font-size: var(--font-size-small); }
 .lg { padding: var(--space-xsmall) var(--space-small); font-size: var(--font-size-small); }
 
-/* -strong text keeps every tone at 4.5:1 or more on its tint, in light and dark. */
+/* -strong text keeps every intent at 4.5:1 or more on its tint, in light and dark. */
 .neutral { background: var(--bg-neutral-subtle); border-color: var(--border-neutral-subtle); color: var(--text-neutral-strong); }
 .brand { background: var(--bg-brand-faint); border-color: var(--border-brand-subtle); color: var(--text-brand-strong); }
 .success { background: var(--bg-success-faint); border-color: var(--border-success-subtle); color: var(--text-success-strong); }

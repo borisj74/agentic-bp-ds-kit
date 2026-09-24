@@ -48,14 +48,14 @@ export function ChatHeader({
   return (
     <div className={styles.frame}>
     <header className={styles.header} aria-label={label ?? title}>
-      <span className={styles.mark}><LogoAI variant="symbol" tone="filled" label={title} /></span>
+      <span className={styles.mark}><LogoAI variant="symbol" intent="filled" label={title} /></span>
       <h2 className={styles.title}>{title}</h2>
       {/* While Plan Mode is on the bar says so, so the tick in the menu is not the only sign of it. On a narrow
           bar the badge drops to its icon, still named Plan Mode, so the name stays whole. */}
       {planMode && (
         <>
-          <span className={[styles.flag, styles.flagText].join(" ")}><Badge tone="info" icon="checklist">Plan Mode</Badge></span>
-          <span className={[styles.flag, styles.flagIcon].join(" ")}><Badge tone="info" icon="checklist" iconOnly>Plan Mode</Badge></span>
+          <span className={[styles.flag, styles.flagText].join(" ")}><Badge intent="info" icon="checklist">Plan Mode</Badge></span>
+          <span className={[styles.flag, styles.flagIcon].join(" ")}><Badge intent="info" icon="checklist" iconOnly>Plan Mode</Badge></span>
         </>
       )}
       <div className={styles.actions}>

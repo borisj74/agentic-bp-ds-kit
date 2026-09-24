@@ -87,8 +87,8 @@
       "type": "string",
       "note": "Material Symbols name. file defaults to description, payment to credit_card. For tree, an optional icon before the label."
     },
-    "tone": {
-      "type": "BadgeTone",
+    "intent": {
+      "type": "BadgeIntent",
       "default": "neutral",
       "note": "For badge."
     },
@@ -96,7 +96,7 @@
       "type": "CellBadge[]",
       "itemShape": {
         "label": "string",
-        "tone": "BadgeTone?"
+        "intent": "BadgeIntent?"
       },
       "note": "For badges. Up to 3."
     },
@@ -326,14 +326,14 @@
           "props": {
             "type": "badge",
             "label": "Paid",
-            "tone": "success"
+            "intent": "success"
           }
         },
         {
           "props": {
             "type": "badge",
             "label": "Overdue",
-            "tone": "danger"
+            "intent": "danger"
           }
         },
         {
@@ -342,11 +342,11 @@
             "badges": [
               {
                 "label": "Usage",
-                "tone": "info"
+                "intent": "info"
               },
               {
                 "label": "Annual",
-                "tone": "neutral"
+                "intent": "neutral"
               }
             ]
           }

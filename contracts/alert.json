@@ -2,9 +2,9 @@
   "name": "Alert",
   "path": "src/ui/Alert/Alert.tsx",
   "intent": "Inline message that stays on the page, with an optional action and dismiss.",
-  "usage": "Use Alert for a message that stays on the page until the user acts on it or dismisses it. Pick the tone from what the message means. Keep it to one or two sentences and at most one action. Warning and danger are announced right away; info and success are announced politely. See contracts/alert.json for the full contract.",
+  "usage": "Use Alert for a message that stays on the page until the user acts on it or dismisses it. Pick the intent from what the message means. Keep it to one or two sentences and at most one action. Warning and danger are announced right away; info and success are announced politely. See contracts/alert.json for the full contract.",
   "props": {
-    "tone": { "enum": ["info", "success", "warning", "danger"], "default": "info", "note": "Sets background, border and icon. info=info, success=check_circle, warning=warning, danger=error." },
+    "intent": { "enum": ["info", "success", "warning", "danger"], "default": "info", "note": "Sets background, border and icon. info=info, success=check_circle, warning=warning, danger=error." },
     "title": { "type": "string", "note": "Optional bold line above the message." },
     "actionLabel": { "type": "string", "note": "Text for the one inline action. Shown as a blue link-style button (--link-brand) after the message. Blue is a deliberate choice; contrast on tinted backgrounds is just under 4.5:1." },
     "dismissible": { "type": "boolean", "default": false, "note": "Shows a close Button. The Alert hides itself and calls onDismiss." },
@@ -13,43 +13,43 @@
     "onDismiss": { "type": "function", "note": "Called after the user closes the Alert." }
   },
   "useWhen": ["Page or form feedback the user should still see after it appears.", "Info, success, warning or danger copy tied to the current view.", "A notice with one follow-up action, like Review or Update card."],
-  "doNot": ["Do not invent a local Alert, Banner, Callout or Notice.", "Do not use for short status labels on rows or cards.", "Do not use for pop-up messages that disappear on their own.", "Do not put more than one action in an Alert. Use a Button nearby instead.", "Do not use raw hex. Tone sets every color."],
+  "doNot": ["Do not invent a local Alert, Banner, Callout or Notice.", "Do not use for short status labels on rows or cards.", "Do not use for pop-up messages that disappear on their own.", "Do not put more than one action in an Alert. Use a Button nearby instead.", "Do not use raw hex. Intent sets every color."],
   "a11y": ["info and success render role=status.", "warning and danger render role=alert.", "The icon is decorative; the message carries the meaning.", "The action is a native button. The close Button is labeled Dismiss."],
-  "snippet": "<Alert tone=\"info\" actionLabel=\"Main action\" dismissible>Alert message goes here</Alert>",
+  "snippet": "<Alert intent=\"info\" actionLabel=\"Main action\" dismissible>Alert message goes here</Alert>",
   "examples": [
     {
       "title": "Accessibility",
       "a11y": true,
       "usage": "Warning and danger interrupt a screen reader. Use them only when the user needs to know now.",
       "items": [
-        { "props": { "tone": "info", "children": "Invoices now sync every hour." } },
-        { "props": { "tone": "danger", "children": "We couldn't process the payment." } }
+        { "props": { "intent": "info", "children": "Invoices now sync every hour." } },
+        { "props": { "intent": "danger", "children": "We couldn't process the payment." } }
       ]
     },
     {
-      "title": "Tones",
-      "usage": "Pick the tone from what the message means. Info for neutral news, success after something worked, warning before a problem, danger after one.",
+      "title": "Intents",
+      "usage": "Pick the intent from what the message means. Info for neutral news, success after something worked, warning before a problem, danger after one.",
       "items": [
-        { "props": { "tone": "info", "children": "Invoices now sync every hour." } },
-        { "props": { "tone": "success", "children": "Your changes are saved." } },
-        { "props": { "tone": "warning", "children": "Your trial ends in 3 days." } },
-        { "props": { "tone": "danger", "children": "We couldn't process the payment." } }
+        { "props": { "intent": "info", "children": "Invoices now sync every hour." } },
+        { "props": { "intent": "success", "children": "Your changes are saved." } },
+        { "props": { "intent": "warning", "children": "Your trial ends in 3 days." } },
+        { "props": { "intent": "danger", "children": "We couldn't process the payment." } }
       ]
     },
     {
       "title": "Action and dismiss",
       "usage": "One action right after the message. Add dismiss when the message is safe to hide.",
       "items": [
-        { "props": { "tone": "info", "actionLabel": "Main action", "dismissible": true, "children": "Alert message goes here" } },
-        { "props": { "tone": "warning", "actionLabel": "Upgrade", "dismissible": true, "children": "Your trial ends in 3 days." } }
+        { "props": { "intent": "info", "actionLabel": "Main action", "dismissible": true, "children": "Alert message goes here" } },
+        { "props": { "intent": "warning", "actionLabel": "Upgrade", "dismissible": true, "children": "Your trial ends in 3 days." } }
       ]
     },
     {
       "title": "With title",
       "usage": "Add a title when the message needs a short headline. Keep the title to a few words.",
       "items": [
-        { "props": { "tone": "danger", "title": "Payment failed", "actionLabel": "Update card", "children": "We couldn't charge the card ending in 4242. Update it to keep your plan active." } },
-        { "props": { "tone": "success", "title": "Invoice sent", "dismissible": true, "children": "The customer will get an email with a link to pay." } }
+        { "props": { "intent": "danger", "title": "Payment failed", "actionLabel": "Update card", "children": "We couldn't charge the card ending in 4242. Update it to keep your plan active." } },
+        { "props": { "intent": "success", "title": "Invoice sent", "dismissible": true, "children": "The customer will get an email with a link to pay." } }
       ]
     }
   ]

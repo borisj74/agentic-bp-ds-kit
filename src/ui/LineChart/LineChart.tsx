@@ -1,8 +1,8 @@
 "use client";
-import type { ChartFormat, ChartTone } from "../Chart/chart";
+import type { ChartFormat, ChartIntent } from "../Chart/chart";
 import { XYChart, type ChartLegendPlace, type ChartLineSeries, type ChartMarker, type ChartReferenceLine } from "../Chart/XYChart";
 
-export type { ChartFormat, ChartTone, ChartLegendPlace, ChartMarker, ChartReferenceLine };
+export type { ChartFormat, ChartIntent, ChartLegendPlace, ChartMarker, ChartReferenceLine };
 // A LineChart series can turn into a forecast part way: projectedFrom.
 export type ChartSeries = ChartLineSeries;
 

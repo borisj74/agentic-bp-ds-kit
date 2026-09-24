@@ -84,7 +84,7 @@ function checkBrackets(formula: string): string | null {
   return null;
 }
 
-type Result = { tone: "success" | "error"; text: string } | null;
+type Result = { intent: "success" | "error"; text: string } | null;
 
 export function FormulaEditor({
   label, hideLabel = false, labelPosition: ownLabelPosition, size = "sm", placeholder, value, defaultValue, onChange,
@@ -100,10 +100,10 @@ export function FormulaEditor({
   const [inner, setInner] = useState(defaultValue ?? "");
   const [result, setResult] = useState<Result>(null);
   const current = value ?? inner;
-  const bad = invalid || Boolean(error) || result?.tone === "error";
+  const bad = invalid || Boolean(error) || result?.intent === "error";
   // A passed error wins, then the last check or calculation, then the hint.
   const message = error || result?.text || hint;
-  const messageClass = error || result?.tone === "error" ? field.error : result ? styles.success : field.hint;
+  const messageClass = error || result?.intent === "error" ? field.error : result ? styles.success : field.hint;
   const describedBy = [message ? messageId : "", help ? helpId : ""].filter(Boolean).join(" ") || undefined;
   const locked = disabled || readOnly;
 
@@ -128,15 +128,15 @@ export function FormulaEditor({
   const check = () => (onCheckSyntax ?? checkBrackets)(current) ?? null;
   const runCheck = () => {
     const problem = check();
-    setResult(problem ? { tone: "error", text: problem } : { tone: "success", text: "No syntax errors found." });
+    setResult(problem ? { intent: "error", text: problem } : { intent: "success", text: "No syntax errors found." });
   };
   const runCalculate = () => {
     const problem = check();
-    if (problem) { setResult({ tone: "error", text: problem }); return; }
+    if (problem) { setResult({ intent: "error", text: problem }); return; }
     try {
-      setResult({ tone: "success", text: `Result: ${onCalculate?.(current)}` });
+      setResult({ intent: "success", text: `Result: ${onCalculate?.(current)}` });
     } catch (e) {
-      setResult({ tone: "error", text: e instanceof Error ? e.message : "This formula could not be calculated." });
+      setResult({ intent: "error", text: e instanceof Error ? e.message : "This formula could not be calculated." });
     }
   };
 

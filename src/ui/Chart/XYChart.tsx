@@ -3,14 +3,14 @@
 // along the other. Upright charts put the categories along the bottom; horizontal bars list them down the start.
 import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import {
-  ChartEmpty, ChartFrame, ChartTooltip, Legend, SrTable, chartStyles as s, formatter, niceTicks, toneAt, toneVar, useWidth,
-  type ChartFormat, type ChartTone,
+  ChartEmpty, ChartFrame, ChartTooltip, Legend, SrTable, chartStyles as s, formatter, niceTicks, intentAt, intentVar, useWidth,
+  type ChartFormat, type ChartIntent,
 } from "./chart";
 
 export interface ChartSeries {
   name: string;
   values: number[];
-  tone?: ChartTone;
+  intent?: ChartIntent;
 }
 
 // LineChart only: projectedFrom is the first category that is a forecast. The line turns dashed where it starts.
@@ -22,7 +22,7 @@ export interface ChartLineSeries extends ChartSeries {
 export interface ChartReferenceLine {
   value: number;
   label: string;
-  tone?: ChartTone;
+  intent?: ChartIntent;
 }
 
 // LineChart only: a thin line down the chart at one category, like today.
@@ -46,7 +46,7 @@ export interface XYChartProps {
   series: ChartLineSeries[];
   orientation?: ChartOrientation;
   highlight?: number | number[];
-  highlightTone?: ChartTone;
+  highlightIntent?: ChartIntent;
   stacked?: boolean;
   barWidth?: ChartBarWidth;
   area?: boolean;
@@ -82,7 +82,7 @@ const ROUND = 2;
 type Box = { l: number; r: number; t: number; b: number };
 
 export function XYChart({
-  kind, label, title, subtitle, showTitle = true, categories, series, orientation = "vertical", highlight, highlightTone = "orange",
+  kind, label, title, subtitle, showTitle = true, categories, series, orientation = "vertical", highlight, highlightIntent = "orange",
   stacked = false, barWidth = "wide", area = false, showPoints = false, showValues = false,
   showGrid = true, showLegend = true, legend = "bottom", animate = true, format = "number", currency = "USD", height, emptyLabel = "No data for this range.",
   referenceLines = [], marker,
@@ -94,7 +94,7 @@ export function XYChart({
   const n = categories.length;
   const horizontal = kind === "bar" && orientation === "horizontal";
   const h = height ?? (horizontal ? Math.max(n, 1) * ROW + TOP + BOTTOM : 240);
-  const list = series.map((sr, k) => ({ ...sr, tone: toneAt(k, sr.tone), vals: categories.map((_, i) => Math.max(sr.values[i] ?? 0, 0)) }));
+  const list = series.map((sr, k) => ({ ...sr, intent: intentAt(k, sr.intent), vals: categories.map((_, i) => Math.max(sr.values[i] ?? 0, 0)) }));
   const short = formatter(format, currency, true);
   const full = formatter(format, currency, false);
 
@@ -175,10 +175,10 @@ export function XYChart({
       + `H${f(x + d)}Q${f(x)},${f(y + hh)} ${f(x)},${f(y + hh - d)}V${f(y + a)}Q${f(x)},${f(y)} ${f(x + a)},${f(y)}Z`;
   };
 
-  // Picked-out bars: the categories named in highlight take the highlight tone, like the first and last of a ranked chart.
+  // Picked-out bars: the categories named in highlight take the highlight intent, like the first and last of a ranked chart.
   const picked = new Set(highlight === undefined ? [] : Array.isArray(highlight) ? highlight : [highlight]);
   const bars = () => list.map((sr, k) => (
-    <g key={sr.name} style={{ fill: toneVar(sr.tone) }}>
+    <g key={sr.name} style={{ fill: intentVar(sr.intent) }}>
       {sr.vals.map((_, i) => {
         const a = v(lower[k][i]);
         const b = v(upper[k][i]);
@@ -186,7 +186,7 @@ export function XYChart({
         const side = c(i) + mid(k) - bw / 2;
         const t = Math.max(bw, 1);
         if (len <= 0) return null;
-        const style = { animationDelay: `${i * 30}ms`, fill: picked.has(i) ? toneVar(highlightTone) : undefined };
+        const style = { animationDelay: `${i * 30}ms`, fill: picked.has(i) ? intentVar(highlightIntent) : undefined };
         const className = horizontal ? s.growX : s.grow;
         if (!thin) {
           return <rect key={i} className={className} style={style} {...(horizontal ? { x: a, y: side, width: len, height: t } : { x: side, y: b, width: t, height: len })} />;
@@ -216,11 +216,11 @@ export function XYChart({
           {area && (
             <path
               className={s.grow} d={`M${topPts.join("L")}L${floor.join("L")}Z`}
-              style={{ fill: toneVar(sr.tone), fillOpacity: stacked ? 1 : "var(--opacity-muted)" }}
+              style={{ fill: intentVar(sr.intent), fillOpacity: stacked ? 1 : "var(--opacity-muted)" }}
             />
           )}
-          {solid.length > 1 && <path className={s.draw} d={`M${solid.join("L")}`} pathLength={1} fill="none" style={{ stroke: toneVar(sr.tone) }} strokeWidth={stacked ? 1 : 2} strokeLinejoin="round" strokeLinecap="round" />}
-          {dashed.length > 1 && <path className={s.fade} data-projected="" d={`M${dashed.join("L")}`} fill="none" style={{ stroke: toneVar(sr.tone) }} strokeWidth={stacked ? 1 : 2} strokeDasharray={DASH} strokeLinejoin="round" />}
+          {solid.length > 1 && <path className={s.draw} d={`M${solid.join("L")}`} pathLength={1} fill="none" style={{ stroke: intentVar(sr.intent) }} strokeWidth={stacked ? 1 : 2} strokeLinejoin="round" strokeLinecap="round" />}
+          {dashed.length > 1 && <path className={s.fade} data-projected="" d={`M${dashed.join("L")}`} fill="none" style={{ stroke: intentVar(sr.intent) }} strokeWidth={stacked ? 1 : 2} strokeDasharray={DASH} strokeLinejoin="round" />}
         </g>
       );
     });
@@ -230,7 +230,7 @@ export function XYChart({
   const marks = () => list.map((sr, k) => (
     <g key={sr.name} className={s.fade}>
       {(showPoints || (kind === "line" && active !== null)) && sr.vals.map((_, i) => (showPoints || i === active) && (
-        <circle key={i} cx={c(i)} cy={v(upper[k][i])} r={POINT} style={{ fill: "var(--surface-flat)", stroke: toneVar(sr.tone) }} strokeWidth={2} />
+        <circle key={i} cx={c(i)} cy={v(upper[k][i])} r={POINT} style={{ fill: "var(--surface-flat)", stroke: intentVar(sr.intent) }} strokeWidth={2} />
       ))}
       {showValues && (kind === "line" || !stacked || k === list.length - 1) && sr.vals.map((val, i) => {
         const at = kind === "bar" && !stacked ? val : upper[k][i];
@@ -249,7 +249,7 @@ export function XYChart({
         <line
           key={`${r.label}${r.value}`} className={s.reference} data-reference=""
           x1={x0} x2={x1} y1={px(v(r.value))} y2={px(v(r.value))} strokeDasharray={DASH}
-          style={{ stroke: r.tone ? toneVar(r.tone) : undefined }}
+          style={{ stroke: r.intent ? intentVar(r.intent) : undefined }}
         />
       ))}
       {mark && <line className={s.marker} data-marker="" x1={px(c(mark.category))} x2={px(c(mark.category))} y1={y0} y2={y1} />}
@@ -298,7 +298,7 @@ export function XYChart({
 
   const tip = active !== null && (() => {
     const end = Math.max(...upper.map((u) => u[active]));
-    const rows = [...list].reverse().map((sr) => ({ label: projected(sr, active) ? `${sr.name} (projected)` : sr.name, value: full(sr.vals[active]), tone: sr.tone }));
+    const rows = [...list].reverse().map((sr) => ({ label: projected(sr, active) ? `${sr.name} (projected)` : sr.name, value: full(sr.vals[active]), intent: sr.intent }));
     // Horizontal: over the end of the bar, turned inward near the edge. Upright: over the top, turned inward at the ends.
     return horizontal
       ? <ChartTooltip x={v(end)} y={c(active) - band / 2} title={categories[active]} align={v(end) > x0 + (x1 - x0) * 0.7 ? "end" : "center"} rows={rows} />
@@ -308,7 +308,7 @@ export function XYChart({
   const px = (p: number) => Math.round(p) + 0.5;
 
   const keys = showLegend
-    ? <Legend items={list.map((sr) => ({ label: sr.name, tone: sr.tone }))} orientation={legend === "end" ? "column" : "row"} align={legend === "end" ? "start" : "center"} />
+    ? <Legend items={list.map((sr) => ({ label: sr.name, intent: sr.intent }))} orientation={legend === "end" ? "column" : "row"} align={legend === "end" ? "start" : "center"} />
     : null;
 
   const plot = (

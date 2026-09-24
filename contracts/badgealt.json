@@ -2,9 +2,9 @@
   "name": "BadgeAlt",
   "path": "src/ui/BadgeAlt/BadgeAlt.tsx",
   "intent": "Alternate status or category label: tinted fill with a matching border, in three sizes.",
-  "usage": "BadgeAlt is the alternate badge style: a light tint, a matching border and tone-colored text, with a brand tone. Use Badge by default; use BadgeAlt only where a screen already uses this style. Do not mix Badge and BadgeAlt on one screen. Only dismissible filters are removable. See contracts/badgealt.json for the full contract.",
+  "usage": "BadgeAlt is the alternate badge style: a light tint, a matching border and intent-colored text, with a brand intent. Use Badge by default; use BadgeAlt only where a screen already uses this style. Do not mix Badge and BadgeAlt on one screen. Only dismissible filters are removable. See contracts/badgealt.json for the full contract.",
   "props": {
-    "tone": { "enum": ["neutral", "brand", "success", "warning", "danger", "info"], "default": "neutral" },
+    "intent": { "enum": ["neutral", "brand", "success", "warning", "danger", "info"], "default": "neutral" },
     "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "Heights about 24 / 28 / 36." },
     "removable": { "type": "boolean", "default": false, "note": "Adds an X button that calls onRemove." },
     "disabled": { "type": "boolean", "default": false, "note": "Dims the badge. The X does not fire." },
@@ -13,24 +13,24 @@
   },
   "useWhen": ["A screen that already uses the tinted, bordered badge style.", "A brand marker, like Beta, in that style."],
   "doNot": ["Do not use BadgeAlt where Badge fits. Badge is the default.", "Do not mix Badge and BadgeAlt on one screen.", "Do not use as a button or link. Only the X is interactive.", "Do not use for people. Use Avatar.", "Do not put sentences in a badge.", "Do not use raw hex."],
-  "a11y": ["Text is the content; tone color is never the only signal.", "Text uses the -strong tone colors so every tone reads at 4.5:1 or more, light and dark.", "disabled sets aria-disabled.", "The X is a native button labeled Remove {children}, with a focus ring. When disabled, it is disabled too."],
-  "snippet": "<BadgeAlt tone=\"success\">Active</BadgeAlt>",
+  "a11y": ["Text is the content; intent color is never the only signal.", "Text uses the -strong intent colors so every intent reads at 4.5:1 or more, light and dark.", "disabled sets aria-disabled.", "The X is a native button labeled Remove {children}, with a focus ring. When disabled, it is disabled too."],
+  "snippet": "<BadgeAlt intent=\"success\">Active</BadgeAlt>",
   "examples": [
     { "title": "Neutral", "usage": "Draft, default or uncategorized labels.", "items": [
-      { "props": { "tone": "neutral", "size": "sm", "children": "Draft" } }, { "props": { "tone": "neutral", "size": "md", "children": "Draft" } }, { "props": { "tone": "neutral", "size": "lg", "children": "Draft" } } ] },
+      { "props": { "intent": "neutral", "size": "sm", "children": "Draft" } }, { "props": { "intent": "neutral", "size": "md", "children": "Draft" } }, { "props": { "intent": "neutral", "size": "lg", "children": "Draft" } } ] },
     { "title": "Brand", "usage": "Product or feature markers, like Beta. Not a status.", "items": [
-      { "props": { "tone": "brand", "size": "sm", "children": "Beta" } }, { "props": { "tone": "brand", "size": "md", "children": "Beta" } }, { "props": { "tone": "brand", "size": "lg", "children": "Beta" } } ] },
+      { "props": { "intent": "brand", "size": "sm", "children": "Beta" } }, { "props": { "intent": "brand", "size": "md", "children": "Beta" } }, { "props": { "intent": "brand", "size": "lg", "children": "Beta" } } ] },
     { "title": "Success", "usage": "Active, complete or healthy states on rows and cards.", "items": [
-      { "props": { "tone": "success", "size": "sm", "children": "Active" } }, { "props": { "tone": "success", "size": "md", "children": "Active" } }, { "props": { "tone": "success", "size": "lg", "children": "Active" } } ] },
+      { "props": { "intent": "success", "size": "sm", "children": "Active" } }, { "props": { "intent": "success", "size": "md", "children": "Active" } }, { "props": { "intent": "success", "size": "lg", "children": "Active" } } ] },
     { "title": "Warning", "usage": "Pending or needs-attention states the user can still fix.", "items": [
-      { "props": { "tone": "warning", "size": "sm", "children": "Pending" } }, { "props": { "tone": "warning", "size": "md", "children": "Pending" } }, { "props": { "tone": "warning", "size": "lg", "children": "Pending" } } ] },
+      { "props": { "intent": "warning", "size": "sm", "children": "Pending" } }, { "props": { "intent": "warning", "size": "md", "children": "Pending" } }, { "props": { "intent": "warning", "size": "lg", "children": "Pending" } } ] },
     { "title": "Danger", "usage": "Blocked, failed or overdue status. Not a delete button.", "items": [
-      { "props": { "tone": "danger", "size": "sm", "children": "Overdue" } }, { "props": { "tone": "danger", "size": "md", "children": "Overdue" } }, { "props": { "tone": "danger", "size": "lg", "children": "Overdue" } } ] },
+      { "props": { "intent": "danger", "size": "sm", "children": "Overdue" } }, { "props": { "intent": "danger", "size": "md", "children": "Overdue" } }, { "props": { "intent": "danger", "size": "lg", "children": "Overdue" } } ] },
     { "title": "Info", "usage": "In-progress or informational status that is neither success nor a problem.", "items": [
-      { "props": { "tone": "info", "size": "sm", "children": "In progress" } }, { "props": { "tone": "info", "size": "md", "children": "In progress" } }, { "props": { "tone": "info", "size": "lg", "children": "In progress" } } ] },
+      { "props": { "intent": "info", "size": "sm", "children": "In progress" } }, { "props": { "intent": "info", "size": "md", "children": "In progress" } }, { "props": { "intent": "info", "size": "lg", "children": "In progress" } } ] },
     { "title": "Removable", "usage": "Only for dismissible filters. The X is the only interactive part.", "items": [
-      { "props": { "tone": "neutral", "removable": true, "children": "Paid" } }, { "props": { "tone": "info", "removable": true, "children": "This month" } }, { "props": { "tone": "brand", "removable": true, "children": "Enterprise" } } ] },
+      { "props": { "intent": "neutral", "removable": true, "children": "Paid" } }, { "props": { "intent": "info", "removable": true, "children": "This month" } }, { "props": { "intent": "brand", "removable": true, "children": "Enterprise" } } ] },
     { "title": "Disabled", "usage": "Dims the badge. If it is removable, the X does not fire.", "items": [
-      { "props": { "tone": "neutral", "disabled": true, "children": "Draft" } }, { "props": { "tone": "info", "disabled": true, "removable": true, "children": "This month" } } ] }
+      { "props": { "intent": "neutral", "disabled": true, "children": "Draft" } }, { "props": { "intent": "info", "disabled": true, "removable": true, "children": "This month" } } ] }
   ]
 }

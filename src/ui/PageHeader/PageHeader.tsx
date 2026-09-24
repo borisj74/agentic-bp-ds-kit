@@ -1,6 +1,6 @@
 "use client";
 import type { ReactNode } from "react";
-import { Badge, type BadgeTone } from "../Badge/Badge";
+import { Badge, type BadgeIntent } from "../Badge/Badge";
 import { Breadcrumb, type BreadcrumbItem } from "../Breadcrumb/Breadcrumb";
 import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
 import { Icon } from "../Icon/Icon";
@@ -12,7 +12,7 @@ export interface PageHeaderProps {
   breadcrumbs?: BreadcrumbItem[];
   icon?: string;
   badge?: string;
-  badgeTone?: BadgeTone;
+  badgeIntent?: BadgeIntent;
   actions?: ReactNode;
   moreActions?: DropdownMenuEntry[];
   onMoreSelect?: (id: string) => void;
@@ -21,7 +21,7 @@ export interface PageHeaderProps {
 }
 
 export function PageHeader({
-  title, breadcrumbs = [], icon, badge, badgeTone = "neutral", actions, moreActions, onMoreSelect, sticky = false, shadow = true,
+  title, breadcrumbs = [], icon, badge, badgeIntent = "neutral", actions, moreActions, onMoreSelect, sticky = false, shadow = true,
 }: PageHeaderProps) {
   // Kit headings read in title case, so a screen can pass its copy either way.
   const heading = titleCase(title);
@@ -42,9 +42,9 @@ export function PageHeader({
             {/* The trail is Home, the section, then this page: the title closes it as the current crumb. */}
             {breadcrumbs.length > 0 && <Breadcrumb items={[...breadcrumbs, { label: heading }]} />}
             <div className={styles.titleRow}>
-              {icon && <Icon name={icon} size="lg" tone="brand" />}
+              {icon && <Icon name={icon} size="lg" intent="brand" />}
               <h1 className={styles.heading}>{heading}</h1>
-              {badge && <Badge tone={badgeTone}>{badge}</Badge>}
+              {badge && <Badge intent={badgeIntent}>{badge}</Badge>}
             </div>
           </>
         )}

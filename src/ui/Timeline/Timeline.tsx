@@ -4,7 +4,7 @@ import { Icon } from "../Icon/Icon";
 import styles from "./Timeline.module.css";
 
 export type TimelineSize = "sm" | "md";
-export type TimelineTone = "neutral" | "brand" | "success" | "warning" | "danger";
+export type TimelineIntent = "neutral" | "brand" | "success" | "warning" | "danger";
 
 export interface TimelineLink {
   label: string;
@@ -23,7 +23,7 @@ export interface TimelineItem {
   timestamp?: string;
   subtitle?: string;
   icon?: string;
-  tone?: TimelineTone;
+  intent?: TimelineIntent;
   notes?: string;
   links?: TimelineLink[];
   action?: TimelineAction;
@@ -50,7 +50,7 @@ export function Timeline({ items, size = "md", label = "Activity", onMenuSelect 
           <li key={item.id} className={styles.item}>
             <span className={[styles.rail, first ? styles.first : "", last ? styles.last : ""].join(" ")} aria-hidden="true">
               <span className={styles.line} />
-              <span className={[styles.node, styles[item.tone ?? "neutral"]].join(" ")}>
+              <span className={[styles.node, styles[item.intent ?? "neutral"]].join(" ")}>
                 <Icon name={item.icon ?? "history"} size={size === "sm" ? "sm" : "md"} />
               </span>
               <span className={styles.line} />

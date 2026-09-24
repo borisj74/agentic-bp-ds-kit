@@ -91,7 +91,7 @@ export default async function UsingPatterns() {
                       <>
                         <p className={docs.label}>Built from</p>
                         <div className={docs.chips}>
-                          {composes.map((name) => <Badge key={name} tone={known.has(name) ? "info" : "neutral"}>{name}</Badge>)}
+                          {composes.map((name) => <Badge key={name} intent={known.has(name) ? "info" : "neutral"}>{name}</Badge>)}
                         </div>
                       </>
                     )}

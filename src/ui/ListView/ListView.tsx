@@ -1,7 +1,7 @@
 "use client";
 import { useId, useLayoutEffect, useRef, useState, type DragEvent, type KeyboardEvent, type CSSProperties, type MouseEvent, type ReactNode } from "react";
 import { Avatar } from "../Avatar/Avatar";
-import { Badge, type BadgeTone } from "../Badge/Badge";
+import { Badge, type BadgeIntent } from "../Badge/Badge";
 import { Button } from "../Button/Button";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { DropdownMenu, type DropdownMenuEntry, type DropdownMenuItem } from "../DropdownMenu/DropdownMenu";
@@ -11,7 +11,7 @@ import styles from "./ListView.module.css";
 export type ListViewSelection = "none" | "single" | "multiple";
 export type ListViewInteraction = "none" | "drill" | "drag";
 export type ListViewGroupSize = "sm" | "md" | "lg";
-export type ListViewMessageTone = "success" | "info" | "warning" | "danger";
+export type ListViewMessageIntent = "success" | "info" | "warning" | "danger";
 export type ListViewBadgePosition = "start" | "end";
 export type ListViewNesting = "step" | "expand";
 
@@ -30,11 +30,11 @@ export interface ListViewItem {
   icon?: string;
   image?: string;
   badge?: string;
-  badgeTone?: BadgeTone;
+  badgeIntent?: BadgeIntent;
   badgePosition?: ListViewBadgePosition;
   unread?: boolean;
   message?: string;
-  messageTone?: ListViewMessageTone;
+  messageIntent?: ListViewMessageIntent;
   actions?: ListViewAction[];
   menu?: DropdownMenuEntry[];
   disabled?: boolean;
@@ -76,7 +76,7 @@ export interface ListViewProps {
 
 type MoveKind = "up" | "down" | "top" | "bottom";
 
-const MESSAGE_ICON: Record<ListViewMessageTone, string> = {
+const MESSAGE_ICON: Record<ListViewMessageIntent, string> = {
   success: "check_circle", info: "info", warning: "warning", danger: "error",
 };
 
@@ -291,7 +291,7 @@ export function ListView({
   // opens, so rows without children keep a gap where the fold would be and every row's text lines up.
   const renderRow = (item: ListViewItem, depth = 0, branch = false): ReactNode[] => {
     const isSelected = selectedIds.includes(item.id);
-    const badge = item.badge && <Badge tone={item.badgeTone ?? "neutral"}>{item.badge}</Badge>;
+    const badge = item.badge && <Badge intent={item.badgeIntent ?? "neutral"}>{item.badge}</Badge>;
     const media = item.avatar
       ? <Avatar name={item.avatar} size="md" shape="square" decorative />
       : item.image
@@ -364,8 +364,8 @@ export function ListView({
             <span className={styles.hit} data-main={selection === "multiple" ? undefined : ""}>{content}</span>
           )}
           {item.message && (
-            <span className={[styles.message, styles[item.messageTone ?? "info"]].join(" ")}>
-              <Icon name={MESSAGE_ICON[item.messageTone ?? "info"]} size="sm" />
+            <span className={[styles.message, styles[item.messageIntent ?? "info"]].join(" ")}>
+              <Icon name={MESSAGE_ICON[item.messageIntent ?? "info"]} size="sm" />
               {item.message}
             </span>
           )}

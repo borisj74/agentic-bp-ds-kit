@@ -21,11 +21,11 @@
         "icon": "string? Material Symbols name before the text, when there is no avatar.",
         "image": "string? An image URL before the text, when there is no avatar.",
         "badge": "string? A status Badge.",
-        "badgeTone": "BadgeTone? Defaults to neutral.",
+        "badgeIntent": "BadgeIntent? Defaults to neutral.",
         "badgePosition": "'start' | 'end'? Before the text or at the end of the row. Defaults to end.",
         "unread": "boolean? A brand dot at the start of the row.",
         "message": "string? A short status line under the text.",
-        "messageTone": "'success' | 'info' | 'warning' | 'danger'? Defaults to info.",
+        "messageIntent": "'success' | 'info' | 'warning' | 'danger'? Defaults to info.",
         "actions": "{ id: string; label: string; icon: string }[]? Icon buttons at the end of the row. Two at most.",
         "disabled": "boolean?",
         "children": "ListViewItem[]? The row's own rows. The row ends in a chevron and a click steps into them.",
@@ -179,7 +179,7 @@
     "A row with children is a button; stepping in moves focus to Back, which is named after the level it returns to, and Back returns focus to the row that was opened. Each step is announced.",
     "With nesting expand, a row with children is a button with aria-expanded; its children follow it in the same list, indented. The detail under a picked row is a region named after the row."
   ],
-  "snippet": "<ListView\n  label=\"Invoices\"\n  selection=\"single\"\n  interaction=\"drill\"\n  onOpen={(id) => router.push(`/invoices/${id}`)}\n  items={[\n    { id: \"inv-1042\", primary: \"INV-1042\", secondary: \"Apex Digital Services · $4,820.00\", icon: \"receipt_long\", badge: \"Overdue\", badgeTone: \"danger\" },\n    { id: \"inv-1043\", primary: \"INV-1043\", secondary: \"Northwind Traders · $1,260.00\", icon: \"receipt_long\", badge: \"Paid\", badgeTone: \"success\" },\n  ]}\n/>",
+  "snippet": "<ListView\n  label=\"Invoices\"\n  selection=\"single\"\n  interaction=\"drill\"\n  onOpen={(id) => router.push(`/invoices/${id}`)}\n  items={[\n    { id: \"inv-1042\", primary: \"INV-1042\", secondary: \"Apex Digital Services · $4,820.00\", icon: \"receipt_long\", badge: \"Overdue\", badgeIntent: \"danger\" },\n    { id: \"inv-1043\", primary: \"INV-1043\", secondary: \"Northwind Traders · $1,260.00\", icon: \"receipt_long\", badge: \"Paid\", badgeIntent: \"success\" },\n  ]}\n/>",
   "examples": [
     {
       "title": "Layout",
@@ -222,7 +222,7 @@
                 "secondary": "Apex Digital Services · $4,820.00",
                 "icon": "receipt_long",
                 "badge": "Overdue",
-                "badgeTone": "danger"
+                "badgeIntent": "danger"
               },
               {
                 "id": "inv-1043",
@@ -230,7 +230,7 @@
                 "secondary": "Northwind Traders · $1,260.00",
                 "icon": "receipt_long",
                 "badge": "Paid",
-                "badgeTone": "success"
+                "badgeIntent": "success"
               },
               {
                 "id": "inv-1044",
@@ -252,7 +252,7 @@
                 "primary": "Enterprise",
                 "secondary": "Billed yearly",
                 "badge": "Current",
-                "badgeTone": "info",
+                "badgeIntent": "info",
                 "badgePosition": "start"
               },
               {
@@ -372,7 +372,7 @@
                 "secondary": "Apex Digital Services · $4,820.00",
                 "icon": "receipt_long",
                 "badge": "Overdue",
-                "badgeTone": "danger"
+                "badgeIntent": "danger"
               },
               {
                 "id": "inv-1043",
@@ -380,7 +380,7 @@
                 "secondary": "Northwind Traders · $1,260.00",
                 "icon": "receipt_long",
                 "badge": "Paid",
-                "badgeTone": "success"
+                "badgeIntent": "success"
               },
               {
                 "id": "inv-1044",
@@ -437,7 +437,7 @@
                 "secondary": "Northwind Traders paid INV-1043",
                 "unread": true,
                 "message": "Posted to the ledger",
-                "messageTone": "success",
+                "messageIntent": "success",
                 "actions": [
                   {
                     "id": "open",
@@ -457,7 +457,7 @@
                 "secondary": "Apex Digital Services, INV-1042",
                 "unread": true,
                 "message": "Retry scheduled for Friday",
-                "messageTone": "warning",
+                "messageIntent": "warning",
                 "actions": [
                   {
                     "id": "open",
@@ -494,7 +494,7 @@
                 "primary": "Sync failed",
                 "secondary": "Tax service did not answer",
                 "message": "Try again later",
-                "messageTone": "danger",
+                "messageIntent": "danger",
                 "disabled": true
               }
             ]
@@ -528,7 +528,7 @@
                 "secondary": "Apex Digital Services · $4,820.00",
                 "icon": "receipt_long",
                 "badge": "Overdue",
-                "badgeTone": "danger",
+                "badgeIntent": "danger",
                 "group": "due"
               },
               {
@@ -545,7 +545,7 @@
                 "secondary": "Northwind Traders · $1,260.00",
                 "icon": "receipt_long",
                 "badge": "Paid",
-                "badgeTone": "success",
+                "badgeIntent": "success",
                 "group": "done"
               }
             ]
@@ -615,7 +615,7 @@
                     "secondary": "August · $4,820.00",
                     "icon": "receipt_long",
                     "badge": "Overdue",
-                    "badgeTone": "danger"
+                    "badgeIntent": "danger"
                   },
                   {
                     "id": "inv-0990",
@@ -623,7 +623,7 @@
                     "secondary": "July · $4,820.00",
                     "icon": "receipt_long",
                     "badge": "Paid",
-                    "badgeTone": "success"
+                    "badgeIntent": "success"
                   },
                   {
                     "id": "inv-0935",
@@ -631,7 +631,7 @@
                     "secondary": "June · $4,610.00",
                     "icon": "receipt_long",
                     "badge": "Paid",
-                    "badgeTone": "success"
+                    "badgeIntent": "success"
                   }
                 ]
               },
@@ -647,7 +647,7 @@
                     "secondary": "August · $1,260.00",
                     "icon": "receipt_long",
                     "badge": "Paid",
-                    "badgeTone": "success"
+                    "badgeIntent": "success"
                   },
                   {
                     "id": "inv-0988",
@@ -655,7 +655,7 @@
                     "secondary": "July · $1,260.00",
                     "icon": "receipt_long",
                     "badge": "Paid",
-                    "badgeTone": "success"
+                    "badgeIntent": "success"
                   }
                 ]
               },
@@ -689,7 +689,7 @@
                     "secondary": "August · $4,820.00",
                     "icon": "receipt_long",
                     "badge": "Overdue",
-                    "badgeTone": "danger"
+                    "badgeIntent": "danger"
                   },
                   {
                     "id": "inv-0990",
@@ -697,7 +697,7 @@
                     "secondary": "July · $4,820.00",
                     "icon": "receipt_long",
                     "badge": "Paid",
-                    "badgeTone": "success"
+                    "badgeIntent": "success"
                   },
                   {
                     "id": "inv-0935",
@@ -705,7 +705,7 @@
                     "secondary": "June · $4,610.00",
                     "icon": "receipt_long",
                     "badge": "Paid",
-                    "badgeTone": "success"
+                    "badgeIntent": "success"
                   }
                 ]
               },
@@ -721,7 +721,7 @@
                     "secondary": "August · $1,260.00",
                     "icon": "receipt_long",
                     "badge": "Paid",
-                    "badgeTone": "success"
+                    "badgeIntent": "success"
                   },
                   {
                     "id": "inv-0988",
@@ -729,7 +729,7 @@
                     "secondary": "July · $1,260.00",
                     "icon": "receipt_long",
                     "badge": "Paid",
-                    "badgeTone": "success"
+                    "badgeIntent": "success"
                   }
                 ]
               },
@@ -769,7 +769,7 @@
                     "secondary": "August · $4,820.00",
                     "icon": "receipt_long",
                     "badge": "Overdue",
-                    "badgeTone": "danger"
+                    "badgeIntent": "danger"
                   },
                   {
                     "id": "inv-0990",
@@ -777,7 +777,7 @@
                     "secondary": "July · $4,820.00",
                     "icon": "receipt_long",
                     "badge": "Paid",
-                    "badgeTone": "success"
+                    "badgeIntent": "success"
                   },
                   {
                     "id": "inv-0935",
@@ -785,7 +785,7 @@
                     "secondary": "June · $4,610.00",
                     "icon": "receipt_long",
                     "badge": "Paid",
-                    "badgeTone": "success"
+                    "badgeIntent": "success"
                   }
                 ]
               },
@@ -801,7 +801,7 @@
                     "secondary": "August · $1,260.00",
                     "icon": "receipt_long",
                     "badge": "Paid",
-                    "badgeTone": "success"
+                    "badgeIntent": "success"
                   },
                   {
                     "id": "inv-0988",
@@ -809,7 +809,7 @@
                     "secondary": "July · $1,260.00",
                     "icon": "receipt_long",
                     "badge": "Paid",
-                    "badgeTone": "success"
+                    "badgeIntent": "success"
                   }
                 ]
               },

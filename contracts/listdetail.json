@@ -125,7 +125,7 @@
           }
         }
       ],
-      "code": "<ListDetail\n  label=\"Invoices\" open={Boolean(invoice)} onBack={() => setOpenId(null)} backLabel=\"Back to invoices\"\n  title={invoice?.number}\n  list={\n    <ListView\n      label=\"Invoices\" selection=\"single\" interaction=\"drill\"\n      items={[{ id: \"INV-1042\", primary: \"INV-1042\", secondary: \"Apex Digital Services · $4,820.00\", avatar: \"Apex Digital Services\", unread: true, message: \"Card declined, retry on Friday\", messageTone: \"danger\", badge: \"Overdue\", badgeTone: \"danger\" }, …]}\n      selected={openId ? [openId] : []} onOpen={setOpenId}\n    />\n  }\n  detail={invoice && <Section title=\"Invoice Details\">…</Section>}\n/>"
+      "code": "<ListDetail\n  label=\"Invoices\" open={Boolean(invoice)} onBack={() => setOpenId(null)} backLabel=\"Back to invoices\"\n  title={invoice?.number}\n  list={\n    <ListView\n      label=\"Invoices\" selection=\"single\" interaction=\"drill\"\n      items={[{ id: \"INV-1042\", primary: \"INV-1042\", secondary: \"Apex Digital Services · $4,820.00\", avatar: \"Apex Digital Services\", unread: true, message: \"Card declined, retry on Friday\", messageIntent: \"danger\", badge: \"Overdue\", badgeIntent: \"danger\" }, …]}\n      selected={openId ? [openId] : []} onOpen={setOpenId}\n    />\n  }\n  detail={invoice && <Section title=\"Invoice Details\">…</Section>}\n/>"
     },
     {
       "title": "Row actions",

@@ -2,17 +2,17 @@
 // Shared parts for BarChart, LineChart and PieChart: colors, number formats, the axis scale, the legend,
 // the tooltip and the screen-reader table. Internal to the charts; screens use the chart components.
 import { useLayoutEffect, useState, type KeyboardEvent, type ReactNode, type RefObject } from "react";
-import { Legend as KitLegend, type LegendTone } from "../Legend/Legend";
+import { Legend as KitLegend, type LegendIntent } from "../Legend/Legend";
 import styles from "./chart.module.css";
 
-// The chart tones are the kit Legend keys, so a chart and its Legend always agree.
-export type ChartTone = LegendTone;
+// The chart intents are the kit Legend keys, so a chart and its Legend always agree.
+export type ChartIntent = LegendIntent;
 export type ChartFormat = "number" | "currency" | "percent";
 
 // Figma Persona Homepages series order: green, olive, cyan, orange, pink, gray, then the rest of the category palette.
-export const TONES: ChartTone[] = ["green", "olive", "cyan", "orange", "pink", "gray", "purple", "yellow", "red", "mint"];
-export const toneAt = (i: number, tone?: ChartTone) => tone ?? TONES[i % TONES.length];
-export const toneVar = (tone: ChartTone) => `var(--bg-${tone})`;
+export const INTENTS: ChartIntent[] = ["green", "olive", "cyan", "orange", "pink", "gray", "purple", "yellow", "red", "mint"];
+export const intentAt = (i: number, intent?: ChartIntent) => intent ?? INTENTS[i % INTENTS.length];
+export const intentVar = (intent: ChartIntent) => `var(--bg-${intent})`;
 
 // Axis ticks and value labels are compact ($4M, 750K); tooltips and the table show the full number.
 export function formatter(format: ChartFormat, currency: string, compact: boolean) {
@@ -51,20 +51,20 @@ export function useWidth(ref: RefObject<HTMLElement | null>) {
 
 // The kit Legend, in the chart: decorative, because the screen-reader table already carries the numbers.
 export function Legend({ items, orientation = "row", align = "center" }: {
-  items: { label: string; tone: ChartTone; note?: string }[];
+  items: { label: string; intent: ChartIntent; note?: string }[];
   orientation?: "row" | "column"; align?: "start" | "center" | "end";
 }) {
   return (
     <KitLegend
       decorative size="sm" orientation={orientation} align={align}
-      items={items.map((it) => ({ label: it.label, tone: it.tone, value: it.note }))}
+      items={items.map((it) => ({ label: it.label, intent: it.intent, value: it.note }))}
     />
   );
 }
 
 // The hover and keyboard tooltip: a title line, then one row per series with its swatch.
 export function ChartTooltip({ x, y, title, rows, align = "center" }: {
-  x: number; y: number; title: string; rows: { label: string; value: string; tone: ChartTone }[]; align?: "center" | "start" | "end";
+  x: number; y: number; title: string; rows: { label: string; value: string; intent: ChartIntent }[]; align?: "center" | "start" | "end";
 }) {
   const shift = align === "start" ? "0%" : align === "end" ? "-100%" : "-50%";
   return (
@@ -72,7 +72,7 @@ export function ChartTooltip({ x, y, title, rows, align = "center" }: {
       <p className={styles.tooltipTitle}>{title}</p>
       {rows.map((r) => (
         <p key={r.label} className={styles.tooltipRow}>
-          <span className={styles.swatch} style={{ background: toneVar(r.tone) }} />
+          <span className={styles.swatch} style={{ background: intentVar(r.intent) }} />
           <span className={styles.tooltipLabel}>{r.label}</span>
           <span className={styles.tooltipValue}>{r.value}</span>
         </p>

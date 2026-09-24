@@ -18,7 +18,7 @@
 .iconOnly.md { width: var(--badge-height-md); }
 .iconOnly.lg { width: var(--badge-height-lg); padding: 0; }
 
-/* Emphasis sets the text color; tone sets the fill. */
+/* Emphasis sets the text color; intent sets the fill. */
 .subtle, .faint { color: var(--text-neutral-intense); }
 /* Strong fills turn light in dark, so strong text turns dark there (text-neutral-min). */
 .strong { color: var(--text-neutral-min); }
@@ -52,7 +52,7 @@
 /* Figma: icon-only strong and faint badges carry a 1px inverse border. */
 .iconOnly.strong:not(.hollow), .iconOnly.faint:not(.hollow) { border-color: var(--icon-neutral-min-static); }
 
-/* Disabled looks the same in every tone and emphasis. */
+/* Disabled looks the same in every intent and emphasis. */
 .badge.disabled, :global([data-theme="dark"]) .badge.disabled { background: var(--bg-neutral-subtle); border-color: transparent; color: var(--text-neutral-faint); }
 
 .remove {

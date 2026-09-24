@@ -25,7 +25,7 @@
       "type": "string",
       "note": "Instance tag, like UAT-2 or Sandbox. Leave out on production."
     },
-    "environmentTone": {
+    "environmentIntent": {
       "enum": [
         "success",
         "info",
@@ -148,7 +148,7 @@
     "Do not invent TopBar, NavBar, Header, GlobalSearch, UserBadge, UserMenu or CompanyBadge.",
     "Do not put the page title, breadcrumbs or page actions in it. They belong in the page.",
     "Do not put more than three icon actions in it.",
-    "Do not recolor the logo. Use environmentTone for the tag, not custom colors.",
+    "Do not recolor the logo. Use environmentIntent for the tag, not custom colors.",
     "Do not use raw hex."
   ],
   "a11y": [
@@ -319,20 +319,20 @@
       ]
     },
     {
-      "title": "Environment tones",
-      "usage": "Pick a tone per environment so they are easy to tell apart.",
+      "title": "Environment intents",
+      "usage": "Pick an intent per environment so they are easy to tell apart.",
       "items": [
         {
           "props": {
             "environment": "Sandbox",
-            "environmentTone": "info",
+            "environmentIntent": "info",
             "search": false
           }
         },
         {
           "props": {
             "environment": "Staging",
-            "environmentTone": "warning",
+            "environmentIntent": "warning",
             "search": false
           }
         }

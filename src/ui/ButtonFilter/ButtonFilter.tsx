@@ -36,7 +36,7 @@ export function ButtonFilter({
         <span><span className={styles.name}>{children}: </span>{value}</span>
       ) : children}
       {count > 0 && (
-        <Count count={count} size={size === "lg" ? "md" : "sm"} tone={state === "off" ? "neutral" : undefined} label="filters applied" disabled={disabled} />
+        <Count count={count} size={size === "lg" ? "md" : "sm"} intent={state === "off" ? "neutral" : undefined} label="filters applied" disabled={disabled} />
       )}
     </span>
   );

@@ -70,7 +70,7 @@
         "label": "string",
         "description": "string?",
         "badge": "string?",
-        "badgeTone": "BadgeTone?",
+        "badgeIntent": "BadgeIntent?",
         "disabled": "boolean?"
       },
       "note": "Two to six. description and badge show in card layout."
@@ -205,7 +205,7 @@
                 "label": "Growth",
                 "description": "Unlimited invoices and usage billing.",
                 "badge": "Recommended",
-                "badgeTone": "success"
+                "badgeIntent": "success"
               },
               {
                 "value": "enterprise",

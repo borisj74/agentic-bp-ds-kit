@@ -20,7 +20,7 @@ import styles from "./Calendar.module.css";
 
 export type CalendarView = "month" | "week" | "day" | "list";
 export type CalendarWeekStart = "sunday" | "monday";
-export type CalendarTone = "green" | "olive" | "cyan" | "orange" | "pink" | "gray" | "purple" | "yellow" | "red" | "mint";
+export type CalendarIntent = "green" | "olive" | "cyan" | "orange" | "pink" | "gray" | "purple" | "yellow" | "red" | "mint";
 
 export interface CalendarEvent {
   id: string;
@@ -29,14 +29,14 @@ export interface CalendarEvent {
   end?: string;
   allDay?: boolean;
   calendar?: string;
-  tone?: CalendarTone;
+  intent?: CalendarIntent;
   note?: string;
 }
 
 export interface CalendarSource {
   id: string;
   name: string;
-  tone?: CalendarTone;
+  intent?: CalendarIntent;
   hidden?: boolean;
 }
 
@@ -59,8 +59,8 @@ export interface CalendarProps {
   readOnly?: boolean;
 }
 
-// Calendars without a tone take these in turn, after the Figma calendar list: PTO, personal, shifts, holidays, a manager's.
-const TONES: CalendarTone[] = ["orange", "cyan", "green", "purple", "pink", "olive", "yellow", "mint", "red", "gray"];
+// Calendars without an intent take these in turn, after the Figma calendar list: PTO, personal, shifts, holidays, a manager's.
+const INTENTS: CalendarIntent[] = ["orange", "cyan", "green", "purple", "pink", "olive", "yellow", "mint", "red", "gray"];
 const VIEW_LABELS: Record<CalendarView, string> = { month: "Month", week: "Week", day: "Day", list: "List" };
 const ALL_VIEWS: CalendarView[] = ["month", "week", "day", "list"];
 // Month days show this many events, then +N more.
@@ -113,7 +113,7 @@ const useNow = () => {
 
 /* ---------- Events ---------- */
 
-interface Placed { ev: CalendarEvent; s: Date; e: Date; tone: CalendarTone; source?: string }
+interface Placed { ev: CalendarEvent; s: Date; e: Date; intent: CalendarIntent; source?: string }
 
 // All-day events run from their first day to the start of the day after their last. Timed ones last an hour when open-ended.
 function place(ev: CalendarEvent, calendars: CalendarSource[]): Placed | null {
@@ -121,13 +121,13 @@ function place(ev: CalendarEvent, calendars: CalendarSource[]): Placed | null {
   if (!s) return null;
   const idx = calendars.findIndex((c) => c.id === ev.calendar);
   const src = idx >= 0 ? calendars[idx] : undefined;
-  const tone = ev.tone ?? src?.tone ?? (idx >= 0 ? TONES[idx % TONES.length] : "cyan");
+  const intent = ev.intent ?? src?.intent ?? (idx >= 0 ? INTENTS[idx % INTENTS.length] : "cyan");
   const end = parse(ev.end);
   if (ev.allDay) {
     const last = end && end >= s ? dayOf(end) : dayOf(s);
-    return { ev, s: dayOf(s), e: addDays(last, 1), tone, source: src?.name };
+    return { ev, s: dayOf(s), e: addDays(last, 1), intent, source: src?.name };
   }
-  return { ev, s, e: end && end > s ? end : addMinutes(s, 60), tone, source: src?.name };
+  return { ev, s, e: end && end > s ? end : addMinutes(s, 60), intent, source: src?.name };
 }
 
 const covers = (p: Placed, day: Date) => p.s < addDays(day, 1) && p.e > day;
@@ -142,11 +142,11 @@ function whenText(p: Placed) {
 }
 const eventName = (p: Placed) => [p.ev.title, whenText(p), p.source].filter(Boolean).join(", ");
 
-const toneStyle = (tone: CalendarTone) => ({
-  "--tone-bg": `var(--bg-${tone}-faint)`,
-  "--tone-border": `var(--border-${tone})`,
-  "--tone-dot": `var(--bg-${tone})`,
-  "--tone-text": `var(--text-${tone}-strong)`,
+const intentStyle = (intent: CalendarIntent) => ({
+  "--tone-bg": `var(--bg-${intent}-faint)`,
+  "--tone-border": `var(--border-${intent})`,
+  "--tone-dot": `var(--bg-${intent})`,
+  "--tone-text": `var(--text-${intent}-strong)`,
 }) as CSSProperties;
 
 // Timed events on one day, side by side where they overlap: each takes a column in its cluster of overlapping events.
@@ -300,7 +300,7 @@ export function Calendar({
       ...(draft.note.trim() ? { note: draft.note.trim() } : {}),
     };
     const old = draft.id ? events.find((x) => x.id === draft.id) : undefined;
-    if (old?.tone) ev.tone = old.tone;
+    if (old?.intent) ev.intent = old.intent;
     commit(draft.id ? events.map((x) => (x.id === draft.id ? ev : x)) : [...events, ev]);
     closePanel();
   };
@@ -326,7 +326,7 @@ export function Calendar({
     const ends = sameDay(addDays(p.e, p.ev.allDay ? -1 : 0), day) || (!p.ev.allDay && +p.e === +addDays(dayOf(day), 1));
     return (
       <button
-        key={p.ev.id} type="button" style={toneStyle(p.tone)} aria-label={eventName(p)}
+        key={p.ev.id} type="button" style={intentStyle(p.intent)} aria-label={eventName(p)}
         className={[kind === "pill" ? styles.pill : styles.item, kind === "pill" && !starts ? styles.continues : "", kind === "pill" && !ends ? styles.carries : ""].join(" ")}
         onClick={() => openEvent(p)}
       >
@@ -447,7 +447,7 @@ export function Calendar({
                     key={p.ev.id} type="button" aria-label={eventName(p)} onClick={() => openEvent(p)}
                     className={[styles.block, len < 0.75 ? styles.blockShort : ""].join(" ")}
                     style={{
-                      ...toneStyle(p.tone),
+                      ...intentStyle(p.intent),
                       top: `calc(var(--calendar-hour) * ${top})`, height: `calc(var(--calendar-hour) * ${len} - var(--border-width-medium))`,
                       left: `${(col / cols) * 100}%`, width: `${100 / cols}%`,
                     }}
@@ -485,7 +485,7 @@ export function Calendar({
             <ul className={styles.listItems}>
               {list.map((p) => (
                 <li key={p.ev.id}>
-                  <button type="button" className={styles.listRow} style={toneStyle(p.tone)} aria-label={eventName(p)} onClick={() => openEvent(p)}>
+                  <button type="button" className={styles.listRow} style={intentStyle(p.intent)} aria-label={eventName(p)} onClick={() => openEvent(p)}>
                     <span className={styles.listTime}>
                       {p.ev.allDay ? "All day" : `${sameDay(p.s, d) ? timeText(p.s) : "…"} – ${sameDay(p.e, d) ? timeText(p.e) : "…"}`}
                     </span>
@@ -556,7 +556,7 @@ export function Calendar({
         <ul className={styles.sources}>
           {calendars.map((c, i) => (
             <li key={c.id} className={styles.source}>
-              <span className={styles.swatch} style={toneStyle(c.tone ?? TONES[i % TONES.length])} aria-hidden="true" />
+              <span className={styles.swatch} style={intentStyle(c.intent ?? INTENTS[i % INTENTS.length])} aria-hidden="true" />
               <Checkbox
                 label={c.name} checked={!hidden.has(c.id)}
                 onChange={(shown) => setHidden((h) => { const next = new Set(h); if (shown) next.delete(c.id); else next.add(c.id); return next; })}

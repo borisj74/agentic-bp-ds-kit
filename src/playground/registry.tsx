@@ -129,11 +129,11 @@ const USAGE_ITEMS: UsageListItem[] = [
 ];
 // ListView sample rows: invoices with a status badge, split into two groups when the Groups switch is on.
 const LIST_VIEW_ITEMS: ListViewItem[] = [
-  { id: "inv-1042", primary: "INV-1042", secondary: "Apex Digital Services · $4,820.00", icon: "receipt_long", badge: "Overdue", badgeTone: "danger", group: "due" },
+  { id: "inv-1042", primary: "INV-1042", secondary: "Apex Digital Services · $4,820.00", icon: "receipt_long", badge: "Overdue", badgeIntent: "danger", group: "due" },
   { id: "inv-1044", primary: "INV-1044", secondary: "Globex Corporation · $980.00", icon: "receipt_long", badge: "Draft", group: "due" },
-  { id: "inv-1045", primary: "INV-1045", secondary: "Initech · $2,150.00", icon: "receipt_long", badge: "Sent", badgeTone: "info", group: "due" },
-  { id: "inv-1043", primary: "INV-1043", secondary: "Northwind Traders · $1,260.00", icon: "receipt_long", badge: "Paid", badgeTone: "success", group: "done" },
-  { id: "inv-1041", primary: "INV-1041", secondary: "Umbrella Corp · $3,400.00", icon: "receipt_long", badge: "Paid", badgeTone: "success", group: "done" },
+  { id: "inv-1045", primary: "INV-1045", secondary: "Initech · $2,150.00", icon: "receipt_long", badge: "Sent", badgeIntent: "info", group: "due" },
+  { id: "inv-1043", primary: "INV-1043", secondary: "Northwind Traders · $1,260.00", icon: "receipt_long", badge: "Paid", badgeIntent: "success", group: "done" },
+  { id: "inv-1041", primary: "INV-1041", secondary: "Umbrella Corp · $3,400.00", icon: "receipt_long", badge: "Paid", badgeIntent: "success", group: "done" },
 ];
 const LIST_VIEW_GROUPS = [{ id: "due", title: "Due" }, { id: "done", title: "Settled" }];
 
@@ -167,8 +167,8 @@ const CELL_SAMPLES: Record<CellType, Props> = {
   avatarGroup: { label: "Owners", people: [{ name: "Maya Chen", src: "/faces/maya-chen.jpg" }, { name: "Noah Williams", src: "/faces/noah-williams.jpg" }, { name: "Iris Okafor", src: "/faces/iris-okafor.jpg" }, { name: "Jordan Lee", src: "/faces/jordan-lee.jpg" }] },
   file: { label: "invoice-1042.pdf" },
   payment: { label: "Visa ending 4242" },
-  badge: { label: "Paid", tone: "success" },
-  badges: { badges: [{ label: "Usage", tone: "info" }, { label: "Annual", tone: "neutral" }] },
+  badge: { label: "Paid", intent: "success" },
+  badges: { badges: [{ label: "Usage", intent: "info" }, { label: "Annual", intent: "neutral" }] },
   trendPositive: { value: "12%" },
   trendNegative: { value: "4%" },
   progress: { value: 64, label: "Onboarding" },
@@ -202,9 +202,9 @@ const ACCOUNT_COLUMNS: TableColumn[] = [
 ];
 const ACCOUNT_ACTIONS = [{ label: "View" }, { label: "Edit" }, { label: "Delete", variant: "danger" as const }];
 const ACCOUNTS: TableRow[] = [
-  { id: "acme", account: <Cell type="link" label="Acme Inc." href="#" />, owner: <Cell type="avatar" name="Maya Chen" src="/faces/maya-chen.jpg" />, status: <Cell type="badge" label="Active" tone="success" />, mrr: "$12,400", actions: <Cell type="actionMenu" align="end" actions={ACCOUNT_ACTIONS} /> },
-  { id: "globex", account: <Cell type="link" label="Globex" href="#" />, owner: <Cell type="avatar" name="Noah Williams" src="/faces/noah-williams.jpg" />, status: <Cell type="badge" label="Trial" tone="info" />, mrr: "$3,150", actions: <Cell type="actionMenu" align="end" actions={ACCOUNT_ACTIONS} /> },
-  { id: "initech", account: <Cell type="link" label="Initech" href="#" />, owner: <Cell type="avatar" name="Iris Okafor" src="/faces/iris-okafor.jpg" />, status: <Cell type="badge" label="Past due" tone="danger" />, mrr: "$980", actions: <Cell type="actionMenu" align="end" actions={ACCOUNT_ACTIONS} /> },
+  { id: "acme", account: <Cell type="link" label="Acme Inc." href="#" />, owner: <Cell type="avatar" name="Maya Chen" src="/faces/maya-chen.jpg" />, status: <Cell type="badge" label="Active" intent="success" />, mrr: "$12,400", actions: <Cell type="actionMenu" align="end" actions={ACCOUNT_ACTIONS} /> },
+  { id: "globex", account: <Cell type="link" label="Globex" href="#" />, owner: <Cell type="avatar" name="Noah Williams" src="/faces/noah-williams.jpg" />, status: <Cell type="badge" label="Trial" intent="info" />, mrr: "$3,150", actions: <Cell type="actionMenu" align="end" actions={ACCOUNT_ACTIONS} /> },
+  { id: "initech", account: <Cell type="link" label="Initech" href="#" />, owner: <Cell type="avatar" name="Iris Okafor" src="/faces/iris-okafor.jpg" />, status: <Cell type="badge" label="Past due" intent="danger" />, mrr: "$980", actions: <Cell type="actionMenu" align="end" actions={ACCOUNT_ACTIONS} /> },
 ];
 // Icon-only row actions: a kit Cell actionIcons, each button named by its label.
 const ICON_ACTIONS = [{ label: "Edit", icon: "edit" }, { label: "Download", icon: "download" }, { label: "Delete", icon: "delete" }];
@@ -311,7 +311,7 @@ const ACTIVITY: TimelineItem[] = [
     action: { label: "Add follow-up" }, menu: ACTIVITY_MENU,
   },
   {
-    id: "invoice", title: "Invoice sent", timestamp: "Yesterday, 16:20", subtitle: "Billing run 2027-03", icon: "receipt_long", tone: "success",
+    id: "invoice", title: "Invoice sent", timestamp: "Yesterday, 16:20", subtitle: "Billing run 2027-03", icon: "receipt_long", intent: "success",
     notes: "INV-1042 for $36,420 went out to billing@acme.com.", links: [{ label: "View invoice", href: "#" }], menu: ACTIVITY_MENU,
   },
   {
@@ -319,17 +319,17 @@ const ACTIVITY: TimelineItem[] = [
     notes: "Account moved to net 45 terms for the rest of the year.",
   },
 ];
-const TONES: TimelineItem[] = [
-  { id: "t1", title: "Payment received", timestamp: "Today", icon: "payments", tone: "success", notes: "$210,300 cleared." },
-  { id: "t2", title: "Credit limit reached", timestamp: "Yesterday", icon: "warning", tone: "warning", notes: "The account is at 98% of its limit." },
-  { id: "t3", title: "Payment failed", timestamp: "6 Jan 2027", icon: "error", tone: "danger", notes: "The card on file was declined." },
-  { id: "t4", title: "Account created", timestamp: "2 Jan 2027", icon: "add_business", tone: "brand" },
+const INTENTS: TimelineItem[] = [
+  { id: "t1", title: "Payment received", timestamp: "Today", icon: "payments", intent: "success", notes: "$210,300 cleared." },
+  { id: "t2", title: "Credit limit reached", timestamp: "Yesterday", icon: "warning", intent: "warning", notes: "The account is at 98% of its limit." },
+  { id: "t3", title: "Payment failed", timestamp: "6 Jan 2027", icon: "error", intent: "danger", notes: "The card on file was declined." },
+  { id: "t4", title: "Account created", timestamp: "2 Jan 2027", icon: "add_business", intent: "brand" },
 ];
 const SHORT: TimelineItem[] = [
-  { id: "s1", title: "Invoice sent", timestamp: "2 hours ago", icon: "receipt_long", tone: "success" },
+  { id: "s1", title: "Invoice sent", timestamp: "2 hours ago", icon: "receipt_long", intent: "success" },
   { id: "s2", title: "Draft saved", timestamp: "Yesterday", icon: "edit_note" },
 ];
-const TIMELINE_SAMPLES: Record<string, unknown> = { "{activity}": ACTIVITY, "{tones}": TONES, "{short}": SHORT };
+const TIMELINE_SAMPLES: Record<string, unknown> = { "{activity}": ACTIVITY, "{intents}": INTENTS, "{short}": SHORT };
 const timelineProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in TIMELINE_SAMPLES ? TIMELINE_SAMPLES[v] : v])) as unknown as TimelineProps;
 
@@ -399,8 +399,8 @@ const CHART_SAMPLES: Record<string, unknown> = {
   ],
   "{days}": ["Apr 1", "Apr 5", "Apr 10", "Apr 15", "Apr 20", "Apr 25", "Apr 30"],
   "{approvals}": [
-    { name: "20% to 49% approved", values: [0, 5800, 4800, 2600, 1100, 450, 150], tone: "orange" },
-    { name: "50% to 79% approved", values: [0, 6000, 5100, 2100, 950, 450, 0], tone: "cyan" },
+    { name: "20% to 49% approved", values: [0, 5800, 4800, 2600, 1100, 450, 150], intent: "orange" },
+    { name: "50% to 79% approved", values: [0, 6000, 5100, 2100, 950, 450, 0], intent: "cyan" },
   ],
   "{severityDays}": ["Apr 1", "Apr 5", "Apr 10", "Apr 20", "Apr 25", "Apr 30"],
   "{severity}": [
@@ -414,18 +414,18 @@ const CHART_SAMPLES: Record<string, unknown> = {
   // A month of daily use split by balance: free credits run out on day 3, the plan on day 18, then the top-up takes over.
   "{monthDays}": Array.from({ length: 21 }, (_, i) => `Sep ${i + 1}`),
   "{creditsByBalance}": [
-    { name: "Free credits", values: [62, 58, 30, ...Array(18).fill(0)], tone: "green" },
-    { name: "AI Plan", values: [0, 0, 38, 70, 74, 66, 60, 72, 68, 70, 75, 68, 62, 70, 66, 64, 72, 5, 0, 0, 0], tone: "cyan" },
-    { name: "Top-up", values: [...Array(17).fill(0), 55, 38, 41, 42], tone: "orange" },
+    { name: "Free credits", values: [62, 58, 30, ...Array(18).fill(0)], intent: "green" },
+    { name: "AI Plan", values: [0, 0, 38, 70, 74, 66, 60, 72, 68, 70, 75, 68, 62, 70, 66, 64, 72, 5, 0, 0, 0], intent: "cyan" },
+    { name: "Top-up", values: [...Array(17).fill(0), 55, 38, 41, 42], intent: "orange" },
   ],
   "{weeks}": ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6", "Week 7"],
   "{statuses}": [
-    { name: "Current", values: [600000, 550000, 240000, 230000, 60000, 20000, 20000], tone: "pink" },
-    { name: "Closing", values: [15000, 25000, 335000, 165000, 50000, 30000, 90000], tone: "orange" },
-    { name: "Closed", values: [20000, 30000, 55000, 235000, 285000, 15000, 15000], tone: "gray" },
-    { name: "Approved", values: [15000, 35000, 15000, 15000, 155000, 350000, 230000], tone: "cyan" },
-    { name: "Sent", values: [10000, 15000, 10000, 10000, 60000, 185000, 145000], tone: "mint" },
-    { name: "Paid", values: [15000, 20000, 20000, 20000, 65000, 75000, 175000], tone: "green" },
+    { name: "Current", values: [600000, 550000, 240000, 230000, 60000, 20000, 20000], intent: "pink" },
+    { name: "Closing", values: [15000, 25000, 335000, 165000, 50000, 30000, 90000], intent: "orange" },
+    { name: "Closed", values: [20000, 30000, 55000, 235000, 285000, 15000, 15000], intent: "gray" },
+    { name: "Approved", values: [15000, 35000, 15000, 15000, 155000, 350000, 230000], intent: "cyan" },
+    { name: "Sent", values: [10000, 15000, 10000, 10000, 60000, 185000, 145000], intent: "mint" },
+    { name: "Paid", values: [15000, 20000, 20000, 20000, 65000, 75000, 175000], intent: "green" },
   ],
   "{customers}": ["Northwind Traders", "Acme Corporation", "Globex Industries", "Initech", "Umbrella Health Services", "Stark Logistics"],
   "{balances}": [{ name: "Open balance", values: [482000, 391500, 268200, 174900, 121300, 64800] }],
@@ -434,14 +434,14 @@ const CHART_SAMPLES: Record<string, unknown> = {
   ],
   // A usage trend that turns into a forecast after today, against the plan limit.
   "{usageDays}": ["Sep 1", "Sep 4", "Sep 7", "Sep 10", "Sep 13", "Sep 16", "Sep 19", "Sep 22", "Sep 25", "Sep 28"],
-  "{usageForecast}": [{ name: "API calls", values: [4200, 5100, 5600, 6300, 7000, 7600, 8300, 9000, 9700, 10400], tone: "cyan", projectedFrom: 5 }],
-  "{usageLimit}": [{ value: 10000, label: "Limit", tone: "red" }],
+  "{usageForecast}": [{ name: "API calls", values: [4200, 5100, 5600, 6300, 7000, 7600, 8300, 9000, 9700, 10400], intent: "cyan", projectedFrom: 5 }],
+  "{usageLimit}": [{ value: 10000, label: "Limit", intent: "red" }],
   "{today}": { category: 4, label: "Today" },
   "{paymentShare}": [
     { label: "Card", value: 55 }, { label: "ACH", value: 29 }, { label: "Wire", value: 13 }, { label: "Check", value: 3 },
   ],
   "{statusShare}": [
-    { label: "Paid", value: 58, tone: "green" }, { label: "Sent", value: 21, tone: "mint" }, { label: "Overdue", value: 13, tone: "red" }, { label: "Draft", value: 8, tone: "gray" },
+    { label: "Paid", value: 58, intent: "green" }, { label: "Sent", value: 21, intent: "mint" }, { label: "Overdue", value: 13, intent: "red" }, { label: "Draft", value: 8, intent: "gray" },
   ],
 };
 const CHAT_FILES = [{ id: "raw", label: "Raw-Data.xls" }, { id: "photo", label: "Photo1.jpg" }];
@@ -464,11 +464,11 @@ const chartProps = <T,>(p: Props) =>
 
 // Calendar samples, laid around this week so today and the time line show. Contract examples name them {calendars} and {events}.
 const CAL_SOURCES: CalendarSource[] = [
-  { id: "pto", name: "PTO", tone: "orange" },
-  { id: "personal", name: "Personal calendar", tone: "cyan" },
-  { id: "shifts", name: "Open shifts", tone: "green" },
-  { id: "holidays", name: "US holidays", tone: "purple" },
-  { id: "billing", name: "Billing runs", tone: "pink" },
+  { id: "pto", name: "PTO", intent: "orange" },
+  { id: "personal", name: "Personal calendar", intent: "cyan" },
+  { id: "shifts", name: "Open shifts", intent: "green" },
+  { id: "holidays", name: "US holidays", intent: "purple" },
+  { id: "billing", name: "Billing runs", intent: "pink" },
 ];
 // A date n days after this week's Sunday, with an optional time.
 const calDay = (n: number, time?: string) => {
@@ -586,7 +586,7 @@ const PRODUCT_COLUMNS: TableColumn[] = [
 ];
 const product = (id: string, name: string, method: string, type: string, level: string, active: boolean, rate: string, created: string): LookupRow => ({
   id, name, method, type, level, rate, created,
-  status: <Cell size="sm" type="badge" label={active ? "Active" : "Deactivated"} tone={active ? "success" : "neutral"} />,
+  status: <Cell size="sm" type="badge" label={active ? "Active" : "Deactivated"} intent={active ? "success" : "neutral"} />,
 });
 const PRODUCTS: LookupRow[] = [
   product("13980", "On-Demand Virtual Training - Gold", "One Time Charge", "Training", "Gold", false, "$3,000.00", "06/04/2022"),
@@ -670,7 +670,7 @@ export const registry: Record<string, Entry> = {
     render: ({ children, ...p }) => <Alert key={JSON.stringify(p) + String(children)} {...(p as object)}>{(children as string) || "Alert message goes here"}</Alert>,
     preview: { children: "Alert message goes here", actionLabel: "Main action", dismissible: true },
     block: true,
-    card: <div style={{ width: "85%" }}><Alert tone="success">Your changes are saved.</Alert></div>,
+    card: <div style={{ width: "85%" }}><Alert intent="success">Your changes are saved.</Alert></div>,
   },
   AlertDialog: {
     render: (p) => <AlertDialogDemo {...(p as { title: string; description: string; actionLabel: string })} />,
@@ -706,14 +706,14 @@ export const registry: Record<string, Entry> = {
   },
   Badge: {
     render: ({ children, ...p }) => <Badge {...(p as object)}>{(children as string) || "Badge"}</Badge>,
-    preview: { tone: "info", children: "In progress" },
+    preview: { intent: "info", children: "In progress" },
     normalize: (p) => (p.iconOnly && !p.icon ? { ...p, icon: "info" } : p),
-    card: <div style={{ display: "flex", gap: 8 }}><Badge tone="success">Paid</Badge><Badge tone="warning">Pending</Badge><Badge tone="danger" emphasis="strong">Overdue</Badge></div>,
+    card: <div style={{ display: "flex", gap: 8 }}><Badge intent="success">Paid</Badge><Badge intent="warning">Pending</Badge><Badge intent="danger" emphasis="strong">Overdue</Badge></div>,
   },
   BadgeAlt: {
     render: ({ children, ...p }) => <BadgeAlt {...(p as object)}>{(children as string) || "In progress"}</BadgeAlt>,
-    preview: { tone: "info", children: "In progress" },
-    card: <div style={{ display: "flex", gap: 8 }}><BadgeAlt tone="success">Active</BadgeAlt><BadgeAlt tone="warning">Pending</BadgeAlt><BadgeAlt tone="brand">Beta</BadgeAlt></div>,
+    preview: { intent: "info", children: "In progress" },
+    card: <div style={{ display: "flex", gap: 8 }}><BadgeAlt intent="success">Active</BadgeAlt><BadgeAlt intent="warning">Pending</BadgeAlt><BadgeAlt intent="brand">Beta</BadgeAlt></div>,
   },
   BarChart: {
     // Sample data swaps in for its {names}; a white panel like a page. Keyed so switching a control plays the motion again.
@@ -728,7 +728,7 @@ export const registry: Record<string, Entry> = {
       bars === "ranked"
         ? { ...p, title: "Open balance by customer", subtitle: "Top six, this period", categories: "{customers}", series: "{balances}", orientation: "horizontal", stacked: false, highlight: [0, 5] }
         : p,
-    hint: "Switch the bars and the orientation. Ranked picks out the top and bottom bar in the highlight tone. Turn the title, stacked, values, grid, legend and animate on and off.",
+    hint: "Switch the bars and the orientation. Ranked picks out the top and bottom bar in the highlight intent. Turn the title, stacked, values, grid, legend and animate on and off.",
     block: true,
     card: <div style={{ width: "100%" }}><BarChart label="Invoices by status" categories={["W1", "W2", "W3", "W4"]} series={[{ name: "Paid", values: [3, 5, 4, 6] }, { name: "Sent", values: [2, 2, 3, 2] }]} stacked showLegend={false} height={96} animate={false} /></div>,
   },
@@ -821,8 +821,8 @@ export const registry: Record<string, Entry> = {
     page: <SettingsPageDemo shell />,
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
-        <Tile title="Security & Users" description="Roles, sharing groups and approvals." icon="shield_person" tone="red" href="#" />
-        <Tile title="Billing" description="Invoices, statements, templates and periods." icon="receipt_long" tone="brand" href="#" />
+        <Tile title="Security & Users" description="Roles, sharing groups and approvals." icon="shield_person" intent="red" href="#" />
+        <Tile title="Billing" description="Invoices, statements, templates and periods." icon="receipt_long" intent="brand" href="#" />
       </div>
     ),
   },
@@ -881,7 +881,7 @@ export const registry: Record<string, Entry> = {
     render: ({ children, ...p }) => <Link {...(p as object)}>{(children as string) || "View recent invoices"}</Link>,
     preview: { children: "View recent invoices" },
     hide: ["onClick"],
-    hint: "Switch tone, external and disabled. Without href the link acts in place, as a button that looks like a link.",
+    hint: "Switch intent, external and disabled. Without href the link acts in place, as a button that looks like a link.",
     card: <span style={{ fontSize: "var(--font-size-small)", color: "var(--text-neutral)" }}>Legal entity: <Link>Parent Co</Link></span>,
   },
   LinkList: {
@@ -928,7 +928,7 @@ export const registry: Record<string, Entry> = {
   LogoAI: {
     render: (p) => <LogoAI {...(p as object)} />,
     preview: {},
-    card: <div style={{ display: "flex", gap: 16, alignItems: "center" }}><LogoAI /><LogoAI tone="filled" /></div>,
+    card: <div style={{ display: "flex", gap: 16, alignItems: "center" }}><LogoAI /><LogoAI intent="filled" /></div>,
   },
   Calendar: {
     // Sample calendars and events swap in for their {names}. Keyed so switching controls starts fresh.
@@ -991,7 +991,7 @@ export const registry: Record<string, Entry> = {
       ...(showMessage ? { message } : {}),
       ...(showImage ? { icon } : {}),
     }),
-    hint: "Turn each part of the card on and off. Click the card to pick it; switch the message tone and disabled.",
+    hint: "Turn each part of the card on and off. Click the card to pick it; switch the message intent and disabled.",
     card: (
       <div style={{ width: 300 }}>
         <Card badge="New" title="Alpha Logic wireless mouse" amount="$49.00" selectable defaultSelected />
@@ -1022,7 +1022,7 @@ export const registry: Record<string, Entry> = {
     // Fills sample data for the picked type so every type previews with real content.
     normalize: (p) => ({ ...CELL_SAMPLES[(p.type as CellType) ?? "text"], ...p, ...(p.type !== "text" && p.label === "INV-1042" ? { label: CELL_SAMPLES[p.type as CellType]?.label } : {}) }),
     hint: "Pick a type, size and states. Each type fills in sample data.",
-    card: <div style={{ display: "grid" }}><Cell type="avatar" size="sm" name="Maya Chen" label="maya@acme.com" src="/faces/maya-chen.jpg" /><Cell type="badge" size="sm" label="Paid" tone="success" /></div>,
+    card: <div style={{ display: "grid" }}><Cell type="avatar" size="sm" name="Maya Chen" label="maya@acme.com" src="/faces/maya-chen.jpg" /><Cell type="badge" size="sm" label="Paid" intent="success" /></div>,
   },
   ChatComposer: {
     // The stage wires the box up, so sending, the attachments and the switches all work.
@@ -1126,7 +1126,7 @@ export const registry: Record<string, Entry> = {
       const down = p.orientation === "vertical";
       const run = content === "chips"
         ? <div style={{ display: "flex", flexDirection: down ? "column" : "row", alignItems: down ? "flex-start" : "center", gap: "var(--space-xsmall)", padding: "var(--space-xxsmall)" }}>
-            {CHIPS.map((t) => <span key={t} style={{ flex: "none" }}><Badge tone="neutral">{t}</Badge></span>)}
+            {CHIPS.map((t) => <span key={t} style={{ flex: "none" }}><Badge intent="neutral">{t}</Badge></span>)}
           </div>
         : <Scoreboard items={NINE_KPIS} scroll={false} label="Key metrics" />;
       const inside = <Conveyor {...(p as unknown as ConveyorProps)}>{run}</Conveyor>;
@@ -1145,8 +1145,8 @@ export const registry: Record<string, Entry> = {
     preview: { count: 3, label: "unread messages" },
     extras: { value: { values: ["3", "42", "150"], default: "3" } },
     normalize: ({ value, ...p }) => ({ ...p, count: Number(value ?? p.count) }),
-    hint: "Switch size, tone and value. 150 shows as 99+ with the default max.",
-    card: <div style={{ display: "flex", gap: 8, alignItems: "center" }}><Count count={3} /><Count tone="danger" count={12} /><Count tone="neutral" count={150} /></div>,
+    hint: "Switch size, intent and value. 150 shows as 99+ with the default max.",
+    card: <div style={{ display: "flex", gap: 8, alignItems: "center" }}><Count count={3} /><Count intent="danger" count={12} /><Count intent="neutral" count={150} /></div>,
   },
   Dashboard: {
     // The pattern in the frame, driven the way a screen would drive it: the dashboard, the open groups and
@@ -1170,7 +1170,7 @@ export const registry: Record<string, Entry> = {
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
         <Scoreboard items={TREND_KPIS.slice(0, 3)} label="Dashboard numbers" />
-        <BarChart label="Aging" categories={["Current", "1-30", "31-60", "61-90"]} series={[{ name: "Balance", values: [230, 60, 22, 8], tone: "orange" }]} height={96} />
+        <BarChart label="Aging" categories={["Current", "1-30", "31-60", "61-90"]} series={[{ name: "Balance", values: [230, 60, 22, 8], intent: "orange" }]} height={96} />
       </div>
     ),
   },
@@ -1238,7 +1238,7 @@ export const registry: Record<string, Entry> = {
         <HeaderCell size="sm" label="Customer" sortable sort="asc" />
         <HeaderCell size="sm" label="Status" />
         <Cell size="sm" type="link" label="Acme Inc." href="#" />
-        <Cell size="sm" type="badge" label="Paid" tone="success" />
+        <Cell size="sm" type="badge" label="Paid" intent="success" />
       </div>
     ),
   },
@@ -1640,7 +1640,7 @@ export const registry: Record<string, Entry> = {
     page: <RecordPageDemo sticky shell />,
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
-        <PageHeader title="Apex Digital Services" badge="Active" badgeTone="success" />
+        <PageHeader title="Apex Digital Services" badge="Active" badgeIntent="success" />
         <Tabs label="Record parts" items={[{ id: "details", label: "Details" }, { id: "contacts", label: "Contacts", count: 4 }, { id: "invoices", label: "Invoices", count: 12 }]} />
       </div>
     ),
@@ -1818,17 +1818,17 @@ export const registry: Record<string, Entry> = {
   },
   Tile: {
     render: (p) => <Tile {...(p as { title: string })} />,
-    preview: { title: "Security & Users", description: "Includes roles, sharing groups, approvals, authentication, and user management.", icon: "shield_person", tone: "red", href: "#" },
+    preview: { title: "Security & Users", description: "Includes roles, sharing groups, approvals, authentication, and user management.", icon: "shield_person", intent: "red", href: "#" },
     hide: ["onClick"],
-    hint: "Walk the tones: each tile in a grid takes its own, so the color becomes part of how people find the place again. A tile is a link, not a choice; comparing options is Card.",
-    card: <div style={{ width: 300 }}><Tile title="Billing" description="Invoices, statements, templates and periods." icon="receipt_long" tone="brand" href="#" /></div>,
+    hint: "Walk the intents: each tile in a grid takes its own, so the color becomes part of how people find the place again. A tile is a link, not a choice; comparing options is Card.",
+    card: <div style={{ width: 300 }}><Tile title="Billing" description="Invoices, statements, templates and periods." icon="receipt_long" intent="brand" href="#" /></div>,
   },
   Timeline: {
     render: (p) => <Timeline {...timelineProps(p)} />,
     preview: { items: "{activity}" },
     hide: ["items", "onMenuSelect"],
-    extras: { entries: { values: ["activity", "tones", "short"], default: "activity" } },
-    normalize: ({ entries, ...p }) => ({ ...p, items: entries === "tones" ? "{tones}" : entries === "short" ? "{short}" : "{activity}" }),
+    extras: { entries: { values: ["activity", "intents", "short"], default: "activity" } },
+    normalize: ({ entries, ...p }) => ({ ...p, items: entries === "intents" ? "{intents}" : entries === "short" ? "{short}" : "{activity}" }),
     hint: "Switch the entries and the size. The line joins the entries and stops at the last one. Each entry can carry notes, links, one action and a More menu.",
     block: true,
     card: <div style={{ width: 300 }}><Timeline items={SHORT} size="sm" /></div>,
@@ -1839,7 +1839,7 @@ export const registry: Record<string, Entry> = {
     preview: { title: "Saved successfully", description: "Your changes have been saved.", actionLabel: "Undo" },
     hide: ["open"],
     snippet: { open: "{saved}", onClose: "{close}", onAction: "{undo}" },
-    hint: "Click the button to show it. With Undo it stays until closed, so people can reach the action; clear the action label and the top bar counts down 5 seconds (point at the toast to pause it). Switch the tone.",
+    hint: "Click the button to show it. With Undo it stays until closed, so people can reach the action; clear the action label and the top bar counts down 5 seconds (point at the toast to pause it). Switch the intent.",
     card: <Button>Show toast</Button>,
   },
   Toolbar: {
@@ -1968,7 +1968,7 @@ export const registry: Record<string, Entry> = {
     },
     snippet: { actions: "{actions}" },
     extras: { titleIcon: { values: ["off", "on"], default: "off" }, actionButtons: { values: ["on", "off"], default: "on" } },
-    hint: "Toggle sticky and shadow, pick a badge tone, turn the title icon on, and turn the action buttons off. More opens the overflow menu.",
+    hint: "Toggle sticky and shadow, pick a badge intent, turn the title icon on, and turn the action buttons off. More opens the overflow menu.",
     block: true,
     wide: true,
     card: (
@@ -2050,7 +2050,7 @@ export const registry: Record<string, Entry> = {
       defaultValue: "annual",
       options: [
         { value: "monthly", label: "Monthly", description: "Pay month to month. Cancel anytime." },
-        { value: "annual", label: "Annual", description: "Two months free.", badge: "Save 16%", badgeTone: "success" },
+        { value: "annual", label: "Annual", description: "Two months free.", badge: "Save 16%", badgeIntent: "success" },
       ],
     },
     extras: { message: { values: ["none", "hint", "error"], default: "none" } },
@@ -2069,6 +2069,6 @@ export const registry: Record<string, Entry> = {
   Icon: {
     render: (p) => <Icon {...(p as object)} name={(p.name as string) || "search"} />,
     preview: { name: "search", size: "lg" },
-    card: <div style={{ display: "flex", gap: 12 }}><Icon name="search" size="lg" /><Icon name="check_circle" size="lg" tone="success" /><Icon name="warning" size="lg" tone="warning" filled /></div>,
+    card: <div style={{ display: "flex", gap: 12 }}><Icon name="search" size="lg" /><Icon name="check_circle" size="lg" intent="success" /><Icon name="warning" size="lg" intent="warning" filled /></div>,
   },
 };

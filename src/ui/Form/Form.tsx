@@ -67,7 +67,7 @@ export function Form({
         </header>
       )}
       <div className={styles.body}>
-        {error && <Alert tone="danger">{error}</Alert>}
+        {error && <Alert intent="danger">{error}</Alert>}
         {/* A group of fields is titled by the kit Section, so a group in a form folds away, carries its help and
             reads the same as a block anywhere else in the kit. */}
         {sections

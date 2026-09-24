@@ -35,7 +35,7 @@ export function Accordion({ items, defaultOpen }: AccordionProps) {
             >
               <span className={styles.title}>{item.title}</span>
               <span className={[styles.chevron, open ? styles.chevronOpen : ""].join(" ")}>
-                <Icon name="expand_more" tone="subtle" />
+                <Icon name="expand_more" intent="subtle" />
               </span>
             </button>
             <div id={panelId} role="region" aria-labelledby={buttonId} className={styles.panel} hidden={!open}>

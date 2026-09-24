@@ -10,7 +10,7 @@
       "itemShape": {
         "id": "string? Used by hidden. Without it, the label.",
         "label": "string",
-        "tone": "green | olive | cyan | orange | pink | gray | purple | yellow | red | mint? Without it, keys take the chart order: green, olive, cyan, orange, pink, gray, then the rest.",
+        "intent": "green | olive | cyan | orange | pink | gray | purple | yellow | red | mint? Without it, keys take the chart order: green, olive, cyan, orange, pink, gray, then the rest.",
         "value": "string? A number after the name, like $482K or 32%."
       },
       "note": "One key per colour, in the same order as the drawing."
@@ -80,7 +80,7 @@
   "doNot": [
     "Do not add a second legend under a kit chart; the chart draws its own. Use showLegend and legend to place it.",
     "Do not use it as a list of filters or tags. Use Badge or ButtonFilter.",
-    "Do not write the colour yourself; pick a tone.",
+    "Do not write the colour yourself; pick an intent.",
     "Do not use raw hex."
   ],
   "a11y": [

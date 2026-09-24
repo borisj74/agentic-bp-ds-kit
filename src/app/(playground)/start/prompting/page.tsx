@@ -108,11 +108,11 @@ export default function Prompting() {
                     <p className={docs.label}>{e.title}</p>
                     <div className={docs.compare}>
                       <div className={docs.compareItem}>
-                        <div><Badge tone="warning">Too vague</Badge></div>
+                        <div><Badge intent="warning">Too vague</Badge></div>
                         <CodeBlock wrap code={e.weak} />
                       </div>
                       <div className={docs.compareItem}>
-                        <div><Badge tone="success">Clear</Badge></div>
+                        <div><Badge intent="success">Clear</Badge></div>
                         <CodeBlock wrap code={e.better} />
                       </div>
                     </div>
@@ -147,7 +147,7 @@ export default function Prompting() {
                   <li><strong>Add it to the kit:</strong> &ldquo;Add a Rating component to the kit: contract first, then the component, then its catalog page.&rdquo;</li>
                   <li><strong>Change the screen:</strong> &ldquo;Use a Select with 1 to 5 instead.&rdquo;</li>
                 </ul>
-                <Alert tone="warning">Avoid &ldquo;just build something quick for this screen&rdquo;. One-off parts drift from the kit and break the next time things change.</Alert>
+                <Alert intent="warning">Avoid &ldquo;just build something quick for this screen&rdquo;. One-off parts drift from the kit and break the next time things change.</Alert>
               </div>
             </Section>
           </div>

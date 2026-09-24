@@ -1,8 +1,8 @@
 "use client";
-import type { ChartFormat, ChartTone } from "../Chart/chart";
+import type { ChartFormat, ChartIntent } from "../Chart/chart";
 import { XYChart, type ChartBarWidth, type ChartLegendPlace, type ChartOrientation, type ChartSeries } from "../Chart/XYChart";
 
-export type { ChartFormat, ChartSeries, ChartTone, ChartLegendPlace };
+export type { ChartFormat, ChartSeries, ChartIntent, ChartLegendPlace };
 export type BarChartOrientation = ChartOrientation;
 export type BarChartBarWidth = ChartBarWidth;
 
@@ -15,7 +15,7 @@ export interface BarChartProps {
   series: ChartSeries[];
   orientation?: BarChartOrientation;
   highlight?: number | number[];
-  highlightTone?: ChartTone;
+  highlightIntent?: ChartIntent;
   stacked?: boolean;
   barWidth?: BarChartBarWidth;
   showValues?: boolean;

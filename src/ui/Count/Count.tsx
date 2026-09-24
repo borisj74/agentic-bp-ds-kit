@@ -1,10 +1,10 @@
 import styles from "./Count.module.css";
 
-export type CountTone = "info" | "danger" | "neutral";
+export type CountIntent = "info" | "danger" | "neutral";
 export type CountSize = "sm" | "md" | "lg";
 
 export interface CountProps {
-  tone?: CountTone;
+  intent?: CountIntent;
   size?: CountSize;
   subtle?: boolean;
   disabled?: boolean;
@@ -13,9 +13,9 @@ export interface CountProps {
   label?: string;
 }
 
-export function Count({ tone = "info", size = "md", subtle = false, disabled = false, count, max = 99, label }: CountProps) {
+export function Count({ intent = "info", size = "md", subtle = false, disabled = false, count, max = 99, label }: CountProps) {
   const shown = count > max ? `${max}+` : String(count);
-  const cls = [styles.count, styles[tone], styles[size], subtle ? styles.subtle : "", disabled ? styles.disabled : ""].join(" ");
+  const cls = [styles.count, styles[intent], styles[size], subtle ? styles.subtle : "", disabled ? styles.disabled : ""].join(" ");
   return (
     <span className={cls} aria-disabled={disabled || undefined}>
       <span aria-hidden="true">{shown}</span>

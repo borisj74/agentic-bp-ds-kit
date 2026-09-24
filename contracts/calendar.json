@@ -2,7 +2,7 @@
   "name": "Calendar",
   "path": "src/ui/Calendar/Calendar.tsx",
   "intent": "A full calendar of events by month, week, day or as a list, where people browse dates, filter calendars and add, edit or delete events.",
-  "usage": "Use Calendar for schedules: shifts, PTO, billing runs, meetings. It is one component: pass events and, if events belong to calendars, calendars. The toolbar has a month picker, New event, previous and next, Today, Calendars (show or hide each calendar) and a Month / Week / Day / List switch. Month shows up to 3 events a day, then +N more; Week and Day show all-day events in a row on top and timed events on an hourly grid that scrolls, side by side when they overlap, with a line at the current time; List shows the week's events by day. Click an empty day or time, or New event, to open a drawer with the event form; click an event to edit or delete it. With events it is controlled (save changes in onEventsChange); with defaultEvents it keeps changes itself. readOnly turns creating and editing off. Dates are local ISO strings: 2024-10-09 for all-day, 2024-10-09T08:30 for timed. CalendarTone: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). See contracts/calendar.json for the full contract.",
+  "usage": "Use Calendar for schedules: shifts, PTO, billing runs, meetings. It is one component: pass events and, if events belong to calendars, calendars. The toolbar has a month picker, New event, previous and next, Today, Calendars (show or hide each calendar) and a Month / Week / Day / List switch. Month shows up to 3 events a day, then +N more; Week and Day show all-day events in a row on top and timed events on an hourly grid that scrolls, side by side when they overlap, with a line at the current time; List shows the week's events by day. Click an empty day or time, or New event, to open a drawer with the event form; click an event to edit or delete it. With events it is controlled (save changes in onEventsChange); with defaultEvents it keeps changes itself. readOnly turns creating and editing off. Dates are local ISO strings: 2024-10-09 for all-day, 2024-10-09T08:30 for timed. CalendarIntent: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). See contracts/calendar.json for the full contract.",
   "props": {
     "label": {
       "type": "string",
@@ -11,8 +11,8 @@
     },
     "events": {
       "type": "CalendarEvent[]",
-      "itemShape": "{ id: string; title: string; start: string; end?: string; allDay?: boolean; calendar?: string; tone?: CalendarTone; note?: string }",
-      "note": "Controlled events. start and end are local ISO strings: a date (2024-10-09) when allDay, a date and time (2024-10-09T08:30) otherwise. An all-day end is the last day, inclusive. A timed event with no end lasts an hour. tone overrides its calendar's color."
+      "itemShape": "{ id: string; title: string; start: string; end?: string; allDay?: boolean; calendar?: string; intent?: CalendarIntent; note?: string }",
+      "note": "Controlled events. start and end are local ISO strings: a date (2024-10-09) when allDay, a date and time (2024-10-09T08:30) otherwise. An all-day end is the last day, inclusive. A timed event with no end lasts an hour. intent overrides its calendar's color."
     },
     "defaultEvents": {
       "type": "CalendarEvent[]",
@@ -30,7 +30,7 @@
     },
     "calendars": {
       "type": "CalendarSource[]",
-      "itemShape": "{ id: string; name: string; tone?: CalendarTone; hidden?: boolean }",
+      "itemShape": "{ id: string; name: string; intent?: CalendarIntent; hidden?: boolean }",
       "note": "The calendars events belong to. They give events their color, fill the Calendar field of the event form and list in the Calendars drawer, where each can be shown or hidden. hidden starts one hidden. Without calendars there is no Calendars button."
     },
     "view": {
@@ -101,7 +101,7 @@
     "Do not use it for a timeline of one record's history or a list of due dates. Use Table.",
     "Do not build a local month grid, week grid or event chip. Use Calendar.",
     "Do not put a primary Button in its toolbar; the event form's Save is the primary action.",
-    "Do not use raw hex; pick a tone."
+    "Do not use raw hex; pick an intent."
   ],
   "a11y": [
     "A region named by label. The title (the month, week or day shown) is a heading and is announced when it changes.",

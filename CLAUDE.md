@@ -60,7 +60,7 @@ Page spacing: 4px grid. Content edge padding and between-section gap come from l
 3. If a pattern matches the screen, use the pattern.
 4. Breadcrumbs always read Home › side-nav section › current screen. Pass `breadcrumbs` starting with Home, then the section (and any parent record); PageHeader adds the page title as the last, current crumb. Never leave Home out. When the screen is the section's own page (like the Accounts list), the title is the section, so pass only Home: the trail reads Home › Accounts, never Home › Accounts › Accounts.
 5. Frame full screens with AppShell and the whole side nav: `items={APP_NAV}` and `endItems={APP_NAV_END}` from `@/patterns/AppShell/appNav`. Never trim or invent nav links; set `current` to the screen's page.
-6. Compose kit pieces. Match closed enums. Do not add variants that are not in the contract.
+6. Compose kit pieces. Match closed enums. Do not add variants that are not in the contract. The color-role prop is `intent` (`intent="success"`), never `tone`.
 7. If something is missing, stop and ask. Do not scaffold a one-off on the screen.
 
 ## Stay consistent

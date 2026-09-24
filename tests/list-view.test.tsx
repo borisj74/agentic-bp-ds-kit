@@ -90,7 +90,7 @@ describe("ListView", () => {
   });
 
   it("reads the unread dot and shows an item-level message", () => {
-    render(<ListView label="Inbox" items={[{ id: "m", primary: "Payment received", unread: true, message: "Posted to the ledger", messageTone: "success" }]} />);
+    render(<ListView label="Inbox" items={[{ id: "m", primary: "Payment received", unread: true, message: "Posted to the ledger", messageIntent: "success" }]} />);
     expect(screen.getByText("Unread")).toBeInTheDocument();
     expect(screen.getByText("Posted to the ledger")).toBeInTheDocument();
   });

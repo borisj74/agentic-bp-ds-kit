@@ -71,7 +71,7 @@ export default function Overview() {
                   <li><strong>Keyboard and screen reader basics</strong> built into the components: labels, focus and keys.</li>
                   <li><strong>An assistant that stops and asks</strong> when a piece is missing, instead of inventing one.</li>
                 </ul>
-                <Alert tone="info" title="Your copy is a snapshot">
+                <Alert intent="info" title="Your copy is a snapshot">
                   A prototype starts as a copy of the kit on the day you create it. Later kit changes do not reach it on
                   their own. Start a new prototype to get them.
                 </Alert>
@@ -83,15 +83,15 @@ export default function Overview() {
             <Section title="What's inside">
               <div className="layout-metrics">
                 <Tile
-                  title={`${foundationPages.length} foundation pages`} icon="palette" tone="purple" href="/foundations"
+                  title={`${foundationPages.length} foundation pages`} icon="palette" intent="purple" href="/foundations"
                   description={foundationPages.map((f) => f.label).join(", ")}
                 />
                 <Tile
-                  title={`${components.length} components`} icon="widgets" tone="cyan" href="/components"
+                  title={`${components.length} components`} icon="widgets" intent="cyan" href="/components"
                   description="The building blocks: controls, fields, data, navigation, feedback and charts."
                 />
                 <Tile
-                  title={`${patterns.length} patterns`} icon="dashboard" tone="green" href="/patterns"
+                  title={`${patterns.length} patterns`} icon="dashboard" intent="green" href="/patterns"
                   description={patterns.map((p) => p.name).join(", ")}
                 />
               </div>

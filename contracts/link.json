@@ -2,7 +2,7 @@
   "name": "Link",
   "path": "src/ui/Link/Link.tsx",
   "intent": "Inline text that takes people somewhere: a record, a list or another page.",
-  "usage": "Use Link for text that navigates, inside a sentence or as a value, like a ledger number, a parent account or View recent invoices. It is one component: children is the text, href is where it goes. It takes the size of the text around it. tone brand is the blue that says this is a link; neutral is for links inside quiet text and keeps an underline. external opens it in a new tab and adds the new-tab mark. Without href it acts in place, as a button that looks like a link, like opening a tab on the same page. disabled shows it in faint text that goes nowhere. For a column of links use LinkList; for a link in a table use a link Cell; for anything that changes data use Button. See contracts/link.json for the full contract.",
+  "usage": "Use Link for text that navigates, inside a sentence or as a value, like a ledger number, a parent account or View recent invoices. It is one component: children is the text, href is where it goes. It takes the size of the text around it. intent brand is the blue that says this is a link; neutral is for links inside quiet text and keeps an underline. external opens it in a new tab and adds the new-tab mark. Without href it acts in place, as a button that looks like a link, like opening a tab on the same page. disabled shows it in faint text that goes nowhere. For a column of links use LinkList; for a link in a table use a link Cell; for anything that changes data use Button. See contracts/link.json for the full contract.",
   "props": {
     "children": {
       "type": "ReactNode",
@@ -17,7 +17,7 @@
       "type": "(event) => void",
       "note": "Runs on click. Without href it is the link's whole job."
     },
-    "tone": {
+    "intent": {
       "enum": [
         "brand",
         "neutral"
@@ -56,7 +56,7 @@
   "snippet": "<FormDisplay label=\"Legal entity\" value={<Link href=\"/legal-entities/parent-co\">Parent Co</Link>} />",
   "examples": [
     {
-      "title": "Tones",
+      "title": "Intents",
       "usage": "brand is the default link blue; neutral sits in quiet text and keeps its underline.",
       "items": [
         {
@@ -66,7 +66,7 @@
         },
         {
           "props": {
-            "tone": "neutral",
+            "intent": "neutral",
             "children": "View recent invoices"
           }
         }

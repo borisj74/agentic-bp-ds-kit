@@ -2,7 +2,7 @@
 import { useState } from "react";
 import styles from "./Legend.module.css";
 
-export type LegendTone = "green" | "olive" | "cyan" | "orange" | "pink" | "gray" | "purple" | "yellow" | "red" | "mint";
+export type LegendIntent = "green" | "olive" | "cyan" | "orange" | "pink" | "gray" | "purple" | "yellow" | "red" | "mint";
 export type LegendOrientation = "row" | "column";
 export type LegendAlign = "start" | "center" | "end";
 export type LegendShape = "square" | "line" | "dot";
@@ -11,7 +11,7 @@ export type LegendSize = "sm" | "md";
 export interface LegendKey {
   id?: string;
   label: string;
-  tone?: LegendTone;
+  intent?: LegendIntent;
   value?: string;
 }
 
@@ -28,9 +28,9 @@ export interface LegendProps {
   decorative?: boolean;
 }
 
-const TONES: LegendTone[] = ["green", "olive", "cyan", "orange", "pink", "gray", "purple", "yellow", "red", "mint"];
-export const legendTone = (i: number, tone?: LegendTone) => tone ?? TONES[i % TONES.length];
-export const legendColor = (tone: LegendTone) => `var(--bg-${tone})`;
+const INTENTS: LegendIntent[] = ["green", "olive", "cyan", "orange", "pink", "gray", "purple", "yellow", "red", "mint"];
+export const legendIntent = (i: number, intent?: LegendIntent) => intent ?? INTENTS[i % INTENTS.length];
+export const legendColor = (intent: LegendIntent) => `var(--bg-${intent})`;
 
 const keyOf = (item: LegendKey) => item.id ?? item.label;
 
@@ -55,7 +55,7 @@ export function Legend({
   const body = (item: LegendKey, i: number, isOff: boolean) => (
     <>
       {/* An off key drops its colour and takes the grey from the stylesheet. */}
-      <span className={[styles.mark, styles[shape]].join(" ")} style={isOff ? undefined : { background: legendColor(legendTone(i, item.tone)) }} />
+      <span className={[styles.mark, styles[shape]].join(" ")} style={isOff ? undefined : { background: legendColor(legendIntent(i, item.intent)) }} />
       <span className={styles.text}>{item.label}</span>
       {item.value && <span className={styles.value}>{item.value}</span>}
     </>

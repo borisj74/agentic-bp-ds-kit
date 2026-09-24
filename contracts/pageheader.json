@@ -22,7 +22,7 @@
       "type": "string",
       "note": "A status after the title, like Draft. A kit Badge."
     },
-    "badgeTone": {
+    "badgeIntent": {
       "enum": [
         "neutral",
         "info",
@@ -179,7 +179,7 @@
             ],
             "title": "Q3 revenue",
             "badge": "Final",
-            "badgeTone": "success",
+            "badgeIntent": "success",
             "actionButtons": "off"
           }
         }

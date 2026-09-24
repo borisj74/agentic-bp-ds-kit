@@ -44,7 +44,7 @@ export function HeaderCell({
       {sortable && label ? (
         <button type="button" className={styles.sort} onClick={onSort} aria-label={`${label}, sort ${NEXT_SORT[sort]}`}>
           <span className={styles.label}>{label}</span>
-          <Icon name={SORT_ICON[sort]} size="sm" tone={sort === "none" ? "subtle" : "brand"} />
+          <Icon name={SORT_ICON[sort]} size="sm" intent={sort === "none" ? "subtle" : "brand"} />
         </button>
       ) : label ? (
         <span className={styles.label} title={title}>{label}</span>

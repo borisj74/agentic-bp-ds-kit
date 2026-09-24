@@ -4,7 +4,7 @@ import styles from "./Progress.module.css";
 export type ProgressShape = "bar" | "circle" | "semicircle";
 export type ProgressSize = "sm" | "md" | "lg";
 export type ProgressThresholds = "none" | "bar" | "track" | "all";
-export type ProgressTone = "info" | "success" | "warning" | "danger";
+export type ProgressIntent = "info" | "success" | "warning" | "danger";
 
 export interface ProgressProps {
   value: number;
@@ -12,7 +12,7 @@ export interface ProgressProps {
   shape?: ProgressShape;
   size?: ProgressSize;
   thresholds?: ProgressThresholds;
-  tone?: ProgressTone;
+  intent?: ProgressIntent;
   referenceLines?: boolean;
   showValue?: boolean;
   datatip?: string;
@@ -31,15 +31,15 @@ const STROKE = 8;
 
 // Figma Meter Bar - Horizontal 6578:325 and Meter - Circle 6605:193.
 export function Progress({
-  value, label = "Progress", shape = "bar", size = "md", thresholds = "none", tone, referenceLines = false, showValue = false, datatip,
+  value, label = "Progress", shape = "bar", size = "md", thresholds = "none", intent, referenceLines = false, showValue = false, datatip,
 }: ProgressProps) {
   const pct = Math.min(Math.max(Number.isFinite(value) ? value : 0, 0), 100);
   const rounded = Math.round(pct);
   const zone = zoneOf(pct);
   // The value is blue unless its own color shows the zone; the track shows the zone in track mode, the three bands in all.
-  // tone sets the value's color outright, for a meaning the screen decides, like a usage limit that is nearly reached.
-  const fillTone = tone ?? (thresholds === "bar" ? zone : "info");
-  const trackTone = thresholds === "track" ? zone : "neutral";
+  // intent sets the value's color outright, for a meaning the screen decides, like a usage limit that is nearly reached.
+  const fillIntent = intent ?? (thresholds === "bar" ? zone : "info");
+  const trackIntent = thresholds === "track" ? zone : "neutral";
   const a11y = {
     role: "progressbar", "aria-label": label, "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": rounded,
     "aria-valuetext": datatip ? `${rounded}%, ${datatip}` : `${rounded}%`,
@@ -56,9 +56,9 @@ export function Progress({
         )}
         <div className={styles.barRow}>
           <div className={styles.trackWrap}>
-            <div className={[styles.track, styles[trackTone]].join(" ")}>
+            <div className={[styles.track, styles[trackIntent]].join(" ")}>
               {thresholds === "all" && ZONES.map((z) => <span key={z} className={[styles.band, styles[z]].join(" ")} />)}
-              <span className={[styles.fill, styles[fillTone]].join(" ")} style={{ width: `${pct}%` }} />
+              <span className={[styles.fill, styles[fillIntent]].join(" ")} style={{ width: `${pct}%` }} />
             </div>
             {referenceLines && EDGES.map((e) => <span key={e} className={styles.marker} style={{ left: `${e}%` }} aria-hidden="true" />)}
           </div>
@@ -92,9 +92,9 @@ export function Progress({
     <div className={[styles.progress, styles.ring, semi ? styles.semi : "", styles[size]].join(" ")} {...a11y}>
       <svg className={styles.svg} viewBox={`0 0 ${C * 2} ${height}`} aria-hidden="true">
         <g style={ringStyle} strokeWidth={STROKE} fill="none">
-          {arc(0, total, [styles.arc, styles[trackTone]].join(" "))}
+          {arc(0, total, [styles.arc, styles[trackIntent]].join(" "))}
           {thresholds === "all" && ZONES.map((z, i) => arc((i * total) / 3 / (semi ? 2 : 1), ((i + 1) * total) / 3 / (semi ? 2 : 1), [styles.arc, styles[z]].join(" ")))}
-          {arc(0, (pct / 100) * (semi ? 100 : total), [styles.arc, styles[fillTone]].join(" "))}
+          {arc(0, (pct / 100) * (semi ? 100 : total), [styles.arc, styles[fillIntent]].join(" "))}
         </g>
         {referenceLines && EDGES.map((e) => {
           const a = point(e, R - STROKE / 2 - 2);

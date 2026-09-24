@@ -89,7 +89,7 @@ export function ChatMessage({
 
   const avatar = mine
     ? <Avatar shape="square" name={person?.name ?? "You"} src={person?.src} initials={person?.initials} />
-    : <span className={styles.aiMark}><LogoAI variant="symbol" tone="filled" label="Assistant" /></span>;
+    : <span className={styles.aiMark}><LogoAI variant="symbol" intent="filled" label="Assistant" /></span>;
 
   return (
     <article className={[styles.message, mine ? styles.mine : styles.theirs].join(" ")} aria-label={`${who} said`}>

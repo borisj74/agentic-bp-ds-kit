@@ -2,12 +2,12 @@
 import { Icon } from "../Icon/Icon";
 import styles from "./Badge.module.css";
 
-export type BadgeTone = "neutral" | "hollow" | "info" | "success" | "warning" | "danger" | "highlight";
+export type BadgeIntent = "neutral" | "hollow" | "info" | "success" | "warning" | "danger" | "highlight";
 export type BadgeEmphasis = "subtle" | "strong" | "faint";
 export type BadgeSize = "sm" | "md" | "lg";
 
 export interface BadgeProps {
-  tone?: BadgeTone;
+  intent?: BadgeIntent;
   emphasis?: BadgeEmphasis;
   size?: BadgeSize;
   icon?: string;
@@ -18,9 +18,9 @@ export interface BadgeProps {
   onRemove?: () => void;
 }
 
-export function Badge({ tone = "neutral", emphasis = "subtle", size = "sm", icon, iconOnly = false, removable = false, disabled = false, children, onRemove }: BadgeProps) {
+export function Badge({ intent = "neutral", emphasis = "subtle", size = "sm", icon, iconOnly = false, removable = false, disabled = false, children, onRemove }: BadgeProps) {
   const small = size === "lg" ? "sm" : "xs";
-  const cls = [styles.badge, styles[tone], styles[emphasis], styles[size], iconOnly ? styles.iconOnly : "", disabled ? styles.disabled : ""].join(" ");
+  const cls = [styles.badge, styles[intent], styles[emphasis], styles[size], iconOnly ? styles.iconOnly : "", disabled ? styles.disabled : ""].join(" ");
   if (iconOnly) {
     return (
       <span className={cls} aria-disabled={disabled || undefined}>

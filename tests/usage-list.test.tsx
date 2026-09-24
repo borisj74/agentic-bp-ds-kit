@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { UsageList } from "@/ui/UsageList/UsageList";
 
-// The fill inside a row's bar, where the tone shows.
+// The fill inside a row's bar, where the intent shows.
 const fillOf = (bar: HTMLElement) => bar.querySelector("span[style*=width]") as HTMLElement;
 
 describe("UsageList", () => {

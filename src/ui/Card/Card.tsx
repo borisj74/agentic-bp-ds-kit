@@ -1,13 +1,13 @@
 "use client";
 import { useId, useState, type MouseEvent } from "react";
-import { Badge, type BadgeTone } from "../Badge/Badge";
+import { Badge, type BadgeIntent } from "../Badge/Badge";
 import { Button } from "../Button/Button";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
 import { Icon } from "../Icon/Icon";
 import styles from "./Card.module.css";
 
-export type CardMessageTone = "success" | "warning" | "danger" | "info";
+export type CardMessageIntent = "success" | "warning" | "danger" | "info";
 
 export interface CardAction {
   id: string;
@@ -19,11 +19,11 @@ export interface CardProps {
   title?: string;
   overline?: string;
   badge?: string;
-  badgeTone?: BadgeTone;
+  badgeIntent?: BadgeIntent;
   description?: string;
   amount?: string;
   message?: string;
-  messageTone?: CardMessageTone;
+  messageIntent?: CardMessageIntent;
   image?: string;
   imageAlt?: string;
   icon?: string;
@@ -39,13 +39,13 @@ export interface CardProps {
   onAction?: (id: string) => void;
 }
 
-const MESSAGE_ICON: Record<CardMessageTone, string> = { success: "check_circle", warning: "warning", danger: "error", info: "info" };
+const MESSAGE_ICON: Record<CardMessageIntent, string> = { success: "check_circle", warning: "warning", danger: "error", info: "info" };
 
 // Figma card 6290:315: header row (badge + overline), title, body, amount and an item message beside a 72 tile,
 // then a footer checkbox when selectable. States: default, hover, selected, disabled. With href or onClick the card
 // opens what it shows instead: its title is the one link, stretched over the whole card.
 export function Card({
-  title, overline, badge, badgeTone = "neutral", description, amount, message, messageTone = "success", image, imageAlt, icon,
+  title, overline, badge, badgeIntent = "neutral", description, amount, message, messageIntent = "success", image, imageAlt, icon,
   selectable = false, selected: selectedProp, defaultSelected = false, onSelectedChange, disabled = false, href, onClick: onOpen,
   actions, menu, onAction,
 }: CardProps) {
@@ -81,7 +81,7 @@ export function Card({
           <div className={styles.text}>
             {(badge || overline) && (
               <div className={styles.header}>
-                {badge && <Badge tone={badgeTone} disabled={disabled}>{badge}</Badge>}
+                {badge && <Badge intent={badgeIntent} disabled={disabled}>{badge}</Badge>}
                 {overline && <span className={styles.overline}>{opens && !title ? open(overline) : overline}</span>}
               </div>
             )}
@@ -97,8 +97,8 @@ export function Card({
           ) : null}
         </div>
         {message && (
-          <p className={[styles.message, styles[messageTone]].join(" ")}>
-            <Icon name={MESSAGE_ICON[messageTone]} size="sm" filled />
+          <p className={[styles.message, styles[messageIntent]].join(" ")}>
+            <Icon name={MESSAGE_ICON[messageIntent]} size="sm" filled />
             {message}
           </p>
         )}

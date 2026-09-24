@@ -50,7 +50,7 @@ export function Modal({ open, title, description, icon, size = "sm", showClose =
       >
         <header className={styles.header}>
           {/* An optional icon before the title, like PageHeader's. */}
-          {icon && <span className={styles.icon}><Icon name={icon} size="lg" tone="brand" /></span>}
+          {icon && <span className={styles.icon}><Icon name={icon} size="lg" intent="brand" /></span>}
           <div className={styles.copy}>
             <h2 id={titleId} className={styles.title}>{title}</h2>
             {description && <p id={descriptionId} className={styles.description}>{description}</p>}

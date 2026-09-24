@@ -61,7 +61,7 @@ import { Table, type TableColumn, type TableRow } from "@/ui/Table/Table";
 import { Tabs, type TabItem } from "@/ui/Tabs/Tabs";
 import { Textarea } from "@/ui/Textarea/Textarea";
 import { Toast, type ToastProps } from "@/ui/Toast/Toast";
-import { Tile, type TileTone } from "@/ui/Tile/Tile";
+import { Tile, type TileIntent } from "@/ui/Tile/Tile";
 import { Timeline } from "@/ui/Timeline/Timeline";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 
@@ -139,7 +139,7 @@ export function FormDemo({ content = "fields", ...p }: Omit<FormProps, "children
           <Checkbox label="Send invoices by email" name="sendInvoices" defaultChecked />
         </Form>
       )}
-      {saved && <Alert tone="success">{saved}</Alert>}
+      {saved && <Alert intent="success">{saved}</Alert>}
     </div>
   );
 }
@@ -239,7 +239,7 @@ export function ToastDemo(p: Omit<ToastProps, "open" | "onClose" | "onAction">) 
   const [done, setDone] = useState("");
   return (
     <div style={{ display: "grid", justifyItems: "center", gap: "var(--space-xsmall)" }}>
-      <Button onClick={() => { setDone(""); setOpen(true); }}>{`Show ${p.tone ?? "info"} toast`}</Button>
+      <Button onClick={() => { setDone(""); setOpen(true); }}>{`Show ${p.intent ?? "info"} toast`}</Button>
       {done && <span style={{ fontSize: "var(--font-size-xsmall)", color: "var(--text-neutral)" }}>{done}</span>}
       <Toast {...p} open={open} onClose={() => setOpen(false)} onAction={() => setDone(`${p.actionLabel} picked`)} />
     </div>
@@ -907,7 +907,7 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
         header={
           <AppHeader
             navOpen={navOpen} onNavToggle={() => setNavOpen((o) => !o)}
-            environment="UAT-2" environmentTone="success"
+            environment="UAT-2" environmentIntent="success"
             searchShortcut="Ctrl+K" searchGroups={SHELL_SEARCH} searchVariant="list" searchIconStyle="tile"
             searchScopes={SHELL_SEARCH_SCOPES} searchScope={scope} onSearchScopeChange={setScope}
             onSearchSelect={() => {}}
@@ -986,11 +986,11 @@ const LIST_RECORDS = Array.from({ length: 12 }, (_, i) => {
   };
 });
 const LIST_PAID: Record<string, string> = Object.fromEntries(LIST_RECORDS.map((r) => [r.id, r.paid]));
-const paidTone = (paid: string) => (paid === "Paid" ? "success" : paid === "Unpaid" ? "danger" : "warning");
+const paidIntent = (paid: string) => (paid === "Paid" ? "success" : paid === "Unpaid" ? "danger" : "warning");
 const LIST_ROWS: TableRow[] = LIST_RECORDS.map((r) => ({
   id: r.id,
   account: r.account,
-  status: <Cell type="badge" tone={paidTone(r.paid)} label={r.paid} />,
+  status: <Cell type="badge" intent={paidIntent(r.paid)} label={r.paid} />,
   due: r.due,
   amount: r.amount,
   actions: menuActions,
@@ -999,7 +999,7 @@ const LIST_ROWS: TableRow[] = LIST_RECORDS.map((r) => ({
 // due date and amount under it, and how it is paid as the badge; every action is in the More menu, as in the table.
 const listViewItem = (r: (typeof LIST_RECORDS)[number]): ListViewItem => ({
   id: r.id, primary: r.account, secondary: `${r.id} \u00b7 Due ${r.due} \u00b7 ${r.amount}`, avatar: r.account,
-  badge: r.paid, badgeTone: paidTone(r.paid), menu: INVOICE_ALL_MENU,
+  badge: r.paid, badgeIntent: paidIntent(r.paid), menu: INVOICE_ALL_MENU,
 });
 const LIST_COLUMNS: TableColumn[] = [
   { key: "id", header: "Invoice", emphasis: true }, { key: "account", header: "Account" }, { key: "status", header: "Status" },
@@ -1085,7 +1085,7 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
           {shown.slice(start, start + size).map((r) => (
             <Card
               key={String(r.id)} overline={String(r.id)} title={String(r.account)} amount={String(r.amount)}
-              badge={LIST_PAID[String(r.id)]} badgeTone={paidTone(LIST_PAID[String(r.id)])}
+              badge={LIST_PAID[String(r.id)]} badgeIntent={paidIntent(LIST_PAID[String(r.id)])}
               description={`Due ${String(r.due)}`}
               selectable selected={picked.includes(String(r.id))}
               onSelectedChange={(on) => setPicked((old) => (on ? [...old, String(r.id)] : old.filter((id) => id !== String(r.id))))}
@@ -1162,7 +1162,7 @@ const RECORD_NUMBERS = [
 // Each pair is a FormDisplay; the value is text unless the record says otherwise.
 const ACCOUNT_FIELDS: { label: string; value: ReactNode; help: string }[] = [
   { label: "Account name", value: "Apex Digital Services", help: "The name on invoices and statements." },
-  { label: "Status", value: <Badge tone="success">Active</Badge>, help: "Whether the account can be billed." },
+  { label: "Status", value: <Badge intent="success">Active</Badge>, help: "Whether the account can be billed." },
   { label: "Account number", value: "ACC-10428", help: "Set when the account is created." },
   { label: "Industry", value: "Software & Technology", help: "Used for reporting." },
   { label: "Account type", value: "Customer", help: "Customer, prospect or partner." },
@@ -1221,7 +1221,7 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" 
       header={
         <PageHeader
           breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]}
-          title="Apex Digital Services" badge="Active" badgeTone="success"
+          title="Apex Digital Services" badge="Active" badgeIntent="success"
           sticky={sticky && compact}
           actions={<><Button size="sm">Clone</Button><Button size="sm" variant="primary">Edit</Button></>}
         />
@@ -1229,7 +1229,7 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" 
       tabs={<Tabs label="What belongs to this account" items={RECORD_TABS} value={tab} onChange={setTab} />}
       notice={
         notice ? (
-          <Alert tone="warning" dismissible onDismiss={() => setNotice(false)} actionLabel="Review invoices" onAction={() => setTab("invoices")}>
+          <Alert intent="warning" dismissible onDismiss={() => setNotice(false)} actionLabel="Review invoices" onAction={() => setTab("invoices")}>
             This account has 2 invoices past due, totalling $22,940.00.
           </Alert>
         ) : undefined
@@ -1361,16 +1361,16 @@ const LEDGER_ROWS: TableRow[] = [
 ];
 
 const CLOSE_TASKS = [
-  { id: "t1", title: "Review and approve invoices", timestamp: "Apr 12", subtitle: "Jordan Ellis", icon: "check_circle", tone: "success" as const },
-  { id: "t2", title: "Post recurring charges", timestamp: "Apr 14", subtitle: "Priya Raman", icon: "check_circle", tone: "success" as const },
-  { id: "t3", title: "Reconcile unapplied cash", timestamp: "Due Apr 28", subtitle: "Billing Operations", icon: "schedule", tone: "warning" as const },
-  { id: "t4", title: "Run revenue recognition", timestamp: "Due Apr 30", subtitle: "Finance", icon: "schedule", tone: "warning" as const },
+  { id: "t1", title: "Review and approve invoices", timestamp: "Apr 12", subtitle: "Jordan Ellis", icon: "check_circle", intent: "success" as const },
+  { id: "t2", title: "Post recurring charges", timestamp: "Apr 14", subtitle: "Priya Raman", icon: "check_circle", intent: "success" as const },
+  { id: "t3", title: "Reconcile unapplied cash", timestamp: "Due Apr 28", subtitle: "Billing Operations", icon: "schedule", intent: "warning" as const },
+  { id: "t4", title: "Run revenue recognition", timestamp: "Due Apr 30", subtitle: "Finance", icon: "schedule", intent: "warning" as const },
 ];
 const PRIOR_ADJUSTMENTS = [
-  { id: "a1", title: "Credit memo CM-10428", timestamp: "New", subtitle: "Apex Digital Services · $2,140.00", icon: "receipt_long", tone: "brand" as const },
-  { id: "a2", title: "Balance transfer BT-331", timestamp: "Posted", subtitle: "Bright Future Labs · $880.00", icon: "swap_horiz", tone: "neutral" as const },
-  { id: "a3", title: "Write-off WO-8821", timestamp: "Draft", subtitle: "Northwind Retail · $410.00", icon: "block", tone: "neutral" as const },
-  { id: "a4", title: "Late-fee reversal LF-19", timestamp: "Posted", subtitle: "Helios Cloud · $125.00", icon: "undo", tone: "neutral" as const },
+  { id: "a1", title: "Credit memo CM-10428", timestamp: "New", subtitle: "Apex Digital Services · $2,140.00", icon: "receipt_long", intent: "brand" as const },
+  { id: "a2", title: "Balance transfer BT-331", timestamp: "Posted", subtitle: "Bright Future Labs · $880.00", icon: "swap_horiz", intent: "neutral" as const },
+  { id: "a3", title: "Write-off WO-8821", timestamp: "Draft", subtitle: "Northwind Retail · $410.00", icon: "block", intent: "neutral" as const },
+  { id: "a4", title: "Late-fee reversal LF-19", timestamp: "Posted", subtitle: "Helios Cloud · $125.00", icon: "undo", intent: "neutral" as const },
 ];
 const PERIODS = [
   { id: "mtd", label: "Month to date" },
@@ -1457,12 +1457,12 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
         <Tiles>
           <BarChart
             label="AR aging by time" title="AR Aging By Time" showTitle categories={AGING_BUCKETS}
-            series={[{ name: "Balance", values: [230, 60, 22, 8, 3, 1], tone: "orange" }]}
+            series={[{ name: "Balance", values: [230, 60, 22, 8, 3, 1], intent: "orange" }]}
             height={220}
           />
           <LineChart
             label="DSO by time" title="DSO By Time" showTitle categories={MONTHS}
-            series={[{ name: "DSO", values: [38, 51, 43, 57, 45, 42], tone: "cyan" }]}
+            series={[{ name: "DSO", values: [38, 51, 43, 57, 45, 42], intent: "cyan" }]}
             showPoints height={220}
           />
         </Tiles>
@@ -1495,7 +1495,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
             <Table
               columns={aging === "list" ? AGING_LIST_COLUMNS : AGING_COLUMNS}
               rows={agingShown.map((r) => (aging === "list"
-                ? { id: r.id, account: <Cell type="avatar" name={r.account} label={`${r.current} current`} />, aging: <Cell type="badge" tone={r.over === "$0" ? "warning" : "danger"} label={r.overdue} />, total: r.total }
+                ? { id: r.id, account: <Cell type="avatar" name={r.account} label={`${r.current} current`} />, aging: <Cell type="badge" intent={r.over === "$0" ? "warning" : "danger"} label={r.overdue} />, total: r.total }
                 : r))}
             />
           )}
@@ -1519,7 +1519,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
         <BarChart
           label="Invoices by status" title="Invoice By Status" showTitle orientation="horizontal"
           categories={["Draft", "Waiting", "Open", "Approved", "Sent", "Paid"]}
-          series={[{ name: "Invoices", values: [8, 12, 25, 18, 15, 44], tone: "purple" }]}
+          series={[{ name: "Invoices", values: [8, 12, 25, 18, 15, 44], intent: "purple" }]}
           showValues height={240}
         />
       </Section>
@@ -1533,7 +1533,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
           />
           <BarChart
             label="Unapplied cash by time" title="Unapplied Cash By Time" showTitle categories={MONTHS}
-            series={[{ name: "Unapplied", values: [96, 112, 128, 140, 132, 128], tone: "mint" }]}
+            series={[{ name: "Unapplied", values: [96, 112, 128, 140, 132, 128], intent: "mint" }]}
             height={220}
           />
         </Tiles>
@@ -1630,17 +1630,17 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
 // Playground harness: the SettingsPage pattern in the AppShell frame, driven like a screen would drive it.
 // Not a kit piece. The places are the real Settings entries from the side nav, with the descriptions and
 // colors of the BP DS Hub settings home.
-const SETTINGS_PLACES: { id: string; title: string; description: string; icon: string; tone: TileTone }[] = [
-  { id: "settings-develop", title: "Develop", description: "Includes entities, workflows, functions, data presentations, OAuth, and APIs.", icon: "handyman", tone: "yellow" },
-  { id: "settings-external-connectors", title: "External Connectors", description: "Includes application, data and tax connectors.", icon: "account_tree", tone: "olive" },
-  { id: "settings-security-users", title: "Security & Users", description: "Includes roles, sharing groups, approvals, authentication, and user management.", icon: "shield_person", tone: "red" },
-  { id: "settings-monitoring-logs", title: "Monitoring & Logs", description: "Includes process console, alerts, scheduled jobs, logs, events and recycle bin.", icon: "monitor_heart", tone: "cyan" },
-  { id: "settings-system", title: "System", description: "Includes company setup, system parameters, reference, localization, and email settings.", icon: "settings_applications", tone: "pink" },
-  { id: "settings-ai-settings", title: "AI Settings", description: "Includes assistants, prompts and the data they are allowed to read.", icon: "auto_awesome", tone: "purple" },
-  { id: "settings-billing", title: "Billing", description: "Includes invoices, statements, templates, periods and tiered pricing.", icon: "receipt_long", tone: "brand" },
-  { id: "settings-payments", title: "Payments", description: "Includes gateways, payment methods and retry rules.", icon: "credit_card", tone: "green" },
-  { id: "settings-financials-revenue", title: "Financials & Revenue", description: "Includes accounting periods, legal entities and revenue contracts.", icon: "paid", tone: "gray" },
-  { id: "settings-collections", title: "Collections", description: "Includes collection modules and dunning templates.", icon: "account_balance", tone: "orange" },
+const SETTINGS_PLACES: { id: string; title: string; description: string; icon: string; intent: TileIntent }[] = [
+  { id: "settings-develop", title: "Develop", description: "Includes entities, workflows, functions, data presentations, OAuth, and APIs.", icon: "handyman", intent: "yellow" },
+  { id: "settings-external-connectors", title: "External Connectors", description: "Includes application, data and tax connectors.", icon: "account_tree", intent: "olive" },
+  { id: "settings-security-users", title: "Security & Users", description: "Includes roles, sharing groups, approvals, authentication, and user management.", icon: "shield_person", intent: "red" },
+  { id: "settings-monitoring-logs", title: "Monitoring & Logs", description: "Includes process console, alerts, scheduled jobs, logs, events and recycle bin.", icon: "monitor_heart", intent: "cyan" },
+  { id: "settings-system", title: "System", description: "Includes company setup, system parameters, reference, localization, and email settings.", icon: "settings_applications", intent: "pink" },
+  { id: "settings-ai-settings", title: "AI Settings", description: "Includes assistants, prompts and the data they are allowed to read.", icon: "auto_awesome", intent: "purple" },
+  { id: "settings-billing", title: "Billing", description: "Includes invoices, statements, templates, periods and tiered pricing.", icon: "receipt_long", intent: "brand" },
+  { id: "settings-payments", title: "Payments", description: "Includes gateways, payment methods and retry rules.", icon: "credit_card", intent: "green" },
+  { id: "settings-financials-revenue", title: "Financials & Revenue", description: "Includes accounting periods, legal entities and revenue contracts.", icon: "paid", intent: "gray" },
+  { id: "settings-collections", title: "Collections", description: "Includes collection modules and dunning templates.", icon: "account_balance", intent: "orange" },
 ];
 
 export function SettingsPageDemo({ shell = true, notice = false, stage = "desktop", ...p }: Omit<SettingsPageProps, "children"> & { shell?: boolean; notice?: boolean; stage?: string }) {
@@ -1657,14 +1657,14 @@ export function SettingsPageDemo({ shell = true, notice = false, stage = "deskto
       {...p}
       label="Settings"
       intro={notice && open ? (
-        <Alert tone="warning" dismissible onDismiss={() => setOpen(false)} actionLabel="Review users" onAction={() => {}}>
+        <Alert intent="warning" dismissible onDismiss={() => setOpen(false)} actionLabel="Review users" onAction={() => {}}>
           Four users have not signed in for 90 days.
         </Alert>
       ) : undefined}
     >
       {SETTINGS_PLACES.map((s) => (
         <Tile
-          key={s.id} title={s.title} description={s.description} icon={s.icon} tone={s.tone}
+          key={s.id} title={s.title} description={s.description} icon={s.icon} intent={s.intent}
           onClick={() => setSection(s.id)}
         />
       ))}
@@ -1880,7 +1880,7 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
       }
       notice={
         notice && said ? (
-          <Alert tone="info" dismissible onDismiss={() => setSaid(false)} actionLabel="Main action" onAction={() => {}}>
+          <Alert intent="info" dismissible onDismiss={() => setSaid(false)} actionLabel="Main action" onAction={() => {}}>
             Use this form to manage general account information as well as the default billing information for the account.
           </Alert>
         ) : undefined
@@ -1890,7 +1890,7 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
         id={formId} labelPosition={labels} columns={columns} sections={sections}
         onSubmit={(data) => setSaved(String(data.get("name") || "").trim() ? `Created ${String(data.get("name"))}.` : "Created the account.")}
       />
-      {saved && <Alert tone="success">{saved}</Alert>}
+      {saved && <Alert intent="success">{saved}</Alert>}
     </FormPage>
   );
 
@@ -2050,7 +2050,7 @@ export function GuidedProcessPageDemo({ shell = true, stage = "desktop", side = 
       footer={<GuidedProcess part="footer" updated={updated} actions={actions} onAction={onAction} />}
     >
       {done ? (
-        <Alert tone="success" actionLabel="Import another" onAction={reset}>Imported the September 2026 usage.</Alert>
+        <Alert intent="success" actionLabel="Import another" onAction={reset}>Imported the September 2026 usage.</Alert>
       ) : (
         <Form key={at} id={formId} columns={2} onSubmit={() => setDone(true)}>{fields[at]}</Form>
       )}
@@ -2252,8 +2252,8 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
     // The ID is a link Cell: blue, so it reads as the way into the account.
     accountId: <Cell type="link" label={a.id} onClick={() => openAccount(a.id)} />,
     name: a.name, type: "ACCOUNT", cycle: "MONTHLY",
-    status: <Cell type="badge" label="Active" tone="success" />,
-    approval: a.approval ? <Cell type="badge" label={a.approval} tone="neutral" /> : "—",
+    status: <Cell type="badge" label="Active" intent="success" />,
+    approval: a.approval ? <Cell type="badge" label={a.approval} intent="neutral" /> : "—",
     actions: <Cell type="actionIcons" align="end" actions={[{ label: "Edit", icon: "edit", onClick: () => openAccount(a.id) }, { label: "Delete", icon: "delete", onClick: () => setAccounts((old) => old.filter((x) => x.id !== a.id)) }]} />,
   }));
   const listHeader = (
@@ -2298,7 +2298,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
             <FormDisplay label="View recent invoices" value={<Link onClick={() => {}}>Invoices</Link>} />
             <FormDisplay label="Total due in collections" value="$0.00" />
             <FormDisplay label="Account ledger number" value={<Link onClick={() => {}}>65550</Link>} />
-            <FormDisplay label="Status" value={<Badge tone="success">Active</Badge>} />
+            <FormDisplay label="Status" value={<Badge intent="success">Active</Badge>} />
             <FormDisplay label="Legal entity" value={<Link onClick={() => {}}>Parent Co</Link>} />
             <FormDisplay label="Invoicing time zone" value="Asia/Bangkok" />
             <FormDisplay label="Invoice currency" value="Dollars" />
@@ -2319,8 +2319,8 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
           <Table
             columns={[{ key: "invoice", header: "Invoice" }, { key: "date", header: "Date" }, { key: "amount", header: "Amount", numeric: true }, { key: "status", header: "Status" }]}
             rows={[
-              { id: "i1", invoice: <Cell type="link" label="INV-30211" onClick={() => {}} />, date: "08/31/2026", amount: "$10.15", status: <Cell type="badge" label="Open" tone="info" /> },
-              { id: "i2", invoice: <Cell type="link" label="INV-29874" onClick={() => {}} />, date: "07/31/2026", amount: "$1,240.00", status: <Cell type="badge" label="Paid" tone="success" /> },
+              { id: "i1", invoice: <Cell type="link" label="INV-30211" onClick={() => {}} />, date: "08/31/2026", amount: "$10.15", status: <Cell type="badge" label="Open" intent="info" /> },
+              { id: "i2", invoice: <Cell type="link" label="INV-29874" onClick={() => {}} />, date: "07/31/2026", amount: "$1,240.00", status: <Cell type="badge" label="Paid" intent="success" /> },
             ]}
           />
         </Section>
@@ -2368,7 +2368,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
       header={
         <PageHeader
           breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", onClick: toList }]}
-          title={account.name} badge="Active" badgeTone="success" sticky={compact}
+          title={account.name} badge="Active" badgeIntent="success" sticky={compact}
           moreActions={[{ id: "edit", label: "Edit", icon: "edit" }, { divider: true }, { id: "delete", label: "Delete", icon: "delete", danger: true }]} onMoreSelect={() => {}}
           actions={
             <>
@@ -2381,7 +2381,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
         />
       }
       tabs={<Tabs label="What belongs to this account" items={tabs} value={tab} onChange={setTab} />}
-      notice={notice ? <Alert tone="success" dismissible onDismiss={() => setNotice("")}>{notice}</Alert> : undefined}
+      notice={notice ? <Alert intent="success" dismissible onDismiss={() => setNotice("")}>{notice}</Alert> : undefined}
       summary={
         tab === "details" ? (
           <Scoreboard
@@ -2502,7 +2502,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
           actions={<><Button size="sm" onClick={toList}>Cancel</Button><Button size="sm" variant="primary" type="submit" form={newAccountForm}>Submit</Button></>}
         />
       }
-      notice={<Alert tone="info">Use this form to manage general account information as well as the default billing information for the account.</Alert>}
+      notice={<Alert intent="info">Use this form to manage general account information as well as the default billing information for the account.</Alert>}
     >
       <Form
         id={newAccountForm} columns={2} sections={newAccountSections}
@@ -2525,7 +2525,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
       header={
         <PageHeader
           breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", onClick: toList }, { label: account.name, onClick: () => openAccount(account.id, "products") }]}
-          title="New account product" badge="Active" badgeTone="success" sticky={compact}
+          title="New account product" badge="Active" badgeIntent="success" sticky={compact}
           actions={<><Button size="sm" onClick={() => openAccount(account.id, "products")}>Cancel</Button><Button size="sm" variant="primary" type="submit" form={newProductForm}>Next</Button></>}
         />
       }
@@ -2598,25 +2598,25 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
 // Playground harness: the ListDetail pattern in the AppShell frame, on Billing › Invoices. Not a kit piece. The
 // screen keeps which invoice is open; ListView picks it and the pane shows it, or covers the list on a phone.
 const LIST_DETAIL_INVOICES: (ListViewItem & { account: string; amount: string; due: string; period: string; status: string })[] = [
-  { id: "INV-1042", primary: "INV-1042", secondary: "Apex Digital Services · $4,820.00", badge: "Overdue", badgeTone: "danger", account: "Apex Digital Services", amount: "$4,820.00", due: "Sep 1, 2026", period: "August 2026", status: "Overdue" },
-  { id: "INV-1043", primary: "INV-1043", secondary: "Northwind Traders · $1,260.00", badge: "Paid", badgeTone: "success", account: "Northwind Traders", amount: "$1,260.00", due: "Sep 15, 2026", period: "August 2026", status: "Paid" },
+  { id: "INV-1042", primary: "INV-1042", secondary: "Apex Digital Services · $4,820.00", badge: "Overdue", badgeIntent: "danger", account: "Apex Digital Services", amount: "$4,820.00", due: "Sep 1, 2026", period: "August 2026", status: "Overdue" },
+  { id: "INV-1043", primary: "INV-1043", secondary: "Northwind Traders · $1,260.00", badge: "Paid", badgeIntent: "success", account: "Northwind Traders", amount: "$1,260.00", due: "Sep 15, 2026", period: "August 2026", status: "Paid" },
   { id: "INV-1044", primary: "INV-1044", secondary: "Globex Corporation · $980.00", badge: "Draft", account: "Globex Corporation", amount: "$980.00", due: "Oct 1, 2026", period: "September 2026", status: "Draft" },
-  { id: "INV-1045", primary: "INV-1045", secondary: "Initech · $2,150.00", badge: "Sent", badgeTone: "info", account: "Initech", amount: "$2,150.00", due: "Oct 5, 2026", period: "September 2026", status: "Sent" },
-  { id: "INV-1046", primary: "INV-1046", secondary: "Umbrella Corp · $3,400.00", badge: "Sent", badgeTone: "info", account: "Umbrella Corp", amount: "$3,400.00", due: "Oct 12, 2026", period: "September 2026", status: "Sent" },
+  { id: "INV-1045", primary: "INV-1045", secondary: "Initech · $2,150.00", badge: "Sent", badgeIntent: "info", account: "Initech", amount: "$2,150.00", due: "Oct 5, 2026", period: "September 2026", status: "Sent" },
+  { id: "INV-1046", primary: "INV-1046", secondary: "Umbrella Corp · $3,400.00", badge: "Sent", badgeIntent: "info", account: "Umbrella Corp", amount: "$3,400.00", due: "Oct 12, 2026", period: "September 2026", status: "Sent" },
 ];
 
 // Nested: the same invoices under their accounts, one level at a time, with an older paid invoice each.
 type LDInvoice = (typeof LIST_DETAIL_INVOICES)[number];
 const LIST_DETAIL_HISTORY: LDInvoice[] = LIST_DETAIL_INVOICES.map((inv, i) => ({
   ...inv, id: `INV-09${88 + i}`, primary: `INV-09${88 + i}`, secondary: `${inv.account} · ${inv.amount}`,
-  badge: "Paid", badgeTone: "success", period: "July 2026", due: "Aug 1, 2026", status: "Paid",
+  badge: "Paid", badgeIntent: "success", period: "July 2026", due: "Aug 1, 2026", status: "Paid",
 }));
 const LIST_DETAIL_ALL = [...LIST_DETAIL_INVOICES, ...LIST_DETAIL_HISTORY];
 const LIST_DETAIL_ACCOUNTS: ListViewItem[] = LIST_DETAIL_INVOICES.map((inv) => {
   const own = LIST_DETAIL_ALL.filter((i) => i.account === inv.account);
   return {
     id: `acct-${inv.id}`, primary: inv.account, secondary: `${own.length} invoices`, avatar: inv.account,
-    children: own.map((i) => ({ id: i.id, primary: i.primary, secondary: `${i.period} · ${i.amount}`, badge: i.badge, badgeTone: i.badgeTone })),
+    children: own.map((i) => ({ id: i.id, primary: i.primary, secondary: `${i.period} · ${i.amount}`, badge: i.badge, badgeIntent: i.badgeIntent })),
   };
 });
 
@@ -2630,10 +2630,10 @@ const LIST_DETAIL_GROUP_OF: Record<string, string> = { Overdue: "attention", Dra
 const LIST_DETAIL_GROUPED: ListViewItem[] = LIST_DETAIL_INVOICES.map((inv) => ({ ...inv, group: LIST_DETAIL_GROUP_OF[inv.status] }));
 
 // Template: the inbox look. The account's avatar, an unread dot on what changed, and a short status line under each.
-const LIST_DETAIL_NOTES: Record<string, Pick<ListViewItem, "unread" | "message" | "messageTone">> = {
-  "INV-1042": { unread: true, message: "Card declined, retry on Friday", messageTone: "danger" },
-  "INV-1043": { message: "Payment posted to the ledger", messageTone: "success" },
-  "INV-1044": { message: "Waiting for approval", messageTone: "warning" },
+const LIST_DETAIL_NOTES: Record<string, Pick<ListViewItem, "unread" | "message" | "messageIntent">> = {
+  "INV-1042": { unread: true, message: "Card declined, retry on Friday", messageIntent: "danger" },
+  "INV-1043": { message: "Payment posted to the ledger", messageIntent: "success" },
+  "INV-1044": { message: "Waiting for approval", messageIntent: "warning" },
   "INV-1045": { unread: true, message: "Viewed by the customer" },
   "INV-1046": { message: "Sent on Sep 12" },
 };
@@ -2699,7 +2699,7 @@ export function ListDetailDemo({ shell = true, stage = "desktop", picked = true,
             <FormDisplay label="Amount" value={invoice.amount} labelPosition="start" />
             <FormDisplay label="Billing period" value={invoice.period} labelPosition="start" />
             <FormDisplay label="Due date" value={invoice.due} labelPosition="start" />
-            <FormDisplay label="Status" value={<Badge tone={invoice.badgeTone ?? "neutral"}>{invoice.status}</Badge>} labelPosition="start" />
+            <FormDisplay label="Status" value={<Badge intent={invoice.badgeIntent ?? "neutral"}>{invoice.status}</Badge>} labelPosition="start" />
           </div>
         </Section>
       )}

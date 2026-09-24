@@ -42,7 +42,7 @@ export function ListPage({
         {state === "empty" && empty && <div className={styles.blank}>{empty}</div>}
         {state === "error" && error && (
           <div className={styles.blank}>
-            <Alert tone="danger" actionLabel={onRetry ? "Try again" : undefined} onAction={onRetry}>{error}</Alert>
+            <Alert intent="danger" actionLabel={onRetry ? "Try again" : undefined} onAction={onRetry}>{error}</Alert>
           </div>
         )}
         {/* The pages go while something else is standing in for the rows. */}

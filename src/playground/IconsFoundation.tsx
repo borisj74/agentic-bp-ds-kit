@@ -59,7 +59,7 @@ export function IconsFoundation() {
 
       <h2 className={styles.h2}>Rules</h2>
       <ul className={styles.rules}>
-        <li>Use semantic icon colors: tone=&quot;neutral&quot;, &quot;subtle&quot;, &quot;brand&quot; or a status tone. Default inherits text color.</li>
+        <li>Use semantic icon colors: intent=&quot;neutral&quot;, &quot;subtle&quot;, &quot;brand&quot; or a status intent. Default inherits text color.</li>
         <li>Let controls decide icon size. Do not pass custom pixel sizes.</li>
         <li>Decorative icons are hidden from assistive tech automatically. Pass label when the icon carries meaning.</li>
         <li>Icon-only Buttons still need children text. It becomes the accessible name.</li>

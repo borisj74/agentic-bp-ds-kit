@@ -2,13 +2,13 @@
 import { Icon } from "../Icon/Icon";
 import styles from "./Tile.module.css";
 
-export type TileTone = "brand" | "green" | "olive" | "cyan" | "orange" | "pink" | "gray" | "purple" | "yellow" | "red" | "mint";
+export type TileIntent = "brand" | "green" | "olive" | "cyan" | "orange" | "pink" | "gray" | "purple" | "yellow" | "red" | "mint";
 
 export interface TileProps {
   title: string;
   description?: string;
   icon?: string;
-  tone?: TileTone;
+  intent?: TileIntent;
   href?: string;
   onClick?: () => void;
   disabled?: boolean;
@@ -16,7 +16,7 @@ export interface TileProps {
 
 // One way in to somewhere: the name of the place, a line about what is inside, and a colored square. A grid
 // of them is a landing page. A link, not a choice: comparing and picking is Card.
-export function Tile({ title, description, icon, tone = "brand", href, onClick, disabled = false }: TileProps) {
+export function Tile({ title, description, icon, intent = "brand", href, onClick, disabled = false }: TileProps) {
   const body = (
     <>
       <span className={styles.text}>
@@ -25,8 +25,8 @@ export function Tile({ title, description, icon, tone = "brand", href, onClick, 
       </span>
       {/* The square is decorative: the title already names the place. */}
       {icon && (
-        <span className={[styles.square, styles[tone]].join(" ")} aria-hidden="true">
-          <Icon name={icon} size="xl" tone="inherit" />
+        <span className={[styles.square, styles[intent]].join(" ")} aria-hidden="true">
+          <Icon name={icon} size="xl" intent="inherit" />
         </span>
       )}
     </>

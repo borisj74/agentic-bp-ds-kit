@@ -2,7 +2,7 @@
   "name": "SettingsPage",
   "path": "src/patterns/SettingsPage/SettingsPage.tsx",
   "intent": "The settings home: a grid of the places people can go from here, each with its own icon and color.",
-  "usage": "Use SettingsPage for a home that sends people onwards rather than showing them data: the settings home, or another home shaped like it, such as a reports home. It is a blueprint: it composes kit pieces and keeps no state of its own. children are kit Tiles, one per place, each with its own tone so the colors become part of how people find the same place again. intro writes anything that has to be said before the tiles, like a kit Alert about a setting that needs attention. The page's name and trail are the kit PageHeader in the AppShell page around it, which owns the page padding. The grid is the .layout-metrics class from contracts/layout.json, widened so a tile has room for its line of text. See contracts/settingspage.json for the full contract.",
+  "usage": "Use SettingsPage for a home that sends people onwards rather than showing them data: the settings home, or another home shaped like it, such as a reports home. It is a blueprint: it composes kit pieces and keeps no state of its own. children are kit Tiles, one per place, each with its own intent so the colors become part of how people find the same place again. intro writes anything that has to be said before the tiles, like a kit Alert about a setting that needs attention. The page's name and trail are the kit PageHeader in the AppShell page around it, which owns the page padding. The grid is the .layout-metrics class from contracts/layout.json, widened so a tile has room for its line of text. See contracts/settingspage.json for the full contract.",
   "composes": [
     "Tile",
     "Section",
@@ -12,7 +12,7 @@
     "children": {
       "type": "ReactNode",
       "required": true,
-      "note": "The ways in: kit Tiles, one per place, each with its own tone."
+      "note": "The ways in: kit Tiles, one per place, each with its own intent."
     },
     "intro": {
       "type": "ReactNode",

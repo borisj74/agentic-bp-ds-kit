@@ -68,7 +68,7 @@
     "The save Button carries form, so it submits from the header without leaving the form.",
     "The name and the notice stay on an opaque bar, so nothing scrolls through them."
   ],
-  "snippet": "<FormPage\n  header={<PageHeader breadcrumbs={[{ label: \"Home\", href: \"/\" }, { label: \"Accounts\", href: \"/accounts\" }]} title=\"Create account\" actions={<><Button onClick={cancel}>Cancel</Button><Button variant=\"primary\" type=\"submit\" form=\"account\">Create</Button></>} />}\n  notice={<Alert tone=\"info\" onDismiss={hide}>Use this form for the account's general and default billing information.</Alert>}\n>\n  <Form id=\"account\" labelPosition=\"start\" columns={2} onSubmit={save} sections={sections} />\n</FormPage>",
+  "snippet": "<FormPage\n  header={<PageHeader breadcrumbs={[{ label: \"Home\", href: \"/\" }, { label: \"Accounts\", href: \"/accounts\" }]} title=\"Create account\" actions={<><Button onClick={cancel}>Cancel</Button><Button variant=\"primary\" type=\"submit\" form=\"account\">Create</Button></>} />}\n  notice={<Alert intent=\"info\" onDismiss={hide}>Use this form for the account's general and default billing information.</Alert>}\n>\n  <Form id=\"account\" labelPosition=\"start\" columns={2} onSubmit={save} sections={sections} />\n</FormPage>",
   "examples": [
     {
       "title": "Creating an account",

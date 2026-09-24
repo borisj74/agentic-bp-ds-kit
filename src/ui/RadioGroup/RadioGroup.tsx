@@ -1,7 +1,7 @@
 "use client";
 import { useId, useState } from "react";
 import { useDensitySize } from "../Density/Density";
-import { Badge, type BadgeTone } from "../Badge/Badge";
+import { Badge, type BadgeIntent } from "../Badge/Badge";
 import styles from "./RadioGroup.module.css";
 
 export type RadioGroupSize = "sm" | "md" | "lg";
@@ -11,7 +11,7 @@ export interface RadioGroupOption {
   label: string;
   description?: string;
   badge?: string;
-  badgeTone?: BadgeTone;
+  badgeIntent?: BadgeIntent;
   disabled?: boolean;
 }
 
@@ -92,7 +92,7 @@ export function RadioGroup({
                 <span className={styles.copy}>
                   <span className={styles.titleRow}>
                     <span className={styles.label}>{o.label}</span>
-                    {o.badge && <Badge tone={o.badgeTone ?? "neutral"}>{o.badge}</Badge>}
+                    {o.badge && <Badge intent={o.badgeIntent ?? "neutral"}>{o.badge}</Badge>}
                   </span>
                   {o.description && <span className={styles.description}>{o.description}</span>}
                 </span>

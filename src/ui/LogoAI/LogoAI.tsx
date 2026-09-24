@@ -3,11 +3,11 @@ import { useId } from "react";
 import styles from "./LogoAI.module.css";
 
 export type LogoAIVariant = "default" | "symbol";
-export type LogoAITone = "color" | "monochrome" | "white" | "filled";
+export type LogoAIIntent = "color" | "monochrome" | "white" | "filled";
 
 export interface LogoAIProps {
   variant?: LogoAIVariant;
-  tone?: LogoAITone;
+  intent?: LogoAIIntent;
   label?: string;
 }
 
@@ -27,14 +27,14 @@ const TEXT = [
 
 const FILL: Record<"monochrome" | "white", string> = { monochrome: "black", white: "white" };
 
-function Outline({ variant, tone }: { variant: LogoAIVariant; tone: Exclude<LogoAITone, "filled"> }) {
+function Outline({ variant, intent }: { variant: LogoAIVariant; intent: Exclude<LogoAIIntent, "filled"> }) {
   const full = variant === "default";
   return (
     <svg className={full ? styles.full : styles.icon} viewBox={full ? "0 0 167.744 85.2" : "0 0 100.706 85.2"} fill="none" aria-hidden="true" focusable="false">
-      {MARK.map((d, i) => <path key={i} d={d} fill={tone === "color" ? MARK_FILLS[i] : FILL[tone]} />)}
+      {MARK.map((d, i) => <path key={i} d={d} fill={intent === "color" ? MARK_FILLS[i] : FILL[intent]} />)}
       {full && (
-        <g className={tone === "color" ? styles.text : undefined}>
-          {TEXT.map((d, i) => <path key={i} d={d} fill={tone === "color" ? "currentColor" : FILL[tone]} />)}
+        <g className={intent === "color" ? styles.text : undefined}>
+          {TEXT.map((d, i) => <path key={i} d={d} fill={intent === "color" ? "currentColor" : FILL[intent]} />)}
         </g>
       )}
     </svg>
@@ -80,10 +80,10 @@ function Filled({ variant }: { variant: LogoAIVariant }) {
   );
 }
 
-export function LogoAI({ variant = "default", tone = "color", label = "AI logo" }: LogoAIProps) {
+export function LogoAI({ variant = "default", intent = "color", label = "AI logo" }: LogoAIProps) {
   return (
     <span className={styles.logo} role="img" aria-label={label}>
-      {tone === "filled" ? <Filled variant={variant} /> : <Outline variant={variant} tone={tone} />}
+      {intent === "filled" ? <Filled variant={variant} /> : <Outline variant={variant} intent={intent} />}
     </span>
   );
 }

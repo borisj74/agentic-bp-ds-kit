@@ -192,15 +192,15 @@ export function Master({ contract }: { contract: Contract }) {
             {(contract.useWhen?.length > 0 || contract.doNot?.length > 0) && (
               <div className={styles.rules}>
                 {[
-                  { title: "Do's", items: contract.useWhen ?? [], icon: "check_circle", tone: "success" as const },
-                  { title: "Don'ts", items: contract.doNot ?? [], icon: "cancel", tone: "danger" as const },
+                  { title: "Do's", items: contract.useWhen ?? [], icon: "check_circle", intent: "success" as const },
+                  { title: "Don'ts", items: contract.doNot ?? [], icon: "cancel", intent: "danger" as const },
                 ].filter((group) => group.items.length > 0).map((group) => (
                   <div key={group.title} className={styles.detail}>
                     <h3 className={styles.detailLabel}>{group.title}</h3>
                     <ul className={styles.ruleList}>
                       {group.items.map((rule) => (
                         <li key={rule} className={styles.rule}>
-                          <Icon name={group.icon} size="sm" tone={group.tone} className={styles.ruleIcon} />
+                          <Icon name={group.icon} size="sm" intent={group.intent} className={styles.ruleIcon} />
                           <span>{rule}</span>
                         </li>
                       ))}
