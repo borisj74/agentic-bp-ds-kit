@@ -17,9 +17,9 @@ export interface FormSection {
   content: ReactNode;
   line?: SectionLine;
   collapsible?: boolean;
-  open?: boolean;
-  defaultOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  expanded?: boolean;
+  defaultExpanded?: boolean;
+  onExpandedChange?: (expanded: boolean) => void;
 }
 
 export interface FormProps {
@@ -74,7 +74,7 @@ export function Form({
           ? sections.map((s) => (
               <Section
                 key={s.title} title={s.title} description={s.description} help={s.help} actions={s.actions} line={s.line}
-                collapsible={s.collapsible} expanded={s.open} defaultExpanded={s.defaultOpen} onExpandedChange={s.onOpenChange}
+                collapsible={s.collapsible} expanded={s.expanded} defaultExpanded={s.defaultExpanded} onExpandedChange={s.onExpandedChange}
               >
                 <div className={styles.fields}>{s.content}</div>
               </Section>

@@ -804,7 +804,7 @@ const SHELL_SCORES = [
 ];
 const SHELL_COLUMNS: TableColumn[] = [
   { key: "id", header: "Invoice", emphasis: true }, { key: "account", header: "Account" }, { key: "due", header: "Due" },
-  { key: "amount", header: "Amount", numeric: true }, { key: "actions", header: "", align: "end", width: "96px" },
+  { key: "amount", header: "Amount", numeric: true }, { key: "actions", header: "", alignment: "end", width: "96px" },
 ];
 // An invoice's own actions, the same in every view: the two it is used for as icon buttons, the rest behind More.
 const INVOICE_ACTIONS = [
@@ -1005,7 +1005,7 @@ const LIST_COLUMNS: TableColumn[] = [
   { key: "id", header: "Invoice", emphasis: true }, { key: "account", header: "Account" }, { key: "status", header: "Status" },
   { key: "due", header: "Due" }, { key: "amount", header: "Amount", numeric: true },
   // One More button, so the column is only as wide as it.
-  { key: "actions", header: "", align: "end", width: "56px" },
+  { key: "actions", header: "", alignment: "end", width: "56px" },
 ];
 
 export function ListPageDemo({ state = "ready", shell = false, stage = "desktop", ...p }: Omit<ListPageProps, "children"> & { state?: ListPageState; shell?: boolean; stage?: string }) {
@@ -1826,7 +1826,7 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
       title: "Billing contact information",
       help: "Who the invoices go to. Left empty, the account's own contact is used.",
       collapsible: true,
-      defaultOpen: false,
+      defaultExpanded: false,
       content: (
         <>
           <Input label="Contact name" name="contactName" placeholder="Enter a value" />
@@ -1840,7 +1840,7 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
       title: "Statement information",
       help: "Whether this account gets statements, and how often.",
       collapsible: true,
-      defaultOpen: false,
+      defaultExpanded: false,
       content: (
         <>
           <Select label="Statement run" name="statementRun" options={STATEMENT_RUNS} defaultValue="monthly" />
@@ -1852,7 +1852,7 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
       title: "Locale information",
       help: "The language, dates and numbers this account's documents are written in.",
       collapsible: true,
-      defaultOpen: false,
+      defaultExpanded: false,
       content: (
         <>
           <Select label="Language" name="language" options={[{ value: "en", label: "English" }, { value: "de", label: "German" }, { value: "sr", label: "Serbian" }]} defaultValue="en" />
@@ -2121,7 +2121,7 @@ const FLOW_ACCOUNTS: FlowAccount[] = [
 const FLOW_ACCOUNT_COLUMNS: TableColumn[] = [
   { key: "accountId", header: "Account ID", width: "128px" }, { key: "name", header: "Account name" }, { key: "type", header: "Type" },
   { key: "cycle", header: "Default billing cycle" }, { key: "status", header: "Status" }, { key: "approval", header: "Approval status" },
-  { key: "actions", header: "Actions", align: "end", width: "112px" },
+  { key: "actions", header: "Actions", alignment: "end", width: "112px" },
 ];
 
 type FlowProduct = { id: string; product: string; rc: string; contract: string; start: string; end: string; qty: string; rate: string; ssp: string; quote: string; discount: string };
@@ -2151,7 +2151,7 @@ const FLOW_PRODUCT_COLUMNS: TableColumn[] = [
   { key: "pid", header: "ID" }, { key: "product", header: "Product" }, { key: "rc", header: "Revenue contract" }, { key: "contract", header: "Contract" },
   { key: "start", header: "Start date" }, { key: "end", header: "End date" }, { key: "qty", header: "Quantity", numeric: true },
   { key: "rate", header: "Rate", numeric: true }, { key: "ssp", header: "SSP", numeric: true }, { key: "quote", header: "Quote" },
-  { key: "discount", header: "Discount", numeric: true }, { key: "actions", header: "Actions", align: "end", width: "112px" },
+  { key: "discount", header: "Discount", numeric: true }, { key: "actions", header: "Actions", alignment: "end", width: "112px" },
 ];
 const flowProductRow = (p: FlowProduct): TableRow => ({
   id: p.id, pid: p.id,
@@ -2469,7 +2469,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
       ),
     },
     {
-      title: "Shipping address", collapsible: true, defaultOpen: false,
+      title: "Shipping address", collapsible: true, defaultExpanded: false,
       content: (
         <>
           <Input label="Address 1" name="shipAddress1" placeholder="Enter a value" />
@@ -2480,7 +2480,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
       ),
     },
     {
-      title: "Statement configuration", collapsible: true, defaultOpen: false,
+      title: "Statement configuration", collapsible: true, defaultExpanded: false,
       content: (
         <>
           <Select label="Statement run" name="statementRun" options={STATEMENT_RUNS} defaultValue="monthly" />
@@ -2489,7 +2489,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
       ),
     },
     {
-      title: "Locale information", collapsible: true, defaultOpen: false,
+      title: "Locale information", collapsible: true, defaultExpanded: false,
       content: <Select label="Date format" name="dateFormat" options={DATE_FORMATS} defaultValue="mdy" />,
     },
   ];

@@ -95,7 +95,7 @@ const COLUMNS: TableColumn[] = [
   { key: "due", header: "Due date" },
   { key: "balance", header: "Balance due", numeric: true },
   { key: "amount", header: "Amount", numeric: true },
-  { key: "actions", header: "", align: "end", width: "136px" },
+  { key: "actions", header: "", alignment: "end", width: "136px" },
 ];
 
 type Note = Omit<ToastProps, "open" | "onClose"> & { key: number };

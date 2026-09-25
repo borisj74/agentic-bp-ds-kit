@@ -1,5 +1,5 @@
 /* Figma lookup field 1059:33521: Input's field box, the picked name, a × and a lookup button behind a divider at the end. */
-.box { padding-inline-end: 0; cursor: pointer; }
+.box { cursor: pointer; }
 .trigger {
   flex: 1; min-width: 0; height: 100%; margin: 0; padding: 0; border: 0; background: none;
   font: inherit; font-size: var(--fs); text-align: start; color: inherit; cursor: pointer; outline: none;

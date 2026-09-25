@@ -198,7 +198,7 @@ const ACCOUNT_COLUMNS: TableColumn[] = [
   { key: "owner", header: "Owner" },
   { key: "status", header: "Status" },
   { key: "mrr", header: "MRR", numeric: true },
-  { key: "actions", header: "", align: "end", width: "1%" },
+  { key: "actions", header: "", alignment: "end", width: "1%" },
 ];
 const ACCOUNT_ACTIONS = [{ label: "View" }, { label: "Edit" }, { label: "Delete", variant: "danger" as const }];
 const ACCOUNTS: TableRow[] = [
@@ -208,7 +208,7 @@ const ACCOUNTS: TableRow[] = [
 ];
 // Icon-only row actions: a kit Cell actionIcons, each button named by its label.
 const ICON_ACTIONS = [{ label: "Edit", icon: "edit" }, { label: "Download", icon: "download" }, { label: "Delete", icon: "delete" }];
-const ICON_ACTION_COLUMNS: TableColumn[] = [...INVOICE_COLUMNS, { key: "actions", header: "", align: "end", width: "1%" }];
+const ICON_ACTION_COLUMNS: TableColumn[] = [...INVOICE_COLUMNS, { key: "actions", header: "", alignment: "end", width: "1%" }];
 const ICON_ACTION_ROWS: TableRow[] = INVOICES.slice(0, 4).map((r) => ({
   ...r, actions: <Cell type="actionIcons" alignment="end" label={`Actions for ${r.invoice}`} actions={ICON_ACTIONS} />,
 }));

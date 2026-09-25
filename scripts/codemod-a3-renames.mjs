@@ -6,13 +6,16 @@
 //      Import paths, imported names, JSX tags, `typeof X` and every exported type (AlertProps -> CalloutProps ...).
 //   2. Props and values, inside the JSX tags of the component that owns them (see PROPS below).
 //   3. Exported type names that follow a renamed prop (TooltipPlacement -> TooltipPosition ...).
+//   4. Keys of the data objects some components take (see KEYS below): Form sections follow Section
+//      (open -> expanded ...) and Table columns follow Cell (align -> alignment).
 // Run A2 (codemod-a2-rulings.mjs) first if the project is older than A2.
 //
 // Usage: node scripts/codemod-a3-renames.mjs [paths...]   (default: src tests)
 // Rewrites .ts and .tsx files in place and prints the files it changed.
 // Safe to run twice: new names never match the old patterns.
 // What it can't see: props passed through a spread ({...props}) or built in an object, and values held in
-// a variable (size={s}). It prints a hint for each such tag so you can check it by hand.
+// a variable (size={s}). It prints a hint for each such tag so you can check it by hand. Section and column
+// objects are found by their shape (a section has collapsible, a column has key), so check any that lack it.
 import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -92,6 +95,12 @@ export const PROPS = {
   LogoAI: { variant: { to: "type" } },
 };
 
+// Keys of data objects, in files that import one of `from`. An object is renamed only when it has the `when` key.
+export const KEYS = [
+  { from: ["Form", "FormPage"], when: "collapsible", keys: { open: "expanded", defaultOpen: "defaultExpanded", onOpenChange: "onExpandedChange" } },
+  { from: ["Table", "Lookup", "ListPage", "AppShell"], when: "key", keys: { align: "alignment" } },
+];
+
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const renamed = (name, from, to) => (name.startsWith(from) ? to + name.slice(from.length) : name);
 
@@ -139,6 +148,39 @@ function renameProps(tag, rules, warn) {
   return out;
 }
 
+// Renames the direct keys of object literals that have `when` among them. Skips strings, template text and
+// comments; a ' only opens a string where a value can start, so JSX copy like "don't" is read as text.
+function renameKeys(text, when, keys) {
+  const frames = [], edits = [];
+  let keyPos = false, prev = "";
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (c === "/" && text[i + 1] === "/") { i = text.indexOf("\n", i); if (i < 0) break; continue; }
+    if (c === "/" && text[i + 1] === "*") { i = text.indexOf("*/", i + 2) + 1; if (i <= 0) break; continue; }
+    if (c === '"' || c === "`" || (c === "'" && /[=(,:[{?&|!+]|^$/.test(prev))) {
+      for (i++; i < text.length && text[i] !== c; i++) if (text[i] === "\\") i++;
+      prev = c; keyPos = false; continue;
+    }
+    if (/\s/.test(c)) continue;
+    if (c === "{") { frames.push({ keys: [] }); keyPos = true; prev = c; continue; }
+    if (c === "}") { const f = frames.pop(); if (f && f.keys.some((k) => k.name === when)) edits.push(...f.keys.filter((k) => keys[k.name])); keyPos = false; prev = c; continue; }
+    if (c === ",") { keyPos = true; prev = c; continue; }
+    const m = keyPos && frames.length ? /^([A-Za-z_$][\w$]*)\s*:/.exec(text.slice(i, i + 64)) : null;
+    if (m) frames[frames.length - 1].keys.push({ name: m[1], at: i });
+    else if (keyPos && frames.length) { const k = /^([A-Za-z_$][\w$]*)\s*[,}]/.exec(text.slice(i, i + 64)); if (k) frames[frames.length - 1].keys.push({ name: k[1], at: -1 }); }
+    keyPos = false;
+    if (m) { i += m[0].length - 1; prev = ":"; continue; }
+    const w = /^[A-Za-z_$][\w$]*/.exec(text.slice(i, i + 64));
+    if (w) { i += w[0].length - 1; prev = "w"; continue; }
+    prev = c;
+  }
+  let out = text;
+  for (const e of edits.filter((e) => e.at >= 0).sort((a, b) => b.at - a.at)) out = out.slice(0, e.at) + keys[e.name] + out.slice(e.at + e.name.length);
+  return out;
+}
+
+const imports = (text, comp) => new RegExp(`["'](?:@/(?:ui|patterns)/|(?:\\.\\./)+(?:ui/|patterns/)?|\\./)${comp}(?:/${comp})?["']`).test(text);
+
 export function transform(text, hints = []) {
   let out = text;
   for (const [from, to] of Object.entries(COMPONENTS)) {
@@ -171,6 +213,7 @@ export function transform(text, hints = []) {
     }
     out = res + out.slice(last);
   }
+  for (const { from, when, keys } of KEYS) if (from.some((c) => imports(out, c))) out = renameKeys(out, when, keys);
   return out;
 }
 

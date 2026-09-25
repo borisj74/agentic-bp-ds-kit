@@ -7,7 +7,7 @@
     "columns": {
       "type": "TableColumn[]",
       "required": true,
-      "itemShape": "{ key: string; header?: string; align?: \"start\" | \"center\" | \"end\"; numeric?: boolean; emphasis?: boolean; width?: string }",
+      "itemShape": "{ key: string; header?: string; alignment?: \"start\" | \"center\" | \"end\"; numeric?: boolean; emphasis?: boolean; width?: string }",
       "note": "key picks the row value. numeric aligns to the end with tabular digits. emphasis makes the column's text medium weight, like the record id. width is a CSS width, like 30%."
     },
     "rows": {

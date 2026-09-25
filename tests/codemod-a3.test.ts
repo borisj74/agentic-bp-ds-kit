@@ -42,6 +42,20 @@ describe("codemod-a3-renames", () => {
     expect(transform(after)).toBe(after);
   });
 
+  it("renames Form section and Table column keys, and only in those objects", () => {
+    const src = `import { Form } from "@/ui/Form/Form";
+import { Table } from "@/ui/Table/Table";
+const sections = [{ title: "More", collapsible: true, defaultOpen: false, content: <p>Don't {x ? { open: 1 } : null}</p> }];
+const columns = [{ key: "actions", header: "", align: "end" }];
+const other = { open: true, align: "end" };`;
+    const out = transform(src);
+    expect(out).toContain(`collapsible: true, defaultExpanded: false`);
+    expect(out).toContain(`{ open: 1 }`);
+    expect(out).toContain(`{ key: "actions", header: "", alignment: "end" }`);
+    expect(out).toContain(`const other = { open: true, align: "end" };`);
+    expect(transform(out)).toBe(out);
+  });
+
   it("flags props it cannot read", () => {
     const hints: string[] = [];
     transform(`import { Tooltip } from "@/ui/Tooltip/Tooltip";\n<Tooltip content="x" placement={side} {...rest} />`, hints);

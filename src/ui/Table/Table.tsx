@@ -7,7 +7,7 @@ import styles from "./Table.module.css";
 export interface TableColumn {
   key: string;
   header?: string;
-  align?: CellAlignment;
+  alignment?: CellAlignment;
   numeric?: boolean;
   emphasis?: boolean;
   width?: string;
@@ -61,7 +61,7 @@ export function Table({
   const all = ids.length > 0 && picked.length === ids.length;
   const span = columns.length + (selectable ? 1 : 0);
   const labelKey = rowLabel ?? columns[0]?.key;
-  const alignOf = (c: TableColumn): CellAlignment => c.align ?? (c.numeric ? "end" : "start");
+  const alignOf = (c: TableColumn): CellAlignment => c.alignment ?? (c.numeric ? "end" : "start");
 
   const select = (next: string[]) => {
     if (selectedProp === undefined) setInnerSelected(next);
