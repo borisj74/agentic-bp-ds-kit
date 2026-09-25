@@ -1,8 +1,8 @@
 {
   "name": "Cell",
   "path": "src/ui/Cell/Cell.tsx",
-  "intent": "Content for one table cell: text, a link, a person, a file, a status, a trend, progress, a rating, a select, row actions or a row menu, a tree row, with an optional row checkbox. Each cell is full width with a faint bottom border.",
-  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, link to open a record, avatar for a person, badge for status, trend for change, progress for how far along something is, actions for row buttons, actionMenu for a More menu, select to change a value in place, checkbox for a column with only the row Checkbox, tree for the first cell of parent and child rows (an indent per level, faint guide lines and a chevron to open and close its children; treeToggle box swaps that chevron for the outlined plus or minus square). Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, Dropdown, Icon, Meter and Select; it never draws its own. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract. With actionIcons, menu puts the row's remaining actions behind one More button at the end. In a box narrower than 640px, the kit's mobile break, the icon buttons fold into that More menu and the cell keeps one button, so the row's own values get the width; only one of the two is in the layout, so nothing is reached twice by the keyboard.",
+  "intent": "Content for one table cell: text, a number, a date, a link, a person, a file, a status, a trend, progress, a rating, a select, a switch or radio, row actions or a row menu, a tree row, with an optional row checkbox. Each cell is full width with a faint bottom border.",
+  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, number for amounts and counts (end-aligned, even-width digits), date for a day, textBlock for a note that wraps over several lines (md only), link to open a record, linkSecondary for a quieter grey link, popupTrigger for grey underlined text that opens a popup the screen owns, avatar for a person, badge for status, status for a coloured dot and a label, icon for a status icon and a label, trend for change, progress for how far along something is, actions for row buttons, actionMenu for a More menu, select to change a value in place, switch to turn a row setting on or off right away, radio to pick one row in the table, checkbox for a column with only the row Checkbox, tree for the first cell of parent and child rows (an indent per level, faint guide lines and a chevron to open and close its children; treeToggle box swaps that chevron for the outlined plus or minus square). Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, Dropdown, Icon, Link, Meter, RadioGroup, Select and Switch; it never draws its own. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract. With actionIcons, menu puts the row's remaining actions behind one More button at the end. In a box narrower than 640px, the kit's mobile break, the icon buttons fold into that More menu and the cell keeps one button, so the row's own values get the width; only one of the two is in the layout, so nothing is reached twice by the keyboard.",
   "props": {
     "type": {
       "enum": [
@@ -23,9 +23,19 @@
         "actionIcons",
         "actionMenu",
         "checkbox",
-        "tree"
+        "tree",
+        "number",
+        "date",
+        "status",
+        "icon",
+        "switch",
+        "radio",
+        "popupTrigger",
+        "linkSecondary",
+        "textBlock"
       ],
-      "default": "text"
+      "default": "text",
+      "note": "link is the brand link (link-primary in the reference). The last nine types match the reference table's number, date, status, icon, switch, radio, popup-triger, secondary-link and text-block cells."
     },
     "size": {
       "enum": [
@@ -33,7 +43,7 @@
         "md"
       ],
       "default": "md",
-      "note": "Row height 36 / 40 px. sm holds one line only; content with a second line (a name over an email) uses md. Side padding 12 px at both sizes, same as HeaderCell. Avatars stay xs (24 px), Badge and Checkbox small (20 / 16 px), so rows keep their height. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown)."
+      "note": "Row height 36 / 40 px. sm holds one line only (a textBlock at sm stops at the cell edge with an ellipsis); content with a second line (a name over an email) uses md. Side padding 12 px at both sizes, same as HeaderCell. Avatars stay xs (24 px), Badge and Checkbox small (20 / 16 px), so rows keep their height. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown)."
     },
     "alignment": {
       "enum": [
@@ -42,7 +52,7 @@
         "end"
       ],
       "default": "start",
-      "note": "Same as HeaderCell: end for numbers and amounts, center for a checkbox-only column."
+      "note": "Same as HeaderCell: end for numbers and amounts, center for a checkbox-only column. type number defaults to end."
     },
     "text": {
       "type": "boolean",
@@ -56,20 +66,25 @@
     },
     "label": {
       "type": "string",
-      "note": "The text. For link it is the link text. For avatar it is the second line when name is set. For actionMenu it names the More button (default Row actions). For select it is the hidden field name. For progress it names the bar for screen readers (default Progress). For checkbox it names the row: the Checkbox is Select {label}."
+      "note": "The text. For link it is the link text. For avatar it is the second line when name is set. For actionMenu it names the More button (default Row actions). For select it is the hidden field name. For progress it names the bar for screen readers (default Progress). For checkbox it names the row: the Checkbox is Select {label}. For status and icon it is the text after the mark. For textBlock it is the text that wraps. For popupTrigger and linkSecondary it is the link text. For switch and radio it is the hidden name of the control, like Auto-renew Acme."
     },
     "href": {
       "type": "string",
-      "note": "For link. Where the link goes. Links navigate only; use actions for operations."
+      "note": "For link and linkSecondary. Where the link goes. Links navigate only; use actions for operations."
+    },
+    "external": {
+      "type": "boolean",
+      "default": false,
+      "note": "For linkSecondary. Opens in a new tab, with the kit Link new-tab mark."
     },
     "onClick": {
       "type": "function",
       "signature": "() => void",
-      "note": "For link. Without href the link is a button that acts in place, like picking a row in a Lookup; with href it runs before the link opens."
+      "note": "For link, linkSecondary and popupTrigger. Without href the link is a button that acts in place, like picking a row in a Lookup; with href it runs before the link opens. For popupTrigger it opens the popup the screen owns (a Modal, Drawer or popover)."
     },
     "name": {
       "type": "string",
-      "note": "Person name for avatar."
+      "note": "Person name for avatar. For radio, the group name every row shares, so the rows form one group."
     },
     "src": {
       "type": "string",
@@ -85,12 +100,12 @@
     },
     "icon": {
       "type": "string",
-      "note": "Material Symbols name. file defaults to description, payment to credit_card. For tree, an optional icon before the label."
+      "note": "Material Symbols name. file defaults to description, payment to credit_card. For tree, an optional icon before the label. For icon, the status icon before the label (default info)."
     },
     "intent": {
       "type": "BadgeIntent",
       "default": "neutral",
-      "note": "For badge."
+      "note": "For badge, status and icon. status and icon colour the dot or icon: neutral and hollow grey, then info, success, warning, danger and highlight."
     },
     "badges": {
       "type": "CellBadge[]",
@@ -102,7 +117,7 @@
     },
     "value": {
       "type": "string | number",
-      "note": "Trend amount like 12%, progress 0 to 100, rating 0 to 5, or the picked option for select."
+      "note": "Trend amount like 12%, progress 0 to 100, rating 0 to 5, or the picked option for select. For number, the amount: a number is written with thousands separators, a string as given (like $4,321.00). For date, an ISO day like 2024-03-12, written Mar 12, 2024."
     },
     "actions": {
       "type": "CellAction[]",
@@ -134,15 +149,15 @@
     },
     "checked": {
       "type": "boolean",
-      "note": "Row checkbox, controlled."
+      "note": "Row checkbox, switch or radio, controlled. radio is always controlled: keep which row is picked in the table and pass checked to every row."
     },
     "defaultChecked": {
       "type": "boolean",
-      "note": "Row checkbox, uncontrolled."
+      "note": "Row checkbox or switch, uncontrolled. Not for radio."
     },
     "onCheckedChange": {
       "type": "function",
-      "note": "(checked: boolean) => void"
+      "note": "(checked: boolean) => void. For radio it is called with true when the row is picked."
     },
     "level": {
       "type": "number",
@@ -174,7 +189,8 @@
   },
   "useWhen": [
     "Cells in a data table.",
-    "A row that mixes text, people, status and actions."
+    "A row that mixes text, people, status and actions.",
+    "A column the reference table draws as number, date, status, icon, switch, radio, popup, secondary link or text block."
   ],
   "doNot": [
     "Do not invent a local table cell, Tag, Trend, FileIcon, PaymentMethod, Rating or ActionCell.",
@@ -185,7 +201,13 @@
     "Use actionMenu instead of actionIcons when a row has more than 3 actions or a destructive one.",
     "Do not put more than 3 badges or 3 actions in one cell.",
     "Do not fake a progress cell before the kit Meter exists.",
-    "Do not use raw hex."
+    "Do not use raw hex.",
+    "Do not use status for a pill. status is a dot and a label; use badge for a pill.",
+    "Do not use switch for a choice that waits for Save. Use checkbox; a switch applies right away.",
+    "Do not use radio without the same name on every row, and keep the picked row in the table (checked).",
+    "Do not use popupTrigger to go to another page. Use link or linkSecondary.",
+    "Do not use textBlock at sm. sm holds one line; the text is cut with an ellipsis.",
+    "Do not write numbers in a text cell. Use number so they line up at the end."
   ],
   "a11y": [
     "link renders a real <a href> with a visible focus ring; the label is the link name.",
@@ -198,7 +220,13 @@
     "select is a small kit Select with a hidden label from label, named with its value.",
     "progress is a kit Meter: a progressbar named by label, read as its percent.",
     "tree: the toggle (chevron or box) is named Expand or Collapse and the row label, with aria-expanded. The indent and guide lines are hidden from screen readers.",
-    "On a phone-width box the folded More menu carries the icon actions as named rows, so every row action is still reachable."
+    "On a phone-width box the folded More menu carries the icon actions as named rows, so every row action is still reachable.",
+    "status and icon: the dot and icon are decorative; the label carries the meaning. With text off, the label becomes hidden text.",
+    "date is a <time> element with the ISO day in datetime.",
+    "switch is a kit Switch: role=switch named by label, Space or Enter toggles it.",
+    "radio is a kit RadioGroup with one option: a native radio named by label, in a group shared by name, so the arrow keys move between rows.",
+    "popupTrigger is a kit Link acting in place: a button named by its text.",
+    "linkSecondary is a kit Link: a real <a href>, neutral links keep their underline so colour is not the only sign."
   ],
   "snippet": "<Cell type=\"avatar\" name=\"Maya Chen\" label=\"maya@acme.com\" src=\"/faces/maya-chen.jpg\" />",
   "examples": [
@@ -540,6 +568,172 @@
             "icon": "domain",
             "expanded": true,
             "treeToggle": "box"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Number",
+      "usage": "An amount or a count: end-aligned with even-width digits, so a column lines up.",
+      "items": [
+        {
+          "props": {
+            "type": "number",
+            "value": 4321
+          }
+        },
+        {
+          "props": {
+            "type": "number",
+            "value": "$12,400.00"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Date",
+      "usage": "An ISO day, written like DatePicker: Mar 12, 2024.",
+      "items": [
+        {
+          "props": {
+            "type": "date",
+            "value": "2024-03-12"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Status",
+      "usage": "A coloured dot and a label. Same intents as Badge; use badge when you want a pill.",
+      "items": [
+        {
+          "props": {
+            "type": "status",
+            "label": "Active",
+            "intent": "success"
+          }
+        },
+        {
+          "props": {
+            "type": "status",
+            "label": "Pending",
+            "intent": "warning"
+          }
+        },
+        {
+          "props": {
+            "type": "status",
+            "label": "Failed",
+            "intent": "danger"
+          }
+        },
+        {
+          "props": {
+            "type": "status",
+            "label": "Discarded",
+            "intent": "neutral"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Icon",
+      "usage": "A status icon and a label. The icon is decorative; the label says it.",
+      "items": [
+        {
+          "props": {
+            "type": "icon",
+            "label": "Information",
+            "icon": "info",
+            "intent": "info"
+          }
+        },
+        {
+          "props": {
+            "type": "icon",
+            "label": "Needs review",
+            "icon": "error",
+            "intent": "warning"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Switch",
+      "usage": "A row setting that applies right away. A small kit Switch, named by label.",
+      "items": [
+        {
+          "props": {
+            "type": "switch",
+            "label": "Auto-renew Acme",
+            "defaultChecked": true
+          }
+        },
+        {
+          "props": {
+            "type": "switch",
+            "label": "Auto-renew Globex"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Radio",
+      "usage": "Pick one row in the table. Every row shares name, and the table keeps the picked row: pass checked to every row and set it from onCheckedChange.",
+      "items": [
+        {
+          "props": {
+            "type": "radio",
+            "label": "Default plan Basic",
+            "name": "plan",
+            "checked": true
+          }
+        },
+        {
+          "props": {
+            "type": "radio",
+            "label": "Default plan Pro",
+            "name": "plan",
+            "checked": false
+          }
+        }
+      ]
+    },
+    {
+      "title": "Secondary link and popup",
+      "usage": "linkSecondary is a quieter grey link; popupTrigger is grey underlined text that opens a popup the screen owns.",
+      "items": [
+        {
+          "props": {
+            "type": "linkSecondary",
+            "label": "Parent Co",
+            "href": "#"
+          }
+        },
+        {
+          "props": {
+            "type": "linkSecondary",
+            "label": "Contract PDF",
+            "href": "#",
+            "external": true
+          }
+        },
+        {
+          "props": {
+            "type": "popupTrigger",
+            "label": "3 contacts"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Text block",
+      "usage": "A note that wraps over several lines. md only: the row grows to fit. In a Table, give its column a width, like 320px, or it stays one long line.",
+      "items": [
+        {
+          "props": {
+            "type": "textBlock",
+            "label": "Billed yearly in advance. Usage above the plan is billed monthly in arrears at the list price."
           }
         }
       ]

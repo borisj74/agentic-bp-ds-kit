@@ -150,6 +150,18 @@
       ]
     },
     {
+      "title": "Reference cell types",
+      "usage": "number, date, status, switch, radio, popupTrigger, linkSecondary and textBlock Cells in one table. The table keeps the picked radio row and the switches; the contacts text opens a Modal.",
+      "items": [
+        {
+          "props": {
+            "columns": "{cellTypeColumns}",
+            "rows": "{cellTypes}"
+          }
+        }
+      ]
+    },
+    {
       "title": "Icon actions",
       "usage": "A last column of icon-only row actions: a kit Cell with type actionIcons, up to three buttons. Each is named by its label, like Edit, and the group by Actions for INV001.",
       "items": [

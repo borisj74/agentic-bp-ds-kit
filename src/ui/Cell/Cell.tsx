@@ -10,12 +10,16 @@ import { Dropdown } from "../Dropdown/Dropdown";
 import { Meter } from "../Meter/Meter";
 import { Select, type SelectOption } from "../Select/Select";
 import { Icon } from "../Icon/Icon";
+import { Link } from "../Link/Link";
+import { RadioGroup } from "../RadioGroup/RadioGroup";
+import { Switch } from "../Switch/Switch";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./Cell.module.css";
 
 export type CellType =
   | "text" | "link" | "avatar" | "avatarGroup" | "file" | "payment" | "badge" | "badges"
-  | "trendPositive" | "trendNegative" | "progress" | "rating" | "select" | "actions" | "actionIcons" | "actionMenu" | "checkbox" | "tree";
+  | "trendPositive" | "trendNegative" | "progress" | "rating" | "select" | "actions" | "actionIcons" | "actionMenu" | "checkbox" | "tree"
+  | "number" | "date" | "status" | "icon" | "switch" | "radio" | "popupTrigger" | "linkSecondary" | "textBlock";
 export type CellSize = "sm" | "md";
 export type CellAlignment = "start" | "center" | "end";
 export type CellTreeToggle = "chevron" | "box";
@@ -33,6 +37,7 @@ export interface CellProps {
   checkbox?: boolean;
   label?: string;
   href?: string;
+  external?: boolean;
   name?: string;
   src?: string;
   people?: CellPerson[];
@@ -57,9 +62,15 @@ export interface CellProps {
 
 const STARS = 5;
 const score = (v?: string | number) => Math.max(0, Math.min(STARS, Math.round(Number(v) || 0)));
+// date: an ISO day like 2024-03-12, read as a local day so the time zone never moves it, written like DatePicker.
+const day = (v?: string | number) => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(v ?? ""));
+  const d = m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : null;
+  return d && !Number.isNaN(d.getTime()) ? { iso: `${m![1]}-${m![2]}-${m![3]}`, text: d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) } : null;
+};
 
 export function Cell({
-  type = "text", size: ownSize, alignment = "start", text = true, checkbox = false, label, href, name, src, people, icon,
+  type = "text", size: ownSize, alignment = type === "number" ? "end" : "start", text = true, checkbox = false, label, href, external = false, name, src, people, icon,
   intent = "neutral", badges, value, actions, menu, options, onValueChange, checked, defaultChecked, onCheckedChange,
   level = 1, expanded, onExpandedChange, showLines = true, treeToggle = "chevron", onClick,
 }: CellProps) {
@@ -77,6 +88,56 @@ export function Cell({
     case "text":
     case "link":
       side = label ?? "";
+      break;
+    case "textBlock":
+      side = label ?? "";
+      break;
+    case "number":
+      // End-aligned with even-width digits (below), so a column of amounts lines up.
+      side = typeof value === "number" ? value.toLocaleString("en-US") : String(value ?? label ?? "");
+      break;
+    case "date": {
+      const d = day(value);
+      visual = d ? <time className={styles.label} dateTime={d.iso}>{d.text}</time> : null;
+      side = d ? "" : String(value ?? label ?? "");
+      break;
+    }
+    case "status":
+    case "icon":
+      // status: a dot in the intent's colour; icon: a status icon. Both 20px like the reference and decorative: the label says it.
+      visual = (
+        <span className={[styles.mark, styles[`mark-${intent}`]].join(" ")}>
+          {type === "status" ? <Icon name="fiber_manual_record" size="md" filled /> : <Icon name={icon ?? "info"} size="md" />}
+        </span>
+      );
+      side = label ?? "";
+      if (!text) aria = label;
+      break;
+    case "switch":
+      visual = (
+        <Switch size="sm" hideLabel label={label ?? "Switch"} checked={checked} defaultChecked={defaultChecked} onChange={onCheckedChange} />
+      );
+      break;
+    case "radio":
+      // One kit RadioGroup option per row. Rows share name, so the table reads as one group and the arrow keys move
+      // between rows. Always controlled: only the table knows which row is picked (checked + onCheckedChange).
+      visual = (
+        <span className={styles.radio}>
+          <RadioGroup
+            size="sm" hideLegend legend={label ?? "Select row"} name={name}
+            options={[{ value: "on", label: label ?? "Select row" }]}
+            value={checked ? "on" : ""}
+            onChange={() => onCheckedChange?.(true)}
+          />
+        </span>
+      );
+      break;
+    case "popupTrigger":
+      // Grey underlined text that opens a popup the screen owns (a Modal, Drawer or popover): a kit Link acting in place.
+      visual = <Link intent="neutral" onClick={onClick}>{label ?? ""}</Link>;
+      break;
+    case "linkSecondary":
+      visual = <Link intent="neutral" href={href} onClick={onClick} external={external}>{label ?? ""}</Link>;
       break;
     case "tree":
       // An optional icon, then the label; the indent and chevron lead the cell (below).
@@ -231,7 +292,7 @@ export function Cell({
   );
 
   return (
-    <span className={[styles.cell, styles[size], styles[alignment], type === "tree" ? styles.tree : ""].join(" ")}>
+    <span className={[styles.cell, styles[size], styles[alignment], type === "tree" ? styles.tree : "", type === "textBlock" ? styles.textBlock : "", type === "number" ? styles.number : ""].join(" ")}>
       {lead}
       {/* A plain span can't carry aria-label, so a cell drawn without text says what it shows in hidden text. */}
       {aria && <span className={styles.srOnly}>{aria}</span>}

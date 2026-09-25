@@ -254,7 +254,13 @@
         "tree table",
         "tree grid",
         "nested rows",
-        "expandable row"
+        "expandable row",
+        "number cell",
+        "date cell",
+        "status dot",
+        "switch cell",
+        "radio cell",
+        "text block"
       ]
     },
     {

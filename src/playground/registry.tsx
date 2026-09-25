@@ -4,7 +4,7 @@ import { Callout } from "@/ui/Callout/Callout";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
 import { APP_NAV, APP_NAV_END } from "@/patterns/AppShell/appNav";
 import type { ListDetailLayout } from "@/patterns/ListDetail/ListDetail";
-import { AppShellDemo, DashboardDemo, FormPageDemo, AccountFlowDemo, GuidedProcessDemo, GuidedProcessPageDemo, SettingsPageDemo, ListDetailDemo, type ListDetailVariant, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { AppShellDemo, DashboardDemo, FormPageDemo, AccountFlowDemo, GuidedProcessDemo, GuidedProcessPageDemo, SettingsPageDemo, ListDetailDemo, type ListDetailVariant, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, CellTypesDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import { Density, type DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -179,6 +179,15 @@ const CELL_SAMPLES: Record<CellType, Props> = {
   actionMenu: { label: "Row actions", actions: [{ label: "View" }, { label: "Download" }, { label: "Delete", icon: "delete", emphasis: "strong", intent: "danger" }] },
   checkbox: { label: "INV-1042" },
   tree: { label: "Acme Holdings" },
+  number: { value: 4321 },
+  date: { value: "2024-03-12" },
+  status: { label: "Warning", intent: "warning" },
+  icon: { label: "Information", intent: "info", icon: "info" },
+  switch: { label: "Auto-renew", defaultChecked: true },
+  radio: { label: "Default plan", name: "cell-radio-sample", checked: true },
+  popupTrigger: { label: "3 contacts" },
+  linkSecondary: { label: "Parent Co", href: "#" },
+  textBlock: { label: "Billed yearly in advance. Usage above the plan is billed monthly in arrears at the list price." },
 };
 
 // Table samples. Contract examples name them as {invoiceColumns}, {invoices}, {total}, {accountColumns}, {accounts}.
@@ -1793,7 +1802,10 @@ export const registry: Record<string, Entry> = {
   },
   Table: {
     // Sample columns and rows swap in for their {names}. Keyed so the selectable switch starts fresh.
-    render: (p) => <Table key={JSON.stringify(p)} {...tableProps(p)} />,
+    // {cellTypes} is a working table of the reference cell types (radio, switch, popup), which keeps its own state.
+    render: (p) => (p.rows === "{cellTypes}"
+      ? <CellTypesDemo size={p.size as CellSize | undefined} />
+      : <Table key={JSON.stringify(p)} {...tableProps(p)} />),
     preview: { caption: "A list of your recent invoices.", columns: "{invoiceColumns}", rows: "{invoices}", footer: "{total}" },
     hide: ["selected"],
     extras: { data: { values: ["invoices", "empty"], default: "invoices" } },

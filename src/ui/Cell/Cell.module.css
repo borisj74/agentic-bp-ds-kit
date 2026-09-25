@@ -86,3 +86,21 @@
 }
 .box:hover { background: var(--bg-info-faint); }
 .box:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
+
+/* number: even-width digits, so a column of amounts lines up at the end (alignment defaults to end). */
+.number { font-variant-numeric: tabular-nums; }
+/* textBlock wraps over several lines, so md gets 8px block padding and the row grows past 40. Table keeps values on
+   one line, so it wraps again here; give its column a width. sm holds one line: the text stops at the cell edge with
+   an ellipsis. */
+.textBlock.md { --pad-y: var(--space-xsmall); white-space: normal; }
+.textBlock.sm .label { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+/* status dot and status icon, coloured by the cell's intent (Badge's intents, as BP's status types). */
+.mark { display: flex; color: var(--icon-neutral-subtle); }
+.mark-info { color: var(--icon-info); }
+.mark-success { color: var(--icon-success); }
+.mark-warning { color: var(--icon-warning); }
+.mark-danger { color: var(--icon-danger); }
+.mark-highlight { color: var(--icon-highlight); }
+/* radio: the row's label names the kit RadioGroup option for screen readers only; the cell shows the bare circle. */
+.radio { display: flex; }
+.radio label > span:last-child { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
