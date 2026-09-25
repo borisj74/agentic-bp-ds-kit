@@ -4,9 +4,11 @@
 .md { --h: var(--control-medium); --fs: var(--font-size-regular); }
 .lg { --h: var(--control-large); --fs: var(--font-size-regular); }
 
+/* Field label: Label/Form (14 Medium, 120%). Shared by every field that imports this module. */
 .label {
   display: inline-flex; align-items: center; gap: var(--space-xxsmall);
-  font-size: var(--font-size-small); font-weight: var(--font-weight-medium); line-height: var(--line-height-tight); color: var(--text-neutral-strong);
+  font-size: var(--text-ref-label-form-size); font-weight: var(--text-ref-label-form-weight); line-height: var(--text-ref-label-form-lh);
+  letter-spacing: var(--text-ref-label-form-ls); color: var(--text-neutral-strong);
 }
 .required { color: var(--text-danger); }
 

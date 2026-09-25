@@ -1,9 +1,10 @@
-/* Full width with a faint bottom border, so a stack of cells reads as table rows. */
+/* Full width with a faint bottom border, so a stack of cells reads as table rows. Text is Text/Cell (14 Regular, 1.5). */
 .cell {
   box-sizing: border-box; display: flex; align-items: center; gap: var(--space-small);
   width: 100%; min-width: 0;
   background: var(--surface-flat); border-bottom: var(--border-width-thin) solid var(--border-neutral-faint);
-  font-family: var(--font-sans); font-size: var(--font-size-small); line-height: var(--line-height-snug); color: var(--text-neutral-strong);
+  font-family: var(--font-sans); font-size: var(--text-ref-cell-size); font-weight: var(--text-ref-cell-weight); line-height: var(--text-ref-cell-lh);
+  letter-spacing: var(--text-ref-cell-ls); color: var(--text-neutral-strong);
 }
 /* min-height sets the row; 4px block padding keeps 24px content plus the 1px border inside 36 / 40. */
 .sm { --pad-y: var(--space-xxsmall); min-height: var(--cell-height-sm); padding: var(--pad-y) var(--space-small); }

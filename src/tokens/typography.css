@@ -28,7 +28,8 @@
   --text-overline-size: var(--ref-font-size-100); --text-overline-weight: var(--font-weight-medium); --text-overline-lh: var(--line-height-normal); --text-overline-ls: var(--letter-spacing-wide);
   --text-code-size: var(--font-size-xsmall); --text-code-weight: var(--font-weight-regular); --text-code-lh: var(--line-height-normal); --text-code-ls: var(--letter-spacing-normal);
   /* BP reference names (Foundations Reference/…): use-named aliases of the roles above. Same values, no new look.
-     Title/Column also sets uppercase (class only). */
+     Title/Column also sets uppercase (class only). Label/Form is label at 120% line height (tight): a field label is
+     one line, and 150% is too tall. label itself stays 1.5 for text that can wrap (Tooltip, Chart). */
   --text-ref-page-size: var(--text-title-xl-size); --text-ref-page-weight: var(--text-title-xl-weight); --text-ref-page-lh: var(--text-title-xl-lh); --text-ref-page-ls: var(--text-title-xl-ls); /* Title/Page */
   --text-ref-modal-size: var(--text-title-lg-size); --text-ref-modal-weight: var(--text-title-lg-weight); --text-ref-modal-lh: var(--text-title-lg-lh); --text-ref-modal-ls: var(--text-title-lg-ls); /* Title/Modal */
   --text-ref-drawer-size: var(--text-title-lg-size); --text-ref-drawer-weight: var(--text-title-lg-weight); --text-ref-drawer-lh: var(--text-title-lg-lh); --text-ref-drawer-ls: var(--text-title-lg-ls); /* Title/Drawer */
@@ -41,7 +42,7 @@
   --text-ref-alert-size: var(--text-body-size); --text-ref-alert-weight: var(--text-body-weight); --text-ref-alert-lh: var(--text-body-lh); --text-ref-alert-ls: var(--text-body-ls); /* Text/Alert */
   --text-ref-caption-size: var(--text-caption-size); --text-ref-caption-weight: var(--text-caption-weight); --text-ref-caption-lh: var(--text-caption-lh); --text-ref-caption-ls: var(--text-caption-ls); /* Text/Caption */
   --text-ref-footnote-size: var(--text-caption-size); --text-ref-footnote-weight: var(--text-caption-weight); --text-ref-footnote-lh: var(--text-caption-lh); --text-ref-footnote-ls: var(--text-caption-ls); /* Text/Footnote */
-  --text-ref-label-form-size: var(--text-label-size); --text-ref-label-form-weight: var(--text-label-weight); --text-ref-label-form-lh: var(--text-label-lh); --text-ref-label-form-ls: var(--text-label-ls); /* Label/Form */
+  --text-ref-label-form-size: var(--text-label-size); --text-ref-label-form-weight: var(--text-label-weight); --text-ref-label-form-lh: var(--line-height-tight); --text-ref-label-form-ls: var(--text-label-ls); /* Label/Form */
   --text-ref-label-tab-size: var(--text-heading-xs-size); --text-ref-label-tab-weight: var(--text-heading-xs-weight); --text-ref-label-tab-lh: var(--text-heading-xs-lh); --text-ref-label-tab-ls: var(--text-heading-xs-ls); /* Label/Tab */
   --text-ref-label-button-size: var(--text-button-small-size); --text-ref-label-button-weight: var(--text-button-small-weight); --text-ref-label-button-lh: var(--text-button-small-lh); --text-ref-label-button-ls: var(--text-button-small-ls); /* Label/Button */
   --text-ref-label-badge-size: var(--text-caption-strong-size); --text-ref-label-badge-weight: var(--text-caption-strong-weight); --text-ref-label-badge-lh: var(--text-caption-strong-lh); --text-ref-label-badge-ls: var(--text-caption-strong-ls); /* Label/Badge */

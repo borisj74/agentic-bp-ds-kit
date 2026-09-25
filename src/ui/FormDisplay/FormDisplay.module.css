@@ -4,9 +4,11 @@
   box-sizing: border-box; display: flex; width: 100%; min-width: 0; margin: 0;
   font-family: var(--font-sans); border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
 }
+/* The label: Label/Form, like a field label. */
 .term {
   display: flex; align-items: center; gap: var(--space-xxsmall); margin: 0;
-  font-size: var(--font-size-small); font-weight: var(--font-weight-medium); line-height: var(--line-height-tight); color: var(--text-neutral-strong);
+  font-size: var(--text-ref-label-form-size); font-weight: var(--text-ref-label-form-weight); line-height: var(--text-ref-label-form-lh);
+  letter-spacing: var(--text-ref-label-form-ls); color: var(--text-neutral-strong);
 }
 .value { margin: 0; min-width: 0; font-size: var(--font-size-regular); line-height: var(--line-height-normal); color: var(--text-neutral); overflow-wrap: anywhere; }
 .blank { color: var(--text-neutral-subtle); }

@@ -38,7 +38,8 @@
 /* Checkbox column: only as wide as the checkbox and its padding. */
 .select { width: 1%; }
 .numeric { font-variant-numeric: tabular-nums; }
-.emphasis { font-weight: var(--font-weight-medium); }
+/* The Cell inside sets Text/Cell (regular), so the column weight goes on it too. */
+.emphasis, .emphasis > * { font-weight: var(--font-weight-medium); }
 .table .empty > * { color: var(--text-neutral); }
 
 /* Total row: a faint fill, closed by a subtle line. */
