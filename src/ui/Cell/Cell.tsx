@@ -19,7 +19,7 @@ import styles from "./Cell.module.css";
 export type CellType =
   | "text" | "link" | "avatar" | "avatarGroup" | "file" | "payment" | "badge" | "badges"
   | "trendPositive" | "trendNegative" | "progress" | "rating" | "select" | "actions" | "actionIcons" | "actionMenu" | "checkbox" | "tree"
-  | "number" | "date" | "status" | "icon" | "switch" | "radio" | "popupTrigger" | "linkSecondary" | "textBlock";
+  | "number" | "date" | "status" | "icon" | "switch" | "radio" | "popupTrigger" | "linkSecondary" | "textBlock" | "redirect";
 export type CellSize = "sm" | "md";
 export type CellAlignment = "start" | "center" | "end";
 export type CellTreeToggle = "chevron" | "box";
@@ -138,6 +138,15 @@ export function Cell({
       break;
     case "linkSecondary":
       visual = <Link intent="neutral" href={href} onClick={onClick} external={external}>{label ?? ""}</Link>;
+      break;
+    case "redirect":
+      // Goes to another page in the app, same tab: brand Link text, then a decorative arrow_outward in the link colour.
+      visual = (
+        <Link href={href} onClick={onClick}>
+          {label ?? ""}
+          <Icon name="arrow_outward" size="sm" className={styles.redirectIcon} />
+        </Link>
+      );
       break;
     case "tree":
       // An optional icon, then the label; the indent and chevron lead the cell (below).

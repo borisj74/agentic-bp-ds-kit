@@ -1,8 +1,8 @@
 {
   "name": "Cell",
   "path": "src/ui/Cell/Cell.tsx",
-  "intent": "Content for one table cell: text, a number, a date, a link, a person, a file, a status, a trend, progress, a rating, a select, a switch or radio, row actions or a row menu, a tree row, with an optional row checkbox. Each cell is full width with a faint bottom border.",
-  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, number for amounts and counts (end-aligned, even-width digits), date for a day, textBlock for a note that wraps over several lines (md only), link to open a record, linkSecondary for a quieter grey link, popupTrigger for grey underlined text that opens a popup the screen owns, avatar for a person, badge for status, status for a coloured dot and a label, icon for a status icon and a label, trend for change, progress for how far along something is, actions for row buttons, actionMenu for a More menu, select to change a value in place, switch to turn a row setting on or off right away, radio to pick one row in the table, checkbox for a column with only the row Checkbox, tree for the first cell of parent and child rows (an indent per level, faint guide lines and a chevron to open and close its children; treeToggle box swaps that chevron for the outlined plus or minus square). Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, Dropdown, Icon, Link, Meter, RadioGroup, Select and Switch; it never draws its own. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract. With actionIcons, menu puts the row's remaining actions behind one More button at the end. In a box narrower than 640px, the kit's mobile break, the icon buttons fold into that More menu and the cell keeps one button, so the row's own values get the width; only one of the two is in the layout, so nothing is reached twice by the keyboard.",
+  "intent": "Content for one table cell: text, a number, a date, a link, a redirect to another page, a person, a file, a status, a trend, progress, a rating, a select, a switch or radio, row actions or a row menu, a tree row, with an optional row checkbox. Each cell is full width with a faint bottom border.",
+  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, number for amounts and counts (end-aligned, even-width digits), date for a day, textBlock for a note that wraps over several lines (md only), link to open a record, redirect to go to another page in the app (brand link text with an outward arrow), linkSecondary for a quieter grey link, popupTrigger for grey underlined text that opens a popup the screen owns, avatar for a person, badge for status, status for a coloured dot and a label, icon for a status icon and a label, trend for change, progress for how far along something is, actions for row buttons, actionMenu for a More menu, select to change a value in place, switch to turn a row setting on or off right away, radio to pick one row in the table, checkbox for a column with only the row Checkbox, tree for the first cell of parent and child rows (an indent per level, faint guide lines and a chevron to open and close its children; treeToggle box swaps that chevron for the outlined plus or minus square). Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, Dropdown, Icon, Link, Meter, RadioGroup, Select and Switch; it never draws its own. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract. With actionIcons, menu puts the row's remaining actions behind one More button at the end. In a box narrower than 640px, the kit's mobile break, the icon buttons fold into that More menu and the cell keeps one button, so the row's own values get the width; only one of the two is in the layout, so nothing is reached twice by the keyboard.",
   "props": {
     "type": {
       "enum": [
@@ -32,10 +32,11 @@
         "radio",
         "popupTrigger",
         "linkSecondary",
-        "textBlock"
+        "textBlock",
+        "redirect"
       ],
       "default": "text",
-      "note": "link is the brand link (link-primary in the reference). The last nine types match the reference table's number, date, status, icon, switch, radio, popup-triger, secondary-link and text-block cells."
+      "note": "link is the brand link (link-primary in the reference). number, date, status, icon, switch, radio, popupTrigger, linkSecondary and textBlock match the reference table's number, date, status, icon, switch, radio, popup-triger, secondary-link and text-block cells; redirect matches its redirect cell (link text and an outward arrow)."
     },
     "size": {
       "enum": [
@@ -66,21 +67,21 @@
     },
     "label": {
       "type": "string",
-      "note": "The text. For link it is the link text. For avatar it is the second line when name is set. For actionMenu it names the More button (default Row actions). For select it is the hidden field name. For progress it names the bar for screen readers (default Progress). For checkbox it names the row: the Checkbox is Select {label}. For status and icon it is the text after the mark. For textBlock it is the text that wraps. For popupTrigger and linkSecondary it is the link text. For switch and radio it is the hidden name of the control, like Auto-renew Acme."
+      "note": "The text. For link it is the link text. For avatar it is the second line when name is set. For actionMenu it names the More button (default Row actions). For select it is the hidden field name. For progress it names the bar for screen readers (default Progress). For checkbox it names the row: the Checkbox is Select {label}. For status and icon it is the text after the mark. For textBlock it is the text that wraps. For popupTrigger, linkSecondary and redirect it is the link text; for redirect it names the page it goes to. For switch and radio it is the hidden name of the control, like Auto-renew Acme."
     },
     "href": {
       "type": "string",
-      "note": "For link and linkSecondary. Where the link goes. Links navigate only; use actions for operations."
+      "note": "For link, linkSecondary and redirect. Where the link goes. Links navigate only; use actions for operations. redirect always opens in the same tab."
     },
     "external": {
       "type": "boolean",
       "default": false,
-      "note": "For linkSecondary. Opens in a new tab, with the kit Link new-tab mark."
+      "note": "For linkSecondary. Opens in a new tab, with the kit Link new-tab mark. redirect has no external: it stays in the same tab."
     },
     "onClick": {
       "type": "function",
       "signature": "() => void",
-      "note": "For link, linkSecondary and popupTrigger. Without href the link is a button that acts in place, like picking a row in a Lookup; with href it runs before the link opens. For popupTrigger it opens the popup the screen owns (a Modal, Drawer or popover)."
+      "note": "For link, linkSecondary, redirect and popupTrigger. Without href the link is a button that acts in place, like picking a row in a Lookup; with href it runs before the link opens. For popupTrigger it opens the popup the screen owns (a Modal, Drawer or popover)."
     },
     "name": {
       "type": "string",
@@ -190,7 +191,8 @@
   "useWhen": [
     "Cells in a data table.",
     "A row that mixes text, people, status and actions.",
-    "A column the reference table draws as number, date, status, icon, switch, radio, popup, secondary link or text block."
+    "A column the reference table draws as number, date, status, icon, switch, radio, popup, secondary link or text block.",
+    "A column that sends people to another page in the app, like Open billing run, drawn as the reference redirect cell."
   ],
   "doNot": [
     "Do not invent a local table cell, Tag, Trend, FileIcon, PaymentMethod, Rating or ActionCell.",
@@ -207,7 +209,9 @@
     "Do not use radio without the same name on every row, and keep the picked row in the table (checked).",
     "Do not use popupTrigger to go to another page. Use link or linkSecondary.",
     "Do not use textBlock at sm. sm holds one line; the text is cut with an ellipsis.",
-    "Do not write numbers in a text cell. Use number so they line up at the end."
+    "Do not write numbers in a text cell. Use number so they line up at the end.",
+    "Do not use redirect for a new tab; use linkSecondary with external.",
+    "Do not use redirect for actions like Delete or Send. Use actions or actionIcons."
   ],
   "a11y": [
     "link renders a real <a href> with a visible focus ring; the label is the link name.",
@@ -226,7 +230,8 @@
     "switch is a kit Switch: role=switch named by label, Space or Enter toggles it.",
     "radio is a kit RadioGroup with one option: a native radio named by label, in a group shared by name, so the arrow keys move between rows.",
     "popupTrigger is a kit Link acting in place: a button named by its text.",
-    "linkSecondary is a kit Link: a real <a href>, neutral links keep their underline so colour is not the only sign."
+    "linkSecondary is a kit Link: a real <a href>, neutral links keep their underline so colour is not the only sign.",
+    "redirect is a kit brand Link: a real <a href> named by its text; the outward arrow is decorative (aria-hidden), so the text names the page it goes to."
   ],
   "snippet": "<Cell type=\"avatar\" name=\"Maya Chen\" label=\"maya@acme.com\" src=\"/faces/maya-chen.jpg\" />",
   "examples": [
@@ -734,6 +739,27 @@
           "props": {
             "type": "textBlock",
             "label": "Billed yearly in advance. Usage above the plan is billed monthly in arrears at the list price."
+          }
+        }
+      ]
+    },
+    {
+      "title": "Redirect",
+      "usage": "Goes to another page in the app, in the same tab: brand link text, then a small outward arrow in the link colour. Name the page, not Redirect.",
+      "items": [
+        {
+          "props": {
+            "type": "redirect",
+            "label": "Open billing run",
+            "href": "#"
+          }
+        },
+        {
+          "props": {
+            "type": "redirect",
+            "size": "sm",
+            "label": "View usage",
+            "href": "#"
           }
         }
       ]

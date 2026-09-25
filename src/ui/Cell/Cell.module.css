@@ -101,3 +101,5 @@
 .mark-warning { color: var(--icon-warning); }
 .mark-danger { color: var(--icon-danger); }
 .mark-highlight { color: var(--icon-highlight); }
+/* redirect: the arrow sits 4px after the link text, on its line, in the link colour (the Icon takes currentColor). */
+.redirectIcon { margin-inline-start: var(--space-xxsmall); vertical-align: text-bottom; }

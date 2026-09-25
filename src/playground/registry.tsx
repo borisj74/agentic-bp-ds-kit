@@ -187,6 +187,7 @@ const CELL_SAMPLES: Record<CellType, Props> = {
   radio: { label: "Default plan", name: "cell-radio-sample", checked: true },
   popupTrigger: { label: "3 contacts" },
   linkSecondary: { label: "Parent Co", href: "#" },
+  redirect: { label: "Open billing run", href: "#" },
   textBlock: { label: "Billed yearly in advance. Usage above the plan is billed monthly in arrears at the list price." },
 };
 

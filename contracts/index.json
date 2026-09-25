@@ -260,7 +260,8 @@
         "status dot",
         "switch cell",
         "radio cell",
-        "text block"
+        "text block",
+        "redirect cell"
       ]
     },
     {

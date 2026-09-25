@@ -478,6 +478,7 @@ export function CellTypesDemo({ size }: { size?: CellSize }) {
     seats: <Cell type="number" size={size} value={s.seats} />,
     contacts: <Cell type="popupTrigger" size={size} label={`${s.contacts.length} ${s.contacts.length === 1 ? "contact" : "contacts"}`} onClick={() => setPopup(s)} />,
     note: <Cell type="textBlock" size={size} label={s.note} />,
+    usage: <Cell type="redirect" size={size} label={`${s.plan} usage`} href="#" />,
   }));
   return (
     <>
@@ -487,6 +488,7 @@ export function CellTypesDemo({ size }: { size?: CellSize }) {
           { key: "pick", header: "Default", width: "1%" }, { key: "plan", header: "Plan", emphasis: true }, { key: "parent", header: "Account" },
           { key: "start", header: "Start" }, { key: "status", header: "Status" }, { key: "renew", header: "Auto-renew" },
           { key: "seats", header: "Seats", alignment: "end" }, { key: "contacts", header: "Contacts" }, { key: "note", header: "Note", width: "320px" },
+          { key: "usage", header: "Usage" },
         ]}
         rows={rows}
       />

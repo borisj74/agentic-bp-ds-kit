@@ -87,6 +87,21 @@ describe("Cell reference types", () => {
     expect(link.className).toContain("neutral");
   });
 
+  it("redirect is a brand kit Link in the same tab, then a decorative arrow_outward", () => {
+    const onClick = vi.fn();
+    render(<Cell type="redirect" label="Open billing run" href="/runs/42" onClick={onClick} />);
+    const link = screen.getByRole("link", { name: "Open billing run" });
+    expect(link).toHaveAttribute("href", "/runs/42");
+    expect(link).not.toHaveAttribute("target");
+    expect(link.className).toContain("brand");
+    const arrow = link.querySelector("[aria-hidden='true']")!;
+    expect(arrow.textContent).toBe("arrow_outward");
+    expect(arrow.className).toContain("sm");
+    expect(arrow.className).toContain("redirectIcon");
+    fireEvent.click(link);
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
   it("textBlock wraps at md and holds one line at sm", () => {
     const { container, rerender } = render(<Cell type="textBlock" label="A long note." />);
     expect(container.firstElementChild!.className).toContain("textBlock");
@@ -107,6 +122,7 @@ describe("Cell reference types", () => {
         <Cell type="popupTrigger" label="3 contacts" onClick={() => {}} />
         <Cell type="linkSecondary" label="Parent Co" href="#" />
         <Cell type="textBlock" label="Billed yearly." />
+        <Cell type="redirect" label="Open billing run" href="#" />
       </div>,
     );
     expect((await axeViolations()).join("\n")).toBe("");
