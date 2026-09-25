@@ -2,7 +2,7 @@
   "name": "Illustration",
   "path": "src/ui/Illustration/Illustration.tsx",
   "intent": "A piece of drawn artwork from the product, like the picture over an empty page.",
-  "usage": "Use Illustration where a screen needs a drawn picture rather than an icon or a logo: the art over an Empty, or the opening of an assistant panel. It is one component: pass name for the artwork and size for how big it is drawn. animated sets the art moving where the movement says something, like the glass walking over the message while the assistant waits for a first question; it is still by default, and stops for anyone who asks for less motion. The art carries the brand colors of the drawing itself, so it does not change with the theme. It is decorative by default and hidden from screen readers; pass label only when the picture is the only thing saying what the block is about. New artwork joins the name list here; do not paste an SVG into a screen. See contracts/illustration.json for the full contract.",
+  "usage": "Use Illustration where a screen needs a drawn picture rather than an icon or a logo: the art over an EmptyState, or the opening of an assistant panel. It is one component: pass name for the artwork and size for how big it is drawn. animated sets the art moving where the movement says something, like the glass walking over the message while the assistant waits for a first question; it is still by default, and stops for anyone who asks for less motion. The art carries the brand colors of the drawing itself, so it does not change with the theme. It is decorative by default and hidden from screen readers; pass label only when the picture is the only thing saying what the block is about. New artwork joins the name list here; do not paste an SVG into a screen. See contracts/illustration.json for the full contract.",
   "props": {
     "name": {
       "enum": [
@@ -32,7 +32,7 @@
     }
   },
   "useWhen": [
-    "The picture over an Empty block.",
+    "The picture over an EmptyState block.",
     "The opening of the assistant, before the first question.",
     "A new chat, before anything has been asked in it."
   ],

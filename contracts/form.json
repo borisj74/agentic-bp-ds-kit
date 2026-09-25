@@ -52,7 +52,7 @@
     },
     "error": {
       "type": "string",
-      "note": "A problem with the whole form, like a failed save. Shows as a danger Alert above the fields. Field problems go on the field's own error."
+      "note": "A problem with the whole form, like a failed save. Shows as a danger Callout above the fields. Field problems go on the field's own error."
     },
     "onSubmit": {
       "type": "function",
@@ -80,7 +80,7 @@
   "a11y": [
     "A native form element, named by its title and described by its description.",
     "Each section is a kit Section named by its heading; its description is read with it, and folding one takes its fields out of the reading order.",
-    "error is a danger Alert, announced when it appears.",
+    "error is a danger Callout, announced when it appears.",
     "Enter in a field submits. Native required checks run before onSubmit."
   ],
   "snippet": "<Form\n  title=\"Company details\"\n  onSubmit={save}\n  actions={<>\n    <Button onClick={cancel}>Cancel</Button>\n    <Button variant=\"primary\" type=\"submit\">Save</Button>\n  </>}\n>\n  <Input label=\"Company\" name=\"company\" required />\n  <Input label=\"Billing email\" name=\"email\" type=\"email\" />\n</Form>",

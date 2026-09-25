@@ -1,0 +1,353 @@
+{
+  "name": "Dropdown",
+  "path": "src/ui/Dropdown/Dropdown.tsx",
+  "intent": "A short list of actions or options that opens from a Button or a FilterButton. One component: the trigger and the menu come from props.",
+  "usage": "Use Dropdown for row actions, a More menu, or filter options. trigger button uses the kit Button with a chevron (or an icon-only button); trigger filter uses the kit FilterButton with its count. Items are data: label, optional description, icon, danger, disabled, selected and checkbox, with { divider: true } between groups. For filters, use checkbox items and closeOnSelect false. The panel is a white card with a blue top line, placed under the trigger (above it when there is no room). Long lists scroll past 280px; searchable adds a search field on top. See contracts/dropdown.json for the full contract. The menu is fixed and placed under its trigger, and it keeps inside the frame it is in: the app frame when the screen sits in one, else the window. It gives up width rather than hanging outside, so a phone-width frame gets a narrower menu, not one over the edge. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page.",
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "note": "Trigger text and the menu name. Icon-only keeps it as the hidden button name."
+    },
+    "items": {
+      "type": "DropdownMenuEntry[]",
+      "required": true,
+      "itemShape": {
+        "id": "string",
+        "label": "string",
+        "description": "string?",
+        "icon": "string? Material Symbols name. Shown in a tinted tile; on danger items it sits at the end.",
+        "danger": "boolean?",
+        "disabled": "boolean?",
+        "selected": "boolean? Light blue row (bg-neutral-min-selected) with a check. Any item with selected set becomes a radio item.",
+        "checkbox": "boolean? Shows a kit Checkbox that follows selected. For multi-select filters.",
+        "count": "number? Shown as a kit Badge at the end of the row, like Chats 7."
+      },
+      "note": "Use { divider: true } as an entry to split groups."
+    },
+    "trigger": {
+      "enum": [
+        "button",
+        "filter",
+        "field"
+      ],
+      "default": "button",
+      "note": "button is the kit Button. filter is the kit FilterButton. field is a form field box, used by Select."
+    },
+    "variant": {
+      "enum": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "danger"
+      ],
+      "default": "secondary",
+      "note": "Button trigger only."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "Trigger size. The menu itself has one size. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown)."
+    },
+    "icon": {
+      "type": "string",
+      "note": "Leading icon on the Button trigger. Icon-only defaults to more_vert."
+    },
+    "iconOnly": {
+      "type": "boolean",
+      "default": false,
+      "note": "Icon-only Button trigger, like a row More menu. label stays as its name."
+    },
+    "count": {
+      "type": "number",
+      "default": 0,
+      "note": "Filter trigger only. Applied filters shown as a Count."
+    },
+    "alignment": {
+      "enum": [
+        "left",
+        "right"
+      ],
+      "default": "left",
+      "note": "Panel edge lines up with the trigger's left or right edge. Use right at the right edge of a table."
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "closeOnSelect": {
+      "type": "boolean",
+      "default": true,
+      "note": "Turn off for checkbox filters so several can be picked."
+    },
+    "open": {
+      "type": "boolean",
+      "note": "Controlled open state. Leave out to let the menu manage itself."
+    },
+    "onOpenChange": {
+      "type": "function",
+      "note": "(open: boolean) => void"
+    },
+    "onSelect": {
+      "type": "function",
+      "note": "(id: string) => void"
+    },
+    "multiple": {
+      "type": "boolean",
+      "default": false,
+      "note": "Items with selected become checkbox items and the menu stays open."
+    },
+    "id": {
+      "type": "string",
+      "note": "Field trigger id, for a label htmlFor."
+    },
+    "text": {
+      "type": "string",
+      "note": "Field trigger text. Defaults to label. With trigger filter it is the chosen value, shown as Name: value."
+    },
+    "muted": {
+      "type": "boolean",
+      "default": false,
+      "note": "Field trigger text in placeholder gray."
+    },
+    "badge": {
+      "type": "string",
+      "note": "Field trigger Badge after the text, like +2."
+    },
+    "toggle": {
+      "enum": [
+        "on",
+        "off"
+      ],
+      "note": "trigger filter only: the filter's on/off state. See FilterButton."
+    },
+    "onToggle": {
+      "type": "function",
+      "note": "trigger filter only: () => void. Splits the filter button: the name turns it on or off, the chevron opens the menu."
+    },
+    "labelledBy": {
+      "type": "string",
+      "note": "Field trigger: id of an outside label. The trigger is named by it plus its text."
+    },
+    "describedBy": {
+      "type": "string",
+      "note": "Field trigger: hint and error ids."
+    },
+    "searchable": {
+      "type": "boolean",
+      "default": false,
+      "note": "Search field at the top of the panel. Filters items by label. Focus starts in it."
+    },
+    "searchPlaceholder": {
+      "type": "string",
+      "default": "Search"
+    },
+    "empty": {
+      "type": "string",
+      "default": "No results.",
+      "note": "Shown when the search matches nothing."
+    },
+    "menuWidth": {
+      "enum": [
+        "default",
+        "field"
+      ],
+      "default": "default",
+      "note": "default: the menu is at least 200 wide. field: the menu is only as wide as the trigger. Select passes it through."
+    }
+  },
+  "useWhen": [
+    "Row actions behind a More button.",
+    "A button that opens a short list of actions.",
+    "Filter options behind a FilterButton."
+  ],
+  "doNot": [
+    "Do not invent DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, MenuDivider, ContextMenu or Popover cousins.",
+    "Do not use for choosing a value in a form. Use Select.",
+    "Do not put page navigation here. Use links.",
+    "Do not use more than one divider in a row, or a divider first or last.",
+    "Do not use a danger item for anything but destructive actions. Put it last, after a divider.",
+    "Do not use raw hex.",
+    "Do not use trigger field on its own. Use Select."
+  ],
+  "a11y": [
+    "The trigger has aria-haspopup=menu, aria-expanded and aria-controls.",
+    "The panel is role=menu, named by label. Items are menuitem, menuitemradio (selected) or menuitemcheckbox (checkbox) with aria-checked.",
+    "Opening moves focus to the first item. Arrow Up on the trigger opens on the last item.",
+    "Arrow keys, Home and End move between items; disabled items are skipped. Enter or Space picks.",
+    "Escape and Tab close and return focus to the trigger. A click outside closes.",
+    "Icons are decorative. The checkbox inside a checkbox item is visual only; the item carries the state.",
+    "With searchable, focus starts in the search field. Arrow Down moves into the list, Arrow Up to the last item, Enter picks the first match."
+  ],
+  "snippet": "<Dropdown\n  label=\"Actions\"\n  items={[\n    { id: \"edit\", label: \"Edit\" },\n    { id: \"duplicate\", label: \"Duplicate\" },\n    { divider: true },\n    { id: \"delete\", label: \"Delete\", icon: \"delete\", danger: true },\n  ]}\n  onSelect={(id) => {}}\n/>",
+  "examples": [
+    {
+      "title": "Actions",
+      "usage": "A Button with a chevron. The destructive action goes last, after a divider.",
+      "items": [
+        {
+          "props": {
+            "label": "Actions",
+            "items": [
+              {
+                "id": "edit",
+                "label": "Edit"
+              },
+              {
+                "id": "duplicate",
+                "label": "Duplicate"
+              },
+              {
+                "id": "archive",
+                "label": "Archive",
+                "disabled": true
+              },
+              {
+                "divider": true
+              },
+              {
+                "id": "delete",
+                "label": "Delete",
+                "icon": "delete",
+                "danger": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Row menu",
+      "usage": "Icon-only tertiary trigger for a table row. Alignment right so the panel stays inside the table.",
+      "items": [
+        {
+          "props": {
+            "label": "Row actions",
+            "iconOnly": true,
+            "variant": "tertiary",
+            "size": "sm",
+            "alignment": "right",
+            "items": [
+              {
+                "id": "view",
+                "label": "View"
+              },
+              {
+                "id": "download",
+                "label": "Download"
+              },
+              {
+                "divider": true
+              },
+              {
+                "id": "delete",
+                "label": "Delete",
+                "icon": "delete",
+                "danger": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Icons and descriptions",
+      "usage": "An icon tile and a second line help when options need explaining.",
+      "items": [
+        {
+          "props": {
+            "label": "New",
+            "variant": "primary",
+            "icon": "add",
+            "items": [
+              {
+                "id": "invoice",
+                "label": "Invoice",
+                "description": "Bill a customer once",
+                "icon": "receipt_long"
+              },
+              {
+                "id": "subscription",
+                "label": "Subscription",
+                "description": "Bill on a schedule",
+                "icon": "autorenew"
+              },
+              {
+                "id": "note",
+                "label": "Credit note",
+                "description": "Refund part of an invoice",
+                "icon": "notes"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Single choice",
+      "usage": "selected marks the current option with a blue row and a check.",
+      "items": [
+        {
+          "props": {
+            "label": "Sort by",
+            "items": [
+              {
+                "id": "newest",
+                "label": "Newest first",
+                "selected": true
+              },
+              {
+                "id": "oldest",
+                "label": "Oldest first",
+                "selected": false
+              },
+              {
+                "id": "amount",
+                "label": "Amount",
+                "selected": false
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Filter",
+      "usage": "FilterButton trigger with checkbox items. closeOnSelect false keeps it open while picking.",
+      "items": [
+        {
+          "props": {
+            "label": "Status",
+            "trigger": "filter",
+            "count": 2,
+            "closeOnSelect": false,
+            "items": [
+              {
+                "id": "paid",
+                "label": "Paid",
+                "checkbox": true,
+                "selected": true
+              },
+              {
+                "id": "due",
+                "label": "Due",
+                "checkbox": true,
+                "selected": true
+              },
+              {
+                "id": "overdue",
+                "label": "Overdue",
+                "checkbox": true,
+                "selected": false
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

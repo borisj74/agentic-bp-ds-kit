@@ -39,7 +39,7 @@
     "Do not put more than one primary Button in a group or the view.",
     "Do not wrap Input, Select, or anything except kit Button.",
     "Do not nest groups.",
-    "Do not use for picking one option (a pressed button). Use SegmentedControl.",
+    "Do not use for picking one option (a pressed button). Use Segmented.",
     "Do not use for paging a list."
   ],
   "a11y": [

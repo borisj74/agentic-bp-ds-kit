@@ -35,7 +35,7 @@
 .check { flex: none; display: inline-flex; margin-inline-end: var(--space-xsmall); }
 .icon { flex: none; margin-inline-end: var(--space-xsmall); color: var(--icon-neutral); }
 .label { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-/* The drag handle is the kit DropdownMenu's icon button: drag the row, or click it for the Move menu. */
+/* The drag handle is the kit Dropdown's icon button: drag the row, or click it for the Move menu. */
 .move { flex: none; display: inline-flex; margin-inline-start: var(--space-xxsmall); }
 
 /* Where a dragged row will land: a brand line above or below, or a brand outline around a folder. */

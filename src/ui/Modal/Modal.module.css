@@ -17,7 +17,7 @@
 .md { max-width: var(--modal-width-md); }
 .lg { max-width: var(--modal-width-lg); }
 .xl { max-width: var(--modal-width-xl); }
-.full { max-width: none; height: 100%; border-radius: 0; }
+.fullscreen { max-width: none; height: 100%; border-radius: 0; }
 
 /* Figma header: 20px padding, 20px bold title (text-ref-modal = text-title-lg), close at the end. */
 /* The body scrolls, and a scroller clips focus rings at its edge, so the body starts 4px higher with 4px of padding:

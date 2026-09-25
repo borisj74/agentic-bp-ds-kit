@@ -2,7 +2,7 @@
   "name": "HeaderCell",
   "path": "src/ui/HeaderCell/HeaderCell.tsx",
   "intent": "Column title for a data table: uppercase label, optional select-all checkbox, optional sort, with a brand-faint bottom border, 2px or 1px.",
-  "usage": "Use HeaderCell inside th scope=col, one per column, above Cell rows. Match its size to the Cell size so side padding lines up. Use align end for number columns and center for a checkbox-only or actions column. HeaderCell composes kit Checkbox and Icon. See contracts/headercell.json for the full contract.",
+  "usage": "Use HeaderCell inside th scope=col, one per column, above Cell rows. Match its size to the Cell size so side padding lines up. Use alignment end for number columns and center for a checkbox-only or actions column. HeaderCell composes kit Checkbox and Icon. See contracts/headercell.json for the full contract.",
   "props": {
     "label": {
       "type": "string",
@@ -16,7 +16,7 @@
       "default": "md",
       "note": "Height 40 / 48 px. Side padding 12 px at both sizes, same as Cell. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown)."
     },
-    "align": {
+    "alignment": {
       "enum": [
         "start",
         "center",
@@ -107,7 +107,7 @@
         {
           "props": {
             "label": "Amount",
-            "align": "end"
+            "alignment": "end"
           }
         }
       ]
@@ -119,13 +119,13 @@
         {
           "props": {
             "checkbox": true,
-            "align": "center"
+            "alignment": "center"
           }
         },
         {
           "props": {
             "checkbox": true,
-            "align": "center",
+            "alignment": "center",
             "indeterminate": true
           }
         }

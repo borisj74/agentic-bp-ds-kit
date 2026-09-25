@@ -2,7 +2,7 @@
   "name": "LinkList",
   "path": "src/ui/LinkList/LinkList.tsx",
   "intent": "A column of links, one a row with a chevron at the end, like an account's quick links.",
-  "usage": "Use LinkList for a short set of places to go from a page, like Quick links in a record's rail or related pages under a heading. It is one component: pass items, each with an id and a label, and href or onClick. icon puts a brand icon before the label; description adds a short line under it; external opens the link in a new tab and swaps the chevron for the new-tab mark. Put it in a Section, which gives it its title and box; the list draws no card of its own and its labels line up with the Section title. label names the list for screen readers, like Quick links. For a single link in text use Link; for actions use Buttons or a DropdownMenu. See contracts/linklist.json for the full contract.",
+  "usage": "Use LinkList for a short set of places to go from a page, like Quick links in a record's rail or related pages under a heading. It is one component: pass items, each with an id and a label, and href or onClick. icon puts a brand icon before the label; description adds a short line under it; external opens the link in a new tab and swaps the chevron for the new-tab mark. Put it in a Section, which gives it its title and box; the list draws no card of its own and its labels line up with the Section title. label names the list for screen readers, like Quick links. For a single link in text use Link; for actions use Buttons or a Dropdown. See contracts/linklist.json for the full contract.",
   "props": {
     "items": {
       "type": "LinkListItem[]",
@@ -29,8 +29,8 @@
     "A few related pages to jump to from a settings or detail page."
   ],
   "doNot": [
-    "Do not use it for actions that change data. Use Buttons or a DropdownMenu.",
-    "Do not use it for page navigation across the app. Use SideNav or Tabs.",
+    "Do not use it for actions that change data. Use Buttons or a Dropdown.",
+    "Do not use it for page navigation across the app. Use AppNav or Tabs.",
     "Do not put it in a Card or draw a box round it yourself. Put it in a Section.",
     "Do not build a list of Links or a one-column Table for quick links. Use LinkList.",
     "Do not use raw hex."

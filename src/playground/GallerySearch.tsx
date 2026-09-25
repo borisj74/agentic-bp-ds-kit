@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
-import { Empty } from "@/ui/Empty/Empty";
+import { EmptyState } from "@/ui/EmptyState/EmptyState";
 import { Input } from "@/ui/Input/Input";
 import styles from "./master.module.css";
 import shell from "./shell.module.css";
@@ -45,7 +45,7 @@ export function GallerySearch({ title, lead, items, noun = "components" }: { tit
         </div>
       </div>
       {shown.length === 0 ? (
-        <Empty
+        <EmptyState
           icon="search_off" iconStyle="plain" headingLevel={2}
           title={`No ${noun} match "${query.trim()}"`}
           description="Try a shorter word, or what the piece does, like table, date or chart."

@@ -133,6 +133,13 @@ Read [Prompting](#prompting) before your first screen.
 
 Working from a clone of the kit (Option 3)? Run `git pull` and then `npm install`.
 
+Some releases rename pieces or props. When you move screens into a newer kit, run the matching script over your screen folders, oldest first, then `npx tsc --noEmit` to catch anything it missed. Each script is safe to run twice.
+
+| Script | What it renames |
+| --- | --- |
+| `node scripts/codemod-a2-rulings.mjs src/app` | `tone` to `intent` |
+| `node scripts/codemod-a3-renames.mjs src/app` | Alert to Callout, Empty to EmptyState, Progress to Meter, ProgressLegacy to ProgressBar, ButtonFilter to FilterButton, SegmentedControl to Segmented, Stepper to Steps, DropdownMenu to Dropdown, ShimmerText to TextLoader, Command to GlobalSearch, Tile to NavTile, SideNav to AppNav, and the props that moved with them |
+
 ### If something goes wrong
 
 - **"Node is too old":** install Node.js 20 or newer, open a new terminal, and run the command again.
@@ -156,7 +163,7 @@ Patterns are blueprints for whole screens. Start every screen from one, and the 
 
 ### How to use a pattern
 
-1. **Frame the page with AppShell** when it is a full screen with the side navigation and top bar. Give its SideNav the full app navigation, `APP_NAV` and `APP_NAV_END` from `@/patterns/AppShell/appNav`, so every prototype has every link.
+1. **Frame the page with AppShell** when it is a full screen with the side navigation and top bar. Give its AppNav the full app navigation, `APP_NAV` and `APP_NAV_END` from `@/patterns/AppShell/appNav`, so every prototype has every link.
 2. **Pick the page pattern** that matches the screen, using the list below.
 3. **Read its contract** in `contracts/`: the slots, the options and the do-nots.
 4. **Fill the slots with the kit components** listed under "Built from".
@@ -168,14 +175,14 @@ Patterns are blueprints for whole screens. Start every screen from one, and the 
 | Pattern | What it is | Use it for | Built from |
 | --- | --- | --- | --- |
 | **AccountFlow** | The account provisioning flow: the accounts list, one account with its tabs, a new account, and a new product on an account, one page at a time. | Account screens that link together: find an account, open it, add an account or a product. | AppShell, ListPage, RecordPage, FormPage, Toolbar, Table, Tabs, Form, FormDisplay, LinkList and more |
-| **AppShell** | The frame every product screen sits in: the bar across the top, the rail down the side, the page in the middle, and the assistant beside it. | Any product screen: a list, a record, a dashboard. | AppHeader, SideNav, PageHeader, ChatWindow, Section |
-| **ChatWindow** | The assistant window: its header over the turns, the composer at the foot, and the saved chats beside or over them. | The assistant docked beside a product screen. | ChatHeader, ChatMessage, ChatComposer, ChatList, Empty |
-| **Dashboard** | The home screen of a job: the numbers that matter, grouped, with the charts and lists that explain them. | A home screen that reports on a job: what is owed, what is due, what closed. | Toolbar, Section, Scoreboard, BarChart, LineChart, PieChart, Legend, Table, Timeline, Empty, Skeleton |
-| **FormPage** | One record being filled in: its name and the save at the top, anything to read first under that, and the fields in folding groups. | Making a new record from a page of its own, not from a Modal. | PageHeader, Alert, Form, Section, Input, Select, Checkbox, DatePicker, Lookup |
-| **GuidedProcessPage** | A process walked one page per step, with every step on a dark panel at the start or end edge of the page. | A process of a few steps done in order, where each step is a page of fields. | GuidedProcess, Form, Alert |
-| **ListPage** | A list of records: the bar to find and filter them, the rows themselves, and the pages under them. | A screen that lists records with a search, filters and pages. | Toolbar, Table, Card, Pagination, Empty, Skeleton, Alert |
-| **RecordPage** | One record: its name and actions at the top, the tabs of what belongs to it, the numbers that matter, and its details in sections. | One record with its details in sections. | PageHeader, Tabs, Alert, Toolbar, Scoreboard, Section, Form, FormDisplay |
-| **SettingsPage** | The settings home: a grid of the places people can go from here, each with its own icon and color. | A page whose job is to send people on. | Tile, Section, Alert |
+| **AppShell** | The frame every product screen sits in: the bar across the top, the rail down the side, the page in the middle, and the assistant beside it. | Any product screen: a list, a record, a dashboard. | AppHeader, AppNav, PageHeader, ChatWindow, Section |
+| **ChatWindow** | The assistant window: its header over the turns, the composer at the foot, and the saved chats beside or over them. | The assistant docked beside a product screen. | ChatHeader, ChatMessage, ChatComposer, ChatList, EmptyState |
+| **Dashboard** | The home screen of a job: the numbers that matter, grouped, with the charts and lists that explain them. | A home screen that reports on a job: what is owed, what is due, what closed. | Toolbar, Section, Scoreboard, BarChart, LineChart, PieChart, Legend, Table, Timeline, EmptyState, Skeleton |
+| **FormPage** | One record being filled in: its name and the save at the top, anything to read first under that, and the fields in folding groups. | Making a new record from a page of its own, not from a Modal. | PageHeader, Callout, Form, Section, Input, Select, Checkbox, DatePicker, Lookup |
+| **GuidedProcessPage** | A process walked one page per step, with every step on a dark panel at the start or end edge of the page. | A process of a few steps done in order, where each step is a page of fields. | GuidedProcess, Form, Callout |
+| **ListPage** | A list of records: the bar to find and filter them, the rows themselves, and the pages under them. | A screen that lists records with a search, filters and pages. | Toolbar, Table, Card, Pagination, EmptyState, Skeleton, Callout |
+| **RecordPage** | One record: its name and actions at the top, the tabs of what belongs to it, the numbers that matter, and its details in sections. | One record with its details in sections. | PageHeader, Tabs, Callout, Toolbar, Scoreboard, Section, Form, FormDisplay |
+| **SettingsPage** | The settings home: a grid of the places people can go from here, each with its own icon and color. | A page whose job is to send people on. | NavTile, Section, Callout |
 
 Each pattern's full contract, with its starting code, is in `contracts/`. The catalog's **Using patterns** page lists them live.
 

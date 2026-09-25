@@ -2,11 +2,11 @@
 import { useId } from "react";
 import styles from "./LogoAI.module.css";
 
-export type LogoAIVariant = "default" | "symbol";
+export type LogoAIType = "default" | "symbol";
 export type LogoAIIntent = "color" | "monochrome" | "white" | "filled";
 
 export interface LogoAIProps {
-  variant?: LogoAIVariant;
+  type?: LogoAIType;
   intent?: LogoAIIntent;
   label?: string;
 }
@@ -27,8 +27,8 @@ const TEXT = [
 
 const FILL: Record<"monochrome" | "white", string> = { monochrome: "black", white: "white" };
 
-function Outline({ variant, intent }: { variant: LogoAIVariant; intent: Exclude<LogoAIIntent, "filled"> }) {
-  const full = variant === "default";
+function Outline({ type, intent }: { type: LogoAIType; intent: Exclude<LogoAIIntent, "filled"> }) {
+  const full = type === "default";
   return (
     <svg className={full ? styles.full : styles.icon} viewBox={full ? "0 0 167.744 85.2" : "0 0 100.706 85.2"} fill="none" aria-hidden="true" focusable="false">
       {MARK.map((d, i) => <path key={i} d={d} fill={intent === "color" ? MARK_FILLS[i] : FILL[intent]} />)}
@@ -41,9 +41,9 @@ function Outline({ variant, intent }: { variant: LogoAIVariant; intent: Exclude<
   );
 }
 
-function Filled({ variant }: { variant: LogoAIVariant }) {
+function Filled({ type }: { type: LogoAIType }) {
   const gid = useId();
-  return variant === "default" ? (
+  return type === "default" ? (
     <svg className={styles.filledFull} viewBox="0 0 130.26 68.8" fill="none" aria-hidden="true" focusable="false">
       <g>
       <path d="M120.54 0H9.72C4.35179 0 0 4.35179 0 9.72V59.08C0 64.4482 4.35179 68.8 9.72 68.8H120.54C125.908 68.8 130.26 64.4482 130.26 59.08V9.72C130.26 4.35179 125.908 0 120.54 0Z" fill={`url(#${gid})`}/>
@@ -80,10 +80,10 @@ function Filled({ variant }: { variant: LogoAIVariant }) {
   );
 }
 
-export function LogoAI({ variant = "default", intent = "color", label = "AI logo" }: LogoAIProps) {
+export function LogoAI({ type = "default", intent = "color", label = "AI logo" }: LogoAIProps) {
   return (
     <span className={styles.logo} role="img" aria-label={label}>
-      {intent === "filled" ? <Filled variant={variant} /> : <Outline variant={variant} intent={intent} />}
+      {intent === "filled" ? <Filled type={type} /> : <Outline type={type} intent={intent} />}
     </span>
   );
 }

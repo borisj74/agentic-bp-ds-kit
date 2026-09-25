@@ -7,11 +7,11 @@ import { Button } from "../Button/Button";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { DatePicker } from "../DatePicker/DatePicker";
 import { Drawer } from "../Drawer/Drawer";
-import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
-import { Empty } from "../Empty/Empty";
+import { Dropdown } from "../Dropdown/Dropdown";
+import { EmptyState } from "../EmptyState/EmptyState";
 import { Form } from "../Form/Form";
 import { Input } from "../Input/Input";
-import { SegmentedControl } from "../SegmentedControl/SegmentedControl";
+import { Segmented } from "../Segmented/Segmented";
 import { Select } from "../Select/Select";
 import { Switch } from "../Switch/Switch";
 import { Textarea } from "../Textarea/Textarea";
@@ -470,7 +470,7 @@ export function Calendar({
     if (!groups.length) {
       return (
         <div className={styles.listEmpty}>
-          <Empty
+          <EmptyState
             icon="event_available" title="No events this week" description={readOnly ? "Nothing is scheduled for these days." : "Add one with New event, or pick another week."}
             actions={readOnly ? undefined : <Button size="sm" iconStart="add" onClick={() => openCreate(focus)}>New event</Button>}
           />
@@ -525,7 +525,7 @@ export function Calendar({
       <div className={styles.header}>
         <div className={styles.titleRow}>
           <h2 id={titleId} className={styles.title} aria-live="polite">{title}</h2>
-          <DropdownMenu
+          <Dropdown
             label="Choose month" variant="tertiary" size="sm" iconOnly icon="expand_more"
             items={months.map((m) => ({ id: toISO(m), label: fmt(m, { month: "long", year: "numeric" }), selected: m.getMonth() === focus.getMonth() }))}
             onSelect={(id) => { const m = parse(id); if (m) setDate(addMonths(focus, m.getMonth() - focus.getMonth())); }}
@@ -540,7 +540,7 @@ export function Calendar({
             {calendars.length > 0 && <Button size="sm" onClick={() => setPanel("calendars")}>Calendars</Button>}
           </div>
           {views.length > 1 && (
-            <SegmentedControl
+            <Segmented
               label="View" hideLabel size="sm" value={view} onChange={(v) => setView(v as CalendarView)}
               options={views.map((v) => ({ value: v, label: VIEW_LABELS[v] }))}
             />

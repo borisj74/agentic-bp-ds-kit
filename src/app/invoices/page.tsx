@@ -7,13 +7,13 @@ import { AlertDialog } from "@/ui/AlertDialog/AlertDialog";
 import { AppHeader, type AppHeaderDensity } from "@/ui/AppHeader/AppHeader";
 import { Button } from "@/ui/Button/Button";
 import { Cell } from "@/ui/Cell/Cell";
-import { DropdownMenu } from "@/ui/DropdownMenu/DropdownMenu";
-import { Empty } from "@/ui/Empty/Empty";
+import { Dropdown } from "@/ui/Dropdown/Dropdown";
+import { EmptyState } from "@/ui/EmptyState/EmptyState";
 import { PageHeader } from "@/ui/PageHeader/PageHeader";
 import { Pagination } from "@/ui/Pagination/Pagination";
 import { Scoreboard } from "@/ui/Scoreboard/Scoreboard";
 import { Section } from "@/ui/Section/Section";
-import { SideNav } from "@/ui/SideNav/SideNav";
+import { AppNav } from "@/ui/AppNav/AppNav";
 import { Table, type TableColumn, type TableRow } from "@/ui/Table/Table";
 import { Toast, type ToastProps } from "@/ui/Toast/Toast";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
@@ -179,7 +179,7 @@ export default function InvoicesPage() {
       amount: money(inv.amount),
       actions: (
         <Cell
-          type="actionIcons" align="end"
+          type="actionIcons" alignment="end"
           actions={[
             ...(unpaid ? [{ label: "Send reminder", icon: "send", onClick: () => remind([inv.id]) }] : []),
             { label: "Download PDF", icon: "download", onClick: () => download([inv.id]) },
@@ -211,7 +211,7 @@ export default function InvoicesPage() {
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         pageHeader={<PageHeader title="Invoices" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />}
       >
@@ -235,7 +235,7 @@ export default function InvoicesPage() {
               searchValue={query} onSearchChange={(v) => { setQuery(v); setPage(1); }} searchPlaceholder="Search invoice or account"
               filters={
                 <>
-                  <DropdownMenu
+                  <Dropdown
                     trigger="filter" size="sm" label="Status"
                     text={STATUS_FILTER.find((o) => o.id === filters.status)?.label}
                     toggle={filters.status ? (off.status ? "off" : "on") : undefined}
@@ -243,7 +243,7 @@ export default function InvoicesPage() {
                     items={STATUS_FILTER.map((o) => ({ ...o, selected: o.id === filters.status }))}
                     onSelect={(id) => setFilter("status", id)}
                   />
-                  <DropdownMenu
+                  <Dropdown
                     trigger="filter" size="sm" label="Due date"
                     text={DUE_FILTER.find((o) => o.id === filters.due)?.label}
                     toggle={filters.due ? (off.due ? "off" : "on") : undefined}
@@ -280,7 +280,7 @@ export default function InvoicesPage() {
             />
           }
           empty={
-            <Empty
+            <EmptyState
               headingLevel={2} icon="search_off" title="No invoices match"
               description="Try another status or due date, or search for a different invoice number or account."
               actions={<Button size="sm" iconStart="filter_alt_off" onClick={clearAll}>Clear filters and search</Button>}

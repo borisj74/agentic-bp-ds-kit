@@ -108,7 +108,7 @@
     "Each editable cell is a button named by its column and row with its value, like Value, row 2: 100. Enter or click opens a kit Input, Select or FormulaEditor named the same way, and focus moves into it.",
     "Enter saves and Escape cancels; focus goes back to the cell. Tab moves to the next cell.",
     "Remove row buttons are named Remove row 2 and show that in a Tooltip.",
-    "Set for all is a kit DropdownMenu under the column title; the header is still the kit HeaderCell.",
+    "Set for all is a kit Dropdown under the column title; the header is still the kit HeaderCell.",
     "With detail, each row starts with a kit Button named Show details, row 2 (Hide when open), with aria-expanded and aria-controls pointing at the open detail, a group named Details, row 2.",
     "A date cell is a kit DatePicker named by its column and row, like Start date, row 2.",
     "With canInsertRows, each row's + is a kit Button named Add row below row N; the new row goes right under it."

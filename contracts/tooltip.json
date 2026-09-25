@@ -9,14 +9,14 @@
       "required": true,
       "note": "Plain text. Wraps past 256px."
     },
-    "placement": {
+    "position": {
       "enum": [
-        "top",
-        "bottom",
+        "above",
+        "below",
         "left",
         "right"
       ],
-      "default": "top",
+      "default": "above",
       "note": "Preferred side. It flips to the other side when there is no room, and stays inside the frame it is in: the app frame when the screen sits in one, else the window."
     },
     "delay": {
@@ -60,31 +60,31 @@
   "snippet": "<Tooltip content=\"Export includes all projects\">\n  <Button>Export</Button>\n</Tooltip>",
   "examples": [
     {
-      "title": "Placement",
+      "title": "Position",
       "usage": "Hover or Tab to each button. It flips when the preferred side has no room.",
       "items": [
         {
           "props": {
             "content": "Shows on top",
-            "placement": "top"
+            "position": "above"
           }
         },
         {
           "props": {
             "content": "Shows below",
-            "placement": "bottom"
+            "position": "below"
           }
         },
         {
           "props": {
             "content": "Shows on the left",
-            "placement": "left"
+            "position": "left"
           }
         },
         {
           "props": {
             "content": "Shows on the right",
-            "placement": "right"
+            "position": "right"
           }
         }
       ]

@@ -24,7 +24,7 @@
 
 /* Start: nav toggle, logo and environment tag, 12px apart. */
 .start { display: flex; align-items: center; gap: var(--space-small); min-width: 0; }
-/* The toggle lines up with the rail it opens: it takes the collapsed SideNav's width and centres the icon
+/* The toggle lines up with the rail it opens: it takes the collapsed AppNav's width and centres the icon
    in it, reaching back through the bar's own side padding so the two share one centre line. */
 .toggle {
   flex: none; display: flex; justify-content: center; width: var(--side-nav-rail);
@@ -53,7 +53,7 @@ a.home:focus-visible { outline: var(--border-width-medium) solid var(--outline-b
 /* Figma uses text/neutral/faint; subtle keeps the label readable. */
 .shortcut { flex: none; font-family: var(--font-mono); font-size: var(--font-size-xsmall); letter-spacing: 0.03em; text-transform: uppercase; color: var(--text-neutral-subtle); }
 .searchCompact { display: none; }
-/* Search dropdown: the kit Command (its own border and shadow). From the wide field it takes the field's
+/* Search dropdown: the kit GlobalSearch (its own border and shadow). From the wide field it takes the field's
    width (set inline) and lays over it; from the compact icon it uses the full search width. Never narrower
    than --app-header-search-min, never wider than the window. Fixed and portaled. */
 .searchPanel {
@@ -88,7 +88,7 @@ button.user:focus-visible { outline: var(--border-width-medium) solid var(--outl
 .company img, .company svg { display: block; max-width: var(--app-header-company-logo); max-height: 100%; }
 .companyName { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--font-size-small); font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); }
 
-/* Account menu under the avatar: name, settings, preferences, log out. Same panel look as DropdownMenu.
+/* Account menu under the avatar: name, settings, preferences, log out. Same panel look as Dropdown.
    Fixed to the window and hidden until placed. */
 .menu {
   position: fixed; top: 0; left: 0; z-index: var(--z-overlay); visibility: hidden;

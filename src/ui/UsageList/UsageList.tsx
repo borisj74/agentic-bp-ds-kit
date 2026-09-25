@@ -1,5 +1,5 @@
 import { Icon } from "../Icon/Icon";
-import { Progress, type ProgressIntent } from "../Progress/Progress";
+import { Meter, type MeterIntent } from "../Meter/Meter";
 import styles from "./UsageList.module.css";
 
 export interface UsageListItem {
@@ -23,12 +23,12 @@ const number = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
 
 function stateOf(used: number, limit: number) {
   const pct = limit > 0 ? (used / limit) * 100 : used > 0 ? FULL_AT : 0;
-  if (pct >= FULL_AT) return { pct, intent: "danger" as ProgressIntent, icon: "error", text: "Limit reached" };
-  if (pct >= WARN_AT) return { pct, intent: "warning" as ProgressIntent, icon: "warning", text: "Almost at limit" };
+  if (pct >= FULL_AT) return { pct, intent: "danger" as MeterIntent, icon: "error", text: "Limit reached" };
+  if (pct >= WARN_AT) return { pct, intent: "warning" as MeterIntent, icon: "warning", text: "Almost at limit" };
   return { pct, intent: undefined, icon: undefined, text: undefined };
 }
 
-// One limit a row: its name and used of limit on one line, a kit Progress bar under them, then an optional note.
+// One limit a row: its name and used of limit on one line, a kit Meter bar under them, then an optional note.
 // It sits in a Section or Card, which gives it its title; it draws no box of its own.
 export function UsageList({ items, label = "Usage" }: UsageListProps) {
   return (
@@ -46,7 +46,7 @@ export function UsageList({ items, label = "Usage" }: UsageListProps) {
                 {text && <span className={styles.srOnly}>, {text}</span>}
               </span>
             </div>
-            <Progress value={pct} intent={intent} label={`${item.label}: ${count} used${text ? `, ${text}` : ""}`} />
+            <Meter value={pct} intent={intent} label={`${item.label}: ${count} used${text ? `, ${text}` : ""}`} />
             {item.note && <p className={styles.note}>{item.note}</p>}
           </li>
         );

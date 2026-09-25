@@ -17,13 +17,13 @@
     },
     "orientation": {
       "enum": [
-        "row",
-        "column"
+        "horizontal",
+        "vertical"
       ],
-      "default": "row",
-      "note": "row wraps the keys across, under or over a chart. column lists them down, beside one."
+      "default": "horizontal",
+      "note": "horizontal wraps the keys across, under or over a chart. vertical lists them down, beside one."
     },
-    "align": {
+    "alignment": {
       "enum": [
         "start",
         "center",
@@ -78,8 +78,8 @@
     "Letting people switch a series off."
   ],
   "doNot": [
-    "Do not add a second legend under a kit chart; the chart draws its own. Use showLegend and legend to place it.",
-    "Do not use it as a list of filters or tags. Use Badge or ButtonFilter.",
+    "Do not add a second legend under a kit chart; the chart draws its own. Use showLegend and legendPosition to place it.",
+    "Do not use it as a list of filters or tags. Use Badge or FilterButton.",
     "Do not write the colour yourself; pick an intent.",
     "Do not use raw hex."
   ],
@@ -102,8 +102,8 @@
         },
         {
           "props": {
-            "orientation": "column",
-            "align": "start",
+            "orientation": "vertical",
+            "alignment": "start",
             "items": "{seriesWithValues}"
           }
         }

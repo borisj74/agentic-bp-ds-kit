@@ -6,8 +6,8 @@ import { Badge, type BadgeIntent } from "../Badge/Badge";
 import { Button, type ButtonVariant } from "../Button/Button";
 import { ButtonGroup } from "../ButtonGroup/ButtonGroup";
 import { Checkbox } from "../Checkbox/Checkbox";
-import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
-import { Progress } from "../Progress/Progress";
+import { Dropdown } from "../Dropdown/Dropdown";
+import { Meter } from "../Meter/Meter";
 import { Select, type SelectOption } from "../Select/Select";
 import { Icon } from "../Icon/Icon";
 import { Tooltip } from "../Tooltip/Tooltip";
@@ -17,7 +17,7 @@ export type CellType =
   | "text" | "link" | "avatar" | "avatarGroup" | "file" | "payment" | "badge" | "badges"
   | "trendPositive" | "trendNegative" | "progress" | "rating" | "select" | "actions" | "actionIcons" | "actionMenu" | "checkbox" | "tree";
 export type CellSize = "sm" | "md";
-export type CellAlign = "start" | "center" | "end";
+export type CellAlignment = "start" | "center" | "end";
 export type CellTreeToggle = "chevron" | "box";
 export interface CellPerson { name: string; src?: string }
 export interface CellBadge { label: string; intent?: BadgeIntent }
@@ -26,7 +26,7 @@ export interface CellAction { label: string; icon?: string; variant?: ButtonVari
 export interface CellProps {
   type?: CellType;
   size?: CellSize;
-  align?: CellAlign;
+  alignment?: CellAlignment;
   text?: boolean;
   checkbox?: boolean;
   label?: string;
@@ -57,7 +57,7 @@ const STARS = 5;
 const score = (v?: string | number) => Math.max(0, Math.min(STARS, Math.round(Number(v) || 0)));
 
 export function Cell({
-  type = "text", size: ownSize, align = "start", text = true, checkbox = false, label, href, name, src, people, icon,
+  type = "text", size: ownSize, alignment = "start", text = true, checkbox = false, label, href, name, src, people, icon,
   intent = "neutral", badges, value, actions, menu, options, onValueChange, checked, defaultChecked, onCheckedChange,
   level = 1, expanded, onExpandedChange, showLines = true, treeToggle = "chevron", onClick,
 }: CellProps) {
@@ -110,8 +110,8 @@ export function Cell({
       break;
     }
     case "progress":
-      // A kit Progress bar that fills the cell, sm or md like the row. label names it; text shows the percent after it.
-      visual = <Progress value={Number(value) || 0} size={size} label={label ?? "Progress"} showValue={text} />;
+      // A kit Meter bar that fills the cell, sm or md like the row. label names it; text shows the percent after it.
+      visual = <Meter value={Number(value) || 0} size={size} label={label ?? "Progress"} showValue={text} />;
       break;
     case "rating": {
       const n = score(value);
@@ -151,14 +151,14 @@ export function Cell({
           <span className={[styles.row, styles.nowrap, styles.actionsWide].join(" ")} role="group" aria-label={label ?? "Row actions"}>
             {/* Icon-only, so each button shows its label in a kit Tooltip, like the AppHeader and Toolbar icons. */}
             {shownActions.map((a, i) => (
-              <Tooltip key={i} content={a.label} placement="top">
+              <Tooltip key={i} content={a.label} position="above">
                 <Button size="sm" variant={a.variant ?? "tertiary"} iconOnly iconStart={a.icon ?? "more_horiz"} onClick={a.onClick}>{a.label}</Button>
               </Tooltip>
             ))}
             {/* The rest of the row's actions, behind one More button at the end. */}
             {menu && menu.length > 0 && (
-              <DropdownMenu
-                label="More row actions" iconOnly icon="more_vert" variant="tertiary" size="sm" align="end"
+              <Dropdown
+                label="More row actions" iconOnly icon="more_vert" variant="tertiary" size="sm" alignment="right"
                 items={menu.map(item)}
                 onSelect={(id) => menu[Number(id)]?.onClick?.()}
               />
@@ -166,8 +166,8 @@ export function Cell({
           </span>
           {folded.length > 0 && (
             <span className={styles.actionsNarrow}>
-              <DropdownMenu
-                label={label ?? "Row actions"} iconOnly icon="more_vert" variant="tertiary" size="sm" align="end"
+              <Dropdown
+                label={label ?? "Row actions"} iconOnly icon="more_vert" variant="tertiary" size="sm" alignment="right"
                 items={folded.map(item)}
                 onSelect={(id) => folded[Number(id)]?.onClick?.()}
               />
@@ -180,8 +180,8 @@ export function Cell({
     case "actionMenu":
       // Aligned to the end so the menu stays inside the table.
       visual = (
-        <DropdownMenu
-          label={label ?? "Row actions"} iconOnly variant="tertiary" size="sm" align="end"
+        <Dropdown
+          label={label ?? "Row actions"} iconOnly variant="tertiary" size="sm" alignment="right"
           items={(actions ?? []).map((a, i) => ({ id: String(i), label: a.label, icon: a.icon, danger: a.variant === "danger" }))}
           onSelect={(id) => actions?.[Number(id)]?.onClick?.()}
         />
@@ -229,7 +229,7 @@ export function Cell({
   );
 
   return (
-    <span className={[styles.cell, styles[size], styles[align], type === "tree" ? styles.tree : ""].join(" ")}>
+    <span className={[styles.cell, styles[size], styles[alignment], type === "tree" ? styles.tree : ""].join(" ")}>
       {lead}
       {/* A plain span can't carry aria-label, so a cell drawn without text says what it shows in hidden text. */}
       {aria && <span className={styles.srOnly}>{aria}</span>}

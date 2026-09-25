@@ -50,13 +50,13 @@ export function useWidth(ref: RefObject<HTMLElement | null>) {
 }
 
 // The kit Legend, in the chart: decorative, because the screen-reader table already carries the numbers.
-export function Legend({ items, orientation = "row", align = "center" }: {
+export function Legend({ items, orientation = "horizontal", alignment = "center" }: {
   items: { label: string; intent: ChartIntent; note?: string }[];
-  orientation?: "row" | "column"; align?: "start" | "center" | "end";
+  orientation?: "horizontal" | "vertical"; alignment?: "start" | "center" | "end";
 }) {
   return (
     <KitLegend
-      decorative size="sm" orientation={orientation} align={align}
+      decorative size="sm" orientation={orientation} alignment={alignment}
       items={items.map((it) => ({ label: it.label, intent: it.intent, value: it.note }))}
     />
   );
@@ -96,15 +96,15 @@ export function ChartEmpty({ label, height }: { label: string; height: number })
   return <div className={styles.empty} style={{ height }}>{label}</div>;
 }
 
-export function ChartFrame({ label, title, subtitle, showTitle = true, animate, children, onKeyDown, onBlur, active, className }: {
-  label: string; title?: string; subtitle?: string; showTitle?: boolean;
+export function ChartFrame({ label, title, subtitle, showHeader = true, animate, children, onKeyDown, onBlur, active, className }: {
+  label: string; title?: string; subtitle?: string; showHeader?: boolean;
   animate: boolean; children: ReactNode; active: boolean;
   onKeyDown?: (e: KeyboardEvent) => void; onBlur?: () => void;
   // A chart that needs a floor width of its own, like a pie that must never be narrower than itself.
   className?: string;
 }) {
   // A focusable figure: arrow keys move through the data and show the tooltip, like pointing at it.
-  const heading = showTitle && (title || subtitle);
+  const heading = showHeader && (title || subtitle);
   return (
     <figure
       className={[styles.chart, animate ? styles.animated : "", active ? styles.active : "", className ?? ""].join(" ")}

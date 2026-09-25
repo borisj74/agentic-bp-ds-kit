@@ -1,6 +1,6 @@
 import { useId } from "react";
 import { Button } from "../Button/Button";
-import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
+import { Dropdown } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import styles from "./GuidedProcess.module.css";
 
@@ -227,8 +227,8 @@ function Footer({ actions = [], onAction, updated }: GuidedProcessFooterProps) {
   const iconed = rest.filter((a) => a.icon);
   const plain = rest.filter((a) => !a.icon);
   const menu = (items: GuidedProcessAction[]) => (
-    <DropdownMenu
-      label="More actions" icon="more_horiz" iconOnly variant="tertiary" align="start"
+    <Dropdown
+      label="More actions" icon="more_horiz" iconOnly variant="tertiary" alignment="left"
       items={items.map((a) => ({ id: a.id, label: a.label, icon: a.icon, disabled: a.disabled }))}
       onSelect={(id) => onAction?.(id)}
     />

@@ -6,8 +6,8 @@ import {
 import { createPortal } from "react-dom";
 import { Button } from "../Button/Button";
 import { Count } from "../Count/Count";
-import { Command, type CommandGroup } from "../Command/Command";
-import { DropdownMenu, type DropdownMenuEntry, type DropdownMenuItem } from "../DropdownMenu/DropdownMenu";
+import { GlobalSearch, type GlobalSearchGroup } from "../GlobalSearch/GlobalSearch";
+import { Dropdown, type DropdownEntry, type DropdownItem } from "../Dropdown/Dropdown";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 import { Icon } from "../Icon/Icon";
 import { Input } from "../Input/Input";
@@ -34,14 +34,14 @@ export interface ToolbarProps {
   searchValue?: string;
   onSearchChange?: (value: string) => void;
   searchPlaceholder?: string;
-  searchGroups?: CommandGroup[];
+  searchGroups?: GlobalSearchGroup[];
   onSearchSelect?: (id: string) => void;
   onSearchViewAll?: (query: string) => void;
   views?: ToolbarView[];
   view?: string;
   onViewChange?: (id: string) => void;
   onRefresh?: () => void;
-  moreActions?: DropdownMenuEntry[];
+  moreActions?: DropdownEntry[];
   onMoreSelect?: (id: string) => void;
   actions?: ReactNode;
   buttons?: ToolbarButtons;
@@ -50,7 +50,7 @@ export interface ToolbarProps {
 
 // On a narrow bar the actions can fold into one Actions menu. That needs each action to be a kit Button with a
 // text label, so the menu can name it; anything else and the actions stay a row.
-interface FoldedAction { item: DropdownMenuItem; run?: () => void }
+interface FoldedAction { item: DropdownItem; run?: () => void }
 function foldActions(actions: ReactNode): FoldedAction[] | null {
   const flat = (node: ReactNode): ReactNode[] =>
     Children.toArray(node).flatMap((child) =>
@@ -89,7 +89,7 @@ export function Toolbar({
     onViewChange?.(id);
   };
 
-  // Search dropdown: with searchGroups the field is a trigger that opens a kit Command laid exactly over it, same
+  // Search dropdown: with searchGroups the field is a trigger that opens a kit GlobalSearch laid exactly over it, same
   // width, so the field seems to grow down into the results. Like the AppHeader search, in the small size.
   const searchRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -119,7 +119,7 @@ export function Toolbar({
     document.addEventListener("pointerdown", away);
     return () => document.removeEventListener("pointerdown", away);
   }, [dropdown]);
-  // Escape closes once the query is empty (Command clears it first).
+  // Escape closes once the query is empty (GlobalSearch clears it first).
   const onPanelKey = (e: KeyboardEvent) => {
     if (e.key !== "Escape" || e.defaultPrevented) return;
     e.preventDefault();
@@ -193,8 +193,8 @@ export function Toolbar({
     else onMoreSelect?.(id);
   };
   const actionsMenu = (iconOnly: boolean) => folding && (
-    <DropdownMenu
-      label="Actions" size="sm" align="end" iconOnly={iconOnly} onSelect={pickFolded}
+    <Dropdown
+      label="Actions" size="sm" alignment="right" iconOnly={iconOnly} onSelect={pickFolded}
       items={[...folding.map((a) => a.item), ...(moreActions?.length ? [{ divider: true } as const, ...moreActions] : [])]}
     />
   );
@@ -202,7 +202,7 @@ export function Toolbar({
   const endControls = (
     <>
       {moreActions && moreActions.length > 0 && (
-        <DropdownMenu label="More" variant="tertiary" size="sm" align="end" items={moreActions} onSelect={onMoreSelect} />
+        <Dropdown label="More" variant="tertiary" size="sm" alignment="right" items={moreActions} onSelect={onMoreSelect} />
       )}
       {actions}
     </>
@@ -244,14 +244,14 @@ export function Toolbar({
           )}
           {find && viewing && <span className={styles.divider} aria-hidden="true" />}
           {current && (
-            <DropdownMenu
+            <Dropdown
               label={current.label} size="sm"
               items={views.map((v) => ({ id: v.id, label: v.label, selected: v.id === current.id }))}
               onSelect={pickView}
             />
           )}
           {onRefresh && (
-            <Tooltip content="Refresh" placement="bottom">
+            <Tooltip content="Refresh" position="below">
               <Button size="sm" iconOnly iconStart="cached" onClick={onRefresh}>Refresh</Button>
             </Tooltip>
           )}
@@ -271,7 +271,7 @@ export function Toolbar({
       </div>
       {dropdown && searchGroups && createPortal(
         <div ref={panelRef} data-density={density} role="dialog" aria-label={searchPlaceholder} className={styles.searchPanel} style={{ width: fit.width }} onKeyDown={onPanelKey}>
-          <Command
+          <GlobalSearch
             groups={searchGroups} size="sm" iconStyle="plain" hints={false} autoFocus
             label={searchPlaceholder} placeholder={searchPlaceholder} defaultQuery={shown}
             onSelect={(id) => { closeSearch(true); onSearchSelect?.(id); }}
@@ -292,7 +292,7 @@ export function Toolbar({
             )}
           </div>
           {filterHelp && (
-            <HelpPopover title="Filters" content={filterHelp} placement="left">
+            <HelpPopover title="Filters" content={filterHelp} position="left">
               <Button variant="tertiary" size="sm" iconOnly iconStart="help_center">Filter help</Button>
             </HelpPopover>
           )}

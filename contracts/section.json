@@ -2,7 +2,7 @@
   "name": "Section",
   "path": "src/ui/Section/Section.tsx",
   "intent": "A titled block of a page, like Account information or Recent invoices: a header with a line under it, optional help and buttons, and the content below. It can collapse.",
-  "usage": "Use Section to split a page under its PageHeader into titled parts, each holding a Table, FormDisplay rows, a Scoreboard or a Form. It is one component: pass title and the content as children, or leave children out for a header only, like a heading above content laid out by the page. Page edge padding and gap between Section blocks come from layout classes (`.layout-content`), not from Section — see contracts/layout.json. help adds a ? icon after the title that opens a HelpPopover. actions holds kit Buttons at the end of the header. collapsible adds a chevron button before the title that hides and shows the content; it starts open unless defaultOpen is false. A Section inside another Section's children is a sub-block: its title steps down to text-heading-xs on its own, so the outer title stays the louder one. Its stacked blocks sit one grid gutter apart. line sets the rule under the header: medium (2px, the default) or thin (1px). Each Section sets its own, so a page can keep 2px lines on its sections and give their subsections thin ones. See contracts/section.json for the full contract.",
+  "usage": "Use Section to split a page under its PageHeader into titled parts, each holding a Table, FormDisplay rows, a Scoreboard or a Form. It is one component: pass title and the content as children, or leave children out for a header only, like a heading above content laid out by the page. Page edge padding and gap between Section blocks come from layout classes (`.layout-content`), not from Section — see contracts/layout.json. help adds a ? icon after the title that opens a HelpPopover. actions holds kit Buttons at the end of the header. collapsible adds a chevron button before the title that hides and shows the content; it starts expanded unless defaultExpanded is false. A Section inside another Section's children is a sub-block: its title steps down to text-heading-xs on its own, so the outer title stays the louder one. Its stacked blocks sit one grid gutter apart. line sets the rule under the header: medium (2px, the default) or thin (1px). Each Section sets its own, so a page can keep 2px lines on its sections and give their subsections thin ones. See contracts/section.json for the full contract.",
   "props": {
     "title": {
       "type": "string",
@@ -19,7 +19,7 @@
     },
     "actions": {
       "type": "ReactNode",
-      "note": "Kit Buttons or a DropdownMenu at the end of the header, usually size sm. One primary Button per view."
+      "note": "Kit Buttons or a Dropdown at the end of the header, usually size sm. One primary Button per view."
     },
     "children": {
       "type": "ReactNode",
@@ -38,18 +38,18 @@
       "default": false,
       "note": "A chevron button before the title hides and shows the content."
     },
-    "open": {
+    "expanded": {
       "type": "boolean",
-      "note": "Controlled open state when collapsible."
+      "note": "Controlled expanded state when collapsible."
     },
-    "defaultOpen": {
+    "defaultExpanded": {
       "type": "boolean",
       "default": true,
-      "note": "Starting open state when collapsible and not controlled."
+      "note": "Starting expanded state when collapsible and not controlled."
     },
-    "onOpenChange": {
+    "onExpandedChange": {
       "type": "function",
-      "note": "(open: boolean) => void"
+      "note": "(expanded: boolean) => void"
     }
   },
   "useWhen": [
@@ -119,13 +119,13 @@
     },
     {
       "title": "Starts closed",
-      "usage": "defaultOpen false starts folded, for parts people rarely need.",
+      "usage": "defaultExpanded false starts folded, for parts people rarely need.",
       "items": [
         {
           "props": {
             "title": "Billing history",
             "collapsible": true,
-            "defaultOpen": false,
+            "defaultExpanded": false,
             "children": "{accountRows}"
           }
         }

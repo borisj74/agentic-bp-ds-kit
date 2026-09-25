@@ -1,8 +1,8 @@
 "use client";
 import type { ChartFormat, ChartIntent } from "../Chart/chart";
-import { XYChart, type ChartLegendPlace, type ChartLineSeries, type ChartMarker, type ChartReferenceLine } from "../Chart/XYChart";
+import { XYChart, type ChartLegendPosition, type ChartLineSeries, type ChartMarker, type ChartReferenceLine } from "../Chart/XYChart";
 
-export type { ChartFormat, ChartIntent, ChartLegendPlace, ChartMarker, ChartReferenceLine };
+export type { ChartFormat, ChartIntent, ChartLegendPosition, ChartMarker, ChartReferenceLine };
 // A LineChart series can turn into a forecast part way: projectedFrom.
 export type ChartSeries = ChartLineSeries;
 
@@ -10,7 +10,7 @@ export interface LineChartProps {
   label: string;
   title?: string;
   subtitle?: string;
-  showTitle?: boolean;
+  showHeader?: boolean;
   categories: string[];
   series: ChartSeries[];
   area?: boolean;
@@ -19,7 +19,7 @@ export interface LineChartProps {
   showValues?: boolean;
   showGrid?: boolean;
   showLegend?: boolean;
-  legend?: ChartLegendPlace;
+  legendPosition?: ChartLegendPosition;
   animate?: boolean;
   format?: ChartFormat;
   currency?: string;

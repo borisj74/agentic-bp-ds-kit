@@ -2,7 +2,7 @@
   "name": "ListView",
   "path": "src/ui/ListView/ListView.tsx",
   "intent": "A list of records, one a row: a primary and a secondary line with an avatar, icon or image before them, and badges, actions, a chevron or a drag handle after, grouped under headers when the list is long, and stepping into nested lists in place.",
-  "usage": "Use ListView when each record reads best as a line or two of text rather than as columns: people, invoices, messages, tasks, files. It is one component: pass items, each with an id and primary text, and optional secondary text. avatar (a name, shown as initials in a square), icon or image goes before the text; badge adds a status Badge at the end, or before the text with badgePosition start; unread puts a brand dot at the start; message adds a status line under the text; actions adds icon buttons at the end and menu puts the rest behind a More button, so a row offers the same actions as the record's Table row and Card. selection single makes a click pick one row (a light blue band between brand lines); multiple adds a checkbox to each row. interaction drill ends each row in a chevron and calls onOpen, for rows that go to a record page; drag adds a drag handle that is also a Move menu, and Alt with the arrows moves the focused row, calling onItemsChange with the new order. groups splits the list under headers: give each item a group id. groupSize sets the header text, collapsible lets headers fold their rows away, and stickyGroups keeps each header at the top of the scrolling box while its rows pass under it. A row with children steps into its own list in place: a chevron at the end, and a click swaps the list for that row's children under a header with Back and the row's name, one level at a time, for records that hold records, like an account's invoices. With nesting expand, the children open right under the row instead, indented, like a tree. detail shows the picked record under its row, inside the list. path, defaultPath and onPathChange say which level is on screen. To show a picked record beside the list rather than going to its page, put the ListView in the ListDetail pattern. Rows are spaced like a kit Table: inset 12 at every width, the checkbox takes only its own width, and the text starts 24 after it, so a ListView and a Table of the same records line up when a screen switches between them. For columns of values that people compare use Table; for a short set of links use LinkList. See contracts/listview.json for the full contract.",
+  "usage": "Use ListView when each record reads best as a line or two of text rather than as columns: people, invoices, messages, tasks, files. It is one component: pass items, each with an id and primary text, and optional secondary text. avatar (a name, shown as initials in a square), icon or image goes before the text; badge adds a status Badge at the end, or before the text with badgePosition start; unread puts a brand dot at the start; message adds a status line under the text; actions adds icon buttons at the end and menu puts the rest behind a More button, so a row offers the same actions as the record's Table row and Card. selection single makes a click pick one row (a light blue band between brand lines); multiple adds a checkbox to each row. interaction drill ends each row in a chevron and calls onOpen, for rows that go to a record page; drag adds a drag handle that is also a Move menu, and Alt with the arrows moves the focused row, calling onItemsChange with the new order. groups splits the list under headers: give each item a group id. size sets the header text, collapsible lets headers fold their rows away, and stickyGroups keeps each header at the top of the scrolling box while its rows pass under it. A row with children steps into its own list in place: a chevron at the end, and a click swaps the list for that row's children under a header with Back and the row's name, one level at a time, for records that hold records, like an account's invoices. With nesting expand, the children open right under the row instead, indented, like a tree. detail shows the picked record under its row, inside the list. path, defaultPath and onPathChange say which level is on screen. To show a picked record beside the list rather than going to its page, put the ListView in the ListDetail pattern. Rows are spaced like a kit Table: inset 12 at every width, the checkbox takes only its own width, and the text starts 24 after it, so a ListView and a Table of the same records line up when a screen switches between them. For columns of values that people compare use Table; for a short set of links use LinkList. See contracts/listview.json for the full contract.",
   "props": {
     "label": {
       "type": "string",
@@ -43,7 +43,7 @@
       "itemShape": "{ id: string; title: string }",
       "note": "Headers in order. Each shows the items whose group is its id. Moves stay inside a group."
     },
-    "groupSize": {
+    "size": {
       "enum": [
         "sm",
         "md",
@@ -555,7 +555,7 @@
           "caption": "Large headers",
           "props": {
             "label": "Team by role",
-            "groupSize": "lg",
+            "size": "lg",
             "groups": [
               {
                 "id": "admins",

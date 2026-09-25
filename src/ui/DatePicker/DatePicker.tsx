@@ -3,7 +3,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent
 import { useDensitySize, usePortalDensity } from "../Density/Density";
 import { createPortal } from "react-dom";
 import { Button } from "../Button/Button";
-import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
+import { Dropdown } from "../Dropdown/Dropdown";
 import { useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
@@ -12,7 +12,7 @@ import field from "../Input/Input.module.css";
 import { carryTheme } from "../Tooltip/useFloating";
 import styles from "./DatePicker.module.css";
 
-export type DatePickerMode = "single" | "range";
+export type DatePickerType = "single" | "dual";
 export type DatePickerSize = "sm" | "md" | "lg";
 export type DatePickerLabelPosition = "top" | "start";
 export type DatePickerMonthYear = "title" | "menus";
@@ -21,7 +21,7 @@ export type DatePickerValue = string | DatePickerRange;
 
 export interface DatePickerProps {
   label: string;
-  mode?: DatePickerMode;
+  type?: DatePickerType;
   hideLabel?: boolean;
   labelPosition?: DatePickerLabelPosition;
   size?: DatePickerSize;
@@ -94,7 +94,7 @@ function presetRanges(today: Date) {
 }
 
 export function DatePicker({
-  label, mode = "single", hideLabel = false, labelPosition: ownLabelPosition, size: ownSize, placeholder, value, defaultValue, onChange,
+  label, type = "single", hideLabel = false, labelPosition: ownLabelPosition, size: ownSize, placeholder, value, defaultValue, onChange,
   minDate, maxDate, presets = true, monthYear = "title", name, id, required = false, disabled = false, invalid = false, error, hint, help,
 }: DatePickerProps) {
   const size = useDensitySize(ownSize);
@@ -105,7 +105,7 @@ export function DatePicker({
   const panelId = `${uid}-panel`;
   const messageId = `${uid}-message`;
   const helpId = `${uid}-help`;
-  const range = mode === "range";
+  const range = type === "dual";
   const monthsShown = range ? 2 : 1;
 
   const [inner, setInner] = useState<DatePickerValue | undefined>(defaultValue);
@@ -169,7 +169,7 @@ export function DatePicker({
       window.removeEventListener("resize", place);
       window.removeEventListener("scroll", place, true);
     };
-  }, [open, mode]);
+  }, [open, type]);
 
   // Move real focus to the focused day after keyboard moves and on open.
   useEffect(() => {
@@ -290,7 +290,7 @@ export function DatePicker({
               <span id={`${headingId}-month`} className={styles.srOnly}>Month</span>
               <span id={`${headingId}-year`} className={styles.srOnly}>Year</span>
               <span className={styles.jumpMonth}>
-                <DropdownMenu
+                <Dropdown
                   label="Month" trigger="field" size="sm" text={monthName(m.getMonth())} labelledBy={`${headingId}-month`}
                   items={Array.from({ length: 12 }, (_, month) => ({
                     id: String(month), label: monthName(month), selected: month === m.getMonth(), disabled: monthOff(m.getFullYear(), month),
@@ -299,7 +299,7 @@ export function DatePicker({
                 />
               </span>
               <span className={styles.jumpYear}>
-                <DropdownMenu
+                <Dropdown
                   label="Year" trigger="field" size="sm" text={String(m.getFullYear())} labelledBy={`${headingId}-year`}
                   items={years().map((year) => ({ id: String(year), label: String(year), selected: year === m.getFullYear(), disabled: monthOff(year, m.getMonth()) }))}
                   onSelect={(year) => jump(index, m.getMonth(), Number(year))}

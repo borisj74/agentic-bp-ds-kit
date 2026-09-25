@@ -9,7 +9,7 @@ export type MotionTile = { label: string; meta: string; duration: string; ease: 
 export type MotionGroup = { title: string; note?: string; tiles: MotionTile[]; usage?: [string, string][] };
 export type MotionTab = { key: string; label: string; groups: MotionGroup[] };
 
-function Tile({ t, c }: { t: MotionTile; c: Copy }) {
+function MotionCard({ t, c }: { t: MotionTile; c: Copy }) {
   const [on, setOn] = useState(false);
   const done = c.copied === t.copy;
   return (
@@ -48,7 +48,7 @@ export function MotionFoundation({ tabs }: { tabs: MotionTab[] }) {
           {g.note && <p className={styles.note}>{g.note}</p>}
           {g.tiles.length > 0 && (
             <div className={styles.grid}>
-              {g.tiles.map((t) => <Tile key={t.label + t.copy} t={t} c={c} />)}
+              {g.tiles.map((t) => <MotionCard key={t.label + t.copy} t={t} c={c} />)}
             </div>
           )}
           {g.usage && (

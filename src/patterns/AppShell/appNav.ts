@@ -1,12 +1,12 @@
-import type { SideNavEntry, SideNavItem } from "@/ui/SideNav/SideNav";
+import type { AppNavEntry, AppNavItem } from "@/ui/AppNav/AppNav";
 
 // The app's full navigation: every rail section and every link in its menu, top to bottom. Every screen in an
-// AppShell passes these to the kit SideNav as they are, so each prototype carries the same whole nav. Do not trim,
+// AppShell passes these to the kit AppNav as they are, so each prototype carries the same whole nav. Do not trim,
 // reorder or invent links; mark the screen's own page with current instead. "-" is a divider.
 const menu = (section: string, labels: string[]) =>
   labels.map((l) => (l === "-" ? { divider: true as const } : { id: `${section}-${l.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, label: l }));
 
-export const APP_NAV: SideNavEntry[] = [
+export const APP_NAV: AppNavEntry[] = [
   { id: "home", label: "Home", icon: "home", children: menu("home", ["Home Dashboards", "Approval Management", "Alert Groups", "Grouped Activity"]) },
   { id: "accounts", label: "Accounts", icon: "group", children: menu("accounts", ["Account", "Contract", "Contacts", "Account Products", "Account Packages", "Revenue Contract", "Account Docs", "-", "Orders", "Service Call"]) },
   { id: "products", label: "Products", icon: "inventory_2", children: menu("products", ["Products", "Product Categories", "Packages", "Rate Classes"]) },
@@ -22,7 +22,7 @@ export const APP_NAV: SideNavEntry[] = [
   { id: "settings", label: "Settings", icon: "settings", children: menu("settings", ["Settings Home", "Develop", "External Connectors", "Security & Users", "Monitoring & Logs", "System", "Configuration Deployment", "-", "AI Settings", "Billing", "Payments", "Financials & Revenue", "Collections"]) },
 ];
 
-export const APP_NAV_END: SideNavItem[] = [
+export const APP_NAV_END: AppNavItem[] = [
   { id: "recycle", label: "Recycle Bin", icon: "recycling" },
   { id: "processes", label: "Processes", icon: "tune" },
 ];

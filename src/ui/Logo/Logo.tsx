@@ -1,10 +1,10 @@
 "use client";
 import styles from "./Logo.module.css";
 
-export type LogoVariant = "default" | "symbol";
+export type LogoType = "default" | "symbol";
 
 export interface LogoProps {
-  variant?: LogoVariant;
+  type?: LogoType;
   label?: string;
 }
 
@@ -41,11 +41,11 @@ function Wordmark() {
   );
 }
 
-export function Logo({ variant = "default", label = "Logo" }: LogoProps) {
+export function Logo({ type = "default", label = "Logo" }: LogoProps) {
   return (
-    <span className={[styles.logo, styles[variant]].join(" ")} role="img" aria-label={label}>
+    <span className={[styles.logo, styles[type]].join(" ")} role="img" aria-label={label}>
       <Mark />
-      {variant === "default" && <span className={styles.text}><Wordmark /></span>}
+      {type === "default" && <span className={styles.text}><Wordmark /></span>}
     </span>
   );
 }

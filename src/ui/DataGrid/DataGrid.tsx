@@ -2,7 +2,7 @@
 import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type FocusEvent, type KeyboardEvent, type ReactNode } from "react";
 import { Button } from "../Button/Button";
 import { DatePicker } from "../DatePicker/DatePicker";
-import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
+import { Dropdown } from "../Dropdown/Dropdown";
 import { FormulaEditor, type FormulaField } from "../FormulaEditor/FormulaEditor";
 import { HeaderCell, type HeaderCellLine } from "../HeaderCell/HeaderCell";
 import { Input } from "../Input/Input";
@@ -267,17 +267,17 @@ export function DataGrid({
             <tr>
               {canInsertRows && <th ref={insertRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyInsert : ""].join(" ")}>{head(<HeaderCell size={size} line={line} />)}<span className={styles.srOnly}>Add row</span></th>}
               {detail && <th ref={toggleRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyToggle : ""].join(" ")}>{head(<HeaderCell size={size} line={line} />)}<span className={styles.srOnly}>Details</span></th>}
-              {rowNumbers && <th ref={indexRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyIndex : ""].join(" ")}>{head(<HeaderCell size={size} line={line} align="center" label="#" />)}</th>}
+              {rowNumbers && <th ref={indexRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyIndex : ""].join(" ")}>{head(<HeaderCell size={size} line={line} alignment="center" label="#" />)}</th>}
               {columns.map((c) => (
                 <th
                   key={c.key} scope="col" className={[c.hug ? styles.hug : styles.fill, c.key === firstKey ? pin : ""].join(" ")}
                   style={c.width ? { width: c.width } : undefined}
                 >
                   {head(
-                    <HeaderCell size={size} line={line} align={c.type === "number" ? "end" : "start"} label={c.header} />,
+                    <HeaderCell size={size} line={line} alignment={c.type === "number" ? "end" : "start"} label={c.header} />,
                     c.setForAll ? (
-                      <DropdownMenu
-                        label="Set for all" variant="tertiary" size="sm" align={c.type === "number" ? "end" : "start"}
+                      <Dropdown
+                        label="Set for all" variant="tertiary" size="sm" alignment={c.type === "number" ? "right" : "left"}
                         items={setForAllItems(c)} onSelect={onSetForAll(c)}
                       />
                     ) : undefined,
@@ -299,7 +299,7 @@ export function DataGrid({
               <tr>
                 {canInsertRows && (
                   <td className={[styles.insert, stickyFirstColumn ? styles.stickyInsert : ""].join(" ")}>
-                    <Tooltip content={`Add row below row ${i + 1}`} placement="right">
+                    <Tooltip content={`Add row below row ${i + 1}`} position="right">
                       <Button variant="tertiary" size="sm" iconOnly iconStart="add" onClick={() => addRow(i)}>{`Add row below row ${i + 1}`}</Button>
                     </Tooltip>
                   </td>
@@ -318,7 +318,7 @@ export function DataGrid({
                 {columns.map((c) => cell(row, i + 1, c))}
                 {canRemoveRows && (
                   <td className={styles.remove}>
-                    <Tooltip content={`Remove row ${i + 1}`} placement="left">
+                    <Tooltip content={`Remove row ${i + 1}`} position="left">
                       <Button variant="tertiary" size="sm" iconOnly iconStart="delete" onClick={() => removeRow(row.id)}>{`Remove row ${i + 1}`}</Button>
                     </Tooltip>
                   </td>

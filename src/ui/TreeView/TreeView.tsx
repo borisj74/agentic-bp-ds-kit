@@ -2,7 +2,7 @@
 import { useId, useLayoutEffect, useRef, useState, type DragEvent, type KeyboardEvent, type MouseEvent } from "react";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { useDensitySize } from "../Density/Density";
-import { DropdownMenu, type DropdownMenuItem } from "../DropdownMenu/DropdownMenu";
+import { Dropdown, type DropdownItem } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import styles from "./TreeView.module.css";
 
@@ -199,7 +199,7 @@ export function TreeView({
     else return false;
     return true;
   };
-  const moveItems = (row: Row): DropdownMenuItem[] => {
+  const moveItems = (row: Row): DropdownItem[] => {
     const { prev, next } = neighbors(row);
     return [
       { id: "up", label: "Move up", description: "Alt+Up", icon: "arrow_upward", disabled: !prev },
@@ -372,9 +372,9 @@ export function TreeView({
               {reorderable && (
                 // The drag handle is also a button: its Move menu moves the row without dragging.
                 <span className={styles.move} data-move>
-                  <DropdownMenu
+                  <Dropdown
                     label={`Move ${item.label}`} items={moveItems(row)} iconOnly icon="drag_indicator" variant="tertiary" size="sm"
-                    align="end" disabled={item.disabled} open={menuFor === item.id}
+                    alignment="right" disabled={item.disabled} open={menuFor === item.id}
                     onOpenChange={(o) => setMenuFor(o ? item.id : null)} onSelect={(kind) => moveRow(row, kind as MoveKind)}
                   />
                 </span>

@@ -17,7 +17,7 @@
 }
 .main { display: flex; }
 
-/* Quick ranges: same rows as the kit DropdownMenu. */
+/* Quick ranges: same rows as the kit Dropdown. */
 .presets {
   display: flex; flex-direction: column; gap: var(--space-xxxsmall); flex: none; width: var(--date-picker-presets);
   padding: var(--space-small) var(--space-xxsmall); border-inline-end: var(--border-width-thin) solid var(--border-neutral-subtle);

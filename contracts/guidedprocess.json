@@ -126,7 +126,7 @@
     "The person needs to see which step they are on and how the earlier ones went while they fill one in."
   ],
   "doNot": [
-    "Do not use it for a short flow inside a Modal or a Drawer. Use Stepper.",
+    "Do not use it for a short flow inside a Modal or a Drawer. Use Steps.",
     "Do not use it for page sections that can be visited in any order. Use Tabs or AnchorNav.",
     "Do not invent GuidedProcessPanel, GuidedProcessSteps, GuidedProcessHeader, GuidedProcessFooter or a light version of the dark parts.",
     "Do not put the step's fields in a dark part; they belong to the page between the header and the footer.",
@@ -143,7 +143,7 @@
     "Done tasks say done to screen readers as well as showing a check.",
     "The counter is read as Step 4 of 6; in the header it is a button that says show steps.",
     "The header's step title is the page's h1.",
-    "The footer's actions are kit Buttons; under 1024 the folded ones are a kit DropdownMenu named More actions, on a phone icon-only Buttons named by their label, and the hidden sets are display none, so no action is reached twice."
+    "The footer's actions are kit Buttons; under 1024 the folded ones are a kit Dropdown named More actions, on a phone icon-only Buttons named by their label, and the hidden sets are display none, so no action is reached twice."
   ],
   "snippet": "<GuidedProcess title=\"Import usage\" steps={steps} current={1} started={false} onStart={start} onCancel={leave} />\n<GuidedProcess part=\"steps\" steps={steps} current={2} />\n<GuidedProcess part=\"header\" title=\"Import usage\" stepTitle=\"Map the columns\" current={2} total={4} onStepsOpen={openSteps} />\n<GuidedProcess part=\"footer\" updated=\"Last updated on September 13, 12:43 PM\" actions={actions} onAction={handle} />",
   "examples": [

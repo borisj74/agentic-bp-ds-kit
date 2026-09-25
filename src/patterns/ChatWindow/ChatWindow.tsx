@@ -2,8 +2,8 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { Button } from "@/ui/Button/Button";
 import { ChatHeader } from "@/ui/ChatHeader/ChatHeader";
-import type { DropdownMenuEntry } from "@/ui/DropdownMenu/DropdownMenu";
-import { Empty } from "@/ui/Empty/Empty";
+import type { DropdownEntry } from "@/ui/Dropdown/Dropdown";
+import { EmptyState } from "@/ui/EmptyState/EmptyState";
 import { Illustration, type IllustrationName } from "@/ui/Illustration/Illustration";
 import styles from "./ChatWindow.module.css";
 
@@ -38,7 +38,7 @@ export interface ChatWindowProps {
   playbooksCount?: number;
   planMode?: boolean;
   onPlanModeChange?: (planMode: boolean) => void;
-  menu?: DropdownMenuEntry[];
+  menu?: DropdownEntry[];
   onMenuSelect?: (id: string) => void;
 }
 
@@ -48,7 +48,7 @@ function GetStarted({ starters, onStarter, art, animated }: { starters?: ChatWin
   return (
     <div className={styles.start}>
       <div className={styles.startHead}>
-        <Empty title="Get Started" media={<Illustration name={art} animated={animated} />} />
+        <EmptyState title="Get Started" media={<Illustration name={art} animated={animated} />} />
       </div>
       {starters && starters.length > 0 && (
         <ul className={styles.starters} aria-label="Suggestions">

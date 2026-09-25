@@ -3,8 +3,8 @@ import { useState } from "react";
 import styles from "./Legend.module.css";
 
 export type LegendIntent = "green" | "olive" | "cyan" | "orange" | "pink" | "gray" | "purple" | "yellow" | "red" | "mint";
-export type LegendOrientation = "row" | "column";
-export type LegendAlign = "start" | "center" | "end";
+export type LegendOrientation = "horizontal" | "vertical";
+export type LegendAlignment = "start" | "center" | "end";
 export type LegendShape = "square" | "line" | "dot";
 export type LegendSize = "sm" | "md";
 
@@ -18,7 +18,7 @@ export interface LegendKey {
 export interface LegendProps {
   items: LegendKey[];
   orientation?: LegendOrientation;
-  align?: LegendAlign;
+  alignment?: LegendAlignment;
   shape?: LegendShape;
   size?: LegendSize;
   hidden?: string[];
@@ -37,7 +37,7 @@ const keyOf = (item: LegendKey) => item.id ?? item.label;
 // Figma data visualization 5410:112240: the colour keys under or beside a chart. Also the key for anything
 // else drawn in the chart colours, like a map or a status bar.
 export function Legend({
-  items, orientation = "row", align = "center", shape = "square", size = "md",
+  items, orientation = "horizontal", alignment = "center", shape = "square", size = "md",
   hidden, defaultHidden = [], onHiddenChange, label = "Legend", decorative = false,
 }: LegendProps) {
   const [inner, setInner] = useState(defaultHidden);
@@ -51,7 +51,7 @@ export function Legend({
     onHiddenChange?.(next);
   };
 
-  const cls = [styles.legend, styles[orientation], styles[align], styles[size]].join(" ");
+  const cls = [styles.legend, styles[orientation], styles[alignment], styles[size]].join(" ");
   const body = (item: LegendKey, i: number, isOff: boolean) => (
     <>
       {/* An off key drops its colour and takes the grey from the stylesheet. */}

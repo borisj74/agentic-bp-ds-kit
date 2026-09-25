@@ -16,27 +16,27 @@ export interface SectionProps {
   children?: ReactNode;
   line?: SectionLine;
   collapsible?: boolean;
-  open?: boolean;
-  defaultOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  expanded?: boolean;
+  defaultExpanded?: boolean;
+  onExpandedChange?: (expanded: boolean) => void;
 }
 
 // Figma COBALT section header 304:31917: chevron button, bold title, ? help, actions at the end, a brand-faint line under it.
 export function Section({
-  title, description, help, actions, children, line = "medium", collapsible = false, open: openProp, defaultOpen = true, onOpenChange,
+  title, description, help, actions, children, line = "medium", collapsible = false, expanded: openProp, defaultExpanded = true, onExpandedChange,
 }: SectionProps) {
   const uid = useId();
   const headingId = `${uid}-title`;
   const bodyId = `${uid}-body`;
   const helpId = `${uid}-help`;
-  const [innerOpen, setInnerOpen] = useState(defaultOpen);
+  const [innerOpen, setInnerOpen] = useState(defaultExpanded);
   const open = !collapsible || (openProp ?? innerOpen);
   // Kit headings read in title case, so a screen can pass its copy either way.
   const heading = titleCase(title);
 
   const toggle = () => {
     if (openProp === undefined) setInnerOpen(!open);
-    onOpenChange?.(!open);
+    onExpandedChange?.(!open);
   };
 
   return (

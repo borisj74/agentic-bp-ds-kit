@@ -27,10 +27,10 @@
         "md",
         "lg",
         "xl",
-        "full"
+        "fullscreen"
       ],
       "default": "sm",
-      "note": "Width 400 / 540 / 768 / 1152 px, or full screen. xl is for a table, like a Lookup. Every size shrinks to fit the window. The body scrolls when content is tall."
+      "note": "Width 400 / 540 / 768 / 1152 px, or fullscreen. xl is for a table, like a Lookup. Every size shrinks to fit the window. The body scrolls when content is tall."
     },
     "showClose": {
       "type": "boolean",
@@ -97,7 +97,7 @@
         {
           "props": {
             "title": "Full screen",
-            "size": "full"
+            "size": "fullscreen"
           }
         }
       ]

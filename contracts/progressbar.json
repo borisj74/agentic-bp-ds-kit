@@ -1,0 +1,76 @@
+{
+  "name": "ProgressBar",
+  "path": "src/ui/ProgressBar/ProgressBar.tsx",
+  "intent": "The older 20-tall progress bar with its percent written on or beside it, for screens that still use the legacy look.",
+  "usage": "Use ProgressBar only to match screens built with the older progress bar. It is one component: pass value from 0 to 100 and a label that names what is loading. The percent shows in the middle of the bar, or to its right with labelPosition=\"right\" when the bar is narrow. valueLabel replaces the percent text, like 3 of 12 files. See contracts/progressbar.json for the full contract.",
+  "props": {
+    "value": {
+      "type": "number",
+      "required": true,
+      "note": "0 to 100. Values outside are clamped."
+    },
+    "label": {
+      "type": "string",
+      "default": "Progress",
+      "note": "Names the bar for screen readers, like Upload or Account setup."
+    },
+    "valueLabel": {
+      "type": "string",
+      "note": "The text shown and read for the value. Defaults to the rounded percent, like 25%."
+    },
+    "showLabel": {
+      "type": "boolean",
+      "default": true,
+      "note": "Shows the value text. Screen readers still get it when hidden."
+    },
+    "labelPosition": {
+      "enum": [
+        "center",
+        "right"
+      ],
+      "default": "center",
+      "note": "center writes the value on the bar; right puts it after the bar, for narrow bars."
+    }
+  },
+  "useWhen": [
+    "Matching screens that still use the older progress bar: uploads, setup steps, imports with a known percent."
+  ],
+  "doNot": [
+    "Do not use it for waits of unknown length. Show a spinner instead.",
+    "Do not stack several bars for one process. Use one bar with a clear label.",
+    "Do not draw a progress bar from divs. Use this or the kit progress bar.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "role progressbar with aria-valuenow, aria-valuemin 0 and aria-valuemax 100, named by label.",
+    "aria-valuetext is the value text, so a custom valueLabel like 3 of 12 files is read as written."
+  ],
+  "snippet": "<ProgressBar label=\"Upload\" value={25} />",
+  "examples": [
+    {
+      "title": "Label in the middle",
+      "usage": "The percent sits on the bar. At 100 the bar is full.",
+      "items": [
+        { "props": { "label": "Upload", "value": 25 } },
+        { "props": { "label": "Upload", "value": 50 } },
+        { "props": { "label": "Upload", "value": 100 } }
+      ]
+    },
+    {
+      "title": "Label on the right",
+      "usage": "labelPosition right puts the value after the bar, for narrow bars.",
+      "items": [
+        { "props": { "label": "Import", "value": 25, "labelPosition": "right" } },
+        { "props": { "label": "Import", "value": 50, "labelPosition": "right" } },
+        { "props": { "label": "Import", "value": 100, "labelPosition": "right" } }
+      ]
+    },
+    {
+      "title": "Custom text",
+      "usage": "valueLabel replaces the percent. Screen readers read it as written.",
+      "items": [
+        { "props": { "label": "Files", "value": 25, "valueLabel": "3 of 12 files", "labelPosition": "right" } }
+      ]
+    }
+  ]
+}

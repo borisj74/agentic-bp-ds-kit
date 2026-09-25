@@ -27,7 +27,7 @@
       "default": 1,
       "note": "How many slides show at once. The last page stops at the end, so the track never shows empty space."
     },
-    "align": {
+    "alignment": {
       "enum": [
         "start",
         "center"

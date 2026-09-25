@@ -16,7 +16,7 @@
 .blank { margin-block: auto; }
 /* Get started: the art and the name centred, the starters stacked under them against the start edge. */
 .start { display: grid; gap: var(--space-medium); }
-/* The name is the biggest thing on an otherwise empty window, so the kit Empty's title steps up one size here. */
+/* The name is the biggest thing on an otherwise empty window, so the kit EmptyState's title steps up one size here. */
 .startHead { --font-size-large: var(--font-size-xxlarge); }
 /* The starters sit on the quiet grey rather than white paper, so they read as things to pick, not the buttons
    of a form. The kit Button is unchanged: only the surface it reads is. */

@@ -6,13 +6,13 @@
 }
 .md { font-size: var(--font-size-small); }
 .sm { font-size: var(--font-size-xsmall); }
-.row { flex-direction: row; }
-.column { flex-direction: column; flex-wrap: nowrap; gap: var(--space-xsmall); }
+.horizontal { flex-direction: row; }
+.vertical { flex-direction: column; flex-wrap: nowrap; gap: var(--space-xsmall); }
 .start { justify-content: flex-start; align-items: flex-start; }
 .center { justify-content: center; align-items: center; }
 .end { justify-content: flex-end; align-items: flex-end; }
-.column.center { align-items: flex-start; justify-content: center; }
-.column.end { align-items: flex-end; }
+.vertical.center { align-items: flex-start; justify-content: center; }
+.vertical.end { align-items: flex-end; }
 
 .item { display: inline-flex; align-items: center; gap: var(--space-xsmall); min-width: 0; }
 .text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

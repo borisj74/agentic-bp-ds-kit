@@ -2,7 +2,7 @@
   "name": "Spinner",
   "path": "src/ui/Spinner/Spinner.tsx",
   "intent": "A small ring of ticks in the brand color that turns while something loads and the wait is short and unknown.",
-  "usage": "Use Spinner for a short wait with no known end, in the spot that is loading: a panel refreshing, a list fetching more, a Drawer loading a record. It is one component: pick a size. label is read by screen readers (Loading by default); showLabel writes it next to the ring, like Loading invoices…. For a button that is working, use Button loading. For content with a known layout, use Skeleton; for a known amount done, use Progress; for a line of status text, use ShimmerText. See contracts/spinner.json for the full contract.",
+  "usage": "Use Spinner for a short wait with no known end, in the spot that is loading: a panel refreshing, a list fetching more, a Drawer loading a record. It is one component: pick a size. label is read by screen readers (Loading by default); showLabel writes it next to the ring, like Loading invoices…. For a button that is working, use Button loading. For content with a known layout, use Skeleton; for a known amount done, use Meter; for a line of status text, use TextLoader. See contracts/spinner.json for the full contract.",
   "props": {
     "size": {
       "enum": [
@@ -30,7 +30,7 @@
   ],
   "doNot": [
     "Do not put it in a Button. Use Button loading.",
-    "Do not use it when the amount done is known. Use Progress.",
+    "Do not use it when the amount done is known. Use Meter.",
     "Do not use it for content with a known layout. Use Skeleton.",
     "Do not use more than one for the same wait.",
     "Do not use raw hex."

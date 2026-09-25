@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { APP_NAV, APP_NAV_END, appNavPlace } from "@/patterns/AppShell/appNav";
-import { SideNav } from "@/ui/SideNav/SideNav";
+import { AppNav } from "@/ui/AppNav/AppNav";
 
 // Every prototype takes the side nav from one place, so it always carries the whole app nav.
 describe("App nav", () => {
@@ -24,8 +24,8 @@ describe("App nav", () => {
     expect(appNavPlace("processes")).toMatchObject({ section: "Processes", page: "Processes" });
   });
 
-  it("renders every section in the kit SideNav", () => {
-    render(<SideNav items={APP_NAV} endItems={APP_NAV_END} expanded />);
+  it("renders every section in the kit AppNav", () => {
+    render(<AppNav items={APP_NAV} endItems={APP_NAV_END} expanded />);
     for (const s of [...sections, ...APP_NAV_END]) expect(screen.getAllByText(s.label).length).toBeGreaterThan(0);
   });
 });

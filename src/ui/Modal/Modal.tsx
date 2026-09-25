@@ -7,7 +7,7 @@ import styles from "./Modal.module.css";
 import { useDialog } from "./useDialog";
 import { usePortalDensity } from "../Density/Density";
 
-export type ModalSize = "sm" | "md" | "lg" | "xl" | "full";
+export type ModalSize = "sm" | "md" | "lg" | "xl" | "fullscreen";
 
 export interface ModalProps {
   open: boolean;
@@ -38,7 +38,7 @@ export function Modal({ open, title, description, icon, size = "sm", showClose =
     // Backdrop click closes, but only when the press also started on the backdrop (not a drag out of a field).
     <div
       data-density={density}
-      className={[styles.overlay, size === "full" ? styles.overlayFull : ""].join(" ")}
+      className={[styles.overlay, size === "fullscreen" ? styles.overlayFull : ""].join(" ")}
       onKeyDown={onKeyDown}
       onMouseDown={(e) => { downOnScrim.current = e.target === e.currentTarget; }}
       onClick={(e) => { if (downOnScrim.current && e.target === e.currentTarget) onClose(); }}

@@ -1,13 +1,13 @@
 "use client";
 import { isValidElement, useEffect, useRef, useState, type ReactNode } from "react";
-import { Cell, type CellAlign, type CellSize } from "../Cell/Cell";
+import { Cell, type CellAlignment, type CellSize } from "../Cell/Cell";
 import { HeaderCell, type HeaderCellLine } from "../HeaderCell/HeaderCell";
 import styles from "./Table.module.css";
 
 export interface TableColumn {
   key: string;
   header?: string;
-  align?: CellAlign;
+  align?: CellAlignment;
   numeric?: boolean;
   emphasis?: boolean;
   width?: string;
@@ -61,7 +61,7 @@ export function Table({
   const all = ids.length > 0 && picked.length === ids.length;
   const span = columns.length + (selectable ? 1 : 0);
   const labelKey = rowLabel ?? columns[0]?.key;
-  const alignOf = (c: TableColumn): CellAlign => c.align ?? (c.numeric ? "end" : "start");
+  const alignOf = (c: TableColumn): CellAlignment => c.align ?? (c.numeric ? "end" : "start");
 
   const select = (next: string[]) => {
     if (selectedProp === undefined) setInnerSelected(next);
@@ -72,7 +72,7 @@ export function Table({
   const toggleAll = (on: boolean) => select(on ? [...new Set([...selected, ...ids])] : selected.filter((s) => !ids.includes(s)));
 
   const value = (v: ReactNode, c: TableColumn) =>
-    isValidElement(v) ? v : <Cell size={size} align={alignOf(c)} label={v === null || v === undefined ? "" : String(v)} />;
+    isValidElement(v) ? v : <Cell size={size} alignment={alignOf(c)} label={v === null || v === undefined ? "" : String(v)} />;
 
   return (
     <div
@@ -86,14 +86,14 @@ export function Table({
             {selectable && (
               <th scope="col" className={styles.select}>
                 <HeaderCell
-                  size={size} line={line} align="center" checkbox checked={all} indeterminate={picked.length > 0 && !all}
+                  size={size} line={line} alignment="center" checkbox checked={all} indeterminate={picked.length > 0 && !all}
                   onCheckedChange={toggleAll}
                 />
               </th>
             )}
             {columns.map((c) => c.header ? (
               <th key={c.key} scope="col" style={c.width ? { width: c.width } : undefined}>
-                <HeaderCell size={size} line={line} align={alignOf(c)} label={c.header} />
+                <HeaderCell size={size} line={line} alignment={alignOf(c)} label={c.header} />
               </th>
             ) : (
               // A column with nothing to name, like row actions: a plain cell, so screen readers meet no empty header.
@@ -104,7 +104,7 @@ export function Table({
         <tbody>
           {rows.length === 0 ? (
             <tr>
-              <td colSpan={span} className={styles.empty}><Cell size={size} align="center" label={emptyLabel} /></td>
+              <td colSpan={span} className={styles.empty}><Cell size={size} alignment="center" label={emptyLabel} /></td>
             </tr>
           ) : rows.map((row, i) => {
             const id = idOf(row, i);
@@ -118,7 +118,7 @@ export function Table({
               >
                 {selectable && (
                   <td className={styles.select}>
-                    <Cell size={size} type="checkbox" align="center" label={name || `row ${i + 1}`} checked={on} onCheckedChange={(v) => toggleRow(id, v)} />
+                    <Cell size={size} type="checkbox" alignment="center" label={name || `row ${i + 1}`} checked={on} onCheckedChange={(v) => toggleRow(id, v)} />
                   </td>
                 )}
                 {columns.map((c) => (

@@ -1,0 +1,129 @@
+{
+  "name": "EmptyState",
+  "path": "src/ui/EmptyState/EmptyState.tsx",
+  "intent": "What a list, page or panel shows when it has nothing yet: an icon, a title, a line of help and the action that fills it.",
+  "usage": "Use EmptyState in place of content that isn't there yet: a list with no rows, a new account's first screen, a panel with nothing selected. It is one component: pass title, and add description, icon and actions as needed. icon shows in a round well above the title, or large and filled with iconStyle=\"plain\"; media replaces it with a kit Avatar or AvatarGroup. actions holds kit Buttons, like one primary Create and a secondary Import. outlined adds a border and a card fill, for an empty region inside a page. See contracts/emptystate.json for the full contract.",
+  "props": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "note": "What is empty, like No invoices yet. A heading: h3 unless headingLevel says otherwise."
+    },
+    "description": {
+      "type": "string",
+      "note": "One or two lines on why and what to do next."
+    },
+    "icon": {
+      "type": "string",
+      "note": "Material Symbols name, shown above the title: in a round well, or large with iconStyle plain."
+    },
+    "iconStyle": {
+      "enum": [
+        "well",
+        "plain"
+      ],
+      "default": "well",
+      "note": "well puts the icon in a small grey circle. plain shows it large and filled with no circle, like the search icon on a too-many-results list."
+    },
+    "media": {
+      "type": "ReactNode",
+      "note": "In place of the icon: a kit Avatar or AvatarGroup, like the person who is away."
+    },
+    "actions": {
+      "type": "ReactNode",
+      "note": "Kit Buttons in a row under the text. One primary per view."
+    },
+    "outlined": {
+      "type": "boolean",
+      "default": false,
+      "note": "A border and a card fill around it."
+    },
+    "headingLevel": { "enum": [2, 3, 4], "default": 3, "note": "Which heading the title is. 2 when the empty state sits right under the page title (a ListPage with no records); 3 inside a Section." }
+  },
+  "useWhen": [
+    "A list or table with no rows yet, or no results for a filter.",
+    "A new account's first screen, or a panel with nothing selected."
+  ],
+  "doNot": [
+    "Do not invent EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription or EmptyContent. Pass props.",
+    "Do not use it for page messages like errors or warnings. Use Callout.",
+    "Do not use it while content is loading.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "The title is a heading, h3 by default; set headingLevel so it follows the headings around it (h2 right under the page title, h3 inside a Section). The description is a paragraph under it.",
+    "The icon well is decorative.",
+    "Actions are ordinary kit Buttons in reading order."
+  ],
+  "snippet": "<EmptyState\n  icon=\"receipt_long\"\n  title=\"No invoices yet\"\n  description=\"Create an invoice or import them from a file.\"\n  actions={<>\n    <Button variant=\"primary\">Create invoice</Button>\n    <Button>Import</Button>\n  </>}\n/>",
+  "examples": [
+    {
+      "title": "With actions",
+      "usage": "Icon, title, a line of help and the actions that fill it: one primary, one secondary.",
+      "items": [
+        {
+          "props": {
+            "icon": "receipt_long",
+            "title": "No invoices yet",
+            "description": "Create an invoice or import them from a file.",
+            "actions": "{createActions}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Plain icon",
+      "usage": "iconStyle plain: a large filled icon, no circle. Here, a list that needs a search or filter before it shows anything.",
+      "items": [
+        {
+          "props": {
+            "icon": "manage_search",
+            "iconStyle": "plain",
+            "title": "Too many accounts to return",
+            "description": "There are too many accounts to show without a search or filter. Use the search or filters above the list."
+          }
+        }
+      ]
+    },
+    {
+      "title": "Outlined",
+      "usage": "A border and a card fill, for an empty region inside a page.",
+      "items": [
+        {
+          "props": {
+            "outlined": true,
+            "icon": "cloud_upload",
+            "title": "No files",
+            "description": "Upload files to attach them to this account.",
+            "actions": "{uploadAction}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "With a person",
+      "usage": "media shows a kit Avatar in place of the icon.",
+      "items": [
+        {
+          "props": {
+            "media": "{avatar}",
+            "title": "Maya is away",
+            "description": "Maya is out of office until Monday.",
+            "actions": "{messageAction}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Title only",
+      "usage": "For a small panel, just the title.",
+      "items": [
+        {
+          "props": {
+            "title": "Nothing selected"
+          }
+        }
+      ]
+    }
+  ]
+}

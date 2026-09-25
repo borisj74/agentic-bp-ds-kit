@@ -4,9 +4,9 @@ import { createPortal } from "react-dom";
 import { Avatar } from "../Avatar/Avatar";
 import { Badge, type BadgeIntent } from "../Badge/Badge";
 import { Button } from "../Button/Button";
-import { Command, type CommandGroup, type CommandIconStyle, type CommandScope, type CommandVariant } from "../Command/Command";
+import { GlobalSearch, type GlobalSearchGroup, type GlobalSearchIconStyle, type GlobalSearchScope, type GlobalSearchVariant } from "../GlobalSearch/GlobalSearch";
 import { useDensity, type DensitySize } from "../Density/Density";
-import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
+import { Dropdown } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import { Logo } from "../Logo/Logo";
 import { RadioGroup } from "../RadioGroup/RadioGroup";
@@ -32,11 +32,11 @@ export interface AppHeaderProps {
   searchPlaceholder?: string;
   searchShortcut?: string;
   onSearch?: () => void;
-  searchGroups?: CommandGroup[];
-  searchVariant?: CommandVariant;
-  searchIconStyle?: CommandIconStyle;
+  searchGroups?: GlobalSearchGroup[];
+  searchVariant?: GlobalSearchVariant;
+  searchIconStyle?: GlobalSearchIconStyle;
   onSearchSelect?: (id: string) => void;
-  searchScopes?: CommandScope[];
+  searchScopes?: GlobalSearchScope[];
   searchScope?: string;
   onSearchScopeChange?: (scope: string) => void;
   actions?: AppHeaderAction[];
@@ -57,7 +57,7 @@ const DENSITIES: { value: AppHeaderDensity; label: string }[] = [
   { value: "comfortable", label: "Comfortable" },
 ];
 const MENU_GAP = 4; // px between a trigger and its panel
-const COMMAND_ROW = 44; // the kit Command search row is --control-large tall
+const COMMAND_ROW = 44; // the kit GlobalSearch search row is --control-large tall
 // The header follows density too: its buttons use the kit sizes, and the bar and search change height in CSS.
 const CONTROL: Record<AppHeaderDensity, DensitySize> = { compact: "sm", default: "md", comfortable: "lg" };
 
@@ -84,7 +84,7 @@ export function AppHeader({
 
   useFloating(open, userRef, menuRef, "bottom", MENU_GAP);
 
-  // Search dropdown: with searchGroups the trigger (wide field or compact icon) opens a kit Command under it.
+  // Search dropdown: with searchGroups the trigger (wide field or compact icon) opens a kit GlobalSearch under it.
   const centerRef = useRef<HTMLDivElement>(null);
   const compactRef = useRef<HTMLSpanElement>(null);
   const anchorRef = useRef<HTMLElement | null>(null);
@@ -94,7 +94,7 @@ export function AppHeader({
   const searchIsOpen = inBrowser && Boolean(searchGroups) && searchOpen;
   useFloating(searchIsOpen, anchorRef, searchPanelRef, "bottom", searchFit.gap);
 
-  // One search box: from the wide field, the Command's own search row lays exactly over the header field
+  // One search box: from the wide field, the GlobalSearch's own search row lays exactly over the header field
   // (same width, centred on it), so the field seems to grow down into the dropdown. From the compact icon
   // there is no field in the bar, so the dropdown opens just below the icon with its search row on top.
   const openSearch = (anchor: HTMLElement | null, cover: boolean) => {
@@ -122,7 +122,7 @@ export function AppHeader({
     document.addEventListener("pointerdown", away);
     return () => document.removeEventListener("pointerdown", away);
   }, [searchIsOpen]);
-  // Escape closes once the query is empty (Command clears it first) and the scope menu is shut.
+  // Escape closes once the query is empty (GlobalSearch clears it first) and the scope menu is shut.
   const onSearchKey = (e: KeyboardEvent) => {
     if (e.key !== "Escape" || e.defaultPrevented) return;
     e.preventDefault();
@@ -169,7 +169,7 @@ export function AppHeader({
   const brand = logo ?? (
     <>
       <span className={styles.brandFull}><Logo /></span>
-      <span className={styles.brandSymbol}><Logo variant="symbol" /></span>
+      <span className={styles.brandSymbol}><Logo type="symbol" /></span>
     </>
   );
   const avatar = user && <Avatar name={user.name} src={user.src} size={density === "comfortable" ? "md" : "sm"} />;
@@ -212,7 +212,7 @@ export function AppHeader({
         <div className={styles.end}>
           {search && (
             <span ref={compactRef} className={styles.searchCompact}>
-              <Tooltip content={searchPlaceholder} placement="bottom">
+              <Tooltip content={searchPlaceholder} position="below">
                 <Button variant="tertiary" size={ctl} iconOnly iconStart="search" {...searchPopup} onClick={() => openSearch(compactRef.current, false)}>{searchPlaceholder}</Button>
               </Tooltip>
             </span>
@@ -221,7 +221,7 @@ export function AppHeader({
           {actions.length > 0 && (
             <div className={styles.actions}>
               {actions.map((a) => (
-                <Tooltip key={a.id} content={a.label} placement="bottom">
+                <Tooltip key={a.id} content={a.label} position="below">
                   <Button variant="tertiary" size={ctl} iconOnly iconStart={a.icon} onClick={() => onAction?.(a.id)}>{a.label}</Button>
                 </Tooltip>
               ))}
@@ -231,8 +231,8 @@ export function AppHeader({
               button. Only one of the two is ever shown, so neither adds a stop for the keyboard twice. */}
           {actions.length > 0 && (
             <div className={styles.actionsMenu}>
-              <DropdownMenu
-                label="More actions" icon="more_vert" iconOnly variant="tertiary" size={ctl} align="end"
+              <Dropdown
+                label="More actions" icon="more_vert" iconOnly variant="tertiary" size={ctl} alignment="right"
                 items={actions.map((a) => ({ id: a.id, label: a.label, icon: a.icon }))}
                 onSelect={(id) => onAction?.(id)}
               />
@@ -266,10 +266,10 @@ export function AppHeader({
         </div>
       </div>
 
-      {/* Search dropdown: the kit Command, fixed and portaled under the search trigger. Non-modal. */}
+      {/* Search dropdown: the kit GlobalSearch, fixed and portaled under the search trigger. Non-modal. */}
       {searchIsOpen && searchGroups && createPortal(
         <div data-density="default" ref={searchPanelRef} role="dialog" aria-label={searchPlaceholder} className={styles.searchPanel} style={{ width: searchFit.width }} onKeyDown={onSearchKey}>
-          <Command
+          <GlobalSearch
             groups={searchGroups} variant={searchVariant} iconStyle={searchIconStyle} label={searchPlaceholder} scopes={searchScopes} scope={searchScope} onScopeChange={onSearchScopeChange} autoFocus
             onSelect={(id) => { closeSearch(true); onSearchSelect?.(id); }}
           />
@@ -277,7 +277,7 @@ export function AppHeader({
         document.body,
       )}
 
-      {/* Account menu: fixed and portaled like DropdownMenu. A non-modal panel, since it holds a switch and a choice. */}
+      {/* Account menu: fixed and portaled like Dropdown. A non-modal panel, since it holds a switch and a choice. */}
       {open && user && createPortal(
         <div data-density="default" ref={menuRef} id={menuId} role="dialog" aria-label={`Account: ${user.name}`} className={styles.menu} onKeyDown={onMenuKey} onBlur={onMenuBlur}>
           <p className={styles.menuName}>{user.name}</p>

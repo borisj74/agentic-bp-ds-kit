@@ -46,7 +46,7 @@
       "default": false,
       "note": "A search box over the columns. Typing lists every path whose labels match; picking one sets the whole path."
     },
-    "showLegend": {
+    "hasLegend": {
       "type": "boolean",
       "default": true,
       "note": "The legend bar under the columns, explaining the relation marks. Shows only when some option has a relation."

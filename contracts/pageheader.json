@@ -40,7 +40,7 @@
     "moreActions": {
       "type": "DropdownMenuEntry[]",
       "itemShape": "{ id: string; label: string; icon?: string; danger?: boolean } | { divider: true }",
-      "note": "Adds a More menu (kit DropdownMenu, tertiary and unbordered) before the actions, for less-used ones. Delete goes last, as danger. Give each one its icon, so the menu reads at a glance."
+      "note": "Adds a More menu (kit Dropdown, tertiary and unbordered) before the actions, for less-used ones. Delete goes last, as danger. Give each one its icon, so the menu reads at a glance."
     },
     "onMoreSelect": {
       "type": "function",
@@ -73,7 +73,7 @@
   ],
   "a11y": [
     "A header with the page's h1. In sticky the h1 stays, hidden, and the trail marks the title as the current page.",
-    "The breadcrumb is the kit Breadcrumb (a nav named Breadcrumb). More is a kit DropdownMenu.",
+    "The breadcrumb is the kit Breadcrumb (a nav named Breadcrumb). More is a kit Dropdown.",
     "The icon is decorative; the title names the page.",
     "The last crumb is the page title, marked aria-current page and not a link."
   ],

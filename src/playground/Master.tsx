@@ -24,7 +24,7 @@ export interface Contract {
   examples?: Example[];
 }
 
-const sizeOrder = ["xs", "sm", "md", "lg", "xl", "full"];
+const sizeOrder = ["xs", "sm", "md", "lg", "xl", "full", "fullscreen"];
 const order = (vals: (string | number)[]) => [...vals].map(String).sort((a, b) => (sizeOrder.includes(a) && sizeOrder.includes(b) ? sizeOrder.indexOf(a) - sizeOrder.indexOf(b) : 0));
 const words = (k: string) => k.replace(/([A-Z])/g, " $1").toLowerCase();
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);

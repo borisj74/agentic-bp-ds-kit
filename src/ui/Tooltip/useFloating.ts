@@ -2,6 +2,9 @@
 import { useLayoutEffect, useSyncExternalStore, type RefObject } from "react";
 
 export type FloatingSide = "top" | "bottom" | "left" | "right";
+// The public word for a side (Tooltip, HelpPopover): above and below, like the BP tooltip.
+export type FloatingPosition = "above" | "below" | "left" | "right";
+export const SIDE: Record<FloatingPosition, FloatingSide> = { above: "top", below: "bottom", left: "left", right: "right" };
 
 const EDGE = 8; // px kept clear of the window edge
 const OPPOSITE: Record<FloatingSide, FloatingSide> = { top: "bottom", bottom: "top", left: "right", right: "left" };

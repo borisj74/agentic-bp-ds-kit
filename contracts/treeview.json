@@ -87,7 +87,7 @@
   ],
   "doNot": [
     "Do not use it for a flat list. Use Table, Select or RadioGroup.",
-    "Do not use it for main app navigation. Use SideNav.",
+    "Do not use it for main app navigation. Use AppNav.",
     "Do not use it for sections of one page that open and close. Use Accordion.",
     "Do not build a local nested list, folder row or tree checkbox. Use TreeView.",
     "Do not use raw hex."
@@ -97,7 +97,7 @@
     "One row is in the tab order. Up and down move a row; Right opens a folder or goes to its first child; Left closes it or goes to its parent; Home and End go to the first and last row; * opens every folder at that level; typing a letter jumps to the next row that starts with it.",
     "Enter or Space selects the row (single), checks it (multiple) or opens and closes it (none).",
     "The checkbox in each row is the kit Checkbox, shown for the eye only: the row itself is the checked item, and a partly checked folder reads as mixed.",
-    "Reorderable: dragging is never the only way. Each row's handle is a kit DropdownMenu named Move {label} with Move up, Move down, Move into the folder above and Move out of its folder (WCAG 2.5.7). It stays out of the tab order so the tree keeps one tab stop.",
+    "Reorderable: dragging is never the only way. Each row's handle is a kit Dropdown named Move {label} with Move up, Move down, Move into the folder above and Move out of its folder (WCAG 2.5.7). It stays out of the tab order so the tree keeps one tab stop.",
     "Keyboard moves: Alt with Up and Down moves among siblings, Alt+Right moves into the folder above, Alt+Left moves out of the folder; Shift+F10 or the menu key opens the Move menu. The tree's description lists these keys, and each move is announced. Disabled rows can be focused but not selected, checked or moved."
   ],
   "snippet": "<TreeView\n  label=\"Organization\"\n  items={teams}\n  selection=\"multiple\"\n  defaultExpanded={[\"org\"]}\n  onSelectedChange={setPeople}\n/>",

@@ -2,20 +2,20 @@
   "name": "DatePicker",
   "path": "src/ui/DatePicker/DatePicker.tsx",
   "intent": "A date field that opens a calendar to pick one date, or a range between two dates. Looks like Input.",
-  "usage": "Use DatePicker for dates in forms and filters. mode single picks one day; mode range picks a start and an end across two months, with quick ranges like Last week. monthYear menus turns the month and year over the days into two menus, for dates far from today, like a date of birth; the arrows stay beside them. Picks stay pending until Apply; Cancel, Escape or a click outside leave the value as it was. Dates are ISO strings (YYYY-MM-DD); a range is { start, end }. Label, hint, error, help and sizes work like Input. See contracts/datepicker.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page. A label set at the start goes back on top of the field when the box around it is narrower than 480px, since a 160px label column would leave too little of the field to type in.",
+  "usage": "Use DatePicker for dates in forms and filters. type single picks one day; type dual picks a start and an end across two months, with quick ranges like Last week. monthYear menus turns the month and year over the days into two menus, for dates far from today, like a date of birth; the arrows stay beside them. Picks stay pending until Apply; Cancel, Escape or a click outside leave the value as it was. Dates are ISO strings (YYYY-MM-DD); a range is { start, end }. Label, hint, error, help and sizes work like Input. See contracts/datepicker.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page. A label set at the start goes back on top of the field when the box around it is narrower than 480px, since a 160px label column would leave too little of the field to type in.",
   "props": {
     "label": {
       "type": "string",
       "required": true,
       "note": "Always set. With hideLabel it stays for screen readers only."
     },
-    "mode": {
+    "type": {
       "enum": [
         "single",
-        "range"
+        "dual"
       ],
       "default": "single",
-      "note": "range shows two months, quick ranges and the picked range in the footer."
+      "note": "dual shows two months, quick ranges and the picked range in the footer."
     },
     "size": {
       "enum": [
@@ -39,11 +39,11 @@
     },
     "placeholder": {
       "type": "string",
-      "note": "Defaults to Select date, or Select dates in range mode."
+      "note": "Defaults to Select date, or Select dates when type is dual."
     },
     "value": {
       "type": "string | DatePickerRange",
-      "note": "Controlled. YYYY-MM-DD, or { start, end } in range mode."
+      "note": "Controlled. YYYY-MM-DD, or { start, end } when type is dual."
     },
     "defaultValue": {
       "type": "string | DatePickerRange",
@@ -64,7 +64,7 @@
     "presets": {
       "type": "boolean",
       "default": true,
-      "note": "Range mode only: Today, Yesterday, This week, Last week, This month, Last month, This year, Last year."
+      "note": "Type dual only: Today, Yesterday, This week, Last week, This month, Last month, This year, Last year."
     },
     "monthYear": {
       "enum": [
@@ -107,11 +107,11 @@
   },
   "useWhen": [
     "A date in a form, like an invoice or due date.",
-    "A period for a report or filter, like last month (mode range)."
+    "A period for a report or filter, like last month (type dual)."
   ],
   "doNot": [
     "Do not invent a local Calendar, DateRangePicker, Popover or native input type=date.",
-    "Do not use two DatePickers for a start and end. Use mode range.",
+    "Do not use two DatePickers for a start and end. Use type dual.",
     "Do not use for time. There is no time picker yet.",
     "Do not use raw hex."
   ],
@@ -150,13 +150,13 @@
         {
           "props": {
             "label": "Billing period",
-            "mode": "range"
+            "type": "dual"
           }
         },
         {
           "props": {
             "label": "Billing period",
-            "mode": "range",
+            "type": "dual",
             "defaultValue": {
               "start": "2027-01-08",
               "end": "2027-01-14"
@@ -166,7 +166,7 @@
         {
           "props": {
             "label": "Report period",
-            "mode": "range",
+            "type": "dual",
             "presets": false
           }
         }

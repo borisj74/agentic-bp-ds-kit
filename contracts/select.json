@@ -1,7 +1,7 @@
 {
   "name": "Select",
   "path": "src/ui/Select/Select.tsx",
-  "intent": "Choose one or several options from a list. A field that opens the kit DropdownMenu. Looks like Input.",
+  "intent": "Choose one or several options from a list. A field that opens the kit Dropdown. Looks like Input.",
   "usage": "Use Select to pick a value from a fixed list in a form or filter: country, status, owner, tags. One pick closes the menu; with multiple the menu stays open and each pick toggles. The field shows the picked labels; with maxVisible it shows the first few and a +N badge. Label, hint, error, help, required and sizes work like Input. For 2 to 5 options that should stay visible, use RadioGroup. See contracts/select.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 480px, since a 160px label column would leave too little of the field to type in.",
   "props": {
     "label": {
@@ -129,14 +129,14 @@
   "doNot": [
     "Do not use a native select.",
     "Do not invent SelectTrigger, SelectContent, SelectItem, MultiSelect, Combobox or Tag.",
-    "Do not use for actions from a button. Use DropdownMenu.",
+    "Do not use for actions from a button. Use Dropdown.",
     "Do not use for 2 to 5 options that should stay visible. Use RadioGroup.",
-    "Do not use for search across the app. Use Command.",
+    "Do not use for search across the app. Use GlobalSearch.",
     "Do not use raw hex."
   ],
   "a11y": [
     "The field is a button with aria-haspopup=menu, named by the label and the current value, like Country, Serbia.",
-    "The list is the kit DropdownMenu: one pick is a menuitemradio, multiple picks are menuitemcheckbox, with aria-checked.",
+    "The list is the kit Dropdown: one pick is a menuitemradio, multiple picks are menuitemcheckbox, with aria-checked.",
     "With searchable, focus starts in the search field; Arrow Down moves into the list and Enter picks the first match.",
     "Arrow keys move, Enter or Space picks, Escape closes and returns focus to the field.",
     "Required is read from the label; error and hint are linked with aria-describedby."

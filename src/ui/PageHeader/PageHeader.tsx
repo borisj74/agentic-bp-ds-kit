@@ -2,7 +2,7 @@
 import type { ReactNode } from "react";
 import { Badge, type BadgeIntent } from "../Badge/Badge";
 import { Breadcrumb, type BreadcrumbItem } from "../Breadcrumb/Breadcrumb";
-import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
+import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import { titleCase } from "../titleCase";
 import styles from "./PageHeader.module.css";
@@ -14,7 +14,7 @@ export interface PageHeaderProps {
   badge?: string;
   badgeIntent?: BadgeIntent;
   actions?: ReactNode;
-  moreActions?: DropdownMenuEntry[];
+  moreActions?: DropdownEntry[];
   onMoreSelect?: (id: string) => void;
   sticky?: boolean;
   shadow?: boolean;
@@ -54,7 +54,7 @@ export function PageHeader({
         <div className={styles.controls}>
           {moreActions && moreActions.length > 0 && (
             // Figma button-group: the overflow More is unbordered (tertiary) and sits first.
-            <DropdownMenu label="More" variant="tertiary" size="sm" align="end" items={moreActions} onSelect={onMoreSelect} />
+            <Dropdown label="More" variant="tertiary" size="sm" alignment="right" items={moreActions} onSelect={onMoreSelect} />
           )}
           {actions}
         </div>

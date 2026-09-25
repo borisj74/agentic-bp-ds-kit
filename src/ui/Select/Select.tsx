@@ -1,7 +1,7 @@
 "use client";
 import { useId, useState } from "react";
 import { useDensitySize } from "../Density/Density";
-import { DropdownMenu, type DropdownMenuEntry, type DropdownMenuWidth } from "../DropdownMenu/DropdownMenu";
+import { Dropdown, type DropdownEntry, type DropdownWidth } from "../Dropdown/Dropdown";
 import { useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
@@ -36,7 +36,7 @@ export interface SelectProps {
   error?: string;
   hint?: string;
   help?: string;
-  menuWidth?: DropdownMenuWidth;
+  menuWidth?: DropdownWidth;
 }
 
 export function Select({
@@ -65,7 +65,7 @@ export function Select({
     if (value === undefined) setInner(next);
     onChange?.(next);
   };
-  const items: DropdownMenuEntry[] = options.map((o) => ({
+  const items: DropdownEntry[] = options.map((o) => ({
     id: o.value, label: o.label, disabled: o.disabled, selected: values.includes(o.value),
     checkbox: multiple && itemCheck === "checkbox" ? true : undefined,
   }));
@@ -86,7 +86,7 @@ export function Select({
         {help && <span id={helpId} className={field.srOnly}>{help}</span>}
       </div>
       <div className={field.body}>
-        <DropdownMenu
+        <Dropdown
           trigger="field" id={fieldId} label={label} labelledBy={labelId} describedBy={describedBy}
           text={text || placeholder} muted={!text} badge={over ? `+${over}` : undefined}
           size={size} disabled={disabled} multiple={multiple} items={items} searchable={searchable} searchPlaceholder={searchPlaceholder} menuWidth={menuWidth}

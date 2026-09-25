@@ -1,5 +1,5 @@
 import { Button } from "../Button/Button";
-import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
+import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import styles from "./Timeline.module.css";
 
@@ -27,7 +27,7 @@ export interface TimelineItem {
   notes?: string;
   links?: TimelineLink[];
   action?: TimelineAction;
-  menu?: DropdownMenuEntry[];
+  menu?: DropdownEntry[];
 }
 
 export interface TimelineProps {
@@ -62,9 +62,9 @@ export function Timeline({ items, size = "md", label = "Activity", onMenuSelect 
                 {item.subtitle && <span className={styles.subtitle}>{item.subtitle}</span>}
               </div>
               {item.menu && item.menu.length > 0 && (
-                <DropdownMenu
+                <Dropdown
                   label={`Actions for ${item.title}`} items={item.menu} iconOnly icon="more_horiz" variant="tertiary"
-                  size={size === "sm" ? "sm" : "md"} align="end" onSelect={(id) => onMenuSelect?.(item.id, id)}
+                  size={size === "sm" ? "sm" : "md"} alignment="right" onSelect={(id) => onMenuSelect?.(item.id, id)}
                 />
               )}
             </div>

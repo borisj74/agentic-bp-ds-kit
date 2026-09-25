@@ -33,7 +33,7 @@
 .title { margin: 0; font-size: var(--font-size-regular); font-weight: var(--font-weight-semibold); }
 .description { margin: 0; font-size: var(--font-size-small); color: var(--text-neutral); }
 
-/* Same link-style action as Alert. */
+/* Same link-style action as Callout. */
 .action {
   min-height: var(--target-min); margin-top: var(--space-xxsmall); padding: 0; border: 0; background: none; cursor: pointer; border-radius: var(--radius-small);
   font: inherit; font-size: var(--font-size-small); font-weight: var(--font-weight-medium); color: var(--link-brand);

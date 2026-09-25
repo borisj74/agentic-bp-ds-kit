@@ -2,7 +2,7 @@
   "name": "AlertDialog",
   "path": "src/ui/AlertDialog/AlertDialog.tsx",
   "intent": "Overlay that stops the user until they cancel or confirm.",
-  "usage": "Use AlertDialog when the user must choose before going on, like leaving with unsaved changes or deleting something. Use Alert for a message on the page. Escape cancels. Clicking the backdrop does nothing. See contracts/alertdialog.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page.",
+  "usage": "Use AlertDialog when the user must choose before going on, like leaving with unsaved changes or deleting something. Use Callout for a message on the page. Escape cancels. Clicking the backdrop does nothing. See contracts/alertdialog.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page.",
   "props": {
     "open": {
       "type": "boolean",

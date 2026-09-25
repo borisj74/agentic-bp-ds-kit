@@ -1,7 +1,7 @@
 "use client";
 import { useId, useRef, useState, type ChangeEvent } from "react";
 import { Button } from "../Button/Button";
-import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
+import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
@@ -45,7 +45,7 @@ const OPERATORS: { symbol: string; description: string }[][] = [
 ];
 const OPERATOR_LIST = OPERATORS.flat();
 // Menu ids are indexes: symbols and dotted field ids are not safe DOM ids.
-const OPERATOR_ITEMS: DropdownMenuEntry[] = OPERATORS.flatMap((group, g) => [
+const OPERATOR_ITEMS: DropdownEntry[] = OPERATORS.flatMap((group, g) => [
   ...(g ? [{ divider: true as const }] : []),
   ...group.map((op) => ({ id: `op-${OPERATOR_LIST.indexOf(op)}`, label: op.symbol, description: op.description })),
 ]);
@@ -158,17 +158,17 @@ export function FormulaEditor({
         <div className={[styles.editor, bad ? styles.invalid : "", disabled ? styles.disabled : ""].join(" ")}>
           <div className={styles.toolbar} role="group" aria-label={`${label} tools`}>
             {fields && fields.length > 0 && (
-              <DropdownMenu
+              <Dropdown
                 label="Insert field" icon="add" size="sm" searchable searchPlaceholder="Search fields" disabled={locked}
                 items={fields.map((f, i) => ({ id: `field-${i}`, label: f.label, description: `{!${f.id}}` }))}
                 onSelect={(itemId) => insert(`{!${fields[Number(itemId.slice(6))].id}}`)}
               />
             )}
-            <DropdownMenu
+            <Dropdown
               label="Insert operator" icon="add" size="sm" disabled={locked} items={OPERATOR_ITEMS}
               onSelect={(itemId) => insert(` ${OPERATOR_LIST[Number(itemId.slice(3))].symbol} `)}
             />
-            <DropdownMenu
+            <Dropdown
               label="Insert function" icon="add" size="sm" searchable searchPlaceholder="Search functions" disabled={locked}
               items={functions.map((f, i) => ({ id: `fn-${i}`, label: f.syntax ?? f.name, description: f.description }))}
               onSelect={(itemId) => insert(`${functions[Number(itemId.slice(3))].name}()`, 1)}

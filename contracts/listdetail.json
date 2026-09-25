@@ -2,12 +2,12 @@
   "name": "ListDetail",
   "path": "src/patterns/ListDetail/ListDetail.tsx",
   "intent": "A list with the picked record beside it: a ListView on one side and the record in a pane on the other, or one at a time on a phone.",
-  "usage": "Use ListDetail when people go through records one after another without leaving the list: an invoice queue, an inbox, approvals. It is a blueprint: it composes kit pieces and keeps no state of its own. list is a kit ListView, usually with selection single and interaction drill; its onOpen tells the screen which record is open. detail is that record, built from kit Sections, FormDisplay and Tables; title names it and actions puts its Buttons at the end of the pane's header. open says a record is open. empty shows in the pane when none is, usually a kit Empty. The list can be any ListView: grouped by status under headers that fold, the inbox template with avatars, unread dots and status lines, or rows with a More menu; the pane works the same. When records sit under other records, give the ListView items with children: the list steps into them in place, with Back, and a leaf opens beside it, like accounts that hold their invoices. layout sets where the record goes: side puts it in a pane beside the list, stacked puts it under the whole list, and inline opens it right under its row, inside the list. With side, the frame measures its own width: from 640 up the list and the pane sit side by side (two fifths and three fifths); below, the list shows until a record opens, then the pane covers it with a Back button that calls onBack, named by backLabel. The page's name and trail are the kit PageHeader in the AppShell page around it. See contracts/listdetail.json for the full contract.",
+  "usage": "Use ListDetail when people go through records one after another without leaving the list: an invoice queue, an inbox, approvals. It is a blueprint: it composes kit pieces and keeps no state of its own. list is a kit ListView, usually with selection single and interaction drill; its onOpen tells the screen which record is open. detail is that record, built from kit Sections, FormDisplay and Tables; title names it and actions puts its Buttons at the end of the pane's header. open says a record is open. empty shows in the pane when none is, usually a kit EmptyState. The list can be any ListView: grouped by status under headers that fold, the inbox template with avatars, unread dots and status lines, or rows with a More menu; the pane works the same. When records sit under other records, give the ListView items with children: the list steps into them in place, with Back, and a leaf opens beside it, like accounts that hold their invoices. layout sets where the record goes: side puts it in a pane beside the list, stacked puts it under the whole list, and inline opens it right under its row, inside the list. With side, the frame measures its own width: from 640 up the list and the pane sit side by side (two fifths and three fifths); below, the list shows until a record opens, then the pane covers it with a Back button that calls onBack, named by backLabel. The page's name and trail are the kit PageHeader in the AppShell page around it. See contracts/listdetail.json for the full contract.",
   "composes": [
     "ListView",
     "Section",
     "FormDisplay",
-    "Empty",
+    "EmptyState",
     "Button"
   ],
   "props": {
@@ -35,7 +35,7 @@
     },
     "empty": {
       "type": "ReactNode",
-      "note": "What the pane shows when no record is open, usually a kit Empty."
+      "note": "What the pane shows when no record is open, usually a kit EmptyState."
     },
     "onBack": {
       "type": "function",
@@ -81,7 +81,7 @@
     "On a phone the Back button is named by backLabel and returns to the list.",
     "Picking a row keeps focus in the list, so people can go through records with the keyboard."
   ],
-  "snippet": "<ListDetail\n  label=\"Invoices\" open={Boolean(invoice)} onBack={() => setOpenId(null)} backLabel=\"Back to invoices\"\n  title={invoice?.number} actions={<Button size=\"sm\">Download</Button>}\n  list={<ListView label=\"Invoices\" selection=\"single\" interaction=\"drill\" selected={openId ? [openId] : []} onOpen={setOpenId} items={invoices} />}\n  empty={<Empty icon=\"receipt_long\" title=\"Pick an invoice\" />}\n  detail={invoice && <Section title=\"Invoice Details\">…</Section>}\n/>",
+  "snippet": "<ListDetail\n  label=\"Invoices\" open={Boolean(invoice)} onBack={() => setOpenId(null)} backLabel=\"Back to invoices\"\n  title={invoice?.number} actions={<Button size=\"sm\">Download</Button>}\n  list={<ListView label=\"Invoices\" selection=\"single\" interaction=\"drill\" selected={openId ? [openId] : []} onOpen={setOpenId} items={invoices} />}\n  empty={<EmptyState icon=\"receipt_long\" title=\"Pick an invoice\" />}\n  detail={invoice && <Section title=\"Invoice Details\">…</Section>}\n/>",
   "examples": [
     {
       "title": "A record open",
@@ -94,7 +94,7 @@
     },
     {
       "title": "Nothing open yet",
-      "usage": "Before a row is picked, the pane shows an Empty that says what to do.",
+      "usage": "Before a row is picked, the pane shows an EmptyState that says what to do.",
       "items": [
         {
           "props": {

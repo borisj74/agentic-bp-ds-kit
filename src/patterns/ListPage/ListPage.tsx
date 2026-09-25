@@ -1,6 +1,6 @@
 "use client";
 import type { ReactNode } from "react";
-import { Alert } from "@/ui/Alert/Alert";
+import { Callout } from "@/ui/Callout/Callout";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
 import styles from "./ListPage.module.css";
 
@@ -19,8 +19,8 @@ export interface ListPageProps {
   label?: string;
 }
 
-// The list screen: the kit Toolbar over the rows, the kit Pagination under them, and the kit Empty,
-// Skeleton or Alert standing in for the rows while there are none. A blueprint only: it composes kit
+// The list screen: the kit Toolbar over the rows, the kit Pagination under them, and the kit EmptyState,
+// Skeleton or Callout standing in for the rows while there are none. A blueprint only: it composes kit
 // pieces and keeps no state of its own. It sits in the AppShell page, which owns the page padding.
 export function ListPage({
   children, toolbar, pagination, bulk, state = "ready", empty, error, onRetry, loadingRows = 6, label,
@@ -42,7 +42,7 @@ export function ListPage({
         {state === "empty" && empty && <div className={styles.blank}>{empty}</div>}
         {state === "error" && error && (
           <div className={styles.blank}>
-            <Alert intent="danger" actionLabel={onRetry ? "Try again" : undefined} onAction={onRetry}>{error}</Alert>
+            <Callout intent="danger" actionLabel={onRetry ? "Try again" : undefined} onAction={onRetry}>{error}</Callout>
           </div>
         )}
         {/* The pages go while something else is standing in for the rows. */}

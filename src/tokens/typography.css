@@ -19,7 +19,7 @@
   --text-body-sm-size: var(--font-size-xsmall); --text-body-sm-weight: var(--font-weight-regular); --text-body-sm-lh: var(--line-height-normal); --text-body-sm-ls: var(--letter-spacing-normal);
   --text-label-size: var(--font-size-small); --text-label-weight: var(--font-weight-medium); --text-label-lh: var(--line-height-normal); --text-label-ls: var(--letter-spacing-normal);
   --text-label-sm-size: var(--font-size-xsmall); --text-label-sm-weight: var(--font-weight-medium); --text-label-sm-lh: var(--line-height-snug); --text-label-sm-ls: var(--letter-spacing-normal);
-  /* Button labels (Button, ButtonFilter). Semibold like BP Foundations Label/Button. Line height 1 centers the label in the fixed-height control. */
+  /* Button labels (Button, FilterButton). Semibold like BP Foundations Label/Button. Line height 1 centers the label in the fixed-height control. */
   --text-button-small-size: var(--font-size-xsmall); --text-button-small-weight: var(--font-weight-semibold); --text-button-small-lh: 1; --text-button-small-ls: var(--letter-spacing-normal);
   --text-button-medium-size: var(--font-size-small); --text-button-medium-weight: var(--font-weight-semibold); --text-button-medium-lh: 1; --text-button-medium-ls: var(--letter-spacing-normal);
   --text-button-large-size: var(--font-size-regular); --text-button-large-weight: var(--font-weight-semibold); --text-button-large-lh: 1; --text-button-large-ls: var(--letter-spacing-normal);

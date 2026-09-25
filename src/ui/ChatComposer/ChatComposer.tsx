@@ -3,7 +3,7 @@ import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import { Badge } from "../Badge/Badge";
 import { Button } from "../Button/Button";
 import { Checkbox } from "../Checkbox/Checkbox";
-import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
+import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./ChatComposer.module.css";
 
@@ -28,7 +28,7 @@ export interface ChatComposerProps {
   onScopeClose?: () => void;
   attachments?: ChatComposerAttachment[];
   onAttachmentRemove?: (id: string) => void;
-  addMenu?: DropdownMenuEntry[];
+  addMenu?: DropdownEntry[];
   onAdd?: (id: string) => void;
   selecting?: boolean;
   onSelectingChange?: (selecting: boolean) => void;
@@ -128,7 +128,7 @@ export function ChatComposer({
       />
       <div className={styles.footer}>
         {addMenu && addMenu.length > 0 ? (
-          <DropdownMenu label="Add to the message" items={addMenu} iconOnly icon="add" variant="tertiary" size="sm" disabled={disabled} onSelect={(id) => onAdd?.(id)} />
+          <Dropdown label="Add to the message" items={addMenu} iconOnly icon="add" variant="tertiary" size="sm" disabled={disabled} onSelect={(id) => onAdd?.(id)} />
         ) : (
           <Tooltip content="Add">
             <Button size="sm" variant="tertiary" iconOnly iconStart="add" disabled={disabled} onClick={() => onAdd?.("add")}>Add</Button>

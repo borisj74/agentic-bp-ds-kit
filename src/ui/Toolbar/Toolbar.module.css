@@ -29,7 +29,7 @@
 .searchText, .searchPlaceholder { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .searchText { color: var(--text-neutral-strong); }
 .searchPlaceholder { color: var(--text-neutral-subtle); }
-/* The Command dropdown, fixed and portaled over the search field. useFloating places it and makes it visible. */
+/* The GlobalSearch dropdown, fixed and portaled over the search field. useFloating places it and makes it visible. */
 .searchPanel { position: fixed; top: 0; left: 0; z-index: var(--z-overlay); visibility: hidden; max-width: calc(100vw - var(--space-medium)); }
 .divider { align-self: stretch; width: var(--border-width-thin); background: var(--border-neutral-subtle); }
 

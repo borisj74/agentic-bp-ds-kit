@@ -2,7 +2,7 @@
   "name": "Toast",
   "path": "src/ui/Toast/Toast.tsx",
   "intent": "A short note that floats in after an action, like Saved successfully, and goes away on its own after a few seconds, with an optional Undo.",
-  "usage": "Use Toast to confirm an action people just took, or to offer a quick Undo. It is one component: render it with open and onClose, and set open when the action happens. It floats at the bottom right of the screen, above dialogs; several stack. A bar along the top counts down duration (5 seconds by default) and then onClose runs; pointing at the toast or tabbing into it pauses the countdown. A toast with an action has no countdown unless you set duration, so people have time to reach the action. intent colors the icon and the bar. actionLabel adds one link-style action, like Undo; picking it runs onAction and closes the toast. For messages that must stay on the page, use Alert. See contracts/toast.json for the full contract. A toast is not opened by anything in particular, so it follows the page's own theme rather than a frame's.",
+  "usage": "Use Toast to confirm an action people just took, or to offer a quick Undo. It is one component: render it with open and onClose, and set open when the action happens. It floats at the bottom right of the screen, above dialogs; several stack. A bar along the top counts down duration (5 seconds by default) and then onClose runs; pointing at the toast or tabbing into it pauses the countdown. A toast with an action has no countdown unless you set duration, so people have time to reach the action. intent colors the icon and the bar. actionLabel adds one link-style action, like Undo; picking it runs onAction and closes the toast. For messages that must stay on the page, use Callout. See contracts/toast.json for the full contract. A toast is not opened by anything in particular, so it follows the page's own theme rather than a frame's.",
   "props": {
     "open": {
       "type": "boolean",
@@ -52,7 +52,7 @@
     "Offering a quick Undo right after a change."
   ],
   "doNot": [
-    "Do not use it for errors people must fix or read later. Use Alert on the page.",
+    "Do not use it for errors people must fix or read later. Use Callout on the page.",
     "Do not put more than one action in a toast.",
     "Do not make duration shorter than people need to read it and reach the action.",
     "Do not invent ToastTitle, ToastDescription, ToastAction or a toast container. Render Toast.",

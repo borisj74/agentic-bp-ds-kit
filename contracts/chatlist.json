@@ -89,7 +89,7 @@
     "Any short list of saved things that open in the panel beside it."
   ],
   "doNot": [
-    "Do not use it for app navigation. Use SideNav.",
+    "Do not use it for app navigation. Use AppNav.",
     "Do not use it for a list of records people sort and filter. Use Table.",
     "Do not build the rows from your own divs, or add a ChatRow or PlaybookItem. Pass items.",
     "Do not pass both items and groups; pick one.",

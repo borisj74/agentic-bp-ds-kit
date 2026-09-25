@@ -86,7 +86,7 @@
   ],
   "doNot": [
     "Do not build a bubble from your own divs, or add a ChatBubble, MessageRow or AiAvatar. Pass the props.",
-    "Do not use it for an alert or a system notice. Use Alert or Toast.",
+    "Do not use it for an alert or a system notice. Use Callout or Toast.",
     "Do not put more than one action row on a turn.",
     "Do not use Accordion for the workings; sections already opens them.",
     "Do not use raw hex."

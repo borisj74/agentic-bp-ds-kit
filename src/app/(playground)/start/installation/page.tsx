@@ -1,7 +1,7 @@
 import shell from "@/playground/shell.module.css";
 import docs from "@/playground/docs.module.css";
 import { CodeBlock } from "@/playground/CodeBlock";
-import { Alert } from "@/ui/Alert/Alert";
+import { Callout } from "@/ui/Callout/Callout";
 import { AnchorNav } from "@/ui/AnchorNav/AnchorNav";
 import { Section } from "@/ui/Section/Section";
 
@@ -104,10 +104,10 @@ export default function Installation() {
           <div id="updates">
             <Section title="Getting updates">
               <div className={docs.prose}>
-                <Alert intent="warning" title="Prototypes do not update on their own">
+                <Callout intent="warning" title="Prototypes do not update on their own">
                   Each prototype is a copy of the kit from the day it was made. To use newer components, start a new
                   prototype with the command in Option 1 and move your screens across.
-                </Alert>
+                </Callout>
                 <p>
                   Working from a clone of the kit (Option 3)? Run <code>git pull</code> and then <code>npm install</code>.
                 </p>

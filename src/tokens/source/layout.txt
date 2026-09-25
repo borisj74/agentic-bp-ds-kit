@@ -88,7 +88,7 @@ header-cell/height/sm|{ref/size/1100}
 header-cell/height/md|{ref/size/1300}
 
 # Dropdown menu (Figma menu 2016:280599, menu-item 1270:25599, dropdown-panel 3736:12109).
-# Figma: menu width 200, item min height 28, icon tile 32. The top line is 1px (kit change from Figma 4px). Tile and height alias BP ref size; 200 is past the scale.
+# Figma: menu width 200, item min height 28, icon tile 32. The top line is 1px (kit change from Figma 4px). The icon tile and height alias BP ref size; 200 is past the scale.
 dropdown/min-width|200px
 menu-item/height|{ref/size/800}
 menu-item/tile|{ref/size/900}
@@ -104,7 +104,7 @@ textarea/height/sm|100px
 textarea/height/md|180px
 textarea/height/lg|260px
 
-# Command (Figma global-search 2316:609207): list body 280 tall (dropdown-panel default), key hints 20 tall.
+# GlobalSearch (Figma global-search 2316:609207): list body 280 tall (dropdown-panel default), key hints 20 tall.
 command/list-height|280px
 command/key|{ref/size/600}
 
@@ -165,7 +165,7 @@ page-header/gap|{ref/space/1100}
 page-header/height|80px
 page-header/height-sticky|52px
 
-# SideNav (Figma closed rail 557:29103, secondary navigation 1409:71403): rail 56 closed / 170 open, 48px rail rows, 40px panel rows.
+# AppNav (Figma closed rail 557:29103, secondary navigation 1409:71403): rail 56 closed / 170 open, 48px rail rows, 40px panel rows.
 # 56 and 170 are past the ref scale. The panel fits its links between 160 and 280 wide.
 side-nav/rail|56px
 side-nav/rail-open|170px
@@ -200,10 +200,10 @@ guided-process/number-narrow|36px
 # Figma guided process template 29120:95949: the step title over the form is 32.
 guided-process/step-title|32px
 
-# ProgressLegacy (Figma progress-bar 3013:5958): the bar is 20 tall.
+# ProgressBar (Figma progress-bar 3013:5958): the bar is 20 tall.
 progress-legacy/height|{ref/size/600}
 
-# Progress (Figma Meter Bar - Horizontal 6578:325, Meter - Circle 6605:193): bar track 4 / 8 / 12 tall; rings 56 / 96 / 196 wide.
+# Meter (Figma Meter Bar - Horizontal 6578:325, Meter - Circle 6605:193): bar track 4 / 8 / 12 tall; rings 56 / 96 / 196 wide.
 progress/bar-sm|{ref/size/200}
 progress/bar-md|{ref/size/300}
 progress/bar-lg|{ref/size/400}
@@ -223,7 +223,7 @@ drawer/medium|460px
 drawer/wide|590px
 drawer/extended|1100px
 
-# Empty (reference kit empty): a 48 round icon well; text stays under 384 wide.
+# EmptyState (reference kit empty): a 48 round icon well; text stays under 384 wide.
 empty/media|{ref/size/1300}
 empty/copy-max|384px
 
@@ -276,7 +276,7 @@ skeleton/circle-sm|{ref/size/900}
 skeleton/circle-md|{ref/size/1100}
 skeleton/circle-lg|{ref/size/1300}
 
-# Stepper (Figma steps 2133:58431): each step is 100 wide; the circle is 32 (md) or 24 (sm).
+# Steps (Figma steps 2133:58431): each step is 100 wide; the circle is 32 (md) or 24 (sm).
 stepper/step|100px
 stepper/node-sm|{ref/size/700}
 stepper/node-md|{ref/size/900}

@@ -1,11 +1,11 @@
 import shell from "@/playground/shell.module.css";
 import docs from "@/playground/docs.module.css";
 import { components, foundationPages, patterns } from "@/playground/nav";
-import { Alert } from "@/ui/Alert/Alert";
+import { Callout } from "@/ui/Callout/Callout";
 import { AnchorNav } from "@/ui/AnchorNav/AnchorNav";
 import { LinkList } from "@/ui/LinkList/LinkList";
 import { Section } from "@/ui/Section/Section";
-import { Tile } from "@/ui/Tile/Tile";
+import { NavTile } from "@/ui/NavTile/NavTile";
 
 const SECTIONS = [
   { id: "what-it-is", label: "What it is" },
@@ -71,10 +71,10 @@ export default function Overview() {
                   <li><strong>Keyboard and screen reader basics</strong> built into the components: labels, focus and keys.</li>
                   <li><strong>An assistant that stops and asks</strong> when a piece is missing, instead of inventing one.</li>
                 </ul>
-                <Alert intent="info" title="Your copy is a snapshot">
+                <Callout intent="info" title="Your copy is a snapshot">
                   A prototype starts as a copy of the kit on the day you create it. Later kit changes do not reach it on
                   their own. Start a new prototype to get them.
-                </Alert>
+                </Callout>
               </div>
             </Section>
           </div>
@@ -82,15 +82,15 @@ export default function Overview() {
           <div id="whats-inside">
             <Section title="What's inside">
               <div className="layout-metrics">
-                <Tile
+                <NavTile
                   title={`${foundationPages.length} foundation pages`} icon="palette" intent="purple" href="/foundations"
                   description={foundationPages.map((f) => f.label).join(", ")}
                 />
-                <Tile
+                <NavTile
                   title={`${components.length} components`} icon="widgets" intent="cyan" href="/components"
                   description="The building blocks: controls, fields, data, navigation, feedback and charts."
                 />
-                <Tile
+                <NavTile
                   title={`${patterns.length} patterns`} icon="dashboard" intent="green" href="/patterns"
                   description={patterns.map((p) => p.name).join(", ")}
                 />

@@ -8,7 +8,7 @@
     "ChatMessage",
     "ChatComposer",
     "ChatList",
-    "Empty",
+    "EmptyState",
     "Illustration",
     "Button"
   ],
@@ -131,7 +131,7 @@
   "doNot": [
     "Do not add state to it; it is a blueprint. Keep the view, the turns and the panel in the screen.",
     "Do not build the header, the turns or the box inside it. Pass the kit pieces.",
-    "Do not build the Get Started block from Empty, Illustration and Buttons in the screen. Pass starters and art.",
+    "Do not build the Get Started block from EmptyState, Illustration and Buttons in the screen. Pass starters and art.",
     "Do not use it as an overlay dialog. Use Drawer or Modal.",
     "Do not invent a second assistant layout beside it.",
     "Do not use raw hex."

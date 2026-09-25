@@ -2,7 +2,7 @@
   "name": "AnchorNav",
   "path": "src/ui/AnchorNav/AnchorNav.tsx",
   "intent": "A list of the sections on one long page, which jumps to a section and shows the one the page is at.",
-  "usage": "Use AnchorNav beside a long page that is split into sections, like a settings page or a long record: a contract, an account or a policy. It is one component: pass items, where each id is the id of that section on the page. Clicking a row scrolls to it and gives it focus. The row the page is at has a strong line and a caret. spy follows the page as it scrolls; offset keeps the jump clear of a sticky header. The menu variant is the same list inside a popover, for narrow screens. This is a map of one page, not app navigation: use SideNav for that, and Tabs to switch views. See contracts/anchornav.json for the full contract.",
+  "usage": "Use AnchorNav beside a long page that is split into sections, like a settings page or a long record: a contract, an account or a policy. It is one component: pass items, where each id is the id of that section on the page. Clicking a row scrolls to it and gives it focus. The row the page is at has a strong line and a caret. spy follows the page as it scrolls; offset keeps the jump clear of a sticky header. The menu variant is the same list inside a popover, for narrow screens. This is a map of one page, not app navigation: use AppNav for that, and Tabs to switch views. See contracts/anchornav.json for the full contract.",
   "props": {
     "items": {
       "type": "AnchorNavItem[]",
@@ -54,9 +54,9 @@
     "A reading page where people need to see where they are and jump about."
   ],
   "doNot": [
-    "Do not use it for app navigation. Use SideNav.",
+    "Do not use it for app navigation. Use AppNav.",
     "Do not use it to switch views on one screen. Use Tabs.",
-    "Do not use it for steps in a flow. Use Stepper.",
+    "Do not use it for steps in a flow. Use Steps.",
     "Do not point a row at a section that is not on the page.",
     "Do not use raw hex."
   ],

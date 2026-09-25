@@ -32,7 +32,7 @@ export interface ChartMarker {
 }
 
 export type ChartOrientation = "vertical" | "horizontal";
-export type ChartLegendPlace = "top" | "bottom" | "end";
+export type ChartLegendPosition = "top" | "bottom" | "end";
 // BarChart only: wide bars fill most of their band; thin bars are a fixed 8px with rounded ends.
 export type ChartBarWidth = "wide" | "thin";
 
@@ -41,7 +41,7 @@ export interface XYChartProps {
   label: string;
   title?: string;
   subtitle?: string;
-  showTitle?: boolean;
+  showHeader?: boolean;
   categories: string[];
   series: ChartLineSeries[];
   orientation?: ChartOrientation;
@@ -54,7 +54,7 @@ export interface XYChartProps {
   showValues?: boolean;
   showGrid?: boolean;
   showLegend?: boolean;
-  legend?: ChartLegendPlace;
+  legendPosition?: ChartLegendPosition;
   animate?: boolean;
   format?: ChartFormat;
   currency?: string;
@@ -75,16 +75,16 @@ const LINE = 16;
 const ROW = 36;
 // Dashes for projections and reference lines: 6 on, 4 off.
 const DASH = "6 4";
-// Thin bars: as thick as a medium Progress bar (--progress-bar-md), with its corners (--radius-small).
+// Thin bars: as thick as a medium Meter bar (--progress-bar-md), with its corners (--radius-small).
 const THIN = 8;
 const ROUND = 2;
 // The room a label or a point takes, for keeping guide labels clear of each other.
 type Box = { l: number; r: number; t: number; b: number };
 
 export function XYChart({
-  kind, label, title, subtitle, showTitle = true, categories, series, orientation = "vertical", highlight, highlightIntent = "orange",
+  kind, label, title, subtitle, showHeader = true, categories, series, orientation = "vertical", highlight, highlightIntent = "orange",
   stacked = false, barWidth = "wide", area = false, showPoints = false, showValues = false,
-  showGrid = true, showLegend = true, legend = "bottom", animate = true, format = "number", currency = "USD", height, emptyLabel = "No data for this range.",
+  showGrid = true, showLegend = true, legendPosition = "bottom", animate = true, format = "number", currency = "USD", height, emptyLabel = "No data for this range.",
   referenceLines = [], marker,
 }: XYChartProps) {
   const plotRef = useRef<HTMLDivElement>(null);
@@ -99,7 +99,7 @@ export function XYChart({
   const full = formatter(format, currency, false);
 
   if (!n || !list.length) {
-    return <ChartFrame label={label} title={title} subtitle={subtitle} showTitle={showTitle} animate={false} active={false}><ChartEmpty label={emptyLabel} height={h} /></ChartFrame>;
+    return <ChartFrame label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={false}><ChartEmpty label={emptyLabel} height={h} /></ChartFrame>;
   }
 
   // Stacks: each series sits on the sum of the ones before it.
@@ -161,7 +161,7 @@ export function XYChart({
   const band = stacked ? bw : bw * list.length + gap * (list.length - 1);
   const mid = (k: number) => (stacked ? 0 : -band / 2 + k * (bw + gap) + bw / 2);
 
-  // Thin bars round their two ends, like a Progress bar. A stack rounds only its outer ends: the first part with a value
+  // Thin bars round their two ends, like a Meter bar. A stack rounds only its outer ends: the first part with a value
   // at the baseline end and the last at the far end, so the joins between parts stay flat.
   const hasValue = (k: number, i: number) => list[k].vals[i] > 0;
   const isFirst = (k: number, i: number) => !stacked || !list.slice(0, k).some((_, j) => hasValue(j, i));
@@ -308,7 +308,7 @@ export function XYChart({
   const px = (p: number) => Math.round(p) + 0.5;
 
   const keys = showLegend
-    ? <Legend items={list.map((sr) => ({ label: sr.name, intent: sr.intent }))} orientation={legend === "end" ? "column" : "row"} align={legend === "end" ? "start" : "center"} />
+    ? <Legend items={list.map((sr) => ({ label: sr.name, intent: sr.intent }))} orientation={legendPosition === "end" ? "vertical" : "horizontal"} alignment={legendPosition === "end" ? "start" : "center"} />
     : null;
 
   const plot = (
@@ -346,10 +346,10 @@ export function XYChart({
   // Where the keys sit: under the chart, over it, or in a column beside it.
   return (
     <ChartFrame
-      label={label} title={title} subtitle={subtitle} showTitle={showTitle} animate={animate} active={active !== null}
+      label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={animate} active={active !== null}
       onKeyDown={onKeyDown} onBlur={() => setActive(null)}
     >
-      {legend === "end" ? <div className={s.beside}>{plot}{keys}</div> : legend === "top" ? <>{keys}{plot}</> : <>{plot}{keys}</>}
+      {legendPosition === "end" ? <div className={s.beside}>{plot}{keys}</div> : legendPosition === "top" ? <>{keys}{plot}</> : <>{plot}{keys}</>}
       <SrTable caption={label} columns={list.map((sr) => sr.name)} rows={categories.map((t, i) => ({ head: t, cells: list.map((sr) => (projected(sr, i) ? `${full(sr.vals[i])} (projected)` : full(sr.vals[i]))) }))} />
       {(refs.length > 0 || mark) && (
         <ul className={s.srOnly}>

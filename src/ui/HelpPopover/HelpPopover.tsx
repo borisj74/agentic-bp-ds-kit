@@ -5,16 +5,16 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { useDescribedBy } from "../Tooltip/Tooltip";
-import { useFloating, useInBrowser, type FloatingSide } from "../Tooltip/useFloating";
+import { SIDE, useFloating, useInBrowser, type FloatingPosition } from "../Tooltip/useFloating";
 import styles from "./HelpPopover.module.css";
 import { usePortalDensity } from "../Density/Density";
 
-export type HelpPopoverPlacement = FloatingSide;
+export type HelpPopoverPosition = FloatingPosition;
 
 export interface HelpPopoverProps {
   title?: string;
   content: string;
-  placement?: HelpPopoverPlacement;
+  position?: HelpPopoverPosition;
   delay?: number;
   open?: boolean;
   disabled?: boolean;
@@ -23,7 +23,7 @@ export interface HelpPopoverProps {
 
 const GAP = 14; // px between trigger and panel; the 12px arrow sits in it
 
-export function HelpPopover({ title, content, placement = "bottom", delay = 150, open: openProp, disabled = false, children }: HelpPopoverProps) {
+export function HelpPopover({ title, content, position = "below", delay = 150, open: openProp, disabled = false, children }: HelpPopoverProps) {
   const id = useId();
   const density = usePortalDensity(); // the portalled popup keeps the surrounding Density
   const wrapRef = useRef<HTMLSpanElement>(null);
@@ -52,7 +52,7 @@ export function HelpPopover({ title, content, placement = "bottom", delay = 150,
   };
   useEffect(() => clear, []);
 
-  useFloating(open, wrapRef, panelRef, placement, GAP, `${title ?? ""}${content}`);
+  useFloating(open, wrapRef, panelRef, SIDE[position], GAP, `${title ?? ""}${content}`);
   // The title and text are always in the page as the trigger's description, so screen readers get them without the panel.
   useDescribedBy(wrapRef, id, disabled);
 

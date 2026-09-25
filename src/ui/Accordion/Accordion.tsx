@@ -11,11 +11,11 @@ export interface AccordionItem {
 
 export interface AccordionProps {
   items: AccordionItem[];
-  defaultOpen?: string;
+  defaultExpanded?: string;
 }
 
-export function Accordion({ items, defaultOpen }: AccordionProps) {
-  const [openId, setOpenId] = useState<string | null>(defaultOpen ?? null);
+export function Accordion({ items, defaultExpanded }: AccordionProps) {
+  const [openId, setOpenId] = useState<string | null>(defaultExpanded ?? null);
   const base = useId();
   return (
     <div className={styles.root}>

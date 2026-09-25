@@ -1,8 +1,8 @@
 "use client";
 import type { ChartFormat, ChartIntent } from "../Chart/chart";
-import { XYChart, type ChartBarWidth, type ChartLegendPlace, type ChartOrientation, type ChartSeries } from "../Chart/XYChart";
+import { XYChart, type ChartBarWidth, type ChartLegendPosition, type ChartOrientation, type ChartSeries } from "../Chart/XYChart";
 
-export type { ChartFormat, ChartSeries, ChartIntent, ChartLegendPlace };
+export type { ChartFormat, ChartSeries, ChartIntent, ChartLegendPosition };
 export type BarChartOrientation = ChartOrientation;
 export type BarChartBarWidth = ChartBarWidth;
 
@@ -10,7 +10,7 @@ export interface BarChartProps {
   label: string;
   title?: string;
   subtitle?: string;
-  showTitle?: boolean;
+  showHeader?: boolean;
   categories: string[];
   series: ChartSeries[];
   orientation?: BarChartOrientation;
@@ -21,7 +21,7 @@ export interface BarChartProps {
   showValues?: boolean;
   showGrid?: boolean;
   showLegend?: boolean;
-  legend?: ChartLegendPlace;
+  legendPosition?: ChartLegendPosition;
   animate?: boolean;
   format?: ChartFormat;
   currency?: string;

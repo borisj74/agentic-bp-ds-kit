@@ -16,7 +16,7 @@ export interface RecordPageProps {
 }
 
 // One record: the kit PageHeader with its name and actions, the kit Tabs of what belongs to it, a kit
-// Alert about it, the kit Toolbar for the tab that is showing, a kit Scoreboard of its numbers, and the
+// Callout about it, the kit Toolbar for the tab that is showing, a kit Scoreboard of its numbers, and the
 // details as kit Sections underneath. A blueprint only: it composes kit pieces and keeps no state of its
 // own. It sits in the AppShell page, which owns the page padding.
 export function RecordPage({

@@ -2,11 +2,11 @@
   "name": "RecordPage",
   "path": "src/patterns/RecordPage/RecordPage.tsx",
   "intent": "One record: its name and actions at the top, the tabs of what belongs to it, the numbers that matter, and its details in sections underneath.",
-  "usage": "Use RecordPage for a single record: an account, an invoice, a quote. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the tab, the sections and what is open. Pass the kit PageHeader as header, with the trail, the record name, its status Badge and the record actions. tabs takes a kit Tabs of what belongs to the record, with counts. notice writes anything that needs saying about the record, as a kit Alert. toolbar takes a kit Toolbar for what acts on the tab that is showing. summary takes a kit Scoreboard of the few numbers people came for. children are the details: kit Sections, each holding a kit Form of FormDisplay pairs in two columns. Only the name stays put; the tabs, the notice and the bar scroll away under it. onStickyChange says when the top has scrolled away: keep that boolean in the screen and pass it to the PageHeader as sticky, so the name shrinks to the kit's compact 52px bar whose trail ends in the record name. It goes in the AppShell page, which owns the page padding. See contracts/recordpage.json for the full contract.",
+  "usage": "Use RecordPage for a single record: an account, an invoice, a quote. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the tab, the sections and what is open. Pass the kit PageHeader as header, with the trail, the record name, its status Badge and the record actions. tabs takes a kit Tabs of what belongs to the record, with counts. notice writes anything that needs saying about the record, as a kit Callout. toolbar takes a kit Toolbar for what acts on the tab that is showing. summary takes a kit Scoreboard of the few numbers people came for. children are the details: kit Sections, each holding a kit Form of FormDisplay pairs in two columns. Only the name stays put; the tabs, the notice and the bar scroll away under it. onStickyChange says when the top has scrolled away: keep that boolean in the screen and pass it to the PageHeader as sticky, so the name shrinks to the kit's compact 52px bar whose trail ends in the record name. It goes in the AppShell page, which owns the page padding. See contracts/recordpage.json for the full contract.",
   "composes": [
     "PageHeader",
     "Tabs",
-    "Alert",
+    "Callout",
     "Toolbar",
     "Scoreboard",
     "Section",
@@ -29,7 +29,7 @@
     },
     "notice": {
       "type": "ReactNode",
-      "note": "Anything that needs saying about the record, as a kit Alert people can dismiss, like invoices past due."
+      "note": "Anything that needs saying about the record, as a kit Callout people can dismiss, like invoices past due."
     },
     "toolbar": {
       "type": "ReactNode",
@@ -62,7 +62,7 @@
     "Do not build the header, the tabs or the bar inside it. Pass the kit pieces.",
     "Do not put page padding around it. It sits in the AppShell page, which owns that.",
     "Do not use it for a list of records. Use ListPage.",
-    "Do not stack more than one Alert over the record; say the one thing that matters.",
+    "Do not stack more than one Callout over the record; say the one thing that matters.",
     "Do not use raw hex."
   ],
   "a11y": [

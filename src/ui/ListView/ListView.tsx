@@ -4,13 +4,13 @@ import { Avatar } from "../Avatar/Avatar";
 import { Badge, type BadgeIntent } from "../Badge/Badge";
 import { Button } from "../Button/Button";
 import { Checkbox } from "../Checkbox/Checkbox";
-import { DropdownMenu, type DropdownMenuEntry, type DropdownMenuItem } from "../DropdownMenu/DropdownMenu";
+import { Dropdown, type DropdownEntry, type DropdownItem } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import styles from "./ListView.module.css";
 
 export type ListViewSelection = "none" | "single" | "multiple";
 export type ListViewInteraction = "none" | "drill" | "drag";
-export type ListViewGroupSize = "sm" | "md" | "lg";
+export type ListViewSize = "sm" | "md" | "lg";
 export type ListViewMessageIntent = "success" | "info" | "warning" | "danger";
 export type ListViewBadgePosition = "start" | "end";
 export type ListViewNesting = "step" | "expand";
@@ -36,7 +36,7 @@ export interface ListViewItem {
   message?: string;
   messageIntent?: ListViewMessageIntent;
   actions?: ListViewAction[];
-  menu?: DropdownMenuEntry[];
+  menu?: DropdownEntry[];
   disabled?: boolean;
   children?: ListViewItem[];
 }
@@ -51,7 +51,7 @@ export interface ListViewProps {
   items: ListViewItem[];
   onItemsChange?: (items: ListViewItem[]) => void;
   groups?: ListViewGroup[];
-  groupSize?: ListViewGroupSize;
+  size?: ListViewSize;
   collapsible?: boolean;
   stickyGroups?: boolean;
   collapsed?: string[];
@@ -117,7 +117,7 @@ function moveTo(items: ListViewItem[], id: string, index: number) {
 // list in place, under a header with a Back button, one level at a time, or with nesting expand opens its children
 // right under it, indented, like a tree. detail shows the picked record under its row.
 export function ListView({
-  label, items: itemsProp, onItemsChange, groups, groupSize = "md", collapsible = false, stickyGroups = false,
+  label, items: itemsProp, onItemsChange, groups, size = "md", collapsible = false, stickyGroups = false,
   collapsed: collapsedProp, defaultCollapsed, onCollapsedChange, selection = "none", selected: selectedProp, defaultSelected,
   onSelectedChange, interaction = "none", onOpen, onAction, path: pathProp, defaultPath, onPathChange,
   nesting = "step", expanded: expandedProp, defaultExpanded, onExpandedChange, detail,
@@ -214,7 +214,7 @@ export function ListView({
     setMessage(`Moved ${item.primary}, ${to + 1} of ${list.length}`);
     return true;
   };
-  const moveItems = (item: ListViewItem): DropdownMenuItem[] => {
+  const moveItems = (item: ListViewItem): DropdownItem[] => {
     const list = peers(item);
     const at = list.indexOf(item);
     return [
@@ -383,8 +383,8 @@ export function ListView({
             ))}
             {/* The rest of the row's actions, behind one More button at the end, as in a Table row. */}
             {item.menu && item.menu.length > 0 && (
-              <DropdownMenu
-                label={`More actions for ${item.primary}`} iconOnly icon="more_vert" variant="tertiary" size="lg" align="end"
+              <Dropdown
+                label={`More actions for ${item.primary}`} iconOnly icon="more_vert" variant="tertiary" size="lg" alignment="right"
                 items={item.menu} disabled={item.disabled} onSelect={(id) => onAction?.(item.id, id)}
               />
             )}
@@ -397,9 +397,9 @@ export function ListView({
         {draggable && (
           // The drag handle is also a button: its Move menu moves the row without dragging.
           <span className={styles.move} data-move>
-            <DropdownMenu
+            <Dropdown
               label={`Move ${item.primary}`} items={moveItems(item)} iconOnly icon="drag_handle" variant="tertiary" size="md"
-              align="end" disabled={item.disabled} open={menuFor === item.id}
+              alignment="right" disabled={item.disabled} open={menuFor === item.id}
               onOpenChange={(o) => setMenuFor(o ? item.id : null)} onSelect={(kind) => moveRow(item, kind as MoveKind)}
             />
           </span>
@@ -431,7 +431,7 @@ export function ListView({
     <div className={[styles.view, stickyGroups ? styles.sticky : ""].join(" ")} role={grouped ? "group" : undefined} aria-label={grouped ? label : undefined}>
       {parent && (
         // A stepped-into list: Back to the level above, then the name of the row it belongs to.
-        <div ref={levelRef} className={[styles.header, styles[`head-${groupSize}`], styles.first, styles.level].join(" ")}>
+        <div ref={levelRef} className={[styles.header, styles[`head-${size}`], styles.first, styles.level].join(" ")}>
           <Button variant="tertiary" size="md" iconOnly iconStart="arrow_back" onClick={stepBack}>
             {`Back to ${trail.length > 1 ? trail[trail.length - 2].primary : label}`}
           </Button>
@@ -449,7 +449,7 @@ export function ListView({
           const toggle = () => { const next = new Set(shut); if (open) next.add(g.id); else next.delete(g.id); setShut([...next]); };
           return (
             <div key={g.id} className={styles.group}>
-              <h3 className={[styles.header, styles[`head-${groupSize}`], i === 0 ? styles.first : ""].join(" ")}>
+              <h3 className={[styles.header, styles[`head-${size}`], i === 0 ? styles.first : ""].join(" ")}>
                 {collapsible ? (
                   <button type="button" id={headId} className={styles.headButton} aria-expanded={open} aria-controls={bodyId} onClick={toggle}>
                     <Icon name="chevron_right" size="lg" className={[styles.fold, open ? styles.open : ""].join(" ")} />

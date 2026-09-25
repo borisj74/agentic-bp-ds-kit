@@ -49,7 +49,7 @@
 .tertiary:hover:not(:disabled, .loading) { background: var(--bg-neutral-min-hover); }
 .tertiary:active:not(:disabled, .loading) { background: var(--bg-neutral-min-press); }
 
-/* Pressed toggle (secondary and tertiary): brand tint and border, like an applied ButtonFilter. */
+/* Pressed toggle (secondary and tertiary): brand tint and border, like an applied FilterButton. */
 .pressed, .pressed:hover:not(:disabled, .loading) { background: var(--bg-brand-faint); border-color: var(--border-brand-subtle); color: var(--text-brand-strong-contrast); }
 .pressed:hover:not(:disabled, .loading) { background: var(--bg-brand-subtle); }
 

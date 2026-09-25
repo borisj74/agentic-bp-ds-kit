@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Accordion, type AccordionItem } from "@/ui/Accordion/Accordion";
-import { Alert } from "@/ui/Alert/Alert";
+import { Callout } from "@/ui/Callout/Callout";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
 import { APP_NAV, APP_NAV_END } from "@/patterns/AppShell/appNav";
 import type { ListDetailLayout } from "@/patterns/ListDetail/ListDetail";
@@ -24,18 +24,18 @@ import { ChatHeader, type ChatHeaderProps } from "@/ui/ChatHeader/ChatHeader";
 import { ChatList, type ChatListProps } from "@/ui/ChatList/ChatList";
 import { ChatMessage, type ChatMessageProps } from "@/ui/ChatMessage/ChatMessage";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
-import { Command, type CommandGroup, type CommandProps } from "@/ui/Command/Command";
+import { GlobalSearch, type GlobalSearchGroup, type GlobalSearchProps } from "@/ui/GlobalSearch/GlobalSearch";
 import { Conveyor, type ConveyorProps } from "@/ui/Conveyor/Conveyor";
 import { Count } from "@/ui/Count/Count";
-import { ButtonFilter } from "@/ui/ButtonFilter/ButtonFilter";
+import { FilterButton } from "@/ui/FilterButton/FilterButton";
 import { ButtonGroup } from "@/ui/ButtonGroup/ButtonGroup";
 import { DataGrid, type DataGridColumn, type DataGridProps, type DataGridRow } from "@/ui/DataGrid/DataGrid";
 import { DatePicker, type DatePickerProps } from "@/ui/DatePicker/DatePicker";
-import { DropdownMenu, type DropdownMenuEntry, type DropdownMenuProps } from "@/ui/DropdownMenu/DropdownMenu";
+import { Dropdown, type DropdownEntry, type DropdownProps } from "@/ui/Dropdown/Dropdown";
 import { Form, type FormProps } from "@/ui/Form/Form";
 import { GuidedProcess, type GuidedProcessAction, type GuidedProcessPanelProps, type GuidedProcessStep } from "@/ui/GuidedProcess/GuidedProcess";
 import { FormDisplay, type FormDisplayProps } from "@/ui/FormDisplay/FormDisplay";
-import { Empty, type EmptyProps } from "@/ui/Empty/Empty";
+import { EmptyState, type EmptyStateProps } from "@/ui/EmptyState/EmptyState";
 import { FormulaEditor, type FormulaEditorProps } from "@/ui/FormulaEditor/FormulaEditor";
 import { HeaderCell } from "@/ui/HeaderCell/HeaderCell";
 import { HelpPopover, type HelpPopoverProps } from "@/ui/HelpPopover/HelpPopover";
@@ -53,23 +53,23 @@ import { LogoAI } from "@/ui/LogoAI/LogoAI";
 import { PageHeader, type PageHeaderProps } from "@/ui/PageHeader/PageHeader";
 import { PieChart, type PieChartProps } from "@/ui/PieChart/PieChart";
 import { Pagination, type PaginationProps } from "@/ui/Pagination/Pagination";
-import { Progress, type ProgressProps } from "@/ui/Progress/Progress";
-import { ProgressLegacy, type ProgressLegacyProps } from "@/ui/ProgressLegacy/ProgressLegacy";
+import { Meter, type MeterProps } from "@/ui/Meter/Meter";
+import { ProgressBar, type ProgressBarProps } from "@/ui/ProgressBar/ProgressBar";
 import { RadioGroup, type RadioGroupOption } from "@/ui/RadioGroup/RadioGroup";
 import { Scoreboard, type ScoreboardItem, type ScoreboardProps } from "@/ui/Scoreboard/Scoreboard";
 import { Section, type SectionProps } from "@/ui/Section/Section";
-import { SegmentedControl, type SegmentedControlProps } from "@/ui/SegmentedControl/SegmentedControl";
-import { ShimmerText, type ShimmerTextProps } from "@/ui/ShimmerText/ShimmerText";
+import { Segmented, type SegmentedProps } from "@/ui/Segmented/Segmented";
+import { TextLoader, type TextLoaderProps } from "@/ui/TextLoader/TextLoader";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
 import { Spinner, type SpinnerProps } from "@/ui/Spinner/Spinner";
-import { Stepper, type StepperProps } from "@/ui/Stepper/Stepper";
+import { Steps, type StepsProps } from "@/ui/Steps/Steps";
 import { Select, type SelectProps } from "@/ui/Select/Select";
-import { SideNav, type SideNavProps } from "@/ui/SideNav/SideNav";
+import { AppNav, type AppNavProps } from "@/ui/AppNav/AppNav";
 import { Switch, type SwitchProps } from "@/ui/Switch/Switch";
 import { Tabs, type TabItem, type TabsProps } from "@/ui/Tabs/Tabs";
 import { Table, type TableColumn, type TableProps, type TableRow } from "@/ui/Table/Table";
 import { Textarea, type TextareaProps } from "@/ui/Textarea/Textarea";
-import { Tile } from "@/ui/Tile/Tile";
+import { NavTile } from "@/ui/NavTile/NavTile";
 import { Timeline, type TimelineItem, type TimelineProps } from "@/ui/Timeline/Timeline";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 import { Tooltip, type TooltipProps } from "@/ui/Tooltip/Tooltip";
@@ -82,7 +82,7 @@ const sideNavProps = (p: Props) => ({
   ...p,
   items: typeof p.items === "string" || !p.items ? APP_NAV : p.items,
   endItems: typeof p.endItems === "string" ? APP_NAV_END : p.endItems,
-}) as unknown as SideNavProps;
+}) as unknown as AppNavProps;
 
 export interface Entry {
   render: (p: Props) => ReactNode;
@@ -202,15 +202,15 @@ const ACCOUNT_COLUMNS: TableColumn[] = [
 ];
 const ACCOUNT_ACTIONS = [{ label: "View" }, { label: "Edit" }, { label: "Delete", variant: "danger" as const }];
 const ACCOUNTS: TableRow[] = [
-  { id: "acme", account: <Cell type="link" label="Acme Inc." href="#" />, owner: <Cell type="avatar" name="Maya Chen" src="/faces/maya-chen.jpg" />, status: <Cell type="badge" label="Active" intent="success" />, mrr: "$12,400", actions: <Cell type="actionMenu" align="end" actions={ACCOUNT_ACTIONS} /> },
-  { id: "globex", account: <Cell type="link" label="Globex" href="#" />, owner: <Cell type="avatar" name="Noah Williams" src="/faces/noah-williams.jpg" />, status: <Cell type="badge" label="Trial" intent="info" />, mrr: "$3,150", actions: <Cell type="actionMenu" align="end" actions={ACCOUNT_ACTIONS} /> },
-  { id: "initech", account: <Cell type="link" label="Initech" href="#" />, owner: <Cell type="avatar" name="Iris Okafor" src="/faces/iris-okafor.jpg" />, status: <Cell type="badge" label="Past due" intent="danger" />, mrr: "$980", actions: <Cell type="actionMenu" align="end" actions={ACCOUNT_ACTIONS} /> },
+  { id: "acme", account: <Cell type="link" label="Acme Inc." href="#" />, owner: <Cell type="avatar" name="Maya Chen" src="/faces/maya-chen.jpg" />, status: <Cell type="badge" label="Active" intent="success" />, mrr: "$12,400", actions: <Cell type="actionMenu" alignment="end" actions={ACCOUNT_ACTIONS} /> },
+  { id: "globex", account: <Cell type="link" label="Globex" href="#" />, owner: <Cell type="avatar" name="Noah Williams" src="/faces/noah-williams.jpg" />, status: <Cell type="badge" label="Trial" intent="info" />, mrr: "$3,150", actions: <Cell type="actionMenu" alignment="end" actions={ACCOUNT_ACTIONS} /> },
+  { id: "initech", account: <Cell type="link" label="Initech" href="#" />, owner: <Cell type="avatar" name="Iris Okafor" src="/faces/iris-okafor.jpg" />, status: <Cell type="badge" label="Past due" intent="danger" />, mrr: "$980", actions: <Cell type="actionMenu" alignment="end" actions={ACCOUNT_ACTIONS} /> },
 ];
 // Icon-only row actions: a kit Cell actionIcons, each button named by its label.
 const ICON_ACTIONS = [{ label: "Edit", icon: "edit" }, { label: "Download", icon: "download" }, { label: "Delete", icon: "delete" }];
 const ICON_ACTION_COLUMNS: TableColumn[] = [...INVOICE_COLUMNS, { key: "actions", header: "", align: "end", width: "1%" }];
 const ICON_ACTION_ROWS: TableRow[] = INVOICES.slice(0, 4).map((r) => ({
-  ...r, actions: <Cell type="actionIcons" align="end" label={`Actions for ${r.invoice}`} actions={ICON_ACTIONS} />,
+  ...r, actions: <Cell type="actionIcons" alignment="end" label={`Actions for ${r.invoice}`} actions={ICON_ACTIONS} />,
 }));
 const TABLE_SAMPLES: Record<string, unknown> = {
   "{invoiceColumns}": INVOICE_COLUMNS, "{invoices}": INVOICES, "{total}": { label: "Total", value: "$2,250.00" },
@@ -378,7 +378,7 @@ const SECTION_SAMPLES: Record<string, ReactNode> = {
 const sectionProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in SECTION_SAMPLES ? SECTION_SAMPLES[v] : v])) as unknown as SectionProps;
 
-// Empty samples. Contract examples name them as {createActions}, {uploadAction}, {avatar}, {messageAction}.
+// EmptyState samples. Contract examples name them as {createActions}, {uploadAction}, {avatar}, {messageAction}.
 const EMPTY_SAMPLES: Record<string, ReactNode> = {
   "{createActions}": <><Button variant="primary">Create invoice</Button><Button>Import</Button></>,
   "{uploadAction}": <Button iconStart="upload">Upload files</Button>,
@@ -386,7 +386,7 @@ const EMPTY_SAMPLES: Record<string, ReactNode> = {
   "{messageAction}": <Button>Leave a message</Button>,
 };
 const emptyProps = (p: Props) =>
-  Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in EMPTY_SAMPLES ? EMPTY_SAMPLES[v] : v])) as unknown as EmptyProps;
+  Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in EMPTY_SAMPLES ? EMPTY_SAMPLES[v] : v])) as unknown as EmptyStateProps;
 
 // Chart samples, after the Persona Homepages charts. Contract examples name them as {months}, {revenue} and so on.
 const M = 1_000_000;
@@ -612,14 +612,14 @@ const LOOKUP_SAMPLES: Record<string, unknown> = { "{productColumns}": PRODUCT_CO
 const lookupProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in LOOKUP_SAMPLES ? LOOKUP_SAMPLES[v] : v])) as unknown as LookupProps;
 
-const MENU_ITEMS: DropdownMenuEntry[] = [
+const MENU_ITEMS: DropdownEntry[] = [
   { id: "edit", label: "Edit" },
   { id: "duplicate", label: "Duplicate" },
   { id: "archive", label: "Archive", disabled: true },
   { divider: true },
   { id: "delete", label: "Delete", icon: "delete", danger: true },
 ];
-const COMMAND_GROUPS: CommandGroup[] = [
+const COMMAND_GROUPS: GlobalSearchGroup[] = [
   {
     heading: "Records",
     items: [
@@ -643,7 +643,7 @@ const COMMAND_GROUPS: CommandGroup[] = [
     ],
   },
 ];
-const FILTER_ITEMS: DropdownMenuEntry[] = [
+const FILTER_ITEMS: DropdownEntry[] = [
   { id: "paid", label: "Paid", checkbox: true, selected: true },
   { id: "due", label: "Due", checkbox: true, selected: true },
   { id: "overdue", label: "Overdue", checkbox: true, selected: false },
@@ -651,10 +651,10 @@ const FILTER_ITEMS: DropdownMenuEntry[] = [
 
 export const registry: Record<string, Entry> = {
   Accordion: {
-    // Keyed by props so defaultOpen applies again when the example changes.
+    // Keyed by props so defaultExpanded applies again when the example changes.
     render: (p) => <Accordion key={JSON.stringify(p)} {...(p as object)} items={(p.items as AccordionItem[] | undefined) ?? []} />,
     preview: {
-      defaultOpen: "hours",
+      defaultExpanded: "hours",
       items: [
         { id: "hours", title: "Hours", content: "Weekdays 9 to 5. Closed on public holidays." },
         { id: "address", title: "Address", content: "Knez Mihailova 1, Belgrade." },
@@ -665,12 +665,12 @@ export const registry: Record<string, Entry> = {
     block: true,
     card: <div style={{ width: "85%" }}><Accordion items={[{ id: "a", title: "Hours", content: "" }, { id: "b", title: "Address", content: "" }]} /></div>,
   },
-  Alert: {
-    // Keyed by props so a dismissed Alert comes back when a control changes.
-    render: ({ children, ...p }) => <Alert key={JSON.stringify(p) + String(children)} {...(p as object)}>{(children as string) || "Alert message goes here"}</Alert>,
-    preview: { children: "Alert message goes here", actionLabel: "Main action", dismissible: true },
+  Callout: {
+    // Keyed by props so a dismissed Callout comes back when a control changes.
+    render: ({ children, ...p }) => <Callout key={JSON.stringify(p) + String(children)} {...(p as object)}>{(children as string) || "Callout message goes here"}</Callout>,
+    preview: { children: "Callout message goes here", actionLabel: "Main action", closeButton: true },
     block: true,
-    card: <div style={{ width: "85%" }}><Alert intent="success">Your changes are saved.</Alert></div>,
+    card: <div style={{ width: "85%" }}><Callout intent="success">Your changes are saved.</Callout></div>,
   },
   AlertDialog: {
     render: (p) => <AlertDialogDemo {...(p as { title: string; description: string; actionLabel: string })} />,
@@ -751,14 +751,14 @@ export const registry: Record<string, Entry> = {
     normalize: (p) => (p.iconOnly && !p.iconStart ? { ...p, iconStart: "search", children: "Search" } : p),
     card: <div style={{ display: "flex", gap: 8 }}><Button variant="primary">Primary</Button><Button>Secondary</Button></div>,
   },
-  ButtonFilter: {
+  FilterButton: {
     // ButtonFilterDemo keeps on/off in local state. Keyed so switching controls starts fresh.
     render: (p) => <ButtonFilterDemo key={JSON.stringify(p)} {...(p as object)} />,
     preview: { children: "Status", onToggle: "{toggleStatus}" },
     extras: { filters: { values: ["none", "1", "3"], default: "none" }, value: { values: ["none", "Pending"], default: "none" } },
     normalize: ({ filters, value, ...p }) => ({ ...p, count: filters === "none" || !filters ? 0 : Number(filters), value: value === "none" ? undefined : value }),
     hint: "Pick a value or applied filters to set it: it turns blue and splits. Click the name to switch it on and off; off is dashed. Turn off has dropdown for a plain chip.",
-    card: <div style={{ display: "flex", gap: 8 }}><ButtonFilter>Status</ButtonFilter><ButtonFilter value="Pending" onToggle={() => {}}>Status</ButtonFilter></div>,
+    card: <div style={{ display: "flex", gap: 8 }}><FilterButton>Status</FilterButton><FilterButton value="Pending" onToggle={() => {}}>Status</FilterButton></div>,
   },
   ButtonGroup: {
     render: ({ children, ...p }) => (
@@ -821,8 +821,8 @@ export const registry: Record<string, Entry> = {
     page: <SettingsPageDemo shell />,
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
-        <Tile title="Security & Users" description="Roles, sharing groups and approvals." icon="shield_person" intent="red" href="#" />
-        <Tile title="Billing" description="Invoices, statements, templates and periods." icon="receipt_long" intent="brand" href="#" />
+        <NavTile title="Security & Users" description="Roles, sharing groups and approvals." icon="shield_person" intent="red" href="#" />
+        <NavTile title="Billing" description="Invoices, statements, templates and periods." icon="receipt_long" intent="brand" href="#" />
       </div>
     ),
   },
@@ -830,11 +830,11 @@ export const registry: Record<string, Entry> = {
     // On the stage the keys switch, so the toggling shows; Variants show the plain key.
     render: ({ toggles, ...p }) => {
       const props = legendProps(p);
-      return <div style={{ ...chartPanel, width: p.orientation === "column" ? "auto" : "100%" }}>
+      return <div style={{ ...chartPanel, width: p.orientation === "vertical" ? "auto" : "100%" }}>
         {toggles ? <LegendDemo {...props} /> : <Legend {...props} />}
       </div>;
     },
-    preview: { items: "{seriesWithValues}", orientation: "row", shape: "square" },
+    preview: { items: "{seriesWithValues}", orientation: "horizontal", shape: "square" },
     hide: ["items", "hidden", "defaultHidden", "onHiddenChange", "decorative"],
     toggles: { toggles: { label: "Keys switch series", default: true } },
     hint: "Switch the direction, shape, size and place. With the switch on, each key is a button: press one to drop that series, press it again to bring it back.",
@@ -1007,7 +1007,7 @@ export const registry: Record<string, Entry> = {
     ),
     preview: { items: "{slides}", showIndex: true },
     snippet: { items: "{slides}" },
-    hint: "Page with the buttons, swipe or the arrow keys. Switch orientation, slides per view and align; turn on loop.",
+    hint: "Page with the buttons, swipe or the arrow keys. Switch orientation, slides per view and alignment; turn on loop.",
     block: true,
     card: <div style={{ width: 400 }}><Carousel items={slides(false)} slidesPerView={2} /></div>,
   },
@@ -1104,11 +1104,11 @@ export const registry: Record<string, Entry> = {
     hint: "Toggle size, checked, indeterminate, error, disabled and hidden label. The checkbox itself is clickable too.",
     card: <div style={{ display: "grid", gap: 8 }}><Checkbox label="Send me product updates" defaultChecked /><Checkbox label="Accept terms" /></div>,
   },
-  Command: {
+  GlobalSearch: {
     // Keyed so a changed default query starts fresh. 480px wide, close to the Figma global search.
     render: (p) => (
       <div style={{ width: 480, maxWidth: "100%" }}>
-        <Command key={JSON.stringify(p)} {...(p as unknown as CommandProps)} groups={(p.groups as CommandGroup[] | undefined) ?? []} />
+        <GlobalSearch key={JSON.stringify(p)} {...(p as unknown as GlobalSearchProps)} groups={(p.groups as GlobalSearchGroup[] | undefined) ?? []} />
       </div>
     ),
     preview: { groups: COMMAND_GROUPS },
@@ -1116,7 +1116,7 @@ export const registry: Record<string, Entry> = {
     card: (
       <div style={{ width: "85%" }}>
         {/* Two results and no hints: the search and the start of the list. */}
-        <Command groups={[{ items: [{ id: "invoices", label: "Invoices", icon: "receipt_long" }, { id: "customers", label: "Customers", icon: "group" }] }]} hints={false} />
+        <GlobalSearch groups={[{ items: [{ id: "invoices", label: "Invoices", icon: "receipt_long" }, { id: "customers", label: "Customers", icon: "group" }] }]} hints={false} />
       </div>
     ),
   },
@@ -1195,7 +1195,7 @@ export const registry: Record<string, Entry> = {
     extras: { message: { values: ["none", "hint", "error"], default: "none" } },
     normalize: ({ message, ...p }) =>
       message === "error" ? { ...p, error: "Pick a date to continue." } : message === "hint" ? { ...p, hint: "Shown on the invoice." } : p,
-    hint: "Click the field to open the calendar. Switch mode to range for two dates. Picks save on Apply.",
+    hint: "Click the field to open the calendar. Switch type to dual for two dates. Picks save on Apply.",
     column: true,
     card: <div style={{ width: "80%" }}><DatePicker size="sm" label="Invoice date" defaultValue="2027-01-08" /></div>,
   },
@@ -1211,19 +1211,19 @@ export const registry: Record<string, Entry> = {
     panelWidth: 300,
     card: <Button>Open drawer</Button>,
   },
-  DropdownMenu: {
+  Dropdown: {
     // Keyed by props so a control change starts closed. The demo keeps picks in state; the menu is the real kit piece.
-    render: (p) => <DropdownMenuDemo key={JSON.stringify(p)} {...(p as unknown as DropdownMenuProps)} items={(p.items as DropdownMenuEntry[] | undefined) ?? []} />,
+    render: (p) => <DropdownMenuDemo key={JSON.stringify(p)} {...(p as unknown as DropdownProps)} items={(p.items as DropdownEntry[] | undefined) ?? []} />,
     preview: { label: "Actions", items: MENU_ITEMS },
     hide: ["open"],
     // The filter trigger gets filter options and a count so it previews like a real filter.
     normalize: (p) => (p.trigger === "filter" && p.items === MENU_ITEMS ? { ...p, label: "Status", count: 2, items: FILTER_ITEMS } : p),
-    hint: "Click the trigger to open the menu. Switch trigger, variant, size and align.",
+    hint: "Click the trigger to open the menu. Switch trigger, variant, size and alignment.",
     card: (
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <DropdownMenu label="Actions" items={MENU_ITEMS} />
-        <DropdownMenu label="Status" trigger="filter" count={2} items={FILTER_ITEMS} />
-        <DropdownMenu label="Row actions" iconOnly variant="tertiary" items={MENU_ITEMS} />
+        <Dropdown label="Actions" items={MENU_ITEMS} />
+        <Dropdown label="Status" trigger="filter" count={2} items={FILTER_ITEMS} />
+        <Dropdown label="Row actions" iconOnly variant="tertiary" items={MENU_ITEMS} />
       </div>
     ),
   },
@@ -1232,7 +1232,7 @@ export const registry: Record<string, Entry> = {
     render: ({ checked, ...p }) => <HeaderCell key={JSON.stringify(p) + String(checked)} {...(p as object)} defaultChecked={Boolean(checked ?? p.defaultChecked)} />,
     preview: { label: "Customer", sortable: true, sort: "asc" },
     hide: ["defaultChecked"],
-    hint: "Switch size, align and sort. Toggle checkbox for select-all.",
+    hint: "Switch size, alignment and sort. Toggle checkbox for select-all.",
     card: (
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", width: "85%" }}>
         <HeaderCell size="sm" label="Customer" sortable sort="asc" />
@@ -1242,12 +1242,12 @@ export const registry: Record<string, Entry> = {
       </div>
     ),
   },
-  Empty: {
+  EmptyState: {
     // Sample actions and media swap in for their {names}. The switches drop parts, like Figma boolean properties.
     // Its icon well is the stage gray, so it sits on a white page panel.
     render: (p) => (
       <div style={{ width: 480, maxWidth: "100%", padding: "var(--space-medium)", background: "var(--surface-flat)", borderRadius: "var(--radius-medium)" }}>
-        <Empty {...emptyProps(p)} />
+        <EmptyState {...emptyProps(p)} />
       </div>
     ),
     preview: { icon: "receipt_long", title: "No invoices yet", description: "Create an invoice or import them from a file.", actions: "{createActions}" },
@@ -1260,7 +1260,7 @@ export const registry: Record<string, Entry> = {
       ...p, ...(showIcon ? { icon } : {}), ...(showDescription ? { description } : {}), ...(showActions ? { actions } : {}),
     }),
     hint: "Turn the icon, description and actions on and off; outlined adds the border.",
-    card: <Empty icon="receipt_long" title="No invoices yet" />,
+    card: <EmptyState icon="receipt_long" title="No invoices yet" />,
   },
   Form: {
     // FormDemo fills the real Form with sample kit fields. content and message are playground-only. Keyed so defaults re-apply.
@@ -1575,7 +1575,7 @@ export const registry: Record<string, Entry> = {
     preview: { title: "Tax ID", content: "The number on your tax registration, like EU123456789. We print it on every invoice.", open: true },
     snippet: { children: '<Button variant="tertiary" size="sm" iconOnly iconStart="help_center">About Tax ID</Button>' },
     extras: { trigger: { values: ["icon", "field"], default: "icon" } },
-    hint: "Switch placement and trigger. Open pins the panel; turn it off, then hover, Tab or click the ? icon.",
+    hint: "Switch position and trigger. Open pins the panel; turn it off, then hover, Tab or click the ? icon.",
     card: (
       // How it is met on a page: the help icon beside a field label, which opens the popover.
       <div style={{ width: "80%" }}><Input size="sm" label="Tax ID" help="The number on your tax registration." placeholder="12-3456789" /></div>
@@ -1658,10 +1658,10 @@ export const registry: Record<string, Entry> = {
     card: <div style={{ width: 380 }}><Scoreboard items={CHART_KPIS.slice(0, 2)} /></div>,
   },
   Section: {
-    // Sample content and actions swap in for their {names}. Keyed so a changed default open state applies again.
+    // Sample content and actions swap in for their {names}. Keyed so a changed default expanded state applies again.
     render: (p) => <Section key={JSON.stringify(p)} {...sectionProps(p)} />,
     preview: { title: "Account information", help: "Details from the account record. Edit them on the account.", collapsible: true, actions: "{editAction}", children: "{accountRows}" },
-    hide: ["open"],
+    hide: ["expanded"],
     extras: { content: { values: ["body", "header only"], default: "body" } },
     normalize: ({ content, children, ...p }) => (content === "header only" ? p : { ...p, children }),
     hint: "Click the chevron to fold the section. Turn collapsible off for a static heading; content header only drops the body. Line thin makes the rule under the title 1px; Variants shows thin subsections.",
@@ -1674,11 +1674,11 @@ export const registry: Record<string, Entry> = {
       </div>
     ),
   },
-  SegmentedControl: {
+  Segmented: {
     // Keyed so a changed default value applies again; the options stay clickable.
     render: (p) => (
       <div style={{ width: p.fullWidth ? 360 : "auto", maxWidth: "100%" }}>
-        <SegmentedControl key={JSON.stringify(p)} {...(p as unknown as SegmentedControlProps)} />
+        <Segmented key={JSON.stringify(p)} {...(p as unknown as SegmentedProps)} />
       </div>
     ),
     preview: {
@@ -1693,21 +1693,21 @@ export const registry: Record<string, Entry> = {
     hint: "Switch size and toggle hidden label, full width and disabled. Click an option or use the arrow keys.",
     column: true,
     card: (
-      <SegmentedControl label="View" hideLabel size="sm" defaultValue="board"
+      <Segmented label="View" hideLabel size="sm" defaultValue="board"
         options={[{ value: "list", label: "List", icon: "view_list" }, { value: "board", label: "Board", icon: "view_kanban" }]} />
     ),
   },
-  ShimmerText: {
-    render: ({ children, ...p }) => <ShimmerText {...(p as Omit<ShimmerTextProps, "children">)}>{(children as string) || "Generating response…"}</ShimmerText>,
+  TextLoader: {
+    render: ({ children, ...p }) => <TextLoader {...(p as Omit<TextLoaderProps, "children">)}>{(children as string) || "Generating response…"}</TextLoader>,
     preview: { children: "Generating response…" },
     hint: "Switch size and speed. The light runs through the letters left to right; with reduced motion it stays still.",
-    card: <ShimmerText size="lg">Generating response…</ShimmerText>,
+    card: <TextLoader size="lg">Generating response…</TextLoader>,
   },
-  SideNav: {
+  AppNav: {
     // A page-sized frame, tall enough for the whole rail: the nav fills its height, the sunken area stands in for the page. Keyed so the pin control re-applies.
     render: (p) => (
       <div key={JSON.stringify(p)} style={{ display: "flex", height: 720, border: "var(--border-width-thin) solid var(--border-neutral-subtle)", background: "var(--surface-sunken)" }}>
-        <SideNav {...sideNavProps(p)} />
+        <AppNav {...sideNavProps(p)} />
       </div>
     ),
     preview: { items: "{sections}", endItems: "{endSections}" },
@@ -1719,7 +1719,7 @@ export const registry: Record<string, Entry> = {
     card: (
       // The rail and the pinned menu's first items; the nav fills this height and the preview fades the rest.
       <div style={{ display: "flex", height: 200 }}>
-        <SideNav items={APP_NAV} endItems={APP_NAV_END} defaultCurrent="revenue-general-ledger" defaultPinned />
+        <AppNav items={APP_NAV} endItems={APP_NAV_END} defaultCurrent="revenue-general-ledger" defaultPinned />
       </div>
     ),
   },
@@ -1750,18 +1750,18 @@ export const registry: Record<string, Entry> = {
     hint: "Switch size. Show label writes it beside the ring; screen readers always hear it. With reduced motion the ticks stay still.",
     card: <div style={{ display: "flex", gap: "var(--space-large)", alignItems: "center" }}><Spinner size="sm" /><Spinner /><Spinner size="lg" /></div>,
   },
-  Stepper: {
-    // The stage walks the steps with Back and Next; Variants show the Stepper alone.
+  Steps: {
+    // The stage walks the steps with Back and Next; Variants show the Steps alone.
     render: ({ walk, ...p }) => {
-      const props = { ...(p as unknown as StepperProps), steps: (p.steps as string[] | undefined) ?? STEPS };
-      return walk ? <StepperDemo {...props} /> : <Stepper {...props} />;
+      const props = { ...(p as unknown as StepsProps), steps: (p.steps as string[] | undefined) ?? STEPS };
+      return walk ? <StepperDemo {...props} /> : <Steps {...props} />;
     },
     toggles: { walk: { label: "Back and Next", default: true } },
     preview: { steps: STEPS, current: 2 },
     hide: ["steps", "onStepClick"],
     block: true,
     hint: "Switch size. Next and Back walk the steps; click a done step to go back. Fill spreads the steps across the width.",
-    card: <div style={{ width: 240 }}><Stepper steps={["Setup", "Columns", "Review"]} current={2} fill /></div>,
+    card: <div style={{ width: 240 }}><Steps steps={["Setup", "Columns", "Review"]} current={2} fill /></div>,
   },
   Switch: {
     // The Checked switch sets the start value; the switch itself stays clickable. Keyed so controls re-apply.
@@ -1816,12 +1816,12 @@ export const registry: Record<string, Entry> = {
       <Tabs label="Account sections" items={[{ id: "overview", label: "Overview" }, { id: "invoices", label: "Invoices", count: 5 }, { id: "payments", label: "Payments" }]} />
     ),
   },
-  Tile: {
-    render: (p) => <Tile {...(p as { title: string })} />,
+  NavTile: {
+    render: (p) => <NavTile {...(p as { title: string })} />,
     preview: { title: "Security & Users", description: "Includes roles, sharing groups, approvals, authentication, and user management.", icon: "shield_person", intent: "red", href: "#" },
     hide: ["onClick"],
     hint: "Walk the intents: each tile in a grid takes its own, so the color becomes part of how people find the place again. A tile is a link, not a choice; comparing options is Card.",
-    card: <div style={{ width: 300 }}><Tile title="Billing" description="Invoices, statements, templates and periods." icon="receipt_long" intent="brand" href="#" /></div>,
+    card: <div style={{ width: 300 }}><NavTile title="Billing" description="Invoices, statements, templates and periods." icon="receipt_long" intent="brand" href="#" /></div>,
   },
   Timeline: {
     render: (p) => <Timeline {...timelineProps(p)} />,
@@ -1864,7 +1864,7 @@ export const registry: Record<string, Entry> = {
     cardCrop: true,
   },
   Tooltip: {
-    // A kit Button is the trigger; trigger is playground-only. Open pins the bubble while you switch placement. Keyed so it re-places.
+    // A kit Button is the trigger; trigger is playground-only. Open pins the bubble while you switch position. Keyed so it re-places.
     // The Open switch pins it; off means uncontrolled (hover and focus), not forced shut.
     render: ({ trigger, ...p }) => (
       <Tooltip key={JSON.stringify(p)} {...(p as unknown as Omit<TooltipProps, "children">)} open={p.open ? true : undefined}>
@@ -1874,7 +1874,7 @@ export const registry: Record<string, Entry> = {
     preview: { content: "Export includes all projects", open: true },
     snippet: { children: "<Button>Export</Button>" },
     extras: { trigger: { values: ["button", "icon"], default: "button" } },
-    hint: "Switch placement and trigger. Open pins the bubble; turn it off, then hover or Tab to the button.",
+    hint: "Switch position and trigger. Open pins the bubble; turn it off, then hover or Tab to the button.",
     card: <Tooltip content="Export includes all projects"><Button size="sm">Export</Button></Tooltip>,
   },
   TreeView: {
@@ -2000,16 +2000,16 @@ export const registry: Record<string, Entry> = {
       return <div style={{ ...chartPanel, maxWidth: 520 }}><PieChart key={JSON.stringify(p)} {...chartProps<PieChartProps>({ ...p, data })} /></div>;
     },
     preview: { label: "Payments by method", title: "Payments by method", subtitle: "This period", data: "{payments}", format: "currency" },
-    hint: "Hover or use the arrow keys for each slice. Switch size and legend place; turn the title, donut, total, legend and animate on and off.",
+    hint: "Hover or use the arrow keys for each slice. Switch size and legend position; turn the title, donut, total, legend and animate on and off.",
     card: <PieChart label="Payments" data={[{ label: "Card", value: 5 }, { label: "ACH", value: 3 }, { label: "Wire", value: 2 }]} size="sm" showLegend={false} animate={false} />,
   },
-  Progress: {
+  Meter: {
     // Its track is the stage gray, so it sits on a white page panel. A bar fills its container, so it gets a 240 column; rings size themselves.
     render: (p) => {
       const ring = p.shape === "circle" || p.shape === "semicircle";
       return (
         <div style={{ width: ring ? "auto" : 240, maxWidth: "100%", padding: "var(--space-medium)", background: "var(--surface-flat)", borderRadius: "var(--radius-medium)" }}>
-          <Progress {...(p as unknown as ProgressProps)} />
+          <Meter {...(p as unknown as MeterProps)} />
         </div>
       );
     },
@@ -2019,16 +2019,16 @@ export const registry: Record<string, Entry> = {
     hint: "Switch shape, size and thresholds; turn on reference lines and the value. Value moves it between the zones.",
     card: (
       <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-        <div style={{ width: 120 }}><Progress label="Upload" value={60} /></div>
-        <Progress label="Setup" value={60} shape="circle" size="sm" />
+        <div style={{ width: 120 }}><Meter label="Upload" value={60} /></div>
+        <Meter label="Setup" value={60} shape="circle" size="sm" />
       </div>
     ),
   },
-  ProgressLegacy: {
+  ProgressBar: {
     // Figma's bar is 180 wide (224 with the label on the right). Its track is the stage gray, so it sits on a white page panel.
     render: (p) => (
       <div style={{ width: p.labelPosition === "right" ? 224 : 180, maxWidth: "100%", padding: "var(--space-small)", background: "var(--surface-flat)", borderRadius: "var(--radius-medium)" }}>
-        <ProgressLegacy {...(p as unknown as ProgressLegacyProps)} />
+        <ProgressBar {...(p as unknown as ProgressBarProps)} />
       </div>
     ),
     preview: { label: "Upload", value: 25 },
@@ -2037,8 +2037,8 @@ export const registry: Record<string, Entry> = {
     hint: "Switch the value, where the label sits, and whether it shows.",
     card: (
       <div style={{ display: "grid", gap: 8, width: 180 }}>
-        <ProgressLegacy label="Upload" value={25} />
-        <ProgressLegacy label="Upload" value={100} />
+        <ProgressBar label="Upload" value={25} />
+        <ProgressBar label="Upload" value={100} />
       </div>
     ),
   },

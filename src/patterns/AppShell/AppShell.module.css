@@ -7,7 +7,7 @@
   container-type: inline-size;
 }
 
-/* The rail column hugs the nav, since the kit SideNav sets its own width (56 collapsed, 170 expanded,
+/* The rail column hugs the nav, since the kit AppNav sets its own width (56 collapsed, 170 expanded,
    wider again when a menu is pinned beside it). */
 /* Positioned, so the phone nav and the sheet under it can be laid over the page. */
 .stage { position: relative; display: flex; min-width: 0; min-height: 0; }
@@ -52,7 +52,7 @@
 @container (max-width: 640px) {
   /* No room for a column of its own: the nav waits off the start edge and slides in over the page when it is
      asked for, rather than pushing the page sideways. Hidden while it is away, so it is not a stop for the
-     keyboard; visibility waits for the slide out to finish, as the SideNav's own menus do. */
+     keyboard; visibility waits for the slide out to finish, as the AppNav's own menus do. */
   .nav {
     position: absolute; inset-block: 0; inset-inline-start: 0; z-index: 4;
     /* Off by the open rail's width rather than 100%, so the whole drawer is away whatever width the nav is

@@ -70,7 +70,7 @@
   "a11y": [
     "The bar is a header named after the assistant, holding a heading with its name.",
     "Every button says what it does, with a kit Tooltip on hover and focus.",
-    "The options menu is a kit DropdownMenu, so it is reachable with the keyboard and Plan Mode reads as ticked.",
+    "The options menu is a kit Dropdown, so it is reachable with the keyboard and Plan Mode reads as ticked.",
     "The icon-only Plan Mode badge still carries the words Plan Mode for screen readers."
   ],
   "snippet": "<ChatHeader chatsCount={7} playbooksCount={9} onNewChat={() => {}} onClose={() => {}} />",

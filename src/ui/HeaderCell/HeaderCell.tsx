@@ -4,14 +4,14 @@ import { Icon } from "../Icon/Icon";
 import styles from "./HeaderCell.module.css";
 
 export type HeaderCellSize = "sm" | "md";
-export type HeaderCellAlign = "start" | "center" | "end";
+export type HeaderCellAlignment = "start" | "center" | "end";
 export type HeaderCellSort = "none" | "asc" | "desc";
 export type HeaderCellLine = "medium" | "thin";
 
 export interface HeaderCellProps {
   label?: string;
   size?: HeaderCellSize;
-  align?: HeaderCellAlign;
+  alignment?: HeaderCellAlignment;
   line?: HeaderCellLine;
   checkbox?: boolean;
   checked?: boolean;
@@ -27,14 +27,14 @@ const SORT_ICON = { none: "unfold_more", asc: "arrow_upward", desc: "arrow_downw
 const NEXT_SORT = { none: "ascending", asc: "descending", desc: "off" } as const;
 
 export function HeaderCell({
-  label, size: ownSize, align = "start", line = "medium", checkbox = false, checked, defaultChecked, indeterminate,
+  label, size: ownSize, alignment = "start", line = "medium", checkbox = false, checked, defaultChecked, indeterminate,
   onCheckedChange, sortable = false, sort = "none", onSort,
 }: HeaderCellProps) {
   // A surrounding Density changes the row through the density tokens, not the size.
   const size = ownSize ?? "md";
   const title = label ?? "column";
   return (
-    <span className={[styles.cell, styles[size], styles[align], line === "thin" ? styles.thin : ""].join(" ")}>
+    <span className={[styles.cell, styles[size], styles[alignment], line === "thin" ? styles.thin : ""].join(" ")}>
       {checkbox && (
         <Checkbox
           size="sm" hideLabel label={label ? `Select all ${label}` : "Select all rows"}

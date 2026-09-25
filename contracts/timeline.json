@@ -2,7 +2,7 @@
   "name": "Timeline",
   "path": "src/ui/Timeline/Timeline.tsx",
   "intent": "What happened on a record, newest first: a circled icon per entry joined by a line, with the note, links and action for each one.",
-  "usage": "Use Timeline for the activity on a record: calls, emails, notes, status changes, an audit trail. It is one component: pass items as data. Each item has a title, and optional timestamp, subtitle, icon, intent, notes, links and one action, plus a More menu of kit DropdownMenu entries. The line joins the entries and stops at the last one. Keep the order you want to show, usually newest first. For steps in a flow, use Stepper. For a list of records, use Table. See contracts/timeline.json for the full contract.",
+  "usage": "Use Timeline for the activity on a record: calls, emails, notes, status changes, an audit trail. It is one component: pass items as data. Each item has a title, and optional timestamp, subtitle, icon, intent, notes, links and one action, plus a More menu of kit Dropdown entries. The line joins the entries and stops at the last one. Keep the order you want to show, usually newest first. For steps in a flow, use Steps. For a list of records, use Table. See contracts/timeline.json for the full contract.",
   "props": {
     "items": {
       "type": "TimelineItem[]",
@@ -46,7 +46,7 @@
   ],
   "doNot": [
     "Do not build a feed from your own divs, or add a TimelineItem, ActivityCard or FeedRow. Pass items.",
-    "Do not use it for steps in a flow. Use Stepper.",
+    "Do not use it for steps in a flow. Use Steps.",
     "Do not use it for a list of records people sort and filter. Use Table.",
     "Do not put more than one action on an entry; extra ones go in the More menu.",
     "Do not use raw hex."

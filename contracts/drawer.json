@@ -52,7 +52,7 @@
     "Extra context about a selected item, like its history or related records."
   ],
   "doNot": [
-    "Do not use it for main navigation. Use SideNav.",
+    "Do not use it for main navigation. Use AppNav.",
     "Do not open a drawer from inside another drawer.",
     "Do not use it for a decision that must block the page. Use Modal or AlertDialog.",
     "Do not invent a Sheet, SidePanel, DrawerHeader or DrawerFooter. Use Drawer.",

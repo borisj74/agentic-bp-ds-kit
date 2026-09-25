@@ -2,7 +2,7 @@
   "name": "LineChart",
   "path": "src/ui/LineChart/LineChart.tsx",
   "intent": "How values change over time as lines or filled areas, one per series, like revenue by month or invoices approved by day.",
-  "usage": "Use LineChart for trends across ordered categories, usually time. It is one component: pass categories (the labels along the bottom) and series (one values array each). area fills under each line; stacked piles the areas on each other so the top edge is the total, like invoices by severity. showPoints marks each value with a dot and showValues writes it above. A limit or target goes in referenceLines, a dashed line across the chart with its label and value at the end. A forecast stays in the same series: projectedFrom names its first forecast category, and the line turns dashed from there. marker draws a thin line down the chart at one category, like Today. Hover or use the arrow keys for a tooltip with every series at that point. animate plays a subtle draw-in. Put the chart's title and report link in the Section or Card around it. ChartIntent: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). title and subtitle write a heading over the chart; showTitle turns it off when the Card around it already says the same. The keys under the chart are the kit Legend; legend moves them over it or beside it. See contracts/linechart.json for the full contract. A legend beside the chart drops under it when the chart's own box is narrower than 360px. A reference label keeps clear of the marker's label, other reference labels and the points near the end of a line: it moves to the other side of its line, or slides left, rather than drawing over them.",
+  "usage": "Use LineChart for trends across ordered categories, usually time. It is one component: pass categories (the labels along the bottom) and series (one values array each). area fills under each line; stacked piles the areas on each other so the top edge is the total, like invoices by severity. showPoints marks each value with a dot and showValues writes it above. A limit or target goes in referenceLines, a dashed line across the chart with its label and value at the end. A forecast stays in the same series: projectedFrom names its first forecast category, and the line turns dashed from there. marker draws a thin line down the chart at one category, like Today. Hover or use the arrow keys for a tooltip with every series at that point. animate plays a subtle draw-in. Put the chart's title and report link in the Section or Card around it. ChartIntent: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). title and subtitle write a heading over the chart; showHeader turns it off when the Card around it already says the same. The keys under the chart are the kit Legend; legendPosition moves them over it or beside it. See contracts/linechart.json for the full contract. A legend beside the chart drops under it when the chart's own box is narrower than 360px. A reference label keeps clear of the marker's label, other reference labels and the points near the end of a line: it moves to the other side of its line, or slides left, rather than drawing over them.",
   "props": {
     "label": {
       "type": "string",
@@ -17,7 +17,7 @@
       "type": "string",
       "note": "A quieter line under the title, like Last 12 months, all accounts."
     },
-    "showTitle": {
+    "showHeader": {
       "type": "boolean",
       "default": true,
       "note": "Shows the title and subtitle. Off draws the chart alone, when the Card or Section around it already carries the title."
@@ -63,7 +63,7 @@
       "default": true,
       "note": "Colored squares with the series names under the chart."
     },
-    "legend": {
+    "legendPosition": {
       "enum": [
         "top",
         "bottom",

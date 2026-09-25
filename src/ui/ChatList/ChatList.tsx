@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import { Button } from "../Button/Button";
-import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
+import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import { Input } from "../Input/Input";
 import { Tooltip } from "../Tooltip/Tooltip";
@@ -11,7 +11,7 @@ export interface ChatListItem {
   id: string;
   label: string;
   icon?: string;
-  menu?: DropdownMenuEntry[];
+  menu?: DropdownEntry[];
 }
 
 export interface ChatListGroup {
@@ -58,9 +58,9 @@ function Row({
       {/* The row's own menu: rename, pin or delete. Quiet until the row is hovered or has focus. */}
       {item.menu && item.menu.length > 0 && (
         <span className={styles.rowMenu}>
-          <DropdownMenu
+          <Dropdown
             label={`Actions for ${item.label}`} items={item.menu} iconOnly icon="more_vert" variant="tertiary" size="sm"
-            align="end" onSelect={(id) => onMenuSelect?.(item.id, id)}
+            alignment="right" onSelect={(id) => onMenuSelect?.(item.id, id)}
           />
         </span>
       )}

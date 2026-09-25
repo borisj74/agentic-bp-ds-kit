@@ -1,6 +1,6 @@
 "use client";
 import { useId, type FormEvent, type ReactNode } from "react";
-import { Alert } from "../Alert/Alert";
+import { Callout } from "../Callout/Callout";
 import { Section, type SectionLine } from "../Section/Section";
 import { FormLayoutContext, type FieldLabelPosition } from "./FormContext";
 import styles from "./Form.module.css";
@@ -67,14 +67,14 @@ export function Form({
         </header>
       )}
       <div className={styles.body}>
-        {error && <Alert intent="danger">{error}</Alert>}
+        {error && <Callout intent="danger">{error}</Callout>}
         {/* A group of fields is titled by the kit Section, so a group in a form folds away, carries its help and
             reads the same as a block anywhere else in the kit. */}
         {sections
           ? sections.map((s) => (
               <Section
                 key={s.title} title={s.title} description={s.description} help={s.help} actions={s.actions} line={s.line}
-                collapsible={s.collapsible} open={s.open} defaultOpen={s.defaultOpen} onOpenChange={s.onOpenChange}
+                collapsible={s.collapsible} expanded={s.open} defaultExpanded={s.defaultOpen} onExpandedChange={s.onOpenChange}
               >
                 <div className={styles.fields}>{s.content}</div>
               </Section>

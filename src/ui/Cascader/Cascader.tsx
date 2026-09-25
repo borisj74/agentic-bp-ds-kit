@@ -36,7 +36,7 @@ export interface CascaderProps {
   variant?: CascaderVariant;
   changeOnSelect?: boolean;
   searchable?: boolean;
-  showLegend?: boolean;
+  hasLegend?: boolean;
   placeholder?: string;
   size?: CascaderSize;
   labelPosition?: CascaderLabelPosition;
@@ -92,7 +92,7 @@ const relationsIn = (options: CascaderOption[]): Set<CascaderRelation> => {
 // Figma BP cascader 3737:20806 (columns, rows, legend) and the field selection modal 3772:6041; behavior after the
 // cascader spec: pick by walking columns left to right.
 export function Cascader({
-  label, options, value, defaultValue, onChange, variant = "field", changeOnSelect = false, searchable = false, showLegend = true,
+  label, options, value, defaultValue, onChange, variant = "field", changeOnSelect = false, searchable = false, hasLegend = true,
   placeholder = "Select", size: ownSize, labelPosition: ownLabelPosition, hideLabel = false, name, required = false,
   disabled = false, invalid = false, error, hint, help, emptyLabel = "No matches.",
 }: CascaderProps) {
@@ -135,7 +135,7 @@ export function Cascader({
 
   const relations = relationsIn(options);
   // The legend only explains marks that are there.
-  const legend = showLegend && relations.size > 0;
+  const legend = hasLegend && relations.size > 0;
   const results = searchable && query.trim()
     ? paths(options, changeOnSelect).filter((p) => p.some((o) => o.label.toLowerCase().includes(query.trim().toLowerCase())))
     : null;

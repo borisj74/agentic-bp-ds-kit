@@ -4,19 +4,19 @@
   "intent": "List of short sections where one opens at a time.",
   "usage": "Use Accordion for FAQs or short groups of details the user opens one at a time. Opening one item closes the others. Clicking the open item closes it. See contracts/accordion.json for the full contract.",
   "props": {
-    "defaultOpen": { "type": "string", "note": "id of the item that starts open. Omit to start with all closed." },
+    "defaultExpanded": { "type": "string", "note": "id of the item that starts open. Omit to start with all closed." },
     "items": { "type": "AccordionItem[]", "required": true, "itemShape": { "id": "string", "title": "string", "content": "string" }, "note": "Two or more. Each id is unique. Keep content short." }
   },
   "useWhen": ["FAQ or help copy grouped under short titles.", "Settings or detail groups the user opens one at a time."],
   "doNot": ["Do not invent a local Accordion, Collapse or Disclosure.", "Do not open more than one item at a time.", "Do not use for switching between peer views of the same data.", "Do not put a full form inside every panel.", "Do not use raw hex."],
   "a11y": ["Each title is a native button with aria-expanded.", "The button aria-controls its panel; the panel is a region labeled by the button.", "Closed panels are hidden from screen readers.", "The chevron is decorative."],
-  "snippet": "<Accordion\n  defaultOpen=\"hours\"\n  items={[\n    { id: \"hours\", title: \"Hours\", content: \"Weekdays 9 to 5.\" },\n    { id: \"address\", title: \"Address\", content: \"Knez Mihailova 1.\" },\n  ]}\n/>",
+  "snippet": "<Accordion\n  defaultExpanded=\"hours\"\n  items={[\n    { id: \"hours\", title: \"Hours\", content: \"Weekdays 9 to 5.\" },\n    { id: \"address\", title: \"Address\", content: \"Knez Mihailova 1.\" },\n  ]}\n/>",
   "examples": [
     {
       "title": "FAQ",
       "usage": "Help copy the user opens one answer at a time. Start with the most asked question open.",
       "items": [
-        { "props": { "defaultOpen": "hours", "items": [
+        { "props": { "defaultExpanded": "hours", "items": [
           { "id": "hours", "title": "Hours", "content": "Weekdays 9 to 5. Closed on public holidays." },
           { "id": "address", "title": "Address", "content": "Knez Mihailova 1, Belgrade." },
           { "id": "parking", "title": "Parking", "content": "Free parking behind the building for the first two hours." }

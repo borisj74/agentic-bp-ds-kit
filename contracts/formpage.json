@@ -2,10 +2,10 @@
   "name": "FormPage",
   "path": "src/patterns/FormPage/FormPage.tsx",
   "intent": "One record being filled in: its name and the save at the top, anything that has to be read first under that, and the fields in folding groups underneath.",
-  "usage": "Use FormPage to create or edit one record: a new account, a new invoice, a rate card. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the values and what is folded away. Pass the kit PageHeader as header, with the trail, what is being made, and the actions: Cancel, then one primary that saves. children are one kit Form with an id and its groups of fields as sections, each collapsible; give it columns 2, or 3 for a long form on a wide page, and pick where the labels go — labelPosition start for a column of labels beside the fields, top for a label over each one, and the whole page follows; give the header's save Button type submit and form set to that id, so one press saves the whole page and the form stays one form. notice writes what has to be read before filling anything in, as a kit Alert; it stays under the name while the fields scroll. Field problems belong on the fields; a save that failed goes on the Form's error. Do not put a second save at the foot of the page: the one in the header is always in reach. It goes in the AppShell page, which owns the page padding. See contracts/formpage.json for the full contract.",
+  "usage": "Use FormPage to create or edit one record: a new account, a new invoice, a rate card. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the values and what is folded away. Pass the kit PageHeader as header, with the trail, what is being made, and the actions: Cancel, then one primary that saves. children are one kit Form with an id and its groups of fields as sections, each collapsible; give it columns 2, or 3 for a long form on a wide page, and pick where the labels go — labelPosition start for a column of labels beside the fields, top for a label over each one, and the whole page follows; give the header's save Button type submit and form set to that id, so one press saves the whole page and the form stays one form. notice writes what has to be read before filling anything in, as a kit Callout; it stays under the name while the fields scroll. Field problems belong on the fields; a save that failed goes on the Form's error. Do not put a second save at the foot of the page: the one in the header is always in reach. It goes in the AppShell page, which owns the page padding. See contracts/formpage.json for the full contract.",
   "composes": [
     "PageHeader",
-    "Alert",
+    "Callout",
     "Form",
     "Section",
     "Input",
@@ -26,7 +26,7 @@
     },
     "notice": {
       "type": "ReactNode",
-      "note": "What has to be read before filling anything in, as a kit Alert people can dismiss."
+      "note": "What has to be read before filling anything in, as a kit Callout people can dismiss."
     },
     "sticky": {
       "type": "boolean",
@@ -68,7 +68,7 @@
     "The save Button carries form, so it submits from the header without leaving the form.",
     "The name and the notice stay on an opaque bar, so nothing scrolls through them."
   ],
-  "snippet": "<FormPage\n  header={<PageHeader breadcrumbs={[{ label: \"Home\", href: \"/\" }, { label: \"Accounts\", href: \"/accounts\" }]} title=\"Create account\" actions={<><Button onClick={cancel}>Cancel</Button><Button variant=\"primary\" type=\"submit\" form=\"account\">Create</Button></>} />}\n  notice={<Alert intent=\"info\" onDismiss={hide}>Use this form for the account's general and default billing information.</Alert>}\n>\n  <Form id=\"account\" labelPosition=\"start\" columns={2} onSubmit={save} sections={sections} />\n</FormPage>",
+  "snippet": "<FormPage\n  header={<PageHeader breadcrumbs={[{ label: \"Home\", href: \"/\" }, { label: \"Accounts\", href: \"/accounts\" }]} title=\"Create account\" actions={<><Button onClick={cancel}>Cancel</Button><Button variant=\"primary\" type=\"submit\" form=\"account\">Create</Button></>} />}\n  notice={<Callout intent=\"info\" onDismiss={hide}>Use this form for the account's general and default billing information.</Callout>}\n>\n  <Form id=\"account\" labelPosition=\"start\" columns={2} onSubmit={save} sections={sections} />\n</FormPage>",
   "examples": [
     {
       "title": "Creating an account",

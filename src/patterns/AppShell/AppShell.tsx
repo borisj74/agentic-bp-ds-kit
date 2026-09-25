@@ -21,7 +21,7 @@ export interface AppShellProps {
   width?: AppShellWidth;
 }
 
-// The frame a product screen sits in: the kit AppHeader across the top, the kit SideNav under it down the side,
+// The frame a product screen sits in: the kit AppHeader across the top, the kit AppNav under it down the side,
 // the kit ChatWindow beside it. A blueprint only: it composes kit pieces and keeps no state of its own.
 // Structure follows contracts/layout.json: the scrolling page is a .layout-content, so its edge padding
 // and the gap between Sections come from the layout tokens, not from the screen.

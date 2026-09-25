@@ -14,18 +14,6 @@
       ]
     },
     {
-      "name": "Alert",
-      "contract": "contracts/alert.json",
-      "category": "feedback",
-      "tags": [
-        "callout",
-        "banner",
-        "notice",
-        "message",
-        "status"
-      ]
-    },
-    {
       "name": "AlertDialog",
       "contract": "contracts/alertdialog.json",
       "category": "overlay",
@@ -64,6 +52,21 @@
         "user",
         "company",
         "logo"
+      ]
+    },
+    {
+      "name": "AppNav",
+      "contract": "contracts/appnav.json",
+      "category": "navigation",
+      "tags": [
+        "side nav",
+        "sidebar",
+        "navigation",
+        "rail",
+        "flyout",
+        "secondary navigation",
+        "menu",
+        "app nav"
       ]
     },
     {
@@ -152,17 +155,6 @@
       ]
     },
     {
-      "name": "ButtonFilter",
-      "contract": "contracts/buttonfilter.json",
-      "category": "base",
-      "tags": [
-        "filter",
-        "split button",
-        "dropdown trigger",
-        "menu button"
-      ]
-    },
-    {
       "name": "ButtonGroup",
       "contract": "contracts/buttongroup.json",
       "category": "base",
@@ -188,6 +180,19 @@
         "shifts",
         "pto",
         "planner"
+      ]
+    },
+    {
+      "name": "Callout",
+      "contract": "contracts/callout.json",
+      "category": "feedback",
+      "tags": [
+        "callout",
+        "banner",
+        "notice",
+        "message",
+        "status",
+        "alert"
       ]
     },
     {
@@ -327,19 +332,6 @@
       ]
     },
     {
-      "name": "Command",
-      "contract": "contracts/command.json",
-      "category": "navigation",
-      "tags": [
-        "command",
-        "search",
-        "global search",
-        "palette",
-        "quick actions",
-        "combobox"
-      ]
-    },
-    {
       "name": "Conveyor",
       "contract": "contracts/conveyor.json",
       "category": "layout",
@@ -422,8 +414,8 @@
       ]
     },
     {
-      "name": "DropdownMenu",
-      "contract": "contracts/dropdownmenu.json",
+      "name": "Dropdown",
+      "contract": "contracts/dropdown.json",
       "category": "overlay",
       "tags": [
         "dropdown",
@@ -431,12 +423,13 @@
         "actions",
         "more",
         "context menu",
-        "filter options"
+        "filter options",
+        "dropdown menu"
       ]
     },
     {
-      "name": "Empty",
-      "contract": "contracts/empty.json",
+      "name": "EmptyState",
+      "contract": "contracts/emptystate.json",
       "category": "feedback",
       "tags": [
         "empty",
@@ -446,6 +439,19 @@
         "blank slate",
         "first run",
         "placeholder"
+      ]
+    },
+    {
+      "name": "FilterButton",
+      "contract": "contracts/filterbutton.json",
+      "category": "base",
+      "tags": [
+        "filter",
+        "split button",
+        "dropdown trigger",
+        "menu button",
+        "button filter",
+        "filter button"
       ]
     },
     {
@@ -489,6 +495,19 @@
         "code",
         "editor",
         "form"
+      ]
+    },
+    {
+      "name": "GlobalSearch",
+      "contract": "contracts/globalsearch.json",
+      "category": "navigation",
+      "tags": [
+        "command",
+        "search",
+        "global search",
+        "palette",
+        "quick actions",
+        "combobox"
       ]
     },
     {
@@ -686,6 +705,23 @@
       ]
     },
     {
+      "name": "Meter",
+      "contract": "contracts/meter.json",
+      "category": "feedback",
+      "tags": [
+        "progress",
+        "progress bar",
+        "meter",
+        "gauge",
+        "ring",
+        "donut",
+        "percent",
+        "thresholds",
+        "completion",
+        "usage"
+      ]
+    },
+    {
       "name": "Modal",
       "contract": "contracts/modal.json",
       "category": "overlay",
@@ -695,6 +731,21 @@
         "overlay",
         "form",
         "command palette"
+      ]
+    },
+    {
+      "name": "NavTile",
+      "contract": "contracts/navtile.json",
+      "category": "data",
+      "tags": [
+        "tile",
+        "landing",
+        "settings home",
+        "way in",
+        "link card",
+        "icon tile",
+        "grid",
+        "nav tile"
       ]
     },
     {
@@ -739,25 +790,8 @@
       ]
     },
     {
-      "name": "Progress",
-      "contract": "contracts/progress.json",
-      "category": "feedback",
-      "tags": [
-        "progress",
-        "progress bar",
-        "meter",
-        "gauge",
-        "ring",
-        "donut",
-        "percent",
-        "thresholds",
-        "completion",
-        "usage"
-      ]
-    },
-    {
-      "name": "ProgressLegacy",
-      "contract": "contracts/progresslegacy.json",
+      "name": "ProgressBar",
+      "contract": "contracts/progressbar.json",
       "category": "feedback",
       "tags": [
         "progress",
@@ -813,8 +847,8 @@
       ]
     },
     {
-      "name": "SegmentedControl",
-      "contract": "contracts/segmentedcontrol.json",
+      "name": "Segmented",
+      "contract": "contracts/segmented.json",
       "category": "form",
       "tags": [
         "segmented",
@@ -823,7 +857,8 @@
         "density",
         "view switch",
         "period",
-        "radio buttons"
+        "radio buttons",
+        "segmented control"
       ]
     },
     {
@@ -837,34 +872,6 @@
         "multi-select",
         "options",
         "form"
-      ]
-    },
-    {
-      "name": "ShimmerText",
-      "contract": "contracts/shimmertext.json",
-      "category": "feedback",
-      "tags": [
-        "shimmer",
-        "shimmer text",
-        "loading text",
-        "generating",
-        "thinking",
-        "processing",
-        "ai status"
-      ]
-    },
-    {
-      "name": "SideNav",
-      "contract": "contracts/sidenav.json",
-      "category": "navigation",
-      "tags": [
-        "side nav",
-        "sidebar",
-        "navigation",
-        "rail",
-        "flyout",
-        "secondary navigation",
-        "menu"
       ]
     },
     {
@@ -896,8 +903,8 @@
       ]
     },
     {
-      "name": "Stepper",
-      "contract": "contracts/stepper.json",
+      "name": "Steps",
+      "contract": "contracts/steps.json",
       "category": "navigation",
       "tags": [
         "stepper",
@@ -965,17 +972,18 @@
       ]
     },
     {
-      "name": "Tile",
-      "contract": "contracts/tile.json",
-      "category": "data",
+      "name": "TextLoader",
+      "contract": "contracts/textloader.json",
+      "category": "feedback",
       "tags": [
-        "tile",
-        "landing",
-        "settings home",
-        "way in",
-        "link card",
-        "icon tile",
-        "grid"
+        "shimmer",
+        "shimmer text",
+        "loading text",
+        "generating",
+        "thinking",
+        "processing",
+        "ai status",
+        "text loader"
       ]
     },
     {

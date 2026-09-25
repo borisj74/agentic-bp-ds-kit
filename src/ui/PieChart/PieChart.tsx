@@ -5,8 +5,8 @@ import styles from "./PieChart.module.css";
 
 export type { ChartFormat, ChartIntent };
 export type PieChartSize = "sm" | "md" | "lg";
-export type PieChartLegend = "end" | "bottom";
-export type PieChartAlign = "start" | "center";
+export type PieChartLegendPosition = "end" | "bottom";
+export type PieChartAlignment = "start" | "center";
 
 export interface PieChartSlice {
   label: string;
@@ -18,15 +18,15 @@ export interface PieChartProps {
   label: string;
   title?: string;
   subtitle?: string;
-  showTitle?: boolean;
+  showHeader?: boolean;
   data: PieChartSlice[];
   donut?: boolean;
   size?: PieChartSize;
   showTotal?: boolean;
   totalLabel?: string;
   showLegend?: boolean;
-  legend?: PieChartLegend;
-  align?: PieChartAlign;
+  legendPosition?: PieChartLegendPosition;
+  alignment?: PieChartAlignment;
   maxSlices?: number;
   otherLabel?: string;
   animate?: boolean;
@@ -43,7 +43,7 @@ const OVERLAP = 0.4;
 
 // Reference kit pie chart, in the colors of the Persona Homepages charts.
 export function PieChart({
-  label, title, subtitle, showTitle = true, data, donut = true, size = "md", showTotal = true, totalLabel = "Total", showLegend = true, legend = "end", align = "start",
+  label, title, subtitle, showHeader = true, data, donut = true, size = "md", showTotal = true, totalLabel = "Total", showLegend = true, legendPosition = "end", alignment = "start",
   maxSlices = 6, otherLabel = "Other", animate = true, format = "number", currency = "USD", emptyLabel = "No data for this range.",
 }: PieChartProps) {
   const frame = { sm: styles.frameSm, md: styles.frameMd, lg: styles.frameLg }[size];
@@ -59,7 +59,7 @@ export function PieChart({
   const total = slices.reduce((s, d) => s + d.value, 0);
 
   if (!slices.length || !(total > 0)) {
-    return <ChartFrame className={frame} label={label} title={title} subtitle={subtitle} showTitle={showTitle} animate={false} active={false}><ChartEmpty label={emptyLabel} height={160} /></ChartFrame>;
+    return <ChartFrame className={frame} label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={false}><ChartEmpty label={emptyLabel} height={160} /></ChartFrame>;
   }
 
   const r = donut ? 40 : 24;
@@ -82,8 +82,8 @@ export function PieChart({
   const cur = active !== null ? arcs[active] : null;
 
   return (
-    <ChartFrame className={frame} label={label} title={title} subtitle={subtitle} showTitle={showTitle} animate={animate} active={active !== null} onKeyDown={onKeyDown} onBlur={() => setActive(null)}>
-      <div className={[styles.layout, styles[legend], align === "center" ? styles.center : ""].join(" ")}>
+    <ChartFrame className={frame} label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={animate} active={active !== null} onKeyDown={onKeyDown} onBlur={() => setActive(null)}>
+      <div className={[styles.layout, styles[legendPosition], alignment === "center" ? styles.center : ""].join(" ")}>
         <div className={[styles.pie, styles[size]].join(" ")} onPointerLeave={() => setActive(null)}>
           <svg className={styles.svg} viewBox="0 0 100 100" aria-hidden="true">
             <g transform={`rotate(-90 ${C} ${C})`} fill="none" strokeWidth={width}>
@@ -110,7 +110,7 @@ export function PieChart({
             </div>
           )}
         </div>
-        {showLegend && <Legend orientation={legend === "end" ? "column" : "row"} align={legend === "end" ? "start" : "center"} items={arcs.map((a) => ({ label: a.label, intent: a.intent, note: `${a.pct}%` }))} />}
+        {showLegend && <Legend orientation={legendPosition === "end" ? "vertical" : "horizontal"} alignment={legendPosition === "end" ? "start" : "center"} items={arcs.map((a) => ({ label: a.label, intent: a.intent, note: `${a.pct}%` }))} />}
       </div>
       <SrTable caption={label} columns={["Value", "Share"]} rows={arcs.map((a) => ({ head: a.label, cells: [full(a.value), `${a.pct}%`] }))} />
     </ChartFrame>

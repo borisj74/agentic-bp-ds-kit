@@ -3,7 +3,7 @@ import { useId, useState, type MouseEvent } from "react";
 import { Badge, type BadgeIntent } from "../Badge/Badge";
 import { Button } from "../Button/Button";
 import { Checkbox } from "../Checkbox/Checkbox";
-import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
+import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import styles from "./Card.module.css";
 
@@ -35,7 +35,7 @@ export interface CardProps {
   href?: string;
   onClick?: () => void;
   actions?: CardAction[];
-  menu?: DropdownMenuEntry[];
+  menu?: DropdownEntry[];
   onAction?: (id: string) => void;
 }
 
@@ -115,7 +115,7 @@ export function Card({
                 </Button>
               ))}
               {menu && menu.length > 0 && (
-                <DropdownMenu label={`More actions for ${name}`} iconOnly icon="more_vert" variant="tertiary" size="sm" align="end" items={menu} disabled={disabled} onSelect={(id) => onAction?.(id)} />
+                <Dropdown label={`More actions for ${name}`} iconOnly icon="more_vert" variant="tertiary" size="sm" alignment="right" items={menu} disabled={disabled} onSelect={(id) => onAction?.(id)} />
               )}
             </span>
           )}

@@ -2,11 +2,11 @@
   "name": "Toolbar",
   "path": "src/ui/Toolbar/Toolbar.tsx",
   "intent": "The bar above a list or table: find and filter on the left, view and actions on the right, with a filter bar that opens under it.",
-  "usage": "Put one Toolbar right above a list or table, under the PageHeader. It is one component. Left: a Filters button (when filters are passed), carrying a kit Count of how many filters are on and a search field, which with searchGroups opens a kit Command dropdown of quick-navigation results; then, after a divider, the view picker and refresh. Right: a More menu and the actions, kit Buttons size sm with at most one primary, last. Filters toggles the filter bar under it: the filter chips (kit DropdownMenu trigger filter), then Reset and Apply filters, and an optional help icon at the end. Every part is optional; leave out what the list does not need. buttons subtle gives the buttons on the bar the bar's own grey instead of white paper, for a quieter bar; the search field keeps its white box either way. See contracts/toolbar.json for the full contract. Under 1024px the toolbar keeps to one line: the filters, the search (it narrows first when space is short), the view and refresh, with the actions at the end. Under 640px, the kit's mobile break, the search takes a line of its own and everything else shares the next. When the actions do not fit on that line they fold into one Actions menu that lists them, then More's items after a divider. It is either the whole row of buttons or the one menu, never a wrapped row. If even the Actions button does not fit, it shows as an icon-only more button, still named Actions.",
+  "usage": "Put one Toolbar right above a list or table, under the PageHeader. It is one component. Left: a Filters button (when filters are passed), carrying a kit Count of how many filters are on and a search field, which with searchGroups opens a kit GlobalSearch dropdown of quick-navigation results; then, after a divider, the view picker and refresh. Right: a More menu and the actions, kit Buttons size sm with at most one primary, last. Filters toggles the filter bar under it: the filter chips (kit Dropdown trigger filter), then Reset and Apply filters, and an optional help icon at the end. Every part is optional; leave out what the list does not need. buttons subtle gives the buttons on the bar the bar's own grey instead of white paper, for a quieter bar; the search field keeps its white box either way. See contracts/toolbar.json for the full contract. Under 1024px the toolbar keeps to one line: the filters, the search (it narrows first when space is short), the view and refresh, with the actions at the end. Under 640px, the kit's mobile break, the search takes a line of its own and everything else shares the next. When the actions do not fit on that line they fold into one Actions menu that lists them, then More's items after a divider. It is either the whole row of buttons or the one menu, never a wrapped row. If even the Actions button does not fit, it shows as an icon-only more button, still named Actions.",
   "props": {
     "filters": {
       "type": "ReactNode",
-      "note": "Filter chips for the filter bar: kit DropdownMenu with trigger filter (or ButtonFilter). Adds the Filters button that opens the bar."
+      "note": "Filter chips for the filter bar: kit Dropdown with trigger filter (or FilterButton). Adds the Filters button that opens the bar."
     },
     "filterCount": {
       "type": "number",
@@ -54,7 +54,7 @@
     "searchGroups": {
       "type": "CommandGroup[]",
       "itemShape": "{ heading?: string; items: { id: string; label: string; description?: string; icon?: string }[] }",
-      "note": "Quick navigation results. The search field becomes a trigger that opens a kit Command (size sm) laid over it, same width. Typed text shows bold in the results."
+      "note": "Quick navigation results. The search field becomes a trigger that opens a kit GlobalSearch (size sm) laid over it, same width. Typed text shows bold in the results."
     },
     "onSearchSelect": {
       "type": "function",
@@ -122,10 +122,10 @@
   ],
   "a11y": [
     "A group named by label. Filters is a kit Button with aria-expanded and aria-controls pointing at the filter bar, and shows pressed while it is open.",
-    "The search is a kit Input named by its placeholder. With searchGroups it is a button (aria-haspopup=dialog) that opens a kit Command combobox over it; Escape clears, then closes and returns focus. The view picker, More and filter chips are kit DropdownMenus.",
+    "The search is a kit Input named by its placeholder. With searchGroups it is a button (aria-haspopup=dialog) that opens a kit GlobalSearch combobox over it; Escape clears, then closes and returns focus. The view picker, More and filter chips are kit Dropdowns.",
     "Refresh and the help icon are icon buttons named by a kit Tooltip or HelpPopover.",
     "The filter bar is a group named Filters. Tab order runs left to right, then into the filter bar.",
-    "Under 1024px the folded actions are one kit DropdownMenu named Actions, icon-only when space is tightest. The hidden copy the Toolbar measures is aria-hidden and inert, so it is never read or reached."
+    "Under 1024px the folded actions are one kit Dropdown named Actions, icon-only when space is tightest. The hidden copy the Toolbar measures is aria-hidden and inert, so it is never read or reached."
   ],
   "snippet": "<Toolbar\n  filters={filterChips}\n  onReset={resetFilters}\n  onApply={applyFilters}\n  onSearchChange={setQuery}\n  views={[{ id: \"list\", label: \"List View\" }, { id: \"board\", label: \"Board View\" }]}\n  onRefresh={reload}\n  actions={<>\n    <Button size=\"sm\">Export</Button>\n    <Button size=\"sm\" variant=\"primary\">Create</Button>\n  </>}\n/>",
   "examples": [

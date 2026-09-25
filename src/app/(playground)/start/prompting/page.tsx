@@ -1,7 +1,7 @@
 import shell from "@/playground/shell.module.css";
 import docs from "@/playground/docs.module.css";
 import { CodeBlock } from "@/playground/CodeBlock";
-import { Alert } from "@/ui/Alert/Alert";
+import { Callout } from "@/ui/Callout/Callout";
 import { AnchorNav } from "@/ui/AnchorNav/AnchorNav";
 import { Badge } from "@/ui/Badge/Badge";
 import { Section } from "@/ui/Section/Section";
@@ -147,7 +147,7 @@ export default function Prompting() {
                   <li><strong>Add it to the kit:</strong> &ldquo;Add a Rating component to the kit: contract first, then the component, then its catalog page.&rdquo;</li>
                   <li><strong>Change the screen:</strong> &ldquo;Use a Select with 1 to 5 instead.&rdquo;</li>
                 </ul>
-                <Alert intent="warning">Avoid &ldquo;just build something quick for this screen&rdquo;. One-off parts drift from the kit and break the next time things change.</Alert>
+                <Callout intent="warning">Avoid &ldquo;just build something quick for this screen&rdquo;. One-off parts drift from the kit and break the next time things change.</Callout>
               </div>
             </Section>
           </div>

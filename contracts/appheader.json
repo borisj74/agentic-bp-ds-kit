@@ -2,7 +2,7 @@
   "name": "AppHeader",
   "path": "src/ui/AppHeader/AppHeader.tsx",
   "intent": "The product's top bar: logo and environment on the start, global search in the centre, utility icons, the user and their company on the end. Not a page title.",
-  "usage": "Put one AppHeader at the top of the app shell, full width. onNavToggle adds the menu button that opens the side nav. It is one component: logo, environment, search, actions, user and company come from props, and it uses kit Logo, Badge, Button, Tooltip and Avatar inside. environment tags the instance (UAT-2, Sandbox) so people know where they are. With searchGroups, the search opens a kit Command in its place: one search box that grows down into the results (Recent items, scopes, arrow keys and Enter); otherwise it runs onSearch; searchShortcut only shows a hint. actions are icon buttons named by a Tooltip. The avatar opens an account menu with the name, User settings, Dark mode, Density & text size and Log out; each row shows only when its handler is passed. The header follows density: its bar, search and buttons shrink in compact and grow in comfortable. Under 800px it turns compact: the logo becomes the symbol and the search becomes an icon button beside the other icons. Under 640px, the kit's mobile break, it turns phone-sized: the environment tag goes, and the row of icon actions becomes one more button holding the same actions, so onAction still tells you which was picked. Under 480px the company badge goes too; the avatar still says who is signed in. The bar answers to its own width, not the window's. Page titles, breadcrumbs and page actions belong in the page, not here. See contracts/appheader.json for the full contract.",
+  "usage": "Put one AppHeader at the top of the app shell, full width. onNavToggle adds the menu button that opens the side nav. It is one component: logo, environment, search, actions, user and company come from props, and it uses kit Logo, Badge, Button, Tooltip and Avatar inside. environment tags the instance (UAT-2, Sandbox) so people know where they are. With searchGroups, the search opens a kit GlobalSearch in its place: one search box that grows down into the results (Recent items, scopes, arrow keys and Enter); otherwise it runs onSearch; searchShortcut only shows a hint. actions are icon buttons named by a Tooltip. The avatar opens an account menu with the name, User settings, Dark mode, Density & text size and Log out; each row shows only when its handler is passed. The header follows density: its bar, search and buttons shrink in compact and grow in comfortable. Under 800px it turns compact: the logo becomes the symbol and the search becomes an icon button beside the other icons. Under 640px, the kit's mobile break, it turns phone-sized: the environment tag goes, and the row of icon actions becomes one more button holding the same actions, so onAction still tells you which was picked. Under 480px the company badge goes too; the avatar still says who is signed in. The bar answers to its own width, not the window's. Page titles, breadcrumbs and page actions belong in the page, not here. See contracts/appheader.json for the full contract.",
   "props": {
     "onNavToggle": {
       "type": "function",
@@ -57,7 +57,7 @@
     "searchGroups": {
       "type": "CommandGroup[]",
       "itemShape": "{ heading?: string; items: { id; label; description?; icon?; shortcut?; disabled? }[] }",
-      "note": "Makes the search open a kit Command. From the wide field, the Command's search row lays exactly over the header field, so there is one search box that grows down into the results (Recent items, scopes, key hints). From the compact icon it opens just below the icon. Typing filters the items."
+      "note": "Makes the search open a kit GlobalSearch. From the wide field, the GlobalSearch's search row lays exactly over the header field, so there is one search box that grows down into the results (Recent items, scopes, key hints). From the compact icon it opens just below the icon. Typing filters the items."
     },
     "searchVariant": {
       "enum": [
@@ -65,7 +65,7 @@
         "tabs"
       ],
       "default": "list",
-      "note": "Command variant for the search dropdown. tabs adds All and one tab per group heading (Records / Reports / Sections)."
+      "note": "GlobalSearch variant for the search dropdown. tabs adds All and one tab per group heading (Records / Reports / Sections)."
     },
     "searchIconStyle": {
       "enum": [
@@ -73,7 +73,7 @@
         "plain"
       ],
       "default": "tile",
-      "note": "Command iconStyle for the search dropdown: tile puts item icons in a tinted tile, plain shows just the icon."
+      "note": "GlobalSearch iconStyle for the search dropdown: tile puts item icons in a tinted tile, plain shows just the icon."
     },
     "onSearchSelect": {
       "type": "function",

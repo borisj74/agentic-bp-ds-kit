@@ -4,7 +4,7 @@
   "intent": "Brand logo: the full wordmark or the mark alone, in fixed brand colors.",
   "usage": "Use the default wordmark in app headers and sign-in screens. Use the symbol alone where space is tight, like a collapsed sidebar. Brand colors are fixed and never follow the theme tokens. In dark theme the wordmark text switches to the white reverse; the mark never changes. See contracts/logo.json for the full contract.",
   "props": {
-    "variant": { "enum": ["default", "symbol"], "default": "default", "note": "default = mark + wordmark (145 x 28). symbol = mark only (22 x 32 frame)." },
+    "type": { "enum": ["default", "symbol"], "default": "default", "note": "default = mark + wordmark (145 x 28). symbol = mark only (22 x 32 frame)." },
     "label": { "type": "string", "default": "Logo", "note": "Accessible name." }
   },
   "useWhen": ["App header, sign-in and other brand moments.", "Collapsed navigation or tight spaces, using the symbol."],
@@ -15,12 +15,12 @@
     {
       "title": "Default",
       "usage": "The full wordmark. Primary use in headers and sign-in screens.",
-      "items": [{ "props": { "variant": "default" } }]
+      "items": [{ "props": { "type": "default" } }]
     },
     {
       "title": "Symbol",
       "usage": "The mark alone for tight spaces, like a collapsed sidebar.",
-      "items": [{ "props": { "variant": "symbol" } }]
+      "items": [{ "props": { "type": "symbol" } }]
     }
   ]
 }

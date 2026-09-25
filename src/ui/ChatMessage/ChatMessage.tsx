@@ -3,7 +3,7 @@ import { useState, type ReactNode } from "react";
 import { Avatar } from "../Avatar/Avatar";
 import { Badge } from "../Badge/Badge";
 import { Button } from "../Button/Button";
-import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
+import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import { LogoAI } from "../LogoAI/LogoAI";
 import { Tooltip } from "../Tooltip/Tooltip";
@@ -43,7 +43,7 @@ export interface ChatMessageProps {
   onAction?: (action: ChatMessageActionId) => void;
   suggestions?: ChatSuggestion[];
   onSuggestion?: (id: string, label: string) => void;
-  menu?: DropdownMenuEntry[];
+  menu?: DropdownEntry[];
   onMenuSelect?: (id: string) => void;
   person?: ChatMessagePerson;
   label?: string;
@@ -89,7 +89,7 @@ export function ChatMessage({
 
   const avatar = mine
     ? <Avatar shape="square" name={person?.name ?? "You"} src={person?.src} initials={person?.initials} />
-    : <span className={styles.aiMark}><LogoAI variant="symbol" intent="filled" label="Assistant" /></span>;
+    : <span className={styles.aiMark}><LogoAI type="symbol" intent="filled" label="Assistant" /></span>;
 
   return (
     <article className={[styles.message, mine ? styles.mine : styles.theirs].join(" ")} aria-label={`${who} said`}>
@@ -97,7 +97,7 @@ export function ChatMessage({
         {/* The person's More menu sits outside the bubble, on hover or focus. */}
         {mine && menu && menu.length > 0 && (
           <span className={styles.menu}>
-            <DropdownMenu label={`Message actions`} items={menu} iconOnly icon="more_vert" variant="tertiary" size="sm" onSelect={(id) => onMenuSelect?.(id)} />
+            <Dropdown label={`Message actions`} items={menu} iconOnly icon="more_vert" variant="tertiary" size="sm" onSelect={(id) => onMenuSelect?.(id)} />
           </span>
         )}
         {!mine && <span className={styles.avatar}>{avatar}</span>}

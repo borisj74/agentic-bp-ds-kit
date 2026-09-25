@@ -6,7 +6,7 @@
   "composes": [
     "GuidedProcess",
     "Form",
-    "Alert"
+    "Callout"
   ],
   "props": {
     "view": {
@@ -67,7 +67,7 @@
   "doNot": [
     "Do not invent WizardPage, StepPage, a steps panel or a footer bar of your own. The parts are GuidedProcess.",
     "Do not put a PageHeader over it. The header part names the step.",
-    "Do not use it for a short flow; two or three fields belong in a Modal with a Stepper.",
+    "Do not use it for a short flow; two or three fields belong in a Modal with Steps.",
     "Do not put page padding on it. It fills the AppShell page; read contracts/layout.json.",
     "Do not give the steps part a different side from the page.",
     "Do not keep whether it has started, the current step, the saved time or the open drawer in the pattern. The screen owns them."

@@ -13,7 +13,7 @@ export interface FormPageProps {
   label?: string;
 }
 
-// One record being filled in: the kit PageHeader with what is being made and the save, a kit Alert with
+// One record being filled in: the kit PageHeader with what is being made and the save, a kit Callout with
 // whatever has to be read first, and one kit Form underneath whose sections are the folding groups of fields.
 // A blueprint only: it composes kit pieces and keeps no state of its own. It sits in the AppShell page, which
 // owns the page padding.

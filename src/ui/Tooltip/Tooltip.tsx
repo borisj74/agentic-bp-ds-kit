@@ -1,15 +1,15 @@
 "use client";
 import { useEffect, useId, useLayoutEffect, useRef, useState, type FocusEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
 import { createPortal } from "react-dom";
-import { useFloating, useInBrowser, type FloatingSide } from "./useFloating";
+import { SIDE, useFloating, useInBrowser, type FloatingPosition } from "./useFloating";
 import styles from "./Tooltip.module.css";
 import { usePortalDensity } from "../Density/Density";
 
-export type TooltipPlacement = FloatingSide;
+export type TooltipPosition = FloatingPosition;
 
 export interface TooltipProps {
   content: string;
-  placement?: TooltipPlacement;
+  position?: TooltipPosition;
   delay?: number;
   open?: boolean;
   disabled?: boolean;
@@ -35,7 +35,7 @@ export function useDescribedBy(wrapRef: RefObject<HTMLElement | null>, id: strin
   }, [wrapRef, id, off]);
 }
 
-export function Tooltip({ content, placement = "top", delay = 150, open: openProp, disabled = false, children }: TooltipProps) {
+export function Tooltip({ content, position = "above", delay = 150, open: openProp, disabled = false, children }: TooltipProps) {
   const id = useId();
   const density = usePortalDensity(); // the portalled popup keeps the surrounding Density
   const wrapRef = useRef<HTMLSpanElement>(null);
@@ -59,7 +59,7 @@ export function Tooltip({ content, placement = "top", delay = 150, open: openPro
   useEffect(() => clear, []);
 
   // Fixed and portaled, so cards, tables and Forms never clip it.
-  useFloating(open, wrapRef, bubbleRef, placement, GAP, content);
+  useFloating(open, wrapRef, bubbleRef, SIDE[position], GAP, content);
   // The text is always in the page as the trigger's description, so screen readers get it without the bubble.
   useDescribedBy(wrapRef, id, disabled);
 

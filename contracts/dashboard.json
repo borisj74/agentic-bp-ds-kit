@@ -5,7 +5,7 @@
   "usage": "Use Dashboard for a home screen that reports rather than lists: accounting, billing, revenue. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns which dashboard is showing, which groups are open and what the filters are. Pass the kit Toolbar as toolbar, with the filters, the search, the view and refresh; it stays at the top under the page header while the groups scroll. name is the dashboard that is showing, written as a heading; it is a name, not a control, so switching between saved dashboards goes in the Toolbar's view menu. children are the groups: one kit Section each, collapsible, and the blocks inside a group are collapsible Sections too, titled like All, Invoices or Revenue, with a kit HelpPopover on the title where the group needs explaining. Inside a group, lead with a kit Scoreboard of that group's few numbers, then the tiles that explain them: kit BarChart, LineChart or PieChart, a kit Table with its own Toolbar over it, for the filters and the export that belong to that table alone, a kit Timeline of what happened. Two tiles side by side is the .layout-split class from contracts/layout.json, not a grid of your own. state swaps what stands in for the groups: loading draws kit Skeleton blocks in their shape and empty shows what you pass as empty. It goes in the AppShell page, under the PageHeader, which owns the page padding. See contracts/dashboard.json for the full contract.",
   "composes": [
     "Toolbar",
-    "DropdownMenu",
+    "Dropdown",
     "Section",
     "Scoreboard",
     "BarChart",
@@ -14,7 +14,7 @@
     "Legend",
     "Table",
     "Timeline",
-    "Empty",
+    "EmptyState",
     "Skeleton"
   ],
   "props": {
@@ -47,7 +47,7 @@
     },
     "empty": {
       "type": "ReactNode",
-      "note": "Shown when state is empty, usually a kit Empty with the action that builds the first dashboard."
+      "note": "Shown when state is empty, usually a kit EmptyState with the action that builds the first dashboard."
     },
     "loadingTiles": {
       "type": "number",

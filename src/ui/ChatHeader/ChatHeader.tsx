@@ -1,7 +1,7 @@
 "use client";
 import { Badge } from "../Badge/Badge";
 import { Button } from "../Button/Button";
-import { DropdownMenu, type DropdownMenuEntry } from "../DropdownMenu/DropdownMenu";
+import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { LogoAI } from "../LogoAI/LogoAI";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./ChatHeader.module.css";
@@ -16,14 +16,14 @@ export interface ChatHeaderProps {
   playbooksCount?: number;
   planMode?: boolean;
   onPlanModeChange?: (planMode: boolean) => void;
-  menu?: DropdownMenuEntry[];
+  menu?: DropdownEntry[];
   onMenuSelect?: (id: string) => void;
   label?: string;
 }
 
 // Figma BP AI shell elements 483:7870: Chats and Playbooks carry how many there are, Plan Mode is ticked
 // while it is on, and a count is left off when there are none.
-function options(chats?: number, playbooks?: number, planMode?: boolean): DropdownMenuEntry[] {
+function options(chats?: number, playbooks?: number, planMode?: boolean): DropdownEntry[] {
   return [
     { id: "chats", label: "Chats", icon: "forum", count: chats || undefined },
     { id: "playbooks", label: "Playbooks", icon: "play_circle", count: playbooks || undefined },
@@ -48,7 +48,7 @@ export function ChatHeader({
   return (
     <div className={styles.frame}>
     <header className={styles.header} aria-label={label ?? title}>
-      <span className={styles.mark}><LogoAI variant="symbol" intent="filled" label={title} /></span>
+      <span className={styles.mark}><LogoAI type="symbol" intent="filled" label={title} /></span>
       <h2 className={styles.title}>{title}</h2>
       {/* While Plan Mode is on the bar says so, so the tick in the menu is not the only sign of it. On a narrow
           bar the badge drops to its icon, still named Plan Mode, so the name stays whole. */}
@@ -74,7 +74,7 @@ export function ChatHeader({
             </Button>
           </Tooltip>
         )}
-        <DropdownMenu label="Options" items={items} iconOnly icon="more_vert" variant="tertiary" size="sm" align="end" onSelect={pick} />
+        <Dropdown label="Options" items={items} iconOnly icon="more_vert" variant="tertiary" size="sm" alignment="right" onSelect={pick} />
         {onClose && (
           <Tooltip content={`Close ${title}`}>
             <Button size="sm" variant="tertiary" iconOnly iconStart="close" onClick={onClose}>{`Close ${title}`}</Button>

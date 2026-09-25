@@ -1,6 +1,6 @@
 "use client";
 import { useId, useState, type ReactNode } from "react";
-import { Alert } from "@/ui/Alert/Alert";
+import { Callout } from "@/ui/Callout/Callout";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
 import { AlertDialog, type AlertDialogProps } from "@/ui/AlertDialog/AlertDialog";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -22,7 +22,7 @@ import { ListDetail, type ListDetailLayout } from "@/patterns/ListDetail/ListDet
 import { ListView, type ListViewItem } from "@/ui/ListView/ListView";
 import { Badge } from "@/ui/Badge/Badge";
 import { Button } from "@/ui/Button/Button";
-import { ButtonFilter, type ButtonFilterProps, type ButtonFilterToggle } from "@/ui/ButtonFilter/ButtonFilter";
+import { FilterButton, type FilterButtonProps, type FilterButtonToggle } from "@/ui/FilterButton/FilterButton";
 import { Card } from "@/ui/Card/Card";
 import { Cell, type CellSize, type CellTreeToggle } from "@/ui/Cell/Cell";
 import { ChatComposer, type ChatComposerMode, type ChatComposerProps } from "@/ui/ChatComposer/ChatComposer";
@@ -32,11 +32,11 @@ import { ChatList, type ChatListProps } from "@/ui/ChatList/ChatList";
 import { ChatMessage, type ChatMessageActionId, type ChatMessageProps } from "@/ui/ChatMessage/ChatMessage";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
 import { DatePicker } from "@/ui/DatePicker/DatePicker";
-import { Empty } from "@/ui/Empty/Empty";
+import { EmptyState } from "@/ui/EmptyState/EmptyState";
 import { ChatWindow, type ChatWindowProps } from "@/patterns/ChatWindow/ChatWindow";
 import { Density, type DensityValue } from "@/ui/Density/Density";
 import { Drawer, type DrawerProps } from "@/ui/Drawer/Drawer";
-import { DropdownMenu, type DropdownMenuProps } from "@/ui/DropdownMenu/DropdownMenu";
+import { Dropdown, type DropdownProps } from "@/ui/Dropdown/Dropdown";
 import { Form, type FormColumns, type FormLabelPosition, type FormProps } from "@/ui/Form/Form";
 import { FormDisplay } from "@/ui/FormDisplay/FormDisplay";
 import { Input } from "@/ui/Input/Input";
@@ -47,21 +47,21 @@ import { Legend, type LegendProps } from "@/ui/Legend/Legend";
 import { Lookup, type LookupRow } from "@/ui/Lookup/Lookup";
 import { Modal, type ModalProps } from "@/ui/Modal/Modal";
 import { PageHeader } from "@/ui/PageHeader/PageHeader";
-import { Progress } from "@/ui/Progress/Progress";
+import { Meter } from "@/ui/Meter/Meter";
 import { Pagination } from "@/ui/Pagination/Pagination";
 import { Scoreboard } from "@/ui/Scoreboard/Scoreboard";
 import { Section } from "@/ui/Section/Section";
-import { SegmentedControl } from "@/ui/SegmentedControl/SegmentedControl";
-import { SideNav } from "@/ui/SideNav/SideNav";
+import { Segmented } from "@/ui/Segmented/Segmented";
+import { AppNav } from "@/ui/AppNav/AppNav";
 import { Select } from "@/ui/Select/Select";
 import { Skeleton, type SkeletonProps } from "@/ui/Skeleton/Skeleton";
-import { Stepper, type StepperProps } from "@/ui/Stepper/Stepper";
+import { Steps, type StepsProps } from "@/ui/Steps/Steps";
 import { Switch } from "@/ui/Switch/Switch";
 import { Table, type TableColumn, type TableRow } from "@/ui/Table/Table";
 import { Tabs, type TabItem } from "@/ui/Tabs/Tabs";
 import { Textarea } from "@/ui/Textarea/Textarea";
 import { Toast, type ToastProps } from "@/ui/Toast/Toast";
-import { Tile, type TileIntent } from "@/ui/Tile/Tile";
+import { NavTile, type NavTileIntent } from "@/ui/NavTile/NavTile";
 import { Timeline } from "@/ui/Timeline/Timeline";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 
@@ -139,7 +139,7 @@ export function FormDemo({ content = "fields", ...p }: Omit<FormProps, "children
           <Checkbox label="Send invoices by email" name="sendInvoices" defaultChecked />
         </Form>
       )}
-      {saved && <Alert intent="success">{saved}</Alert>}
+      {saved && <Callout intent="success">{saved}</Callout>}
     </div>
   );
 }
@@ -271,7 +271,7 @@ export function DensityDemo({ value = "default" }: { value?: DensityValue }) {
       <div style={{ display: "grid", gap: "var(--space-medium)", width: 360, maxWidth: "100%" }}>
         <Input label="Company" defaultValue="Acme Inc." />
         <Select label="Country" options={COUNTRIES} defaultValue="us" />
-        <SegmentedControl label="View" options={[{ value: "list", label: "List" }, { value: "board", label: "Board" }]} defaultValue="list" />
+        <Segmented label="View" options={[{ value: "list", label: "List" }, { value: "board", label: "Board" }]} defaultValue="list" />
         <Switch label="Email notifications" defaultChecked />
         <div style={{ display: "flex", gap: "var(--space-xsmall)" }}>
           <Button>Cancel</Button>
@@ -293,8 +293,8 @@ export function AlertDialogDemo(p: Omit<AlertDialogProps, "open" | "onCancel" | 
   );
 }
 
-// Playground harness: keeps the real DropdownMenu's items in state so checkbox and single-choice items respond. Not a kit piece.
-export function DropdownMenuDemo(p: DropdownMenuProps) {
+// Playground harness: keeps the real Dropdown's items in state so checkbox and single-choice items respond. Not a kit piece.
+export function DropdownMenuDemo(p: DropdownProps) {
   const [items, setItems] = useState(p.items);
   const onSelect = (id: string) =>
     setItems((list) =>
@@ -306,7 +306,7 @@ export function DropdownMenuDemo(p: DropdownMenuProps) {
       }),
     );
   const count = p.trigger === "filter" ? items.filter((e) => !("divider" in e) && e.checkbox && e.selected).length : p.count;
-  return <DropdownMenu {...p} items={items} count={count} onSelect={onSelect} />;
+  return <Dropdown {...p} items={items} count={count} onSelect={onSelect} />;
 }
 
 // Playground-only Calculate for FormulaEditor: fills sample field values, then works out + - * / and brackets.
@@ -344,20 +344,20 @@ export function calculate(formula: string): string {
 }
 
 // Playground harness: onToggle="{toggleStatus}" in props turns on the split; here it flips a local on/off.
-export function ButtonFilterDemo({ children, toggle, onToggle, ...p }: Omit<ButtonFilterProps, "children" | "onToggle"> & { children?: string; onToggle?: unknown }) {
-  const [state, setState] = useState<ButtonFilterToggle | undefined>(toggle);
+export function ButtonFilterDemo({ children, toggle, onToggle, ...p }: Omit<FilterButtonProps, "children" | "onToggle"> & { children?: string; onToggle?: unknown }) {
+  const [state, setState] = useState<FilterButtonToggle | undefined>(toggle);
   const local = onToggle !== undefined || p.hasDropdown === false;
   return (
-    <ButtonFilter
+    <FilterButton
       {...p} toggle={local ? state : toggle}
       onToggle={local ? () => setState((s) => (s === "on" ? "off" : "on")) : undefined}
     >
       {children || "Status"}
-    </ButtonFilter>
+    </FilterButton>
   );
 }
 
-// Playground harness for Toolbar: real filter chips (kit DropdownMenu trigger filter) with their value and on/off in
+// Playground harness for Toolbar: real filter chips (kit Dropdown trigger filter) with their value and on/off in
 // local state. Contract props arrive as "{name}" placeholders; each one present turns on that part.
 type FilterOption = { id: string; label: string };
 const FILTER_SETS: { id: string; label: string; options: FilterOption[]; start?: string }[] = [
@@ -379,7 +379,7 @@ export function ToolbarDemo(p: Record<string, unknown>) {
   const chips = FILTER_SETS.map((f) => {
     const value = values[f.id];
     return (
-      <DropdownMenu
+      <Dropdown
         key={f.id} trigger="filter" size="sm" label={f.label}
         text={f.options.find((o) => o.id === value)?.label}
         toggle={value ? (off[f.id] ? "off" : "on") : undefined}
@@ -512,8 +512,8 @@ export function SkeletonDemo({ layout = "single", ...p }: SkeletonProps & { layo
   return <div style={{ width: 320 }}><Skeleton {...p}>{real}</Skeleton></div>;
 }
 
-// Playground harness: the real Stepper walked with Back and Next, and done steps clickable. Not a kit piece.
-export function StepperDemo({ current = 1, steps, ...p }: StepperProps) {
+// Playground harness: the real Steps walked with Back and Next, and done steps clickable. Not a kit piece.
+export function StepperDemo({ current = 1, steps, ...p }: StepsProps) {
   const [at, setAt] = useState(current);
   const [from, setFrom] = useState(current);
   // A new start step from the controls resets the walk.
@@ -521,7 +521,7 @@ export function StepperDemo({ current = 1, steps, ...p }: StepperProps) {
   const last = steps.length;
   return (
     <div style={{ display: "grid", gap: "var(--space-large)", width: "100%" }}>
-      <Stepper {...p} steps={steps} current={at} onStepClick={setAt} />
+      <Steps {...p} steps={steps} current={at} onStepClick={setAt} />
       <div style={{ display: "flex", justifyContent: "center", gap: "var(--space-xsmall)" }}>
         <Button size="sm" disabled={at <= 1} onClick={() => setAt(Math.max(at - 1, 1))}>Back</Button>
         <Button size="sm" variant="primary" disabled={at > last} onClick={() => setAt(at + 1)}>{at >= last ? "Finish" : "Next"}</Button>
@@ -822,13 +822,13 @@ const INVOICE_MENU = [
 const INVOICE_ALL_MENU = [...INVOICE_ACTIONS, ...INVOICE_MENU];
 const menuActions = (
   <Cell
-    type="actionIcons" align="end"
+    type="actionIcons" alignment="end"
     menu={INVOICE_ALL_MENU.map(({ label, icon, ...a }) => ({ label, icon, variant: "danger" in a && a.danger ? "danger" as const : undefined }))}
   />
 );
 const rowActions = (
   <Cell
-    type="actionIcons" align="end"
+    type="actionIcons" alignment="end"
     actions={INVOICE_ACTIONS.map(({ label, icon }) => ({ label, icon }))}
     menu={INVOICE_MENU.map(({ label, icon, danger }) => ({ label, icon, variant: danger ? "danger" as const : undefined }))}
   />
@@ -918,7 +918,7 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         onPageHeaderStick={setCompact}
         pageHeader={
@@ -1027,7 +1027,7 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
   const chips = FILTER_SETS.map((f) => {
     const value = values[f.id];
     return (
-      <DropdownMenu
+      <Dropdown
         key={f.id} trigger="filter" size="sm" label={f.label}
         text={f.options.find((o) => o.id === value)?.label}
         toggle={value ? (off[f.id] ? "off" : "on") : undefined}
@@ -1075,7 +1075,7 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
           pageSize={size} onPageSizeChange={(next) => { setSize(next); setPage(1); }} label="Invoices"
         />
       }
-      empty={<Empty headingLevel={2} icon="receipt_long" title="No invoices yet" description="Invoices appear here once a billing run completes." actions={<Button size="sm" variant="primary" iconStart="add">New invoice</Button>} />}
+      empty={<EmptyState headingLevel={2} icon="receipt_long" title="No invoices yet" description="Invoices appear here once a billing run completes." actions={<Button size="sm" variant="primary" iconStart="add">New invoice</Button>} />}
       error="The invoice list could not be loaded."
       onRetry={() => {}}
     >
@@ -1129,7 +1129,7 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         pageHeader={
           // No actions on the bar: a list keeps them in its own Toolbar, which owns the one primary.
@@ -1187,11 +1187,11 @@ const USAGE_FIELDS: { label: string; value: ReactNode; help: string }[] = [
   { label: "Sandbox environments", value: <RecordMeter value={33} label="Sandboxes used" of="1 of 3" />, help: "Against the plan's sandboxes." },
 ];
 
-// A used-against-allowance value: the kit Progress with its percent, and the raw figures beside it.
+// A used-against-allowance value: the kit Meter with its percent, and the raw figures beside it.
 function RecordMeter({ value, label, of }: { value: number; label: string; of: string }) {
   return (
     <span style={{ display: "flex", alignItems: "center", gap: "var(--space-xsmall)", minWidth: 0 }}>
-      <span style={{ flex: "1 1 auto", minWidth: 0 }}><Progress value={value} label={label} size="sm" showValue /></span>
+      <span style={{ flex: "1 1 auto", minWidth: 0 }}><Meter value={value} label={label} size="sm" showValue /></span>
       <span style={{ flex: "none", fontSize: "var(--font-size-xsmall)", color: "var(--text-neutral)" }}>{of}</span>
     </span>
   );
@@ -1229,9 +1229,9 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" 
       tabs={<Tabs label="What belongs to this account" items={RECORD_TABS} value={tab} onChange={setTab} />}
       notice={
         notice ? (
-          <Alert intent="warning" dismissible onDismiss={() => setNotice(false)} actionLabel="Review invoices" onAction={() => setTab("invoices")}>
+          <Callout intent="warning" closeButton onDismiss={() => setNotice(false)} actionLabel="Review invoices" onAction={() => setTab("invoices")}>
             This account has 2 invoices past due, totalling $22,940.00.
-          </Alert>
+          </Callout>
         ) : undefined
       }
       toolbar={
@@ -1251,7 +1251,7 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" 
         </>
       ) : (
         <Section title={RECORD_TABS.find((t) => t.id === tab)?.label ?? "Details"}>
-          <Empty icon="folder_open" title={`${RECORD_TABS.find((t) => t.id === tab)?.label} go here`} description="Each tab holds its own list or details." />
+          <EmptyState icon="folder_open" title={`${RECORD_TABS.find((t) => t.id === tab)?.label} go here`} description="Each tab holds its own list or details." />
         </Section>
       )}
     </RecordPage>
@@ -1279,7 +1279,7 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" 
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
       >
         {record}
@@ -1431,14 +1431,14 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
       state={shown}
       label={onDashboards ? name : place.page}
       empty={onDashboards
-        ? <Empty icon="dashboard" title="No dashboard yet" description="Build one from the numbers your team watches every morning." actions={<Button size="sm" iconStart="add">New dashboard</Button>} />
-        : <Empty icon="construction" title={`${place.page} is not built here`} description="This playground only ships the Home Dashboards page. The frame, the bar and the page header are the kit's own." />}
+        ? <EmptyState icon="dashboard" title="No dashboard yet" description="Build one from the numbers your team watches every morning." actions={<Button size="sm" iconStart="add">New dashboard</Button>} />
+        : <EmptyState icon="construction" title={`${place.page} is not built here`} description="This playground only ships the Home Dashboards page. The frame, the bar and the page header are the kit's own." />}
       toolbar={!onDashboards ? undefined : (
         <Toolbar
           label={name} searchValue={query} onSearchChange={setQuery} searchPlaceholder="Search"
           filterCount={period ? 1 : 0}
           filters={
-            <DropdownMenu
+            <Dropdown
               trigger="filter" size="sm" label="Period"
               text={PERIODS.find((o) => o.id === period)?.label}
               toggle={period ? "on" : undefined} onToggle={period ? () => setPeriod("") : undefined}
@@ -1456,12 +1456,12 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
         <Scoreboard items={AR_SCORES} selectable defaultSelected="open-ar" scroll label="Receivables summary" />
         <Tiles>
           <BarChart
-            label="AR aging by time" title="AR Aging By Time" showTitle categories={AGING_BUCKETS}
+            label="AR aging by time" title="AR Aging By Time" showHeader categories={AGING_BUCKETS}
             series={[{ name: "Balance", values: [230, 60, 22, 8, 3, 1], intent: "orange" }]}
             height={220}
           />
           <LineChart
-            label="DSO by time" title="DSO By Time" showTitle categories={MONTHS}
+            label="DSO by time" title="DSO By Time" showHeader categories={MONTHS}
             series={[{ name: "DSO", values: [38, 51, 43, 57, 45, 42], intent: "cyan" }]}
             showPoints height={220}
           />
@@ -1472,7 +1472,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
             searchValue={agingQuery} onSearchChange={setAgingQuery} searchPlaceholder="Search accounts"
             filterCount={bucket ? 1 : 0}
             filters={
-              <DropdownMenu
+              <Dropdown
                 trigger="filter" size="sm" label="Aging"
                 text={BUCKET_FILTERS.find((o) => o.id === bucket)?.label}
                 toggle={bucket ? "on" : undefined} onToggle={bucket ? () => setBucket("") : undefined}
@@ -1517,7 +1517,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
       <Section title="Invoices" help="Where this period's invoices stand." collapsible>
         <Scoreboard items={INVOICE_SCORES} scroll label="Invoice summary" />
         <BarChart
-          label="Invoices by status" title="Invoice By Status" showTitle orientation="horizontal"
+          label="Invoices by status" title="Invoice By Status" showHeader orientation="horizontal"
           categories={["Draft", "Waiting", "Open", "Approved", "Sent", "Paid"]}
           series={[{ name: "Invoices", values: [8, 12, 25, 18, 15, 44], intent: "purple" }]}
           showValues height={240}
@@ -1528,11 +1528,11 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
         <Scoreboard items={CASH_SCORES} scroll label="Cash summary" />
         <Tiles>
           <PieChart
-            label="Payments by method" title="Payment Methods" showTitle donut showTotal
+            label="Payments by method" title="Payment Methods" showHeader donut showTotal
             data={[{ label: "Bank", value: 52 }, { label: "Credit Card", value: 28 }, { label: "Check", value: 12 }, { label: "Other", value: 8 }]}
           />
           <BarChart
-            label="Unapplied cash by time" title="Unapplied Cash By Time" showTitle categories={MONTHS}
+            label="Unapplied cash by time" title="Unapplied Cash By Time" showHeader categories={MONTHS}
             series={[{ name: "Unapplied", values: [96, 112, 128, 140, 132, 128], intent: "mint" }]}
             height={220}
           />
@@ -1543,17 +1543,17 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
         <Scoreboard items={REVENUE_SCORES} scroll label="Revenue summary" />
         <Tiles>
           <LineChart
-            label="Revenue by time" title="Revenue by Time" showTitle categories={MONTHS}
+            label="Revenue by time" title="Revenue by Time" showHeader categories={MONTHS}
             series={[{ name: "Revenue", values: [4300, 4400, 4600, 4500, 4800, 4900] }]}
             area showPoints height={220}
           />
           <BarChart
-            label="Revenue recognition schedule" title="Revenue Recognition Schedule" showTitle categories={MONTHS}
+            label="Revenue recognition schedule" title="Revenue Recognition Schedule" showHeader categories={MONTHS}
             series={[
               { name: "Recognized", values: [3200, 3400, 3600, 3500, 3800, 3900] },
               { name: "Deferred", values: [820, 780, 760, 800, 740, 720] },
             ]}
-            showLegend legend="bottom" height={220}
+            showLegend legendPosition="bottom" height={220}
           />
         </Tiles>
       </Section>
@@ -1588,7 +1588,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         onPageHeaderStick={setCompact}
         pageHeader={
@@ -1630,7 +1630,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
 // Playground harness: the SettingsPage pattern in the AppShell frame, driven like a screen would drive it.
 // Not a kit piece. The places are the real Settings entries from the side nav, with the descriptions and
 // colors of the BP DS Hub settings home.
-const SETTINGS_PLACES: { id: string; title: string; description: string; icon: string; intent: TileIntent }[] = [
+const SETTINGS_PLACES: { id: string; title: string; description: string; icon: string; intent: NavTileIntent }[] = [
   { id: "settings-develop", title: "Develop", description: "Includes entities, workflows, functions, data presentations, OAuth, and APIs.", icon: "handyman", intent: "yellow" },
   { id: "settings-external-connectors", title: "External Connectors", description: "Includes application, data and tax connectors.", icon: "account_tree", intent: "olive" },
   { id: "settings-security-users", title: "Security & Users", description: "Includes roles, sharing groups, approvals, authentication, and user management.", icon: "shield_person", intent: "red" },
@@ -1657,13 +1657,13 @@ export function SettingsPageDemo({ shell = true, notice = false, stage = "deskto
       {...p}
       label="Settings"
       intro={notice && open ? (
-        <Alert intent="warning" dismissible onDismiss={() => setOpen(false)} actionLabel="Review users" onAction={() => {}}>
+        <Callout intent="warning" closeButton onDismiss={() => setOpen(false)} actionLabel="Review users" onAction={() => {}}>
           Four users have not signed in for 90 days.
-        </Alert>
+        </Callout>
       ) : undefined}
     >
       {SETTINGS_PLACES.map((s) => (
-        <Tile
+        <NavTile
           key={s.id} title={s.title} description={s.description} icon={s.icon} intent={s.intent}
           onClick={() => setSection(s.id)}
         />
@@ -1693,7 +1693,7 @@ export function SettingsPageDemo({ shell = true, notice = false, stage = "deskto
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         pageHeader={
           <PageHeader
@@ -1705,7 +1705,7 @@ export function SettingsPageDemo({ shell = true, notice = false, stage = "deskto
         }
       >
         {chosen ? (
-          <Empty
+          <EmptyState
             icon="construction" title={`${chosen.title} is not built here`}
             description="This playground ships the settings home. Go back to Settings for the way in."
             actions={<Button size="sm" onClick={() => setSection("settings-settings-home")}>Back to Settings</Button>}
@@ -1880,9 +1880,9 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
       }
       notice={
         notice && said ? (
-          <Alert intent="info" dismissible onDismiss={() => setSaid(false)} actionLabel="Main action" onAction={() => {}}>
+          <Callout intent="info" closeButton onDismiss={() => setSaid(false)} actionLabel="Main action" onAction={() => {}}>
             Use this form to manage general account information as well as the default billing information for the account.
-          </Alert>
+          </Callout>
         ) : undefined
       }
     >
@@ -1890,7 +1890,7 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
         id={formId} labelPosition={labels} columns={columns} sections={sections}
         onSubmit={(data) => setSaved(String(data.get("name") || "").trim() ? `Created ${String(data.get("name"))}.` : "Created the account.")}
       />
-      {saved && <Alert intent="success">{saved}</Alert>}
+      {saved && <Callout intent="success">{saved}</Callout>}
     </FormPage>
   );
 
@@ -1916,7 +1916,7 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
       >
         {page}
@@ -2050,7 +2050,7 @@ export function GuidedProcessPageDemo({ shell = true, stage = "desktop", side = 
       footer={<GuidedProcess part="footer" updated={updated} actions={actions} onAction={onAction} />}
     >
       {done ? (
-        <Alert intent="success" actionLabel="Import another" onAction={reset}>Imported the September 2026 usage.</Alert>
+        <Callout intent="success" actionLabel="Import another" onAction={reset}>Imported the September 2026 usage.</Callout>
       ) : (
         <Form key={at} id={formId} columns={2} onSubmit={() => setDone(true)}>{fields[at]}</Form>
       )}
@@ -2085,7 +2085,7 @@ export function GuidedProcessPageDemo({ shell = true, stage = "desktop", side = 
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
       >
         {page}
@@ -2159,7 +2159,7 @@ const flowProductRow = (p: FlowProduct): TableRow => ({
   rc: p.rc, contract: p.contract, start: p.start, end: p.end, qty: p.qty, rate: p.rate, ssp: p.ssp,
   quote: p.quote === "—" ? "—" : <Cell type="link" label={p.quote} onClick={() => {}} />,
   discount: p.discount,
-  actions: <Cell type="actionIcons" align="end" actions={[{ label: "Edit", icon: "edit" }, { label: "Delete", icon: "delete" }]} />,
+  actions: <Cell type="actionIcons" alignment="end" actions={[{ label: "Edit", icon: "edit" }, { label: "Delete", icon: "delete" }]} />,
 });
 
 const FLOW_TIME_ZONES = [{ value: "asia-bangkok", label: "Asia/Bangkok" }, { value: "america-denver", label: "America/Denver" }, { value: "europe-london", label: "Europe/London" }];
@@ -2235,7 +2235,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
   const chips = filterSets.map((f) => {
     const on = picks[f.key];
     return (
-      <DropdownMenu
+      <Dropdown
         key={f.key} trigger="filter" size="sm" label={f.label} multiple closeOnSelect={false}
         text={on.length === 0 ? undefined : on.length === 1 ? on[0] : `${on.length} selected`}
         items={f.options.map((o) => ({ id: o, label: o, selected: on.includes(o) }))}
@@ -2254,7 +2254,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
     name: a.name, type: "ACCOUNT", cycle: "MONTHLY",
     status: <Cell type="badge" label="Active" intent="success" />,
     approval: a.approval ? <Cell type="badge" label={a.approval} intent="neutral" /> : "—",
-    actions: <Cell type="actionIcons" align="end" actions={[{ label: "Edit", icon: "edit", onClick: () => openAccount(a.id) }, { label: "Delete", icon: "delete", onClick: () => setAccounts((old) => old.filter((x) => x.id !== a.id)) }]} />,
+    actions: <Cell type="actionIcons" alignment="end" actions={[{ label: "Edit", icon: "edit", onClick: () => openAccount(a.id) }, { label: "Delete", icon: "delete", onClick: () => setAccounts((old) => old.filter((x) => x.id !== a.id)) }]} />,
   }));
   const listHeader = (
     // The page's own actions live here, not in the Toolbar, which keeps finding and viewing.
@@ -2305,7 +2305,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
             <FormDisplay label="Reporting currency" value="USD" />
           </Form>
         </Section>
-        <Section title="Billing profile" collapsible defaultOpen={false}>
+        <Section title="Billing profile" collapsible defaultExpanded={false}>
           <Form columns={2}>
             <FormDisplay label="Default billing cycle" value="MONTHLY" />
             <FormDisplay label="Billing cycle closing day" value="31" />
@@ -2315,7 +2315,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
             <FormDisplay label="Dunning process" value="None" />
           </Form>
         </Section>
-        <Section title="Invoices" collapsible defaultOpen={false}>
+        <Section title="Invoices" collapsible defaultExpanded={false}>
           <Table
             columns={[{ key: "invoice", header: "Invoice" }, { key: "date", header: "Date" }, { key: "amount", header: "Amount", numeric: true }, { key: "status", header: "Status" }]}
             rows={[
@@ -2324,7 +2324,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
             ]}
           />
         </Section>
-        <Section title="Account products" collapsible defaultOpen={false}>
+        <Section title="Account products" collapsible defaultExpanded={false}>
           <Table columns={FLOW_PRODUCT_COLUMNS.slice(0, 5)} rows={products.slice(0, 5).map(flowProductRow)} emptyLabel="No products on this account yet." />
         </Section>
       </div>
@@ -2381,7 +2381,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
         />
       }
       tabs={<Tabs label="What belongs to this account" items={tabs} value={tab} onChange={setTab} />}
-      notice={notice ? <Alert intent="success" dismissible onDismiss={() => setNotice("")}>{notice}</Alert> : undefined}
+      notice={notice ? <Callout intent="success" closeButton onDismiss={() => setNotice("")}>{notice}</Callout> : undefined}
       summary={
         tab === "details" ? (
           <Scoreboard
@@ -2399,7 +2399,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
     >
       {tab === "details" ? details : tab === "products" ? productList : (
         <Section title={tabLabel}>
-          <Empty icon="folder_open" title={`No ${tabLabel.toLowerCase()} yet`} description={`${tabLabel} for this account show here.`} />
+          <EmptyState icon="folder_open" title={`No ${tabLabel.toLowerCase()} yet`} description={`${tabLabel} for this account show here.`} />
         </Section>
       )}
     </RecordPage>
@@ -2502,7 +2502,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
           actions={<><Button size="sm" onClick={toList}>Cancel</Button><Button size="sm" variant="primary" type="submit" form={newAccountForm}>Submit</Button></>}
         />
       }
-      notice={<Alert intent="info">Use this form to manage general account information as well as the default billing information for the account.</Alert>}
+      notice={<Callout intent="info">Use this form to manage general account information as well as the default billing information for the account.</Callout>}
     >
       <Form
         id={newAccountForm} columns={2} sections={newAccountSections}
@@ -2583,7 +2583,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current="accounts-account" onNavigate={(id) => { if (id === "accounts-account") toList(); }} expanded={navOpen} />}
+        nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current="accounts-account" onNavigate={(id) => { if (id === "accounts-account") toList(); }} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         // Only the list's header sits in the frame; the record and the forms carry their own.
         pageHeader={view === "list" ? listHeader : undefined}
@@ -2690,7 +2690,7 @@ export function ListDetailDemo({ shell = true, stage = "desktop", picked = true,
           onAction={(id, action) => { if (action === "view") setOpenId(id); }}
         />
       )}
-      empty={<Empty icon="receipt_long" title="Pick an invoice" description="Its details show here." />}
+      empty={<EmptyState icon="receipt_long" title="Pick an invoice" description="Its details show here." />}
       detail={invoice && (
         <Section title="Invoice Details">
           {/* The rows stack flush: one plain box, so the label column reads as one fill and a Section's gap stays out. */}
@@ -2727,7 +2727,7 @@ export function ListDetailDemo({ shell = true, stage = "desktop", picked = true,
             onUserSettings={() => {}} onLogout={() => {}}
           />
         }
-        nav={<SideNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
+        nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         pageHeader={<PageHeader title="Invoices" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />}
       >

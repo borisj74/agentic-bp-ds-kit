@@ -2,7 +2,7 @@
   "name": "Skeleton",
   "path": "src/ui/Skeleton/Skeleton.tsx",
   "intent": "Gray placeholder shapes in the layout of content that is still loading, like lines of text, an avatar or an image, so the page keeps its shape until the data arrives.",
-  "usage": "Use Skeleton while data loads, in the place and rough shape the content will take: text lines for copy, a circle for an avatar, a block for an image, chart or card. It is one component: pick a shape, and for text how many lines (the last is shorter). animation shimmer runs a soft band of light across every skeleton on the page together; pulse fades them in and out; none keeps them still gray. Wrap the real content as children and set loading to false when it is ready: the Skeleton steps aside. Compose several for a card, a list row or a table. For a short line saying work is happening, use ShimmerText; for a known amount done, use Progress. See contracts/skeleton.json for the full contract.",
+  "usage": "Use Skeleton while data loads, in the place and rough shape the content will take: text lines for copy, a circle for an avatar, a block for an image, chart or card. It is one component: pick a shape, and for text how many lines (the last is shorter). animation shimmer runs a soft band of light across every skeleton on the page together; pulse fades them in and out; none keeps them still gray. Wrap the real content as children and set loading to false when it is ready: the Skeleton steps aside. Compose several for a card, a list row or a table. For a short line saying work is happening, use TextLoader; for a known amount done, use Meter. See contracts/skeleton.json for the full contract.",
   "props": {
     "shape": {
       "enum": [
@@ -64,9 +64,9 @@
     "Keeping the page from jumping while data arrives."
   ],
   "doNot": [
-    "Do not use it for a short status line. Use ShimmerText.",
-    "Do not use it when the amount done is known. Use Progress.",
-    "Do not leave it up when the load failed; show an Alert or an Empty state.",
+    "Do not use it for a short status line. Use TextLoader.",
+    "Do not use it when the amount done is known. Use Meter.",
+    "Do not leave it up when the load failed; show a Callout or an EmptyState.",
     "Do not draw loading bars with local gray divs. Use Skeleton.",
     "Do not use raw hex."
   ],

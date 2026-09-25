@@ -83,7 +83,7 @@ describe("PieChart align", () => {
   it("hugs the start by default and centres with align center", () => {
     const { container, rerender } = render(<PieChart label="Payments" data={data} animate={false} />);
     expect(container.querySelector(".layout.center")).toBeNull();
-    rerender(<PieChart label="Payments" data={data} animate={false} align="center" />);
+    rerender(<PieChart label="Payments" data={data} animate={false} alignment="center" />);
     expect(container.querySelector(".layout.center")).not.toBeNull();
   });
 });

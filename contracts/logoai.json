@@ -4,7 +4,7 @@
   "intent": "AI logo for AI features: full logo or icon, in fixed brand colors.",
   "usage": "Use LogoAI to mark AI features, like an assistant panel header or an AI suggestion. Use Logo for the product brand itself. color is the default. Use white on dark or photo backgrounds, monochrome where color is not allowed, and filled for a stand-alone tile. In dark theme the AI text of the color logo switches to white. See contracts/logoai.json for the full contract.",
   "props": {
-    "variant": { "enum": ["default", "symbol"], "default": "default", "note": "default = mark + AI text (55 x 28). symbol = mark only (33 x 28)." },
+    "type": { "enum": ["default", "symbol"], "default": "default", "note": "default = mark + AI text (55 x 28). symbol = mark only (33 x 28)." },
     "intent": { "enum": ["color", "monochrome", "white", "filled"], "default": "color", "note": "filled = white logo on the brand gradient tile (43 x 23, icon 23 x 23)." },
     "label": { "type": "string", "default": "AI logo", "note": "Accessible name." }
   },
@@ -16,22 +16,22 @@
     {
       "title": "Color",
       "usage": "The default. Full logo and icon.",
-      "items": [{ "props": { "variant": "default", "intent": "color" } }, { "props": { "variant": "symbol", "intent": "color" } }]
+      "items": [{ "props": { "type": "default", "intent": "color" } }, { "props": { "type": "symbol", "intent": "color" } }]
     },
     {
       "title": "Monochrome",
       "usage": "One color, for places where the brand colors are not allowed.",
-      "items": [{ "props": { "variant": "default", "intent": "monochrome" } }, { "props": { "variant": "symbol", "intent": "monochrome" } }]
+      "items": [{ "props": { "type": "default", "intent": "monochrome" } }, { "props": { "type": "symbol", "intent": "monochrome" } }]
     },
     {
       "title": "Filled",
       "usage": "White logo on the brand gradient tile. Use it where the logo stands alone, like an app tile.",
-      "items": [{ "props": { "variant": "default", "intent": "filled" } }, { "props": { "variant": "symbol", "intent": "filled" } }]
+      "items": [{ "props": { "type": "default", "intent": "filled" } }, { "props": { "type": "symbol", "intent": "filled" } }]
     },
     {
       "title": "White",
       "usage": "For dark or photo backgrounds. The playground stage turns dark in dark theme; in light theme this sits on a light stage only to show the shape.",
-      "items": [{ "props": { "variant": "default", "intent": "white" } }, { "props": { "variant": "symbol", "intent": "white" } }]
+      "items": [{ "props": { "type": "default", "intent": "white" } }, { "props": { "type": "symbol", "intent": "white" } }]
     }
   ]
 }

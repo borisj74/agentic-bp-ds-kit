@@ -2,7 +2,7 @@
   "name": "Cell",
   "path": "src/ui/Cell/Cell.tsx",
   "intent": "Content for one table cell: text, a link, a person, a file, a status, a trend, progress, a rating, a select, row actions or a row menu, a tree row, with an optional row checkbox. Each cell is full width with a faint bottom border.",
-  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, link to open a record, avatar for a person, badge for status, trend for change, progress for how far along something is, actions for row buttons, actionMenu for a More menu, select to change a value in place, checkbox for a column with only the row Checkbox, tree for the first cell of parent and child rows (an indent per level, faint guide lines and a chevron to open and close its children; treeToggle box swaps that chevron for the outlined plus or minus square). Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, DropdownMenu, Icon, Progress and Select; it never draws its own. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract. With actionIcons, menu puts the row's remaining actions behind one More button at the end. In a box narrower than 640px, the kit's mobile break, the icon buttons fold into that More menu and the cell keeps one button, so the row's own values get the width; only one of the two is in the layout, so nothing is reached twice by the keyboard.",
+  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, link to open a record, avatar for a person, badge for status, trend for change, progress for how far along something is, actions for row buttons, actionMenu for a More menu, select to change a value in place, checkbox for a column with only the row Checkbox, tree for the first cell of parent and child rows (an indent per level, faint guide lines and a chevron to open and close its children; treeToggle box swaps that chevron for the outlined plus or minus square). Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, Dropdown, Icon, Meter and Select; it never draws its own. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract. With actionIcons, menu puts the row's remaining actions behind one More button at the end. In a box narrower than 640px, the kit's mobile break, the icon buttons fold into that More menu and the cell keeps one button, so the row's own values get the width; only one of the two is in the layout, so nothing is reached twice by the keyboard.",
   "props": {
     "type": {
       "enum": [
@@ -35,7 +35,7 @@
       "default": "md",
       "note": "Row height 48 / 56 px. Side padding 12 px at both sizes, same as HeaderCell. Avatars, Badge and Checkbox stay sm (32 / 20 / 16 px) so rows keep their height. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown)."
     },
-    "align": {
+    "alignment": {
       "enum": [
         "start",
         "center",
@@ -116,7 +116,7 @@
     },
     "menu": {
       "type": "CellAction[]",
-      "note": "With actionIcons, the rest of the row's actions behind one More button at the end of the icons, as a kit DropdownMenu. Leave it out and there is no More button; a danger variant becomes a danger item."
+      "note": "With actionIcons, the rest of the row's actions behind one More button at the end of the icons, as a kit Dropdown. Leave it out and there is no More button; a danger variant becomes a danger item."
     },
     "options": {
       "type": "SelectOption[]",
@@ -177,13 +177,13 @@
   ],
   "doNot": [
     "Do not invent a local table cell, Tag, Trend, FileIcon, PaymentMethod, Rating or ActionCell.",
-    "Do not draw a progress bar in a cell. Use type progress; it is a kit Progress.",
+    "Do not draw a progress bar in a cell. Use type progress; it is a kit Meter.",
     "Do not use Badge for trends. Use a trend type.",
     "Do not use link for actions like Delete or Send. Use actions or actionIcons.",
     "Do not draw a local Avatar, Badge, Checkbox or Button. Cell composes the kit ones.",
     "Use actionMenu instead of actionIcons when a row has more than 3 actions or a destructive one.",
     "Do not put more than 3 badges or 3 actions in one cell.",
-    "Do not fake a progress cell before the kit Progress exists.",
+    "Do not fake a progress cell before the kit Meter exists.",
     "Do not use raw hex."
   ],
   "a11y": [
@@ -193,9 +193,9 @@
     "rating is role=img, read as {n} of 5.",
     "The row checkbox has a hidden label: Select {label or name}.",
     "Icon-only actions keep their label as the button name.",
-    "actionMenu is a kit DropdownMenu: an icon-only More button named by label, opening a role=menu.",
+    "actionMenu is a kit Dropdown: an icon-only More button named by label, opening a role=menu.",
     "select is a small kit Select with a hidden label from label, named with its value.",
-    "progress is a kit Progress: a progressbar named by label, read as its percent.",
+    "progress is a kit Meter: a progressbar named by label, read as its percent.",
     "tree: the toggle (chevron or box) is named Expand or Collapse and the row label, with aria-expanded. The indent and guide lines are hidden from screen readers.",
     "On a phone-width box the folded More menu carries the icon actions as named rows, so every row action is still reachable."
   ],
@@ -373,7 +373,7 @@
     },
     {
       "title": "Progress",
-      "usage": "How far along a row is, from 0 to 100: a kit Progress bar that fills the cell, with the percent after it. label names it for screen readers.",
+      "usage": "How far along a row is, from 0 to 100: a kit Meter bar that fills the cell, with the percent after it. label names it for screen readers.",
       "items": [
         {
           "props": {
@@ -471,7 +471,7 @@
     },
     {
       "title": "Action menu",
-      "usage": "A More button that opens a DropdownMenu, aligned to the row end. The danger action goes last.",
+      "usage": "A More button that opens a Dropdown, aligned to the row end. The danger action goes last.",
       "items": [
         {
           "props": {

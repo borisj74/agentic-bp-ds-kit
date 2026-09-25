@@ -2,7 +2,7 @@
   "name": "PieChart",
   "path": "src/ui/PieChart/PieChart.tsx",
   "intent": "How a whole splits into a few parts, as a donut or a solid pie, like payments by method.",
-  "usage": "Use PieChart for the share of a total across a handful of parts. It is one component: pass data, one entry per slice. Slices go largest first from the top, clockwise; past maxSlices the rest merge into one grey Other slice. donut (the default) leaves a hole with the total in it; turn it off for a solid pie. The legend lists each part with its percent, beside the chart or under it. align center keeps the pie and a legend beside it together in the middle of a wide box. Hover or use the arrow keys for a tooltip with the value. animate sweeps the slices in. ChartIntent: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). title and subtitle write a heading over the chart; showTitle turns it off when the Card around it already says the same. See contracts/piechart.json for the full contract. A legend beside the chart drops under it when the chart's own box is narrower than 360px.",
+  "usage": "Use PieChart for the share of a total across a handful of parts. It is one component: pass data, one entry per slice. Slices go largest first from the top, clockwise; past maxSlices the rest merge into one grey Other slice. donut (the default) leaves a hole with the total in it; turn it off for a solid pie. The legend lists each part with its percent, beside the chart or under it. alignment center keeps the pie and a legend beside it together in the middle of a wide box. Hover or use the arrow keys for a tooltip with the value. animate sweeps the slices in. ChartIntent: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). title and subtitle write a heading over the chart; showHeader turns it off when the Card around it already says the same. See contracts/piechart.json for the full contract. A legend beside the chart drops under it when the chart's own box is narrower than 360px.",
   "props": {
     "label": {
       "type": "string",
@@ -17,7 +17,7 @@
       "type": "string",
       "note": "A quieter line under the title, like Last 12 months, all accounts."
     },
-    "showTitle": {
+    "showHeader": {
       "type": "boolean",
       "default": true,
       "note": "Shows the title and subtitle. Off draws the chart alone, when the Card or Section around it already carries the title."
@@ -57,7 +57,7 @@
       "default": true,
       "note": "Each part with its color and percent."
     },
-    "legend": {
+    "legendPosition": {
       "enum": [
         "end",
         "bottom"
@@ -65,7 +65,7 @@
       "default": "end",
       "note": "Legend beside the chart or under it."
     },
-    "align": {
+    "alignment": {
       "enum": [
         "start",
         "center"
@@ -113,7 +113,7 @@
   ],
   "doNot": [
     "Do not use it for many parts or values over time. Use BarChart or LineChart.",
-    "Do not switch the legend to bottom only to centre the chart. Use align center.",
+    "Do not switch the legend to bottom only to centre the chart. Use alignment center.",
     "Do not use it to compare parts that don't add up to a whole.",
     "Do not draw charts with loose SVG or a chart library. Use the kit charts.",
     "Do not use raw hex; pick an intent."
@@ -141,14 +141,14 @@
     },
     {
       "title": "Pie with the legend below",
-      "usage": "donut off draws a solid pie; legend bottom puts the parts under it.",
+      "usage": "donut off draws a solid pie; legendPosition bottom puts the parts under it.",
       "items": [
         {
           "props": {
             "label": "Invoices by status",
             "data": "{statusShare}",
             "donut": false,
-            "legend": "bottom",
+            "legendPosition": "bottom",
             "size": "sm"
           }
         }
@@ -156,14 +156,14 @@
     },
     {
       "title": "Centred",
-      "usage": "align center keeps the pie and its legend together in the middle of a wide box.",
+      "usage": "alignment center keeps the pie and its legend together in the middle of a wide box.",
       "items": [
         {
           "props": {
             "label": "Payments by method",
             "data": "{payments}",
             "format": "currency",
-            "align": "center"
+            "alignment": "center"
           }
         }
       ]

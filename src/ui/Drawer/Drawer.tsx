@@ -55,7 +55,7 @@ export function Drawer({ open, title, description, size = "narrow", showClose = 
           </div>
           {showClose && (
             <span className={styles.close}>
-              <Tooltip content="Close" placement="left">
+              <Tooltip content="Close" position="left">
                 <Button variant="tertiary" size="sm" iconOnly iconStart="close" onClick={onClose}>Close</Button>
               </Tooltip>
             </span>

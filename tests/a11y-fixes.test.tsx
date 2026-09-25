@@ -2,19 +2,19 @@ import { render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Avatar } from "@/ui/Avatar/Avatar";
 import { Cell } from "@/ui/Cell/Cell";
-import { Empty } from "@/ui/Empty/Empty";
+import { EmptyState } from "@/ui/EmptyState/EmptyState";
 import { Scoreboard } from "@/ui/Scoreboard/Scoreboard";
 import { Table } from "@/ui/Table/Table";
 
 // Small checks that pin the accessibility fixes the contract-driven axe run turned up.
 
-describe("Empty headingLevel", () => {
+describe("EmptyState headingLevel", () => {
   it("is an h3 by default", () => {
-    render(<Empty title="No invoices yet" />);
+    render(<EmptyState title="No invoices yet" />);
     expect(screen.getByRole("heading", { level: 3, name: "No invoices yet" })).toBeInTheDocument();
   });
   it("follows the page's headings when told to", () => {
-    render(<Empty title="No invoices yet" headingLevel={2} />);
+    render(<EmptyState title="No invoices yet" headingLevel={2} />);
     expect(screen.getByRole("heading", { level: 2, name: "No invoices yet" })).toBeInTheDocument();
   });
 });
