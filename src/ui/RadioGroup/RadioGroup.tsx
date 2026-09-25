@@ -13,6 +13,7 @@ export interface RadioGroupOption {
   badge?: string;
   badgeIntent?: BadgeIntent;
   disabled?: boolean;
+  hideLabel?: boolean;
 }
 
 export interface RadioGroupProps {
@@ -97,7 +98,8 @@ export function RadioGroup({
                   {o.description && <span className={styles.description}>{o.description}</span>}
                 </span>
               ) : (
-                <span className={styles.label}>{o.label}</span>
+                // hideLabel: a bare circle whose label only screen readers hear, like the radio Cell in a table row.
+                <span className={o.hideLabel ? styles.srOnly : styles.label}>{o.label}</span>
               )}
               {card && control}
             </label>

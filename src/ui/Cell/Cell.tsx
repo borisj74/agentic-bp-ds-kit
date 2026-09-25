@@ -122,10 +122,10 @@ export function Cell({
       // One kit RadioGroup option per row. Rows share name, so the table reads as one group and the arrow keys move
       // between rows. Always controlled: only the table knows which row is picked (checked + onCheckedChange).
       visual = (
-        <span className={styles.radio}>
+        <span className={styles.visual}>
           <RadioGroup
             size="sm" hideLegend legend={label ?? "Select row"} name={name}
-            options={[{ value: "on", label: label ?? "Select row" }]}
+            options={[{ value: "on", label: label ?? "Select row", hideLabel: true }]}
             value={checked ? "on" : ""}
             onChange={() => onCheckedChange?.(true)}
           />

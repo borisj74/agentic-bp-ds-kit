@@ -101,6 +101,3 @@
 .mark-warning { color: var(--icon-warning); }
 .mark-danger { color: var(--icon-danger); }
 .mark-highlight { color: var(--icon-highlight); }
-/* radio: the row's label names the kit RadioGroup option for screen readers only; the cell shows the bare circle. */
-.radio { display: flex; }
-.radio label > span:last-child { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

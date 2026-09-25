@@ -71,9 +71,10 @@
         "description": "string?",
         "badge": "string?",
         "badgeIntent": "BadgeIntent?",
-        "disabled": "boolean?"
+        "disabled": "boolean?",
+        "hideLabel": "boolean?"
       },
-      "note": "Two to six. description and badge show in card layout."
+      "note": "Two to six. description and badge show in card layout. hideLabel keeps an option's label for screen readers only and shows the bare circle (list layout); the radio Cell uses it with one option per table row."
     },
     "onChange": {
       "type": "function",
@@ -90,11 +91,12 @@
     "Do not use for long lists of options.",
     "Do not use to switch page panels.",
     "Do not use an unstyled native radio.",
-    "Do not use raw hex."
+    "Do not use raw hex.",
+    "Do not use hideLabel where people need to read the choice. It is for a radio whose row already says it, like the radio Cell in a table."
   ],
   "a11y": [
     "fieldset with a legend that names the group.",
-    "Each option is a native input type=radio with a visible label; arrow keys move between options.",
+    "Each option is a native input type=radio with a visible label; arrow keys move between options. With hideLabel the label is hidden text, so the radio keeps its name.",
     "error sets aria-invalid on the fieldset and links the message with aria-describedby.",
     "Disabled options stay readable but cannot be picked.",
     "Focus ring on the circle for keyboard users."
@@ -290,6 +292,32 @@
               {
                 "value": "editor",
                 "label": "Editor"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Hidden option label",
+      "usage": "hideLabel shows the bare circle and keeps the label for screen readers, like the radio Cell in a table row.",
+      "items": [
+        {
+          "props": {
+            "legend": "Default plan",
+            "hideLegend": true,
+            "orientation": "horizontal",
+            "defaultValue": "basic",
+            "options": [
+              {
+                "value": "basic",
+                "label": "Basic",
+                "hideLabel": true
+              },
+              {
+                "value": "pro",
+                "label": "Pro",
+                "hideLabel": true
               }
             ]
           }
