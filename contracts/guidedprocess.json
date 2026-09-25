@@ -2,7 +2,7 @@
   "name": "GuidedProcess",
   "path": "src/ui/GuidedProcess/GuidedProcess.tsx",
   "intent": "The pieces of a process walked one step at a time: a dark panel for a step, the dark list of every step beside the page, the header over a step, and the footer under it.",
-  "usage": "Use GuidedProcess for a process of a few steps done in order where each step is a page, like importing usage or registering a supplier. It is one component with four parts, picked by part, and each part takes only its own props. part panel (the default) is one step as a dark column: pass steps and current, the step number starting at 1, and it shows the number, the title and how the step went. Each step has a title, and can have a status (success, warning or error) with statusText, and tasks, the short list of what is done and left in it. Give the first column title and subtitle, and while the process has not started set started false with onStart and onCancel for Start and Cancel; shade 1 to 5 darkens columns further along. placement auto is a tall column from 1024 of box width and a band under it; side and band fix it. part steps is the dark panel beside the page once the process has started: the 4 | 6 counter at the top and every step at the foot, with a notch in the edge at the current step and its tasks under it. side is the page edge it sits on, so the notch points into the page; onClose shows a close button where it is a drawer, under 1024. part header goes over the step's fields: title is the process name, stepTitle the step's, and with total and onStepsOpen a 4 | 6 counter opens the steps where they are a drawer. part footer goes under the fields: updated is when the work was last saved and actions are the step's buttons in order. The last moves the process on: Continue, which is secondary, or Submit on the last step, which is primary and can be type submit with form set to the step's Form id; the rest are tertiary. onAction gets the id pressed. From 1024 every action is a Button, under 1024 all but the last fold into a More menu, and under 600 the saved time goes on its own line and the quieter actions show as a row of large icon buttons over the last one, so give them an icon. Every dark part is dark in light and dark themes alike. Place the parts with the GuidedProcessPage pattern. See contracts/guidedprocess.json for the full contract.",
+  "usage": "Use GuidedProcess for a process of a few steps done in order where each step is a page, like importing usage or registering a supplier. It is one component with four parts, picked by part, and each part takes only its own props. part panel (the default) is one step as a dark column: pass steps and current, the step number starting at 1, and it shows the number, the title and how the step went. Each step has a title, and can have a status (success, warning or error) with statusText, and tasks, the short list of what is done and left in it. Give the first column title and subtitle, and while the process has not started set started false with onStart and onCancel for Start and Cancel; shade 1 to 5 darkens columns further along. placement auto is a tall column from 1024 of box width and a band under it; side and band fix it. part steps is the dark panel beside the page once the process has started: the 4 | 6 counter at the top and every step at the foot, with a notch in the edge at the current step and its tasks under it. side is the page edge it sits on, so the notch points into the page; onClose shows a close button where it is a drawer, under 1024. part header goes over the step's fields: title is the process name, stepTitle the step's, and with total and onStepsOpen a 4 | 6 counter opens the steps where they are a drawer. part footer goes under the fields: updated is when the work was last saved and actions are the step's buttons in order. The last moves the process on: Continue, which is subtle, or Submit on the last step, which is strong brand and can be type submit with form set to the step's Form id; the rest are minimal. onAction gets the id pressed. From 1024 every action is a Button, under 1024 all but the last fold into a More menu, and under 600 the saved time goes on its own line and the quieter actions show as a row of large icon buttons over the last one, so give them an icon. Every dark part is dark in light and dark themes alike. Place the parts with the GuidedProcessPage pattern. See contracts/guidedprocess.json for the full contract.",
   "props": {
     "part": {
       "enum": [
@@ -69,7 +69,7 @@
     },
     "onStart": {
       "type": "() => void",
-      "note": "Panel. Begin the process. Shows the primary Start button while started is off."
+      "note": "Panel. Begin the process. Shows the strong brand Start button while started is off."
     },
     "onCancel": {
       "type": "() => void",
@@ -105,7 +105,8 @@
         "id": "string",
         "label": "string",
         "icon": "string? Material Symbols name. On a phone-width box the action shows as an icon button named by label; without one it goes in a More menu.",
-        "variant": "\"primary\" | \"secondary\" | \"tertiary\"? Defaults to tertiary, and secondary for the last action.",
+        "emphasis": "\"strong\" | \"subtle\" | \"minimal\"? Defaults to minimal, and subtle for the last action. strong needs intent brand.",
+        "intent": "\"brand\"? Only with emphasis strong: the Submit on the last step.",
         "type": "\"button\" | \"submit\"? submit with form sends the step's Form.",
         "form": "string? The id of the Form a submit action sends.",
         "disabled": "boolean?"
@@ -130,8 +131,8 @@
     "Do not use it for page sections that can be visited in any order. Use Tabs or AnchorNav.",
     "Do not invent GuidedProcessPanel, GuidedProcessSteps, GuidedProcessHeader, GuidedProcessFooter or a light version of the dark parts.",
     "Do not put the step's fields in a dark part; they belong to the page between the header and the footer.",
-    "Do not show Start while the footer has a primary action. One primary per view.",
-    "Do not give two footer actions variant primary.",
+    "Do not show Start while the footer has a strong brand action. One strong brand Button per view.",
+    "Do not give two footer actions emphasis strong.",
     "Do not use a PageHeader over the step; use part header.",
     "Do not use raw hex."
   ],
@@ -390,7 +391,7 @@
     },
     {
       "title": "Footer",
-      "usage": "When the work was saved, then Cancel, Save and Skip, and Continue to move on. On the last step, Submit is the primary.",
+      "usage": "When the work was saved, then Cancel, Save and Skip, and Continue to move on. On the last step, Submit is the strong brand Button.",
       "items": [
         {
           "props": {
@@ -437,7 +438,8 @@
               {
                 "id": "submit",
                 "label": "Submit",
-                "variant": "primary"
+                "emphasis": "strong",
+                "intent": "brand"
               }
             ]
           }

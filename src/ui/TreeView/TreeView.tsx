@@ -373,7 +373,7 @@ export function TreeView({
                 // The drag handle is also a button: its Move menu moves the row without dragging.
                 <span className={styles.move} data-move>
                   <Dropdown
-                    label={`Move ${item.label}`} items={moveItems(row)} iconOnly icon="drag_indicator" variant="tertiary" size="sm"
+                    label={`Move ${item.label}`} items={moveItems(row)} iconOnly icon="drag_indicator" emphasis="minimal" size="sm"
                     alignment="right" disabled={item.disabled} open={menuFor === item.id}
                     onOpenChange={(o) => setMenuFor(o ? item.id : null)} onSelect={(kind) => moveRow(row, kind as MoveKind)}
                   />

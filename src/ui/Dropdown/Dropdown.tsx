@@ -2,7 +2,7 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import { useDensitySize, usePortalDensity } from "../Density/Density";
 import { createPortal } from "react-dom";
-import { Button, type ButtonSize, type ButtonVariant } from "../Button/Button";
+import { Button, type ButtonSize, type ButtonPair } from "../Button/Button";
 import { FilterButton, type FilterButtonToggle } from "../FilterButton/FilterButton";
 import { Badge } from "../Badge/Badge";
 import { Checkbox } from "../Checkbox/Checkbox";
@@ -30,11 +30,10 @@ export interface DropdownItem {
 export interface DropdownDivider { divider: true }
 export type DropdownEntry = DropdownItem | DropdownDivider;
 
-export interface DropdownProps {
+export type DropdownProps = ButtonPair & {
   label: string;
   items: DropdownEntry[];
   trigger?: DropdownTrigger;
-  variant?: ButtonVariant;
   size?: ButtonSize;
   icon?: string;
   iconOnly?: boolean;
@@ -58,7 +57,7 @@ export interface DropdownProps {
   searchPlaceholder?: string;
   empty?: string;
   menuWidth?: DropdownWidth;
-}
+};
 
 export type DropdownWidth = "default" | "field";
 
@@ -68,7 +67,7 @@ const enabledItems = (panel: HTMLElement | null) =>
   [...(panel?.querySelectorAll<HTMLElement>('[data-item]:not([aria-disabled="true"])') ?? [])];
 
 export function Dropdown({
-  label, items, trigger = "button", variant = "secondary", size: ownSize, icon, iconOnly = false, count = 0,
+  label, items, trigger = "button", emphasis = "subtle", intent, size: ownSize, icon, iconOnly = false, count = 0,
   alignment = "left", disabled = false, closeOnSelect = true, open: openProp, onOpenChange, onSelect,
   multiple = false, id, text, muted = false, badge, toggle, onToggle, labelledBy, describedBy,
   searchable = false, searchPlaceholder = "Search", empty = "No results.", menuWidth = "default",
@@ -215,7 +214,7 @@ export function Dropdown({
         <FilterButton size={size} open={open} disabled={disabled} count={count} value={text} toggle={toggle} onToggle={onToggle} onClick={flip}>{label}</FilterButton>
       ) : (
         <Button
-          variant={variant} size={size} disabled={disabled} iconOnly={iconOnly}
+          {...({ emphasis, intent } as ButtonPair)} size={size} disabled={disabled} iconOnly={iconOnly}
           iconStart={iconOnly ? icon ?? "more_vert" : icon} iconEnd={iconOnly ? undefined : open ? "expand_less" : "expand_more"}
           aria-haspopup="menu" aria-expanded={open} onClick={flip}
         >

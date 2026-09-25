@@ -139,6 +139,7 @@ Some releases rename pieces or props. When you move screens into a newer kit, ru
 | --- | --- |
 | `node scripts/codemod-a2-rulings.mjs src/app` | `tone` to `intent` |
 | `node scripts/codemod-a3-renames.mjs src/app` | Alert to Callout, Empty to EmptyState, Progress to Meter, ProgressLegacy to ProgressBar, ButtonFilter to FilterButton, SegmentedControl to Segmented, Stepper to Steps, DropdownMenu to Dropdown, ShimmerText to TextLoader, Command to GlobalSearch, Tile to NavTile, SideNav to AppNav, and the props that moved with them |
+| `node scripts/codemod-a4a-button.mjs src/app` | Button `variant` to `emphasis` + `intent` (primary → strong brand, secondary → subtle, tertiary → minimal, danger → strong danger), `pressed` to `toggle`, the same on Dropdown's button trigger, Cell and GuidedProcess action data, and AlertDialog `actionVariant` to `actionIntent` |
 
 ### If something goes wrong
 
@@ -219,7 +220,7 @@ Begin with the skill, the pattern and one sentence about the screen:
 
 1. **The screen and its pattern:** "a RecordPage for an account", not "a page with details".
 2. **The content:** columns, fields, sections, tabs, and sample data.
-3. **The actions:** which buttons, which one is primary (only one), and what each one does.
+3. **The actions:** which buttons, which one is the strong brand Button (only one), and what each one does.
 4. **The states:** empty, loading, error, success messages, validation.
 5. **The widths that matter:** "must work on a phone" or "desktop only".
 6. **What to leave out:** parts of a screenshot to ignore, or features for later.
@@ -239,7 +240,7 @@ Clear:
 ```text
 /prototype-from-kit An Invoices list using ListPage inside AppShell.
 Columns: Invoice number (a link), Account, Status (Paid, Overdue, Draft as badges), Due date, Amount (right-aligned).
-Toolbar: search, filters for Status and Due date, and one primary action, New invoice.
+Toolbar: search, filters for Status and Due date, and one strong brand action, New invoice.
 20 sample rows, 10 per page. Show the empty state when the filters match nothing.
 It must work on a phone.
 ```
@@ -257,7 +258,7 @@ Clear:
 ```text
 /prototype-from-kit A New account page using FormPage.
 Sections: Account (Name, required; Type: Customer or Partner; Parent account as a Lookup), Billing (Currency, Billing cycle, Payment terms), Address (two columns).
-Save is the one primary action; Cancel goes back to the account list.
+Save is the one strong brand action; Cancel goes back to the account list.
 After saving, go to the account and show a success message.
 ```
 
@@ -305,7 +306,7 @@ The kit tells the assistant to stop and ask when a screen needs something it doe
 ### Keep the kit clean
 
 - Ask for kit components by name, and use only the options their contracts list.
-- One primary button per view.
+- One strong brand Button per view.
 - No colors or spacing typed in by hand: the kit's tokens and layout classes cover them.
 - Describe goals, not other products: "a dense table for power users", not "make it like product X".
 - Keep secrets out of prompts: no passwords, keys or real customer data.
@@ -314,7 +315,7 @@ The kit tells the assistant to stop and ask when a screen needs something it doe
 
 - [ ] Started with `/prototype-from-kit` and named a pattern.
 - [ ] Gave real content: columns, fields, actions, sample data.
-- [ ] Said which button is primary, and which states to show.
+- [ ] Said which button is the strong brand one, and which states to show.
 - [ ] Said which widths matter.
 - [ ] Asked for a plan first on anything bigger than one screen.
 - [ ] Checked it in the browser at every width before calling it done.

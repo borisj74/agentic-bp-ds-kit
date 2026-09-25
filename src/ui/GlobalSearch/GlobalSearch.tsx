@@ -153,7 +153,7 @@ export function GlobalSearch({
         />
         {/* Small rows are too short for the clear button; Escape clears there. */}
         {query && size === "md" && (
-          <Button variant="tertiary" size="sm" iconOnly iconStart="close" onClick={() => { setQuery(""); inputRef.current?.focus(); }}>
+          <Button emphasis="minimal" size="sm" iconOnly iconStart="close" onClick={() => { setQuery(""); inputRef.current?.focus(); }}>
             Clear search
           </Button>
         )}
@@ -162,7 +162,7 @@ export function GlobalSearch({
           <span className={styles.scope}>
             <span id={scopeHintId} className={styles.srOnly}>Search in</span>
             <Dropdown
-              label={scopeLabel} variant="tertiary" size="sm" alignment="right" describedBy={scopeHintId}
+              label={scopeLabel} emphasis="minimal" size="sm" alignment="right" describedBy={scopeHintId}
               items={scopes.map((s) => ({ id: s.value, label: s.label, selected: s.value === currentScope }))}
               onSelect={pickScope}
             />

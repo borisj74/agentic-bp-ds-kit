@@ -45,7 +45,7 @@ export function Section({
         <div className={styles.row}>
           {collapsible && (
             <Button
-              variant="tertiary" size="sm" iconOnly iconStart={open ? "expand_more" : "chevron_right"}
+              emphasis="minimal" size="sm" iconOnly iconStart={open ? "expand_more" : "chevron_right"}
               aria-expanded={open} aria-controls={children != null ? bodyId : undefined} onClick={toggle}
             >
               {heading}

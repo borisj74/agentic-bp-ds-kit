@@ -198,11 +198,11 @@ export function Toolbar({
       items={[...folding.map((a) => a.item), ...(moreActions?.length ? [{ divider: true } as const, ...moreActions] : [])]}
     />
   );
-  // Same order as the PageHeader: More (overflow) first, then the actions with the one primary last.
+  // Same order as the PageHeader: More (overflow) first, then the actions with the one strong brand Button last.
   const endControls = (
     <>
       {moreActions && moreActions.length > 0 && (
-        <Dropdown label="More" variant="tertiary" size="sm" alignment="right" items={moreActions} onSelect={onMoreSelect} />
+        <Dropdown label="More" emphasis="minimal" size="sm" alignment="right" items={moreActions} onSelect={onMoreSelect} />
       )}
       {actions}
     </>
@@ -214,7 +214,7 @@ export function Toolbar({
         <div ref={startRef} className={styles.start}>
           {filters && (
             <Button
-              size="sm" iconStart="filter_list" pressed={open}
+              size="sm" iconStart="filter_list" toggle={open}
               aria-expanded={open} aria-controls={open ? barId : undefined} onClick={() => setOpen(!open)}
             >
               {/* How many filters are on, so a folded filter bar still says the list is narrowed. */}
@@ -286,14 +286,14 @@ export function Toolbar({
             {filters}
             {(onReset || onApply) && (
               <span className={styles.apply}>
-                {onReset && <Button variant="tertiary" size="sm" onClick={onReset}>Reset</Button>}
-                {onApply && <Button variant="tertiary" size="sm" iconStart="check" onClick={onApply}>Apply filters</Button>}
+                {onReset && <Button emphasis="minimal" size="sm" onClick={onReset}>Reset</Button>}
+                {onApply && <Button emphasis="minimal" size="sm" iconStart="check" onClick={onApply}>Apply filters</Button>}
               </span>
             )}
           </div>
           {filterHelp && (
             <HelpPopover title="Filters" content={filterHelp} position="left">
-              <Button variant="tertiary" size="sm" iconOnly iconStart="help_center">Filter help</Button>
+              <Button emphasis="minimal" size="sm" iconOnly iconStart="help_center">Filter help</Button>
             </HelpPopover>
           )}
         </div>

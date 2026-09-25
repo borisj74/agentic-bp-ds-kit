@@ -110,12 +110,12 @@ export function Card({
             // The record's actions at the end of the footer: the ones it is used for as icon buttons, the rest behind More.
             <span className={styles.actions}>
               {actions?.map((a) => (
-                <Button key={a.id} size="sm" variant="tertiary" iconOnly iconStart={a.icon} disabled={disabled} aria-label={`${a.label} ${name}`} onClick={() => onAction?.(a.id)}>
+                <Button key={a.id} size="sm" emphasis="minimal" iconOnly iconStart={a.icon} disabled={disabled} aria-label={`${a.label} ${name}`} onClick={() => onAction?.(a.id)}>
                   {a.label}
                 </Button>
               ))}
               {menu && menu.length > 0 && (
-                <Dropdown label={`More actions for ${name}`} iconOnly icon="more_vert" variant="tertiary" size="sm" alignment="right" items={menu} disabled={disabled} onSelect={(id) => onAction?.(id)} />
+                <Dropdown label={`More actions for ${name}`} iconOnly icon="more_vert" emphasis="minimal" size="sm" alignment="right" items={menu} disabled={disabled} onSelect={(id) => onAction?.(id)} />
               )}
             </span>
           )}

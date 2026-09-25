@@ -5,7 +5,7 @@ import { Button } from "../Button/Button";
 import { carryTheme } from "../Tooltip/useFloating";
 import styles from "./AlertDialog.module.css";
 
-export type AlertDialogActionVariant = "primary" | "danger";
+export type AlertDialogActionIntent = "brand" | "danger";
 export type AlertDialogSize = "sm" | "md";
 
 export interface AlertDialogProps {
@@ -14,7 +14,7 @@ export interface AlertDialogProps {
   description: string;
   cancelLabel?: string;
   actionLabel: string;
-  actionVariant?: AlertDialogActionVariant;
+  actionIntent?: AlertDialogActionIntent;
   size?: AlertDialogSize;
   onCancel: () => void;
   onAction: () => void;
@@ -26,7 +26,7 @@ export function AlertDialog({
   description,
   cancelLabel = "Cancel",
   actionLabel,
-  actionVariant = "primary",
+  actionIntent = "brand",
   size = "md",
   onCancel,
   onAction,
@@ -95,8 +95,8 @@ export function AlertDialog({
         <h2 id={titleId} className={styles.title}>{title}</h2>
         <p id={descriptionId} className={styles.description}>{description}</p>
         <div className={styles.footer}>
-          <Button variant="secondary" onClick={onCancel}>{cancelLabel}</Button>
-          <Button variant={actionVariant} onClick={onAction}>{actionLabel}</Button>
+          <Button emphasis="subtle" onClick={onCancel}>{cancelLabel}</Button>
+          <Button emphasis="strong" intent={actionIntent} onClick={onAction}>{actionLabel}</Button>
         </div>
       </div>
     </div>,

@@ -109,14 +109,15 @@
       "itemShape": {
         "label": "string",
         "icon": "string?",
-        "variant": "ButtonVariant?",
+        "emphasis": "\"strong\" | \"subtle\" | \"minimal\"? Leave out for the cell's own look: subtle in actions, minimal in actionIcons.",
+        "intent": "\"brand\" | \"neutral\" | \"danger\"? Same pairs as Button; required with emphasis strong.",
         "onClick": "function?"
       },
-      "note": "For actions (labeled, up to 3), actionIcons (icon only, up to 3, label becomes the name and a kit Tooltip) and actionMenu (menu items, danger variant becomes a danger item). onClick runs when picked."
+      "note": "For actions (labeled, up to 3), actionIcons (icon only, up to 3, label becomes the name and a kit Tooltip) and actionMenu (menu items, danger intent becomes a danger item). onClick runs when picked."
     },
     "menu": {
       "type": "CellAction[]",
-      "note": "With actionIcons, the rest of the row's actions behind one More button at the end of the icons, as a kit Dropdown. Leave it out and there is no More button; a danger variant becomes a danger item."
+      "note": "With actionIcons, the rest of the row's actions behind one More button at the end of the icons, as a kit Dropdown. Leave it out and there is no More button; a danger intent becomes a danger item."
     },
     "options": {
       "type": "SelectOption[]",
@@ -487,7 +488,8 @@
               {
                 "label": "Delete",
                 "icon": "delete",
-                "variant": "danger"
+                "emphasis": "strong",
+                "intent": "danger"
               }
             ]
           }

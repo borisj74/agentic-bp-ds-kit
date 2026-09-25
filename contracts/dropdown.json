@@ -34,15 +34,23 @@
       "default": "button",
       "note": "button is the kit Button. filter is the kit FilterButton. field is a form field box, used by Select."
     },
-    "variant": {
+    "emphasis": {
       "enum": [
-        "primary",
-        "secondary",
-        "tertiary",
+        "strong",
+        "subtle",
+        "minimal"
+      ],
+      "default": "subtle",
+      "note": "Button trigger only. Same pairs as Button: strong with brand or danger, subtle with neutral, minimal with neutral, brand or danger."
+    },
+    "intent": {
+      "enum": [
+        "brand",
+        "neutral",
         "danger"
       ],
-      "default": "secondary",
-      "note": "Button trigger only."
+      "default": "neutral",
+      "note": "Button trigger only. Required with emphasis strong."
     },
     "size": {
       "enum": [
@@ -222,13 +230,13 @@
     },
     {
       "title": "Row menu",
-      "usage": "Icon-only tertiary trigger for a table row. Alignment right so the panel stays inside the table.",
+      "usage": "Icon-only minimal trigger for a table row. Alignment right so the panel stays inside the table.",
       "items": [
         {
           "props": {
             "label": "Row actions",
             "iconOnly": true,
-            "variant": "tertiary",
+            "emphasis": "minimal",
             "size": "sm",
             "alignment": "right",
             "items": [
@@ -261,7 +269,8 @@
         {
           "props": {
             "label": "New",
-            "variant": "primary",
+            "emphasis": "strong",
+            "intent": "brand",
             "icon": "add",
             "items": [
               {

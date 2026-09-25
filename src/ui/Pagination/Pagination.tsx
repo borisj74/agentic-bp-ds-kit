@@ -61,7 +61,7 @@ export function Pagination({
   return (
     <div className={styles.pagination}>
       <nav className={styles.pages} aria-label={label}>
-        <Button variant="tertiary" size="sm" iconOnly iconStart="chevron_left" disabled={page <= 1} onClick={() => goTo(page - 1)}>Previous page</Button>
+        <Button emphasis="minimal" size="sm" iconOnly iconStart="chevron_left" disabled={page <= 1} onClick={() => goTo(page - 1)}>Previous page</Button>
         {pageList(page, count).map((p, i) => p === GAP ? (
           <span key={`gap-${i}`} className={styles.gap} aria-hidden="true">…</span>
         ) : (
@@ -72,7 +72,7 @@ export function Pagination({
             {p}
           </button>
         ))}
-        <Button variant="tertiary" size="sm" iconOnly iconStart="chevron_right" disabled={page >= count} onClick={() => goTo(page + 1)}>Next page</Button>
+        <Button emphasis="minimal" size="sm" iconOnly iconStart="chevron_right" disabled={page >= count} onClick={() => goTo(page + 1)}>Next page</Button>
       </nav>
       {(showRange || showPageSize) && (
         <div className={styles.end}>

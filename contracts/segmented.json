@@ -1,7 +1,7 @@
 {
   "name": "Segmented",
   "path": "src/ui/Segmented/Segmented.tsx",
-  "intent": "One choice from two to five options, shown as kit tertiary Buttons side by side. The chosen one has a brand tint and border.",
+  "intent": "One choice from two to five options, shown as kit minimal Buttons side by side. The chosen one has a brand tint and border.",
   "usage": "Use Segmented for a small, always-visible choice that applies at once, like density, a view (List / Board) or a period (Day / Week / Month). It works like a radio group: one option is chosen, and arrow keys move the choice. Pass label (visible, or hideLabel), options and value or defaultValue. fullWidth stretches the options to fill the row, like in a menu. For more options or long labels, use Select; for an on/off setting, use Switch. See contracts/segmented.json for the full contract.",
   "props": {
     "label": {

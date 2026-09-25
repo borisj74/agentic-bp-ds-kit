@@ -101,7 +101,7 @@ export function ChatWindow({
               <div className={styles.notice}>
                 <p className={styles.noticeText}>{notice}</p>
                 {onNoticeDismiss && (
-                  <Button size="sm" variant="tertiary" iconOnly iconStart="close" onClick={onNoticeDismiss}>Dismiss</Button>
+                  <Button size="sm" emphasis="minimal" iconOnly iconStart="close" onClick={onNoticeDismiss}>Dismiss</Button>
                 )}
               </div>
             )}

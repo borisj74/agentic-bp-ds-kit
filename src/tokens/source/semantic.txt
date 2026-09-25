@@ -16,6 +16,7 @@ background/neutral/intense|{ui/neutral/200}|{ui/neutral/600}
 background/neutral/hover|{ui/neutral/150}|{ui/neutral/600}
 background/neutral/press|{ui/neutral/200}|{ui/neutral/700}
 background/brand/faint|{ui/brand/50}|{ui/brand/50}
+background/brand/faint/press|{ui/brand/100}|{ui/brand/100}
 background/brand/subtle|{ui/brand/200}|{ui/brand/200}
 background/brand|{ui/brand/action}|{ui/brand/action}
 background/brand/strong|{ui/brand/600}|{ui/brand/600}
@@ -152,6 +153,7 @@ border/warning/intense|{ui/status/warning/600}|{ui/status/warning/700}
 border/warning/hover|{ui/status/warning/500}|{ui/status/warning/600}
 border/warning/press|{ui/status/warning/600}|{ui/status/warning/700}
 background/danger/faint|{ui/status/danger/50}|{ui/status/danger/50}
+background/danger/faint/press|{ui/status/danger/100}|{ui/status/danger/100}
 background/danger/subtle|{ui/status/danger/200}|{ui/status/danger/200}
 background/danger|{ui/status/danger/500}|{ui/status/danger/500}
 background/danger/strong|{ui/status/danger/600}|{ui/status/danger/600}

@@ -184,7 +184,7 @@ export default function InvoicesPage() {
             ...(unpaid ? [{ label: "Send reminder", icon: "send", onClick: () => remind([inv.id]) }] : []),
             { label: "Download PDF", icon: "download", onClick: () => download([inv.id]) },
           ]}
-          menu={inv.status === "void" ? undefined : [{ label: "Void invoice", icon: "block", variant: "danger", onClick: () => setVoiding([inv.id]) }]}
+          menu={inv.status === "void" ? undefined : [{ label: "Void invoice", icon: "block", emphasis: "strong", intent: "danger", onClick: () => setVoiding([inv.id]) }]}
         />
       ),
     };
@@ -266,9 +266,9 @@ export default function InvoicesPage() {
                 <strong style={{ fontSize: "var(--font-size-small)" }}>{`${picked.length} selected`}</strong>
                 <Button size="sm" iconStart="send" onClick={() => remind(picked)}>Send reminders</Button>
                 <Button size="sm" iconStart="download" onClick={() => download(picked)}>Download PDFs</Button>
-                <Button size="sm" variant="danger" iconStart="block" onClick={() => setVoiding(picked)}>Void</Button>
+                <Button size="sm" emphasis="strong" intent="danger" iconStart="block" onClick={() => setVoiding(picked)}>Void</Button>
                 <span style={{ marginInlineStart: "auto" }}>
-                  <Button size="sm" variant="tertiary" onClick={() => setPicked([])}>Clear</Button>
+                  <Button size="sm" emphasis="minimal" onClick={() => setPicked([])}>Clear</Button>
                 </span>
               </>
             ) : undefined
@@ -299,7 +299,7 @@ export default function InvoicesPage() {
             ? `${byId(voidList[0]).account} will no longer owe ${money(byId(voidList[0]).amount - byId(voidList[0]).paid)} on this invoice. Voided invoices stay on record and cannot be sent again.`
             : "These accounts will no longer owe these invoices. Voided invoices stay on record and cannot be sent again."
         }
-        actionLabel={voidList.length === 1 ? "Void invoice" : "Void invoices"} actionVariant="danger"
+        actionLabel={voidList.length === 1 ? "Void invoice" : "Void invoices"} actionIntent="danger"
         onCancel={() => setVoiding(null)} onAction={confirmVoid}
       />
       {notes.map(({ key, ...n }) => (

@@ -1,17 +1,26 @@
 {
   "name": "Button",
   "path": "src/ui/Button/Button.tsx",
-  "intent": "Triggers an action. One primary Button per view.",
-  "usage": "Use one primary per view. Use secondary for quieter paths, tertiary for low-emphasis actions, and danger only for work that cannot be undone. Accessibility is built in: native button, focus ring, loading and disabled states, and a label for icon-only buttons. See contracts/button.json for the full contract.",
+  "intent": "Triggers an action. One strong brand Button per view.",
+  "usage": "Pick an emphasis and an intent. Use one strong brand Button per view for the main action. Use subtle (the default) for quieter paths like cancel or back, and minimal for low-emphasis actions. Intent danger is only for work that cannot be undone. Only these pairs exist: strong with brand or danger, subtle with neutral, minimal with neutral, brand or danger. Accessibility is built in: native button, focus ring, loading and disabled states, and a label for icon-only buttons. See contracts/button.json for the full contract.",
   "props": {
-    "variant": {
+    "emphasis": {
       "enum": [
-        "primary",
-        "secondary",
-        "tertiary",
+        "strong",
+        "subtle",
+        "minimal"
+      ],
+      "default": "subtle",
+      "note": "How loud the Button is. strong is filled, subtle has a border, minimal has neither."
+    },
+    "intent": {
+      "enum": [
+        "brand",
+        "neutral",
         "danger"
       ],
-      "default": "secondary"
+      "default": "neutral",
+      "note": "Color role. Allowed pairs: strong with brand or danger (intent is required with strong); subtle with neutral; minimal with neutral, brand or danger. Leave both out for subtle neutral."
     },
     "size": {
       "enum": [
@@ -48,9 +57,9 @@
       "type": "boolean",
       "default": false
     },
-    "pressed": {
+    "toggle": {
       "type": "boolean",
-      "note": "Toggle state for secondary and tertiary Buttons: brand tint and border, with aria-pressed. With aria-expanded (a button that shows or hides a panel, like the Toolbar Filters button) only the look changes."
+      "note": "Toggle on, for neutral subtle and minimal Buttons: brand tint and border, with aria-pressed. With aria-expanded (a button that shows or hides a panel, like the Toolbar Filters button) only the look changes."
     },
     "disabled": {
       "type": "boolean",
@@ -79,8 +88,9 @@
   ],
   "doNot": [
     "Do not use for in-text navigation (use Link).",
-    "Do not put two primary Buttons in one view.",
-    "Do not invent extra variants.",
+    "Do not put two strong brand Buttons in one view.",
+    "Do not pair an emphasis and an intent outside the allowed pairs (no strong neutral, no subtle brand or danger).",
+    "Do not invent extra looks.",
     "Do not set iconSize larger than lg on a Button with a label; big icons are for icon-only Buttons."
   ],
   "a11y": [
@@ -88,9 +98,9 @@
     "Visible focus ring via --outline-brand.",
     "loading sets aria-busy and aria-disabled, keeps width and full color, and ignores clicks. It does not look disabled.",
     "iconOnly needs children as accessible label.",
-    "pressed sets aria-pressed, unless the Button already has aria-expanded."
+    "toggle sets aria-pressed, unless the Button already has aria-expanded."
   ],
-  "snippet": "<Button variant=\"primary\" iconStart=\"add\">Create invoice</Button>",
+  "snippet": "<Button emphasis=\"strong\" intent=\"brand\" iconStart=\"add\">Create invoice</Button>",
   "examples": [
     {
       "title": "Accessibility",
@@ -100,14 +110,15 @@
         {
           "caption": "Tab here to see the focus ring",
           "props": {
-            "variant": "primary",
+            "emphasis": "strong",
+            "intent": "brand",
             "children": "Continue"
           }
         },
         {
           "caption": "Icon-only uses its label",
           "props": {
-            "variant": "tertiary",
+            "emphasis": "minimal",
             "iconOnly": true,
             "iconStart": "search",
             "children": "Search"
@@ -116,7 +127,7 @@
         {
           "caption": "Loading sets aria-busy",
           "props": {
-            "variant": "secondary",
+            "emphasis": "subtle",
             "loading": true,
             "children": "Saving"
           }
@@ -124,7 +135,7 @@
         {
           "caption": "Disabled",
           "props": {
-            "variant": "secondary",
+            "emphasis": "subtle",
             "disabled": true,
             "children": "Unavailable"
           }
@@ -132,26 +143,29 @@
       ]
     },
     {
-      "title": "Primary",
-      "usage": "Use one primary per view. Show sm, md and lg when hierarchy or density changes.",
+      "title": "Strong brand",
+      "usage": "The main action. Use one strong brand Button per view. Show sm, md and lg when hierarchy or density changes.",
       "items": [
         {
           "props": {
-            "variant": "primary",
+            "emphasis": "strong",
+            "intent": "brand",
             "size": "sm",
             "children": "Save"
           }
         },
         {
           "props": {
-            "variant": "primary",
+            "emphasis": "strong",
+            "intent": "brand",
             "size": "md",
             "children": "Continue"
           }
         },
         {
           "props": {
-            "variant": "primary",
+            "emphasis": "strong",
+            "intent": "brand",
             "size": "lg",
             "children": "Get started"
           }
@@ -159,26 +173,26 @@
       ]
     },
     {
-      "title": "Secondary",
-      "usage": "Use secondary for cancel, back, or other paths that should stay quieter than primary.",
+      "title": "Subtle",
+      "usage": "The default. Use subtle for cancel, back, or other paths that should stay quieter than the strong brand Button.",
       "items": [
         {
           "props": {
-            "variant": "secondary",
+            "emphasis": "subtle",
             "size": "sm",
             "children": "Back"
           }
         },
         {
           "props": {
-            "variant": "secondary",
+            "emphasis": "subtle",
             "size": "md",
             "children": "Cancel"
           }
         },
         {
           "props": {
-            "variant": "secondary",
+            "emphasis": "subtle",
             "size": "lg",
             "children": "View details"
           }
@@ -186,26 +200,26 @@
       ]
     },
     {
-      "title": "Tertiary",
-      "usage": "Use tertiary for quiet actions in toolbars, empty states, or dense screens where a filled button would feel heavy.",
+      "title": "Minimal",
+      "usage": "Use minimal for quiet actions in toolbars, empty states, or dense screens where a filled button would feel heavy.",
       "items": [
         {
           "props": {
-            "variant": "tertiary",
+            "emphasis": "minimal",
             "size": "sm",
             "children": "Edit"
           }
         },
         {
           "props": {
-            "variant": "tertiary",
+            "emphasis": "minimal",
             "size": "md",
             "children": "Learn more"
           }
         },
         {
           "props": {
-            "variant": "tertiary",
+            "emphasis": "minimal",
             "size": "lg",
             "children": "See all options"
           }
@@ -213,26 +227,68 @@
       ]
     },
     {
-      "title": "Danger",
-      "usage": "Use danger only for actions that cannot be undone, like delete. Ask the user to confirm when a mistake would be costly.",
+      "title": "Minimal brand and danger",
+      "usage": "A quiet action in the brand color, like Add row, or a quiet remove among other actions. Use minimal danger where a strong danger Button would be too loud, and still confirm costly work.",
       "items": [
         {
           "props": {
-            "variant": "danger",
+            "emphasis": "minimal",
+            "intent": "brand",
+            "iconStart": "add",
+            "children": "Add row"
+          }
+        },
+        {
+          "props": {
+            "emphasis": "minimal",
+            "intent": "brand",
+            "children": "View all"
+          }
+        },
+        {
+          "props": {
+            "emphasis": "minimal",
+            "intent": "danger",
+            "iconStart": "delete",
+            "children": "Remove"
+          }
+        },
+        {
+          "caption": "Icon-only",
+          "props": {
+            "emphasis": "minimal",
+            "intent": "danger",
+            "iconOnly": true,
+            "iconStart": "delete",
+            "children": "Delete row"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Strong danger",
+      "usage": "Use strong danger only for actions that cannot be undone, like delete. Ask the user to confirm when a mistake would be costly.",
+      "items": [
+        {
+          "props": {
+            "emphasis": "strong",
+            "intent": "danger",
             "size": "sm",
             "children": "Remove"
           }
         },
         {
           "props": {
-            "variant": "danger",
+            "emphasis": "strong",
+            "intent": "danger",
             "size": "md",
             "children": "Delete"
           }
         },
         {
           "props": {
-            "variant": "danger",
+            "emphasis": "strong",
+            "intent": "danger",
             "size": "lg",
             "children": "Delete account"
           }
@@ -245,21 +301,21 @@
       "items": [
         {
           "props": {
-            "variant": "secondary",
+            "emphasis": "subtle",
             "iconStart": "add",
             "children": "Create invoice"
           }
         },
         {
           "props": {
-            "variant": "secondary",
+            "emphasis": "subtle",
             "iconEnd": "arrow_forward",
             "children": "Next"
           }
         },
         {
           "props": {
-            "variant": "tertiary",
+            "emphasis": "minimal",
             "iconOnly": true,
             "iconStart": "close",
             "children": "Close"
@@ -268,7 +324,7 @@
         {
           "caption": "Icon-only with an xl icon",
           "props": {
-            "variant": "tertiary",
+            "emphasis": "minimal",
             "size": "lg",
             "iconOnly": true,
             "iconStart": "save",
@@ -279,21 +335,21 @@
       ]
     },
     {
-      "title": "Pressed",
+      "title": "Toggle",
       "usage": "A toggle that stays on, like Filters while the filter bar is open.",
       "items": [
         {
           "props": {
-            "variant": "secondary",
+            "emphasis": "subtle",
             "size": "sm",
             "iconStart": "filter_list",
-            "pressed": true,
+            "toggle": true,
             "children": "Filters"
           }
         },
         {
           "props": {
-            "variant": "secondary",
+            "emphasis": "subtle",
             "size": "sm",
             "iconStart": "filter_list",
             "children": "Filters"

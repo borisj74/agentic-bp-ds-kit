@@ -2,7 +2,7 @@
   "name": "EmptyState",
   "path": "src/ui/EmptyState/EmptyState.tsx",
   "intent": "What a list, page or panel shows when it has nothing yet: an icon, a title, a line of help and the action that fills it.",
-  "usage": "Use EmptyState in place of content that isn't there yet: a list with no rows, a new account's first screen, a panel with nothing selected. It is one component: pass title, and add description, icon and actions as needed. icon shows in a round well above the title, or large and filled with iconStyle=\"plain\"; media replaces it with a kit Avatar or AvatarGroup. actions holds kit Buttons, like one primary Create and a secondary Import. outlined adds a border and a card fill, for an empty region inside a page. See contracts/emptystate.json for the full contract.",
+  "usage": "Use EmptyState in place of content that isn't there yet: a list with no rows, a new account's first screen, a panel with nothing selected. It is one component: pass title, and add description, icon and actions as needed. icon shows in a round well above the title, or large and filled with iconStyle=\"plain\"; media replaces it with a kit Avatar or AvatarGroup. actions holds kit Buttons, like one strong brand Create and a subtle Import. outlined adds a border and a card fill, for an empty region inside a page. See contracts/emptystate.json for the full contract.",
   "props": {
     "title": {
       "type": "string",
@@ -31,7 +31,7 @@
     },
     "actions": {
       "type": "ReactNode",
-      "note": "Kit Buttons in a row under the text. One primary per view."
+      "note": "Kit Buttons in a row under the text. One strong brand Button per view."
     },
     "outlined": {
       "type": "boolean",
@@ -55,11 +55,11 @@
     "The icon well is decorative.",
     "Actions are ordinary kit Buttons in reading order."
   ],
-  "snippet": "<EmptyState\n  icon=\"receipt_long\"\n  title=\"No invoices yet\"\n  description=\"Create an invoice or import them from a file.\"\n  actions={<>\n    <Button variant=\"primary\">Create invoice</Button>\n    <Button>Import</Button>\n  </>}\n/>",
+  "snippet": "<EmptyState\n  icon=\"receipt_long\"\n  title=\"No invoices yet\"\n  description=\"Create an invoice or import them from a file.\"\n  actions={<>\n    <Button emphasis=\"strong\" intent=\"brand\">Create invoice</Button>\n    <Button>Import</Button>\n  </>}\n/>",
   "examples": [
     {
       "title": "With actions",
-      "usage": "Icon, title, a line of help and the actions that fill it: one primary, one secondary.",
+      "usage": "Icon, title, a line of help and the actions that fill it: one strong brand Button, one subtle.",
       "items": [
         {
           "props": {

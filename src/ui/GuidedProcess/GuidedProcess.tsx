@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { Button } from "../Button/Button";
+import { Button, type ButtonPair } from "../Button/Button";
 import { Dropdown } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import styles from "./GuidedProcess.module.css";
@@ -21,15 +21,23 @@ export interface GuidedProcessStep {
   tasks?: GuidedProcessTask[];
 }
 
-export interface GuidedProcessAction {
+/** The footer action looks: strong brand (Submit), subtle (Continue) or minimal (the rest). */
+export type GuidedProcessActionLook =
+  | { emphasis: "strong"; intent: "brand" }
+  | { emphasis?: "subtle" | "minimal"; intent?: "neutral" };
+
+export type GuidedProcessAction = GuidedProcessActionLook & {
   id: string;
   label: string;
   icon?: string;
-  variant?: "primary" | "secondary" | "tertiary";
   type?: "button" | "submit";
   form?: string;
   disabled?: boolean;
-}
+};
+// An action with no emphasis takes its place's look: minimal for the quieter ones, subtle for the last.
+const look = (a: GuidedProcessAction, fallback: "subtle" | "minimal"): ButtonPair =>
+  a.emphasis === "strong" ? { emphasis: "strong", intent: "brand" } : { emphasis: a.emphasis ?? fallback } as ButtonPair;
+
 
 export interface GuidedProcessPanelProps {
   part?: "panel";
@@ -132,8 +140,8 @@ function Panel({
 
       {!started && (onStart || onCancel) && (
         <div className={styles.actions}>
-          {onStart && <Button variant="primary" onClick={onStart}>{startLabel}</Button>}
-          {onCancel && <Button variant="tertiary" onClick={onCancel}>Cancel</Button>}
+          {onStart && <Button emphasis="strong" intent="brand" onClick={onStart}>{startLabel}</Button>}
+          {onCancel && <Button emphasis="minimal" onClick={onCancel}>Cancel</Button>}
         </div>
       )}
     </section>
@@ -164,7 +172,7 @@ function Steps({ steps, current = 1, side = "end", onClose }: GuidedProcessSteps
           {/* Only a drawer can be closed; beside a wide page the steps are always there. */}
           {onClose && (
             <span className={styles.close}>
-              <Button variant="tertiary" iconOnly iconStart="close" onClick={onClose}>Close steps</Button>
+              <Button emphasis="minimal" iconOnly iconStart="close" onClick={onClose}>Close steps</Button>
             </span>
           )}
         </div>
@@ -228,7 +236,7 @@ function Footer({ actions = [], onAction, updated }: GuidedProcessFooterProps) {
   const plain = rest.filter((a) => !a.icon);
   const menu = (items: GuidedProcessAction[]) => (
     <Dropdown
-      label="More actions" icon="more_horiz" iconOnly variant="tertiary" alignment="left"
+      label="More actions" icon="more_horiz" iconOnly emphasis="minimal" alignment="left"
       items={items.map((a) => ({ id: a.id, label: a.label, icon: a.icon, disabled: a.disabled }))}
       onSelect={(id) => onAction?.(id)}
     />
@@ -246,7 +254,7 @@ function Footer({ actions = [], onAction, updated }: GuidedProcessFooterProps) {
             <>
               <div className={styles.rest}>
                 {rest.map((a) => (
-                  <Button key={a.id} variant={a.variant ?? "tertiary"} type={a.type ?? "button"} form={a.form} disabled={a.disabled} onClick={() => onAction?.(a.id)}>
+                  <Button key={a.id} {...look(a, "minimal")} type={a.type ?? "button"} form={a.form} disabled={a.disabled} onClick={() => onAction?.(a.id)}>
                     {a.label}
                   </Button>
                 ))}
@@ -255,7 +263,7 @@ function Footer({ actions = [], onAction, updated }: GuidedProcessFooterProps) {
               {iconed.length > 0 && (
                 <div className={styles.icons}>
                   {iconed.map((a) => (
-                    <Button key={a.id} variant="tertiary" size="lg" iconOnly iconStart={a.icon} iconSize="xl" type={a.type ?? "button"} form={a.form} disabled={a.disabled} onClick={() => onAction?.(a.id)}>
+                    <Button key={a.id} emphasis="minimal" size="lg" iconOnly iconStart={a.icon} iconSize="xl" type={a.type ?? "button"} form={a.form} disabled={a.disabled} onClick={() => onAction?.(a.id)}>
                       {a.label}
                     </Button>
                   ))}
@@ -265,7 +273,7 @@ function Footer({ actions = [], onAction, updated }: GuidedProcessFooterProps) {
             </>
           )}
           <span className={styles.last}>
-            <Button variant={last.variant ?? "secondary"} type={last.type ?? "button"} form={last.form} disabled={last.disabled} fullWidth onClick={() => onAction?.(last.id)}>
+            <Button {...look(last, "subtle")} type={last.type ?? "button"} form={last.form} disabled={last.disabled} fullWidth onClick={() => onAction?.(last.id)}>
               {last.label}
             </Button>
           </span>

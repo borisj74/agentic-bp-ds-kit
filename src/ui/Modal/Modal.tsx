@@ -57,7 +57,7 @@ export function Modal({ open, title, description, icon, size = "sm", showClose =
           </div>
           {showClose && (
             <span className={styles.close}>
-              <Button variant="tertiary" iconOnly iconStart="close" onClick={onClose}>Close</Button>
+              <Button emphasis="minimal" iconOnly iconStart="close" onClick={onClose}>Close</Button>
             </span>
           )}
         </header>

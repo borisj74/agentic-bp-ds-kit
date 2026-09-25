@@ -13,7 +13,7 @@ export function CodeBlock({ code, wrap = false }: { code: string; wrap?: boolean
     <div className={styles.codeWrap}>
       <pre className={[styles.code, wrap ? docs.wrap : ""].join(" ")} tabIndex={wrap ? undefined : 0} role={wrap ? undefined : "region"} aria-label={wrap ? undefined : "Code"}>{code}</pre>
       <span className={styles.copy}>
-        <Button size="sm" variant="secondary" iconStart={done ? "check" : "content_copy"} onClick={() => c.copy("code", code)}>
+        <Button size="sm" emphasis="subtle" iconStart={done ? "check" : "content_copy"} onClick={() => c.copy("code", code)}>
           {done ? "Copied" : "Copy"}
         </Button>
       </span>

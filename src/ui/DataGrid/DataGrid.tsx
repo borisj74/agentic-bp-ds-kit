@@ -229,7 +229,7 @@ export function DataGrid({
             fields={col.fields} onCalculate={col.onCalculate}
           />
           <span className={styles.done}>
-            <Button variant="tertiary" size="sm" iconStart="check" onClick={() => close(true, true)}>Done</Button>
+            <Button emphasis="minimal" size="sm" iconStart="check" onClick={() => close(true, true)}>Done</Button>
           </span>
         </span>
       );
@@ -277,7 +277,7 @@ export function DataGrid({
                     <HeaderCell size={size} line={line} alignment={c.type === "number" ? "end" : "start"} label={c.header} />,
                     c.setForAll ? (
                       <Dropdown
-                        label="Set for all" variant="tertiary" size="sm" alignment={c.type === "number" ? "right" : "left"}
+                        label="Set for all" emphasis="minimal" size="sm" alignment={c.type === "number" ? "right" : "left"}
                         items={setForAllItems(c)} onSelect={onSetForAll(c)}
                       />
                     ) : undefined,
@@ -300,14 +300,14 @@ export function DataGrid({
                 {canInsertRows && (
                   <td className={[styles.insert, stickyFirstColumn ? styles.stickyInsert : ""].join(" ")}>
                     <Tooltip content={`Add row below row ${i + 1}`} position="right">
-                      <Button variant="tertiary" size="sm" iconOnly iconStart="add" onClick={() => addRow(i)}>{`Add row below row ${i + 1}`}</Button>
+                      <Button emphasis="minimal" size="sm" iconOnly iconStart="add" onClick={() => addRow(i)}>{`Add row below row ${i + 1}`}</Button>
                     </Tooltip>
                   </td>
                 )}
                 {detail && (
                   <td className={[styles.toggle, stickyFirstColumn ? styles.stickyToggle : ""].join(" ")}>
                     <Button
-                      variant="tertiary" size="sm" iconOnly iconStart={isOpen ? "expand_more" : "chevron_right"}
+                      emphasis="minimal" size="sm" iconOnly iconStart={isOpen ? "expand_more" : "chevron_right"}
                       aria-expanded={isOpen} aria-controls={isOpen ? detailId : undefined} onClick={() => toggleRow(row.id)}
                     >
                       {`${isOpen ? "Hide" : "Show"} details, row ${i + 1}`}
@@ -319,7 +319,7 @@ export function DataGrid({
                 {canRemoveRows && (
                   <td className={styles.remove}>
                     <Tooltip content={`Remove row ${i + 1}`} position="left">
-                      <Button variant="tertiary" size="sm" iconOnly iconStart="delete" onClick={() => removeRow(row.id)}>{`Remove row ${i + 1}`}</Button>
+                      <Button emphasis="minimal" size="sm" iconOnly iconStart="delete" onClick={() => removeRow(row.id)}>{`Remove row ${i + 1}`}</Button>
                     </Tooltip>
                   </td>
                 )}
@@ -339,7 +339,7 @@ export function DataGrid({
       </div>
       {canAddRows && (
         <div className={styles.add}>
-          <Button variant="tertiary" size="sm" iconStart="add" onClick={() => addRow()}>Add row</Button>
+          <Button emphasis="minimal" size="sm" iconStart="add" onClick={() => addRow()}>Add row</Button>
         </div>
       )}
     </div>

@@ -60,7 +60,7 @@
     "Escape, a click elsewhere, or moving focus away closes it. Escape does not close an enclosing Modal.",
     "The pointer can move onto the panel to read it. It is fixed to the window, so containers never clip it."
   ],
-  "snippet": "<HelpPopover title=\"Tax ID\" content=\"The number on your tax registration, like EU123456789.\">\n  <Button variant=\"tertiary\" size=\"sm\" iconOnly iconStart=\"help_center\">About Tax ID</Button>\n</HelpPopover>",
+  "snippet": "<HelpPopover title=\"Tax ID\" content=\"The number on your tax registration, like EU123456789.\">\n  <Button emphasis=\"minimal\" size=\"sm\" iconOnly iconStart=\"help_center\">About Tax ID</Button>\n</HelpPopover>",
   "examples": [
     {
       "title": "With a title",

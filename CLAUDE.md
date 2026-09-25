@@ -15,7 +15,7 @@ If a contract exists, import it from `@/ui/<Name>/<Name>`. Never invent a local 
 If a pattern listed under `patterns` in `contracts/index.json` matches the screen, import it from `@/patterns/`.
 If something is missing from the index, stop and ask — do not add a one-off.
 Never put hex in components; use semantic tokens from `src/tokens/semantic.css` (not primitive `--ref-*` / `--ui-*` ramps).
-One `variant="primary"` Button per view.
+One `emphasis="strong" intent="brand"` Button per view.
 Page spacing: 4px grid. Content edge padding and between-section gap come from layout classes in `src/tokens/layout.css` — `.layout-content` uses `--layout-margin-md` (24px) for inset and `--layout-gutter-lg` (24px) for gap between stacked children. A column of Sections inside another layout (for example a `.layout-split` side) uses `.layout-stack`: same gap, no padding. Section does not own page padding; read `contracts/layout.json`.
 
 ## Stack
@@ -51,7 +51,7 @@ Page spacing: 4px grid. Content edge padding and between-section gap come from l
 3. If it is missing, add it as one flattened component: contract first, then React, then playground. Do not skip the playground.
 4. Flatten compound APIs into one component. Example: one Toast, not ToastTitle + ToastDescription.
 5. Playground must show the real kit component, not a local mock.
-6. One primary Button per view.
+6. One strong brand Button (`emphasis="strong" intent="brand"`) per view.
 
 ## How to prototype a screen
 
@@ -60,7 +60,7 @@ Page spacing: 4px grid. Content edge padding and between-section gap come from l
 3. If a pattern matches the screen, use the pattern.
 4. Breadcrumbs always read Home › side-nav section › current screen. Pass `breadcrumbs` starting with Home, then the section (and any parent record); PageHeader adds the page title as the last, current crumb. Never leave Home out. When the screen is the section's own page (like the Accounts list), the title is the section, so pass only Home: the trail reads Home › Accounts, never Home › Accounts › Accounts.
 5. Frame full screens with AppShell and the whole side nav: `items={APP_NAV}` and `endItems={APP_NAV_END}` from `@/patterns/AppShell/appNav`. Never trim or invent nav links; set `current` to the screen's page.
-6. Compose kit pieces. Match closed enums. Do not add variants that are not in the contract. The color-role prop is `intent` (`intent="success"`), never `tone`.
+6. Compose kit pieces. Match closed enums. Do not add variants that are not in the contract. The color-role prop is `intent` (`intent="success"`), never `tone`. Button looks are `emphasis` × `intent`, allowed pairs only (strong: brand, danger · subtle: neutral · minimal: neutral, brand, danger); never `variant`.
 7. If something is missing, stop and ask. Do not scaffold a one-off on the screen.
 
 ## Stay consistent

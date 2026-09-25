@@ -97,7 +97,7 @@ export function ChatMessage({
         {/* The person's More menu sits outside the bubble, on hover or focus. */}
         {mine && menu && menu.length > 0 && (
           <span className={styles.menu}>
-            <Dropdown label={`Message actions`} items={menu} iconOnly icon="more_vert" variant="tertiary" size="sm" onSelect={(id) => onMenuSelect?.(id)} />
+            <Dropdown label={`Message actions`} items={menu} iconOnly icon="more_vert" emphasis="minimal" size="sm" onSelect={(id) => onMenuSelect?.(id)} />
           </span>
         )}
         {!mine && <span className={styles.avatar}>{avatar}</span>}
@@ -130,7 +130,7 @@ export function ChatMessage({
               {keys.map((k) => (
                 <Tooltip key={k} content={ACTIONS[k].label}>
                   <Button
-                    size="sm" variant="tertiary" iconOnly iconStart={ACTIONS[k].icon} pressed={pressed.includes(k)} onClick={() => onAction?.(k)}
+                    size="sm" emphasis="minimal" iconOnly iconStart={ACTIONS[k].icon} toggle={pressed.includes(k)} onClick={() => onAction?.(k)}
                   >
                     {ACTIONS[k].label}
                   </Button>

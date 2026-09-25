@@ -176,7 +176,7 @@ const CELL_SAMPLES: Record<CellType, Props> = {
   select: { label: "Status", value: "paid", options: [{ value: "draft", label: "Draft" }, { value: "paid", label: "Paid" }, { value: "void", label: "Void" }] },
   actions: { actions: [{ label: "View" }, { label: "Send" }] },
   actionIcons: { actions: [{ label: "Edit", icon: "edit" }, { label: "Download", icon: "download" }, { label: "Delete", icon: "delete" }] },
-  actionMenu: { label: "Row actions", actions: [{ label: "View" }, { label: "Download" }, { label: "Delete", icon: "delete", variant: "danger" }] },
+  actionMenu: { label: "Row actions", actions: [{ label: "View" }, { label: "Download" }, { label: "Delete", icon: "delete", emphasis: "strong", intent: "danger" }] },
   checkbox: { label: "INV-1042" },
   tree: { label: "Acme Holdings" },
 };
@@ -200,7 +200,7 @@ const ACCOUNT_COLUMNS: TableColumn[] = [
   { key: "mrr", header: "MRR", numeric: true },
   { key: "actions", header: "", alignment: "end", width: "1%" },
 ];
-const ACCOUNT_ACTIONS = [{ label: "View" }, { label: "Edit" }, { label: "Delete", variant: "danger" as const }];
+const ACCOUNT_ACTIONS = [{ label: "View" }, { label: "Edit" }, { label: "Delete", emphasis: "strong" as const, intent: "danger" as const }];
 const ACCOUNTS: TableRow[] = [
   { id: "acme", account: <Cell type="link" label="Acme Inc." href="#" />, owner: <Cell type="avatar" name="Maya Chen" src="/faces/maya-chen.jpg" />, status: <Cell type="badge" label="Active" intent="success" />, mrr: "$12,400", actions: <Cell type="actionMenu" alignment="end" actions={ACCOUNT_ACTIONS} /> },
   { id: "globex", account: <Cell type="link" label="Globex" href="#" />, owner: <Cell type="avatar" name="Noah Williams" src="/faces/noah-williams.jpg" />, status: <Cell type="badge" label="Trial" intent="info" />, mrr: "$3,150", actions: <Cell type="actionMenu" alignment="end" actions={ACCOUNT_ACTIONS} /> },
@@ -380,7 +380,7 @@ const sectionProps = (p: Props) =>
 
 // EmptyState samples. Contract examples name them as {createActions}, {uploadAction}, {avatar}, {messageAction}.
 const EMPTY_SAMPLES: Record<string, ReactNode> = {
-  "{createActions}": <><Button variant="primary">Create invoice</Button><Button>Import</Button></>,
+  "{createActions}": <><Button emphasis="strong" intent="brand">Create invoice</Button><Button>Import</Button></>,
   "{uploadAction}": <Button iconStart="upload">Upload files</Button>,
   "{avatar}": <Avatar name="Maya Chen" src="/faces/maya-chen.jpg" size="lg" />,
   "{messageAction}": <Button>Leave a message</Button>,
@@ -677,7 +677,7 @@ export const registry: Record<string, Entry> = {
     preview: { title: "Leave this page?", description: "You have unsaved changes. Continue without saving?", actionLabel: "Continue" },
     hide: ["open"],
     snippet: { open: "{open}", onCancel: "{close}", onAction: "{confirm}" },
-    hint: "Open the dialog, then switch size and action variant. Escape cancels. Clicking the backdrop does not.",
+    hint: "Open the dialog, then switch size and action intent. Escape cancels. Clicking the backdrop does not.",
     card: <Button>Show dialog</Button>,
   },
   Avatar: {
@@ -745,11 +745,21 @@ export const registry: Record<string, Entry> = {
   },
   Button: {
     render: ({ children, ...p }) => <Button {...(p as object)}>{(children as string) || "Continue"}</Button>,
-    preview: { variant: "primary", children: "Continue" },
+    preview: { emphasis: "strong", intent: "brand", children: "Continue" },
     // type is the HTML button type (button / submit / reset), not a visual option.
     hide: ["type"],
-    normalize: (p) => (p.iconOnly && !p.iconStart ? { ...p, iconStart: "search", children: "Search" } : p),
-    card: <div style={{ display: "flex", gap: 8 }}><Button variant="primary">Primary</Button><Button>Secondary</Button></div>,
+    // Only the allowed pairs: an intent that does not go with the emphasis snaps to the first one that does,
+    // and toggle is dropped where it is not allowed (strong, or minimal brand/danger).
+    normalize: (p) => {
+      const pairs: Record<string, string[]> = { strong: ["brand", "danger"], subtle: ["neutral"], minimal: ["neutral", "brand", "danger"] };
+      const emphasis = (p.emphasis as string | undefined) ?? "subtle";
+      const allowed = pairs[emphasis] ?? pairs.subtle;
+      const intent = allowed.includes(p.intent as string) ? p.intent : allowed[0];
+      const q: typeof p = { ...p, intent, toggle: intent === "neutral" ? p.toggle : undefined };
+      return q.iconOnly && !q.iconStart ? { ...q, iconStart: "search", children: "Search" } : q;
+    },
+    hint: "Pick an emphasis, then an intent. Only the allowed pairs show: strong brand or danger, subtle neutral, minimal neutral, brand or danger.",
+    card: <div style={{ display: "flex", gap: 8 }}><Button emphasis="strong" intent="brand">Strong</Button><Button>Subtle</Button></div>,
   },
   FilterButton: {
     // ButtonFilterDemo keeps on/off in local state. Keyed so switching controls starts fresh.
@@ -768,7 +778,7 @@ export const registry: Record<string, Entry> = {
     ),
     preview: {
       label: "Plan period",
-      children: [{ variant: "secondary", children: "Day" }, { variant: "secondary", children: "Week" }, { variant: "secondary", children: "Month" }],
+      children: [{ emphasis: "subtle", children: "Day" }, { emphasis: "subtle", children: "Week" }, { emphasis: "subtle", children: "Month" }],
     },
     card: <ButtonGroup label="Plan period"><Button>Day</Button><Button>Week</Button><Button>Month</Button></ButtonGroup>,
   },
@@ -871,7 +881,7 @@ export const registry: Record<string, Entry> = {
     page: <ListPageDemo state="ready" shell />,
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
-        <Toolbar label="Invoices" views={[{ id: "table", label: "Table View" }]} onRefresh={() => {}} actions={<Button size="sm" variant="primary" iconStart="add">New</Button>} />
+        <Toolbar label="Invoices" views={[{ id: "table", label: "Table View" }]} onRefresh={() => {}} actions={<Button size="sm" emphasis="strong" intent="brand" iconStart="add">New</Button>} />
         <Pagination total={248} defaultPage={2} showPageSize={false} />
       </div>
     ),
@@ -1218,12 +1228,12 @@ export const registry: Record<string, Entry> = {
     hide: ["open"],
     // The filter trigger gets filter options and a count so it previews like a real filter.
     normalize: (p) => (p.trigger === "filter" && p.items === MENU_ITEMS ? { ...p, label: "Status", count: 2, items: FILTER_ITEMS } : p),
-    hint: "Click the trigger to open the menu. Switch trigger, variant, size and alignment.",
+    hint: "Click the trigger to open the menu. Switch trigger, emphasis, intent, size and alignment.",
     card: (
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
         <Dropdown label="Actions" items={MENU_ITEMS} />
         <Dropdown label="Status" trigger="filter" count={2} items={FILTER_ITEMS} />
-        <Dropdown label="Row actions" iconOnly variant="tertiary" items={MENU_ITEMS} />
+        <Dropdown label="Row actions" iconOnly emphasis="minimal" items={MENU_ITEMS} />
       </div>
     ),
   },
@@ -1278,7 +1288,7 @@ export const registry: Record<string, Entry> = {
     column: true,
     card: (
       <div style={{ width: "80%" }}>
-        <Form actions={<Button size="sm" variant="primary" type="submit">Save</Button>}>
+        <Form actions={<Button size="sm" emphasis="strong" intent="brand" type="submit">Save</Button>}>
           <Input size="sm" label="Company" defaultValue="Acme Inc." />
         </Form>
       </div>
@@ -1314,7 +1324,7 @@ export const registry: Record<string, Entry> = {
     page: <FormPageDemo shell />,
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
-        <PageHeader title="Create account" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]} actions={<><Button size="sm">Cancel</Button><Button size="sm" variant="primary">Create</Button></>} />
+        <PageHeader title="Create account" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]} actions={<><Button size="sm">Cancel</Button><Button size="sm" emphasis="strong" intent="brand">Create</Button></>} />
         <Input size="sm" label="Account name" labelPosition="start" placeholder="Enter a value" required />
         <Select size="sm" label="Status" labelPosition="start" options={[{ value: "active", label: "Active" }, { value: "pending", label: "Pending" }]} defaultValue="active" />
       </div>
@@ -1341,7 +1351,7 @@ export const registry: Record<string, Entry> = {
     page: <AccountFlowDemo />,
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
-        <PageHeader title="Account" actions={<><Button size="sm">Export</Button><Button size="sm" variant="primary">New</Button></>} />
+        <PageHeader title="Account" actions={<><Button size="sm">Export</Button><Button size="sm" emphasis="strong" intent="brand">New</Button></>} />
         <Table
           size="sm" columns={[{ key: "accountId", header: "Account ID" }, { key: "name", header: "Account name" }]}
           rows={[
@@ -1460,7 +1470,7 @@ export const registry: Record<string, Entry> = {
     card: (
       <div style={{ width: 340, display: "flex", flexDirection: "column", gap: "var(--space-small)" }}>
         <AppHeader search={false} />
-        <PageHeader title="Accounts" breadcrumbs={[{ label: "Home", href: "#" }]} actions={<Button size="sm" variant="primary">New account</Button>} />
+        <PageHeader title="Accounts" breadcrumbs={[{ label: "Home", href: "#" }]} actions={<Button size="sm" emphasis="strong" intent="brand">New account</Button>} />
       </div>
     ),
   },
@@ -1569,11 +1579,11 @@ export const registry: Record<string, Entry> = {
         </div>
       ) : (
         <HelpPopover key={JSON.stringify(p)} {...(p as unknown as Omit<HelpPopoverProps, "children">)} open={p.open ? true : undefined}>
-          <Button variant="tertiary" size="sm" iconOnly iconStart="help_center">{`About ${(p.title as string) || "this"}`}</Button>
+          <Button emphasis="minimal" size="sm" iconOnly iconStart="help_center">{`About ${(p.title as string) || "this"}`}</Button>
         </HelpPopover>
       ),
     preview: { title: "Tax ID", content: "The number on your tax registration, like EU123456789. We print it on every invoice.", open: true },
-    snippet: { children: '<Button variant="tertiary" size="sm" iconOnly iconStart="help_center">About Tax ID</Button>' },
+    snippet: { children: '<Button emphasis="minimal" size="sm" iconOnly iconStart="help_center">About Tax ID</Button>' },
     extras: { trigger: { values: ["icon", "field"], default: "icon" } },
     hint: "Switch position and trigger. Open pins the panel; turn it off, then hover, Tab or click the ? icon.",
     card: (
@@ -1858,7 +1868,7 @@ export const registry: Record<string, Entry> = {
     card: (
       <div style={{ width: 720 }}>
         <Toolbar filters={<></>} onSearchChange={() => {}} views={[{ id: "list", label: "List View" }]} onRefresh={() => {}}
-          actions={<><Button size="sm">Export</Button><Button size="sm" variant="primary">Create</Button></>} />
+          actions={<><Button size="sm">Export</Button><Button size="sm" emphasis="strong" intent="brand">Create</Button></>} />
       </div>
     ),
     cardCrop: true,
@@ -1868,7 +1878,7 @@ export const registry: Record<string, Entry> = {
     // The Open switch pins it; off means uncontrolled (hover and focus), not forced shut.
     render: ({ trigger, ...p }) => (
       <Tooltip key={JSON.stringify(p)} {...(p as unknown as Omit<TooltipProps, "children">)} open={p.open ? true : undefined}>
-        {trigger === "icon" ? <Button variant="tertiary" iconOnly iconStart="download">Download invoice</Button> : <Button>Export</Button>}
+        {trigger === "icon" ? <Button emphasis="minimal" iconOnly iconStart="download">Download invoice</Button> : <Button>Export</Button>}
       </Tooltip>
     ),
     preview: { content: "Export includes all projects", open: true },
@@ -1946,13 +1956,13 @@ export const registry: Record<string, Entry> = {
     card: <Button>Open modal</Button>,
   },
   PageHeader: {
-    // actionButtons and titleIcon are playground-only: one adds a secondary and the one primary Button as actions,
+    // actionButtons and titleIcon are playground-only: one adds a subtle and the one strong brand Button as actions,
     // the other puts the optional icon before the title. No icon by default.
     render: ({ actionButtons, titleIcon, ...p }) => (
       <PageHeader
         {...(p as unknown as PageHeaderProps)} onMoreSelect={() => {}}
         icon={titleIcon === "on" ? "folder_open" : (p as unknown as PageHeaderProps).icon}
-        actions={actionButtons === "off" ? undefined : <><Button size="sm">Send</Button><Button size="sm" variant="primary">Approve</Button></>}
+        actions={actionButtons === "off" ? undefined : <><Button size="sm">Send</Button><Button size="sm" emphasis="strong" intent="brand">Approve</Button></>}
       />
     ),
     preview: {
@@ -1974,7 +1984,7 @@ export const registry: Record<string, Entry> = {
     card: (
       <div style={{ width: 560 }}>
         <PageHeader breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }, { label: "Invoices", href: "#" }]} title="INV-1042" badge="Draft"
-          actions={<><Button size="sm">Send</Button><Button size="sm" variant="primary">Approve</Button></>} />
+          actions={<><Button size="sm">Send</Button><Button size="sm" emphasis="strong" intent="brand">Approve</Button></>} />
       </div>
     ),
     cardCrop: true,

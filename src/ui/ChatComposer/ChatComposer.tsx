@@ -106,7 +106,7 @@ export function ChatComposer({
           {/* The scope can be shut for good when the question is not about the page at all. */}
           {onScopeClose && (
             <Tooltip content={`Stop scoping to ${scopeLabel}`}>
-              <Button size="sm" variant="tertiary" iconOnly iconStart="close" disabled={disabled} onClick={onScopeClose}>{`Stop scoping to ${scopeLabel}`}</Button>
+              <Button size="sm" emphasis="minimal" iconOnly iconStart="close" disabled={disabled} onClick={onScopeClose}>{`Stop scoping to ${scopeLabel}`}</Button>
             </Tooltip>
           )}
         </div>
@@ -128,17 +128,17 @@ export function ChatComposer({
       />
       <div className={styles.footer}>
         {addMenu && addMenu.length > 0 ? (
-          <Dropdown label="Add to the message" items={addMenu} iconOnly icon="add" variant="tertiary" size="sm" disabled={disabled} onSelect={(id) => onAdd?.(id)} />
+          <Dropdown label="Add to the message" items={addMenu} iconOnly icon="add" emphasis="minimal" size="sm" disabled={disabled} onSelect={(id) => onAdd?.(id)} />
         ) : (
           <Tooltip content="Add">
-            <Button size="sm" variant="tertiary" iconOnly iconStart="add" disabled={disabled} onClick={() => onAdd?.("add")}>Add</Button>
+            <Button size="sm" emphasis="minimal" iconOnly iconStart="add" disabled={disabled} onClick={() => onAdd?.("add")}>Add</Button>
           </Tooltip>
         )}
         <span className={styles.spacer} />
         {/* Picking fields and dictating are switches: while one is on it turns red and says how to stop. */}
         <Tooltip content={selecting ? "Stop field selection" : "Select fields on page"}>
           <Button
-            size="sm" variant={selecting ? "danger" : "tertiary"} iconOnly iconStart={selecting ? "stop_circle" : "near_me"}
+            size="sm" {...(selecting ? { emphasis: "strong", intent: "danger" } as const : { emphasis: "minimal" } as const)} iconOnly iconStart={selecting ? "stop_circle" : "near_me"}
             disabled={disabled} onClick={() => onSelectingChange?.(!selecting)}
           >
             {selecting ? "Stop field selection" : "Select fields on page"}
@@ -146,7 +146,7 @@ export function ChatComposer({
         </Tooltip>
         <Tooltip content={dictating ? "Stop dictation" : "Dictate message"}>
           <Button
-            size="sm" variant={dictating ? "danger" : "tertiary"} iconOnly iconStart={dictating ? "stop_circle" : "mic_none"}
+            size="sm" {...(dictating ? { emphasis: "strong", intent: "danger" } as const : { emphasis: "minimal" } as const)} iconOnly iconStart={dictating ? "stop_circle" : "mic_none"}
             disabled={disabled} onClick={() => onDictatingChange?.(!dictating)}
           >
             {dictating ? "Stop dictation" : "Dictate message"}
@@ -155,7 +155,7 @@ export function ChatComposer({
         {onModeChange && (
           <Tooltip content={mode === "deep" ? "Using Deep Thought" : "Use Deep Thought"}>
             <Button
-              size="sm" variant="tertiary" iconOnly iconStart="psychology" disabled={disabled} pressed={mode === "deep"}
+              size="sm" emphasis="minimal" iconOnly iconStart="psychology" disabled={disabled} toggle={mode === "deep"}
               onClick={() => onModeChange(mode === "deep" ? "quick" : "deep")}
             >
               Deep Thought
@@ -163,7 +163,7 @@ export function ChatComposer({
           </Tooltip>
         )}
         <Tooltip content="Send message">
-          <Button size="sm" variant="primary" iconOnly iconStart="arrow_upward" disabled={disabled || !text.trim()} onClick={send}>Send message</Button>
+          <Button size="sm" emphasis="strong" intent="brand" iconOnly iconStart="arrow_upward" disabled={disabled || !text.trim()} onClick={send}>Send message</Button>
         </Tooltip>
       </div>
     </div>

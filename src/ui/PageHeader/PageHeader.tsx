@@ -50,11 +50,11 @@ export function PageHeader({
         )}
       </div>
       {hasControls && (
-        // Figma order: More (overflow) first, then the actions with the one primary last.
+        // Figma order: More (overflow) first, then the actions with the one strong brand Button last.
         <div className={styles.controls}>
           {moreActions && moreActions.length > 0 && (
-            // Figma button-group: the overflow More is unbordered (tertiary) and sits first.
-            <Dropdown label="More" variant="tertiary" size="sm" alignment="right" items={moreActions} onSelect={onMoreSelect} />
+            // Figma button-group: the overflow More is unbordered (minimal) and sits first.
+            <Dropdown label="More" emphasis="minimal" size="sm" alignment="right" items={moreActions} onSelect={onMoreSelect} />
           )}
           {actions}
         </div>

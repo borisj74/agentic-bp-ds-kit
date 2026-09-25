@@ -36,24 +36,32 @@
 .iconOnly.md { width: var(--control-medium); padding: 0; }
 .iconOnly.lg { width: var(--control-large); padding: 0; }
 
-/* variants */
-.primary { background: var(--bg-brand); color: var(--text-neutral-min-static); }
-.primary:hover:not(:disabled, .loading) { background: var(--bg-brand-hover); }
-.primary:active:not(:disabled, .loading) { background: var(--bg-brand-press); }
+/* emphasis × intent (allowed pairs only: strong brand/danger, subtle neutral, minimal neutral/brand/danger) */
+.strong.brand { background: var(--bg-brand); color: var(--text-neutral-min-static); }
+.strong.brand:hover:not(:disabled, .loading) { background: var(--bg-brand-hover); }
+.strong.brand:active:not(:disabled, .loading) { background: var(--bg-brand-press); }
 
-.secondary { background: var(--surface-raised); color: var(--text-neutral-strong); border-color: var(--border-neutral-strong); }
-.secondary:hover:not(:disabled, .loading) { background: var(--bg-neutral-min-hover); }
-.secondary:active:not(:disabled, .loading) { background: var(--bg-neutral-min-press); }
+.subtle { background: var(--surface-raised); color: var(--text-neutral-strong); border-color: var(--border-neutral-strong); }
+.subtle:hover:not(:disabled, .loading) { background: var(--bg-neutral-min-hover); }
+.subtle:active:not(:disabled, .loading) { background: var(--bg-neutral-min-press); }
 
-.tertiary { background: transparent; color: var(--text-neutral-strong); }
-.tertiary:hover:not(:disabled, .loading) { background: var(--bg-neutral-min-hover); }
-.tertiary:active:not(:disabled, .loading) { background: var(--bg-neutral-min-press); }
+.minimal { background: transparent; color: var(--text-neutral-strong); }
+.minimal:hover:not(:disabled, .loading) { background: var(--bg-neutral-min-hover); }
+.minimal:active:not(:disabled, .loading) { background: var(--bg-neutral-min-press); }
 
-/* Pressed toggle (secondary and tertiary): brand tint and border, like an applied FilterButton. */
-.pressed, .pressed:hover:not(:disabled, .loading) { background: var(--bg-brand-faint); border-color: var(--border-brand-subtle); color: var(--text-brand-strong-contrast); }
-.pressed:hover:not(:disabled, .loading) { background: var(--bg-brand-subtle); }
+/* Minimal brand and danger: coloured text, faint tint on hover, one step deeper on press. */
+.minimal.brand { color: var(--text-brand-strong); }
+.minimal.brand:hover:not(:disabled, .loading) { background: var(--bg-brand-faint); }
+.minimal.brand:active:not(:disabled, .loading) { background: var(--bg-brand-faint-press); }
+.minimal.danger { color: var(--text-danger-strong); }
+.minimal.danger:hover:not(:disabled, .loading) { background: var(--bg-danger-faint); }
+.minimal.danger:active:not(:disabled, .loading) { background: var(--bg-danger-faint-press); }
 
-.danger { background: var(--bg-danger); color: var(--text-neutral-min-static); }
-.danger:hover:not(:disabled, .loading) { background: var(--bg-danger-hover); }
-.danger:active:not(:disabled, .loading) { background: var(--bg-danger-press); }
+/* Toggle on (neutral subtle and minimal): brand tint and border, like an applied FilterButton. */
+.toggle, .toggle:hover:not(:disabled, .loading) { background: var(--bg-brand-faint); border-color: var(--border-brand-subtle); color: var(--text-brand-strong-contrast); }
+.toggle:hover:not(:disabled, .loading) { background: var(--bg-brand-subtle); }
+
+.strong.danger { background: var(--bg-danger); color: var(--text-neutral-min-static); }
+.strong.danger:hover:not(:disabled, .loading) { background: var(--bg-danger-hover); }
+.strong.danger:active:not(:disabled, .loading) { background: var(--bg-danger-press); }
 .danger:focus-visible { outline-color: var(--outline-danger); }

@@ -100,7 +100,7 @@
     "Do not use it to pick one date or a range in a form. Use DatePicker.",
     "Do not use it for a timeline of one record's history or a list of due dates. Use Table.",
     "Do not build a local month grid, week grid or event chip. Use Calendar.",
-    "Do not put a primary Button in its toolbar; the event form's Save is the primary action.",
+    "Do not put a strong brand Button in its toolbar; the event form's Save is the strong brand action.",
     "Do not use raw hex; pick an intent."
   ],
   "a11y": [

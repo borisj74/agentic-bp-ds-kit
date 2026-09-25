@@ -5,32 +5,50 @@ import { Icon, type IconSize } from "../Icon/Icon";
 import { ButtonGroupContext } from "../ButtonGroup/context";
 import styles from "./Button.module.css";
 
-export type ButtonVariant = "primary" | "secondary" | "tertiary" | "danger";
+export type ButtonEmphasis = "strong" | "subtle" | "minimal";
+export type ButtonIntent = "brand" | "neutral" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 export type ButtonIconSize = Exclude<IconSize, "xs">;
 
-export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  iconStart?: string;
-  iconEnd?: string;
-  iconSize?: ButtonIconSize;
-  iconOnly?: boolean;
-  loading?: boolean;
-  pressed?: boolean;
-  fullWidth?: boolean;
-  children: ReactNode;
-}
+/** Emphasis × intent, only the allowed pairs. For components that pass a Button look through (Dropdown, Cell actions…). */
+export type ButtonPair =
+  | { emphasis: "strong"; intent: "brand" | "danger" }
+  | { emphasis?: "subtle"; intent?: "neutral" }
+  | { emphasis: "minimal"; intent?: "neutral" | "brand" | "danger" };
+
+/**
+ * Emphasis × intent, only the allowed pairs:
+ * strong: brand, danger · subtle: neutral · minimal: neutral, brand, danger.
+ * Leave both out for subtle neutral. `toggle` is for the neutral subtle and minimal Buttons only.
+ */
+export type ButtonLook =
+  | { emphasis: "strong"; intent: "brand" | "danger"; toggle?: never }
+  | { emphasis?: "subtle"; intent?: "neutral"; toggle?: boolean }
+  | { emphasis: "minimal"; intent?: "neutral"; toggle?: boolean }
+  | { emphasis: "minimal"; intent: "brand" | "danger"; toggle?: never };
+
+export type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> &
+  ButtonLook & {
+    size?: ButtonSize;
+    iconStart?: string;
+    iconEnd?: string;
+    iconSize?: ButtonIconSize;
+    iconOnly?: boolean;
+    loading?: boolean;
+    fullWidth?: boolean;
+    children: ReactNode;
+  };
 
 export function Button({
-  variant = "secondary",
+  emphasis = "subtle",
+  intent = emphasis === "strong" ? "brand" : "neutral",
   size: sizeProp,
   iconStart,
   iconEnd,
   iconSize: iconSizeProp,
   iconOnly = false,
   loading = false,
-  pressed,
+  toggle,
   fullWidth = false,
   disabled,
   type = "button",
@@ -48,12 +66,13 @@ export function Button({
   const iconSize = iconSizeProp ?? (size === "sm" ? "sm" : "md");
   const cls = [
     styles.button,
-    styles[variant],
+    styles[emphasis],
+    styles[intent],
     styles[size],
     iconOnly ? styles.iconOnly : "",
     fullWidth ? styles.fullWidth : "",
     loading ? styles.loading : "",
-    pressed ? styles.pressed : "",
+    toggle ? styles.toggle : "",
     className ?? "",
   ]
     .join(" ")
@@ -65,8 +84,8 @@ export function Button({
       type={type}
       className={cls}
       disabled={off}
-      // A toggle announces its state. A disclosure (aria-expanded) already does, so pressed only changes its look.
-      aria-pressed={pressed === undefined || rest["aria-expanded"] !== undefined ? undefined : pressed}
+      // A toggle announces its state. A disclosure (aria-expanded) already does, so toggle only changes its look.
+      aria-pressed={toggle === undefined || rest["aria-expanded"] !== undefined ? undefined : toggle}
       aria-busy={loading || undefined}
       aria-disabled={loading || undefined}
       onClick={loading ? (e) => e.preventDefault() : onClick}

@@ -36,7 +36,7 @@
   "doNot": [
     "Do not invent a local button group or segmented control.",
     "Do not mix sizes inside one group.",
-    "Do not put more than one primary Button in a group or the view.",
+    "Do not put more than one strong brand Button in a group or the view.",
     "Do not wrap Input, Select, or anything except kit Button.",
     "Do not nest groups.",
     "Do not use for picking one option (a pressed button). Use Segmented.",
@@ -51,22 +51,22 @@
   "examples": [
     {
       "title": "Period switch",
-      "usage": "Related sibling actions that share one size. All secondary, so the group stays quiet.",
+      "usage": "Related sibling actions that share one size. All subtle, so the group stays quiet.",
       "items": [
         {
           "props": {
             "label": "Plan period",
             "children": [
               {
-                "variant": "secondary",
+                "emphasis": "subtle",
                 "children": "Day"
               },
               {
-                "variant": "secondary",
+                "emphasis": "subtle",
                 "children": "Week"
               },
               {
-                "variant": "secondary",
+                "emphasis": "subtle",
                 "children": "Month"
               }
             ]
@@ -76,18 +76,19 @@
     },
     {
       "title": "Confirm pair",
-      "usage": "Cancel and save as one cluster. This is the one primary Button for the view.",
+      "usage": "Cancel and save as one cluster. This is the one strong brand Button for the view.",
       "items": [
         {
           "props": {
             "label": "Save changes",
             "children": [
               {
-                "variant": "secondary",
+                "emphasis": "subtle",
                 "children": "Cancel"
               },
               {
-                "variant": "primary",
+                "emphasis": "strong",
+                "intent": "brand",
                 "children": "Save"
               }
             ]
@@ -104,19 +105,19 @@
             "label": "Text alignment",
             "children": [
               {
-                "variant": "secondary",
+                "emphasis": "subtle",
                 "iconOnly": true,
                 "iconStart": "format_align_left",
                 "children": "Align left"
               },
               {
-                "variant": "secondary",
+                "emphasis": "subtle",
                 "iconOnly": true,
                 "iconStart": "format_align_center",
                 "children": "Align center"
               },
               {
-                "variant": "secondary",
+                "emphasis": "subtle",
                 "iconOnly": true,
                 "iconStart": "format_align_right",
                 "children": "Align right"
@@ -136,11 +137,11 @@
             "size": "sm",
             "children": [
               {
-                "variant": "secondary",
+                "emphasis": "subtle",
                 "children": "Day"
               },
               {
-                "variant": "secondary",
+                "emphasis": "subtle",
                 "children": "Week"
               }
             ]
@@ -152,11 +153,11 @@
             "size": "md",
             "children": [
               {
-                "variant": "secondary",
+                "emphasis": "subtle",
                 "children": "Day"
               },
               {
-                "variant": "secondary",
+                "emphasis": "subtle",
                 "children": "Week"
               }
             ]
@@ -168,11 +169,11 @@
             "size": "lg",
             "children": [
               {
-                "variant": "secondary",
+                "emphasis": "subtle",
                 "children": "Day"
               },
               {
-                "variant": "secondary",
+                "emphasis": "subtle",
                 "children": "Week"
               }
             ]
