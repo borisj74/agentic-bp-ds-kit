@@ -33,7 +33,7 @@ export function Callout({ intent = "info", title, actionLabel, closeButton = fal
         </p>
       </div>
       {closeButton && (
-        <Button variant="tertiary" size="sm" iconOnly iconStart="close" onClick={() => { setOpen(false); onDismiss?.(); }}>
+        <Button emphasis="minimal" size="sm" iconOnly iconStart="close" onClick={() => { setOpen(false); onDismiss?.(); }}>
           Dismiss
         </Button>
       )}

@@ -54,13 +54,13 @@ export function Segmented({
   return (
     <div className={[styles.root, fullWidth ? styles.full : ""].join(" ")}>
       <span id={labelId} className={hideLabel ? field.srOnly : field.label}>{label}</span>
-      {/* Each option is a kit tertiary Button; the chosen one gets a brand tint and border on top. */}
+      {/* Each option is a kit minimal Button; the chosen one gets a brand tint and border on top. */}
       <div ref={groupRef} role="radiogroup" aria-labelledby={labelId} aria-disabled={disabled || undefined} className={styles.group}>
         {options.map((o, i) => {
           const on = o.value === current;
           return (
             <Button
-              key={o.value} variant="tertiary" size={size} iconStart={o.icon}
+              key={o.value} emphasis="minimal" size={size} iconStart={o.icon}
               role="radio" aria-checked={on} tabIndex={i === tabStop ? 0 : -1} disabled={disabled || o.disabled}
               className={on ? styles.on : undefined}
               onClick={() => pick(o.value)} onKeyDown={(e) => onKeyDown(e, i)}

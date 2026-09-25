@@ -375,7 +375,7 @@ export function ListView({
           <span className={styles.actions} data-own>
             {item.actions?.map((a) => (
               <Button
-                key={a.id} variant="tertiary" size="lg" iconOnly iconStart={a.icon} disabled={item.disabled}
+                key={a.id} emphasis="minimal" size="lg" iconOnly iconStart={a.icon} disabled={item.disabled}
                 aria-label={`${a.label} ${item.primary}`} onClick={() => onAction?.(item.id, a.id)}
               >
                 {a.label}
@@ -384,7 +384,7 @@ export function ListView({
             {/* The rest of the row's actions, behind one More button at the end, as in a Table row. */}
             {item.menu && item.menu.length > 0 && (
               <Dropdown
-                label={`More actions for ${item.primary}`} iconOnly icon="more_vert" variant="tertiary" size="lg" alignment="right"
+                label={`More actions for ${item.primary}`} iconOnly icon="more_vert" emphasis="minimal" size="lg" alignment="right"
                 items={item.menu} disabled={item.disabled} onSelect={(id) => onAction?.(item.id, id)}
               />
             )}
@@ -398,7 +398,7 @@ export function ListView({
           // The drag handle is also a button: its Move menu moves the row without dragging.
           <span className={styles.move} data-move>
             <Dropdown
-              label={`Move ${item.primary}`} items={moveItems(item)} iconOnly icon="drag_handle" variant="tertiary" size="md"
+              label={`Move ${item.primary}`} items={moveItems(item)} iconOnly icon="drag_handle" emphasis="minimal" size="md"
               alignment="right" disabled={item.disabled} open={menuFor === item.id}
               onOpenChange={(o) => setMenuFor(o ? item.id : null)} onSelect={(kind) => moveRow(item, kind as MoveKind)}
             />
@@ -432,7 +432,7 @@ export function ListView({
       {parent && (
         // A stepped-into list: Back to the level above, then the name of the row it belongs to.
         <div ref={levelRef} className={[styles.header, styles[`head-${size}`], styles.first, styles.level].join(" ")}>
-          <Button variant="tertiary" size="md" iconOnly iconStart="arrow_back" onClick={stepBack}>
+          <Button emphasis="minimal" size="md" iconOnly iconStart="arrow_back" onClick={stepBack}>
             {`Back to ${trail.length > 1 ? trail[trail.length - 2].primary : label}`}
           </Button>
           <h3 id={`${uid}-level`} className={styles.levelTitle}>{parent.primary}</h3>

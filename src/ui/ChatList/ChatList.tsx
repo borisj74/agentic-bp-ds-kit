@@ -59,7 +59,7 @@ function Row({
       {item.menu && item.menu.length > 0 && (
         <span className={styles.rowMenu}>
           <Dropdown
-            label={`Actions for ${item.label}`} items={item.menu} iconOnly icon="more_vert" variant="tertiary" size="sm"
+            label={`Actions for ${item.label}`} items={item.menu} iconOnly icon="more_vert" emphasis="minimal" size="sm"
             alignment="right" onSelect={(id) => onMenuSelect?.(item.id, id)}
           />
         </span>
@@ -92,13 +92,13 @@ export function ChatList({
       <header className={styles.head}>
         {onClose && (
           <Tooltip content={closeLabel}>
-            <Button size="sm" variant="tertiary" iconOnly iconStart="close" onClick={onClose}>{closeLabel}</Button>
+            <Button size="sm" emphasis="minimal" iconOnly iconStart="close" onClick={onClose}>{closeLabel}</Button>
           </Tooltip>
         )}
         <h2 className={styles.title}>{title}</h2>
         {onCreate && (
           <Tooltip content={createLabel}>
-            <Button size="sm" variant="tertiary" iconOnly iconStart="add_box" onClick={onCreate}>{createLabel}</Button>
+            <Button size="sm" emphasis="minimal" iconOnly iconStart="add_box" onClick={onCreate}>{createLabel}</Button>
           </Tooltip>
         )}
       </header>

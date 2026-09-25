@@ -184,7 +184,7 @@ export function AppHeader({
           {onNavToggle && (
             // The toggle stands over the rail it opens, so it takes the rail's width and centres in it.
             <span className={styles.toggle}>
-              <Button variant="tertiary" size={ctl} iconOnly iconStart="menu" aria-expanded={navOpen} onClick={onNavToggle}>Navigation</Button>
+              <Button emphasis="minimal" size={ctl} iconOnly iconStart="menu" aria-expanded={navOpen} onClick={onNavToggle}>Navigation</Button>
             </span>
           )}
           {homeHref ? <a href={homeHref} className={styles.home} aria-label="Home">{brand}</a> : <span className={styles.home}>{brand}</span>}
@@ -213,7 +213,7 @@ export function AppHeader({
           {search && (
             <span ref={compactRef} className={styles.searchCompact}>
               <Tooltip content={searchPlaceholder} position="below">
-                <Button variant="tertiary" size={ctl} iconOnly iconStart="search" {...searchPopup} onClick={() => openSearch(compactRef.current, false)}>{searchPlaceholder}</Button>
+                <Button emphasis="minimal" size={ctl} iconOnly iconStart="search" {...searchPopup} onClick={() => openSearch(compactRef.current, false)}>{searchPlaceholder}</Button>
               </Tooltip>
             </span>
           )}
@@ -222,7 +222,7 @@ export function AppHeader({
             <div className={styles.actions}>
               {actions.map((a) => (
                 <Tooltip key={a.id} content={a.label} position="below">
-                  <Button variant="tertiary" size={ctl} iconOnly iconStart={a.icon} onClick={() => onAction?.(a.id)}>{a.label}</Button>
+                  <Button emphasis="minimal" size={ctl} iconOnly iconStart={a.icon} onClick={() => onAction?.(a.id)}>{a.label}</Button>
                 </Tooltip>
               ))}
             </div>
@@ -232,7 +232,7 @@ export function AppHeader({
           {actions.length > 0 && (
             <div className={styles.actionsMenu}>
               <Dropdown
-                label="More actions" icon="more_vert" iconOnly variant="tertiary" size={ctl} alignment="right"
+                label="More actions" icon="more_vert" iconOnly emphasis="minimal" size={ctl} alignment="right"
                 items={actions.map((a) => ({ id: a.id, label: a.label, icon: a.icon }))}
                 onSelect={(id) => onAction?.(id)}
               />

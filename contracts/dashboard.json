@@ -68,7 +68,7 @@
     "Do not add state to it; it is a blueprint. Keep the dashboard, the open groups and the filters in the screen.",
     "Do not build the bar, the groups or the tiles inside it. Pass the kit pieces.",
     "Do not invent a tile grid. Two tiles side by side is .layout-split; read contracts/layout.json.",
-    "Do not stack more than one primary Button across the whole dashboard.",
+    "Do not stack more than one strong brand Button across the whole dashboard.",
     "Do not use it to list records. Use ListPage.",
     "Do not add page padding around it. It sits in the AppShell page, which owns that.",
     "Do not use raw hex."

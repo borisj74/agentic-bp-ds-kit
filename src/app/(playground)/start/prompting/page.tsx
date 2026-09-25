@@ -23,13 +23,13 @@ const EXAMPLES = [
     title: "A list of records",
     weak: "Make an invoices page.",
     better:
-      "/prototype-from-kit An Invoices list using ListPage inside AppShell.\nColumns: Invoice number (a link), Account, Status (Paid, Overdue, Draft as badges), Due date, Amount (right-aligned).\nToolbar: search, filters for Status and Due date, and one primary action, New invoice.\n20 sample rows, 10 per page. Show the empty state when the filters match nothing.\nIt must work on a phone.",
+      "/prototype-from-kit An Invoices list using ListPage inside AppShell.\nColumns: Invoice number (a link), Account, Status (Paid, Overdue, Draft as badges), Due date, Amount (right-aligned).\nToolbar: search, filters for Status and Due date, and one strong brand action, New invoice.\n20 sample rows, 10 per page. Show the empty state when the filters match nothing.\nIt must work on a phone.",
   },
   {
     title: "A form",
     weak: "Add a form to create a customer.",
     better:
-      "/prototype-from-kit A New account page using FormPage.\nSections: Account (Name, required; Type: Customer or Partner; Parent account as a Lookup), Billing (Currency, Billing cycle, Payment terms), Address (two columns).\nSave is the one primary action; Cancel goes back to the account list.\nAfter saving, go to the account and show a success message.",
+      "/prototype-from-kit A New account page using FormPage.\nSections: Account (Name, required; Type: Customer or Partner; Parent account as a Lookup), Billing (Currency, Billing cycle, Payment terms), Address (two columns).\nSave is the one strong brand action; Cancel goes back to the account list.\nAfter saving, go to the account and show a success message.",
   },
   {
     title: "From a screenshot",
@@ -91,7 +91,7 @@ export default function Prompting() {
                 <ol>
                   <li><strong>The screen and its pattern:</strong> &ldquo;a RecordPage for an account&rdquo;, not &ldquo;a page with details&rdquo;.</li>
                   <li><strong>The content:</strong> columns, fields, sections, tabs, and sample data.</li>
-                  <li><strong>The actions:</strong> which buttons, which one is primary (only one), and what each one does.</li>
+                  <li><strong>The actions:</strong> which buttons, which one is the strong brand Button (only one), and what each one does.</li>
                   <li><strong>The states:</strong> empty, loading, error, success messages, validation.</li>
                   <li><strong>The widths that matter:</strong> &ldquo;must work on a phone&rdquo; or &ldquo;desktop only&rdquo;.</li>
                   <li><strong>What to leave out:</strong> parts of a screenshot to ignore, or features for later.</li>
@@ -170,7 +170,7 @@ export default function Prompting() {
               <div className={docs.prose}>
                 <ul>
                   <li>Ask for kit components by name, and use only the options their contracts list.</li>
-                  <li>One primary button per view.</li>
+                  <li>One strong brand Button per view.</li>
                   <li>No colors or spacing typed in by hand: the kit&apos;s tokens and layout classes cover them.</li>
                   <li>Describe goals, not other products: &ldquo;a dense table for power users&rdquo;, not &ldquo;make it like product X&rdquo;.</li>
                   <li>Keep secrets out of prompts: no passwords, keys or real customer data.</li>
@@ -185,7 +185,7 @@ export default function Prompting() {
                 <ul>
                   <li>Started with <code>/prototype-from-kit</code> and named a pattern.</li>
                   <li>Gave real content: columns, fields, actions, sample data.</li>
-                  <li>Said which button is primary, and which states to show.</li>
+                  <li>Said which button is the strong brand one, and which states to show.</li>
                   <li>Said which widths matter.</li>
                   <li>Asked for a plan first on anything bigger than one screen.</li>
                   <li>Checked it in the browser at every width before calling it done.</li>

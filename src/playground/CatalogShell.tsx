@@ -81,7 +81,7 @@ export function CatalogShell({ children }: { children: ReactNode }) {
         <div className={styles.brand}>
           <span ref={buttonRef} className={styles.menuButton}>
             <Button
-              variant="tertiary" size="sm" iconOnly iconStart={icon}
+              emphasis="minimal" size="sm" iconOnly iconStart={icon}
               aria-expanded={shown} aria-controls={menuId}
               onClick={() => (wide ? setCollapsed(!collapsed) : setOpen((o) => !o))}
             >

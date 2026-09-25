@@ -57,7 +57,7 @@ export function Conveyor({ children, orientation = "horizontal", step, label = "
     const name = across ? (way < 0 ? "chevron_left" : "chevron_right") : way < 0 ? "keyboard_arrow_up" : "keyboard_arrow_down";
     const said = across ? (way < 0 ? "left" : "right") : way < 0 ? "up" : "down";
     return (
-      <Button variant="tertiary" iconOnly iconStart={name} disabled={way < 0 ? !back : !forward} onClick={() => go(way)}>
+      <Button emphasis="minimal" iconOnly iconStart={name} disabled={way < 0 ? !back : !forward} onClick={() => go(way)}>
         {`Scroll ${label.toLowerCase()} ${said}`}
       </Button>
     );

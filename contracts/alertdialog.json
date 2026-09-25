@@ -28,13 +28,13 @@
       "required": true,
       "note": "A verb that names the result, like Delete or Continue. Not Yes or OK."
     },
-    "actionVariant": {
+    "actionIntent": {
       "enum": [
-        "primary",
+        "brand",
         "danger"
       ],
-      "default": "primary",
-      "note": "danger for actions that cannot be undone."
+      "default": "brand",
+      "note": "The action Button is always strong. danger for actions that cannot be undone."
     },
     "size": {
       "enum": [
@@ -63,7 +63,7 @@
     "Do not put forms, tables or extra actions inside.",
     "Do not add a close X or close on backdrop click.",
     "Do not wrap the two Buttons in a ButtonGroup. They stay separate with a gap.",
-    "Do not use more than one primary or danger action. The action Button is the one.",
+    "Do not add a second strong Button. The action Button is the one strong brand or strong danger Button.",
     "Do not use raw hex."
   ],
   "a11y": [
@@ -73,18 +73,18 @@
     "Tab stays inside the dialog while it is open.",
     "Escape cancels. Backdrop click does nothing."
   ],
-  "snippet": "<AlertDialog\n  open={open}\n  title=\"Delete project?\"\n  description=\"This cannot be undone.\"\n  actionLabel=\"Delete\"\n  actionVariant=\"danger\"\n  onCancel={close}\n  onAction={remove}\n/>",
+  "snippet": "<AlertDialog\n  open={open}\n  title=\"Delete project?\"\n  description=\"This cannot be undone.\"\n  actionLabel=\"Delete\"\n  actionIntent=\"danger\"\n  onCancel={close}\n  onAction={remove}\n/>",
   "examples": [
     {
       "title": "Confirm",
-      "usage": "Use primary for a choice that is not destructive. The user still has to pick Cancel or Continue.",
+      "usage": "Use brand for a choice that is not destructive. The user still has to pick Cancel or Continue.",
       "items": [
         {
           "props": {
             "title": "Leave this page?",
             "description": "You have unsaved changes. Continue without saving?",
             "actionLabel": "Continue",
-            "actionVariant": "primary",
+            "actionIntent": "brand",
             "size": "md"
           }
         }
@@ -92,14 +92,14 @@
     },
     {
       "title": "Destructive",
-      "usage": "Use danger for actions that cannot be undone. Cancel stays secondary. The backdrop does not close it.",
+      "usage": "Use danger for actions that cannot be undone. Cancel stays subtle. The backdrop does not close it.",
       "items": [
         {
           "props": {
             "title": "Delete project?",
             "description": "This cannot be undone. All invoices in this project will be removed.",
             "actionLabel": "Delete",
-            "actionVariant": "danger",
+            "actionIntent": "danger",
             "size": "md"
           }
         }
@@ -114,7 +114,7 @@
             "title": "Sign out?",
             "description": "You will need to sign in again.",
             "actionLabel": "Sign out",
-            "actionVariant": "primary",
+            "actionIntent": "brand",
             "size": "sm"
           }
         }

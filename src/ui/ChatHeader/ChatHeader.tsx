@@ -61,23 +61,23 @@ export function ChatHeader({
       <div className={styles.actions}>
         {onNewChat && (
           <Tooltip content="Start new chat">
-            <Button size="sm" variant="tertiary" iconOnly iconStart="add_comment" onClick={onNewChat}>Start new chat</Button>
+            <Button size="sm" emphasis="minimal" iconOnly iconStart="add_comment" onClick={onNewChat}>Start new chat</Button>
           </Tooltip>
         )}
         {onExpandedChange && (
           <Tooltip content={expanded ? "Back to the side panel" : "Full screen"}>
             <Button
-              size="sm" variant="tertiary" iconOnly iconStart={expanded ? "close_fullscreen" : "open_in_full"}
+              size="sm" emphasis="minimal" iconOnly iconStart={expanded ? "close_fullscreen" : "open_in_full"}
               onClick={() => onExpandedChange(!expanded)}
             >
               {expanded ? "Back to the side panel" : "Full screen"}
             </Button>
           </Tooltip>
         )}
-        <Dropdown label="Options" items={items} iconOnly icon="more_vert" variant="tertiary" size="sm" alignment="right" onSelect={pick} />
+        <Dropdown label="Options" items={items} iconOnly icon="more_vert" emphasis="minimal" size="sm" alignment="right" onSelect={pick} />
         {onClose && (
           <Tooltip content={`Close ${title}`}>
-            <Button size="sm" variant="tertiary" iconOnly iconStart="close" onClick={onClose}>{`Close ${title}`}</Button>
+            <Button size="sm" emphasis="minimal" iconOnly iconStart="close" onClick={onClose}>{`Close ${title}`}</Button>
           </Tooltip>
         )}
       </div>

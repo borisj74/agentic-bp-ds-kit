@@ -2,7 +2,7 @@
   "name": "PageHeader",
   "path": "src/ui/PageHeader/PageHeader.tsx",
   "intent": "The top of a page's content: where it sits (breadcrumb), what it is (title, badge, and an optional icon) and the page actions. Below the AppHeader.",
-  "usage": "Put one PageHeader at the top of each page, under the AppHeader. It is one component: breadcrumbs are the page's parents, all links, starting with Home and then its side-nav section; the header closes the trail with the title as the current crumb, so it always reads Home › section › this page (like Home › Accounts › Northwind Traders). Then the title row with an optional badge, and an icon before the title only when you pass one (none by default), and the page actions on the end. actions are kit Buttons, size sm, with the one primary last; moreActions puts less-used actions in a More menu before them. sticky is the compact bar for when the page scrolls: one line whose trail ends in the page title, with a raised shadow unless shadow is false. See contracts/pageheader.json for the full contract. On a phone-width header, under 640px of its own width, the title row takes the full width and the actions move onto their own row under it, starting at the start edge; the compact sticky bar stays one 52px line, keeping only the page name in its trail, shortened with an ellipsis when it runs long. The bar adds no side padding of its own: the page inset comes from the layout class around it (contracts/layout.json), so the title lines up with the Sections under it. The bar is the top of the page, so it sits flush against the frame's bar with no page inset above it; the pattern holding it (AppShell, RecordPage) takes care of that.",
+  "usage": "Put one PageHeader at the top of each page, under the AppHeader. It is one component: breadcrumbs are the page's parents, all links, starting with Home and then its side-nav section; the header closes the trail with the title as the current crumb, so it always reads Home › section › this page (like Home › Accounts › Northwind Traders). Then the title row with an optional badge, and an icon before the title only when you pass one (none by default), and the page actions on the end. actions are kit Buttons, size sm, with the one strong brand Button last; moreActions puts less-used actions in a More menu before them. sticky is the compact bar for when the page scrolls: one line whose trail ends in the page title, with a raised shadow unless shadow is false. See contracts/pageheader.json for the full contract. On a phone-width header, under 640px of its own width, the title row takes the full width and the actions move onto their own row under it, starting at the start edge; the compact sticky bar stays one 52px line, keeping only the page name in its trail, shortened with an ellipsis when it runs long. The bar adds no side padding of its own: the page inset comes from the layout class around it (contracts/layout.json), so the title lines up with the Sections under it. The bar is the top of the page, so it sits flush against the frame's bar with no page inset above it; the pattern holding it (AppShell, RecordPage) takes care of that.",
   "props": {
     "title": {
       "type": "string",
@@ -35,12 +35,12 @@
     },
     "actions": {
       "type": "ReactNode",
-      "note": "Kit Buttons, size sm: secondary first, one primary last. At most five visible actions including More."
+      "note": "Kit Buttons, size sm: subtle first, one strong brand Button last. At most five visible actions including More."
     },
     "moreActions": {
       "type": "DropdownMenuEntry[]",
       "itemShape": "{ id: string; label: string; icon?: string; danger?: boolean } | { divider: true }",
-      "note": "Adds a More menu (kit Dropdown, tertiary and unbordered) before the actions, for less-used ones. Delete goes last, as danger. Give each one its icon, so the menu reads at a glance."
+      "note": "Adds a More menu (kit Dropdown, minimal and unbordered) before the actions, for less-used ones. Delete goes last, as danger. Give each one its icon, so the menu reads at a glance."
     },
     "onMoreSelect": {
       "type": "function",
@@ -65,7 +65,7 @@
   "doNot": [
     "Do not invent ContentHeader, PageTitle, TitleBar or a local heading row.",
     "Do not put the app's logo, search or user in it. That is the AppHeader.",
-    "Do not put more than one primary Button in actions, or more than five visible actions.",
+    "Do not put more than one strong brand Button in actions, or more than five visible actions.",
     "Do not use raw hex.",
     "Do not give it side padding to inset the page. Wrap the page in .layout-content, which owns that inset.",
     "Do not leave Home out of breadcrumbs, and do not pass the page title as a crumb yourself. PageHeader adds it as the current crumb.",
@@ -77,11 +77,11 @@
     "The icon is decorative; the title names the page.",
     "The last crumb is the page title, marked aria-current page and not a link."
   ],
-  "snippet": "<PageHeader\n  breadcrumbs={[{ label: \"Home\", href: \"/\" }, { label: \"Billing\", href: \"/billing\" }, { label: \"Invoices\", href: \"/invoices\" }]}\n  title=\"INV-1042\"\n  badge=\"Draft\"\n  moreActions={moreActions}\n  actions={<>\n    <Button size=\"sm\">Send</Button>\n    <Button size=\"sm\" variant=\"primary\">Approve</Button>\n  </>}\n/>",
+  "snippet": "<PageHeader\n  breadcrumbs={[{ label: \"Home\", href: \"/\" }, { label: \"Billing\", href: \"/billing\" }, { label: \"Invoices\", href: \"/invoices\" }]}\n  title=\"INV-1042\"\n  badge=\"Draft\"\n  moreActions={moreActions}\n  actions={<>\n    <Button size=\"sm\">Send</Button>\n    <Button size=\"sm\" emphasis=\"strong\" intent=\"brand\">Approve</Button>\n  </>}\n/>",
   "examples": [
     {
       "title": "Default",
-      "usage": "Trail, title and badge, with More and two actions. The one primary is last.",
+      "usage": "Trail, title and badge, with More and two actions. The one strong brand Button is last.",
       "items": [
         {
           "props": {

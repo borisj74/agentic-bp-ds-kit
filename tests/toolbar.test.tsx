@@ -33,7 +33,7 @@ describe("Toolbar", () => {
   });
 
   it("is a named group whose actions appear once to assistive tech, despite the hidden measuring copy", () => {
-    render(<Toolbar label="Invoice tools" actions={<><Button size="sm">Export</Button><Button size="sm" variant="primary">New invoice</Button></>} />);
+    render(<Toolbar label="Invoice tools" actions={<><Button size="sm">Export</Button><Button size="sm" emphasis="strong" intent="brand">New invoice</Button></>} />);
     expect(screen.getByRole("group", { name: "Invoice tools" })).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: "Export" })).toHaveLength(1);
     expect(screen.getAllByRole("button", { name: "New invoice" })).toHaveLength(1);

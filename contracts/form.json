@@ -2,7 +2,7 @@
   "name": "Form",
   "path": "src/ui/Form/Form.tsx",
   "intent": "One form: an optional title, kit fields (or titled sections of them) and the actions that save it.",
-  "usage": "Use Form to wrap kit fields (Input, Textarea, Select, DatePicker, Lookup, Cascader, FormulaEditor, Checkbox, RadioGroup, Switch) that save together. Read-only values go in FormDisplay rows; back-to-back rows sit flush as one list. Pass the fields as children, or as sections when they fall into groups like Company and Billing; each section is a titled group. labelPosition=\"start\" puts every field's label in a column at the beginning; columns={2} puts fields side by side. A long form of groups — a create page — takes sections with collapsible, and the save can sit outside the form: give the Form an id and the Button type=\"submit\" with form set to it, so one press still saves one form. actions holds kit Buttons: secondary first, one primary last with type=\"submit\". Enter in a field submits, and onSubmit gets the values by field name. Inside a Modal, skip the title (the Modal names it), give the Form an id, and put the Save Button in the Modal footer with form set to that id. See contracts/form.json for the full contract.",
+  "usage": "Use Form to wrap kit fields (Input, Textarea, Select, DatePicker, Lookup, Cascader, FormulaEditor, Checkbox, RadioGroup, Switch) that save together. Read-only values go in FormDisplay rows; back-to-back rows sit flush as one list. Pass the fields as children, or as sections when they fall into groups like Company and Billing; each section is a titled group. labelPosition=\"start\" puts every field's label in a column at the beginning; columns={2} puts fields side by side. A long form of groups — a create page — takes sections with collapsible, and the save can sit outside the form: give the Form an id and the Button type=\"submit\" with form set to it, so one press still saves one form. actions holds kit Buttons: subtle first, one strong brand Button last with type=\"submit\". Enter in a field submits, and onSubmit gets the values by field name. Inside a Modal, skip the title (the Modal names it), give the Form an id, and put the Save Button in the Modal footer with form set to that id. See contracts/form.json for the full contract.",
   "props": {
     "title": {
       "type": "string",
@@ -48,7 +48,7 @@
     },
     "actions": {
       "type": "ReactNode",
-      "note": "Kit Buttons at the end: secondary first, one primary last with type=\"submit\". Size sm in a card."
+      "note": "Kit Buttons at the end: subtle first, one strong brand Button last with type=\"submit\". Size sm in a card."
     },
     "error": {
       "type": "string",
@@ -71,7 +71,7 @@
   "doNot": [
     "Do not invent FieldSet, FieldGroup, FieldLegend, FormSection, FormActions or a local <form> wrapper.",
     "Do not put a Form inside another Form.",
-    "Do not put more than one primary Button in actions.",
+    "Do not put more than one strong brand Button in actions.",
     "Do not wrap a single RadioGroup in a section. It already has its own legend.",
     "Do not show field errors in error. Put them on the field.",
     "Do not use raw hex.",
@@ -83,7 +83,7 @@
     "error is a danger Callout, announced when it appears.",
     "Enter in a field submits. Native required checks run before onSubmit."
   ],
-  "snippet": "<Form\n  title=\"Company details\"\n  onSubmit={save}\n  actions={<>\n    <Button onClick={cancel}>Cancel</Button>\n    <Button variant=\"primary\" type=\"submit\">Save</Button>\n  </>}\n>\n  <Input label=\"Company\" name=\"company\" required />\n  <Input label=\"Billing email\" name=\"email\" type=\"email\" />\n</Form>",
+  "snippet": "<Form\n  title=\"Company details\"\n  onSubmit={save}\n  actions={<>\n    <Button onClick={cancel}>Cancel</Button>\n    <Button emphasis=\"strong\" intent=\"brand\" type=\"submit\">Save</Button>\n  </>}\n>\n  <Input label=\"Company\" name=\"company\" required />\n  <Input label=\"Billing email\" name=\"email\" type=\"email\" />\n</Form>",
   "examples": [
     {
       "title": "Fields",

@@ -280,7 +280,7 @@ export function DatePicker({
       <div key={toISO(m)} className={styles.month}>
         <div className={styles.monthHead}>
           {index === 0 ? (
-            <Button variant="tertiary" size="sm" iconOnly iconStart="chevron_left" disabled={Boolean(minDate && toISO(addDays(view, -1)) < minDate)} onClick={() => turn(-1)}>Previous month</Button>
+            <Button emphasis="minimal" size="sm" iconOnly iconStart="chevron_left" disabled={Boolean(minDate && toISO(addDays(view, -1)) < minDate)} onClick={() => turn(-1)}>Previous month</Button>
           ) : <span className={styles.spacer} />}
           {monthYear === "menus" ? (
             /* The month and the year as dropdowns, so a far-off date takes one pick instead of many turns of the
@@ -310,7 +310,7 @@ export function DatePicker({
             <h2 id={headingId} className={styles.heading} aria-live="polite">{monthLabel(m)}</h2>
           )}
           {index === monthsShown - 1 ? (
-            <Button variant="tertiary" size="sm" iconOnly iconStart="chevron_right" disabled={Boolean(maxDate && toISO(shiftMonth(view, monthsShown)) > maxDate)} onClick={() => turn(1)}>Next month</Button>
+            <Button emphasis="minimal" size="sm" iconOnly iconStart="chevron_right" disabled={Boolean(maxDate && toISO(shiftMonth(view, monthsShown)) > maxDate)} onClick={() => turn(1)}>Next month</Button>
           ) : <span className={styles.spacer} />}
         </div>
         <div role="grid" aria-labelledby={headingId} className={styles.grid} onKeyDown={onGridKey}>
@@ -405,11 +405,11 @@ export function DatePicker({
                 {start ? `${short(start)} – ${short(end ?? previewEnd) || "Pick an end date"}` : "Pick a start date"}
               </span>
             ) : (
-              <Button size="sm" variant="tertiary" disabled={blocked(todayISO)} onClick={() => { pick(today); go(today); }}>Today</Button>
+              <Button size="sm" emphasis="minimal" disabled={blocked(todayISO)} onClick={() => { pick(today); go(today); }}>Today</Button>
             )}
             <span className={styles.actions}>
               <Button size="sm" onClick={() => close(true)}>Cancel</Button>
-              <Button size="sm" variant="primary" disabled={!start} onClick={apply}>Apply</Button>
+              <Button size="sm" emphasis="strong" intent="brand" disabled={!start} onClick={apply}>Apply</Button>
             </span>
           </div>
         </div>,

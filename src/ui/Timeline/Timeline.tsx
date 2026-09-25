@@ -63,7 +63,7 @@ export function Timeline({ items, size = "md", label = "Activity", onMenuSelect 
               </div>
               {item.menu && item.menu.length > 0 && (
                 <Dropdown
-                  label={`Actions for ${item.title}`} items={item.menu} iconOnly icon="more_horiz" variant="tertiary"
+                  label={`Actions for ${item.title}`} items={item.menu} iconOnly icon="more_horiz" emphasis="minimal"
                   size={size === "sm" ? "sm" : "md"} alignment="right" onSelect={(id) => onMenuSelect?.(item.id, id)}
                 />
               )}

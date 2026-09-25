@@ -24,7 +24,7 @@ import { Badge } from "@/ui/Badge/Badge";
 import { Button } from "@/ui/Button/Button";
 import { FilterButton, type FilterButtonProps, type FilterButtonToggle } from "@/ui/FilterButton/FilterButton";
 import { Card } from "@/ui/Card/Card";
-import { Cell, type CellSize, type CellTreeToggle } from "@/ui/Cell/Cell";
+import { Cell, type CellSize, type CellTreeToggle, type CellAction } from "@/ui/Cell/Cell";
 import { ChatComposer, type ChatComposerMode, type ChatComposerProps } from "@/ui/ChatComposer/ChatComposer";
 import { ChatComposer as ChatComposerPiece } from "@/ui/ChatComposer/ChatComposer";
 import { ChatHeader, type ChatHeaderProps } from "@/ui/ChatHeader/ChatHeader";
@@ -83,7 +83,7 @@ export function FormDemo({ content = "fields", ...p }: Omit<FormProps, "children
   const actions = (
     <>
       <Button size={size} onClick={() => setSaved("")}>Cancel</Button>
-      <Button size={size} variant="primary" type="submit">Save</Button>
+      <Button size={size} emphasis="strong" intent="brand" type="submit">Save</Button>
     </>
   );
   const onSubmit = (data: FormData) => setSaved(`Saved: ${String(data.get("company") ?? data.get("name"))}`);
@@ -168,8 +168,8 @@ export function ModalDemo({ content = "text", ...p }: Omit<ModalProps, "open" | 
     <>
       <Button size="sm" onClick={close}>Cancel</Button>
       {content === "form"
-        ? <Button size="sm" variant="primary" type="submit" form={formId}>Save</Button>
-        : <Button size="sm" variant="primary" onClick={close}>Done</Button>}
+        ? <Button size="sm" emphasis="strong" intent="brand" type="submit" form={formId}>Save</Button>
+        : <Button size="sm" emphasis="strong" intent="brand" onClick={close}>Done</Button>}
     </>
   );
   const trigger = content === "form" ? "Edit customer" : `Open ${p.size ?? "sm"} modal`;
@@ -202,7 +202,7 @@ export function DrawerDemo({ content = "details", ...p }: Omit<DrawerProps, "ope
   const footer = content === "form" ? (
     <>
       <Button size="sm" onClick={close}>Cancel</Button>
-      <Button size="sm" variant="primary" type="submit" form={formId}>Save</Button>
+      <Button size="sm" emphasis="strong" intent="brand" type="submit" form={formId}>Save</Button>
     </>
   ) : (
     <Button size="sm" onClick={close}>Close</Button>
@@ -275,7 +275,7 @@ export function DensityDemo({ value = "default" }: { value?: DensityValue }) {
         <Switch label="Email notifications" defaultChecked />
         <div style={{ display: "flex", gap: "var(--space-xsmall)" }}>
           <Button>Cancel</Button>
-          <Button variant="primary">Save</Button>
+          <Button emphasis="strong" intent="brand">Save</Button>
         </div>
       </div>
     </Density>
@@ -405,7 +405,7 @@ export function ToolbarDemo(p: Record<string, unknown>) {
       onRefresh={p.onRefresh ? () => {} : undefined}
       moreActions={p.moreActions ? [{ id: "import", label: "Import", icon: "upload" }, { id: "columns", label: "Edit columns", icon: "view_column" }, { divider: true }, { id: "delete", label: "Delete all", icon: "delete", danger: true }] : undefined}
       onMoreSelect={() => {}}
-      actions={p.actions ? <><Button size="sm">Export</Button><Button size="sm" variant="primary">Create</Button></> : undefined}
+      actions={p.actions ? <><Button size="sm">Export</Button><Button size="sm" emphasis="strong" intent="brand">Create</Button></> : undefined}
       buttons={p.buttons === "subtle" ? "subtle" : undefined}
     />
   );
@@ -524,7 +524,7 @@ export function StepperDemo({ current = 1, steps, ...p }: StepsProps) {
       <Steps {...p} steps={steps} current={at} onStepClick={setAt} />
       <div style={{ display: "flex", justifyContent: "center", gap: "var(--space-xsmall)" }}>
         <Button size="sm" disabled={at <= 1} onClick={() => setAt(Math.max(at - 1, 1))}>Back</Button>
-        <Button size="sm" variant="primary" disabled={at > last} onClick={() => setAt(at + 1)}>{at >= last ? "Finish" : "Next"}</Button>
+        <Button size="sm" emphasis="strong" intent="brand" disabled={at > last} onClick={() => setAt(at + 1)}>{at >= last ? "Finish" : "Next"}</Button>
       </div>
     </div>
   );
@@ -823,14 +823,14 @@ const INVOICE_ALL_MENU = [...INVOICE_ACTIONS, ...INVOICE_MENU];
 const menuActions = (
   <Cell
     type="actionIcons" alignment="end"
-    menu={INVOICE_ALL_MENU.map(({ label, icon, ...a }) => ({ label, icon, variant: "danger" in a && a.danger ? "danger" as const : undefined }))}
+    menu={INVOICE_ALL_MENU.map(({ label, icon, ...a }): CellAction => ("danger" in a && a.danger ? { label, icon, emphasis: "strong", intent: "danger" } : { label, icon }))}
   />
 );
 const rowActions = (
   <Cell
     type="actionIcons" alignment="end"
     actions={INVOICE_ACTIONS.map(({ label, icon }) => ({ label, icon }))}
-    menu={INVOICE_MENU.map(({ label, icon, danger }) => ({ label, icon, variant: danger ? "danger" as const : undefined }))}
+    menu={INVOICE_MENU.map(({ label, icon, danger }): CellAction => (danger ? { label, icon, emphasis: "strong", intent: "danger" } : { label, icon }))}
   />
 );
 const SHELL_ROWS: TableRow[] = [
@@ -928,7 +928,7 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
             actions={
               <>
                 <Button size="sm" iconStart="auto_awesome" onClick={() => setChatOpen((o) => !o)}>Ask the assistant</Button>
-                <Button size="sm" variant="primary">New invoice</Button>
+                <Button size="sm" emphasis="strong" intent="brand">New invoice</Button>
               </>
             }
           />
@@ -1053,7 +1053,7 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
           views={[{ id: "table", label: "Table View" }, { id: "list", label: "List View" }, { id: "card", label: "Card View" }]}
           view={view} onViewChange={setView} onRefresh={() => {}}
           moreActions={[{ id: "import", label: "Import", icon: "upload" }, { id: "export", label: "Export all", icon: "download" }]} onMoreSelect={() => {}}
-          actions={<Button size="sm" variant="primary" iconStart="add">New invoice</Button>}
+          actions={<Button size="sm" emphasis="strong" intent="brand" iconStart="add">New invoice</Button>}
         />
       }
       bulk={
@@ -1062,9 +1062,9 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
             <strong style={{ fontSize: "var(--font-size-small)" }}>{`${picked.length} selected`}</strong>
             <Button size="sm" iconStart="send">Send</Button>
             <Button size="sm" iconStart="download">Download</Button>
-            <Button size="sm" variant="danger" iconStart="block">Void</Button>
+            <Button size="sm" emphasis="strong" intent="danger" iconStart="block">Void</Button>
             <span style={{ marginInlineStart: "auto" }}>
-              <Button size="sm" variant="tertiary" onClick={() => setPicked([])}>Clear</Button>
+              <Button size="sm" emphasis="minimal" onClick={() => setPicked([])}>Clear</Button>
             </span>
           </>
         ) : undefined
@@ -1075,7 +1075,7 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
           pageSize={size} onPageSizeChange={(next) => { setSize(next); setPage(1); }} label="Invoices"
         />
       }
-      empty={<EmptyState headingLevel={2} icon="receipt_long" title="No invoices yet" description="Invoices appear here once a billing run completes." actions={<Button size="sm" variant="primary" iconStart="add">New invoice</Button>} />}
+      empty={<EmptyState headingLevel={2} icon="receipt_long" title="No invoices yet" description="Invoices appear here once a billing run completes." actions={<Button size="sm" emphasis="strong" intent="brand" iconStart="add">New invoice</Button>} />}
       error="The invoice list could not be loaded."
       onRetry={() => {}}
     >
@@ -1132,7 +1132,7 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
         nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         pageHeader={
-          // No actions on the bar: a list keeps them in its own Toolbar, which owns the one primary.
+          // No actions on the bar: a list keeps them in its own Toolbar, which owns the one strong brand Button.
           <PageHeader title="Invoices" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />
         }
       >
@@ -1223,7 +1223,7 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" 
           breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]}
           title="Apex Digital Services" badge="Active" badgeIntent="success"
           sticky={sticky && compact}
-          actions={<><Button size="sm">Clone</Button><Button size="sm" variant="primary">Edit</Button></>}
+          actions={<><Button size="sm">Clone</Button><Button size="sm" emphasis="strong" intent="brand">Edit</Button></>}
         />
       }
       tabs={<Tabs label="What belongs to this account" items={RECORD_TABS} value={tab} onChange={setTab} />}
@@ -1499,7 +1499,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
                 : r))}
             />
           )}
-          <Button size="sm" variant="tertiary" iconEnd="arrow_forward">View AR Aging by Account Report</Button>
+          <Button size="sm" emphasis="minimal" iconEnd="arrow_forward">View AR Aging by Account Report</Button>
         </Section>
       </Section>
 
@@ -1561,7 +1561,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
       <Section title="GL Entries" help="What posted to the ledger this period." collapsible>
         <Scoreboard items={GL_SCORES} scroll label="Ledger summary" />
         <Table columns={LEDGER_COLUMNS} rows={LEDGER_ROWS} />
-        <Button size="sm" variant="tertiary" iconEnd="arrow_forward">View GL Entries Report</Button>
+        <Button size="sm" emphasis="minimal" iconEnd="arrow_forward">View GL Entries Report</Button>
       </Section>
     </Dashboard>
   );
@@ -1598,7 +1598,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
             actions={
               <>
                 <Button size="sm" iconStart="auto_awesome" onClick={() => setChatOpen((o) => !o)}>Ask the assistant</Button>
-                <Button size="sm" variant="primary" iconStart="add">New dashboard</Button>
+                <Button size="sm" emphasis="strong" intent="brand" iconStart="add">New dashboard</Button>
               </>
             }
           />
@@ -1873,7 +1873,7 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
             <>
               <Button size="sm" onClick={() => setSaved("")}>Cancel</Button>
               {/* The save sits outside the form and submits it by id, so one press saves every group. */}
-              <Button size="sm" variant="primary" type="submit" form={formId}>Create</Button>
+              <Button size="sm" emphasis="strong" intent="brand" type="submit" form={formId}>Create</Button>
             </>
           }
         />
@@ -2023,7 +2023,7 @@ export function GuidedProcessPageDemo({ shell = true, stage = "desktop", side = 
     { id: "save", label: "Save", icon: "save" },
     ...(at < last
       ? [{ id: "skip", label: "Skip", icon: "skip_next" }, { id: "continue", label: "Continue" }]
-      : [{ id: "submit", label: "Submit", variant: "primary" as const, type: "submit" as const, form: formId }]),
+      : [{ id: "submit", label: "Submit", emphasis: "strong" as const, intent: "brand" as const, type: "submit" as const, form: formId }]),
   ];
   const onAction = (id: string) => {
     if (id === "cancel") reset();
@@ -2261,7 +2261,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
     <PageHeader
       title="Account" sticky={compact}
       breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", onClick: toList }]}
-      actions={<><Button size="sm" iconStart="download">Export</Button><Button size="sm" variant="primary" iconStart="add" onClick={() => go("newAccount")}>New</Button></>}
+      actions={<><Button size="sm" iconStart="download">Export</Button><Button size="sm" emphasis="strong" intent="brand" iconStart="add" onClick={() => go("newAccount")}>New</Button></>}
     />
   );
   const list = (
@@ -2374,8 +2374,8 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
             <>
               <Button size="sm" iconStart="content_copy">Copy</Button>
               {tab === "products"
-                ? <Button size="sm" variant="primary" iconStart="add" onClick={() => go("newProduct")}>New account product</Button>
-                : <Button size="sm" variant="primary" iconStart="add" onClick={() => go("newAccount")}>New</Button>}
+                ? <Button size="sm" emphasis="strong" intent="brand" iconStart="add" onClick={() => go("newProduct")}>New account product</Button>
+                : <Button size="sm" emphasis="strong" intent="brand" iconStart="add" onClick={() => go("newAccount")}>New</Button>}
             </>
           }
         />
@@ -2499,7 +2499,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
       header={
         <PageHeader
           breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", onClick: toList }]} title="New account" sticky={compact}
-          actions={<><Button size="sm" onClick={toList}>Cancel</Button><Button size="sm" variant="primary" type="submit" form={newAccountForm}>Submit</Button></>}
+          actions={<><Button size="sm" onClick={toList}>Cancel</Button><Button size="sm" emphasis="strong" intent="brand" type="submit" form={newAccountForm}>Submit</Button></>}
         />
       }
       notice={<Callout intent="info">Use this form to manage general account information as well as the default billing information for the account.</Callout>}
@@ -2526,7 +2526,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
         <PageHeader
           breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", onClick: toList }, { label: account.name, onClick: () => openAccount(account.id, "products") }]}
           title="New account product" badge="Active" badgeIntent="success" sticky={compact}
-          actions={<><Button size="sm" onClick={() => openAccount(account.id, "products")}>Cancel</Button><Button size="sm" variant="primary" type="submit" form={newProductForm}>Next</Button></>}
+          actions={<><Button size="sm" onClick={() => openAccount(account.id, "products")}>Cancel</Button><Button size="sm" emphasis="strong" intent="brand" type="submit" form={newProductForm}>Next</Button></>}
         />
       }
     >

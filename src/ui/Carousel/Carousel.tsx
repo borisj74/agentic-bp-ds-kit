@@ -121,7 +121,7 @@ export function Carousel({
     return (
       <span className={styles.control}>
         <Tooltip content={name} position={vertical ? (dir === "prev" ? "above" : "below") : dir === "prev" ? "left" : "right"}>
-          <Button variant="secondary" size="sm" iconOnly iconStart={icon} disabled={dir === "prev" ? !canPrev : !canNext} onClick={() => go(index + (dir === "prev" ? -1 : 1))}>
+          <Button emphasis="subtle" size="sm" iconOnly iconStart={icon} disabled={dir === "prev" ? !canPrev : !canNext} onClick={() => go(index + (dir === "prev" ? -1 : 1))}>
             {name}
           </Button>
         </Tooltip>

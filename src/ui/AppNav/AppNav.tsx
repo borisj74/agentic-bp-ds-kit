@@ -230,7 +230,7 @@ export function AppNav({
               <span id={titleId} className={styles.title}>{menuItem.label}</span>
               <Tooltip content={pinned ? "Close navigation" : "Pin navigation open"} position="below">
                 <Button
-                  variant="tertiary" size="sm" iconOnly iconStart={pinned ? "close" : "keep"}
+                  emphasis="minimal" size="sm" iconOnly iconStart={pinned ? "close" : "keep"}
                   onClick={() => { if (pinned) close(); setPinned(!pinned); }}
                 >
                   {pinned ? "Close navigation" : "Pin navigation open"}

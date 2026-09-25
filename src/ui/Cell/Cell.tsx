@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Avatar } from "../Avatar/Avatar";
 import { AvatarGroup } from "../AvatarGroup/AvatarGroup";
 import { Badge, type BadgeIntent } from "../Badge/Badge";
-import { Button, type ButtonVariant } from "../Button/Button";
+import { Button, type ButtonPair } from "../Button/Button";
 import { ButtonGroup } from "../ButtonGroup/ButtonGroup";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { Dropdown } from "../Dropdown/Dropdown";
@@ -21,7 +21,9 @@ export type CellAlignment = "start" | "center" | "end";
 export type CellTreeToggle = "chevron" | "box";
 export interface CellPerson { name: string; src?: string }
 export interface CellBadge { label: string; intent?: BadgeIntent }
-export interface CellAction { label: string; icon?: string; variant?: ButtonVariant; onClick?: () => void }
+export type CellAction = ButtonPair & { label: string; icon?: string; onClick?: () => void };
+// An action with no emphasis takes the cell's own look: subtle in actions, minimal in actionIcons.
+const actionLook = (a: CellAction, fallback: ButtonPair): ButtonPair => (a.emphasis ? ({ emphasis: a.emphasis, intent: a.intent } as ButtonPair) : fallback);
 
 export interface CellProps {
   type?: CellType;
@@ -135,7 +137,7 @@ export function Cell({
     case "actions":
       visual = (
         <ButtonGroup size="sm" label={label ?? "Row actions"}>
-          {(actions ?? []).slice(0, 3).map((a, i) => <Button key={i} variant={a.variant ?? "secondary"} iconStart={a.icon} onClick={a.onClick}>{a.label}</Button>)}
+          {(actions ?? []).slice(0, 3).map((a, i) => <Button key={i} {...actionLook(a, { emphasis: "subtle" })} iconStart={a.icon} onClick={a.onClick}>{a.label}</Button>)}
         </ButtonGroup>
       );
       break;
@@ -145,20 +147,20 @@ export function Cell({
       // second stop for the keyboard.
       const shownActions = (actions ?? []).slice(0, 3);
       const folded = [...shownActions, ...(menu ?? [])];
-      const item = (a: CellAction, i: number) => ({ id: String(i), label: a.label, icon: a.icon, danger: a.variant === "danger" });
+      const item = (a: CellAction, i: number) => ({ id: String(i), label: a.label, icon: a.icon, danger: a.intent === "danger" });
       visual = (
         <>
           <span className={[styles.row, styles.nowrap, styles.actionsWide].join(" ")} role="group" aria-label={label ?? "Row actions"}>
             {/* Icon-only, so each button shows its label in a kit Tooltip, like the AppHeader and Toolbar icons. */}
             {shownActions.map((a, i) => (
               <Tooltip key={i} content={a.label} position="above">
-                <Button size="sm" variant={a.variant ?? "tertiary"} iconOnly iconStart={a.icon ?? "more_horiz"} onClick={a.onClick}>{a.label}</Button>
+                <Button size="sm" {...actionLook(a, { emphasis: "minimal" })} iconOnly iconStart={a.icon ?? "more_horiz"} onClick={a.onClick}>{a.label}</Button>
               </Tooltip>
             ))}
             {/* The rest of the row's actions, behind one More button at the end. */}
             {menu && menu.length > 0 && (
               <Dropdown
-                label="More row actions" iconOnly icon="more_vert" variant="tertiary" size="sm" alignment="right"
+                label="More row actions" iconOnly icon="more_vert" emphasis="minimal" size="sm" alignment="right"
                 items={menu.map(item)}
                 onSelect={(id) => menu[Number(id)]?.onClick?.()}
               />
@@ -167,7 +169,7 @@ export function Cell({
           {folded.length > 0 && (
             <span className={styles.actionsNarrow}>
               <Dropdown
-                label={label ?? "Row actions"} iconOnly icon="more_vert" variant="tertiary" size="sm" alignment="right"
+                label={label ?? "Row actions"} iconOnly icon="more_vert" emphasis="minimal" size="sm" alignment="right"
                 items={folded.map(item)}
                 onSelect={(id) => folded[Number(id)]?.onClick?.()}
               />
@@ -181,8 +183,8 @@ export function Cell({
       // Aligned to the end so the menu stays inside the table.
       visual = (
         <Dropdown
-          label={label ?? "Row actions"} iconOnly variant="tertiary" size="sm" alignment="right"
-          items={(actions ?? []).map((a, i) => ({ id: String(i), label: a.label, icon: a.icon, danger: a.variant === "danger" }))}
+          label={label ?? "Row actions"} iconOnly emphasis="minimal" size="sm" alignment="right"
+          items={(actions ?? []).map((a, i) => ({ id: String(i), label: a.label, icon: a.icon, danger: a.intent === "danger" }))}
           onSelect={(id) => actions?.[Number(id)]?.onClick?.()}
         />
       );
@@ -217,7 +219,7 @@ export function Cell({
             </button>
           ) : (
             <Button
-              size="sm" variant="tertiary" iconOnly iconStart={expanded ? "expand_more" : "chevron_right"}
+              size="sm" emphasis="minimal" iconOnly iconStart={expanded ? "expand_more" : "chevron_right"}
               aria-expanded={expanded} onClick={() => onExpandedChange?.(!expanded)}
             >
               {`${expanded ? "Collapse" : "Expand"} ${label ?? "row"}`}

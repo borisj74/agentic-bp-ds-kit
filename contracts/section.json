@@ -19,7 +19,7 @@
     },
     "actions": {
       "type": "ReactNode",
-      "note": "Kit Buttons or a Dropdown at the end of the header, usually size sm. One primary Button per view."
+      "note": "Kit Buttons or a Dropdown at the end of the header, usually size sm. One strong brand Button per view."
     },
     "children": {
       "type": "ReactNode",

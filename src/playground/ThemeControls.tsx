@@ -35,7 +35,7 @@ export function ThemeControls() {
       <select className={styles.select} aria-label="Brand" value={brand} onChange={(e) => setBrand(e.target.value)}>
         {brands.map((b) => <option key={b} value={b}>{b}</option>)}
       </select>
-      <Button variant="tertiary" size="sm" iconOnly iconStart={theme === "dark" ? "light_mode" : "dark_mode"} onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+      <Button emphasis="minimal" size="sm" iconOnly iconStart={theme === "dark" ? "light_mode" : "dark_mode"} onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
         Switch to {theme === "dark" ? "light" : "dark"} mode
       </Button>
     </>

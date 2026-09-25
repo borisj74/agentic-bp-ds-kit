@@ -133,7 +133,7 @@ export function Lookup({
       footer={multiple ? (
         <>
           <Button size="sm" onClick={close}>Cancel</Button>
-          <Button size="sm" variant="primary" disabled={picks.length === 0} onClick={confirm}>{`${confirmLabel} (${picks.length})`}</Button>
+          <Button size="sm" emphasis="strong" intent="brand" disabled={picks.length === 0} onClick={confirm}>{`${confirmLabel} (${picks.length})`}</Button>
         </>
       ) : undefined}
     >
@@ -145,8 +145,8 @@ export function Lookup({
               placeholder={searchPlaceholder ?? `Search ${label.toLowerCase()}`} value={query} onChange={setQuery}
             />
           </span>
-          {/* With many to pick, the footer holds the one primary, so Search steps down. */}
-          <Button size="sm" variant={multiple ? "secondary" : "primary"} onClick={search}>Search</Button>
+          {/* With many to pick, the footer holds the one strong brand Button, so Search steps down. */}
+          <Button size="sm" {...(multiple ? { emphasis: "subtle" } as const : { emphasis: "strong", intent: "brand" } as const)} onClick={search}>Search</Button>
         </div>
         {multiple ? (
           <Table
@@ -204,7 +204,7 @@ export function Lookup({
           </button>
           {clearable && shown && !disabled && (
             <span className={styles.clear}>
-              <Button size="sm" variant="tertiary" iconOnly iconStart="close" onClick={() => { emit(null); triggerRef.current?.focus(); }}>{`Clear ${label}`}</Button>
+              <Button size="sm" emphasis="minimal" iconOnly iconStart="close" onClick={() => { emit(null); triggerRef.current?.focus(); }}>{`Clear ${label}`}</Button>
             </span>
           )}
           {/* The same action as the field, for the pointer; the field itself is the keyboard stop. */}

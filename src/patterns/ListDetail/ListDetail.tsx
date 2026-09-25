@@ -34,7 +34,7 @@ export function ListDetail({ list, detail, open = false, title, actions, empty, 
           {/* Only the narrow side layout needs a way back; otherwise the list is right there. */}
           {onBack && layout === "side" && (
             <span className={styles.back}>
-              <Button variant="tertiary" size="md" iconOnly iconStart="arrow_back" onClick={onBack}>{backLabel}</Button>
+              <Button emphasis="minimal" size="md" iconOnly iconStart="arrow_back" onClick={onBack}>{backLabel}</Button>
             </span>
           )}
           {title && <h2 className={styles.title}>{title}</h2>}

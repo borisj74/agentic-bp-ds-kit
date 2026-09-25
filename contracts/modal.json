@@ -2,7 +2,7 @@
   "name": "Modal",
   "path": "src/ui/Modal/Modal.tsx",
   "intent": "A window over the page for a short task, a form or extra detail. People can always close it.",
-  "usage": "Use Modal for work that can be dismissed: a short form or extra detail. One component: title, description, body (children) and footer come from props. Put kit Buttons in footer, size sm, secondary first and one primary last. Escape, the close button and a backdrop click all close it. For a must-choose confirm, use AlertDialog. See contracts/modal.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page.",
+  "usage": "Use Modal for work that can be dismissed: a short form or extra detail. One component: title, description, body (children) and footer come from props. Put kit Buttons in footer, size sm, subtle first and one strong brand Button last. Escape, the close button and a backdrop click all close it. For a must-choose confirm, use AlertDialog. See contracts/modal.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page.",
   "props": {
     "open": {
       "type": "boolean",
@@ -49,7 +49,7 @@
     },
     "footer": {
       "type": "ReactNode",
-      "note": "Kit Buttons, size sm: secondary first, one primary last."
+      "note": "Kit Buttons, size sm: subtle first, one strong brand Button last."
     }
   },
   "useWhen": [
@@ -60,7 +60,7 @@
     "Do not invent Dialog, DialogTrigger, DialogContent, ModalCard, Sheet or CommandDialog.",
     "Do not use for a must-choose confirm. Use AlertDialog.",
     "Do not put page navigation or long flows in a modal. Use a page.",
-    "Do not put more than one primary Button in the footer.",
+    "Do not put more than one strong brand Button in the footer.",
     "Do not hide the × unless the footer has a clear way out.",
     "Do not use raw hex."
   ],
@@ -70,7 +70,7 @@
     "Escape closes, unless a menu or search inside handled it first. A backdrop click closes.",
     "Closing returns focus to what had it before. The page behind does not scroll while open."
   ],
-  "snippet": "<Modal\n  open={open}\n  title=\"Edit customer\"\n  onClose={close}\n  footer={<>\n    <Button size=\"sm\" onClick={close}>Cancel</Button>\n    <Button size=\"sm\" variant=\"primary\" onClick={save}>Save</Button>\n  </>}\n>\n  ...\n</Modal>",
+  "snippet": "<Modal\n  open={open}\n  title=\"Edit customer\"\n  onClose={close}\n  footer={<>\n    <Button size=\"sm\" onClick={close}>Cancel</Button>\n    <Button size=\"sm\" emphasis=\"strong\" intent=\"brand\" onClick={save}>Save</Button>\n  </>}\n>\n  ...\n</Modal>",
   "examples": [
     {
       "title": "Sizes",
@@ -104,7 +104,7 @@
     },
     {
       "title": "Form",
-      "usage": "Kit Inputs in the body. Focus starts in the first field; Save is the one primary.",
+      "usage": "Kit Inputs in the body. Focus starts in the first field; Save is the one strong brand Button.",
       "items": [
         {
           "props": {

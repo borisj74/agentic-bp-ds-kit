@@ -16,7 +16,7 @@
         "intent": "neutral | brand | success | warning | danger? Tints the circle. Default neutral.",
         "notes": "string? The body text under the head.",
         "links": "{ label, href?, onClick? }[]? Related records, one per line.",
-        "action": "{ label, onClick? }? One secondary Button under the entry.",
+        "action": "{ label, onClick? }? One subtle Button under the entry.",
         "menu": "DropdownMenuEntry[]? A More menu at the end of the head."
       },
       "note": "One entry per thing that happened, in the order they are shown."

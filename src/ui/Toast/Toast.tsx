@@ -87,7 +87,7 @@ function ToastCard({ onClose, title, description, intent = "info", actionLabel, 
             <button type="button" className={styles.action} onClick={() => { onAction?.(); onClose(); }}>{actionLabel}</button>
           )}
         </div>
-        <Button variant="tertiary" size="sm" iconOnly iconStart="close" onClick={onClose}>Dismiss</Button>
+        <Button emphasis="minimal" size="sm" iconOnly iconStart="close" onClick={onClose}>Dismiss</Button>
       </div>
     </div>
   );

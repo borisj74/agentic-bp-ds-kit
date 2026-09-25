@@ -514,9 +514,9 @@ export function Calendar({
 
   const eventFooter = (
     <>
-      {draft?.id && <Button size="sm" variant="danger" onClick={remove}>Delete</Button>}
+      {draft?.id && <Button size="sm" emphasis="strong" intent="danger" onClick={remove}>Delete</Button>}
       <Button size="sm" onClick={closePanel}>Cancel</Button>
-      <Button size="sm" variant="primary" type="submit" form={formId}>Save</Button>
+      <Button size="sm" emphasis="strong" intent="brand" type="submit" form={formId}>Save</Button>
     </>
   );
 
@@ -526,7 +526,7 @@ export function Calendar({
         <div className={styles.titleRow}>
           <h2 id={titleId} className={styles.title} aria-live="polite">{title}</h2>
           <Dropdown
-            label="Choose month" variant="tertiary" size="sm" iconOnly icon="expand_more"
+            label="Choose month" emphasis="minimal" size="sm" iconOnly icon="expand_more"
             items={months.map((m) => ({ id: toISO(m), label: fmt(m, { month: "long", year: "numeric" }), selected: m.getMonth() === focus.getMonth() }))}
             onSelect={(id) => { const m = parse(id); if (m) setDate(addMonths(focus, m.getMonth() - focus.getMonth())); }}
           />
