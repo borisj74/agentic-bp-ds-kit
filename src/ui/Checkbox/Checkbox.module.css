@@ -3,7 +3,7 @@
   font-family: var(--font-sans); color: var(--text-neutral-strong); cursor: pointer;
 }
 .sm { --box: var(--checkbox-size-sm); font-size: var(--font-size-xsmall); }
-.md { --box: var(--checkbox-size-md); font-size: var(--font-size-small); }
+.md { --box: var(--checkbox-size-md); font-size: var(--text-ref-label-form-size); }
 .lg { --box: var(--checkbox-size-lg); font-size: var(--font-size-regular); }
 
 .control { position: relative; display: inline-flex; flex: none; width: var(--box); height: var(--box); }
@@ -32,7 +32,9 @@
 
 .disabled { cursor: not-allowed; opacity: var(--opacity-disabled); }
 
-.text { line-height: var(--line-height-snug); }
+/* Labels are Medium at 120%, like Label/Form. md is Label/Form (14); sm (12) and lg (16) keep their own size. */
+.text { font-weight: var(--font-weight-medium); line-height: var(--line-height-tight); }
+.md .text { font-weight: var(--text-ref-label-form-weight); line-height: var(--text-ref-label-form-lh); letter-spacing: var(--text-ref-label-form-ls); }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 @media (prefers-reduced-motion: reduce) {

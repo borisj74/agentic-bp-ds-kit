@@ -25,7 +25,7 @@
 .md { max-width: 448px; }
 
 .title { margin: 0; font-size: var(--text-heading-md-size); font-weight: var(--text-heading-md-weight); line-height: var(--text-heading-md-lh); color: var(--text-neutral-strong); }
-.description { margin: var(--space-xsmall) 0 0; font-size: var(--font-size-small); line-height: var(--line-height-normal); color: var(--text-neutral-subtle); }
+.description { margin: var(--space-xsmall) 0 0; font-size: var(--text-body-size); font-weight: var(--text-body-weight); line-height: var(--text-body-lh); letter-spacing: var(--text-body-ls); color: var(--text-neutral-subtle); }
 
 /* Two separate Buttons with a gap. Not a ButtonGroup. */
 .footer { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: var(--space-xsmall); margin-top: var(--space-xlarge); }

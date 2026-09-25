@@ -1,7 +1,8 @@
 .list {
   display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xxsmall);
   margin: 0; padding: 0; list-style: none;
-  font-family: var(--font-sans); font-size: var(--font-size-small); line-height: var(--line-height-normal);
+  /* Labels are text/body (14 Regular, 1.5); the current crumb is Medium. */
+  font-family: var(--font-sans); font-size: var(--text-body-size); font-weight: var(--text-body-weight); line-height: var(--text-body-lh); letter-spacing: var(--text-body-ls);
 }
 .item { display: flex; align-items: center; min-width: 0; }
 

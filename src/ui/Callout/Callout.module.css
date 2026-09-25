@@ -1,5 +1,6 @@
 .alert {
-  --line: 1.5em;
+  /* Text/Alert (body 14 Regular, 1.5). --line is the same line height as a length, for the centring calc below. */
+  --line: calc(var(--text-ref-alert-lh) * 1em);
   box-sizing: border-box;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
@@ -10,8 +11,10 @@
   border: var(--border-width-thin) solid;
   border-radius: var(--radius-medium);
   font-family: var(--font-sans);
-  font-size: var(--font-size-small);
+  font-size: var(--text-ref-alert-size);
+  font-weight: var(--text-ref-alert-weight);
   line-height: var(--line);
+  letter-spacing: var(--text-ref-alert-ls);
   color: var(--text-neutral-strong);
 }
 .dismissible { grid-template-columns: auto minmax(0, 1fr) auto; }

@@ -30,8 +30,8 @@
 .option[data-checked]:hover:not([data-disabled]) .dot { background: var(--bg-brand-hover); }
 .option:has(.input:focus-visible) .control { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
 
-.label { font-weight: var(--font-weight-medium); line-height: var(--line-height-snug); color: var(--text-neutral-strong); }
-/* md option labels are Label/Form (14 Medium, 120%). sm and lg keep their size at 135%. */
+.label { font-weight: var(--font-weight-medium); line-height: var(--line-height-tight); color: var(--text-neutral-strong); }
+/* Option labels are Medium at 120%, like Label/Form. md is Label/Form (14); sm (12) and lg (16) keep their own size. */
 .md .label { font-size: var(--text-ref-label-form-size); font-weight: var(--text-ref-label-form-weight); line-height: var(--text-ref-label-form-lh); letter-spacing: var(--text-ref-label-form-ls); }
 
 .error .control, .error .option:hover:not([data-disabled]) .control { border-color: var(--border-danger); }

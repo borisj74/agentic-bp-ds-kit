@@ -2,10 +2,11 @@
 .legend {
   display: flex; flex-wrap: wrap; gap: var(--space-xsmall) var(--space-large);
   margin: 0; padding: 0; list-style: none;
-  font-family: var(--font-sans); font-size: var(--font-size-xsmall); color: var(--text-neutral-strong);
+  font-family: var(--font-sans); color: var(--text-neutral-strong);
 }
-.md { font-size: var(--font-size-small); }
-.sm { font-size: var(--font-size-xsmall); }
+/* Key labels: sm is text/caption (12 Regular, 1.5), md is text/body (14 Regular, 1.5). */
+.legend, .sm { font-size: var(--text-caption-size); font-weight: var(--text-caption-weight); line-height: var(--text-caption-lh); letter-spacing: var(--text-caption-ls); }
+.md { font-size: var(--text-body-size); font-weight: var(--text-body-weight); line-height: var(--text-body-lh); letter-spacing: var(--text-body-ls); }
 .horizontal { flex-direction: row; }
 .vertical { flex-direction: column; flex-wrap: nowrap; gap: var(--space-xsmall); }
 .start { justify-content: flex-start; align-items: flex-start; }
