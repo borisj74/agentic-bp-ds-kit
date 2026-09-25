@@ -7,7 +7,7 @@
     "name": { "type": "string", "required": true, "note": "Full name. Used for alt text and initials." },
     "src": { "type": "string", "note": "Photo URL. Cropped to the shape." },
     "initials": { "type": "string", "note": "Overrides the initials from name. Two letters max." },
-    "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "32 / 40 / 48 px." },
+    "size": { "enum": ["xs", "sm", "md", "lg"], "default": "md", "note": "24 / 32 / 40 / 48 px. xs is the table row size: it keeps a person cell inside a 36 / 40 px row." },
     "shape": { "enum": ["circle", "square"], "default": "circle", "note": "square has small rounded corners (--radius-medium)." },
     "decorative": { "type": "boolean", "default": false, "note": "The person's name is already written next to the avatar, like in a table cell or a list row, so screen readers skip the picture instead of reading the name twice." }
   },
@@ -18,8 +18,9 @@
   "examples": [
     {
       "title": "Photo",
-      "usage": "Photo avatars in sm, md and lg. The photo is cropped to the circle.",
+      "usage": "Photo avatars in xs, sm, md and lg. The photo is cropped to the circle.",
       "items": [
+        { "props": { "name": "Maya Chen", "src": "/faces/maya-chen.jpg", "size": "xs" } },
         { "props": { "name": "Maya Chen", "src": "/faces/maya-chen.jpg", "size": "sm" } },
         { "props": { "name": "Maya Chen", "src": "/faces/maya-chen.jpg", "size": "md" } },
         { "props": { "name": "Maya Chen", "src": "/faces/maya-chen.jpg", "size": "lg" } }
@@ -55,8 +56,9 @@
     },
     {
       "title": "Sizes",
-      "usage": "sm 32px, md 40px, lg 48px. The same sizes apply to photos and initials.",
+      "usage": "xs 24px, sm 32px, md 40px, lg 48px. The same sizes apply to photos and initials. xs is the size a table cell uses, so a person row keeps its height.",
       "items": [
+        { "props": { "name": "Ada Jones", "size": "xs" } },
         { "props": { "name": "Ada Jones", "size": "sm" } },
         { "props": { "name": "Ada Jones", "size": "md" } },
         { "props": { "name": "Ada Jones", "size": "lg" } }

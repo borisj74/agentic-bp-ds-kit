@@ -1337,6 +1337,7 @@
   --z-overlay: 1000;
   --z-toast: 1100;
   --target-min: 24px;
+  --avatar-size-xs: var(--ref-size-700);
   --avatar-size-sm: var(--ref-size-900);
   --avatar-size-md: var(--ref-size-1100);
   --avatar-size-lg: var(--ref-size-1300);
@@ -1355,10 +1356,10 @@
   --radio-size-sm: var(--ref-size-500);
   --radio-size-md: var(--ref-size-600);
   --radio-size-lg: var(--ref-size-700);
-  --cell-height-sm: var(--ref-size-1300);
-  --cell-height-md: var(--ref-size-1500);
+  --cell-height-sm: var(--ref-size-1000);
+  --cell-height-md: var(--ref-size-1100);
   --header-cell-height-sm: var(--ref-size-1100);
-  --header-cell-height-md: var(--ref-size-1300);
+  --header-cell-height-md: var(--ref-size-1100);
   --dropdown-min-width: 200px;
   --menu-item-height: var(--ref-size-800);
   --menu-item-tile: var(--ref-size-900);

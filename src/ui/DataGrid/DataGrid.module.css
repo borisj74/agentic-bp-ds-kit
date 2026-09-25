@@ -16,7 +16,7 @@
   font-size: var(--font-size-small); color: var(--text-neutral-strong);
 }
 .table td:first-child { border-left: var(--border-width-thin) solid var(--border-neutral-subtle); }
-/* Rows are 48 / 56 like Table, line included; a table cell's height acts as its minimum, so formula editors can grow it. */
+/* Rows are 36 / 40 like Table, line included; a table cell's height acts as its minimum, so formula editors can grow it. */
 .sm td { height: calc(var(--cell-height-sm) - var(--border-width-thin)); }
 .md td { height: calc(var(--cell-height-md) - var(--border-width-thin)); }
 

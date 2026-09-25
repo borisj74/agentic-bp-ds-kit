@@ -33,7 +33,7 @@
         "md"
       ],
       "default": "md",
-      "note": "Row height 48 / 56 px. Side padding 12 px at both sizes, same as HeaderCell. Avatars, Badge and Checkbox stay sm (32 / 20 / 16 px) so rows keep their height. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown)."
+      "note": "Row height 36 / 40 px. sm holds one line only; content with a second line (a name over an email) uses md. Side padding 12 px at both sizes, same as HeaderCell. Avatars stay xs (24 px), Badge and Checkbox small (20 / 16 px), so rows keep their height. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown)."
     },
     "alignment": {
       "enum": [

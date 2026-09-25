@@ -29,7 +29,7 @@
         "md"
       ],
       "default": "md",
-      "note": "Row height 48 / 56, header 40 / 48, same as Table. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown). Formula cells grow while they are edited."
+      "note": "Row height 36 / 40, header 40, same as Table. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown). Formula cells grow while they are edited."
     },
     "line": {
       "enum": [

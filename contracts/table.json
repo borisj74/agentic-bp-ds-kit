@@ -22,7 +22,7 @@
         "md"
       ],
       "default": "md",
-      "note": "Row height 48 / 56, header 40 / 48, same as Cell and HeaderCell. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown). Give Cells you pass the same size."
+      "note": "Row height 36 / 40, header 40, same as Cell and HeaderCell. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown). Give Cells you pass the same size."
     },
     "line": {
       "enum": [

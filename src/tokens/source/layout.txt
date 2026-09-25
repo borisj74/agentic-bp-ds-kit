@@ -50,7 +50,8 @@ z/toast|1100
 # Fixed 24 in every density, so Compact never goes under the WCAG minimum.
 target/min|24px
 
-# not in Figma: avatar sizes. Alias BP ref size (32 / 40 / 48).
+# not in Figma: avatar sizes. Alias BP ref size (24 / 32 / 40 / 48). xs is the size a table cell uses.
+avatar/size/xs|{ref/size/700}
 avatar/size/sm|{ref/size/900}
 avatar/size/md|{ref/size/1100}
 avatar/size/lg|{ref/size/1300}
@@ -79,13 +80,13 @@ radio/size/sm|{ref/size/500}
 radio/size/md|{ref/size/600}
 radio/size/lg|{ref/size/700}
 
-# not in Figma: table cell row heights. sm 48 and md 56 alias BP ref size (1300 / 1500).
-cell/height/sm|{ref/size/1300}
-cell/height/md|{ref/size/1500}
+# BP table cell row heights: sm 36 and md 40 alias BP ref size (1000 / 1100).
+cell/height/sm|{ref/size/1000}
+cell/height/md|{ref/size/1100}
 
-# Header cell (Figma .table / th 3559:106607): sm 40 is the Figma th height. md 48 matches the sm body row. Both alias BP ref size.
+# Header cell (Figma .table / th 3559:106607): 40 at both sizes, the BP header height. Alias BP ref size.
 header-cell/height/sm|{ref/size/1100}
-header-cell/height/md|{ref/size/1300}
+header-cell/height/md|{ref/size/1100}
 
 # Dropdown menu (Figma menu 2016:280599, menu-item 1270:25599, dropdown-panel 3736:12109).
 # Figma: menu width 200, item min height 28, icon tile 32. The top line is 1px (kit change from Figma 4px). The icon tile and height alias BP ref size; 200 is past the scale.

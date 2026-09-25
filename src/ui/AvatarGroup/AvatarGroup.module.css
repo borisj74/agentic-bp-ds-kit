@@ -12,6 +12,8 @@
   font-family: var(--font-sans); font-weight: var(--font-weight-semibold); line-height: 1;
   background: var(--bg-neutral-subtle); color: var(--text-neutral);
 }
+/* xs is the size a table cell uses. */
+.xs { width: var(--avatar-size-xs); height: var(--avatar-size-xs); font-size: var(--font-size-xsmall); }
 .sm { width: var(--avatar-size-sm); height: var(--avatar-size-sm); font-size: var(--font-size-xsmall); }
 .md { width: var(--avatar-size-md); height: var(--avatar-size-md); font-size: var(--font-size-small); }
 .lg { width: var(--avatar-size-lg); height: var(--avatar-size-lg); font-size: var(--font-size-regular); }

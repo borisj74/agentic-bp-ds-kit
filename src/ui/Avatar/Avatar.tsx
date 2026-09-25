@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Icon } from "../Icon/Icon";
 import styles from "./Avatar.module.css";
 
-export type AvatarSize = "sm" | "md" | "lg";
+export type AvatarSize = "xs" | "sm" | "md" | "lg";
 export type AvatarShape = "circle" | "square";
 
 export interface AvatarProps {
@@ -27,7 +27,7 @@ function initialsOf(name: string, override?: string) {
   return `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase();
 }
 
-const iconSize = { sm: "sm", md: "md", lg: "lg" } as const;
+const iconSize = { xs: "sm", sm: "sm", md: "md", lg: "lg" } as const;
 
 // decorative: the name is already written beside the avatar, so screen readers skip the picture instead of saying it twice.
 export function Avatar({ name, src, initials, size = "md", shape = "circle", decorative = false }: AvatarProps) {

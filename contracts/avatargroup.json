@@ -5,7 +5,7 @@
   "usage": "Use for several people on a row, card or table cell. Only kit Avatars go in the group. People past max collapse into a +N count, not another face. One person is a plain Avatar. See contracts/avatargroup.json for the full contract.",
   "props": {
     "label": { "type": "string", "note": "Names the group for screen readers, like Assignees." },
-    "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "Applied to every Avatar and the count." },
+    "size": { "enum": ["xs", "sm", "md", "lg"], "default": "md", "note": "Applied to every Avatar and the count. xs is 24 px, the table row size." },
     "shape": { "enum": ["circle", "square"], "default": "circle", "note": "Applied to every Avatar and the count." },
     "max": { "type": "number", "default": 3, "note": "How many Avatars show before +N. No count when items.length <= max." },
     "items": { "type": "AvatarGroupItem[]", "required": true, "itemShape": { "name": "string", "src": "string?", "initials": "string?" }, "note": "Two or more people. Same fields as Avatar." }

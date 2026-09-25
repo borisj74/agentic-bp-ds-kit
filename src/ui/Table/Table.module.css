@@ -18,7 +18,7 @@
 
 /* The table cells carry the lines and the rows the fills, so the Cells inside drop theirs; cells of different
    heights in one row still share one line. HeaderCell's 2px brand-faint line, then a 1px faint line per row.
-   Each Cell gives up the line's height, so rows stay 48 / 56 and the header 40 / 48, as on their own. */
+   Each Cell gives up the line's height, so rows stay 36 / 40 and the header 40, as on their own. */
 .table th > *, .table td > * { border-bottom: 0; background: transparent; }
 .table thead th, .table thead td { border-bottom: var(--border-width-medium) solid var(--border-brand-faint); }
 .table tbody td { border-bottom: var(--border-width-thin) solid var(--border-neutral-faint); }

@@ -14,7 +14,7 @@
         "md"
       ],
       "default": "md",
-      "note": "Height 40 / 48 px. Side padding 12 px at both sizes, same as Cell. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown)."
+      "note": "Height 40 px at both sizes, the BP header height. Side padding 12 px at both sizes, same as Cell. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown)."
     },
     "alignment": {
       "enum": [
