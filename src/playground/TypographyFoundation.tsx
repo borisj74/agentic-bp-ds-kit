@@ -33,7 +33,7 @@ const roles = [
   ["text-code", "invoice.lines.reduce((s, l) => s + l.amount, 0)"],
 ] as const;
 
-// BP Foundations reference names (Reference/…), each an alias of a role above (Label/Form: line height 120%).
+// BP Foundations reference names (Reference/…), each an alias of a role above (Label/Form: line height 120%, Label/Badge: 100%).
 const refs = [
   ["text-ref-page", "title-xl", "Title/Page", "Page title"],
   ["text-ref-modal", "title-lg", "Title/Modal", "Modal title"],
@@ -50,7 +50,7 @@ const refs = [
   ["text-ref-label-form", "label at 120% line height", "Label/Form", "Form label"],
   ["text-ref-label-tab", "heading-xs", "Label/Tab", "Tab label"],
   ["text-ref-label-button", "button-small", "Label/Button", "Button label"],
-  ["text-ref-label-badge", "caption-strong", "Label/Badge", "Badge label"],
+  ["text-ref-label-badge", "caption-strong at 100% line height", "Label/Badge", "Badge label"],
 ] as const;
 
 const sizes = [["ref-font-size-100", 10], ["ref-font-size-200", 12], ["ref-font-size-300", 14], ["ref-font-size-400", 16], ["ref-font-size-500", 18], ["ref-font-size-600", 20], ["ref-font-size-700", 22], ["ref-font-size-800", 24], ["ref-font-size-900", 26]] as const;

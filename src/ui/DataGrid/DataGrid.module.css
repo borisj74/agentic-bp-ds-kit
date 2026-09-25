@@ -9,11 +9,13 @@
 /* Header cells have no side lines: only the HeaderCell line under the row. Body cells keep their boxes. */
 .table th { background: var(--surface-flat); }
 .table th > * { background: transparent; }
+/* Body cells: Text/Cell (14 Regular, 1.5), like Cell. */
 .table td {
   background: var(--bg-neutral-faint);
   border-right: var(--border-width-thin) solid var(--border-neutral-subtle);
   border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
-  font-size: var(--font-size-small); color: var(--text-neutral-strong);
+  font-size: var(--text-ref-cell-size); font-weight: var(--text-ref-cell-weight); line-height: var(--text-ref-cell-lh); letter-spacing: var(--text-ref-cell-ls);
+  color: var(--text-neutral-strong);
 }
 .table td:first-child { border-left: var(--border-width-thin) solid var(--border-neutral-subtle); }
 /* Rows follow Table, line included, but an editable cell keeps its 8px padding, so sm sits at 38 rather than 36.

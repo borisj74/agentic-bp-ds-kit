@@ -31,6 +31,8 @@
 .option:has(.input:focus-visible) .control { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
 
 .label { font-weight: var(--font-weight-medium); line-height: var(--line-height-snug); color: var(--text-neutral-strong); }
+/* md option labels are Label/Form (14 Medium, 120%). sm and lg keep their size at 135%. */
+.md .label { font-size: var(--text-ref-label-form-size); font-weight: var(--text-ref-label-form-weight); line-height: var(--text-ref-label-form-lh); letter-spacing: var(--text-ref-label-form-ls); }
 
 .error .control, .error .option:hover:not([data-disabled]) .control { border-color: var(--border-danger); }
 .error .dot, .error .option[data-checked]:hover .dot { background: var(--bg-danger); }
@@ -54,7 +56,7 @@
 .card .option[data-checked] { border-color: var(--border-brand); }
 .copy { display: grid; gap: var(--space-xxsmall); min-width: 0; flex: 1; }
 .titleRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xsmall); }
-.card .label { font-weight: var(--font-weight-semibold); }
+.card .label { font-weight: var(--font-weight-semibold); line-height: var(--line-height-snug); }
 .description { font-size: var(--font-size-small); line-height: var(--line-height-snug); color: var(--text-neutral-subtle); }
 
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

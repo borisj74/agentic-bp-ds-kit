@@ -8,8 +8,10 @@
   font-family: var(--font-sans); font-weight: var(--font-weight-semibold); line-height: 1;
   white-space: nowrap;
 }
-.sm { height: var(--badge-height-sm); font-size: var(--font-size-xsmall); }
-.md { height: var(--badge-height-md); font-size: var(--font-size-xsmall); }
+/* sm and md text is Label/Badge (12 Semibold, 100%). lg is 14 and has no reference name. */
+.sm, .md { font-size: var(--text-ref-label-badge-size); font-weight: var(--text-ref-label-badge-weight); line-height: var(--text-ref-label-badge-lh); letter-spacing: var(--text-ref-label-badge-ls); }
+.sm { height: var(--badge-height-sm); }
+.md { height: var(--badge-height-md); }
 .lg { height: var(--badge-height-lg); font-size: var(--font-size-small); padding: 0 var(--space-small); }
 
 /* Icon-only is square. Figma strokes sit inside the box, so the border is included in the size. */
