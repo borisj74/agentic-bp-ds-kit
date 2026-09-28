@@ -1,10 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { Cell } from "@/ui/Cell/Cell";
 import { axeViolations } from "./axe";
 
-// The reference table's cell types: number, date, status, icon, switch, radio, popupTrigger, linkSecondary, textBlock.
+// The reference table's cell types: number, date, status, switch, popupTrigger, textBlock, redirect.
 describe("Cell reference types", () => {
   it("number is end-aligned with even-width digits and thousands separators", () => {
     const { container } = render(<Cell type="number" value={4321} />);
@@ -33,12 +32,6 @@ describe("Cell reference types", () => {
     expect(screen.getByText("Pending")).toBeInTheDocument();
   });
 
-  it("icon shows a status icon (info by default) and keeps the label as hidden text when text is off", () => {
-    const { container } = render(<Cell type="icon" label="Information" intent="info" text={false} />);
-    expect(container.querySelector(".mark-info")?.textContent).toBe("info");
-    expect(container.querySelector(".srOnly")?.textContent).toBe("Information");
-  });
-
   it("switch is a kit Switch named by label that toggles with the keyboard", () => {
     const onChange = vi.fn();
     render(<Cell type="switch" label="Auto-renew Acme" onCheckedChange={onChange} />);
@@ -49,42 +42,17 @@ describe("Cell reference types", () => {
     expect(sw).toHaveAttribute("aria-checked", "true");
   });
 
-  it("radio rows share a name and the table keeps the picked row", () => {
-    function Rows() {
-      const [picked, setPicked] = useState("a");
-      return (
-        <>
-          <Cell type="radio" name="plan" label="Default plan Basic" checked={picked === "a"} onCheckedChange={() => setPicked("a")} />
-          <Cell type="radio" name="plan" label="Default plan Pro" checked={picked === "b"} onCheckedChange={() => setPicked("b")} />
-        </>
-      );
-    }
-    render(<Rows />);
-    const basic = screen.getByRole("radio", { name: "Default plan Basic" });
-    const pro = screen.getByRole("radio", { name: "Default plan Pro" });
-    expect(basic).toHaveAttribute("name", "plan");
-    expect(pro).toHaveAttribute("name", "plan");
-    expect(basic).toBeChecked();
-    fireEvent.click(pro);
-    expect(pro).toBeChecked();
-    expect(basic).not.toBeChecked();
-  });
-
-  it("popupTrigger is a neutral kit Link acting in place", () => {
+  it("popupTrigger is a neutral kit Link acting in place, then a decorative open_in_full", () => {
     const onClick = vi.fn();
     render(<Cell type="popupTrigger" label="3 contacts" onClick={onClick} />);
     const trigger = screen.getByRole("button", { name: "3 contacts" });
     expect(trigger.className).toContain("neutral");
+    const mark = trigger.querySelector("[aria-hidden='true']")!;
+    expect(mark.textContent).toBe("open_in_full");
+    expect(mark.className).toContain("sm");
+    expect(mark.className).toContain("trailIcon");
     fireEvent.click(trigger);
     expect(onClick).toHaveBeenCalled();
-  });
-
-  it("linkSecondary is a neutral kit Link with an optional new-tab mark", () => {
-    render(<Cell type="linkSecondary" label="Contract PDF" href="/c.pdf" external />);
-    const link = screen.getByRole("link", { name: /Contract PDF/ });
-    expect(link).toHaveAttribute("href", "/c.pdf");
-    expect(link).toHaveAttribute("target", "_blank");
-    expect(link.className).toContain("neutral");
   });
 
   it("redirect is a brand kit Link in the same tab, then a decorative arrow_outward", () => {
@@ -97,7 +65,7 @@ describe("Cell reference types", () => {
     const arrow = link.querySelector("[aria-hidden='true']")!;
     expect(arrow.textContent).toBe("arrow_outward");
     expect(arrow.className).toContain("sm");
-    expect(arrow.className).toContain("redirectIcon");
+    expect(arrow.className).toContain("trailIcon");
     fireEvent.click(link);
     expect(onClick).toHaveBeenCalledTimes(1);
   });
@@ -116,11 +84,8 @@ describe("Cell reference types", () => {
         <Cell type="number" value={12} />
         <Cell type="date" value="2024-03-12" />
         <Cell type="status" label="Active" intent="success" />
-        <Cell type="icon" label="Information" />
         <Cell type="switch" label="Auto-renew" />
-        <Cell type="radio" name="p" label="Pick Basic" checked />
         <Cell type="popupTrigger" label="3 contacts" onClick={() => {}} />
-        <Cell type="linkSecondary" label="Parent Co" href="#" />
         <Cell type="textBlock" label="Billed yearly." />
         <Cell type="redirect" label="Open billing run" href="#" />
       </div>,

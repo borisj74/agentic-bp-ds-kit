@@ -172,8 +172,6 @@ const CELL_SAMPLES: Record<CellType, Props> = {
   trendPositive: { value: "12%" },
   trendNegative: { value: "4%" },
   progress: { value: 64, label: "Onboarding" },
-  rating: { value: 4 },
-  select: { label: "Status", value: "paid", options: [{ value: "draft", label: "Draft" }, { value: "paid", label: "Paid" }, { value: "void", label: "Void" }] },
   actions: { actions: [{ label: "View" }, { label: "Send" }] },
   actionIcons: { actions: [{ label: "Edit", icon: "edit" }, { label: "Download", icon: "download" }, { label: "Delete", icon: "delete" }] },
   actionMenu: { label: "Row actions", actions: [{ label: "View" }, { label: "Download" }, { label: "Delete", icon: "delete", emphasis: "strong", intent: "danger" }] },
@@ -182,11 +180,8 @@ const CELL_SAMPLES: Record<CellType, Props> = {
   number: { value: 4321 },
   date: { value: "2024-03-12" },
   status: { label: "Warning", intent: "warning" },
-  icon: { label: "Information", intent: "info", icon: "info" },
   switch: { label: "Auto-renew", defaultChecked: true },
-  radio: { label: "Default plan", name: "cell-radio-sample", checked: true },
   popupTrigger: { label: "3 contacts" },
-  linkSecondary: { label: "Parent Co", href: "#" },
   redirect: { label: "Open billing run", href: "#" },
   textBlock: { label: "Billed yearly in advance. Usage above the plan is billed monthly in arrears at the list price." },
 };
@@ -1032,7 +1027,7 @@ export const registry: Record<string, Entry> = {
     card: <div style={{ width: 400 }}><Carousel items={slides(false)} slidesPerView={2} /></div>,
   },
   Cell: {
-    // tree previews in a real Table of parent and child accounts, so the chevrons open and close rows.
+    // tree previews in a real Table of parent and child accounts, so the toggles open and close rows.
     render: (p) => (p.type === "tree"
       ? <div style={{ width: 640, maxWidth: "100%" }}><CellTreeDemo size={p.size as CellSize | undefined} checkbox={Boolean(p.checkbox)} showLines={p.showLines !== false} treeToggle={p.treeToggle as CellTreeToggle | undefined} /></div>
       : <Cell {...(p as object)} />),
@@ -1803,7 +1798,7 @@ export const registry: Record<string, Entry> = {
   },
   Table: {
     // Sample columns and rows swap in for their {names}. Keyed so the selectable switch starts fresh.
-    // {cellTypes} is a working table of the reference cell types (radio, switch, popup), which keeps its own state.
+    // {cellTypes} is a working table of the reference cell types (switch, popup), which keeps its own state.
     render: (p) => (p.rows === "{cellTypes}"
       ? <CellTypesDemo size={p.size as CellSize | undefined} />
       : <Table key={JSON.stringify(p)} {...tableProps(p)} />),

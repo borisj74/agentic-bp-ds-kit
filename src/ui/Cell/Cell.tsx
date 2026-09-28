@@ -8,18 +8,16 @@ import { ButtonGroup } from "../ButtonGroup/ButtonGroup";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { Dropdown } from "../Dropdown/Dropdown";
 import { Meter } from "../Meter/Meter";
-import { Select, type SelectOption } from "../Select/Select";
 import { Icon } from "../Icon/Icon";
 import { Link } from "../Link/Link";
-import { RadioGroup } from "../RadioGroup/RadioGroup";
 import { Switch } from "../Switch/Switch";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./Cell.module.css";
 
 export type CellType =
   | "text" | "link" | "avatar" | "avatarGroup" | "file" | "payment" | "badge" | "badges"
-  | "trendPositive" | "trendNegative" | "progress" | "rating" | "select" | "actions" | "actionIcons" | "actionMenu" | "checkbox" | "tree"
-  | "number" | "date" | "status" | "icon" | "switch" | "radio" | "popupTrigger" | "linkSecondary" | "textBlock" | "redirect";
+  | "trendPositive" | "trendNegative" | "progress" | "actions" | "actionIcons" | "actionMenu" | "checkbox" | "tree"
+  | "number" | "date" | "status" | "switch" | "popupTrigger" | "textBlock" | "redirect";
 export type CellSize = "sm" | "md";
 export type CellAlignment = "start" | "center" | "end";
 export type CellTreeToggle = "chevron" | "box";
@@ -37,7 +35,6 @@ export interface CellProps {
   checkbox?: boolean;
   label?: string;
   href?: string;
-  external?: boolean;
   name?: string;
   src?: string;
   people?: CellPerson[];
@@ -47,8 +44,6 @@ export interface CellProps {
   value?: string | number;
   actions?: CellAction[];
   menu?: CellAction[];
-  options?: SelectOption[];
-  onValueChange?: (value: string) => void;
   checked?: boolean;
   defaultChecked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
@@ -60,8 +55,6 @@ export interface CellProps {
   treeToggle?: CellTreeToggle;
 }
 
-const STARS = 5;
-const score = (v?: string | number) => Math.max(0, Math.min(STARS, Math.round(Number(v) || 0)));
 // date: an ISO day like 2024-03-12, read as a local day so the time zone never moves it, written like DatePicker.
 const day = (v?: string | number) => {
   const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(v ?? ""));
@@ -70,9 +63,9 @@ const day = (v?: string | number) => {
 };
 
 export function Cell({
-  type = "text", size: ownSize, alignment = type === "number" ? "end" : "start", text = true, checkbox = false, label, href, external = false, name, src, people, icon,
-  intent = "neutral", badges, value, actions, menu, options, onValueChange, checked, defaultChecked, onCheckedChange,
-  level = 1, expanded, onExpandedChange, showLines = true, treeToggle = "chevron", onClick,
+  type = "text", size: ownSize, alignment = type === "number" ? "end" : "start", text = true, checkbox = false, label, href, name, src, people, icon,
+  intent = "neutral", badges, value, actions, menu, checked, defaultChecked, onCheckedChange,
+  level = 1, expanded, onExpandedChange, showLines = true, treeToggle = "box", onClick,
 }: CellProps) {
   // A surrounding Density changes the row through the density tokens, not the size.
   const size = ownSize ?? "md";
@@ -103,11 +96,10 @@ export function Cell({
       break;
     }
     case "status":
-    case "icon":
-      // status: a dot in the intent's colour; icon: a status icon. Both 20px like the reference and decorative: the label says it.
+      // A dot in the intent's colour, 20px like the reference and decorative: the label says it.
       visual = (
         <span className={[styles.mark, styles[`mark-${intent}`]].join(" ")}>
-          {type === "status" ? <Icon name="fiber_manual_record" size="md" filled /> : <Icon name={icon ?? "info"} size="md" />}
+          <Icon name="fiber_manual_record" size="md" filled />
         </span>
       );
       side = label ?? "";
@@ -118,38 +110,27 @@ export function Cell({
         <Switch size="sm" hideLabel label={label ?? "Switch"} checked={checked} defaultChecked={defaultChecked} onChange={onCheckedChange} />
       );
       break;
-    case "radio":
-      // One kit RadioGroup option per row. Rows share name, so the table reads as one group and the arrow keys move
-      // between rows. Always controlled: only the table knows which row is picked (checked + onCheckedChange).
-      visual = (
-        <span className={styles.visual}>
-          <RadioGroup
-            size="sm" hideLegend legend={label ?? "Select row"} name={name}
-            options={[{ value: "on", label: label ?? "Select row", hideLabel: true }]}
-            value={checked ? "on" : ""}
-            onChange={() => onCheckedChange?.(true)}
-          />
-        </span>
-      );
-      break;
     case "popupTrigger":
       // Grey underlined text that opens a popup the screen owns (a Modal, Drawer or popover): a kit Link acting in place.
-      visual = <Link intent="neutral" onClick={onClick}>{label ?? ""}</Link>;
-      break;
-    case "linkSecondary":
-      visual = <Link intent="neutral" href={href} onClick={onClick} external={external}>{label ?? ""}</Link>;
+      // A decorative open_in_full after the text says it opens a popup; a caret would read as a dropdown.
+      visual = (
+        <Link intent="neutral" onClick={onClick}>
+          {label ?? ""}
+          <Icon name="open_in_full" size="sm" className={styles.trailIcon} />
+        </Link>
+      );
       break;
     case "redirect":
       // Goes to another page in the app, same tab: brand Link text, then a decorative arrow_outward in the link colour.
       visual = (
         <Link href={href} onClick={onClick}>
           {label ?? ""}
-          <Icon name="arrow_outward" size="sm" className={styles.redirectIcon} />
+          <Icon name="arrow_outward" size="sm" className={styles.trailIcon} />
         </Link>
       );
       break;
     case "tree":
-      // An optional icon, then the label; the indent and chevron lead the cell (below).
+      // An optional icon, then the label; the indent and toggle lead the cell (below).
       if (icon) visual = <span className={styles.icon}><Icon name={icon} size="sm" /></span>;
       side = label ?? "";
       break;
@@ -184,25 +165,6 @@ export function Cell({
     case "progress":
       // A kit Meter bar that fills the cell, sm or md like the row. label names it; text shows the percent after it.
       visual = <Meter value={Number(value) || 0} size={size} label={label ?? "Progress"} showValue={text} />;
-      break;
-    case "rating": {
-      const n = score(value);
-      visual = (
-        <span className={styles.row} role="img" aria-label={`${n} of ${STARS}`}>
-          {Array.from({ length: STARS }, (_, i) => <Icon key={i} name="star" size="sm" filled={i < n} intent={i < n ? "warning" : "subtle"} />)}
-        </span>
-      );
-      break;
-    }
-    case "select":
-      // A small kit Select with a hidden label, filling the cell.
-      visual = (
-        <Select
-          size="sm" hideLabel label={label ?? "Value"} options={options ?? []}
-          defaultValue={value !== undefined ? String(value) : undefined}
-          onChange={(v) => onValueChange?.(Array.isArray(v) ? v[0] ?? "" : v)}
-        />
-      );
       break;
     case "actions":
       visual = (
@@ -264,7 +226,7 @@ export function Cell({
   const twoLine = type === "avatar" && text && who;
   const showSide = text && side && type !== "trendPositive" && type !== "trendNegative";
 
-  // Tree: one indent cell per level above this row, carrying the guide line, then the chevron when the row has children.
+  // Tree: one indent cell per level above this row, carrying the guide line, then the toggle when the row has children.
   // A row with no children lines up with its parent's label, like TreeView.
   const depth = Math.max(Math.floor(level), 1) - 1;
   const parent = expanded !== undefined;
@@ -308,7 +270,7 @@ export function Cell({
       {(checkbox || type === "checkbox") && (
         <Checkbox size="sm" hideLabel label={`Select ${label || name || "row"}`} checked={checked} defaultChecked={defaultChecked} onChange={onCheckedChange} />
       )}
-      {visual && <span className={type === "select" ? styles.fill : type === "progress" ? [styles.fill, styles.progress].join(" ") : styles.visual}>{visual}</span>}
+      {visual && <span className={type === "progress" ? [styles.fill, styles.progress].join(" ") : styles.visual}>{visual}</span>}
       {twoLine ? (
         <span className={styles.copy}>
           <span className={styles.name}>{who}</span>

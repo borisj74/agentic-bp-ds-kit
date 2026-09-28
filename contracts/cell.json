@@ -1,8 +1,8 @@
 {
   "name": "Cell",
   "path": "src/ui/Cell/Cell.tsx",
-  "intent": "Content for one table cell: text, a number, a date, a link, a redirect to another page, a person, a file, a status, a trend, progress, a rating, a select, a switch or radio, row actions or a row menu, a tree row, with an optional row checkbox. Each cell is full width with a faint bottom border.",
-  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, number for amounts and counts (end-aligned, even-width digits), date for a day, textBlock for a note that wraps over several lines (md only), link to open a record, redirect to go to another page in the app (brand link text with an outward arrow), linkSecondary for a quieter grey link, popupTrigger for grey underlined text that opens a popup the screen owns, avatar for a person, badge for status, status for a coloured dot and a label, icon for a status icon and a label, trend for change, progress for how far along something is, actions for row buttons, actionMenu for a More menu, select to change a value in place, switch to turn a row setting on or off right away, radio to pick one row in the table, checkbox for a column with only the row Checkbox, tree for the first cell of parent and child rows (an indent per level, faint guide lines and a chevron to open and close its children; treeToggle box swaps that chevron for the outlined plus or minus square). Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, Dropdown, Icon, Link, Meter, RadioGroup, Select and Switch; it never draws its own. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract. With actionIcons, menu puts the row's remaining actions behind one More button at the end. In a box narrower than 640px, the kit's mobile break, the icon buttons fold into that More menu and the cell keeps one button, so the row's own values get the width; only one of the two is in the layout, so nothing is reached twice by the keyboard.",
+  "intent": "Content for one table cell: text, a number, a date, a link, a redirect to another page, a person, a file, a status, a trend, progress, a switch, row actions or a row menu, a tree row, with an optional row checkbox. Each cell is full width with a faint bottom border.",
+  "usage": "Use Cell inside table cells to show one kind of value consistently. Pick the type from the data: text for plain values, number for amounts and counts (end-aligned, even-width digits), date for a day, textBlock for a note that wraps over several lines (md only), link to open a record, redirect to go to another page in the app (brand link text with an outward arrow), popupTrigger for grey underlined text with an open_in_full mark that opens a popup the screen owns, avatar for a person, badge for status, status for a coloured dot and a label, trend for change, progress for how far along something is, actions for row buttons, actionMenu for a More menu, switch to turn a row setting on or off right away, checkbox for a column with only the row Checkbox, tree for the first cell of parent and child rows (an indent per level, faint guide lines and the outlined plus or minus square to open and close its children; treeToggle chevron swaps the square for a chevron button). Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, Dropdown, Icon, Link, Meter and Switch; it never draws its own. Pair with HeaderCell for column titles. See contracts/cell.json for the full contract. With actionIcons, menu puts the row's remaining actions behind one More button at the end. In a box narrower than 640px, the kit's mobile break, the icon buttons fold into that More menu and the cell keeps one button, so the row's own values get the width; only one of the two is in the layout, so nothing is reached twice by the keyboard.",
   "props": {
     "type": {
       "enum": [
@@ -17,8 +17,6 @@
         "trendPositive",
         "trendNegative",
         "progress",
-        "rating",
-        "select",
         "actions",
         "actionIcons",
         "actionMenu",
@@ -27,16 +25,13 @@
         "number",
         "date",
         "status",
-        "icon",
         "switch",
-        "radio",
         "popupTrigger",
-        "linkSecondary",
         "textBlock",
         "redirect"
       ],
       "default": "text",
-      "note": "link is the brand link (link-primary in the reference). number, date, status, icon, switch, radio, popupTrigger, linkSecondary and textBlock match the reference table's number, date, status, icon, switch, radio, popup-triger, secondary-link and text-block cells; redirect matches its redirect cell (link text and an outward arrow)."
+      "note": "link is the brand link (link-primary in the reference). number, date, status, switch, popupTrigger and textBlock match the reference table's number, date, status, switch, popup-triger and text-block cells; redirect matches its redirect cell (link text and an outward arrow); popupTrigger adds an open_in_full mark after its text so it reads as opening a popup."
     },
     "size": {
       "enum": [
@@ -67,25 +62,20 @@
     },
     "label": {
       "type": "string",
-      "note": "The text. For link it is the link text. For avatar it is the second line when name is set. For actionMenu it names the More button (default Row actions). For select it is the hidden field name. For progress it names the bar for screen readers (default Progress). For checkbox it names the row: the Checkbox is Select {label}. For status and icon it is the text after the mark. For textBlock it is the text that wraps. For popupTrigger, linkSecondary and redirect it is the link text; for redirect it names the page it goes to. For switch and radio it is the hidden name of the control, like Auto-renew Acme."
+      "note": "The text. For link it is the link text. For avatar it is the second line when name is set. For actionMenu it names the More button (default Row actions). For progress it names the bar for screen readers (default Progress). For checkbox it names the row: the Checkbox is Select {label}. For status it is the text after the dot. For textBlock it is the text that wraps. For popupTrigger and redirect it is the link text; for redirect it names the page it goes to. For switch it is the hidden name of the control, like Auto-renew Acme."
     },
     "href": {
       "type": "string",
-      "note": "For link, linkSecondary and redirect. Where the link goes. Links navigate only; use actions for operations. redirect always opens in the same tab."
-    },
-    "external": {
-      "type": "boolean",
-      "default": false,
-      "note": "For linkSecondary. Opens in a new tab, with the kit Link new-tab mark. redirect has no external: it stays in the same tab."
+      "note": "For link and redirect. Where the link goes. Links navigate only; use actions for operations. redirect always opens in the same tab."
     },
     "onClick": {
       "type": "function",
       "signature": "() => void",
-      "note": "For link, linkSecondary, redirect and popupTrigger. Without href the link is a button that acts in place, like picking a row in a Lookup; with href it runs before the link opens. For popupTrigger it opens the popup the screen owns (a Modal, Drawer or popover)."
+      "note": "For link, redirect and popupTrigger. Without href the link is a button that acts in place, like picking a row in a Lookup; with href it runs before the link opens. For popupTrigger it opens the popup the screen owns (a Modal, Drawer or popover)."
     },
     "name": {
       "type": "string",
-      "note": "Person name for avatar. For radio, the group name every row shares, so the rows form one group."
+      "note": "Person name for avatar."
     },
     "src": {
       "type": "string",
@@ -101,12 +91,12 @@
     },
     "icon": {
       "type": "string",
-      "note": "Material Symbols name. file defaults to description, payment to credit_card. For tree, an optional icon before the label. For icon, the status icon before the label (default info)."
+      "note": "Material Symbols name. file defaults to description, payment to credit_card. For tree, an optional icon before the label."
     },
     "intent": {
       "type": "BadgeIntent",
       "default": "neutral",
-      "note": "For badge, status and icon. status and icon colour the dot or icon: neutral and hollow grey, then info, success, warning, danger and highlight."
+      "note": "For badge and status. status colours the dot: neutral grey, then info, success, warning, danger and highlight."
     },
     "badges": {
       "type": "CellBadge[]",
@@ -118,7 +108,7 @@
     },
     "value": {
       "type": "string | number",
-      "note": "Trend amount like 12%, progress 0 to 100, rating 0 to 5, or the picked option for select. For number, the amount: a number is written with thousands separators, a string as given (like $4,321.00). For date, an ISO day like 2024-03-12, written Mar 12, 2024."
+      "note": "Trend amount like 12%, or progress 0 to 100. For number, the amount: a number is written with thousands separators, a string as given (like $4,321.00). For date, an ISO day like 2024-03-12, written Mar 12, 2024."
     },
     "actions": {
       "type": "CellAction[]",
@@ -135,30 +125,17 @@
       "type": "CellAction[]",
       "note": "With actionIcons, the rest of the row's actions behind one More button at the end of the icons, as a kit Dropdown. Leave it out and there is no More button; a danger intent becomes a danger item."
     },
-    "options": {
-      "type": "SelectOption[]",
-      "itemShape": {
-        "value": "string",
-        "label": "string",
-        "disabled": "boolean?"
-      },
-      "note": "For select. The value prop is the picked option."
-    },
-    "onValueChange": {
-      "type": "function",
-      "note": "For select. (value: string) => void"
-    },
     "checked": {
       "type": "boolean",
-      "note": "Row checkbox, switch or radio, controlled. radio is always controlled: keep which row is picked in the table and pass checked to every row."
+      "note": "Row checkbox or switch, controlled."
     },
     "defaultChecked": {
       "type": "boolean",
-      "note": "Row checkbox or switch, uncontrolled. Not for radio."
+      "note": "Row checkbox or switch, uncontrolled."
     },
     "onCheckedChange": {
       "type": "function",
-      "note": "(checked: boolean) => void. For radio it is called with true when the row is picked."
+      "note": "(checked: boolean) => void."
     },
     "level": {
       "type": "number",
@@ -167,35 +144,35 @@
     },
     "expanded": {
       "type": "boolean",
-      "note": "For tree. Set it (true or false) on rows that have children to show the chevron; leave it out on rows without children, which line up with their parent's label."
+      "note": "For tree. Set it (true or false) on rows that have children to show the toggle; leave it out on rows without children, which line up with their parent's label."
     },
     "onExpandedChange": {
       "type": "function",
       "signature": "(expanded: boolean) => void",
-      "note": "For tree. The chevron was clicked; show or hide the row's children. The table keeps which rows are open."
+      "note": "For tree. The toggle was clicked; show or hide the row's children. The table keeps which rows are open."
     },
     "showLines": {
       "type": "boolean",
       "default": true,
-      "note": "For tree. Faint lines under each open parent's chevron, joining its children from row to row."
+      "note": "For tree. Faint lines under each open parent's toggle, joining its children from row to row."
     },
     "treeToggle": {
       "enum": [
         "chevron",
         "box"
       ],
-      "default": "chevron",
-      "note": "For tree. chevron opens and closes the row with a kit chevron button. box draws the outlined square with add or remove inside it, as in the Figma table part, with the guide line running through it."
+      "default": "box",
+      "note": "For tree. box (the default) draws the outlined square with add or remove inside it, as in the Figma table part, with the guide line running through it. chevron opens and closes the row with a kit chevron button instead."
     }
   },
   "useWhen": [
     "Cells in a data table.",
     "A row that mixes text, people, status and actions.",
-    "A column the reference table draws as number, date, status, icon, switch, radio, popup, secondary link or text block.",
+    "A column the reference table draws as number, date, status, switch, popup or text block.",
     "A column that sends people to another page in the app, like Open billing run, drawn as the reference redirect cell."
   ],
   "doNot": [
-    "Do not invent a local table cell, Tag, Trend, FileIcon, PaymentMethod, Rating or ActionCell.",
+    "Do not invent a local table cell, Tag, Trend, FileIcon, PaymentMethod or ActionCell.",
     "Do not draw a progress bar in a cell. Use type progress; it is a kit Meter.",
     "Do not use Badge for trends. Use a trend type.",
     "Do not use link for actions like Delete or Send. Use actions or actionIcons.",
@@ -206,31 +183,26 @@
     "Do not use raw hex.",
     "Do not use status for a pill. status is a dot and a label; use badge for a pill.",
     "Do not use switch for a choice that waits for Save. Use checkbox; a switch applies right away.",
-    "Do not use radio without the same name on every row, and keep the picked row in the table (checked).",
-    "Do not use popupTrigger to go to another page. Use link or linkSecondary.",
+    "Do not use popupTrigger to go to another page. Use link or redirect.",
     "Do not use textBlock at sm. sm holds one line; the text is cut with an ellipsis.",
     "Do not write numbers in a text cell. Use number so they line up at the end.",
-    "Do not use redirect for a new tab; use linkSecondary with external.",
+    "Do not use redirect for a new tab. It always stays in the same tab.",
     "Do not use redirect for actions like Delete or Send. Use actions or actionIcons."
   ],
   "a11y": [
     "link renders a real <a href> with a visible focus ring; the label is the link name.",
-    "Visual icons (file, payment, trend arrows, stars) are decorative; the text carries the meaning.",
+    "Visual icons (file, payment, trend arrows) are decorative; the text carries the meaning.",
     "When text is off, file, payment and trend cells get an aria-label from label or value.",
-    "rating is role=img, read as {n} of 5.",
     "The row checkbox has a hidden label: Select {label or name}.",
     "Icon-only actions keep their label as the button name.",
     "actionMenu is a kit Dropdown: an icon-only More button named by label, opening a role=menu.",
-    "select is a small kit Select with a hidden label from label, named with its value.",
     "progress is a kit Meter: a progressbar named by label, read as its percent.",
     "tree: the toggle (chevron or box) is named Expand or Collapse and the row label, with aria-expanded. The indent and guide lines are hidden from screen readers.",
     "On a phone-width box the folded More menu carries the icon actions as named rows, so every row action is still reachable.",
-    "status and icon: the dot and icon are decorative; the label carries the meaning. With text off, the label becomes hidden text.",
+    "status: the dot is decorative; the label carries the meaning. With text off, the label becomes hidden text.",
     "date is a <time> element with the ISO day in datetime.",
     "switch is a kit Switch: role=switch named by label, Space or Enter toggles it.",
-    "radio is a kit RadioGroup with one option: a native radio named by label, in a group shared by name, so the arrow keys move between rows.",
-    "popupTrigger is a kit Link acting in place: a button named by its text.",
-    "linkSecondary is a kit Link: a real <a href>, neutral links keep their underline so colour is not the only sign.",
+    "popupTrigger is a kit Link acting in place: a button named by its text; the open_in_full mark is decorative (aria-hidden).",
     "redirect is a kit brand Link: a real <a href> named by its text; the outward arrow is decorative (aria-hidden), so the text names the page it goes to."
   ],
   "snippet": "<Cell type=\"avatar\" name=\"Maya Chen\" label=\"maya@acme.com\" src=\"/faces/maya-chen.jpg\" />",
@@ -427,45 +399,6 @@
       ]
     },
     {
-      "title": "Rating",
-      "usage": "A score from 0 to 5, read as {n} of 5.",
-      "items": [
-        {
-          "props": {
-            "type": "rating",
-            "value": 4
-          }
-        }
-      ]
-    },
-    {
-      "title": "Select",
-      "usage": "Change a value in place, like a status. A small kit Select that fills the cell.",
-      "items": [
-        {
-          "props": {
-            "type": "select",
-            "label": "Status",
-            "value": "paid",
-            "options": [
-              {
-                "value": "draft",
-                "label": "Draft"
-              },
-              {
-                "value": "paid",
-                "label": "Paid"
-              },
-              {
-                "value": "void",
-                "label": "Void"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
       "title": "Actions",
       "usage": "Row buttons. Labeled actions sit in a ButtonGroup; icon actions keep their label as the hidden name. Up to 3.",
       "items": [
@@ -550,7 +483,7 @@
     },
     {
       "title": "Tree",
-      "usage": "Parent and child accounts in a Table: the chevron opens and closes a row's children; rows without children line up with their parent's label.",
+      "usage": "Parent and child accounts in a Table: the outlined plus or minus square opens and closes a row's children; rows without children line up with their parent's label.",
       "items": [
         {
           "props": {
@@ -563,8 +496,8 @@
       ]
     },
     {
-      "title": "Tree with box toggles",
-      "usage": "treeToggle box: the outlined plus or minus square from the Figma table part, with the guide line running through it.",
+      "title": "Tree with chevron toggles",
+      "usage": "treeToggle chevron: a kit chevron button in place of the square.",
       "items": [
         {
           "props": {
@@ -572,7 +505,7 @@
             "label": "Acme Holdings",
             "icon": "domain",
             "expanded": true,
-            "treeToggle": "box"
+            "treeToggle": "chevron"
           }
         }
       ]
@@ -642,28 +575,6 @@
       ]
     },
     {
-      "title": "Icon",
-      "usage": "A status icon and a label. The icon is decorative; the label says it.",
-      "items": [
-        {
-          "props": {
-            "type": "icon",
-            "label": "Information",
-            "icon": "info",
-            "intent": "info"
-          }
-        },
-        {
-          "props": {
-            "type": "icon",
-            "label": "Needs review",
-            "icon": "error",
-            "intent": "warning"
-          }
-        }
-      ]
-    },
-    {
       "title": "Switch",
       "usage": "A row setting that applies right away. A small kit Switch, named by label.",
       "items": [
@@ -683,46 +594,9 @@
       ]
     },
     {
-      "title": "Radio",
-      "usage": "Pick one row in the table. Every row shares name, and the table keeps the picked row: pass checked to every row and set it from onCheckedChange.",
+      "title": "Popup",
+      "usage": "popupTrigger is grey underlined text with a small open_in_full mark after it, so it reads as opening a popup the screen owns, like a Modal or Drawer. Not a dropdown: there is no caret.",
       "items": [
-        {
-          "props": {
-            "type": "radio",
-            "label": "Default plan Basic",
-            "name": "plan",
-            "checked": true
-          }
-        },
-        {
-          "props": {
-            "type": "radio",
-            "label": "Default plan Pro",
-            "name": "plan",
-            "checked": false
-          }
-        }
-      ]
-    },
-    {
-      "title": "Secondary link and popup",
-      "usage": "linkSecondary is a quieter grey link; popupTrigger is grey underlined text that opens a popup the screen owns.",
-      "items": [
-        {
-          "props": {
-            "type": "linkSecondary",
-            "label": "Parent Co",
-            "href": "#"
-          }
-        },
-        {
-          "props": {
-            "type": "linkSecondary",
-            "label": "Contract PDF",
-            "href": "#",
-            "external": true
-          }
-        },
         {
           "props": {
             "type": "popupTrigger",

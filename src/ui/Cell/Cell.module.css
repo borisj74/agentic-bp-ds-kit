@@ -17,7 +17,7 @@
 .end { justify-content: flex-end; text-align: end; }
 
 .visual { display: inline-flex; align-items: center; flex: none; min-width: 0; }
-/* Select and progress fill the rest of the row; a progress bar keeps a minimum so a hugging cell still shows it. */
+/* progress fills the rest of the row and keeps a minimum, so a hugging cell still shows the bar. */
 .fill { display: flex; flex: 1; min-width: 0; }
 .progress { min-width: var(--cell-progress-min); }
 /* Values wrap only between words: an ID, a date or an amount never splits down the cell. When the columns cannot
@@ -94,12 +94,13 @@
    an ellipsis. */
 .textBlock.md { --pad-y: var(--space-xsmall); white-space: normal; }
 .textBlock.sm .label { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-/* status dot and status icon, coloured by the cell's intent (Badge's intents, as BP's status types). */
+/* status dot, coloured by the cell's intent (Badge's intents, as BP's status types). */
 .mark { display: flex; color: var(--icon-neutral-subtle); }
 .mark-info { color: var(--icon-info); }
 .mark-success { color: var(--icon-success); }
 .mark-warning { color: var(--icon-warning); }
 .mark-danger { color: var(--icon-danger); }
 .mark-highlight { color: var(--icon-highlight); }
-/* redirect: the arrow sits 4px after the link text, on its line, in the link colour (the Icon takes currentColor). */
-.redirectIcon { margin-inline-start: var(--space-xxsmall); vertical-align: text-bottom; }
+/* redirect arrow and popupTrigger open_in_full: 16px, 4px after the link text, on its line, in the link colour
+   (the Icon takes currentColor). */
+.trailIcon { margin-inline-start: var(--space-xxsmall); vertical-align: text-bottom; }

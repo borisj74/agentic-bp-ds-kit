@@ -455,23 +455,20 @@ export function CellTreeDemo({ size, checkbox = false, showLines = true, icons =
   );
 }
 
-// Playground harness: the reference table's cell types in one Table. The table keeps the picked radio row, the
-// switches and the open popup, so every control works. Not a kit piece.
+// Playground harness: the reference table's cell types in one Table. The table keeps the switches and the open
+// popup, so every control works. Not a kit piece.
 const SUBSCRIPTIONS = [
   { id: "basic", plan: "Basic", parent: "Acme Inc.", start: "2024-03-12", status: ["Active", "success"], renew: true, seats: 12, contacts: ["Maya Chen", "Noah Williams"], note: "Billed monthly." },
   { id: "pro", plan: "Pro", parent: "Globex", start: "2024-07-01", status: ["Pending", "warning"], renew: false, seats: 1250, contacts: ["Iris Okafor"], note: "Billed yearly in advance. Usage above the plan is billed monthly in arrears at the list price." },
   { id: "legacy", plan: "Legacy", parent: "Initech", start: "2023-11-20", status: ["Discarded", "neutral"], renew: false, seats: 3, contacts: ["Jordan Lee", "Maya Chen", "Ada Jones"], note: "Moved to Pro." },
 ] as const;
 export function CellTypesDemo({ size }: { size?: CellSize }) {
-  const [picked, setPicked] = useState("basic");
   const [renew, setRenew] = useState<string[]>(SUBSCRIPTIONS.filter((s) => s.renew).map((s) => s.id));
   const [popup, setPopup] = useState<(typeof SUBSCRIPTIONS)[number] | null>(null);
-  const name = useId();
   const rows: TableRow[] = SUBSCRIPTIONS.map((s) => ({
     id: s.id,
-    pick: <Cell type="radio" size={size} name={name} label={`Default plan ${s.plan}`} checked={picked === s.id} onCheckedChange={() => setPicked(s.id)} />,
     plan: s.plan,
-    parent: <Cell type="linkSecondary" size={size} label={s.parent} href="#" />,
+    parent: <Cell type="link" size={size} label={s.parent} href="#" />,
     start: <Cell type="date" size={size} value={s.start} />,
     status: <Cell type="status" size={size} label={s.status[0]} intent={s.status[1]} />,
     renew: <Cell type="switch" size={size} label={`Auto-renew ${s.plan}`} checked={renew.includes(s.id)} onCheckedChange={(on) => setRenew((r) => (on ? [...r, s.id] : r.filter((id) => id !== s.id)))} />,
@@ -485,7 +482,7 @@ export function CellTypesDemo({ size }: { size?: CellSize }) {
       <Table
         size={size} caption="Subscriptions"
         columns={[
-          { key: "pick", header: "Default", width: "1%" }, { key: "plan", header: "Plan", emphasis: true }, { key: "parent", header: "Account" },
+          { key: "plan", header: "Plan", emphasis: true }, { key: "parent", header: "Account" },
           { key: "start", header: "Start" }, { key: "status", header: "Status" }, { key: "renew", header: "Auto-renew" },
           { key: "seats", header: "Seats", alignment: "end" }, { key: "contacts", header: "Contacts" }, { key: "note", header: "Note", width: "320px" },
           { key: "usage", header: "Usage" },

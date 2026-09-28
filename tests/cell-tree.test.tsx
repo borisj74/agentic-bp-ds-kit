@@ -3,18 +3,18 @@ import { describe, expect, it, vi } from "vitest";
 import { Cell } from "@/ui/Cell/Cell";
 
 describe("Cell tree toggle", () => {
-  it("opens and closes with a chevron by default", () => {
-    const { container } = render(<Cell type="tree" label="Acme Holdings" expanded={false} onExpandedChange={() => {}} />);
+  it("opens and closes with a chevron for treeToggle chevron", () => {
+    const { container } = render(<Cell type="tree" label="Acme Holdings" treeToggle="chevron" expanded={false} onExpandedChange={() => {}} />);
     const toggle = screen.getByRole("button", { name: "Expand Acme Holdings" });
     expect(toggle).toHaveAttribute("aria-expanded", "false");
     expect(container.querySelector(".box")).toBeNull();
     expect(container.querySelector(".material-symbols-outlined")?.textContent).toBe("chevron_right");
   });
 
-  it("draws the outlined square with add or remove for treeToggle box", () => {
+  it("draws the outlined square with add or remove by default (treeToggle box)", () => {
     const onExpandedChange = vi.fn();
     const { container, rerender } = render(
-      <Cell type="tree" label="Acme Holdings" treeToggle="box" expanded={false} onExpandedChange={onExpandedChange} />,
+      <Cell type="tree" label="Acme Holdings" expanded={false} onExpandedChange={onExpandedChange} />,
     );
     const box = container.querySelector("button.box")!;
     expect(box).toHaveAttribute("aria-expanded", "false");
