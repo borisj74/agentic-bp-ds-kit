@@ -74,7 +74,7 @@
         "disabled": "boolean?",
         "hideLabel": "boolean?"
       },
-      "note": "Two to six. description and badge show in card layout. hideLabel keeps an option's label for screen readers only and shows the bare circle (list layout); the radio Cell uses it with one option per table row."
+      "note": "Two to six. description and badge show in card layout. hideLabel keeps an option's label for screen readers only and shows the bare circle (list layout), for a choice whose row already says it."
     },
     "onChange": {
       "type": "function",
@@ -92,7 +92,7 @@
     "Do not use to switch page panels.",
     "Do not use an unstyled native radio.",
     "Do not use raw hex.",
-    "Do not use hideLabel where people need to read the choice. It is for a radio whose row already says it, like the radio Cell in a table."
+    "Do not use hideLabel where people need to read the choice. It is for a radio whose row already says it, like a pick column in a table."
   ],
   "a11y": [
     "fieldset with a legend that names the group.",
@@ -300,7 +300,7 @@
     },
     {
       "title": "Hidden option label",
-      "usage": "hideLabel shows the bare circle and keeps the label for screen readers, like the radio Cell in a table row.",
+      "usage": "hideLabel shows the bare circle and keeps the label for screen readers, for a radio whose row already says it.",
       "items": [
         {
           "props": {

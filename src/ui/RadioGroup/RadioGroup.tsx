@@ -98,7 +98,7 @@ export function RadioGroup({
                   {o.description && <span className={styles.description}>{o.description}</span>}
                 </span>
               ) : (
-                // hideLabel: a bare circle whose label only screen readers hear, like the radio Cell in a table row.
+                // hideLabel: a bare circle whose label only screen readers hear, for a row that already says the choice.
                 <span className={o.hideLabel ? styles.srOnly : styles.label}>{o.label}</span>
               )}
               {card && control}
