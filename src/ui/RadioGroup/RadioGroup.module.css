@@ -8,6 +8,22 @@
 .options { clear: both; display: grid; gap: var(--gap); }
 .horizontal { display: flex; flex-wrap: wrap; column-gap: var(--space-large); }
 
+/* Start: the legend sits in the same 160px column as a field's label, right-aligned and level with the first
+   option, and the options and message line up with the fields beside them. */
+.startLabel .legend {
+  box-sizing: border-box; display: flex; align-items: center; justify-content: flex-end;
+  width: var(--input-label-width); min-height: var(--circle); margin: 0; padding-inline-start: var(--space-small); text-align: end;
+}
+/* clear: none, or the options would drop under the floated legend instead of sitting beside it. */
+.startLabel .options, .startLabel .message { clear: none; margin-inline-start: calc(var(--input-label-width) + var(--space-small)); }
+
+/* 480px: a 160px column leaves too little room for the options, so a start legend goes back on top. The box
+   being measured is the Form around the group, which is a size container. */
+@container (max-width: 480px) {
+  .startLabel .legend { display: block; width: 100%; min-height: 0; margin-block-end: var(--gap); padding-inline-start: 0; text-align: start; }
+  .startLabel .options, .startLabel .message { margin-inline-start: 0; }
+}
+
 .option { position: relative; display: inline-flex; align-items: center; gap: var(--space-xsmall); cursor: pointer; }
 .input { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 

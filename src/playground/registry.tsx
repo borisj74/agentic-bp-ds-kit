@@ -2074,7 +2074,7 @@ export const registry: Record<string, Entry> = {
     extras: { message: { values: ["none", "hint", "error"], default: "none" } },
     normalize: ({ message, ...p }) =>
       message === "error" ? { ...p, error: "Select a billing cycle to continue." } : message === "hint" ? { ...p, hint: "You can change this later." } : p,
-    hint: "Switch size, orientation, layout and message. Descriptions and badges show in card layout.",
+    hint: "Switch size, orientation, layout, label position and message. Descriptions and badges show in card layout. Label position start moves the legend into the 160px label column beside the options.",
     card: <RadioGroup legend="Billing cycle" defaultValue="annual" options={[{ value: "monthly", label: "Monthly" }, { value: "annual", label: "Annual" }]} />,
   },
   Illustration: {

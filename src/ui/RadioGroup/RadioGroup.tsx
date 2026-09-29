@@ -1,6 +1,7 @@
 "use client";
 import { useId, useState } from "react";
 import { useDensitySize } from "../Density/Density";
+import { useLabelPosition, type FieldLabelPosition } from "../Form/FormContext";
 import { Badge, type BadgeIntent } from "../Badge/Badge";
 import styles from "./RadioGroup.module.css";
 
@@ -22,6 +23,7 @@ export interface RadioGroupProps {
   layout?: "list" | "card";
   disabled?: boolean;
   hideLegend?: boolean;
+  labelPosition?: FieldLabelPosition;
   legend: string;
   name?: string;
   value?: string;
@@ -38,6 +40,7 @@ export function RadioGroup({
   layout = "list",
   disabled = false,
   hideLegend = false,
+  labelPosition: ownLabelPosition,
   legend,
   name,
   value,
@@ -48,6 +51,8 @@ export function RadioGroup({
   onChange,
 }: RadioGroupProps) {
   const size = useDensitySize(ownSize);
+  // Own position first, then the Form around it, then top, the same order the kit fields follow.
+  const labelPosition = useLabelPosition(ownLabelPosition);
   const uid = useId();
   const groupName = name ?? uid;
   const controlled = value !== undefined;
@@ -59,7 +64,9 @@ export function RadioGroup({
 
   return (
     <fieldset
-      className={[styles.group, styles[size], card ? styles.card : "", error ? styles.error : ""].join(" ")}
+      className={[styles.group, styles[size], card ? styles.card : "", error ? styles.error : "", !hideLegend && labelPosition === "start" ? styles.startLabel : ""].join(" ")}
+      // Tells a Form with labels at the start that this group already sits in the label column.
+      data-label={hideLegend ? undefined : labelPosition}
       disabled={disabled}
       aria-invalid={error ? true : undefined}
       aria-describedby={messageId}
