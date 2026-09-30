@@ -8,11 +8,11 @@ import { useCopy } from "./useCopy";
 // The third entry is the use name: what the role is for in a product screen.
 const roles: readonly (readonly [string, string, string?])[] = [
   ["text-display", "Agentic BP DS"],
-  ["text-heading-xl", "Page title", "Page title"],
-  ["text-heading-lg", "Modal / Drawer title", "Modal / Drawer title"],
-  ["text-heading-md", "Section title", "Section title"],
-  ["text-heading-sm", "Field values / text", "Field values / text"],
-  ["text-heading-xs", "Field labels", "Field labels"],
+  ["text-heading-xl", "Page Title", "Page Title"],
+  ["text-heading-lg", "Modal / Drawer Title", "Modal / Drawer Title"],
+  ["text-heading-md", "Section Title", "Section Title"],
+  ["text-heading-sm", "Field Values / Text", "Field Values / Text"],
+  ["text-heading-xs", "Field Labels", "Field Labels"],
   ["text-title-xl", "Page title"],
   ["text-title-lg", "Modal, drawer or step title"],
   ["text-title-md", "Card or section title"],
