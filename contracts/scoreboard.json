@@ -8,7 +8,7 @@
       "type": "ScoreboardItem[]",
       "required": true,
       "itemShape": "{ id: string; title: string; metric: string; metadata?: string; badge?: string; trend?: { value: string; unit?: string; status?: \"success\" | \"danger\" | \"neutral\"; direction?: \"up\" | \"down\" | \"none\" }; chart?: { points: number[]; status?: \"success\" | \"danger\" | \"neutral\"; area?: boolean } }",
-      "note": "3 to 6 cards. The metric is set in text-ref-metric (16px semibold), so it fits the card with a badge beside the title; the 24px text-metric is for a number that stands alone. badge is a neutral Badge next to the title. trend status is good (success), bad (danger) or neutral; direction none drops the arrow and goes with status neutral. chart points are drawn left to right; its status defaults to the trend's, and area (default true) fills under the line."
+      "note": "3 to 6 cards. The metric is set in text-ref-metric (16px semibold), so it fits the card with a badge beside the title. badge is a neutral Badge next to the title. trend status is good (success), bad (danger) or neutral; direction none drops the arrow and goes with status neutral. chart points are drawn left to right; its status defaults to the trend's, and area (default true) fills under the line."
     },
     "selectable": {
       "type": "boolean",
