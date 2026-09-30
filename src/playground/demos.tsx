@@ -66,7 +66,7 @@ import { Timeline } from "@/ui/Timeline/Timeline";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 
 export type ModalDemoContent = "text" | "form";
-export type DrawerDemoContent = "details" | "form";
+export type DrawerDemoContent = "details" | "form" | "blocks";
 export type FormDemoContent = "fields" | "sections" | "details";
 
 const COUNTRIES = [
@@ -219,6 +219,21 @@ export function DrawerDemo({ content = "details", ...p }: Omit<DrawerProps, "ope
             <Select label="Role" options={[{ value: "billing", label: "Billing contact" }, { value: "admin", label: "Admin" }]} defaultValue="billing" />
             <Textarea label="Notes" name="notes" size="sm" placeholder="Add a note for your team" />
           </Form>
+        ) : content === "blocks" ? (
+          // Layout blocks measure the drawer: one column in narrow, medium and wide, side by side in extended.
+          <div className="layout-stack">
+            <Scoreboard items={RECORD_NUMBERS} label="Invoice numbers" />
+            <div className="layout-split">
+              <Section title="Invoice">
+                <FormDisplay label="Invoice" value="INV-1042" />
+                <FormDisplay label="Amount" value="$2,500.00" />
+              </Section>
+              <Section title="Account">
+                <FormDisplay label="Account" value="Northwind Traders" />
+                <FormDisplay label="Status" value="Pending" />
+              </Section>
+            </div>
+          </div>
         ) : (
           <div>
             <FormDisplay label="Invoice" value="INV-1042" />

@@ -43,6 +43,8 @@
 .layout-split--primary > :first-child { grid-column: span var(--layout-split-primary); }
 .layout-split--primary > :last-child { grid-column: span var(--layout-split-secondary); }
 .layout-split--thirds > * { grid-column: span var(--layout-split-third); }
+/* Four is the most a form or record view holds. */
+.layout-split--quarters > * { grid-column: span var(--layout-split-quarter); }
 
 .layout-container-sm, .layout-container-md, .layout-container-lg, .layout-container-xl, .layout-container-2xl {
   width: 100%; margin-inline: auto; padding-inline: var(--layout-margin-md);
@@ -58,11 +60,12 @@
   .layout-workspace > aside { display: none; }
   .layout-metrics--fixed-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .layout-metrics--fixed-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .layout-split--quarters > * { grid-column: span var(--layout-split-half); }
 }
 @media (max-width: 640px) {
   /* No room for a nav column. The AppShell pattern slides the nav in over the page instead. */
   .layout-canvas > aside:first-child { display: none; }
-  .layout-split > *, .layout-split--primary > :first-child, .layout-split--primary > :last-child, .layout-split--thirds > * { grid-column: 1 / -1; }
+  .layout-split > *, .layout-split--primary > :first-child, .layout-split--primary > :last-child, .layout-split--thirds > *, .layout-split--quarters > * { grid-column: 1 / -1; }
   .layout-metrics--fixed-3, .layout-metrics--fixed-4, .layout-metrics--fixed-5 { grid-template-columns: minmax(0, 1fr); }
 }
 
@@ -74,10 +77,11 @@
   .layout-workspace > aside { display: none; }
   .layout-metrics--fixed-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .layout-metrics--fixed-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .layout-split--quarters > * { grid-column: span var(--layout-split-half); }
 }
 @container (max-width: 640px) {
   /* No room for a nav column. The AppShell pattern slides the nav in over the page instead. */
   .layout-canvas > aside:first-child { display: none; }
-  .layout-split > *, .layout-split--primary > :first-child, .layout-split--primary > :last-child, .layout-split--thirds > * { grid-column: 1 / -1; }
+  .layout-split > *, .layout-split--primary > :first-child, .layout-split--primary > :last-child, .layout-split--thirds > *, .layout-split--quarters > * { grid-column: 1 / -1; }
   .layout-metrics--fixed-3, .layout-metrics--fixed-4, .layout-metrics--fixed-5 { grid-template-columns: minmax(0, 1fr); }
 }

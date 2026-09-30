@@ -1343,6 +1343,7 @@
   --layout-split-primary: 8;
   --layout-split-secondary: 4;
   --layout-split-third: 4;
+  --layout-split-quarter: 3;
   --z-overlay: 1000;
   --z-toast: 1100;
   --target-min: 24px;

@@ -1220,8 +1220,8 @@ export const registry: Record<string, Entry> = {
     preview: { title: "Invoice INV-1042" },
     hide: ["open"],
     snippet: { open: "{open}", onClose: "{close}" },
-    extras: { content: { values: ["details", "form"], default: "details" } },
-    hint: "Click the button to open it. Switch size and content. Escape, the close button, or a click behind it closes.",
+    extras: { content: { values: ["details", "form", "blocks"], default: "details" } },
+    hint: "Click the button to open it. Switch size and content; blocks shows layouts measuring the drawer. Escape, the close button, or a click behind it closes.",
     // Four long size chips need more room than the default panel.
     panelWidth: 300,
     card: <Button>Open drawer</Button>,

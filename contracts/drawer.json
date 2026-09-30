@@ -2,7 +2,7 @@
   "name": "Drawer",
   "path": "src/ui/Drawer/Drawer.tsx",
   "intent": "A panel that slides in from the right edge for a detail view or an edit form about something on the page, while the page stays in view behind it.",
-  "usage": "Use Drawer to show or edit one record next to the list it came from: a detail view, an edit form, related context. It is one component: pass open, title, onClose and the content as children. size picks the width: narrow 360 for quick views, medium 460 for forms, wide 590 for rich details, extended 1100 for side-by-side work. footer holds kit Buttons, size sm, at the end: subtle first, one strong brand Button last. Escape, the close button or a click on the page behind it closes it. For a decision that must block the page, use Modal or AlertDialog. See contracts/drawer.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page.",
+  "usage": "Use Drawer to show or edit one record next to the list it came from: a detail view, an edit form, related context. It is one component: pass open, title, onClose and the content as children. size picks the width: narrow 360 for quick views, medium 460 for forms, wide 590 for rich details, extended 1100 for side-by-side work. footer holds kit Buttons, size sm, at the end: subtle first, one strong brand Button last. Escape, the close button or a click on the page behind it closes it. The body is the box its content measures, not the window: inside narrow, medium and wide drawers, which are all under the kit's 640 break, .layout-split, the fixed metrics rows and Scoreboard go to one column or their phone shape on their own, and extended keeps columns. Stack blocks in the body with .layout-stack; the drawer has its own 20px padding, so do not put .layout-content inside it. For a decision that must block the page, use Modal or AlertDialog. See contracts/drawer.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page.",
   "props": {
     "open": {
       "type": "boolean",
@@ -40,7 +40,7 @@
     "children": {
       "type": "ReactNode",
       "required": true,
-      "note": "The body: FormDisplay rows, a Form, a Table or text."
+      "note": "The body: FormDisplay rows, a Form, a Table or text. More than one block goes in a .layout-stack."
     },
     "footer": {
       "type": "ReactNode",
@@ -55,6 +55,7 @@
     "Do not use it for main navigation. Use AppNav.",
     "Do not open a drawer from inside another drawer.",
     "Do not use it for a decision that must block the page. Use Modal or AlertDialog.",
+    "Do not put .layout-content inside it, and do not force columns in a narrow or medium drawer. The body has its own padding and layouts inside measure the drawer.",
     "Do not invent a Sheet, SidePanel, DrawerHeader or DrawerFooter. Use Drawer.",
     "Do not use raw hex."
   ],
@@ -93,6 +94,26 @@
           "props": {
             "size": "extended",
             "title": "Compare proposals"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Blocks inside",
+      "usage": "Layouts measure the drawer, not the window. The same blocks are one column in a narrow drawer and side by side in an extended one.",
+      "items": [
+        {
+          "props": {
+            "size": "narrow",
+            "title": "Invoice INV-1042",
+            "content": "blocks"
+          }
+        },
+        {
+          "props": {
+            "size": "extended",
+            "title": "Invoice INV-1042",
+            "content": "blocks"
           }
         }
       ]

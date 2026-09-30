@@ -27,7 +27,11 @@
 .close { flex: none; align-self: flex-start; }
 
 /* Figma body: 20px padding; it scrolls when the content is tall. */
+/* The body is the box its content measures. The drawer is drawn outside the app frame, so without this a layout
+   inside it would answer to the window: a split would keep its columns in a 360 drawer. Narrow, medium and wide
+   are all under the kit's 640 break, so layouts inside go to one column; extended keeps its columns. */
 .body {
+  container-type: inline-size;
   flex: 1; min-height: 0; overflow-y: auto; padding: var(--space-xxsmall) var(--space-large) var(--space-large);
   font-size: var(--font-size-small); line-height: var(--line-height-normal); color: var(--text-neutral-strong);
 }

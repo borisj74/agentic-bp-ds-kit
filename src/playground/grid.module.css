@@ -17,7 +17,7 @@
 .dMain { display: grid; grid-template-rows: 24px 1fr 1fr; gap: var(--space-xxsmall); padding: var(--space-xxsmall); min-width: 0; }
 .dPageHeader { composes: dBox; justify-items: start; padding-inline: var(--space-xsmall); border-bottom: var(--border-divider) solid var(--border-neutral-subtle); }
 .dMetrics { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-xxsmall); }
-.dSplit { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-xxsmall); }
+.dSplit { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-xxsmall); }
 .dCell { composes: dBox; background: var(--bg-neutral-subtle); border-radius: var(--radius-small); color: var(--text-neutral-subtle); }
 .dRail { composes: dBox; border-left: var(--border-divider) solid var(--border-neutral-subtle); }
 .legend { margin: 0 0 var(--space-small); font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); }

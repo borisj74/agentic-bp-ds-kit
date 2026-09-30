@@ -76,7 +76,8 @@ const snippet = `<div className="layout-app">
       <main className="layout-content">
         {/* page header, then content blocks */}
         <section className="layout-metrics layout-metrics--fixed-5">…</section>
-        <section className="layout-split layout-split--thirds">
+        <section className="layout-split layout-split--quarters">
+          <div className="layout-stack">…</div>
           <div className="layout-stack">…</div>
           <div className="layout-stack">…</div>
           <div className="layout-stack">…</div>
@@ -144,14 +145,14 @@ export function GridFoundation() {
                   <div className={styles.dMain}>
                     <div className={styles.dPageHeader}>Page header</div>
                     <div className={styles.dMetrics}>{[1, 2, 3, 4, 5].map((n) => <span key={n} className={styles.dCell}>{n}</span>)}</div>
-                    <div className={styles.dSplit}>{[1, 2, 3].map((n) => <span key={n} className={styles.dCell}>{n}</span>)}</div>
+                    <div className={styles.dSplit}>{[1, 2, 3, 4].map((n) => <span key={n} className={styles.dCell}>{n}</span>)}</div>
                   </div>
                   <div className={styles.dRail}>Page rail · drawer</div>
                 </div>
                 <div className={styles.dShell}>BP AI</div>
               </div>
             </div>
-            <p className={styles.legend}>Dashed: shell panels that come in from off canvas. The rows show the most slots: five on a dashboard, three on a form or record.</p>
+            <p className={styles.legend}>Dashed: shell panels that come in from off canvas. The rows show the most slots: five on a dashboard, four on a form or record.</p>
             <div className={styles.codeWrap}>
               <pre className={styles.code} tabIndex={0} role="region" aria-label="Code">{snippet}</pre>
               <span className={styles.codeCopy}>
@@ -203,7 +204,7 @@ export function GridFoundation() {
 
           <section className={styles.section}>
             <Head title="Content splits" prefix=".layout-split*" />
-            <p className={styles.lead}>Panels inside <code>.layout-content</code>. Primary is the default table plus activity layout. Form and record views hold up to three slots.</p>
+            <p className={styles.lead}>Panels inside <code>.layout-content</code>. Primary is the default table plus activity layout. Form and record views hold up to four slots.</p>
             <p className={styles.label}>.layout-split--primary</p>
             <div className={styles.demo}>
               <div className="layout-split layout-split--primary"><div className={styles.cell}>Main · table</div><div className={styles.cell}>Aside · activity</div></div>
@@ -215,6 +216,10 @@ export function GridFoundation() {
             <p className={styles.label}>.layout-split--thirds</p>
             <div className={styles.demo}>
               <div className="layout-split layout-split--thirds"><div className={styles.cell}>1</div><div className={styles.cell}>2</div><div className={styles.cell}>3</div></div>
+            </div>
+            <p className={styles.label}>.layout-split--quarters</p>
+            <div className={styles.demo}>
+              <div className="layout-split layout-split--quarters">{[1, 2, 3, 4].map((n) => <div key={n} className={styles.cell}>{n}</div>)}</div>
             </div>
           </section>
 
