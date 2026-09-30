@@ -2,17 +2,25 @@
    Media queries use literal px because CSS vars cannot appear in media queries:
    1024px = --grid-breakpoint-md, 640px = --grid-breakpoint-sm. */
 
-.layout-app { display: grid; grid-template-columns: var(--layout-sidebar) minmax(0, 1fr); min-height: 100vh; }
-.layout-app > aside { min-width: 0; background: var(--surface-sunken); border-right: var(--border-divider) solid var(--border-neutral-subtle); }
+/* The shell: the global header across the full width, then the row under it. */
+.layout-app { display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: 100vh; }
 
-.layout-canvas { display: grid; grid-template-rows: auto minmax(0, 1fr); min-width: 0; min-height: 0; }
-
+/* The global header: one bar, edge to edge, over the nav, the page and the assistant. */
 .layout-header {
   display: flex; align-items: center; justify-content: space-between; gap: var(--layout-gutter-md);
   padding: var(--layout-gutter-md) var(--layout-margin-md);
   border-bottom: var(--border-divider) solid var(--border-neutral-subtle);
 }
 
+/* The row under the header: the app nav, the page, the assistant rail. The nav and the assistant belong to the
+   shell, not the page: they come in from off canvas at the start and end edges, so each aside takes the width of
+   what is in it while it is open and none while it is away. */
+.layout-canvas { display: flex; min-width: 0; min-height: 0; }
+.layout-canvas > aside { flex: none; min-width: 0; min-height: 0; }
+.layout-canvas > :not(aside) { flex: 1 1 auto; min-width: 0; min-height: 0; }
+
+/* The page: its content, and an optional page rail beside it. The rail is an inline drawer about the page
+   (an inspector, a detail), never the assistant. Under 1024px it goes; the kit Drawer opens it off canvas there. */
 .layout-workspace { display: grid; grid-template-columns: minmax(0, 1fr) auto; min-height: 0; }
 .layout-workspace > aside { width: var(--layout-rail); min-height: 0; overflow: auto; border-left: var(--border-divider) solid var(--border-neutral-subtle); }
 
@@ -26,6 +34,8 @@
 .layout-metrics { display: grid; gap: var(--layout-gutter-md); grid-template-columns: repeat(auto-fit, minmax(var(--layout-metrics-min), 1fr)); }
 .layout-metrics--fixed-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .layout-metrics--fixed-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+/* Five is the most a dashboard row holds. */
+.layout-metrics--fixed-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 
 /* Columns of Sections sit the same 24px apart as stacked ones, so a split reads as one grid of blocks. */
 .layout-split { display: grid; gap: var(--layout-gutter-lg); grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr)); }
@@ -47,12 +57,13 @@
   .layout-workspace { grid-template-columns: minmax(0, 1fr); }
   .layout-workspace > aside { display: none; }
   .layout-metrics--fixed-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .layout-metrics--fixed-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 640px) {
-  .layout-app { grid-template-columns: minmax(0, 1fr); }
-  .layout-app > aside { display: none; }
+  /* No room for a nav column. The AppShell pattern slides the nav in over the page instead. */
+  .layout-canvas > aside:first-child { display: none; }
   .layout-split > *, .layout-split--primary > :first-child, .layout-split--primary > :last-child, .layout-split--thirds > * { grid-column: 1 / -1; }
-  .layout-metrics--fixed-3, .layout-metrics--fixed-4 { grid-template-columns: minmax(0, 1fr); }
+  .layout-metrics--fixed-3, .layout-metrics--fixed-4, .layout-metrics--fixed-5 { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* The same two steps again, against the box the layout is in rather than the window. A frame can be a phone-width
@@ -62,10 +73,11 @@
   .layout-workspace { grid-template-columns: minmax(0, 1fr); }
   .layout-workspace > aside { display: none; }
   .layout-metrics--fixed-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .layout-metrics--fixed-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @container (max-width: 640px) {
-  .layout-app { grid-template-columns: minmax(0, 1fr); }
-  .layout-app > aside { display: none; }
+  /* No room for a nav column. The AppShell pattern slides the nav in over the page instead. */
+  .layout-canvas > aside:first-child { display: none; }
   .layout-split > *, .layout-split--primary > :first-child, .layout-split--primary > :last-child, .layout-split--thirds > * { grid-column: 1 / -1; }
-  .layout-metrics--fixed-3, .layout-metrics--fixed-4 { grid-template-columns: minmax(0, 1fr); }
+  .layout-metrics--fixed-3, .layout-metrics--fixed-4, .layout-metrics--fixed-5 { grid-template-columns: minmax(0, 1fr); }
 }

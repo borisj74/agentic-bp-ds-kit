@@ -3,14 +3,19 @@
 # Rule (A1d): component sizes (heights, widths, rows, nodes) alias ref/size and gaps/padding alias ref/space, like
 # Foundations controls and icons. Both follow [data-density]; Default values are the same on both ramps.
 # not in Figma: 12 columns, 640 / 1024 widths, and the layout roles.
+# K1 (review round 1): 48 is a new step on both ladders and 40 stays: gutter 2xl and margin xl. Margin 2xl is 64,
+# the page inset for wide, high-resolution screens.
 grid/columns|12
 grid/gutter/sm|{ref/space/400}
 grid/gutter/md|{ref/space/500}
 grid/gutter/lg|{ref/space/700}
 grid/gutter/xl|{ref/space/1100}
+grid/gutter/2xl|{ref/space/1300}
 grid/margin/sm|{ref/space/500}
 grid/margin/md|{ref/space/700}
 grid/margin/lg|{ref/space/1100}
+grid/margin/xl|{ref/space/1300}
+grid/margin/2xl|{ref/space/1700}
 grid/width/sm|640px
 grid/width/md|1024px
 grid/width/lg|1280px
@@ -28,9 +33,12 @@ layout/gutter/sm|{grid/gutter/sm}
 layout/gutter/md|{grid/gutter/md}
 layout/gutter/lg|{grid/gutter/lg}
 layout/gutter/xl|{grid/gutter/xl}
+layout/gutter/2xl|{grid/gutter/2xl}
 layout/margin/sm|{grid/margin/sm}
 layout/margin/md|{grid/margin/md}
 layout/margin/lg|{grid/margin/lg}
+layout/margin/xl|{grid/margin/xl}
+layout/margin/2xl|{grid/margin/2xl}
 layout/container/sm|{grid/width/sm}
 layout/container/md|{grid/width/md}
 layout/container/lg|{grid/width/lg}

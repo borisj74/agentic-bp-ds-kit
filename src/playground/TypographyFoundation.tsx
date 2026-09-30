@@ -5,14 +5,15 @@ import master from "./master.module.css";
 import styles from "./typography.module.css";
 import { useCopy } from "./useCopy";
 
-const roles = [
+// The third entry is the use name: what the role is for in a product screen.
+const roles: readonly (readonly [string, string, string?])[] = [
   ["text-display", "Agentic BP DS"],
   ["text-metric", "$5,144,707.08"],
-  ["text-heading-xl", "Design system foundations"],
-  ["text-heading-lg", "Typography semantics"],
-  ["text-heading-md", "Build with intent"],
-  ["text-heading-sm", "Section title"],
-  ["text-heading-xs", "Subsection title"],
+  ["text-heading-xl", "Design system foundations", "Page title"],
+  ["text-heading-lg", "Typography semantics", "Modal / Drawer title"],
+  ["text-heading-md", "Build with intent", "Section title"],
+  ["text-heading-sm", "Acme Corporation", "Field values / text"],
+  ["text-heading-xs", "Account name", "Field labels"],
   ["text-title-xl", "Page title"],
   ["text-title-lg", "Modal, drawer or step title"],
   ["text-title-md", "Card or section title"],
@@ -31,7 +32,7 @@ const roles = [
   ["text-caption-strong", "Weekday or value label"],
   ["text-overline", "Section meta"],
   ["text-code", "invoice.lines.reduce((s, l) => s + l.amount, 0)"],
-] as const;
+];
 
 // BP Foundations reference names (Reference/…), each an alias of a role above (Label/Form: line height 120%, Label/Badge: 100%).
 const refs = [
@@ -72,11 +73,14 @@ function Head({ title, prefix }: { title: string; prefix: string }) {
 export function TypographyFoundation() {
   const [tab, setTab] = useState<"primitives" | "semantics">("primitives");
   const c = useCopy();
-  const Row = ({ k, value, children, style, className }: { k: string; value: string; children: React.ReactNode; style?: React.CSSProperties; className?: string }) => {
+  const Row = ({ k, value, use, children, style, className }: { k: string; value: string; use?: string; children: React.ReactNode; style?: React.CSSProperties; className?: string }) => {
     const done = c.copied === k;
     return (
       <button type="button" className={styles.row} onClick={() => c.copy(k, value)} aria-label={`Copy ${value}`}>
-        <span className={`${styles.key} ${done ? styles.copied : ""}`} aria-live="polite">{done ? "Copied" : k}</span>
+        <span className={`${styles.key} ${done ? styles.copied : ""}`} aria-live="polite">
+          {done ? "Copied" : k}
+          {use && <span className={styles.use}>{use}</span>}
+        </span>
         <span className={`${styles.sample} ${className ?? ""}`} style={style}>{children}</span>
       </button>
     );
@@ -109,7 +113,8 @@ export function TypographyFoundation() {
       {tab === "semantics" && (
         <>
           <Head title="Roles" prefix="text-display → text-code" />
-          {roles.map(([k, sample]) => <Row key={k} k={`.${k}`} value={k} className={k}>{sample}</Row>)}
+          <p className={styles.note}>Heading rows carry their use name: what each size is for in a product screen.</p>
+          {roles.map(([k, sample, use]) => <Row key={k} k={`.${k}`} value={k} use={use} className={k}>{sample}</Row>)}
           <Head title="BP reference names" prefix="text-ref-* → role" />
           {refs.map(([k, role, bp, sample]) => <Row key={k} k={`.${k} · ${bp} → ${role}`} value={k} className={k}>{sample}</Row>)}
         </>

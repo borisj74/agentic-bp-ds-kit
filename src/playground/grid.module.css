@@ -2,21 +2,25 @@
 .lead { margin: 0 0 var(--space-small); font-size: var(--font-size-small); color: var(--text-neutral); }
 .lead code { font-family: var(--font-mono); font-size: var(--font-size-xsmall); }
 
+/* The shell as a picture: the global header across the top, then the nav, the page and the assistant under it.
+   Dashed boxes are the shell's own panels, which come in from off canvas. */
 .diagram {
-  display: grid; grid-template-columns: 22% minmax(0, 1fr); gap: var(--space-xxsmall);
-  height: 168px; padding: var(--space-xsmall); margin-bottom: var(--space-small);
+  display: grid; grid-template-rows: 28px minmax(0, 1fr); gap: var(--space-xxsmall);
+  height: 232px; padding: var(--space-xsmall); margin-bottom: var(--space-small);
   background: var(--bg-neutral-subtle); border-radius: var(--radius-large);
 }
-.dBox { display: grid; place-items: center; font-size: var(--font-size-xsmall); color: var(--text-neutral); }
-.dNav { composes: dBox; background: var(--bg-neutral); border-radius: var(--radius-medium); }
-.dCanvas { display: grid; grid-template-rows: 32px minmax(0, 1fr); background: var(--surface-flat); border-radius: var(--radius-medium); overflow: hidden; }
-.dHeader { composes: dBox; border-bottom: var(--border-divider) solid var(--border-neutral-subtle); }
-.dWorkspace { display: grid; grid-template-columns: minmax(0, 1fr) 28%; min-height: 0; }
-.dMain { display: grid; grid-template-rows: 1fr 1fr; gap: var(--space-xxsmall); padding: var(--space-xxsmall); }
-.dMetrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-xxsmall); }
-.dSplit { display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-xxsmall); }
-.dCell { composes: dBox; background: var(--bg-neutral-subtle); border-radius: var(--radius-small); font-size: 11px; color: var(--text-neutral-subtle); }
+.dBox { display: grid; place-items: center; text-align: center; font-size: var(--font-size-xsmall); color: var(--text-neutral); }
+.dHeader { composes: dBox; background: var(--bg-neutral); border-radius: var(--radius-medium); }
+.dBody { display: grid; grid-template-columns: 12% minmax(0, 1fr) 14%; gap: var(--space-xxsmall); min-height: 0; }
+.dShell { composes: dBox; border: var(--border-width-thin) dashed var(--border-neutral-strong); border-radius: var(--radius-medium); }
+.dPage { display: grid; grid-template-columns: minmax(0, 1fr) 22%; background: var(--surface-flat); border-radius: var(--radius-medium); overflow: hidden; min-height: 0; }
+.dMain { display: grid; grid-template-rows: 24px 1fr 1fr; gap: var(--space-xxsmall); padding: var(--space-xxsmall); min-width: 0; }
+.dPageHeader { composes: dBox; justify-items: start; padding-inline: var(--space-xsmall); border-bottom: var(--border-divider) solid var(--border-neutral-subtle); }
+.dMetrics { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-xxsmall); }
+.dSplit { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-xxsmall); }
+.dCell { composes: dBox; background: var(--bg-neutral-subtle); border-radius: var(--radius-small); color: var(--text-neutral-subtle); }
 .dRail { composes: dBox; border-left: var(--border-divider) solid var(--border-neutral-subtle); }
+.legend { margin: 0 0 var(--space-small); font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); }
 
 .codeWrap { position: relative; }
 .code { font-family: var(--font-mono); font-size: var(--font-size-xsmall); line-height: 1.6; background: var(--bg-neutral-subtle); padding: var(--space-medium); border-radius: var(--radius-large); overflow-x: auto; margin: 0; color: var(--text-neutral-strong); }

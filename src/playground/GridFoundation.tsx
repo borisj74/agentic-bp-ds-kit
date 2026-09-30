@@ -22,10 +22,12 @@ const semanticRows: Section[] = [
   { title: "Gutter", prefix: "--layout-gutter-*", note: "Space between columns and cards.", rows: [
     { token: "layout-gutter-sm", value: "12px", visual: "var" }, { token: "layout-gutter-md", value: "16px", visual: "var" },
     { token: "layout-gutter-lg", value: "24px", visual: "var" }, { token: "layout-gutter-xl", value: "40px", visual: "var" },
+    { token: "layout-gutter-2xl", value: "48px", visual: "var" },
   ] },
-  { title: "Margin", prefix: "--layout-margin-*", note: "Page inset around content.", rows: [
+  { title: "Margin", prefix: "--layout-margin-*", note: "Page inset around content. 2xl is for wide, high-resolution screens.", rows: [
     { token: "layout-margin-sm", value: "16px", visual: "var" }, { token: "layout-margin-md", value: "24px", visual: "var" },
-    { token: "layout-margin-lg", value: "40px", visual: "var" },
+    { token: "layout-margin-lg", value: "40px", visual: "var" }, { token: "layout-margin-xl", value: "48px", visual: "var" },
+    { token: "layout-margin-2xl", value: "64px", visual: "var" },
   ] },
   { title: "Containers", prefix: ".layout-container-*", note: "Centered max-width shells for docs and marketing. Prefer the product patterns above for app screens.", rows: [
     { token: "layout-container-sm", value: "640px", visual: "fraction", frac: frac(640) },
@@ -41,10 +43,12 @@ const primitiveRows: Section[] = [
   { title: "Gutters", prefix: "--grid-gutter-*", rows: [
     { token: "grid-gutter-sm", value: "12px", visual: "var" }, { token: "grid-gutter-md", value: "16px", visual: "var" },
     { token: "grid-gutter-lg", value: "24px", visual: "var" }, { token: "grid-gutter-xl", value: "40px", visual: "var" },
+    { token: "grid-gutter-2xl", value: "48px", visual: "var" },
   ] },
   { title: "Margins", prefix: "--grid-margin-*", rows: [
     { token: "grid-margin-sm", value: "16px", visual: "var" }, { token: "grid-margin-md", value: "24px", visual: "var" },
-    { token: "grid-margin-lg", value: "40px", visual: "var" },
+    { token: "grid-margin-lg", value: "40px", visual: "var" }, { token: "grid-margin-xl", value: "48px", visual: "var" },
+    { token: "grid-margin-2xl", value: "64px", visual: "var" },
   ] },
   { title: "Widths", prefix: "--grid-width-*", rows: [640, 1024, 1280, 1440, 1920].map((px, i) => ({
     token: `grid-width-${["sm", "md", "lg", "xl", "2xl"][i]}`, value: `${px}px`, visual: "fraction" as const, frac: frac(px),
@@ -55,29 +59,32 @@ const primitiveRows: Section[] = [
 ];
 
 const patterns = [
-  ["App shell", "layout-app", "Fixed product nav plus a fluid canvas. The first layout every product screen uses."],
-  ["Canvas", "layout-canvas", "Header bar over a fill-height body. Lives in the app shell canvas column."],
-  ["Workspace", "layout-workspace", "Primary content plus an optional context rail for an assistant, inspector, or detail."],
-  ["Content", "layout-content", "Scrollable body with a section stack and page inset."],
+  ["App shell", "layout-app", "The global header across the full width, then the canvas row under it. The first layout every product screen uses."],
+  ["Header", "layout-header", "The global header bar: edge to edge, over the nav, the page and the assistant."],
+  ["Canvas", "layout-canvas", "The row under the header: app nav, page, assistant. The nav and the assistant come in from off canvas."],
+  ["Workspace", "layout-workspace", "The page content plus an optional page rail: an inline drawer about the page, never the assistant."],
+  ["Content", "layout-content", "Scrollable page body: the page header, then a stack of content blocks, with the page inset."],
   ["Stack", "layout-stack", "A column of Sections inside another layout, such as a split side. Same gap, no inset."],
-  ["Metrics", "layout-metrics", "KPI and summary card strip. Use --fixed-3 or --fixed-4 when the count is known."],
-  ["Header", "layout-header", "Title cluster and actions row for the canvas top bar."],
+  ["Metrics", "layout-metrics", "KPI and summary card strip. Use --fixed-3, --fixed-4 or --fixed-5 when the count is known."],
 ] as const;
 
 const snippet = `<div className="layout-app">
-  <aside>{/* nav */}</aside>
+  <header className="layout-header">{/* global header, full width */}</header>
   <div className="layout-canvas">
-    <header className="layout-header">…</header>
+    <aside>{/* app nav */}</aside>
     <div className="layout-workspace">
       <main className="layout-content">
-        <section className="layout-metrics layout-metrics--fixed-3">…</section>
-        <section className="layout-split layout-split--primary">
+        {/* page header, then content blocks */}
+        <section className="layout-metrics layout-metrics--fixed-5">…</section>
+        <section className="layout-split layout-split--thirds">
+          <div className="layout-stack">…</div>
           <div className="layout-stack">…</div>
           <div className="layout-stack">…</div>
         </section>
       </main>
-      <aside>{/* context rail */}</aside>
+      <aside>{/* page rail: an inline drawer */}</aside>
     </div>
+    <aside>{/* assistant */}</aside>
   </div>
 </div>`;
 
@@ -127,21 +134,24 @@ export function GridFoundation() {
       {tab === "semantics" ? (
         <>
           <section className={styles.section}>
-            <Head title="Product composition" prefix="app → canvas → workspace → content" />
-            <p className={styles.lead}>Build product screens from these patterns instead of inventing per-page grids.</p>
+            <Head title="Product composition" prefix="app → header + canvas → workspace → content" />
+            <p className={styles.lead}>Build product screens from these patterns instead of inventing per-page grids. The global header spans the full width. The app nav and the assistant are part of the shell and come in from off canvas. The page is a page header plus content blocks; a rail on the page is a drawer, inline or off canvas, not the assistant.</p>
             <div className={styles.diagram} aria-hidden="true">
-              <div className={styles.dNav}>Nav</div>
-              <div className={styles.dCanvas}>
-                <div className={styles.dHeader}>Header</div>
-                <div className={styles.dWorkspace}>
+              <div className={styles.dHeader}>Global header</div>
+              <div className={styles.dBody}>
+                <div className={styles.dShell}>App nav</div>
+                <div className={styles.dPage}>
                   <div className={styles.dMain}>
-                    <div className={styles.dMetrics}><span className={styles.dCell} /><span className={styles.dCell} /><span className={styles.dCell} /></div>
-                    <div className={styles.dSplit}><span className={styles.dCell}>Main</span><span className={styles.dCell}>Aside</span></div>
+                    <div className={styles.dPageHeader}>Page header</div>
+                    <div className={styles.dMetrics}>{[1, 2, 3, 4, 5].map((n) => <span key={n} className={styles.dCell}>{n}</span>)}</div>
+                    <div className={styles.dSplit}>{[1, 2, 3].map((n) => <span key={n} className={styles.dCell}>{n}</span>)}</div>
                   </div>
-                  <div className={styles.dRail}>Rail</div>
+                  <div className={styles.dRail}>Page rail · drawer</div>
                 </div>
+                <div className={styles.dShell}>BP AI</div>
               </div>
             </div>
+            <p className={styles.legend}>Dashed: shell panels that come in from off canvas. The rows show the most slots: five on a dashboard, three on a form or record.</p>
             <div className={styles.codeWrap}>
               <pre className={styles.code} tabIndex={0} role="region" aria-label="Code">{snippet}</pre>
               <span className={styles.codeCopy}>
@@ -172,7 +182,8 @@ export function GridFoundation() {
 
           <section className={styles.section}>
             <Head title="Metrics" prefix=".layout-metrics" />
-            <p className={styles.lead}>KPI rows. Fixed variants keep equal columns. The default auto-fits from <code>--layout-metrics-min</code>.</p>
+            <p className={styles.lead}>KPI rows. Fixed variants keep equal columns. The default auto-fits from <code>--layout-metrics-min</code>. A dashboard row holds up to five slots.</p>
+            <p className={styles.label}>.layout-metrics--fixed-3</p>
             <div className={styles.demo}>
               <div className="layout-metrics layout-metrics--fixed-3">
                 <div className={styles.cell}>Revenue</div>
@@ -180,11 +191,19 @@ export function GridFoundation() {
                 <div className={styles.cell}>Overdue</div>
               </div>
             </div>
+            <p className={styles.label}>.layout-metrics--fixed-4</p>
+            <div className={styles.demo}>
+              <div className="layout-metrics layout-metrics--fixed-4">{[1, 2, 3, 4].map((n) => <div key={n} className={styles.cell}>{n}</div>)}</div>
+            </div>
+            <p className={styles.label}>.layout-metrics--fixed-5</p>
+            <div className={styles.demo}>
+              <div className="layout-metrics layout-metrics--fixed-5">{[1, 2, 3, 4, 5].map((n) => <div key={n} className={styles.cell}>{n}</div>)}</div>
+            </div>
           </section>
 
           <section className={styles.section}>
             <Head title="Content splits" prefix=".layout-split*" />
-            <p className={styles.lead}>Panels inside <code>.layout-content</code>. Primary is the default table plus activity layout.</p>
+            <p className={styles.lead}>Panels inside <code>.layout-content</code>. Primary is the default table plus activity layout. Form and record views hold up to three slots.</p>
             <p className={styles.label}>.layout-split--primary</p>
             <div className={styles.demo}>
               <div className="layout-split layout-split--primary"><div className={styles.cell}>Main · table</div><div className={styles.cell}>Aside · activity</div></div>

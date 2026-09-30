@@ -1279,9 +1279,9 @@ export const registry: Record<string, Entry> = {
   },
   Form: {
     // FormDemo fills the real Form with sample kit fields. content and message are playground-only. Keyed so defaults re-apply.
-    // Start labels and two columns need more room; narrow stages drop to one column on their own.
+    // Start labels and two or three columns need more room; narrow stages drop to one column on their own.
     render: ({ content, ...p }) => (
-      <div style={{ width: (p.columns === 2 ? 640 : 480) + (p.labelPosition === "start" ? 160 : 0), maxWidth: "100%" }}>
+      <div style={{ width: (p.columns === 3 ? 960 : p.columns === 2 ? 640 : 480) + (p.labelPosition === "start" ? 160 : 0), maxWidth: "100%" }}>
         <FormDemo key={JSON.stringify(p) + String(content)} {...(p as FormProps)} content={content as FormDemoContent | undefined} />
       </div>
     ),

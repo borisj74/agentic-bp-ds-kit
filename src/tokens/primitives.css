@@ -1124,6 +1124,7 @@
   --ref-space-1100: 40px;
   --ref-space-1200: 44px;
   --ref-space-1300: 48px;
+  --ref-space-1700: 64px;
   --ref-size-50: 1px;
   --ref-size-100: 2px;
   --ref-size-200: 4px;
@@ -1176,6 +1177,7 @@
   --ref-space-1100: 36px;
   --ref-space-1200: 40px;
   --ref-space-1300: 44px;
+  --ref-space-1700: 60px;
   --ref-size-400: 8px;
   --ref-size-500: 12px;
   --ref-size-600: 16px;
@@ -1213,6 +1215,7 @@
   --ref-space-1100: 44px;
   --ref-space-1200: 48px;
   --ref-space-1300: 52px;
+  --ref-space-1700: 68px;
   --ref-size-400: 16px;
   --ref-size-500: 16px;
   --ref-size-600: 20px;
@@ -1302,9 +1305,12 @@
   --grid-gutter-md: var(--ref-space-500);
   --grid-gutter-lg: var(--ref-space-700);
   --grid-gutter-xl: var(--ref-space-1100);
+  --grid-gutter-2xl: var(--ref-space-1300);
   --grid-margin-sm: var(--ref-space-500);
   --grid-margin-md: var(--ref-space-700);
   --grid-margin-lg: var(--ref-space-1100);
+  --grid-margin-xl: var(--ref-space-1300);
+  --grid-margin-2xl: var(--ref-space-1700);
   --grid-width-sm: 640px;
   --grid-width-md: 1024px;
   --grid-width-lg: 1280px;
@@ -1322,9 +1328,12 @@
   --layout-gutter-md: var(--grid-gutter-md);
   --layout-gutter-lg: var(--grid-gutter-lg);
   --layout-gutter-xl: var(--grid-gutter-xl);
+  --layout-gutter-2xl: var(--grid-gutter-2xl);
   --layout-margin-sm: var(--grid-margin-sm);
   --layout-margin-md: var(--grid-margin-md);
   --layout-margin-lg: var(--grid-margin-lg);
+  --layout-margin-xl: var(--grid-margin-xl);
+  --layout-margin-2xl: var(--grid-margin-2xl);
   --layout-container-sm: var(--grid-width-sm);
   --layout-container-md: var(--grid-width-md);
   --layout-container-lg: var(--grid-width-lg);

@@ -10,6 +10,9 @@
 .row:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: -2px; }
 .key { font-family: var(--font-mono); font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); }
 .copied { color: var(--text-success); }
+/* The use name under a role: what it is for. */
+.use { display: block; margin-top: var(--space-xxxsmall); font-family: var(--font-sans); color: var(--text-neutral-strong); }
+.note { margin: 0 0 var(--space-xsmall); font-size: var(--font-size-small); color: var(--text-neutral); }
 .sample { min-width: 0; overflow-wrap: anywhere; }
 .family { border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-large); padding: var(--space-medium); background: var(--surface-flat); display: grid; gap: var(--space-xsmall); }
 .mono { font-family: var(--font-mono); color: var(--text-neutral); }

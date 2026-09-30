@@ -74,6 +74,8 @@ ref/space/1000|36|32|40
 ref/space/1100|40|36|44
 ref/space/1200|44|40|48
 ref/space/1300|48|44|52
+# not in Figma: 64, past the Foundations ramp, for the wide page margin (grid/margin/2xl). Same 4px density steps.
+ref/space/1700|64|60|68
 # size primitives (Foundations `Scale : density`). Controls and icon sizes alias these.
 ref/size/50|1
 ref/size/100|2
