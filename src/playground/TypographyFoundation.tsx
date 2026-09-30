@@ -8,7 +8,6 @@ import { useCopy } from "./useCopy";
 // The third entry is the use name: what the role is for in a product screen.
 const roles: readonly (readonly [string, string, string?])[] = [
   ["text-display", "Agentic BP DS"],
-  ["text-metric", "$5,144,707.08"],
   ["text-heading-xl", "Page title", "Page title"],
   ["text-heading-lg", "Modal / Drawer title", "Modal / Drawer title"],
   ["text-heading-md", "Section title", "Section title"],
@@ -20,6 +19,7 @@ const roles: readonly (readonly [string, string, string?])[] = [
   ["text-title-sm", "Popover title"],
   ["text-title-xs", "Group header"],
   ["text-title-xxs", "Column header"],
+  ["text-metric", "$5,144,707.08"],
   ["text-body-lg", "Use semantic text styles in components so hierarchy stays consistent across the product."],
   ["text-body", "Body text carries the bulk of product copy. Keep size and leading on the semantic tokens."],
   ["text-body-sm", "Supporting copy for denser UI, tables, and helper text."],
