@@ -46,12 +46,12 @@ const refs = [
   ["text-ref-form-value", "body-lg", "Text/Form-value", "Acme Corporation"],
   ["text-ref-cell", "body", "Text/Cell", "Invoice INV-10482"],
   ["text-ref-alert", "body", "Text/Alert", "Your changes were saved."],
-  ["text-ref-caption", "caption", "Text/Caption", "Caption under a control"],
+  ["text-ref-caption", "caption", "Text/Caption", "Caption Under a Control"],
   ["text-ref-footnote", "caption", "Text/Footnote", "Prices exclude tax."],
-  ["text-ref-label-form", "label at 120% line height", "Label/Form", "Form label"],
-  ["text-ref-label-tab", "heading-xs", "Label/Tab", "Tab label"],
-  ["text-ref-label-button", "button-small", "Label/Button", "Button label"],
-  ["text-ref-label-badge", "caption-strong at 100% line height", "Label/Badge", "Badge label"],
+  ["text-ref-label-form", "label at 120% line height", "Label/Form", "Form Label"],
+  ["text-ref-label-tab", "heading-xs", "Label/Tab", "Tab Label"],
+  ["text-ref-label-button", "button-small", "Label/Button", "Button Label"],
+  ["text-ref-label-badge", "caption-strong at 100% line height", "Label/Badge", "Badge Label"],
 ] as const;
 
 const sizes = [["ref-font-size-100", 10], ["ref-font-size-200", 12], ["ref-font-size-300", 14], ["ref-font-size-400", 16], ["ref-font-size-500", 18], ["ref-font-size-600", 20], ["ref-font-size-700", 22], ["ref-font-size-800", 24], ["ref-font-size-900", 26]] as const;
