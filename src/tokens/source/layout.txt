@@ -29,6 +29,8 @@ grid/breakpoint/2xl|1920px
 layout/sidebar|224px
 layout/rail|352px
 layout/metrics-min|192px
+# K2: the widest one column of a record or form view gets: a 160 start label, a 12 gap and a 308 field.
+layout/column-max|480px
 layout/gutter/sm|{grid/gutter/sm}
 layout/gutter/md|{grid/gutter/md}
 layout/gutter/lg|{grid/gutter/lg}

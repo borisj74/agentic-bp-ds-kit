@@ -140,12 +140,13 @@ export function Master({ contract }: { contract: Contract }) {
             {hasControls && (<aside className={styles.panel} aria-label={`${contract.name} controls`}>
               {enums.map(([k, v]) => {
                 const id = `ctl-${k}`;
-                return k === "size" ? (
+                // Size and columns read as one row of chips (sm → lg, 1 → 3); number values keep their type.
+                return k === "size" || k === "columns" ? (
                   <div key={k} className={styles.group}>
                     <span id={id} className={styles.label}>{cap(words(k))}</span>
                     <div className={styles.segment} role="group" aria-labelledby={id}>
-                      {order(v.enum!).map((opt) => (
-                        <button key={opt} type="button" className={[styles.segBtn, state[k] === opt ? styles.segOn : ""].join(" ")} aria-pressed={state[k] === opt} onClick={() => set(k, opt)}>{opt}</button>
+                      {(k === "size" ? order(v.enum!) : v.enum!).map((opt) => (
+                        <button key={String(opt)} type="button" className={[styles.segBtn, state[k] === opt ? styles.segOn : ""].join(" ")} aria-pressed={state[k] === opt} onClick={() => set(k, opt)}>{opt}</button>
                       ))}
                     </div>
                   </div>

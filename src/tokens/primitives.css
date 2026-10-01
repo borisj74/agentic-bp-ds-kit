@@ -1324,6 +1324,7 @@
   --layout-sidebar: 224px;
   --layout-rail: 352px;
   --layout-metrics-min: 192px;
+  --layout-column-max: 480px;
   --layout-gutter-sm: var(--grid-gutter-sm);
   --layout-gutter-md: var(--grid-gutter-md);
   --layout-gutter-lg: var(--grid-gutter-lg);

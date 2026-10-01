@@ -379,6 +379,17 @@ const SECTION_SAMPLES: Record<string, ReactNode> = {
     </div>
   ),
   "{invoiceTable}": <Table size="sm" columns={INVOICE_COLUMNS} rows={INVOICES.slice(0, 3)} />,
+  // Loose rows for a Section with columns: they flow left to right.
+  "{columnRows}": (
+    <>
+      <FormDisplay label="Account name" value="Northwind Traders" labelPosition="start" />
+      <FormDisplay label="Account number" value="ACC-10482" labelPosition="start" />
+      <FormDisplay label="Billing contact" value="Maria Anders" labelPosition="start" />
+      <FormDisplay label="Account type" value="Customer" labelPosition="start" />
+      <FormDisplay label="Payment terms" value="Net 30" labelPosition="start" />
+      <FormDisplay label="Currency" value="USD" labelPosition="start" />
+    </>
+  ),
 };
 const sectionProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in SECTION_SAMPLES ? SECTION_SAMPLES[v] : v])) as unknown as SectionProps;
@@ -1307,7 +1318,7 @@ export const registry: Record<string, Entry> = {
         {...(p as Record<string, unknown>)}
         shell={shell !== false} notice={notice !== false} stage={String(stage ?? "desktop")}
         labels={labels === "top" ? "top" : "start"}
-        columns={columns === "3" ? 3 : columns === "1" ? 1 : 2}
+        columns={columns === 3 ? 3 : columns === 1 ? 1 : 2}
       />
     ),
     preview: {},
@@ -1320,10 +1331,9 @@ export const registry: Record<string, Entry> = {
     },
     extras: {
       labels: { values: ["start", "top"], default: "start" },
-      columns: { values: ["1", "2", "3"], default: "2" },
-      stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" },
+      stage: { values: ["desktop", "laptop", "tablet", "phone", "1920", "2560", "3008"], default: "desktop" },
     },
-    hint: "Fill in the new account: the name is the only field that has to be filled in, and Create in the bar saves every group at once. Fold a group away, open one of the three that start closed, and scroll: the name and the notice stay at the top while the fields pass under them. Labels switches the whole form between a label column at the start of each field and a label over it. Columns lays the fields out in one, two or three; three gives way to two when the page is too narrow for them. Stage narrows the box the frame lives in, so watch the two columns become one on a phone.",
+    hint: "Fill in the new account: the name is the only field that has to be filled in, and Create in the bar saves every group at once. Fold a group away, open one of the three that start closed, and scroll: the name and the notice stay at the top while the fields pass under them. Labels switches the whole form between a label column at the start of each field and a label over it. Columns lays the fields out in one, two or three; each column stops at 480px, so on a big screen the space past the last one stays empty, and the contacts table under the form keeps the full width. Three gives way to two when the page is too narrow for them. Stage 1920, 2560 and 3008 draws the frame at that screen's real width, scaled down to fit. Stage narrows the box the frame lives in, so watch the two columns become one on a phone.",
     block: true,
     wide: true,
     page: <FormPageDemo shell />,
@@ -1644,12 +1654,14 @@ export const registry: Record<string, Entry> = {
   },
   RecordPage: {
     // The pattern in the frame, driven the way a screen would drive it: the tab and the notice live outside it.
-    render: ({ sticky, shell, stage }) => <RecordPageDemo sticky={sticky !== false} shell={shell !== false} stage={String(stage ?? "desktop")} />,
+    render: ({ sticky, shell, stage, columns }) => (
+      <RecordPageDemo sticky={sticky !== false} shell={shell !== false} stage={String(stage ?? "desktop")} columns={columns === 3 ? 3 : columns === 1 ? 1 : 2} />
+    ),
     preview: { sticky: true },
-    hide: ["children", "header", "tabs", "notice", "toolbar", "summary", "onStickyChange", "label"],
+    hide: ["children", "header", "tabs", "notice", "toolbar", "summary", "onStickyChange", "labelPosition", "label"],
     toggles: { sticky: { label: "Top stays put", default: true }, shell: { label: "In the app frame", default: true } },
-    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
-    hint: "Stage narrows the box the frame lives in, so watch the record on a phone. Walk the record's tabs, fold a section of details away, dismiss the notice, and scroll: the name stays at the top and shrinks to one compact line whose trail ends in the record, while the tabs and the bar scroll away under it. Turn the frame off to see the record on its own.",
+    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone", "1920", "2560", "3008"], default: "desktop" } },
+    hint: "Columns lays the details out in one, two or three; each column stops at 480px, so on a big screen the space past the last one stays empty, and the related invoices under the details keep the full width. Stage 1920, 2560 and 3008 draws the frame at that screen's real width, scaled down to fit. Stage narrows the box the frame lives in, so watch the record on a phone. Walk the record's tabs, fold a section of details away, dismiss the notice, and scroll: the name stays at the top and shrinks to one compact line whose trail ends in the record, while the tabs and the bar scroll away under it. Turn the frame off to see the record on its own.",
     block: true,
     wide: true,
     page: <RecordPageDemo sticky shell />,
@@ -1678,8 +1690,9 @@ export const registry: Record<string, Entry> = {
     preview: { title: "Account information", help: "Details from the account record. Edit them on the account.", collapsible: true, actions: "{editAction}", children: "{accountRows}" },
     hide: ["expanded"],
     extras: { content: { values: ["body", "header only"], default: "body" } },
-    normalize: ({ content, children, ...p }) => (content === "header only" ? p : { ...p, children }),
-    hint: "Click the chevron to fold the section. Turn collapsible off for a static heading; content header only drops the body. Line thin makes the rule under the title 1px; Variants shows thin subsections.",
+    // With columns the rows go straight in, so the preview swaps the wrapped list for loose rows.
+    normalize: ({ content, children, ...p }) => (content === "header only" ? p : { ...p, children: p.columns ? "{columnRows}" : children }),
+    hint: "Columns puts the rows side by side, each column at most 480px. Click the chevron to fold the section. Turn collapsible off for a static heading; content header only drops the body. Line thin makes the rule under the title 1px; Variants shows thin subsections.",
     block: true,
     card: (
       <div style={{ width: 380 }}>

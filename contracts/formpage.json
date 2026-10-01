@@ -2,7 +2,7 @@
   "name": "FormPage",
   "path": "src/patterns/FormPage/FormPage.tsx",
   "intent": "One record being filled in: its name and the save at the top, anything that has to be read first under that, and the fields in folding groups underneath.",
-  "usage": "Use FormPage to create or edit one record: a new account, a new invoice, a rate card. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the values and what is folded away. Pass the kit PageHeader as header, with the trail, what is being made, and the actions: Cancel, then one strong brand Button that saves. children are one kit Form with an id and its groups of fields as sections, each collapsible; give it columns 2, or 3 for a long form on a wide page (up to three fields side by side), and pick where the labels go — labelPosition start for a column of labels beside the fields, top for a label over each one, and the whole page follows; give the header's save Button type submit and form set to that id, so one press saves the whole page and the form stays one form. notice writes what has to be read before filling anything in, as a kit Callout; it stays under the name while the fields scroll. Field problems belong on the fields; a save that failed goes on the Form's error. Do not put a second save at the foot of the page: the one in the header is always in reach. It goes in the AppShell page, which owns the page padding. See contracts/formpage.json for the full contract.",
+  "usage": "Use FormPage to create or edit one record: a new account, a new invoice, a rate card. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the values and what is folded away. Pass the kit PageHeader as header, with the trail, what is being made, and the actions: Cancel, then one strong brand Button that saves. children are one kit Form with an id and its groups of fields as sections, each collapsible. columns (1, 2 or 3, default 2) is set on the FormPage and the Form follows it unless it sets its own; each column stops at 480px (--layout-column-max) and the fields stay at the start, so on a wide screen the space past the last column stays empty instead of stretching the fields. Never more than 3 columns, even at 2560px and wider. On an edit page a related list can follow the Form as a kit Section holding a Table, one gutter below it; it keeps the full width. Pick where the labels go on the Form: labelPosition start for a column of labels beside the fields, top for a label over each one, and the whole page follows; give the header's save Button type submit and form set to that id, so one press saves the whole page and the form stays one form. notice writes what has to be read before filling anything in, as a kit Callout; it stays under the name while the fields scroll. Field problems belong on the fields; a save that failed goes on the Form's error. Do not put a second save at the foot of the page: the one in the header is always in reach. It goes in the AppShell page, which owns the page padding. See contracts/formpage.json for the full contract.",
   "composes": [
     "PageHeader",
     "Callout",
@@ -18,7 +18,7 @@
     "children": {
       "type": "ReactNode",
       "required": true,
-      "note": "The fields: one kit Form with sections, each a folding group like Account information or Billing profile."
+      "note": "The fields: one kit Form with sections, each a folding group like Account information or Billing profile. On an edit page, related lists can follow it as kit Sections holding a Table, at full width."
     },
     "header": {
       "type": "ReactNode",
@@ -42,6 +42,15 @@
       "type": "(stuck: boolean) => void",
       "note": "Says when the top of the page has scrolled away. Keep the boolean in the screen and pass it to the PageHeader as sticky, so the name shrinks to the kit's compact bar."
     },
+    "columns": {
+      "enum": [
+        1,
+        2,
+        3
+      ],
+      "default": 2,
+      "note": "How many columns the fields use: the Form in children lays its fields out left to right in this many, each at most 480px, unless it sets its own columns. Narrow pages drop to fewer columns on their own."
+    },
     "label": {
       "type": "string",
       "default": "Form",
@@ -59,7 +68,9 @@
     "Do not add a second save bar at the foot. The header keeps the save in reach.",
     "Do not put page padding on it. The AppShell page owns that; read contracts/layout.json.",
     "Do not use it for a short form. Two or three fields belong in a Modal or a Drawer.",
-    "Do not keep the fold state or the values in the pattern. The screen owns them."
+    "Do not keep the fold state or the values in the pattern. The screen owns them.",
+    "Do not set a width on the Form or stretch its columns to fill a wide page. Pass columns to the FormPage; each column stops at 480px.",
+    "Do not use more than 3 columns, even on a 2560px or wider screen."
   ],
   "a11y": [
     "The page is one section named by label, so a screen reader says what is being filled in.",
@@ -68,7 +79,7 @@
     "The save Button carries form, so it submits from the header without leaving the form.",
     "The name and the notice stay on an opaque bar, so nothing scrolls through them."
   ],
-  "snippet": "<FormPage\n  header={<PageHeader breadcrumbs={[{ label: \"Home\", href: \"/\" }, { label: \"Accounts\", href: \"/accounts\" }]} title=\"Create account\" actions={<><Button onClick={cancel}>Cancel</Button><Button emphasis=\"strong\" intent=\"brand\" type=\"submit\" form=\"account\">Create</Button></>} />}\n  notice={<Callout intent=\"info\" onDismiss={hide}>Use this form for the account's general and default billing information.</Callout>}\n>\n  <Form id=\"account\" labelPosition=\"start\" columns={2} onSubmit={save} sections={sections} />\n</FormPage>",
+  "snippet": "<FormPage\n  columns={2}\n  header={<PageHeader breadcrumbs={[{ label: \"Home\", href: \"/\" }, { label: \"Accounts\", href: \"/accounts\" }]} title=\"Create account\" actions={<><Button onClick={cancel}>Cancel</Button><Button emphasis=\"strong\" intent=\"brand\" type=\"submit\" form=\"account\">Create</Button></>} />}\n  notice={<Callout intent=\"info\" onDismiss={hide}>Use this form for the account's general and default billing information.</Callout>}\n>\n  <Form id=\"account\" labelPosition=\"start\" onSubmit={save} sections={sections} />\n</FormPage>",
   "examples": [
     {
       "title": "Creating an account",
@@ -79,6 +90,20 @@
             "header": "{header}",
             "notice": "{notice}",
             "children": "{form}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Three columns",
+      "usage": "columns 3 puts the fields in threes on a wide screen. Each column still stops at 480px, and three give way to two when the page is too narrow for them.",
+      "items": [
+        {
+          "props": {
+            "header": "{header}",
+            "notice": "{notice}",
+            "children": "{form}",
+            "columns": 3
           }
         }
       ]

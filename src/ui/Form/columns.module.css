@@ -1,0 +1,35 @@
+/* Columns for a Form's fields and for a Section of FormDisplay rows or fields: they fill left to right. Each column
+   stops at --layout-column-max (a 160 start label, a 12 gap and a 308 field) and the block stays at the start, so on
+   a wide screen the space past the last column stays empty instead of the fields stretching. Never more than 3.
+   The box that holds the grid is the size container the breakpoints measure. */
+
+/* Only rows and fields (a FormDisplay is a dl, a field carries data-label, a Checkbox is a label) go into columns:
+   a Table, a Scoreboard or a wrapper div keeps the full width of the box. */
+.grid:has(> :is(dl, [data-label], label)) {
+  display: grid; align-items: start; gap: var(--space-medium) var(--space-large);
+}
+.one { grid-template-columns: minmax(0, var(--layout-column-max)); }
+.two { grid-template-columns: repeat(2, minmax(0, var(--layout-column-max))); }
+.three { grid-template-columns: repeat(3, minmax(0, var(--layout-column-max))); }
+/* A Textarea spans the row. */
+.grid > :has(textarea) { grid-column: 1 / -1; }
+
+/* FormDisplay rows read as one list: each has its own line under it, so a gap between rows would break the list.
+   A pair whose label wraps is taller than its neighbour, so every row in a line stretches to the tallest one and
+   the lines under a row sit level. The class is doubled to outrank the grid rule above. */
+.grid.grid:has(> dl) { row-gap: 0; align-items: stretch; }
+
+/* Start labels (a Form's labelPosition, or rows that carry their own): controls with no label column (Checkbox,
+   Switch) shift over to line up with the fields. */
+.grid:is(.start, :has(> [data-label="start"])) > :not([data-label="start"]) { margin-inline-start: calc(var(--input-label-width) + var(--space-small)); }
+/* Once the fields put their label on top (under 480px), there is no column to line up with. */
+@container (max-width: 480px) { .grid:is(.start, :has(> [data-label="start"])) > :not([data-label="start"]) { margin-inline-start: 0; } }
+
+/* A field needs about 220px to be typed in, so three give way to two under 720px with labels on top, and under
+   1080px with a 160px label column beside each field; two give way to one under 560px, or 720px with start labels. */
+@container (max-width: 1079px) { .three:is(.start, :has(> [data-label="start"])) { grid-template-columns: repeat(2, minmax(0, var(--layout-column-max))); } }
+@container (max-width: 719px) {
+  .three { grid-template-columns: repeat(2, minmax(0, var(--layout-column-max))); }
+  :is(.two, .three):is(.start, :has(> [data-label="start"])) { grid-template-columns: minmax(0, var(--layout-column-max)); }
+}
+@container (max-width: 560px) { .two, .three { grid-template-columns: minmax(0, var(--layout-column-max)); } }

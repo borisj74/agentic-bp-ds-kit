@@ -2,6 +2,7 @@
 import { useId, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "../Button/Button";
+import { FormLayoutContext } from "../Form/FormContext";
 import { useDialog } from "../Modal/useDialog";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./Drawer.module.css";
@@ -35,36 +36,40 @@ export function Drawer({ open, title, description, size = "narrow", showClose = 
   if (!open || typeof document === "undefined") return null;
 
   return createPortal(
-    // A click on the page behind closes it, but only when the press also started there (not a drag out of a field).
-    <div
-      data-density={density}
-      className={styles.overlay}
-      onKeyDown={onKeyDown}
-      onMouseDown={(e) => { downOnBackdrop.current = e.target === e.currentTarget; }}
-      onClick={(e) => { if (downOnBackdrop.current && e.target === e.currentTarget) onClose(); }}
-    >
+    // A dialog opened from a record or a form page starts from the kit's own layout: its Form fills the dialog with
+    // labels on top unless it says otherwise.
+    <FormLayoutContext.Provider value={{}}>
+      {/* A click on the page behind closes it, but only when the press also started there (not a drag out of a field). */}
       <div
-        ref={panelRef} role="dialog" aria-modal="true" aria-labelledby={titleId}
-        aria-describedby={description ? descriptionId : undefined} tabIndex={-1}
-        className={[styles.drawer, styles[size]].join(" ")}
+        data-density={density}
+        className={styles.overlay}
+        onKeyDown={onKeyDown}
+        onMouseDown={(e) => { downOnBackdrop.current = e.target === e.currentTarget; }}
+        onClick={(e) => { if (downOnBackdrop.current && e.target === e.currentTarget) onClose(); }}
       >
-        <header className={styles.header}>
-          <div className={styles.copy}>
-            <h2 id={titleId} className={styles.title}>{title}</h2>
-            {description && <p id={descriptionId} className={styles.description}>{description}</p>}
-          </div>
-          {showClose && (
-            <span className={styles.close}>
-              <Tooltip content="Close" position="left">
-                <Button emphasis="minimal" size="sm" iconOnly iconStart="close" onClick={onClose}>Close</Button>
-              </Tooltip>
-            </span>
-          )}
-        </header>
-        <div ref={bodyRef} className={styles.body}>{children}</div>
-        {footer && <footer className={styles.footer}>{footer}</footer>}
+        <div
+          ref={panelRef} role="dialog" aria-modal="true" aria-labelledby={titleId}
+          aria-describedby={description ? descriptionId : undefined} tabIndex={-1}
+          className={[styles.drawer, styles[size]].join(" ")}
+        >
+          <header className={styles.header}>
+            <div className={styles.copy}>
+              <h2 id={titleId} className={styles.title}>{title}</h2>
+              {description && <p id={descriptionId} className={styles.description}>{description}</p>}
+            </div>
+            {showClose && (
+              <span className={styles.close}>
+                <Tooltip content="Close" position="left">
+                  <Button emphasis="minimal" size="sm" iconOnly iconStart="close" onClick={onClose}>Close</Button>
+                </Tooltip>
+              </span>
+            )}
+          </header>
+          <div ref={bodyRef} className={styles.body}>{children}</div>
+          {footer && <footer className={styles.footer}>{footer}</footer>}
+        </div>
       </div>
-    </div>,
+    </FormLayoutContext.Provider>,
     document.body,
   );
 }

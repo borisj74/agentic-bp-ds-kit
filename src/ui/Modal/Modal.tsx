@@ -3,6 +3,7 @@ import { useId, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "../Button/Button";
 import { Icon } from "../Icon/Icon";
+import { FormLayoutContext } from "../Form/FormContext";
 import styles from "./Modal.module.css";
 import { useDialog } from "./useDialog";
 import { usePortalDensity } from "../Density/Density";
@@ -35,36 +36,40 @@ export function Modal({ open, title, description, icon, size = "sm", showClose =
   if (!open || typeof document === "undefined") return null;
 
   return createPortal(
-    // Backdrop click closes, but only when the press also started on the backdrop (not a drag out of a field).
-    <div
-      data-density={density}
-      className={[styles.overlay, size === "fullscreen" ? styles.overlayFull : ""].join(" ")}
-      onKeyDown={onKeyDown}
-      onMouseDown={(e) => { downOnScrim.current = e.target === e.currentTarget; }}
-      onClick={(e) => { if (downOnScrim.current && e.target === e.currentTarget) onClose(); }}
-    >
+    // A dialog opened from a record or a form page starts from the kit's own layout: its Form fills the dialog with
+    // labels on top unless it says otherwise.
+    <FormLayoutContext.Provider value={{}}>
+      {/* Backdrop click closes, but only when the press also started on the backdrop (not a drag out of a field). */}
       <div
-        ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby={titleId}
-        aria-describedby={description ? descriptionId : undefined} tabIndex={-1}
-        className={[styles.modal, styles[size]].join(" ")}
+        data-density={density}
+        className={[styles.overlay, size === "fullscreen" ? styles.overlayFull : ""].join(" ")}
+        onKeyDown={onKeyDown}
+        onMouseDown={(e) => { downOnScrim.current = e.target === e.currentTarget; }}
+        onClick={(e) => { if (downOnScrim.current && e.target === e.currentTarget) onClose(); }}
       >
-        <header className={styles.header}>
-          {/* An optional icon before the title, like PageHeader's. */}
-          {icon && <span className={styles.icon}><Icon name={icon} size="lg" intent="brand" /></span>}
-          <div className={styles.copy}>
-            <h2 id={titleId} className={styles.title}>{title}</h2>
-            {description && <p id={descriptionId} className={styles.description}>{description}</p>}
-          </div>
-          {showClose && (
-            <span className={styles.close}>
-              <Button emphasis="minimal" iconOnly iconStart="close" onClick={onClose}>Close</Button>
-            </span>
-          )}
-        </header>
-        <div ref={bodyRef} className={styles.body}>{children}</div>
-        {footer && <footer className={styles.footer}>{footer}</footer>}
+        <div
+          ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby={titleId}
+          aria-describedby={description ? descriptionId : undefined} tabIndex={-1}
+          className={[styles.modal, styles[size]].join(" ")}
+        >
+          <header className={styles.header}>
+            {/* An optional icon before the title, like PageHeader's. */}
+            {icon && <span className={styles.icon}><Icon name={icon} size="lg" intent="brand" /></span>}
+            <div className={styles.copy}>
+              <h2 id={titleId} className={styles.title}>{title}</h2>
+              {description && <p id={descriptionId} className={styles.description}>{description}</p>}
+            </div>
+            {showClose && (
+              <span className={styles.close}>
+                <Button emphasis="minimal" iconOnly iconStart="close" onClick={onClose}>Close</Button>
+              </span>
+            )}
+          </header>
+          <div ref={bodyRef} className={styles.body}>{children}</div>
+          {footer && <footer className={styles.footer}>{footer}</footer>}
+        </div>
       </div>
-    </div>,
+    </FormLayoutContext.Provider>,
     document.body,
   );
 }

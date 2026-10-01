@@ -1,5 +1,5 @@
 "use client";
-import { useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { Callout } from "@/ui/Callout/Callout";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
 import { AlertDialog, type AlertDialogProps } from "@/ui/AlertDialog/AlertDialog";
@@ -923,6 +923,46 @@ const SHELL_HEADER_ACTIONS = [
 // Playground harness: the AppShell pattern driven like a screen would drive it. Not a kit piece.
 // How wide the preview box is, so the frame can be watched answering to its own width.
 const STAGE_WIDTHS: Record<string, number | undefined> = { desktop: undefined, laptop: 1024, tablet: 768, phone: 390 };
+// Big screens for record and form views: 1920 is 40% of users, 2560 and 3008 the widest seen.
+const SCREEN_WIDTHS: Record<string, number | undefined> = { "1920": 1920, "2560": 2560, "3008": 3008 };
+
+// Playground harness, not a kit piece: the app frame at a stage width, the way the other pattern demos show it. A
+// big-screen stage lays the frame out at that screen's true width and 16:9 height, then scales it down to fit the
+// catalog, so the columns and the empty space past them show in their real proportions on any monitor.
+function StageFrame({ stage, dark, children }: { stage: string; dark: boolean; children: ReactNode }) {
+  const box = useRef<HTMLDivElement>(null);
+  const [room, setRoom] = useState(0);
+  const screen = SCREEN_WIDTHS[stage];
+  useEffect(() => {
+    const el = box.current;
+    if (!screen || !el) return;
+    const watch = new ResizeObserver(([entry]) => setRoom(entry.contentRect.width));
+    watch.observe(el);
+    return () => watch.disconnect();
+  }, [screen]);
+  const frame: CSSProperties = {
+    border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden",
+  };
+  if (!screen) {
+    return (
+      <div data-theme={dark ? "dark" : undefined} style={{ ...frame, height: 900, width: STAGE_WIDTHS[stage] ?? "100%", maxWidth: "100%", marginInline: "auto" }}>
+        {children}
+      </div>
+    );
+  }
+  const tall = Math.round((screen * 9) / 16);
+  const scale = room ? Math.min(1, room / screen) : 0;
+  return (
+    <div ref={box} style={{ width: "100%", height: tall * scale }}>
+      <div
+        data-theme={dark ? "dark" : undefined}
+        style={{ ...frame, width: screen, height: tall, transform: `scale(${scale})`, transformOrigin: "0 0", visibility: scale ? undefined : "hidden" }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omit<AppShellProps, "children" | "assistant"> & { assistant?: boolean; stage?: string }) {
   const [navOpen, setNavOpen] = useState(false);
@@ -1019,7 +1059,7 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
         </Section>
         {/* Enough page to scroll, so the page header can be watched staying at the top and shrinking. */}
         <Section title="Billing settings" collapsible>
-          <RecordFields fields={BILLING_FIELDS} />
+          <Form columns={2} labelPosition="start">{recordRows(BILLING_FIELDS)}</Form>
         </Section>
       </AppShell>
     </div>
@@ -1253,15 +1293,24 @@ function RecordMeter({ value, label, of }: { value: number; label: string; of: s
   );
 }
 
-function RecordFields({ fields }: { fields: { label: string; value: ReactNode; help: string }[] }) {
-  return (
-    <Form columns={2} labelPosition="start">
-      {fields.map((f) => <FormDisplay key={f.label} label={f.label} value={f.value} help={f.help} />)}
-    </Form>
-  );
+// The rows go straight into the Section: the record sets the columns and the labels for every Section of them.
+function recordRows(fields: { label: string; value: ReactNode; help: string }[]) {
+  return fields.map((f) => <FormDisplay key={f.label} label={f.label} value={f.value} help={f.help} />);
 }
 
-export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" }: { sticky?: boolean; shell?: boolean; stage?: string }) {
+// A related list under the details: a Section of a Table keeps the full width while the rows above sit in columns.
+const RECORD_INVOICE_COLUMNS: TableColumn[] = [
+  { key: "invoice", header: "Invoice" }, { key: "date", header: "Date" }, { key: "due", header: "Due" },
+  { key: "amount", header: "Amount", numeric: true }, { key: "status", header: "Status" },
+];
+const RECORD_INVOICES = [
+  { id: "r1", invoice: <Cell type="link" label="INV-30211" onClick={() => {}} />, date: "08/31/2026", due: "09/30/2026", amount: "$12,600.50", status: <Cell type="badge" label="Open" intent="info" /> },
+  { id: "r2", invoice: <Cell type="link" label="INV-29874" onClick={() => {}} />, date: "07/31/2026", due: "08/30/2026", amount: "$11,470.00", status: <Cell type="badge" label="Past due" intent="danger" /> },
+  { id: "r3", invoice: <Cell type="link" label="INV-29502" onClick={() => {}} />, date: "06/30/2026", due: "07/30/2026", amount: "$11,470.00", status: <Cell type="badge" label="Past due" intent="danger" /> },
+  { id: "r4", invoice: <Cell type="link" label="INV-29133" onClick={() => {}} />, date: "05/31/2026", due: "06/30/2026", amount: "$10,980.25", status: <Cell type="badge" label="Paid" intent="success" /> },
+];
+
+export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop", columns = 2 }: { sticky?: boolean; shell?: boolean; stage?: string; columns?: FormColumns }) {
   const [tab, setTab] = useState("details");
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");
@@ -1273,7 +1322,7 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" 
 
   const record = (
     <RecordPage
-      label="Account" sticky={sticky} onStickyChange={setCompact}
+      label="Account" sticky={sticky} onStickyChange={setCompact} columns={columns}
       header={
         <PageHeader
           breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]}
@@ -1301,9 +1350,12 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" 
     >
       {tab === "details" ? (
         <>
-          <Section title="Account information" collapsible><RecordFields fields={ACCOUNT_FIELDS} /></Section>
-          <Section title="Billing information" collapsible><RecordFields fields={BILLING_FIELDS} /></Section>
-          <Section title="Product utilization" collapsible><RecordFields fields={USAGE_FIELDS} /></Section>
+          <Section title="Account information" collapsible>{recordRows(ACCOUNT_FIELDS)}</Section>
+          <Section title="Billing information" collapsible>{recordRows(BILLING_FIELDS)}</Section>
+          <Section title="Product utilization" collapsible>{recordRows(USAGE_FIELDS)}</Section>
+          <Section title="Recent invoices" actions={<Button size="sm" onClick={() => setTab("invoices")}>View all</Button>}>
+            <Table columns={RECORD_INVOICE_COLUMNS} rows={RECORD_INVOICES} />
+          </Section>
         </>
       ) : (
         <Section title={RECORD_TABS.find((t) => t.id === tab)?.label ?? "Details"}>
@@ -1316,13 +1368,7 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" 
   if (!shell) return record;
   // In the frame, the way a screen would ship it.
   return (
-    <div
-      data-theme={dark ? "dark" : undefined}
-      style={{
-        height: 900, width: STAGE_WIDTHS[stage] ?? "100%", maxWidth: "100%", marginInline: "auto",
-        border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden",
-      }}
-    >
+    <StageFrame stage={stage} dark={dark}>
       <AppShell
         header={
           <AppHeader
@@ -1340,7 +1386,7 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" 
       >
         {record}
       </AppShell>
-    </div>
+    </StageFrame>
   );
 }
 
@@ -1826,6 +1872,15 @@ const TEMPLATE_COLUMNS: TableColumn[] = [
   { key: "name", header: "Template" }, { key: "use", header: "Used for" }, { key: "updated", header: "Updated" },
 ];
 
+const FORM_CONTACT_COLUMNS: TableColumn[] = [
+  { key: "name", header: "Name" }, { key: "role", header: "Role" }, { key: "email", header: "Email" }, { key: "phone", header: "Phone" },
+];
+const FORM_CONTACTS = [
+  { id: "c1", name: "Priya Raman", role: "Billing contact", email: "priya.raman@apexdigital.com", phone: "(206) 555-0142" },
+  { id: "c2", name: "Jordan Ellis", role: "Account owner", email: "jordan.ellis@apexdigital.com", phone: "(206) 555-0187" },
+  { id: "c3", name: "Mei Tanaka", role: "Accounts payable", email: "ap@apexdigital.com", phone: "(206) 555-0110" },
+];
+
 export function FormPageDemo({ shell = true, notice = true, stage = "desktop", labels = "start", columns = 2, ...p }:
   Omit<FormPageProps, "children"> & { shell?: boolean; notice?: boolean; stage?: string; labels?: FormLabelPosition; columns?: FormColumns }) {
   const [dark, setDark] = useState(false);
@@ -1920,7 +1975,7 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
 
   const page = (
     <FormPage
-      {...p} label="Create account" onStickyChange={setCompact}
+      {...p} label="Create account" onStickyChange={setCompact} columns={columns}
       header={
         <PageHeader
           breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]}
@@ -1943,23 +1998,21 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
       }
     >
       <Form
-        id={formId} labelPosition={labels} columns={columns} sections={sections}
+        id={formId} labelPosition={labels} sections={sections}
         onSubmit={(data) => setSaved(String(data.get("name") || "").trim() ? `Created ${String(data.get("name"))}.` : "Created the account.")}
       />
       {saved && <Callout intent="success">{saved}</Callout>}
+      {/* A related list after the form keeps the full width while the fields above sit in columns. */}
+      <Section title="Contacts" description="People who get invoices and notices for this account." actions={<Button size="sm" iconStart="add">Add contact</Button>}>
+        <Table columns={FORM_CONTACT_COLUMNS} rows={FORM_CONTACTS} />
+      </Section>
     </FormPage>
   );
 
   if (!shell) return page;
   // In the frame, the way a screen would ship it.
   return (
-    <div
-      data-theme={dark ? "dark" : undefined}
-      style={{
-        height: 900, width: STAGE_WIDTHS[stage] ?? "100%", maxWidth: "100%", marginInline: "auto",
-        border: "var(--border-width-thin) solid var(--border-neutral-subtle)", borderRadius: "var(--radius-medium)", overflow: "hidden",
-      }}
-    >
+    <StageFrame stage={stage} dark={dark}>
       <AppShell
         header={
           <AppHeader
@@ -1977,7 +2030,7 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
       >
         {page}
       </AppShell>
-    </div>
+    </StageFrame>
   );
 }
 
@@ -2420,7 +2473,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
   );
   const record = (
     <RecordPage
-      label="Account" onStickyChange={setCompact}
+      label="Account" onStickyChange={setCompact} labelPosition="top"
       header={
         <PageHeader
           breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", onClick: toList }]}

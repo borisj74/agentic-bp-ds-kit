@@ -36,7 +36,10 @@
 /* Blocks stacked in one section — a Scoreboard over its charts, a table over its report link — are one
    gutter apart (--layout-gutter-md, the grid gutter), so the section reads as one block of its own. */
 .body { display: flex; flex-direction: column; gap: var(--layout-gutter-md); min-width: 0; }
-/* A class beats the browser's own rule for hidden, so folding the section away has to be said here. */
-.body[hidden] { display: none; }
+/* columns: the section is the box its columns measure, so they give way as the section narrows. */
+.columns { container-type: inline-size; }
+/* A class beats the browser's own rule for hidden, so folding the section away has to be said here. The class is
+   doubled to outrank the columns grid as well. */
+.body.body[hidden] { display: none; }
 
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

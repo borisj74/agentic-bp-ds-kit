@@ -1,5 +1,6 @@
 "use client";
 import type { ReactNode } from "react";
+import { FormLayoutContext, type FieldColumns, type FieldLabelPosition } from "@/ui/Form/FormContext";
 import { useStickMark } from "../stick";
 import styles from "./RecordPage.module.css";
 
@@ -12,6 +13,8 @@ export interface RecordPageProps {
   summary?: ReactNode;
   sticky?: boolean;
   onStickyChange?: (stuck: boolean) => void;
+  columns?: FieldColumns;
+  labelPosition?: FieldLabelPosition;
   label?: string;
 }
 
@@ -20,7 +23,7 @@ export interface RecordPageProps {
 // details as kit Sections underneath. A blueprint only: it composes kit pieces and keeps no state of its
 // own. It sits in the AppShell page, which owns the page padding.
 export function RecordPage({
-  children, header, tabs, notice, toolbar, summary, sticky = true, onStickyChange, label,
+  children, header, tabs, notice, toolbar, summary, sticky = true, onStickyChange, columns = 2, labelPosition = "start", label,
 }: RecordPageProps) {
   const top = tabs || notice || toolbar;
   // The marker above the header says when the top of the record has scrolled away, so the screen can swap
@@ -42,7 +45,11 @@ export function RecordPage({
         </div>
       )}
       {summary && <div className={styles.summary}>{summary}</div>}
-      <div className={styles.details}>{children}</div>
+      {/* The record sets the columns and the labels once: every Section of FormDisplay rows (and any Form) in the
+          details follows them unless it sets its own. Sections of Tables keep the full width. */}
+      <FormLayoutContext.Provider value={{ columns, labelPosition }}>
+        <div className={styles.details}>{children}</div>
+      </FormLayoutContext.Provider>
     </section>
   );
 }

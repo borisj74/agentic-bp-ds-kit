@@ -33,4 +33,5 @@
   padding: var(--space-xsmall) var(--layout-margin-md);
 }
 
-.fields { min-width: 0; }
+/* The Form, then any related list after it, one section gap apart. */
+.fields { display: flex; flex-direction: column; gap: var(--layout-gutter-lg); min-width: 0; }

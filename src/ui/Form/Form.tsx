@@ -1,13 +1,14 @@
 "use client";
-import { useId, type FormEvent, type ReactNode } from "react";
+import { useContext, useId, type FormEvent, type ReactNode } from "react";
 import { Callout } from "../Callout/Callout";
 import { Section, type SectionLine } from "../Section/Section";
-import { FormLayoutContext, type FieldLabelPosition } from "./FormContext";
+import { FormLayoutContext, type FieldColumns, type FieldLabelPosition } from "./FormContext";
 import styles from "./Form.module.css";
+import grid from "./columns.module.css";
 
 export type FormVariant = "plain" | "card";
 export type FormLabelPosition = FieldLabelPosition;
-export type FormColumns = 1 | 2 | 3;
+export type FormColumns = FieldColumns;
 
 export interface FormSection {
   title: string;
@@ -37,11 +38,15 @@ export interface FormProps {
 }
 
 export function Form({
-  title, description, variant = "plain", labelPosition = "top", columns = 1, children, sections, actions, error, onSubmit, id,
+  title, description, variant = "plain", labelPosition: ownLabelPosition, columns: ownColumns, children, sections, actions, error, onSubmit, id,
 }: FormProps) {
   const base = useId();
   const titleId = `${base}-title`;
   const descriptionId = `${base}-description`;
+  // Unset, the Form takes the labels of the record and the columns of the page it is in.
+  const page = useContext(FormLayoutContext);
+  const labelPosition = ownLabelPosition ?? page.labelPosition ?? "top";
+  const columns = ownColumns ?? page.columns;
 
   // The page never reloads; the caller gets the field values by name.
   const submit = (e: FormEvent<HTMLFormElement>) => {
@@ -49,9 +54,12 @@ export function Form({
     onSubmit?.(new FormData(e.currentTarget));
   };
 
-  const cls = [styles.form, styles[variant], labelPosition === "start" ? styles.start : "", columns === 2 ? styles.two : columns === 3 ? styles.three : ""];
+  const cls = [styles.form, styles[variant], labelPosition === "start" ? styles.start : ""];
+  // Set columns cap each column at --layout-column-max; unset, the fields fill the form.
+  const fields = [styles.fields, ...(columns ? [grid.grid, grid[["", "one", "two", "three"][columns]], labelPosition === "start" ? grid.start : ""] : [])].join(" ");
   return (
-    // Fields inside take the Form's labelPosition unless they set their own.
+    // Fields inside take the Form's labelPosition unless they set their own. The page's columns stop here: the
+    // Form lays its own fields out, so the Sections it titles them with take none.
     <FormLayoutContext.Provider value={{ labelPosition }}>
     <form
       id={id}
@@ -76,10 +84,10 @@ export function Form({
                 key={s.title} title={s.title} description={s.description} help={s.help} actions={s.actions} line={s.line}
                 collapsible={s.collapsible} expanded={s.expanded} defaultExpanded={s.defaultExpanded} onExpandedChange={s.onExpandedChange}
               >
-                <div className={styles.fields}>{s.content}</div>
+                <div className={fields}>{s.content}</div>
               </Section>
             ))
-          : <div className={styles.fields}>{children}</div>}
+          : <div className={fields}>{children}</div>}
       </div>
       {actions && <footer className={styles.footer}>{actions}</footer>}
     </form>
