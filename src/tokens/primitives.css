@@ -1451,6 +1451,7 @@
   --empty-media: var(--ref-size-1300);
   --empty-copy-max: 384px;
   --toast-width: 400px;
+  --toast-loading-width: 360px;
   --toast-bar: var(--ref-size-200);
   --pagination-height: var(--ref-size-1100);
   --chart-swatch: 10px;

@@ -3,6 +3,9 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties
 import { createPortal } from "react-dom";
 import { Button } from "../Button/Button";
 import { Icon } from "../Icon/Icon";
+import { Meter } from "../Meter/Meter";
+import { Spinner } from "../Spinner/Spinner";
+import { TextLoader } from "../TextLoader/TextLoader";
 import { useInBrowser } from "../Tooltip/useFloating";
 import styles from "./Toast.module.css";
 
@@ -17,18 +20,21 @@ export interface ToastProps {
   actionLabel?: string;
   onAction?: () => void;
   duration?: number | null;
+  progress?: number | "indeterminate";
 }
 
 const ICONS: Record<ToastIntent, string> = { info: "info", success: "check_circle", warning: "warning", danger: "error" };
 
-// Every Toast portals into one fixed stack at the bottom right, so several stack without a provider. The stack is
-// the live region: it is in the page before any card arrives, so screen readers announce each card that joins it.
-function stack() {
-  let el = document.getElementById("kit-toasts");
+// Every Toast portals into one fixed stack, so several stack without a provider: confirmations at the bottom right,
+// loading toasts at the top center. Each stack is a live region: it is in the page before any card arrives, so screen
+// readers announce each card that joins it.
+function stack(loading: boolean) {
+  const id = loading ? "kit-toasts-loading" : "kit-toasts";
+  let el = document.getElementById(id);
   if (!el) {
     el = document.createElement("div");
-    el.id = "kit-toasts";
-    el.className = styles.stack;
+    el.id = id;
+    el.className = [styles.stack, loading ? styles.top : styles.bottom].join(" ");
     el.setAttribute("role", "status");
     el.setAttribute("aria-live", "polite");
     document.body.appendChild(el);
@@ -38,15 +44,19 @@ function stack() {
 
 // A white card with a countdown bar on top, the intent's icon, title, description, one action and a close button.
 // The card mounts on each open, so the countdown and the pause always start fresh.
+// progress turns on loading mode: a narrower card with a Spinner, the title wave and a thin Meter under the text. It
+// never closes itself and has no close button; the action (like Cancel) is the way out.
 export function Toast(props: ToastProps) {
   const inBrowser = useInBrowser();
   if (!props.open || !inBrowser) return null;
-  return createPortal(<ToastCard {...props} />, stack());
+  return createPortal(<ToastCard {...props} />, stack(props.progress !== undefined));
 }
 
-function ToastCard({ onClose, title, description, intent = "info", actionLabel, onAction, duration: durationProp }: ToastProps) {
+function ToastCard({ onClose, title, description, intent = "info", actionLabel, onAction, duration: durationProp, progress }: ToastProps) {
+  const loading = progress !== undefined;
   // A toast with an action waits to be closed: keyboard and screen reader users need time to reach it (WCAG 2.2.1).
-  const duration = durationProp === undefined ? (actionLabel ? null : 5000) : durationProp;
+  // A loading toast waits for the work, so it has no countdown at all.
+  const duration = loading ? null : durationProp === undefined ? (actionLabel ? null : 5000) : durationProp;
   const titleId = useId();
   const [paused, setPaused] = useState(false);
   const remaining = useRef(duration ?? 0);
@@ -68,9 +78,11 @@ function ToastCard({ onClose, title, description, intent = "info", actionLabel, 
     if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setPaused(false);
   };
 
+  // Loading toasts stay polite whatever the intent: the work is under way, nothing has gone wrong yet.
+  const alert = intent === "danger" && !loading;
   return (
     <div
-      className={[styles.toast, styles[intent]].join(" ")} role={intent === "danger" ? "alert" : undefined} aria-labelledby={intent === "danger" ? titleId : undefined}
+      className={[styles.toast, styles[intent], loading ? styles.inProgress : ""].join(" ")} role={alert ? "alert" : undefined} aria-labelledby={alert ? titleId : undefined}
       onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={onBlur}
     >
       {duration != null && (
@@ -79,15 +91,23 @@ function ToastCard({ onClose, title, description, intent = "info", actionLabel, 
         </span>
       )}
       <div className={styles.body}>
-        <span className={styles.icon} aria-hidden="true"><Icon name={ICONS[intent]} intent={intent} /></span>
+        <span className={styles.icon} aria-hidden="true">
+          {/* The title already says what is loading, so the Spinner is decorative. */}
+          {loading ? <Spinner size="sm" label="" /> : <Icon name={ICONS[intent]} intent={intent} />}
+        </span>
         <div className={styles.content}>
-          <p id={titleId} className={styles.title}>{title}</p>
+          <p id={titleId} className={styles.title}>{loading ? <TextLoader>{title}</TextLoader> : title}</p>
           {description && <p className={styles.description}>{description}</p>}
+          {loading && (
+            <div className={styles.progress}>
+              <Meter value={progress} label={title} size="sm" intent={intent} showValue={progress !== "indeterminate"} />
+            </div>
+          )}
           {actionLabel && (
             <button type="button" className={styles.action} onClick={() => { onAction?.(); onClose(); }}>{actionLabel}</button>
           )}
         </div>
-        <Button emphasis="minimal" size="sm" iconOnly iconStart="close" onClick={onClose}>Dismiss</Button>
+        {!loading && <Button emphasis="minimal" size="sm" iconOnly iconStart="close" onClick={onClose}>Dismiss</Button>}
       </div>
     </div>
   );

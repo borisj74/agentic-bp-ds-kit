@@ -7,7 +7,7 @@ export type MeterThresholds = "none" | "bar" | "plotArea" | "all";
 export type MeterIntent = "info" | "success" | "warning" | "danger";
 
 export interface MeterProps {
-  value: number;
+  value: number | "indeterminate";
   label?: string;
   shape?: MeterShape;
   size?: MeterSize;
@@ -33,17 +33,36 @@ const STROKE = 8;
 export function Meter({
   value, label = "Progress", shape = "bar", size = "md", thresholds = "none", intent, referenceLines = false, showValue = false, datatip,
 }: MeterProps) {
-  const pct = Math.min(Math.max(Number.isFinite(value) ? value : 0, 0), 100);
+  const indeterminate = value === "indeterminate";
+  const pct = indeterminate ? 0 : Math.min(Math.max(Number.isFinite(value) ? value : 0, 0), 100);
   const rounded = Math.round(pct);
   const zone = zoneOf(pct);
   // The value is blue unless its own color shows the zone; the track shows the zone in plotArea mode, the three bands in all.
   // intent sets the value's color outright, for a meaning the screen decides, like a usage limit that is nearly reached.
   const fillIntent = intent ?? (thresholds === "bar" ? zone : "info");
   const trackIntent = thresholds === "plotArea" ? zone : "neutral";
-  const a11y = {
-    role: "progressbar", "aria-label": label, "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": rounded,
-    "aria-valuetext": datatip ? `${rounded}%, ${datatip}` : `${rounded}%`,
-  } as const;
+  // Indeterminate has no value to read, so screen readers hear the bar is busy.
+  const a11y = indeterminate
+    ? { role: "progressbar", "aria-label": label, "aria-valuemin": 0, "aria-valuemax": 100 } as const
+    : {
+      role: "progressbar", "aria-label": label, "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": rounded,
+      "aria-valuetext": datatip ? `${rounded}%, ${datatip}` : `${rounded}%`,
+    } as const;
+
+  // Indeterminate: a short segment slides along the bar; no zones, percent or tip, since there is no value yet.
+  if (indeterminate) {
+    return (
+      <div className={[styles.progress, styles.bar, styles[size]].join(" ")} {...a11y}>
+        <div className={styles.barRow}>
+          <div className={styles.trackWrap}>
+            <div className={[styles.track, styles.neutral].join(" ")}>
+              <span className={[styles.fill, styles.slide, styles[intent ?? "info"]].join(" ")} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (shape === "bar") {
     return (

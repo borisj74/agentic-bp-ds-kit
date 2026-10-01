@@ -78,3 +78,45 @@ describe("Toast", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("Toast loading mode", () => {
+  const top = () => document.getElementById("kit-toasts-loading");
+
+  it("joins its own polite stack at the top, apart from confirmations", () => {
+    render(<Toast open onClose={() => {}} title="Data is loading" progress="indeterminate" />);
+    expect(top()).toHaveAttribute("role", "status");
+    expect(top()).toHaveAttribute("aria-live", "polite");
+    expect(top()).toHaveTextContent("Data is loading");
+    expect(stack()?.textContent ?? "").not.toContain("Data is loading");
+  });
+
+  it("never closes itself, even with a duration, and has no close button", () => {
+    const onClose = vi.fn();
+    render(<Toast open onClose={onClose} title="Data is loading" progress="indeterminate" duration={3000} />);
+    act(() => { vi.advanceTimersByTime(60000); });
+    expect(onClose).not.toHaveBeenCalled();
+    expect(screen.queryByRole("button", { name: "Dismiss" })).not.toBeInTheDocument();
+  });
+
+  it("shows a progressbar named by the title, with the value or none when indeterminate", () => {
+    const { rerender } = render(<Toast open onClose={() => {}} title="Importing invoices" progress={42} />);
+    const bar = screen.getByRole("progressbar", { name: "Importing invoices" });
+    expect(bar).toHaveAttribute("aria-valuenow", "42");
+    rerender(<Toast open onClose={() => {}} title="Importing invoices" progress="indeterminate" />);
+    expect(screen.getByRole("progressbar", { name: "Importing invoices" })).not.toHaveAttribute("aria-valuenow");
+  });
+
+  it("Cancel is a real button that runs the action and then closes", () => {
+    const onClose = vi.fn();
+    const onAction = vi.fn();
+    render(<Toast open onClose={onClose} title="Data is loading" progress="indeterminate" actionLabel="Cancel" onAction={onAction} />);
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(onAction).toHaveBeenCalledTimes(1);
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("stays polite for danger, since nothing has gone wrong yet", () => {
+    render(<Toast open intent="danger" onClose={() => {}} title="Retrying sync" progress="indeterminate" />);
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+});

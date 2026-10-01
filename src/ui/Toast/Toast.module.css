@@ -1,9 +1,12 @@
-/* The shared stack: bottom right, above dialogs, newest at the bottom. Clicks pass through the gaps. */
+/* The shared stacks, above dialogs, newest at the bottom. Clicks pass through the gaps.
+   Confirmations sit bottom right; loading toasts sit top center. */
 .stack {
-  position: fixed; right: var(--space-xlarge); bottom: var(--space-xlarge); z-index: var(--z-toast);
-  display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-small);
+  position: fixed; z-index: var(--z-toast);
+  display: flex; flex-direction: column; gap: var(--space-small);
   max-width: calc(100vw - var(--space-xlarge) * 2); pointer-events: none;
 }
+.bottom { right: var(--space-xlarge); bottom: var(--space-xlarge); align-items: flex-end; }
+.top { top: var(--space-xlarge); left: 50%; transform: translateX(-50%); align-items: center; }
 
 .toast {
   box-sizing: border-box; width: var(--toast-width); max-width: 100%; overflow: hidden; pointer-events: auto;
@@ -33,6 +36,11 @@
 .title { margin: 0; font-size: var(--font-size-regular); font-weight: var(--font-weight-semibold); }
 .description { margin: 0; font-size: var(--font-size-small); color: var(--text-neutral); }
 
+/* Loading: narrower, no close column, and it drops in from above. The Meter takes the content's full width. */
+.inProgress { width: var(--toast-loading-width); animation-name: enter-top; }
+.inProgress .body { grid-template-columns: auto minmax(0, 1fr); }
+.progress { justify-self: stretch; padding-block: var(--space-xsmall) var(--space-xxsmall); }
+
 /* Same link-style action as Callout. */
 .action {
   min-height: var(--target-min); margin-top: var(--space-xxsmall); padding: 0; border: 0; background: none; cursor: pointer; border-radius: var(--radius-small);
@@ -44,4 +52,5 @@
 
 @keyframes countdown { from { width: 100%; } to { width: 0; } }
 @keyframes enter { from { opacity: var(--opacity-0); transform: translateY(var(--space-xsmall)); } }
+@keyframes enter-top { from { opacity: var(--opacity-0); transform: translateY(calc(var(--space-xsmall) * -1)); } }
 @media (prefers-reduced-motion: reduce) { .toast { animation: none; } }

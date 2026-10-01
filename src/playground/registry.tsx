@@ -1870,7 +1870,13 @@ export const registry: Record<string, Entry> = {
     preview: { title: "Saved successfully", description: "Your changes have been saved.", actionLabel: "Undo" },
     hide: ["open"],
     snippet: { open: "{saved}", onClose: "{close}", onAction: "{undo}" },
-    hint: "Click the button to show it. With Undo it stays until closed, so people can reach the action; clear the action label and the top bar counts down 5 seconds (point at the toast to pause it). Switch the intent.",
+    // loading picks progress; a loading toast gets loading copy and a Cancel, as a screen would give it.
+    extras: { loading: { values: ["off", "indeterminate", "42"], default: "off" } },
+    normalize: ({ loading, ...p }) => loading === "off" || loading === undefined ? p : {
+      ...p, title: "Data is loading", description: "You can keep working while it loads.", actionLabel: "Cancel",
+      progress: loading === "indeterminate" ? "indeterminate" : Number(loading),
+    },
+    hint: "Click the button to show it. With Undo it stays until closed, so people can reach the action; clear the action label and the top bar counts down 5 seconds (point at the toast to pause it). Switch the intent. Switch loading to see loading mode: it sits top center with a Spinner, the title wave and a thin bar, and only Cancel closes it.",
     card: <Button>Show toast</Button>,
   },
   Toolbar: {
@@ -2045,8 +2051,8 @@ export const registry: Record<string, Entry> = {
       );
     },
     preview: { label: "Budget spent", value: 60, showValue: true },
-    extras: { value: { values: ["0", "30", "60", "100"], default: "60" } },
-    normalize: ({ value, ...p }) => ({ ...p, value: Number(value ?? p.value) }),
+    extras: { value: { values: ["0", "30", "60", "100", "indeterminate"], default: "60" } },
+    normalize: ({ value, ...p }) => ({ ...p, value: (value ?? p.value) === "indeterminate" ? "indeterminate" : Number(value ?? p.value) }),
     hint: "Switch shape, size and thresholds; turn on reference lines and the value. Value moves it between the zones.",
     card: (
       <div style={{ display: "flex", alignItems: "center", gap: 16 }}>

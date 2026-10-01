@@ -724,7 +724,8 @@
         "percent",
         "thresholds",
         "completion",
-        "usage"
+        "usage",
+        "indeterminate"
       ]
     },
     {
@@ -1018,7 +1019,10 @@
         "confirmation",
         "undo",
         "timed",
-        "flash message"
+        "flash message",
+        "loading notice",
+        "background task",
+        "cancel"
       ]
     },
     {

@@ -254,7 +254,7 @@ export function ToastDemo(p: Omit<ToastProps, "open" | "onClose" | "onAction">) 
   const [done, setDone] = useState("");
   return (
     <div style={{ display: "grid", justifyItems: "center", gap: "var(--space-xsmall)" }}>
-      <Button onClick={() => { setDone(""); setOpen(true); }}>{`Show ${p.intent ?? "info"} toast`}</Button>
+      <Button onClick={() => { setDone(""); setOpen(true); }}>{p.progress !== undefined ? "Show loading toast" : `Show ${p.intent ?? "info"} toast`}</Button>
       {done && <span style={{ fontSize: "var(--font-size-xsmall)", color: "var(--text-neutral)" }}>{done}</span>}
       <Toast {...p} open={open} onClose={() => setOpen(false)} onAction={() => setDone(`${p.actionLabel} picked`)} />
     </div>

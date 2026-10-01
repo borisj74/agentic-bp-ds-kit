@@ -15,6 +15,11 @@
   transition: width var(--motion-expand-duration) var(--motion-expand-easing);
 }
 
+/* Indeterminate: a segment a third as wide as the track slides from off its start to off its end, again and again.
+   Moved by transform, in its own widths: three and a bit carry it right across. */
+.slide { width: calc(100% / 3); animation: slide var(--motion-loading-duration) var(--motion-loading-easing) infinite; }
+@keyframes slide { from { transform: translateX(-100%); } to { transform: translateX(300%); } }
+
 /* Tones: the track is neutral unless it shows a zone; the value is blue unless it takes its zone's color. */
 .track.neutral { background: var(--bg-neutral-subtle); }
 .track.danger, .band.danger, .fill.danger { background: var(--bg-danger); }
@@ -66,4 +71,8 @@
 .ring.lg .value { font-size: var(--font-size-xlarge); }
 .ring .tip { transform: translate(-50%, calc(-100% - var(--space-xxsmall))); }
 
-@media (prefers-reduced-motion: reduce) { .fill, .arc { transition: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .fill, .arc { transition: none; }
+  /* A still, faint fill across the track says busy without moving. */
+  .slide { width: 100%; animation: none; opacity: var(--opacity-300); }
+}
