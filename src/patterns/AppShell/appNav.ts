@@ -24,7 +24,7 @@ export const APP_NAV: AppNavEntry[] = [
 
 export const APP_NAV_END: AppNavItem[] = [
   { id: "recycle", label: "Recycle Bin", icon: "recycling" },
-  { id: "processes", label: "Processes", icon: "tune" },
+  { id: "processes", label: "Processes", icon: "rule_settings" },
 ];
 
 // Where a nav id lands: the section it sits under and the page's own name, for the trail and the title.
