@@ -44,22 +44,25 @@ describe("Toast", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("stays until dismissed when duration is null, and Dismiss closes it", () => {
+  it("has no close button; it stays when duration is null, and Escape closes it", () => {
     const onClose = vi.fn();
     render(<Toast open onClose={onClose} title="Saved" duration={null} />);
+    expect(screen.queryByRole("button", { name: "Dismiss" })).not.toBeInTheDocument();
     act(() => { vi.advanceTimersByTime(60000); });
     expect(onClose).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole("button", { name: "Dismiss" }));
+    fireEvent.keyDown(card(), { key: "Escape" });
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   // Regression: an Undo toast closed after 5 seconds, before keyboard and screen reader users could reach it.
-  it("waits to be closed when it has an action and no duration", () => {
+  it("counts down 8 seconds when it has an action and no duration", () => {
     const onClose = vi.fn();
     render(<Toast open onClose={onClose} title="Deleted" actionLabel="Undo" onAction={() => {}} />);
-    act(() => { vi.advanceTimersByTime(60000); });
+    act(() => { vi.advanceTimersByTime(7999); });
     expect(onClose).not.toHaveBeenCalled();
     expect(card()).toHaveTextContent("Undo");
+    act(() => { vi.advanceTimersByTime(1); });
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it("still counts down with an action when a duration is set", () => {
@@ -90,12 +93,13 @@ describe("Toast loading mode", () => {
     expect(stack()?.textContent ?? "").not.toContain("Data is loading");
   });
 
-  it("never closes itself, even with a duration, and has no close button", () => {
+  it("never closes itself, even with a duration or Escape", () => {
     const onClose = vi.fn();
     render(<Toast open onClose={onClose} title="Data is loading" progress="indeterminate" duration={3000} />);
     act(() => { vi.advanceTimersByTime(60000); });
     expect(onClose).not.toHaveBeenCalled();
-    expect(screen.queryByRole("button", { name: "Dismiss" })).not.toBeInTheDocument();
+    fireEvent.keyDown(top()!.firstElementChild!, { key: "Escape" });
+    expect(onClose).not.toHaveBeenCalled();
   });
 
   it("shows a progressbar named by the title, with the value or none when indeterminate", () => {

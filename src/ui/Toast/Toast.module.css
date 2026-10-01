@@ -29,16 +29,15 @@
 .danger .bar { background: var(--bg-danger-subtle); }
 .danger .fill { background: var(--bg-danger); }
 
-/* Icon, text and close in one row; the icon and close sit on the title line. */
-.body { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; gap: var(--space-small); padding: var(--space-medium); }
+/* Icon and text in one row; the icon sits on the title line. */
+.body { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: var(--space-small); padding: var(--space-medium); }
 .icon { display: flex; align-items: center; height: var(--control-small); }
 .content { display: grid; justify-items: start; gap: var(--space-xxsmall); min-width: 0; padding-block: calc((var(--control-small) - var(--line-height-snug) * 1em) / 2); line-height: var(--line-height-snug); }
 .title { margin: 0; font-size: var(--font-size-regular); font-weight: var(--font-weight-semibold); }
 .description { margin: 0; font-size: var(--font-size-small); color: var(--text-neutral); }
 
-/* Loading: narrower, no close column, and it drops in from above. The Meter takes the content's full width. */
-.inProgress { width: var(--toast-loading-width); animation-name: enter-top; }
-.inProgress .body { grid-template-columns: auto minmax(0, 1fr); }
+/* Loading: it drops in from above. The Meter takes the content's full width. */
+.inProgress { animation-name: enter-top; }
 .progress { justify-self: stretch; padding-block: var(--space-xsmall) var(--space-xxsmall); }
 
 /* Same link-style action as Callout. */

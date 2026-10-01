@@ -2,7 +2,7 @@
   "name": "Toast",
   "path": "src/ui/Toast/Toast.tsx",
   "intent": "A short note that floats in after an action, like Saved successfully, and goes away on its own after a few seconds, with an optional Undo. In loading mode it is a small notice that stays while work runs, with a progress bar and a Cancel.",
-  "usage": "Use Toast to confirm an action people just took, or to offer a quick Undo. It is one component: render it with open and onClose, and set open when the action happens. It floats at the bottom right of the screen, above dialogs; several stack. A bar along the top counts down duration (5 seconds by default) and then onClose runs; pointing at the toast or tabbing into it pauses the countdown. A toast with an action has no countdown unless you set duration, so people have time to reach the action. intent colors the icon and the bar. actionLabel adds one link-style action, like Undo; picking it runs onAction and closes the toast. Loading mode: set progress to a number from 0 to 100, or to indeterminate when the amount done is not known, for work that runs in the background while people keep using the page, like Data is loading. A loading toast sits at the top center of the screen, and loading toasts stack there; it is 360 wide. The kit Spinner takes the place of the icon, the title runs through the kit TextLoader wave, and a thin kit Meter bar sits under the text, with the percent after it. It has no countdown and no close button and never closes itself: actionLabel, like Cancel, is the way out (onAction runs, then onClose), and the screen sets open to false when the work is done. It has no scrim and does not block the page. intent colors the bar. For messages that must stay on the page, use Callout. See contracts/toast.json for the full contract. A toast is not opened by anything in particular, so it follows the page's own theme rather than a frame's.",
+  "usage": "Use Toast to confirm an action people just took, or to offer a quick Undo. It is one component: render it with open and onClose, and set open when the action happens. It floats at the bottom right of the screen, above dialogs; several stack. It is 360 wide and has no close button. A bar along the top counts down duration and then onClose runs: 5 seconds by default, 8 with an action, so people have time to reach it. Pointing at the toast or tabbing into it pauses the countdown, and Escape closes it while focus is inside. intent colors the icon and the bar. actionLabel adds one link-style action, like Undo; picking it runs onAction and closes the toast. Loading mode: set progress to a number from 0 to 100, or to indeterminate when the amount done is not known, for work that runs in the background while people keep using the page, like Data is loading. A loading toast sits at the top center of the screen, and loading toasts stack there. The kit Spinner takes the place of the icon, the title runs through the kit TextLoader wave, and a thin kit Meter bar sits under the text, with the percent after it. It has no countdown and never closes itself, and Escape does not close it: actionLabel, like Cancel, is the way out (onAction runs, then onClose), and the screen sets open to false when the work is done. It has no scrim and does not block the page. intent colors the bar. For messages that must stay on the page, use Callout. See contracts/toast.json for the full contract. A toast is not opened by anything in particular, so it follows the page's own theme rather than a frame's.",
   "props": {
     "open": {
       "type": "boolean",
@@ -12,7 +12,7 @@
     "onClose": {
       "type": "function",
       "required": true,
-      "note": "() => void. Runs when the time is up, on the close button, or after the action. In loading mode only the action runs it."
+      "note": "() => void. Runs when the time is up, on Escape, or after the action. In loading mode only the action runs it."
     },
     "title": {
       "type": "string",
@@ -43,12 +43,11 @@
     },
     "progress": {
       "type": "number | \"indeterminate\"",
-      "note": "Turns on loading mode. 0 to 100 fills the bar and writes the percent after it; indeterminate slides a segment along it. Leave it out for a normal toast. A loading toast sits top center, is 360 wide, has a Spinner for its icon, the title in the TextLoader wave, no countdown and no close button."
+      "note": "Turns on loading mode. 0 to 100 fills the bar and writes the percent after it; indeterminate slides a segment along it. Leave it out for a normal toast. A loading toast sits top center, has a Spinner for its icon, the title in the TextLoader wave and no countdown."
     },
     "duration": {
       "type": "number | null",
-      "default": 5000,
-      "note": "How long it stays, in ms, while the bar counts down. null keeps it until it is closed, with no bar. With actionLabel and no duration it defaults to null. Ignored in loading mode, which never closes itself."
+      "note": "How long it stays, in ms, while the bar counts down. Defaults to 5000, or 8000 with actionLabel. null keeps it, with no bar, until the action runs or the screen sets open to false; use it only when the screen closes it itself. Ignored in loading mode, which never closes itself."
     }
   },
   "useWhen": [
@@ -63,28 +62,28 @@
     "Do not invent ToastTitle, ToastDescription, ToastAction or a toast container. Render Toast.",
     "Do not put a scrim behind a loading toast or make it modal. If people cannot do anything until the work is done, the page shows the loading itself.",
     "Do not set duration on a loading toast or close it on a timer; close it when the work is done or cancelled.",
-    "Do not add a close button to a loading toast. Give it an action like Cancel when the work can be stopped.",
+    "Do not add a close button to a toast. The countdown, the action or Escape closes it; give a loading toast an action like Cancel when the work can be stopped.",
     "Do not move toasts: confirmations sit bottom right, loading toasts top center.",
     "Do not use a loading toast for a short wait in one spot. Put a Spinner there.",
     "Do not use raw hex."
   ],
   "a11y": [
     "role status, announced politely; danger toasts are role alert and announced at once.",
-    "The countdown pauses while the pointer is over the toast or focus is inside it, so people can read it.",
-    "A toast with an action does not close on its own unless duration is set, so keyboard and screen reader users can reach the action (WCAG 2.2.1).",
-    "The close button is a kit Button named Dismiss. The icon and the bar are decorative.",
+    "The countdown pauses while the pointer is over the toast or focus is inside it, so people can read it and reach the action. Escape closes it while focus is inside.",
+    "A toast with an action counts down 8 seconds, not 5, and pauses on focus, so keyboard and screen reader users can reach the action (WCAG 2.2.1).",
+    "There is no close button. The icon and the bar are decorative.",
     "It fades in unless the person prefers reduced motion.",
     "The action is at least 24 tall (WCAG 2.5.8).",
     "A loading toast joins its own polite status region at the top center; its title is read once, as one phrase.",
     "Its bar is a progressbar named by the title, with the percent as its value, or with no value when indeterminate.",
-    "Its action, like Cancel, is a real button that keyboard users reach with Tab; there is no close button before it.",
+    "Its action, like Cancel, is a real button that keyboard users reach with Tab.",
     "The Spinner and the TextLoader wave stop moving when the person prefers reduced motion."
   ],
   "snippet": "<Toast\n  open={saved}\n  onClose={() => setSaved(false)}\n  title=\"Saved successfully\"\n  description=\"Your changes have been saved.\"\n  actionLabel=\"Undo\"\n  onAction={undo}\n/>",
   "examples": [
     {
       "title": "Intents",
-      "usage": "Click a button to show the toast. intent colors the icon and the countdown bar. The ones with an action wait to be closed, so they have no bar.",
+      "usage": "Click a button to show the toast. intent colors the icon and the countdown bar. The ones with an action count down 8 seconds, the others 5.",
       "items": [
         {
           "props": {
@@ -120,7 +119,7 @@
     },
     {
       "title": "Stays open",
-      "usage": "duration null keeps the toast until it is closed, with no countdown bar.",
+      "usage": "duration null keeps the toast, with no countdown bar, until the action runs or the screen closes it.",
       "items": [
         {
           "props": {

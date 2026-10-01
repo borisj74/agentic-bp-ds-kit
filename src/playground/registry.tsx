@@ -1865,18 +1865,18 @@ export const registry: Record<string, Entry> = {
     card: <div style={{ width: 300 }}><Timeline items={SHORT} size="sm" /></div>,
   },
   Toast: {
-    // A kit Button shows the real Toast. With an action label it waits to be closed; clear the label for the 5 second countdown.
+    // A kit Button shows the real Toast. It counts down 8 seconds with an action label, 5 without.
     render: (p) => <ToastDemo {...(p as { title: string })} />,
     preview: { title: "Saved successfully", description: "Your changes have been saved.", actionLabel: "Undo" },
     hide: ["open"],
     snippet: { open: "{saved}", onClose: "{close}", onAction: "{undo}" },
     // loading picks progress; a loading toast gets loading copy and a Cancel, as a screen would give it.
-    extras: { loading: { values: ["off", "indeterminate", "42"], default: "off" } },
+    extras: { loading: { values: ["off", "indeterminate", "%"], default: "off" } },
     normalize: ({ loading, ...p }) => loading === "off" || loading === undefined ? p : {
       ...p, title: "Data is loading", description: "You can keep working while it loads.", actionLabel: "Cancel",
-      progress: loading === "indeterminate" ? "indeterminate" : Number(loading),
+      progress: loading === "indeterminate" ? "indeterminate" : 42,
     },
-    hint: "Click the button to show it. With Undo it stays until closed, so people can reach the action; clear the action label and the top bar counts down 5 seconds (point at the toast to pause it). Switch the intent. Switch loading to see loading mode: it sits top center with a Spinner, the title wave and a thin bar, and only Cancel closes it.",
+    hint: "Click the button to show it. The top bar counts down 8 seconds with an action like Undo, 5 without; point at the toast or tab into it to pause it, and Escape closes it. Switch the intent. Switch loading to see loading mode: it sits top center with a Spinner, the title wave and a thin bar (% shows a value), and only Cancel closes it.",
     card: <Button>Show toast</Button>,
   },
   Toolbar: {

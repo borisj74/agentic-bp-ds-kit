@@ -239,9 +239,8 @@ drawer/extended|1100px
 empty/media|{ref/size/1300}
 empty/copy-max|384px
 
-# Toast: 400 wide, a 4px countdown bar on top. A loading toast is 360 wide.
-toast/width|400px
-toast/loading-width|360px
+# Toast: 360 wide, loading or not, a 4px countdown bar on top.
+toast/width|360px
 toast/bar|{ref/size/200}
 
 # Pagination (Figma table footer 3187:39779): 40 tall.
