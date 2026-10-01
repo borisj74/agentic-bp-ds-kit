@@ -133,6 +133,8 @@ Read [Prompting](#prompting) before your first screen.
 
 Working from a clone of the kit (Option 3)? Run `git pull` and then `npm install`.
 
+What changed in each release is in [CHANGELOG.md](CHANGELOG.md). Breaking releases say what to rename or run.
+
 Some releases rename pieces or props. When you move screens into a newer kit, run the matching script over your screen folders, oldest first, then `npx tsc --noEmit` to catch anything it missed. Each script is safe to run twice.
 
 | Script | What it renames |
@@ -333,6 +335,8 @@ The kit tells the assistant to stop and ask when a screen needs something it doe
 | `src/app/(playground)/` | The catalog you see at localhost:3000, including the Start pages |
 | `packages/create-agentic-bp-ds/` | The `npm create` installer |
 | `.claude/skills/prototype-from-kit/` | The Prototype from kit skill |
+| `CHANGELOG.md` | What changed in each release |
+| `RELEASING.md` | How a new version goes out |
 
 ## License
 
