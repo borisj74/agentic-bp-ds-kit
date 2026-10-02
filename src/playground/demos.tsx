@@ -2398,70 +2398,68 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
   });
   const tabLabel = tabs.find((t) => t.id === tab)?.label ?? "Details";
   const details = (
-    <div className="layout-split layout-split--primary">
-      <div className="layout-stack">
-        <Section title="Account information" collapsible>
-          <Form columns={2}>
-            <FormDisplay label="Account name" value={account.name} />
-            <FormDisplay label="Account type" value="ACCOUNT" />
-            <FormDisplay label="View recent invoices" value={<Link onClick={() => {}}>Invoices</Link>} />
-            <FormDisplay label="Total due in collections" value="$0.00" />
-            <FormDisplay label="Account ledger number" value={<Link onClick={() => {}}>65550</Link>} />
-            <FormDisplay label="Status" value={<Badge intent="success">Active</Badge>} />
-            <FormDisplay label="Legal entity" value={<Link onClick={() => {}}>Parent Co</Link>} />
-            <FormDisplay label="Invoicing time zone" value="Asia/Bangkok" />
-            <FormDisplay label="Invoice currency" value="Dollars" />
-            <FormDisplay label="Reporting currency" value="USD" />
-          </Form>
-        </Section>
-        <Section title="Billing profile" collapsible defaultExpanded={false}>
-          <Form columns={2}>
-            <FormDisplay label="Default billing cycle" value="MONTHLY" />
-            <FormDisplay label="Billing cycle closing day" value="31" />
-            <FormDisplay label="Payment terms (net)" value="30" />
-            <FormDisplay label="Payment method" value="Manual payment" />
-            <FormDisplay label="Invoice template" value="Standard invoice" />
-            <FormDisplay label="Dunning process" value="None" />
-          </Form>
-        </Section>
-        <Section title="Invoices" collapsible defaultExpanded={false}>
-          <Table
-            columns={[{ key: "invoice", header: "Invoice" }, { key: "date", header: "Date" }, { key: "amount", header: "Amount", numeric: true }, { key: "status", header: "Status" }]}
-            rows={[
-              { id: "i1", invoice: <Cell type="link" label="INV-30211" onClick={() => {}} />, date: "08/31/2026", amount: "$10.15", status: <Cell type="badge" label="Open" intent="info" /> },
-              { id: "i2", invoice: <Cell type="link" label="INV-29874" onClick={() => {}} />, date: "07/31/2026", amount: "$1,240.00", status: <Cell type="badge" label="Paid" intent="success" /> },
-            ]}
-          />
-        </Section>
-        <Section title="Account products" collapsible defaultExpanded={false}>
-          <Table columns={FLOW_PRODUCT_COLUMNS.slice(0, 5)} rows={products.slice(0, 5).map(flowProductRow)} emptyLabel="No products on this account yet." />
-        </Section>
-      </div>
-      <div className="layout-stack">
-        <Section title="System information">
-          <Form>
-            <FormDisplay label="Account ID" value={account.id} />
-            <FormDisplay label="Created by" value="Admin · 08/29/2022" />
-            <FormDisplay label="Modified by" value="Admin · 09/15/2024" />
-          </Form>
-        </Section>
-        <Section title="Payments & aging">
-          <Form labelPosition="start">
-            <FormDisplay label="Current" value="$10.15" />
-            <FormDisplay label="1–30" value="$0.00" />
-            <FormDisplay label="31–60" value="$0.00" />
-            <FormDisplay label="61–90" value="$0.00" />
-            <FormDisplay label="90+" value="$0.00" />
-            <FormDisplay label="Total balance" value="$10.15" />
-          </Form>
-        </Section>
-        <Section title="Shipping address">
-          <FormDisplay label="Address" value={<>{account.name}<br />123 Market Street, Suite 400<br />San Francisco, CA 94105<br />United States</>} />
-        </Section>
-        <Section title="Quick links">
-          <LinkList label="Quick links" items={FLOW_QUICK_LINKS.map((l) => ({ id: l, label: l, onClick: () => {} }))} />
-        </Section>
-      </div>
+    // One full-width column: the account's Sections stack, all but Account information closed at start.
+    <div className="layout-stack">
+      <Section title="Account information" collapsible>
+        {/* Labels at the start here only; the RecordPage keeps the other Sections' labels on top. */}
+        <Form columns={2} labelPosition="start">
+          <FormDisplay label="Account name" value={account.name} />
+          <FormDisplay label="Account type" value="ACCOUNT" />
+          <FormDisplay label="View recent invoices" value={<Link onClick={() => {}}>Invoices</Link>} />
+          <FormDisplay label="Total due in collections" value="$0.00" />
+          <FormDisplay label="Account ledger number" value={<Link onClick={() => {}}>65550</Link>} />
+          <FormDisplay label="Status" value={<Badge intent="success">Active</Badge>} />
+          <FormDisplay label="Legal entity" value={<Link onClick={() => {}}>Parent Co</Link>} />
+          <FormDisplay label="Invoicing time zone" value="Asia/Bangkok" />
+          <FormDisplay label="Invoice currency" value="Dollars" />
+          <FormDisplay label="Reporting currency" value="USD" />
+        </Form>
+      </Section>
+      <Section title="Billing profile" collapsible defaultExpanded={false}>
+        <Form columns={2}>
+          <FormDisplay label="Default billing cycle" value="MONTHLY" />
+          <FormDisplay label="Billing cycle closing day" value="31" />
+          <FormDisplay label="Payment terms (net)" value="30" />
+          <FormDisplay label="Payment method" value="Manual payment" />
+          <FormDisplay label="Invoice template" value="Standard invoice" />
+          <FormDisplay label="Dunning process" value="None" />
+        </Form>
+      </Section>
+      <Section title="Invoices" collapsible defaultExpanded={false}>
+        <Table
+          columns={[{ key: "invoice", header: "Invoice" }, { key: "date", header: "Date" }, { key: "amount", header: "Amount", numeric: true }, { key: "status", header: "Status" }]}
+          rows={[
+            { id: "i1", invoice: <Cell type="link" label="INV-30211" onClick={() => {}} />, date: "08/31/2026", amount: "$10.15", status: <Cell type="badge" label="Open" intent="info" /> },
+            { id: "i2", invoice: <Cell type="link" label="INV-29874" onClick={() => {}} />, date: "07/31/2026", amount: "$1,240.00", status: <Cell type="badge" label="Paid" intent="success" /> },
+          ]}
+        />
+      </Section>
+      <Section title="Account products" collapsible defaultExpanded={false}>
+        <Table columns={FLOW_PRODUCT_COLUMNS.slice(0, 5)} rows={products.slice(0, 5).map(flowProductRow)} emptyLabel="No products on this account yet." />
+      </Section>
+      <Section title="System information" collapsible defaultExpanded={false}>
+        <Form>
+          <FormDisplay label="Account ID" value={account.id} />
+          <FormDisplay label="Created by" value="Admin · 08/29/2022" />
+          <FormDisplay label="Modified by" value="Admin · 09/15/2024" />
+        </Form>
+      </Section>
+      <Section title="Payments & aging" collapsible defaultExpanded={false}>
+        <Form labelPosition="start">
+          <FormDisplay label="Current" value="$10.15" />
+          <FormDisplay label="1–30" value="$0.00" />
+          <FormDisplay label="31–60" value="$0.00" />
+          <FormDisplay label="61–90" value="$0.00" />
+          <FormDisplay label="90+" value="$0.00" />
+          <FormDisplay label="Total balance" value="$10.15" />
+        </Form>
+      </Section>
+      <Section title="Shipping address" collapsible defaultExpanded={false}>
+        <FormDisplay label="Address" value={<>{account.name}<br />123 Market Street, Suite 400<br />San Francisco, CA 94105<br />United States</>} />
+      </Section>
+      <Section title="Quick links" collapsible defaultExpanded={false}>
+        <LinkList label="Quick links" items={FLOW_QUICK_LINKS.map((l) => ({ id: l, label: l, onClick: () => {} }))} />
+      </Section>
     </div>
   );
   const prodStart = (prodPage - 1) * prodSize;
