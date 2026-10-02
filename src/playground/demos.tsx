@@ -2226,6 +2226,24 @@ const FLOW_ACCOUNTS: FlowAccount[] = [
   { id: "72075", name: "Claude Test Account 2026-07-28 #2" },
   { id: "72074", name: "Claude Test Account 2026-07-28" },
   { id: "72073", name: "Anton Test Subscription 6" },
+  { id: "72072", name: "Northwind Retail EU", approval: "Pending" },
+  { id: "72071", name: "Contoso Cloud Services" },
+  { id: "72070", name: "Fabrikam Manufacturing" },
+  { id: "72069", name: "Tailspin Toys Wholesale" },
+  { id: "72068", name: "Wide World Importers", approval: "Approved" },
+  { id: "72067", name: "Adventure Works Cycles" },
+  { id: "72066", name: "Litware Analytics" },
+  { id: "72065", name: "Proseware Health" },
+  { id: "72064", name: "Woodgrove Bank Treasury" },
+  { id: "72063", name: "Lucerne Publishing" },
+  { id: "72062", name: "Margie's Travel", approval: "Dismissed" },
+  { id: "72061", name: "Coho Winery" },
+  { id: "72060", name: "Alpine Ski House" },
+  { id: "72059", name: "Blue Yonder Airlines" },
+  { id: "72058", name: "Trey Research Usage Test" },
+  { id: "72057", name: "Graphic Design Institute" },
+  { id: "72056", name: "School of Fine Art" },
+  { id: "72055", name: "VanArsdel Annual Prepaid" },
 ];
 const FLOW_ACCOUNT_COLUMNS: TableColumn[] = [
   { key: "accountId", header: "Account ID", width: "128px" }, { key: "name", header: "Account name" }, { key: "type", header: "Type" },
@@ -2314,6 +2332,8 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
   const [picks, setPicks] = useState(FLOW_NO_FILTERS);
   const [listPage, setListPage] = useState(1);
   const [listSize, setListSize] = useState(10);
+  // How the accounts list shows: Table View by default, List View when picked in the Toolbar.
+  const [listView, setListView] = useState("table");
   const [prodPage, setProdPage] = useState(1);
   const [prodSize, setProdSize] = useState(10);
   // The screen holds whether the top has scrolled away; each pattern only reports the crossing.
@@ -2382,12 +2402,25 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
           filters={<>{chips}</>} filterCount={filterSets.filter((f) => picks[f.key].length > 0).length}
           onReset={() => { setPicks(FLOW_NO_FILTERS); setListPage(1); }}
           searchValue={query} onSearchChange={(v) => { setQuery(v); setListPage(1); }} searchPlaceholder="Search in list"
-          views={[{ id: "list", label: "List View" }, { id: "table", label: "Table View" }]} onRefresh={() => {}}
+          views={[{ id: "table", label: "Table View" }, { id: "list", label: "List View" }]} view={listView} onViewChange={setListView} onRefresh={() => {}}
         />
       }
       pagination={<Pagination total={found.length} page={listPage} onPageChange={setListPage} pageSize={listSize} onPageSizeChange={(n) => { setListSize(n); setListPage(1); }} label="Accounts" />}
     >
-      <Table columns={FLOW_ACCOUNT_COLUMNS} rows={listRows} emptyLabel="No accounts match the search and filters." />
+      {listView === "list" ? (
+        // List View: the same accounts as kit ListView rows; a row opens the account, with the table's Edit and Delete.
+        <ListView
+          label="Accounts" interaction="drill" onOpen={(id) => openAccount(id)}
+          onAction={(id, action) => (action === "delete" ? setAccounts((old) => old.filter((x) => x.id !== id)) : openAccount(id))}
+          items={found.slice(listStart, listStart + listSize).map((a) => ({
+            id: a.id, primary: a.name, secondary: `${a.id} \u00b7 ACCOUNT \u00b7 MONTHLY${a.approval ? ` \u00b7 ${a.approval}` : ""}`,
+            badge: "Active", badgeIntent: "success",
+            actions: [{ id: "edit", label: "Edit", icon: "edit" }, { id: "delete", label: "Delete", icon: "delete" }],
+          }))}
+        />
+      ) : (
+        <Table columns={FLOW_ACCOUNT_COLUMNS} rows={listRows} emptyLabel="No accounts match the search and filters." />
+      )}
     </ListPage>
   );
 
