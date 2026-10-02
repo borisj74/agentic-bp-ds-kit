@@ -2331,7 +2331,8 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
   const [query, setQuery] = useState("");
   const [picks, setPicks] = useState(FLOW_NO_FILTERS);
   const [listPage, setListPage] = useState(1);
-  const [listSize, setListSize] = useState(10);
+  // 25 a page, so the rows fill the page rather than leaving the table's box half empty.
+  const [listSize, setListSize] = useState(25);
   // How the accounts list shows: Table View by default, List View when picked in the Toolbar.
   const [listView, setListView] = useState("table");
   const [prodPage, setProdPage] = useState(1);
