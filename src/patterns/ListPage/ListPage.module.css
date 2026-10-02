@@ -4,6 +4,12 @@
 
 /* The rows and their page bar as one block, nothing between them: the bar reads as the table's footer. */
 .body { display: flex; flex-direction: column; min-width: 0; }
+/* Table View runs to the bottom of the page: the list takes the page's free height and the table's box grows
+   into it, so the page bar sits at the foot of the page. With more rows than fit, the page scrolls as before.
+   List and Card views keep their own height. */
+.list:has(> .body table) { flex: 1 0 auto; }
+.list:has(> .body table) > .body { flex: 1 0 auto; }
+.list:has(> .body table) > .body > :first-child { flex: 1 0 auto; }
 /* Cards are separate blocks, not rows, so the page bar sits one grid gutter under them instead of flush. */
 .body:has(> :global(.layout-split), > :global(.layout-metrics)) { gap: var(--layout-gutter-md); }
 
