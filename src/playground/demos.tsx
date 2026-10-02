@@ -2647,7 +2647,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
       notice={<Callout intent="info">Use this form to manage general account information as well as the default billing information for the account.</Callout>}
     >
       <Form
-        id={newAccountForm} columns={2} sections={newAccountSections}
+        id={newAccountForm} columns={2} labelPosition="start" sections={newAccountSections}
         onSubmit={(data) => {
           const name = String(data.get("name") || "").trim() || "New account";
           const id = String(Math.max(...accounts.map((a) => Number(a.id))) + 1);
