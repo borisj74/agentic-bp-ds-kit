@@ -1,11 +1,11 @@
-/* Figma app-header 2652:90243: a 56px bar with a faint radial wash and a subtle bottom line.
+/* Figma app-header 2652:90243: a 56px bar on the neutral faint background with a subtle bottom line.
    The header is the size container; the bar inside does the layout, since a container query
    cannot restyle the container itself. */
 .header {
   /* Density: bar, search and company badge heights. Default is the Figma 56 / 40 / 36. */
   --bar-h: var(--app-header-height); --search-h: var(--app-header-search-height); --who-h: var(--control-medium);
   box-sizing: border-box; width: 100%; container-type: inline-size;
-  background: radial-gradient(ellipse at center, var(--bg-neutral-faint), var(--surface-flat) 70%);
+  background: var(--bg-neutral-faint);
   border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
   font-family: var(--font-sans);
 }
