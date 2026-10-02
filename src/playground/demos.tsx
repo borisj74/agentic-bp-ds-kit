@@ -2388,8 +2388,9 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
   const listHeader = (
     // The page's own actions live here, not in the Toolbar, which keeps finding and viewing.
     <PageHeader
-      title="Account" sticky={compact}
-      breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", onClick: toList }]}
+      // The list is the Accounts section's own page: the title is the section, so the trail is Home › Accounts.
+      title="Accounts" sticky={compact}
+      breadcrumbs={[{ label: "Home", href: "#" }]}
       actions={<><Button size="sm" iconStart="download">Export</Button><Button size="sm" emphasis="strong" intent="brand" iconStart="add" onClick={() => go("newAccount")}>New</Button></>}
     />
   );
