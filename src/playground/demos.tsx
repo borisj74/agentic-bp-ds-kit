@@ -2473,7 +2473,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
         <Table columns={FLOW_PRODUCT_COLUMNS.slice(0, 5)} rows={products.slice(0, 5).map(flowProductRow)} emptyLabel="No products on this account yet." />
       </Section>
       <Section title="System information" collapsible defaultExpanded={false}>
-        <Form>
+        <Form labelPosition="start">
           <FormDisplay label="Account ID" value={account.id} />
           <FormDisplay label="Created by" value="Admin · 08/29/2022" />
           <FormDisplay label="Modified by" value="Admin · 09/15/2024" />
