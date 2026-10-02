@@ -2451,7 +2451,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
         </Form>
       </Section>
       <Section title="Billing profile" collapsible defaultExpanded={false}>
-        <Form columns={2}>
+        <Form columns={2} labelPosition="start">
           <FormDisplay label="Default billing cycle" value="MONTHLY" />
           <FormDisplay label="Billing cycle closing day" value="31" />
           <FormDisplay label="Payment terms (net)" value="30" />
