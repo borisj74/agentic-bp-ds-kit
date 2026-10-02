@@ -4,6 +4,19 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.4.5 — 2026-10-02
+
+### Added
+- `CHANGELOG.md` (this file, back to v0.3.0) and `RELEASING.md`, the steps a release follows.
+- AccountFlow holds 36 accounts, so the list has pages to turn.
+
+### Changed
+- ListPage: Table View runs to the bottom of the page, so Pagination sits at the foot instead of partway up. More rows than fit still scroll inside the table. List and Card views keep their own height.
+- AccountFlow list: Table View is the default and the view picker is controlled; List View shows the same page of accounts as a ListView. 25 rows a page, so the table fills the page.
+- AccountFlow list trail reads Home › Accounts: the list is the Accounts section's own page, so there is no second Account crumb.
+- AccountFlow Details is one column. Account information, Billing profile and System information put their labels at the start, and the side sections (Payments, Shipping address, Quick links) move below Account products, each collapsible and closed. The new-account form puts its labels at the start too.
+- AppHeader background is `bg-neutral-faint`, flat instead of a radial wash to white, and the search field has no shadow behind it.
+
 ## v0.4.4 — 2026-10-01 · Breaking
 
 ### Added
