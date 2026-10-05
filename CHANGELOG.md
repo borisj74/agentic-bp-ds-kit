@@ -4,6 +4,12 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.4.7 — 2026-10-05
+
+### Changed
+- A reference line whose level changes now reads both ends in the hidden list screen readers get, like "Grant: 1,150 to 1,750". Before it gave only the level the line ends at, so the change was lost. A line that stays flat reads as it did.
+- The BarChart contract describes `referenceLines`, `projectedFrom` and `marker` in its usage, the way LineChart does, and says how they reach screen readers.
+
 ## v0.4.6 — 2026-10-05
 
 ### Added
