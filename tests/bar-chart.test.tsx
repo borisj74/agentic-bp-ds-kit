@@ -107,7 +107,8 @@ describe("BarChart", () => {
       const levels = step.getAttribute("d")!.split("V").slice(1).map((p) => Number(p.split("H")[0]));
       expect(levels).toHaveLength(month.length - 1);
       expect(new Set(levels).size).toBe(3);
-      expect(screen.getByRole("listitem")).toHaveTextContent("Grant: 1,550");
+      // Both ends, so a reader hears the grant changed instead of one flat number.
+      expect(screen.getByRole("listitem")).toHaveTextContent("Grant: 1,150 to 1,550");
     });
 
     it("draws the marker at its category", () => {

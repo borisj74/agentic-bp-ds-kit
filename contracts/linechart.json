@@ -130,7 +130,7 @@
   ],
   "a11y": [
     "A figure named by label. The drawing is hidden from screen readers; a visually hidden table holds every value, with the categories as rows and the series as columns.",
-    "Reference lines and the marker are listed after the table for screen readers, like Limit: 10,000 and Today: Sep 13. Forecast values say projected in the tooltip and the table.",
+    "Reference lines and the marker are listed after the table for screen readers, like Limit: 10,000 and Today: Sep 13; a line that steps reports both ends, like Grant: 1,150 to 1,750. Forecast values say projected in the tooltip and the table.",
     "The chart takes focus: the arrow keys (and Home and End) move through the categories and show the same tooltip as pointing at them. Escape hides it.",
     "Colors come with a legend and the tooltip names each series, so color is not the only way to tell them apart.",
     "Motion is subtle and optional (animate), and never plays when the person prefers reduced motion."

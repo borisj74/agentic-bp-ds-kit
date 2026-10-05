@@ -123,6 +123,12 @@ export function XYChart({
   const levelAt = (r: ChartReferenceLine, i: number) => (stepped(r) ? r.values![Math.min(i, r.values!.length - 1)] : r.value);
   // The level a reference line ends at, which its label reports.
   const refLevel = (r: ChartReferenceLine) => levelAt(r, n - 1);
+  // What the hidden list says: a flat line is its value, a line that steps names both ends, so a reader hears it changed.
+  const refText = (r: ChartReferenceLine) => {
+    const from = levelAt(r, 0);
+    const to = refLevel(r);
+    return from === to ? full(to) : `${full(from)} to ${full(to)}`;
+  };
   // A reference line above the data still sits inside the scale.
   const max = Math.max(...upper.flat(), ...refs.flatMap((r) => [r.value, ...(stepped(r) ? r.values! : [])]), 0);
   const ticks = niceTicks(max);
@@ -392,7 +398,7 @@ export function XYChart({
       <SrTable caption={label} columns={list.map((sr) => sr.name)} rows={categories.map((t, i) => ({ head: t, cells: list.map((sr) => (projected(sr, i) ? `${full(sr.vals[i])} (projected)` : full(sr.vals[i]))) }))} />
       {(refs.length > 0 || mark) && (
         <ul className={s.srOnly}>
-          {refs.map((r) => <li key={`${r.label}${r.value}`}>{`${r.label}: ${full(refLevel(r))}`}</li>)}
+          {refs.map((r) => <li key={`${r.label}${r.value}`}>{`${r.label}: ${refText(r)}`}</li>)}
           {mark && <li>{`${mark.label}: ${categories[mark.category]}`}</li>}
         </ul>
       )}
