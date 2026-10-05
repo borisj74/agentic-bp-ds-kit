@@ -30,8 +30,8 @@
     "series": {
       "type": "ChartSeries[]",
       "required": true,
-      "itemShape": "{ name: string; values: number[]; intent?: ChartIntent }",
-      "note": "One entry per line or bar color, with one value per category. intent picks the color; by default series take green, olive, cyan, orange, pink, gray, then purple, yellow, red and mint."
+      "itemShape": "{ name: string; values: number[]; intent?: ChartIntent; projectedFrom?: number }",
+      "note": "One entry per line or bar color, with one value per category. intent picks the color; by default series take green, olive, cyan, orange, pink, gray, then purple, yellow, red and mint. projectedFrom (upright charts) is the first category that is a forecast, counted from 0: its bars and the ones after it draw see-through in the same color, and the tooltip and table say projected."
     },
     "orientation": {
       "enum": [
@@ -125,6 +125,16 @@
       "type": "string",
       "default": "No data for this range.",
       "note": "Shown when there are no categories or series."
+    },
+    "referenceLines": {
+      "type": "ChartReferenceLine[]",
+      "itemShape": "{ value: number; label: string; intent?: ChartIntent; values?: number[] }",
+      "note": "Upright charts only. Dashed lines across the chart at a value, like a grant, a limit or a target, drawn over the bars so they stay visible where the bars pass them. label names it, like Grant; the chart writes the short value after it, at the end of the line, clear of the bars. Neutral gray unless intent picks a color. The scale always reaches the highest line. values gives one level per category for a limit that changes during the period, like a grant a top-up raises: the line steps on the category it changed, and the label reports the level it ends at."
+    },
+    "marker": {
+      "type": "ChartMarker",
+      "itemShape": "{ category: number; label: string }",
+      "note": "Upright charts only. A thin line down the chart at one category, counted from 0, with its label over the top, like Today."
     }
   },
   "useWhen": [
@@ -132,7 +142,9 @@
     "Parts of a total per period, with stacked.",
     "Long category names or a ranked list, like top customers by balance, with orientation horizontal.",
     "A ranked list where one or two bars matter most: sort the data and pick them out with highlight.",
-    "A long run of periods, like usage per day for a month, with barWidth thin so the bars read as a light rhythm."
+    "A long run of periods, like usage per day for a month, with barWidth thin so the bars read as a light rhythm.",
+    "Usage against a grant or limit over a period, like credits used by day against the grant: referenceLines, with values when the grant steps up partway.",
+    "Actual and forecast periods in one run of bars: projectedFrom on the series, with a marker at today."
   ],
   "doNot": [
     "Do not use it for a long, smooth trend. Use LineChart.",
@@ -140,7 +152,11 @@
     "Do not draw charts with loose SVG or a chart library. Use the kit charts.",
     "Do not use raw hex; pick an intent.",
     "Do not use highlight on every bar; pick out one or two, or use a series intent.",
-    "Do not use barWidth thin for a handful of categories; the bars get lost in wide bands. Keep wide."
+    "Do not use barWidth thin for a handful of categories; the bars get lost in wide bands. Keep wide.",
+    "Do not fake a limit or target with an extra series. It shows in the legend, the tooltip and the table as data. Use referenceLines.",
+    "Do not draw forecast bars as a second series in a lighter color. Use projectedFrom, so actual and forecast stay one series with one name.",
+    "Do not fake a changing limit with several flat reference lines. Give the one line its values per category.",
+    "Do not use referenceLines, marker or projectedFrom on a horizontal chart; they belong to a time axis and a horizontal chart ignores them."
   ],
   "a11y": [
     "A figure named by label. The drawing is hidden from screen readers; a visually hidden table holds every value, with the categories as rows and the series as columns.",
@@ -207,6 +223,21 @@
             "series": "{creditsByBalance}",
             "stacked": true,
             "barWidth": "thin"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Against a grant",
+      "usage": "Credits used so far, day by day, against a grant that steps up when a top-up lands. Bars after today are a see-through forecast.",
+      "items": [
+        {
+          "props": {
+            "label": "Credits used against the grant",
+            "categories": "{grantDays}",
+            "series": "{grantUsed}",
+            "referenceLines": "{grantSteps}",
+            "marker": "{grantToday}"
           }
         }
       ]

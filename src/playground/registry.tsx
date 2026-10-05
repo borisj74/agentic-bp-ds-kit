@@ -453,6 +453,15 @@ const CHART_SAMPLES: Record<string, unknown> = {
   "{usageForecast}": [{ name: "API calls", values: [4200, 5100, 5600, 6300, 7000, 7600, 8300, 9000, 9700, 10400], intent: "cyan", projectedFrom: 5 }],
   "{usageLimit}": [{ value: 10000, label: "Limit", intent: "red" }],
   "{today}": { category: 4, label: "Today" },
+  // Credits used so far this month against the grant: a 1,150 grant that auto top-ups raise on Sep 18, 20 and 22. Bars
+  // after today (Sep 23) are the forecast.
+  "{grantDays}": Array.from({ length: 30 }, (_, i) => `Sep ${i + 1}`),
+  "{grantUsed}": [{
+    name: "Credits used", intent: "purple", projectedFrom: 23,
+    values: [62, 120, 188, 258, 332, 398, 458, 530, 598, 668, 743, 811, 873, 943, 1009, 1073, 1150, 1222, 1300, 1380, 1462, 1552, 1595, 1683, 1771, 1859, 1947, 2035, 2123, 2211],
+  }],
+  "{grantSteps}": [{ value: 1150, label: "Grant", intent: "red", values: [...Array(17).fill(1150), 1350, 1350, 1550, 1550, ...Array(9).fill(1750)] }],
+  "{grantToday}": { category: 22, label: "Today" },
   "{paymentShare}": [
     { label: "Card", value: 55 }, { label: "ACH", value: 29 }, { label: "Wire", value: 13 }, { label: "Check", value: 3 },
   ],

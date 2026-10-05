@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BarChart } from "@/ui/BarChart/BarChart";
 
@@ -66,5 +66,64 @@ describe("BarChart", () => {
     const step = (600 - 8 - x0) / days.length;
     fireEvent.pointerMove(plot, { clientX: x0 + step * 2 + 2, clientY: 50 });
     expect(screen.getByText("Sep 3", { selector: "p" })).toBeInTheDocument();
+  });
+
+  describe("against a grant", () => {
+    const month = ["Sep 1", "Sep 2", "Sep 3", "Sep 4", "Sep 5", "Sep 6"];
+    const used = [{ name: "Credits used", values: [300, 600, 900, 1200, 1400, 1600], projectedFrom: 4 }];
+
+    it("draws a reference line over the bars, with its label and value, and lists it for screen readers", () => {
+      const { container } = render(
+        <BarChart label="Credits used" categories={month} series={used} referenceLines={[{ value: 1150, label: "Grant", intent: "red" }]} animate={false} />,
+      );
+      const svg = container.querySelector("svg")!;
+      const ref = svg.querySelector("line[data-reference]")!;
+      const lastBar = [...svg.querySelectorAll("rect:not([class*=hoverBand])")].pop()!;
+      // Drawn after the bars, so it shows where they pass it.
+      expect(lastBar.compareDocumentPosition(ref) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(svg).toHaveTextContent("Grant 1.2K");
+      expect(screen.getByRole("listitem")).toHaveTextContent("Grant: 1,150");
+    });
+
+    it("draws forecast bars see-through and says projected in the screen-reader table", () => {
+      const { container } = render(<BarChart label="Credits used" categories={month} series={used} animate={false} />);
+      const ahead = container.querySelectorAll("rect[data-projected]");
+      expect(ahead).toHaveLength(2);
+      ahead.forEach((r) => expect((r as SVGElement).style.fillOpacity).toBe("var(--opacity-muted)"));
+      const table = screen.getByRole("table", { name: "Credits used" });
+      expect(within(table).getByRole("row", { name: /Sep 4/ })).not.toHaveTextContent("projected");
+      expect(within(table).getByRole("row", { name: /Sep 5/ })).toHaveTextContent("1,400 (projected)");
+    });
+
+    it("steps a reference line given a level per category, and reports the level it ends at", () => {
+      const { container } = render(
+        <BarChart
+          label="Credits used" categories={month} series={used} animate={false}
+          referenceLines={[{ value: 1150, label: "Grant", values: [1150, 1150, 1150, 1350, 1350, 1550] }]}
+        />,
+      );
+      const step = container.querySelector("path[data-reference]")!;
+      // Each category after the first starts with a move to its own level: three levels, rising on Sep 4 and on Sep 6.
+      const levels = step.getAttribute("d")!.split("V").slice(1).map((p) => Number(p.split("H")[0]));
+      expect(levels).toHaveLength(month.length - 1);
+      expect(new Set(levels).size).toBe(3);
+      expect(screen.getByRole("listitem")).toHaveTextContent("Grant: 1,550");
+    });
+
+    it("draws the marker at its category", () => {
+      const { container } = render(<BarChart label="Credits used" categories={month} series={used} marker={{ category: 3, label: "Today" }} animate={false} />);
+      expect(container.querySelectorAll("line[data-marker]")).toHaveLength(1);
+      expect(screen.getByRole("listitem")).toHaveTextContent("Today: Sep 4");
+    });
+
+    it("ignores reference lines, the marker and forecasts on a horizontal chart", () => {
+      const { container } = render(
+        <BarChart
+          label="Credits used" categories={month} series={used} orientation="horizontal" animate={false}
+          referenceLines={[{ value: 1150, label: "Grant" }]} marker={{ category: 3, label: "Today" }}
+        />,
+      );
+      expect(container.querySelectorAll("[data-reference], [data-marker], [data-projected]")).toHaveLength(0);
+    });
   });
 });

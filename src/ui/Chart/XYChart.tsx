@@ -13,19 +13,23 @@ export interface ChartSeries {
   intent?: ChartIntent;
 }
 
-// LineChart only: projectedFrom is the first category that is a forecast. The line turns dashed where it starts.
+// Upright charts only: projectedFrom is the first category that is a forecast. A line turns dashed where it starts;
+// bars from there on draw see-through.
 export interface ChartLineSeries extends ChartSeries {
   projectedFrom?: number;
 }
 
-// LineChart only: a dashed line across the chart at a value, like a limit or a target.
+// Upright charts only: a dashed line across the chart at a value, like a limit or a target.
 export interface ChartReferenceLine {
   value: number;
   label: string;
   intent?: ChartIntent;
+  // A limit that changes during the period, like a grant a top-up raises: one level per category, drawn as a step.
+  // The label reports the level it ends at.
+  values?: number[];
 }
 
-// LineChart only: a thin line down the chart at one category, like today.
+// Upright charts only: a thin line down the chart at one category, like today.
 export interface ChartMarker {
   category: number;
   label: string;
@@ -105,15 +109,22 @@ export function XYChart({
   // Stacks: each series sits on the sum of the ones before it.
   const lower = list.map((_, k) => categories.map((__, i) => (stacked ? list.slice(0, k).reduce((sum, sr) => sum + sr.vals[i], 0) : 0)));
   const upper = list.map((sr, k) => sr.vals.map((v, i) => lower[k][i] + v));
-  // Reference lines and projections are line-chart ideas; bars ignore them.
+  // Reference lines, the marker and projections run along a time axis, so upright charts draw them, lines and bars
+  // alike; horizontal bars ignore them.
   const line = kind === "line";
-  const refs = line ? referenceLines : [];
-  const mark = line && marker && marker.category >= 0 && marker.category < n ? marker : undefined;
+  const upright = !horizontal;
+  const refs = upright ? referenceLines : [];
+  const mark = upright && marker && marker.category >= 0 && marker.category < n ? marker : undefined;
   // The first forecast category of a series, or n when it has none.
-  const firstProjected = (sr: ChartLineSeries) => (line && sr.projectedFrom !== undefined ? Math.min(Math.max(Math.round(sr.projectedFrom), 0), n) : n);
+  const firstProjected = (sr: ChartLineSeries) => (upright && sr.projectedFrom !== undefined ? Math.min(Math.max(Math.round(sr.projectedFrom), 0), n) : n);
   const projected = (sr: ChartLineSeries, i: number) => i >= firstProjected(sr);
+  // A reference line with a level per category steps; without them it is flat at value.
+  const stepped = (r: ChartReferenceLine) => Boolean(r.values && r.values.length);
+  const levelAt = (r: ChartReferenceLine, i: number) => (stepped(r) ? r.values![Math.min(i, r.values!.length - 1)] : r.value);
+  // The level a reference line ends at, which its label reports.
+  const refLevel = (r: ChartReferenceLine) => levelAt(r, n - 1);
   // A reference line above the data still sits inside the scale.
-  const max = Math.max(...upper.flat(), ...refs.map((r) => r.value), 0);
+  const max = Math.max(...upper.flat(), ...refs.flatMap((r) => [r.value, ...(stepped(r) ? r.values! : [])]), 0);
   const ticks = niceTicks(max);
   const top = ticks[ticks.length - 1];
   const tickW = Math.max(...ticks.map((t) => short(t).length)) * CHAR;
@@ -186,10 +197,16 @@ export function XYChart({
         const side = c(i) + mid(k) - bw / 2;
         const t = Math.max(bw, 1);
         if (len <= 0) return null;
-        const style = { animationDelay: `${i * 30}ms`, fill: picked.has(i) ? intentVar(highlightIntent) : undefined };
+        // A forecast bar is the same color, see-through, so it reads as not yet used.
+        const ahead = projected(sr, i);
+        const style = {
+          animationDelay: `${i * 30}ms`, fill: picked.has(i) ? intentVar(highlightIntent) : undefined,
+          fillOpacity: ahead ? "var(--opacity-muted)" : undefined,
+        };
+        const forecast = ahead ? { "data-projected": "" } : {};
         const className = horizontal ? s.growX : s.grow;
         if (!thin) {
-          return <rect key={i} className={className} style={style} {...(horizontal ? { x: a, y: side, width: len, height: t } : { x: side, y: b, width: t, height: len })} />;
+          return <rect key={i} className={className} style={style} {...forecast} {...(horizontal ? { x: a, y: side, width: len, height: t } : { x: side, y: b, width: t, height: len })} />;
         }
         const start = isFirst(k, i) ? ROUND : 0;
         const end = isLast(k, i) ? ROUND : 0;
@@ -197,7 +214,7 @@ export function XYChart({
         const d = horizontal
           ? roundBox(a, side, len, t, [start, end, end, start])
           : roundBox(side, b, t, len, [end, end, start, start]);
-        return <path key={i} className={className} style={style} d={d} data-bar="thin" />;
+        return <path key={i} className={className} style={style} d={d} data-bar="thin" {...forecast} />;
       })}
     </g>
   ));
@@ -242,16 +259,34 @@ export function XYChart({
     </g>
   ));
 
-  // Reference lines under the data, labelled at the end with their short value; the marker runs top to bottom.
+  // A stepped reference line: one flat run per category, joined by the jump on the category the level changed.
+  const stepPath = (r: ChartReferenceLine) => {
+    const edge = (i: number) => px(x0 + step * i);
+    let d = "";
+    for (let i = 0; i < n; i++) {
+      const y = px(v(levelAt(r, i)));
+      d += `${i === 0 ? `M${edge(0)},${y}` : `V${y}`}H${edge(i + 1)}`;
+    }
+    return d;
+  };
+  // Reference lines, labelled at the end with their short value; the marker runs top to bottom. A line chart draws
+  // them under its lines; a bar chart draws them over its bars, so a limit stays visible where the bars pass it.
   const guides = () => (
     <g className={s.fade}>
-      {refs.map((r) => (
-        <line
-          key={`${r.label}${r.value}`} className={s.reference} data-reference=""
-          x1={x0} x2={x1} y1={px(v(r.value))} y2={px(v(r.value))} strokeDasharray={DASH}
-          style={{ stroke: r.intent ? intentVar(r.intent) : undefined }}
-        />
-      ))}
+      {refs.map((r) => (stepped(r)
+        ? (
+          <path
+            key={`${r.label}${r.value}`} className={s.reference} data-reference="" fill="none" strokeDasharray={DASH}
+            d={stepPath(r)} style={{ stroke: r.intent ? intentVar(r.intent) : undefined }}
+          />
+        )
+        : (
+          <line
+            key={`${r.label}${r.value}`} className={s.reference} data-reference=""
+            x1={x0} x2={x1} y1={px(v(r.value))} y2={px(v(r.value))} strokeDasharray={DASH}
+            style={{ stroke: r.intent ? intentVar(r.intent) : undefined }}
+          />
+        )))}
       {mark && <line className={s.marker} data-marker="" x1={px(c(mark.category))} x2={px(c(mark.category))} y1={y0} y2={y1} />}
     </g>
   );
@@ -269,10 +304,13 @@ export function XYChart({
     const l = markAnchor === "start" ? markX : markAnchor === "end" ? markX - w : markX - w / 2;
     taken.push({ l, r: l + w, t: y0 - 19, b: y0 - 5 });
   }
-  const dots: Box[] = line && refs.length ? list.flatMap((_, k) => upper[k].map((val, i) => ({ l: c(i) - POINT - 2, r: c(i) + POINT + 2, t: v(val) - POINT - 2, b: v(val) + POINT + 2 }))) : [];
+  // What a reference label must not cover: the points of a line, or each category's bars from their top down.
+  const dots: Box[] = !refs.length ? [] : line
+    ? list.flatMap((_, k) => upper[k].map((val, i) => ({ l: c(i) - POINT - 2, r: c(i) + POINT + 2, t: v(val) - POINT - 2, b: v(val) + POINT + 2 })))
+    : categories.map((_, i) => ({ l: c(i) - band / 2 - 2, r: c(i) + band / 2 + 2, t: v(Math.max(...upper.map((u) => u[i]))) - 2, b: y1 }));
   const refPlaces = refs.map((r) => {
-    const text = `${r.label} ${short(r.value)}`;
-    const y = v(r.value);
+    const text = `${r.label} ${short(refLevel(r))}`;
+    const y = v(refLevel(r));
     const sides = (y - y0 < 16 ? [y + 14, y - 6] : [y - 6, y + 14]).filter((base) => base - 11 >= 0 && base + 3 <= h);
     const fits = sides.map((base) => {
       let x = x1;
@@ -332,8 +370,9 @@ export function XYChart({
             : <line className={s.crosshair} x1={c(active)} x2={c(active)} y1={y0} y2={y1} />)}
           {line && guides()}
           {kind === "bar" ? bars() : lines()}
+          {!line && guides()}
           {marks()}
-          {line && guideLabels()}
+          {guideLabels()}
           {categories.map((t, i) => i % every === 0 && (horizontal
             ? <text key={t + i} className={s.tick} x={x0 - 12} y={c(i)} dy="0.35em" textAnchor="end">{catText(t)}</text>
             : <text key={t + i} className={s.tick} x={c(i)} y={y1 + 18} textAnchor="middle">{t}</text>))}
@@ -353,7 +392,7 @@ export function XYChart({
       <SrTable caption={label} columns={list.map((sr) => sr.name)} rows={categories.map((t, i) => ({ head: t, cells: list.map((sr) => (projected(sr, i) ? `${full(sr.vals[i])} (projected)` : full(sr.vals[i]))) }))} />
       {(refs.length > 0 || mark) && (
         <ul className={s.srOnly}>
-          {refs.map((r) => <li key={`${r.label}${r.value}`}>{`${r.label}: ${full(r.value)}`}</li>)}
+          {refs.map((r) => <li key={`${r.label}${r.value}`}>{`${r.label}: ${full(refLevel(r))}`}</li>)}
           {mark && <li>{`${mark.label}: ${categories[mark.category]}`}</li>}
         </ul>
       )}
