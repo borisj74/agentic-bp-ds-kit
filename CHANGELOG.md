@@ -4,6 +4,14 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.4.6 — 2026-10-05
+
+### Added
+- BarChart `referenceLines` and `marker`, the same as LineChart's, on upright charts: a dashed line across at a value (like a grant or a limit), drawn over the bars so it stays visible where they pass it, and a thin line down at one category (like today). The reference label moves clear of the bars.
+- BarChart series `projectedFrom`: bars from that category on draw see-through in their color, and the tooltip and the screen-reader table say projected.
+- Reference lines (BarChart and LineChart) take `values`, one level per category, for a limit that changes during the period, like a grant a top-up raises: the line steps on the category it changed, and its label reports the level it ends at.
+- Catalog: BarChart example Against a grant.
+
 ## v0.4.5 — 2026-10-02
 
 ### Added

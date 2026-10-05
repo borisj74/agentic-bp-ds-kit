@@ -1,8 +1,12 @@
 "use client";
 import type { ChartFormat, ChartIntent } from "../Chart/chart";
-import { XYChart, type ChartBarWidth, type ChartLegendPosition, type ChartOrientation, type ChartSeries } from "../Chart/XYChart";
+import {
+  XYChart, type ChartBarWidth, type ChartLegendPosition, type ChartLineSeries, type ChartMarker, type ChartOrientation, type ChartReferenceLine,
+} from "../Chart/XYChart";
 
-export type { ChartFormat, ChartSeries, ChartIntent, ChartLegendPosition };
+export type { ChartFormat, ChartIntent, ChartLegendPosition, ChartMarker, ChartReferenceLine };
+// An upright BarChart series can turn into a forecast part way: projectedFrom.
+export type ChartSeries = ChartLineSeries;
 export type BarChartOrientation = ChartOrientation;
 export type BarChartBarWidth = ChartBarWidth;
 
@@ -27,6 +31,8 @@ export interface BarChartProps {
   currency?: string;
   height?: number;
   emptyLabel?: string;
+  referenceLines?: ChartReferenceLine[];
+  marker?: ChartMarker;
 }
 
 // Figma Persona Homepages 1139:11403: stacked bars per period, legend under the chart. Horizontal lists the categories down the start.

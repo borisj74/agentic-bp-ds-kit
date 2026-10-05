@@ -103,8 +103,8 @@
     },
     "referenceLines": {
       "type": "ChartReferenceLine[]",
-      "itemShape": "{ value: number; label: string; intent?: ChartIntent }",
-      "note": "Dashed lines across the chart at a value, like a limit or a target. label names it, like Limit; the chart writes the short value after it, at the end of the line. Neutral gray unless intent picks a color. The scale always reaches the highest line."
+      "itemShape": "{ value: number; label: string; intent?: ChartIntent; values?: number[] }",
+      "note": "Dashed lines across the chart at a value, like a limit or a target. label names it, like Limit; the chart writes the short value after it, at the end of the line. Neutral gray unless intent picks a color. The scale always reaches the highest line. values gives one level per category for a limit that changes during the period, like a grant a top-up raises: the line steps on the category it changed, and the label reports the level it ends at."
     },
     "marker": {
       "type": "ChartMarker",
@@ -125,7 +125,8 @@
     "Do not draw a forecast as a second series. Use projectedFrom, so actual and forecast stay one line with one name.",
     "Do not use marker for ranges or several moments. It marks one category, like today.",
     "Do not draw charts with loose SVG or a chart library. Use the kit charts.",
-    "Do not use raw hex; pick an intent."
+    "Do not use raw hex; pick an intent.",
+    "Do not fake a changing limit with several flat reference lines. Give the one line its values per category."
   ],
   "a11y": [
     "A figure named by label. The drawing is hidden from screen readers; a visually hidden table holds every value, with the categories as rows and the series as columns.",
