@@ -297,8 +297,8 @@ export function XYChart({
     </g>
   );
   // Their words go over everything else. A reference label sits at the end of its line, over it, or under it when
-  // the line is at the very top. When that spot is taken by the marker's word, another reference label or a point
-  // near the end of a line, it tries the other side, then slides left until it is clear.
+  // the line is at the very top. When that spot is taken by the marker's line or word, another reference label or a
+  // point near the end of a line, it tries the other side, then slides left until it is clear.
   const markX = mark ? c(mark.category) : 0;
   const markAnchor = markX - x0 < 40 ? "start" : x1 - markX < 40 ? "end" : "middle";
   const hit = (a: Box, b: Box) => a.l < b.r && b.l < a.r && a.t < b.b && b.t < a.b;
@@ -309,6 +309,7 @@ export function XYChart({
     const w = mark.label.length * CHAR;
     const l = markAnchor === "start" ? markX : markAnchor === "end" ? markX - w : markX - w / 2;
     taken.push({ l, r: l + w, t: y0 - 19, b: y0 - 5 });
+    taken.push({ l: markX - 3, r: markX + 3, t: y0, b: y1 });
   }
   // What a reference label must not cover: the points of a line, or each category's bars from their top down.
   const dots: Box[] = !refs.length ? [] : line

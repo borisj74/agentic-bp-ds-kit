@@ -4,6 +4,11 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## Unreleased
+
+### Changed
+- A reference label (BarChart and LineChart) now keeps clear of the marker line, not just the marker's label. When the line runs through the label's spot at the end, the label slides left until it is clear. In the BarChart example Against a grant, the Today line no longer cuts through "Grant 1.8K".
+
 ## v0.4.7 — 2026-10-05
 
 ### Changed

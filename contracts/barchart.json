@@ -129,7 +129,7 @@
     "referenceLines": {
       "type": "ChartReferenceLine[]",
       "itemShape": "{ value: number; label: string; intent?: ChartIntent; values?: number[] }",
-      "note": "Upright charts only. Dashed lines across the chart at a value, like a grant, a limit or a target, drawn over the bars so they stay visible where the bars pass them. label names it, like Grant; the chart writes the short value after it, at the end of the line, clear of the bars. Neutral gray unless intent picks a color. The scale always reaches the highest line. values gives one level per category for a limit that changes during the period, like a grant a top-up raises: the line steps on the category it changed, and the label reports the level it ends at."
+      "note": "Upright charts only. Dashed lines across the chart at a value, like a grant, a limit or a target, drawn over the bars so they stay visible where the bars pass them. label names it, like Grant; the chart writes the short value after it, at the end of the line, clear of the bars and of the marker's line and label. Neutral gray unless intent picks a color. The scale always reaches the highest line. values gives one level per category for a limit that changes during the period, like a grant a top-up raises: the line steps on the category it changed, and the label reports the level it ends at."
     },
     "marker": {
       "type": "ChartMarker",

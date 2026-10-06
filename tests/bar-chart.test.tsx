@@ -117,6 +117,23 @@ describe("BarChart", () => {
       expect(screen.getByRole("listitem")).toHaveTextContent("Today: Sep 4");
     });
 
+    it("slides a reference label clear of the marker line", () => {
+      // Low bars leave the end of the grant line free, so only the marker line, on the last category, is in the way.
+      const low = [{ name: "Credits used", values: [100, 120, 140, 160, 180, 200] }];
+      const { container } = render(
+        <BarChart
+          label="Credits used" categories={month} series={low} animate={false}
+          referenceLines={[{ value: 1150, label: "Grant" }]} marker={{ category: 5, label: "Today" }}
+        />,
+      );
+      const markX = Number(container.querySelector("line[data-marker]")!.getAttribute("x1"));
+      const label = [...container.querySelectorAll("text")].find((t) => t.textContent === "Grant 1.2K")!;
+      const end = Number(label.getAttribute("x"));
+      // The label is end-anchored, about 7px a character wide.
+      const start = end - "Grant 1.2K".length * 7;
+      expect(end < markX - 3 || start > markX + 3).toBe(true);
+    });
+
     it("ignores reference lines, the marker and forecasts on a horizontal chart", () => {
       const { container } = render(
         <BarChart
