@@ -79,4 +79,22 @@ describe("Lookup", () => {
     dialog = await screen.findByRole("dialog", { name: "Lookup: Add batch" });
     expect(within(dialog).getByRole("button", { name: "Add selected (0)" })).toBeDisabled();
   });
+
+  it("passes detail and detailCount to its Table, and opening a detail does not pick the row", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <Lookup
+        label="Product" columns={[...COLUMNS, { key: "rate", header: "Rate", opensDetail: true }]}
+        rows={ROWS.map((r) => ({ ...r, rate: "USD 0–10,000: 1,800.00" }))} labelKey="name" onChange={onChange}
+        detail={(row) => (row.id === "p1" ? <p>Every band</p> : null)} detailCount={(row) => (row.id === "p1" ? 2 : undefined)}
+      />,
+    );
+    await user.click(field());
+    const dialog = await screen.findByRole("dialog");
+    const more = within(dialog).getByRole("button", { name: "2 more, row 1" });
+    await user.click(more);
+    expect(within(dialog).getByRole("group", { name: "Details, row 1" })).toHaveTextContent("Every band");
+    expect(onChange).not.toHaveBeenCalled();
+  });
 });

@@ -5,23 +5,25 @@
 .wrap { position: relative; max-width: 100%; overflow-x: auto; }
 
 .table { width: 100%; border-collapse: separate; border-spacing: 0; }
-.table th, .table td { padding: 0; text-align: start; vertical-align: middle; }
+/* Every cell rule below is on the grid's own cells (.table > thead/tbody > tr > th/td), so a kit Table or other
+   piece inside an open row's detail keeps its own look. */
+.table > thead > tr > th, .table > tbody > tr > td { padding: 0; text-align: start; vertical-align: middle; }
 /* Header cells have no side lines: only the HeaderCell line under the row. Body cells keep their boxes. */
-.table th { background: var(--surface-flat); }
-.table th > * { background: transparent; }
+.table > thead > tr > th { background: var(--surface-flat); }
+.table > thead > tr > th > * { background: transparent; }
 /* Body cells: Text/Cell (14 Regular, 1.5), like Cell. */
-.table td {
+.table > tbody > tr > td {
   background: var(--bg-neutral-faint);
   border-right: var(--border-width-thin) solid var(--border-neutral-subtle);
   border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
   font-size: var(--text-ref-cell-size); font-weight: var(--text-ref-cell-weight); line-height: var(--text-ref-cell-lh); letter-spacing: var(--text-ref-cell-ls);
   color: var(--text-neutral-strong);
 }
-.table td:first-child { border-left: var(--border-width-thin) solid var(--border-neutral-subtle); }
+.table > tbody > tr > td:first-child { border-left: var(--border-width-thin) solid var(--border-neutral-subtle); }
 /* Rows follow Table, line included, but an editable cell keeps its 8px padding, so sm sits at 38 rather than 36.
    A table cell's height acts as its minimum, so formula editors can grow it. */
-.sm td { height: calc(var(--cell-height-sm) - var(--border-width-thin)); }
-.md td { height: calc(var(--cell-height-md) - var(--border-width-thin)); }
+.sm > tbody > tr > td { height: calc(var(--cell-height-sm) - var(--border-width-thin)); }
+.md > tbody > tr > td { height: calc(var(--cell-height-md) - var(--border-width-thin)); }
 
 /* Columns are at least 160 wide; hug columns (# and remove) are only as wide as their content. */
 .fill { min-width: var(--data-grid-column-min); }
@@ -34,7 +36,7 @@
 .hugCell.editing .control { width: 0; min-width: 100%; box-sizing: border-box; }
 .table td.hugCell.editing { min-width: var(--data-grid-edit-min); }
 
-/* td.x so these win over the base ".table td" rule (no padding, text at the start). */
+/* td.x so these win over the base body cell rule (no padding, text at the start). */
 .table td.index { width: 1%; padding: 0 var(--space-small); text-align: center; color: var(--text-neutral); font-variant-numeric: tabular-nums; }
 .table td.remove { width: 1%; padding: 0 var(--space-xxsmall); text-align: center; }
 /* Figma data grid: add sits at the start of the row, remove at the end. */
@@ -59,6 +61,9 @@
 .readOnly { color: var(--text-neutral); }
 .readOnly .value { display: block; padding: var(--space-xsmall) var(--space-small); }
 .numeric.readOnly .value { text-align: end; }
+/* opensDetail: the value, then its "+N more" button on the same line. */
+.valueMore { display: flex; align-items: center; gap: var(--space-xxsmall); padding-inline-end: var(--space-xsmall); white-space: nowrap; }
+.numeric .valueMore { justify-content: flex-end; }
 
 /* Editing: the cell turns white and holds the kit editor. */
 .table td.editing { background: var(--surface-flat); }
@@ -83,6 +88,12 @@
   /* The cell's own start and end lines sit outside this box, so they come off the visible width. */
   width: calc(var(--data-grid-view-width, 100%) - 2 * var(--border-width-thin)); padding: var(--space-medium);
 }
+/* A detail opened from an opensDetail cell starts under that column (its offset in the visible grid, less the
+   detail's own padding). The detail is at least --data-grid-detail-min wide (a Table inside is a size container, so it
+   has no width of its own) and fills the rest of the row; the spacer shrinks first, so it slides back to fit. */
+.detailAligned { display: flex; }
+.detailSpacer { flex: 0 1 max(0px, calc(var(--data-grid-detail-start, 0px) - var(--space-medium) - var(--border-width-thin))); min-width: 0; }
+.detailContent { flex: 1 0 min(100%, var(--data-grid-detail-min)); min-width: 0; }
 
 /* A header with Set for all: the kit HeaderCell title, then the menu under it, both above one header line. */
 /* th height 1px lets .head fill the whole header row (a table cell's height acts as its minimum), so every

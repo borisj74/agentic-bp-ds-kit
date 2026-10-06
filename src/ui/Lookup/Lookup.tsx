@@ -1,5 +1,5 @@
 "use client";
-import { useId, useRef, useState, type KeyboardEvent } from "react";
+import { useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { Button } from "../Button/Button";
 import { Cell } from "../Cell/Cell";
 import { useDensitySize } from "../Density/Density";
@@ -51,6 +51,8 @@ export interface LookupProps {
   buttonIcon?: string;
   confirmLabel?: string;
   onConfirm?: (ids: string[], rows: TableRow[]) => void;
+  detail?: (row: TableRow) => ReactNode;
+  detailCount?: (row: TableRow) => number | undefined;
 }
 
 // Text a search can match: plain values only; kit Cells and other elements are skipped.
@@ -63,7 +65,7 @@ export function Lookup({
   label, columns, rows, value, defaultValue = null, onChange, labelKey: labelKeyProp, title, icon = "folder_open",
   searchPlaceholder, pageSize: initialPageSize = 10, clearable = true, placeholder, emptyLabel = "No matches.",
   size: ownSize, labelPosition: ownLabelPosition, hideLabel = false, name, required = false, disabled = false,
-  invalid = false, error, hint, help, multiple = false, trigger = "field", buttonIcon, confirmLabel = "Add selected", onConfirm,
+  invalid = false, error, hint, help, multiple = false, trigger = "field", buttonIcon, confirmLabel = "Add selected", onConfirm, detail, detailCount,
 }: LookupProps) {
   const size = useDensitySize(ownSize);
   const labelPosition = useLabelPosition(ownLabelPosition);
@@ -150,12 +152,12 @@ export function Lookup({
         </div>
         {multiple ? (
           <Table
-            size="sm" columns={columns} rows={pageRows} emptyLabel={emptyLabel} rowLabel={labelKey}
+            size="sm" columns={columns} rows={pageRows} emptyLabel={emptyLabel} rowLabel={labelKey} detail={detail} detailCount={detailCount}
             selectable selected={picks} onSelectionChange={setPicks} onRowClick={togglePick}
           />
         ) : (
           <Table
-            size="sm" columns={columns} rows={pageRows} emptyLabel={emptyLabel} rowLabel={labelKey}
+            size="sm" columns={columns} rows={pageRows} emptyLabel={emptyLabel} rowLabel={labelKey} detail={detail} detailCount={detailCount}
             selected={current ? [current] : []} onRowClick={(id) => { const r = rows.find((x) => x.id === id); if (r) pick(r); }}
           />
         )}

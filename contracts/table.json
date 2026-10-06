@@ -7,8 +7,8 @@
     "columns": {
       "type": "TableColumn[]",
       "required": true,
-      "itemShape": "{ key: string; header?: string; alignment?: \"start\" | \"center\" | \"end\"; numeric?: boolean; emphasis?: boolean; width?: string }",
-      "note": "key picks the row value. numeric aligns to the end with tabular digits. emphasis makes the column's text medium weight, like the record id. width is a CSS width, like 30%."
+      "itemShape": "{ key: string; header?: string; alignment?: \"start\" | \"center\" | \"end\"; numeric?: boolean; emphasis?: boolean; width?: string; maxWidth?: string; opensDetail?: boolean }",
+      "note": "key picks the row value. numeric aligns to the end with tabular digits. emphasis makes the column's text medium weight, like the record id. width is a CSS width, like 30%. maxWidth is a CSS width, like 240px: a long text or link value stops there and ends with an ellipsis instead of widening the table, and the whole value shows on hover and stays for screen readers. Use it for long names, like products; values that must read in full, like amounts and dates, keep their room. opensDetail (with detail and detailCount) puts a kit Button holding a Count of the row's other values after the cell's value; it opens and closes the row's detail under the row, lined up under that column."
     },
     "rows": {
       "type": "TableRow[]",
@@ -71,6 +71,14 @@
       "type": "function",
       "signature": "(id: string, row: TableRow) => void",
       "note": "Clicking anywhere on a row runs it, for picking a row, like in a Lookup. It is a pointer shortcut: give the row a keyboard control too, like a link Cell with onClick in its first column. Clicks on the row's own links, buttons and checkboxes act on their own."
+    },
+    "detail": {
+      "type": "function",
+      "note": "(row: TableRow) => ReactNode. What an opensDetail column's Count button opens under the row, like every rate band behind the first. Return null for a row with nothing more: it gets no button. The detail starts under that column (at least --table-detail-min wide, 360px) and slides back to fit the box. Put kit pieces in it, like a Table size sm."
+    },
+    "detailCount": {
+      "type": "function",
+      "note": "(row: TableRow) => number | undefined. How many more values the row's detail holds, shown as the Count in the cell's button."
     }
   },
   "useWhen": [
@@ -83,14 +91,16 @@
     "Do not put search or filters in the table. Use a Toolbar above it.",
     "Do not use raw hex.",
     "Do not wrap it in your own scrolling box or set a width on it to make it fit a phone. It scrolls sideways and freezes its first column on its own.",
-    "Do not force a wide table into a narrow column by letting values break mid-word. Give it the room, or let it scroll sideways in its own box."
+    "Do not force a wide table into a narrow column by letting values break mid-word. Give it the room, let it scroll sideways in its own box, or give a long-name column a maxWidth so it ends with an ellipsis."
   ],
   "a11y": [
     "A native table: caption, th scope=col headers (kit HeaderCell) and td cells. A column with no header, like row actions, gets a plain cell in the header row instead of an empty header.",
     "Row checkboxes are named Select plus the row label; the header one is Select all rows and is mixed when only some rows are selected. Selected rows set aria-selected.",
     "The empty message is a real cell spanning the columns, so screen readers read it in place.",
     "On a narrow box the sideways scroll is the table's own box, so the page never scrolls sideways and the frozen first column keeps the row's name in view.",
-    "A table wider than its box scrolls sideways inside it; then the box is a focus stop named by caption (or Table), so the arrow keys scroll it (WCAG 2.1.1). When it fits, it adds no tab stop."
+    "A table wider than its box scrolls sideways inside it; then the box is a focus stop named by caption (or Table), so the arrow keys scroll it (WCAG 2.1.1). When it fits, it adds no tab stop.",
+    "A maxWidth column only cuts the value off on screen: the whole text stays in the cell for screen readers, and the cell's title shows it on hover.",
+    "An opensDetail cell's Count button is named N more, row 2, with aria-expanded and aria-controls pointing at the open detail, a group named Details, row 2. Clicking it never selects or picks the row."
   ],
   "snippet": "<Table\n  caption=\"A list of your recent invoices.\"\n  columns={[\n    { key: \"invoice\", header: \"Invoice\", emphasis: true },\n    { key: \"status\", header: \"Status\" },\n    { key: \"method\", header: \"Method\" },\n    { key: \"amount\", header: \"Amount\", numeric: true },\n  ]}\n  rows={invoices}\n  footer={{ label: \"Total\", value: \"$2,500.00\" }}\n/>",
   "examples": [
@@ -145,6 +155,32 @@
           "props": {
             "columns": "{accountColumns}",
             "rows": "{accounts}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Long names",
+      "usage": "Product has maxWidth 240px, so a long product name ends with an ellipsis and the table keeps its other columns in view. Hover a name to read it whole.",
+      "items": [
+        {
+          "props": {
+            "columns": "{longNameColumns}",
+            "rows": "{longNames}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "More values in a cell",
+      "usage": "Tiered rates. Rate shows the first band, USD 0–10,000: 1,800.00; the Count after it (2) opens the row to every band in a Table size sm, line thin, captioned Sandbox Environment: 3 rates in USD. Seat license has one price, so no Count.",
+      "items": [
+        {
+          "props": {
+            "columns": "{moreRateColumns}",
+            "rows": "{moreRateRows}",
+            "detail": "{moreRateDetail}",
+            "detailCount": "{moreRateCount}"
           }
         }
       ]

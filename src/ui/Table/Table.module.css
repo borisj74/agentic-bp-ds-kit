@@ -35,6 +35,27 @@
 .table tbody tr.selected { background: var(--bg-neutral-min-selected); }
 .table tbody tr.selected:hover { background: var(--bg-neutral-min-selected-hover); }
 
+/* maxWidth: the column stops at that width, and a long text or link value ends with an ellipsis instead of widening
+   the table. The whole value stays in the page for screen readers and shows on hover (the cell's title). */
+.truncate > * { max-width: var(--table-column-max); }
+.truncate > * > :is(span, a, button, time) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* opensDetail: the value, then a Count button for the row's other values, on one line. */
+.valueMore { display: flex; align-items: center; gap: var(--space-xxsmall); }
+.numeric .valueMore { justify-content: flex-end; }
+.valueMore > :first-child { width: auto; flex: 0 1 auto; padding-inline-end: 0; }
+/* The value's Cell sits one level down here, so it drops its own fill and line too, like any Cell in the table:
+   the row's hover and selected fills show through. */
+.valueMore > * { background: transparent; border-bottom: 0; }
+/* An open row's detail: one cell across the table, the content starting under the opensDetail column
+   (--table-detail-start, less the cell's padding). It is at least --table-detail-min wide and fills the rest; the
+   spacer shrinks first, so a detail too wide for the room slides back to fit. */
+.table tbody tr.detailRow, .table tbody tr.detailRow:hover { background: var(--surface-flat); }
+.table tbody tr.detailRow > td { padding: var(--space-small) var(--space-medium) var(--space-medium); white-space: normal; }
+.detailBody { display: flex; }
+.detailSpacer { flex: 0 1 max(0px, calc(var(--table-detail-start, 0px) - var(--space-medium))); min-width: 0; }
+.detailContent { flex: 1 0 min(100%, var(--table-detail-min)); min-width: 0; }
+
 /* Checkbox column: only as wide as the checkbox and its padding. */
 .select { width: 1%; }
 .numeric { font-variant-numeric: tabular-nums; }

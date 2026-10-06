@@ -1,6 +1,7 @@
 "use client";
 import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type FocusEvent, type KeyboardEvent, type ReactNode } from "react";
 import { Button } from "../Button/Button";
+import { Count } from "../Count/Count";
 import { DatePicker } from "../DatePicker/DatePicker";
 import { Dropdown } from "../Dropdown/Dropdown";
 import { FormulaEditor, type FormulaField } from "../FormulaEditor/FormulaEditor";
@@ -26,6 +27,7 @@ export interface DataGridColumn {
   fields?: FormulaField[];
   onCalculate?: (formula: string) => string;
   setForAll?: boolean;
+  opensDetail?: boolean;
 }
 export type DataGridRow = { id: string } & Record<string, string>;
 
@@ -44,6 +46,7 @@ export interface DataGridProps {
   label?: string;
   stickyFirstColumn?: boolean;
   detail?: (row: DataGridRow) => ReactNode;
+  detailCount?: (row: DataGridRow) => number | undefined;
   expanded?: string[];
   defaultExpanded?: string[];
   onExpandedChange?: (ids: string[]) => void;
@@ -57,7 +60,7 @@ const spotSelector = (s: Spot) => `[data-cell="${CSS.escape(`${s.row}:${s.key}`)
 export function DataGrid({
   columns, rows: rowsProp, defaultRows = [], onRowsChange, size: ownSize, line = "medium", rowNumbers = true,
   canAddRows = false, canRemoveRows = false, canInsertRows = false, emptyLabel = "No rows yet.", label = "Data grid", stickyFirstColumn = true,
-  detail, expanded: expandedProp, defaultExpanded = [], onExpandedChange,
+  detail, detailCount, expanded: expandedProp, defaultExpanded = [], onExpandedChange,
 }: DataGridProps) {
   // A surrounding Density changes the row through the density tokens, not the size.
   const size = ownSize ?? "md";
@@ -77,6 +80,13 @@ export function DataGrid({
     if (expandedProp === undefined) setInnerExpanded(next);
     onExpandedChange?.(next);
   };
+  // Each row's detail, worked out once per render. A row whose detail is empty (null, undefined or false) cannot
+  // open, so whatever opens rows says the row has more to show.
+  const details = new Map(rows.map((r) => [r.id, detail ? detail(r) : null]));
+  const hasDetail = (id: string) => { const d = details.get(id); return d !== null && d !== undefined && d !== false; };
+  // A column with opensDetail opens rows from its own cells (a "+N more" button after the value), so the grid drops
+  // its toggle column.
+  const toggleColumn = Boolean(detail) && !columns.some((c) => c.opensDetail);
 
   // Pinned columns sit one after another: the expand toggle, then #, then the first column, so each needs the
   // widths before it as its offset. An open detail is as wide as the visible grid, so it stays in view too.
@@ -84,7 +94,9 @@ export function DataGrid({
   const insertRef = useRef<HTMLTableCellElement>(null);
   const toggleRef = useRef<HTMLTableCellElement>(null);
   const indexRef = useRef<HTMLTableCellElement>(null);
-  const [offsets, setOffsets] = useState({ toggle: 0, index: 0, first: 0, view: 0 });
+  // The opensDetail column's header: an open detail lines up under it (see detailStart below).
+  const detailColRef = useRef<HTMLTableCellElement>(null);
+  const [offsets, setOffsets] = useState({ toggle: 0, index: 0, first: 0, view: 0, detailStart: 0 });
   useLayoutEffect(() => {
     const wrap = wrapRef.current;
     const measure = () => {
@@ -93,14 +105,17 @@ export function DataGrid({
       const toggle = toggleRef.current?.getBoundingClientRect().width ?? 0;
       const index = indexRef.current?.getBoundingClientRect().width ?? 0;
       const view = wrap?.clientWidth ?? 0;
-      const next = { toggle: insert, index: insert + toggle, first: insert + toggle + index, view };
-      setOffsets((old) => (old.toggle === next.toggle && old.index === next.index && old.first === next.first && old.view === next.view ? old : next));
+      // Where the opensDetail column starts in the visible part of the grid, so a detail can sit under it.
+      const detailStart = Math.max(0, (detailColRef.current?.offsetLeft ?? 0) - (wrap?.scrollLeft ?? 0));
+      const next = { toggle: insert, index: insert + toggle, first: insert + toggle + index, view, detailStart };
+      setOffsets((old) => (old.toggle === next.toggle && old.index === next.index && old.first === next.first && old.view === next.view && old.detailStart === next.detailStart ? old : next));
     };
     measure();
-    if (typeof ResizeObserver === "undefined") return;
+    wrap?.addEventListener("scroll", measure, { passive: true });
+    if (typeof ResizeObserver === "undefined") return () => wrap?.removeEventListener("scroll", measure);
     const observer = new ResizeObserver(measure);
-    [wrap, insertRef.current, toggleRef.current, indexRef.current].forEach((el) => el && observer.observe(el));
-    return () => observer.disconnect();
+    [wrap, tableRef.current, insertRef.current, toggleRef.current, indexRef.current, detailColRef.current].forEach((el) => el && observer.observe(el));
+    return () => { observer.disconnect(); wrap?.removeEventListener("scroll", measure); };
   }, [stickyFirstColumn, rowNumbers, detail, canInsertRows]);
   const pin = stickyFirstColumn ? styles.sticky : "";
 
@@ -170,7 +185,7 @@ export function DataGrid({
     close(true, false);
   };
 
-  const span = columns.length + (canInsertRows ? 1 : 0) + (detail ? 1 : 0) + (rowNumbers ? 1 : 0) + (canRemoveRows ? 1 : 0);
+  const span = columns.length + (canInsertRows ? 1 : 0) + (toggleColumn ? 1 : 0) + (rowNumbers ? 1 : 0) + (canRemoveRows ? 1 : 0);
   const firstKey = columns[0]?.key;
 
   // Set for all: row 1's value goes to every row, or the column is cleared.
@@ -205,7 +220,25 @@ export function DataGrid({
     const cls = [type === "number" ? styles.numeric : "", isEditing ? styles.editing : "", col.readOnly ? styles.readOnly : "", col.hug ? styles.hugCell : "", col.key === firstKey ? pin : ""].join(" ");
 
     let body;
-    if (col.readOnly) {
+    if (col.readOnly && col.opensDetail) {
+      // The value, then a kit Button holding a Count of the row's other values: it opens and closes the detail.
+      const more = hasDetail(row.id) ? detailCount?.(row) : undefined;
+      const open = expanded.includes(row.id);
+      body = (
+        <span className={styles.valueMore}>
+          <span className={styles.value}>{value}</span>
+          {more ? (
+            <Button
+              emphasis="minimal" intent="brand" size="sm" iconEnd={open ? "expand_less" : "expand_more"}
+              aria-label={`${more} more, row ${n}`} aria-expanded={open} aria-controls={open ? `${uid}-detail-${row.id}` : undefined}
+              onClick={() => toggleRow(row.id)}
+            >
+              <Count count={more} size="sm" intent="neutral" label="more" />
+            </Button>
+          ) : null}
+        </span>
+      );
+    } else if (col.readOnly) {
       body = <span className={[styles.value, type === "formula" ? styles.mono : ""].join(" ")}>{value}</span>;
     } else if (type === "select") {
       // Always a kit Select, like the Figma cell with its arrow button.
@@ -257,20 +290,20 @@ export function DataGrid({
   };
 
   return (
-    <div className={styles.grid}>
+    <div className={styles.grid} data-data-grid="">
       <div ref={wrapRef} className={styles.wrap}>
         <table
           ref={tableRef} className={[styles.table, styles[size]].join(" ")} aria-label={label}
-          style={{ "--data-grid-toggle-offset": `${offsets.toggle}px`, "--data-grid-index-offset": `${offsets.index}px`, "--data-grid-sticky-offset": `${offsets.first}px`, "--data-grid-view-width": `${offsets.view}px` } as CSSProperties}
+          style={{ "--data-grid-toggle-offset": `${offsets.toggle}px`, "--data-grid-index-offset": `${offsets.index}px`, "--data-grid-sticky-offset": `${offsets.first}px`, "--data-grid-view-width": `${offsets.view}px`, "--data-grid-detail-start": `${offsets.detailStart}px` } as CSSProperties}
         >
           <thead>
             <tr>
               {canInsertRows && <th ref={insertRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyInsert : ""].join(" ")}>{head(<HeaderCell size={size} line={line} />)}<span className={styles.srOnly}>Add row</span></th>}
-              {detail && <th ref={toggleRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyToggle : ""].join(" ")}>{head(<HeaderCell size={size} line={line} />)}<span className={styles.srOnly}>Details</span></th>}
+              {toggleColumn && <th ref={toggleRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyToggle : ""].join(" ")}>{head(<HeaderCell size={size} line={line} />)}<span className={styles.srOnly}>Details</span></th>}
               {rowNumbers && <th ref={indexRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyIndex : ""].join(" ")}>{head(<HeaderCell size={size} line={line} alignment="center" label="#" />)}</th>}
               {columns.map((c) => (
                 <th
-                  key={c.key} scope="col" className={[c.hug ? styles.hug : styles.fill, c.key === firstKey ? pin : ""].join(" ")}
+                  key={c.key} ref={c.opensDetail ? detailColRef : undefined} scope="col" className={[c.hug ? styles.hug : styles.fill, c.key === firstKey ? pin : ""].join(" ")}
                   style={c.width ? { width: c.width } : undefined}
                 >
                   {head(
@@ -292,7 +325,8 @@ export function DataGrid({
             {rows.length === 0 ? (
               <tr><td colSpan={span} className={styles.empty}>{emptyLabel}</td></tr>
             ) : rows.map((row, i) => {
-              const isOpen = Boolean(detail) && expanded.includes(row.id);
+              const content = details.get(row.id);
+              const isOpen = hasDetail(row.id) && expanded.includes(row.id);
               const detailId = `${uid}-detail-${row.id}`;
               return (
               <Fragment key={row.id}>
@@ -304,14 +338,16 @@ export function DataGrid({
                     </Tooltip>
                   </td>
                 )}
-                {detail && (
+                {toggleColumn && (
                   <td className={[styles.toggle, stickyFirstColumn ? styles.stickyToggle : ""].join(" ")}>
-                    <Button
-                      emphasis="minimal" size="sm" iconOnly iconStart={isOpen ? "expand_more" : "chevron_right"}
-                      aria-expanded={isOpen} aria-controls={isOpen ? detailId : undefined} onClick={() => toggleRow(row.id)}
-                    >
-                      {`${isOpen ? "Hide" : "Show"} details, row ${i + 1}`}
-                    </Button>
+                    {hasDetail(row.id) && (
+                      <Button
+                        emphasis="minimal" size="sm" iconOnly iconStart={isOpen ? "expand_more" : "chevron_right"}
+                        aria-expanded={isOpen} aria-controls={isOpen ? detailId : undefined} onClick={() => toggleRow(row.id)}
+                      >
+                        {`${isOpen ? "Hide" : "Show"} details, row ${i + 1}`}
+                      </Button>
+                    )}
                   </td>
                 )}
                 {rowNumbers && <td className={[styles.index, stickyFirstColumn ? styles.stickyIndex : ""].join(" ")}>{i + 1}</td>}
@@ -324,10 +360,19 @@ export function DataGrid({
                   </td>
                 )}
               </tr>
-              {isOpen && detail && (
+              {isOpen && (
                 <tr>
                   <td id={detailId} colSpan={span} className={styles.detail}>
-                    <div className={styles.detailBody} role="group" aria-label={`Details, row ${i + 1}`}>{detail(row)}</div>
+                    {toggleColumn ? (
+                      <div className={styles.detailBody} role="group" aria-label={`Details, row ${i + 1}`}>{content}</div>
+                    ) : (
+                      // Opened from a cell: the detail lines up under that column, and slides back toward the start
+                      // (the spacer shrinks) when it would run past the grid's visible edge.
+                      <div className={[styles.detailBody, styles.detailAligned].join(" ")}>
+                        <span className={styles.detailSpacer} aria-hidden="true" />
+                        <div className={styles.detailContent} role="group" aria-label={`Details, row ${i + 1}`}>{content}</div>
+                      </div>
+                    )}
                   </td>
                 </tr>
               )}

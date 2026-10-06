@@ -193,6 +193,10 @@ toolbar/search|200px
 data-grid/column-min|160px
 # not in Figma: a hug cell being edited is at least 96 wide, room for a few digits and the stepper.
 data-grid/edit-min|96px
+# An open detail lined up under an opensDetail column is at least this wide, and slides back to fit.
+data-grid/detail-min|360px
+# An open Table row's detail, lined up under its opensDetail column, is at least this wide.
+table/detail-min|360px
 
 # Scoreboard (Figma scoreboard 7295:12323, scorecard 6175:426, chart 6174:403): cards are at least 196 wide; the spark chart is 64 by 20.
 scoreboard/card-min|196px

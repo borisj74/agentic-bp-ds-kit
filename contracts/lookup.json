@@ -139,6 +139,14 @@
       "type": "function",
       "signature": "(ids: string[], rows: TableRow[]) => void",
       "note": "With multiple: runs with every ticked row when the strong brand Button is pressed; the dialog then closes."
+    },
+    "detail": {
+      "type": "function",
+      "note": "(row: TableRow) => ReactNode. Passed to the dialog's Table: with an opensDetail column, a Count button in that cell opens this under the row, like a product's rate bands, so people can check before they pick. Opening it does not pick the row."
+    },
+    "detailCount": {
+      "type": "function",
+      "note": "(row: TableRow) => number | undefined. The Count in that cell's button: how many more values the detail holds."
     }
   },
   "useWhen": [
@@ -160,7 +168,8 @@
     "Each row's name is a link-styled button that picks the row, so rows can be picked from the keyboard; clicking anywhere on a row is a pointer shortcut. The picked row is highlighted.",
     "Pagination announces the rows shown and the page.",
     "With multiple, each row's checkbox is named Select plus the row's name and is the keyboard stop; the footer's Cancel and strong brand Button are kit Buttons, and the strong brand Button says how many are ticked.",
-    "With trigger button, the kit Button is named by label and gives focus back when the dialog closes."
+    "With trigger button, the kit Button is named by label and gives focus back when the dialog closes.",
+    "With detail and an opensDetail column, the cell's Count button is named N more, row 2, with aria-expanded and aria-controls pointing at the open detail. Opening it never picks the row."
   ],
   "snippet": "<Lookup\n  label=\"Product\"\n  columns={productColumns}\n  rows={products}\n  value={productId}\n  onChange={setProductId}\n  required\n/>",
   "examples": [
@@ -204,6 +213,21 @@
             "multiple": true,
             "columns": "{productColumns}",
             "rows": "{products}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "More values in a cell",
+      "usage": "Sandbox Environment has tiered rates: its Rate cell shows the first band, USD 0–10,000: 1,800.00, and a Count button with 2. Open it in the dialog to check every band before you pick; opening it does not pick the row.",
+      "items": [
+        {
+          "props": {
+            "label": "Product",
+            "columns": "{tieredProductColumns}",
+            "rows": "{tieredProducts}",
+            "detail": "{productBands}",
+            "detailCount": "{productBandCount}"
           }
         }
       ]

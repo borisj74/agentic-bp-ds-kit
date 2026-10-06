@@ -217,10 +217,55 @@ const ICON_ACTION_COLUMNS: TableColumn[] = [...INVOICE_COLUMNS, { key: "actions"
 const ICON_ACTION_ROWS: TableRow[] = INVOICES.slice(0, 4).map((r) => ({
   ...r, actions: <Cell type="actionIcons" alignment="end" label={`Actions for ${r.invoice}`} actions={ICON_ACTIONS} />,
 }));
+// Long names: Product stops at 240px and ends with an ellipsis; the rest of the columns stay in view.
+const LONG_NAME_COLUMNS: TableColumn[] = [
+  { key: "id", header: "ID", emphasis: true },
+  { key: "product", header: "Product", maxWidth: "240px" },
+  { key: "start", header: "Start date" },
+  { key: "qty", header: "Quantity", numeric: true },
+  { key: "rate", header: "Rate", numeric: true },
+];
+const LONG_NAMES: TableRow[] = [
+  ["105538", "Platform Access", "08/01/2026", "5", "$120.00"],
+  ["105539", "Software Maintenance - Dedicated Support Enterprise", "08/01/2026", "1", "$12,000.00"],
+  ["105540", "Analytics - Real-Time Streams with Extended Retention", "09/01/2026", "1", "$0.0450"],
+].map(([id, product, start, qty, rate]) => ({ id, product: <Cell type="link" label={product} href="#" />, start, qty, rate }));
+// More values in a cell: tiered rates. The cell shows the first band; the Count after it opens the row to every band.
+// Shared by the Table, DataGrid and Lookup examples. A product with one price has no bands, so its detail is null.
+const RATE_BANDS: Record<string, [string, string, string][]> = {
+  "Sandbox Environment": [["USD", "10,000", "1,800.00"], ["USD", "50,000", "1,620.00"], ["USD", "No limit", "1,440.00"]],
+};
+const RATE_BAND_COLUMNS: TableColumn[] = [
+  { key: "currency", header: "Currency" }, { key: "upper", header: "Upper band", numeric: true }, { key: "rate", header: "Rate", numeric: true },
+];
+const bandsOf = (product: unknown) => (typeof product === "string" ? RATE_BANDS[product] : undefined);
+const rateBandTable = (product: unknown) => {
+  const bands = bandsOf(product);
+  if (!bands) return null;
+  const currencies = [...new Set(bands.map(([c]) => c))].join(", ");
+  return (
+    <Table
+      size="sm" line="thin" columns={RATE_BAND_COLUMNS} caption={`${product}: ${bands.length} rates in ${currencies}.`}
+      rows={bands.map(([currency, upper, rate], i) => ({ id: String(i), currency, upper, rate }))}
+    />
+  );
+};
+const rateBandCount = (product: unknown) => { const bands = bandsOf(product); return bands ? bands.length - 1 : undefined; };
+const MORE_RATE_COLUMNS: TableColumn[] = [
+  { key: "product", header: "Product" }, { key: "qty", header: "Qty", numeric: true }, { key: "rate", header: "Rate", opensDetail: true },
+];
+const MORE_RATE_ROWS: TableRow[] = [
+  { id: "sandbox", product: "Sandbox Environment", qty: "1", rate: "USD 0–10,000: 1,800.00" },
+  { id: "seat", product: "Seat license", qty: "25", rate: "USD 40.00" },
+];
+const moreRateDetail = (row: TableRow) => rateBandTable(row.product);
+const moreRateCount = (row: TableRow) => rateBandCount(row.product);
 const TABLE_SAMPLES: Record<string, unknown> = {
   "{invoiceColumns}": INVOICE_COLUMNS, "{invoices}": INVOICES, "{total}": { label: "Total", value: "$2,250.00" },
   "{accountColumns}": ACCOUNT_COLUMNS, "{accounts}": ACCOUNTS,
   "{iconActionColumns}": ICON_ACTION_COLUMNS, "{invoicesWithActions}": ICON_ACTION_ROWS,
+  "{longNameColumns}": LONG_NAME_COLUMNS, "{longNames}": LONG_NAMES,
+  "{moreRateColumns}": MORE_RATE_COLUMNS, "{moreRateRows}": MORE_RATE_ROWS, "{moreRateDetail}": moreRateDetail, "{moreRateCount}": moreRateCount,
 };
 const tableProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in TABLE_SAMPLES ? TABLE_SAMPLES[v] : v])) as unknown as TableProps;
@@ -266,12 +311,26 @@ const BANDS: DataGridRow[] = [
   { id: "b2", currency: "EUR", upper: "100000", rate: "1.20" },
   { id: "b3", currency: "EUR", upper: "", rate: "0.85" },
 ];
-const bandDetail = (row: DataGridRow) => (
+// Seat license has one price and no bands, so its detail is null and its row has no toggle.
+const bandDetail = (row: DataGridRow) => (row.id === "t2" ? null : (
   <DataGrid label={`Rate bands, ${row.product}`} size="sm" columns={BAND_COLUMNS} defaultRows={BANDS} rowNumbers={false} stickyFirstColumn={false} canAddRows canRemoveRows />
-);
+));
+// More values in a cell: Rate is read-only and shows the first band; the Count after it opens the row to every band.
+const MORE_COLUMNS: DataGridColumn[] = [
+  { key: "product", header: "Product" },
+  { key: "qty", header: "Qty", type: "number", hug: true },
+  { key: "rate", header: "Rate", readOnly: true, opensDetail: true },
+];
+const MORE_ROWS: DataGridRow[] = [
+  { id: "m1", product: "Sandbox Environment", qty: "1", rate: "USD 0–10,000: 1,800.00" },
+  { id: "m2", product: "Seat license", qty: "25", rate: "USD 40.00" },
+];
+const moreDetail = (row: DataGridRow) => rateBandTable(row.product);
+const moreCount = (row: DataGridRow) => rateBandCount(row.product);
 const GRID_SAMPLES: Record<string, unknown> = {
   "{conditionColumns}": CONDITION_COLUMNS, "{conditions}": CONDITIONS, "{lineItemColumns}": LINE_ITEM_COLUMNS, "{lineItems}": LINE_ITEMS,
   "{termColumns}": TERM_COLUMNS, "{terms}": TERMS, "{bandDetail}": bandDetail,
+  "{moreColumns}": MORE_COLUMNS, "{moreRows}": MORE_ROWS, "{moreDetail}": moreDetail, "{moreCount}": moreCount,
 };
 const gridProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in GRID_SAMPLES ? GRID_SAMPLES[v] : v])) as unknown as DataGridProps;
@@ -633,7 +692,19 @@ const PRODUCTS: LookupRow[] = [
   product("13998", "24x7 Toll Free Support", "Subscription", "Support", "Enterprise", false, "$0.00", "07/08/2022"),
   product("13999", "Ajanta's Revenue Subscription", "Subscription", "Support", "Enterprise", false, "$0.00", "09/23/2022"),
 ];
-const LOOKUP_SAMPLES: Record<string, unknown> = { "{productColumns}": PRODUCT_COLUMNS, "{products}": PRODUCTS };
+// More values in a cell: Rate shows a tiered product's first band; its Count opens every band before the pick.
+const TIERED_PRODUCT_COLUMNS: TableColumn[] = PRODUCT_COLUMNS.map((c) => (c.key === "rate" ? { ...c, numeric: false, opensDetail: true } : c));
+const TIERED_PRODUCTS: LookupRow[] = [
+  product("72090", "Sandbox Environment", "Tiered", "Software", "Enterprise", true, "USD 0–10,000: 1,800.00", "09/29/2026"),
+  ...PRODUCTS.slice(0, 5),
+];
+const TIERED_NAMES: Record<string, string> = { "72090": "Sandbox Environment" };
+const LOOKUP_SAMPLES: Record<string, unknown> = {
+  "{productColumns}": PRODUCT_COLUMNS, "{products}": PRODUCTS,
+  "{tieredProductColumns}": TIERED_PRODUCT_COLUMNS, "{tieredProducts}": TIERED_PRODUCTS,
+  // Keyed by id: the dialog turns each name into a button, so row.name is not plain text there.
+  "{productBands}": (row: TableRow) => rateBandTable(TIERED_NAMES[row.id ?? ""]), "{productBandCount}": (row: TableRow) => rateBandCount(TIERED_NAMES[row.id ?? ""]),
+};
 const lookupProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in LOOKUP_SAMPLES ? LOOKUP_SAMPLES[v] : v])) as unknown as LookupProps;
 

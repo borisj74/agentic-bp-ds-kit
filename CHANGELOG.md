@@ -4,6 +4,14 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## Unreleased
+
+### Added
+- More values in a cell (DataGrid, Table, Lookup). A column with `opensDetail` shows the cell's first value, then a Button holding a Count of the other values (`detailCount`) with an expand arrow; it opens and closes the row's `detail`. The open detail lines up under that column, at least 360px wide (`--data-grid-detail-min`, `--table-detail-min`), and slides back to fit. Built for tiered rates: "USD 0–10,000: 1,800.00" with 2 more bands. The button is named "2 more, row 1" and has aria-expanded. Lookup passes `detail` and `detailCount` to its Table; opening a detail never picks the row.
+- DataGrid: a row whose `detail` is null gets no toggle and cannot open. With an `opensDetail` column the grid drops its toggle column.
+- DataGrid: cell styles now stay on the grid's own cells, so a kit Table inside an open detail keeps the Table look.
+- Table: `TableColumn.maxWidth` caps a column; a long value ends with an ellipsis and shows in full on hover (title) and to screen readers. Example "Long names".
+
 ## v0.4.8 — 2026-10-06
 
 ### Changed

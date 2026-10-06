@@ -7,8 +7,8 @@
     "columns": {
       "type": "DataGridColumn[]",
       "required": true,
-      "itemShape": "{ key: string; header: string; type?: \"text\" | \"number\" | \"select\" | \"formula\" | \"date\"; options?: SelectOption[]; searchable?: boolean; searchPlaceholder?: string; placeholder?: string; readOnly?: boolean; hug?: boolean; width?: string; fields?: FormulaField[]; onCalculate?: (formula: string) => string; setForAll?: boolean }",
-      "note": "type defaults to text. options for select. date cells are always a kit DatePicker (size sm); their value is an ISO date, YYYY-MM-DD, shown formatted, and placeholder fills the empty field. fields and onCalculate for formula, passed to the FormulaEditor. hug makes the column only as wide as its content; otherwise it is at least 160 wide. width is a CSS width. searchable adds a search field at the top of a select column's list that filters options by label, for long lists like a product catalog; searchPlaceholder names it (default Search). setForAll adds a Set for all menu under the column title: Use row 1 value copies the first row's value to every row, Clear all rows empties the column."
+      "itemShape": "{ key: string; header: string; type?: \"text\" | \"number\" | \"select\" | \"formula\" | \"date\"; options?: SelectOption[]; searchable?: boolean; searchPlaceholder?: string; placeholder?: string; readOnly?: boolean; hug?: boolean; width?: string; fields?: FormulaField[]; onCalculate?: (formula: string) => string; setForAll?: boolean; opensDetail?: boolean }",
+      "note": "type defaults to text. options for select. date cells are always a kit DatePicker (size sm); their value is an ISO date, YYYY-MM-DD, shown formatted, and placeholder fills the empty field. fields and onCalculate for formula, passed to the FormulaEditor. hug makes the column only as wide as its content; otherwise it is at least 160 wide. width is a CSS width. searchable adds a search field at the top of a select column's list that filters options by label, for long lists like a product catalog; searchPlaceholder names it (default Search). setForAll adds a Set for all menu under the column title: Use row 1 value copies the first row's value to every row, Clear all rows empties the column. opensDetail (on a readOnly column, with detail and detailCount) puts a kit Button holding a Count of the other values after the cell's value that opens and closes the row's detail, and the grid drops its toggle column. The open detail lines up under that column (at least --data-grid-detail-min wide, 360px) and slides back toward the start when it would run past the grid's visible edge: use it when the cell shows the first of several values, like the first rate band."
     },
     "rows": {
       "type": "DataGridRow[]",
@@ -76,7 +76,11 @@
     },
     "detail": {
       "type": "function",
-      "note": "(row: DataGridRow) => ReactNode. Makes rows expandable: a toggle column comes first, and an open row shows this under it in one cell across the grid, kept to the grid's visible width. Put kit pieces in it: a Form of settings, or a nested DataGrid (size sm) for sub-rows like rate bands."
+      "note": "(row: DataGridRow) => ReactNode. Makes rows expandable: a toggle column comes first, and an open row shows this under it in one cell across the grid, kept to the grid's visible width. Return null for a row with nothing to show: it gets no toggle and cannot open, so the toggle itself says the row has more, like rate tiers. Put kit pieces in it: a Form of settings, a nested DataGrid (size sm) for sub-rows people edit like rate bands, or a Table (size sm) for sub-rows they only read. The grid's own cell look stays on its own cells, so a Table inside keeps the Table look."
+    },
+    "detailCount": {
+      "type": "function",
+      "note": "(row: DataGridRow) => number | undefined. With an opensDetail column: how many more values the row's detail holds, shown as a Count in the cell's button. A row with no number (or a null detail) gets no button and cannot open."
     },
     "expanded": {
       "type": "string[]",
@@ -109,9 +113,10 @@
     "Enter saves and Escape cancels; focus goes back to the cell. Tab moves to the next cell.",
     "Remove row buttons are named Remove row 2 and show that in a Tooltip.",
     "Set for all is a kit Dropdown under the column title; the header is still the kit HeaderCell.",
-    "With detail, each row starts with a kit Button named Show details, row 2 (Hide when open), with aria-expanded and aria-controls pointing at the open detail, a group named Details, row 2.",
+    "With detail, each row that has one starts with a kit Button named Show details, row 2 (Hide when open), with aria-expanded and aria-controls pointing at the open detail, a group named Details, row 2. A row whose detail is null has no button.",
     "A date cell is a kit DatePicker named by its column and row, like Start date, row 2.",
-    "With canInsertRows, each row's + is a kit Button named Add row below row N; the new row goes right under it."
+    "With canInsertRows, each row's + is a kit Button named Add row below row N; the new row goes right under it.",
+    "With an opensDetail column, the Count button is named N more, row 2, with aria-expanded and aria-controls pointing at the open detail."
   ],
   "snippet": "<DataGrid\n  label=\"Conditions\"\n  columns={[\n    { key: \"field\", header: \"Field\", type: \"formula\", fields: accountFields },\n    { key: \"condition\", header: \"Condition\", type: \"select\", options: conditions, width: \"200px\" },\n    { key: \"value\", header: \"Value\" },\n  ]}\n  rows={rules}\n  onRowsChange={setRules}\n  canAddRows\n  canRemoveRows\n/>",
   "examples": [
@@ -146,7 +151,7 @@
     },
     {
       "title": "Dates and details",
-      "usage": "Start and End are date cells. Each row opens to its rate bands, a nested grid with a Currency select; the first row starts open.",
+      "usage": "Start and End are date cells. API calls opens to its rate bands, a nested grid with a Currency select, and starts open. Seat license has one price, so its detail is null and it has no toggle.",
       "items": [
         {
           "props": {
@@ -159,6 +164,21 @@
             ],
             "canRemoveRows": true,
             "canInsertRows": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "More values in a cell",
+      "usage": "Tiered rates. Rate is a readOnly opensDetail column: Sandbox Environment shows its first band, USD 0–10,000: 1,800.00, then a Count button with 2, the number of other bands. It opens the row to every band in a read-only Table size sm, line thin, captioned Sandbox Environment: 3 rates in USD. Seat license has one price, so its detail is null: no button, and no toggle column.",
+      "items": [
+        {
+          "props": {
+            "label": "Products",
+            "columns": "{moreColumns}",
+            "defaultRows": "{moreRows}",
+            "detail": "{moreDetail}",
+            "detailCount": "{moreCount}"
           }
         }
       ]

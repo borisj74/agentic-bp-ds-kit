@@ -1426,6 +1426,8 @@
   --toolbar-search: 200px;
   --data-grid-column-min: 160px;
   --data-grid-edit-min: 96px;
+  --data-grid-detail-min: 360px;
+  --table-detail-min: 360px;
   --scoreboard-card-min: 196px;
   --scoreboard-card-min-narrow: 160px;
   --scoreboard-chart-width: 64px;
