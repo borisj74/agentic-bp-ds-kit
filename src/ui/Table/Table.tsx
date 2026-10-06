@@ -58,12 +58,14 @@ export function Table({
   const [open, setOpen] = useState<string[]>([]);
   const detailColRef = useRef<HTMLTableCellElement>(null);
   const [detailStart, setDetailStart] = useState(0);
+  const [viewWidth, setViewWidth] = useState(0);
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
     const measure = () => {
       setOverflows(el.scrollWidth > el.clientWidth + 1);
       setDetailStart(Math.max(0, (detailColRef.current?.offsetLeft ?? 0) - el.scrollLeft));
+      setViewWidth(el.clientWidth);
     };
     measure();
     el.addEventListener("scroll", measure, { passive: true });
@@ -109,7 +111,7 @@ export function Table({
       <span className={styles.valueMore}>
         {shown}
         <Button
-          emphasis="minimal" size="sm" iconEnd={isOpen ? "expand_less" : "expand_more"}
+          emphasis="minimal" intent="brand" size="sm" iconEnd={isOpen ? "expand_less" : "expand_more"}
           aria-label={`${more} more, row ${n}`} aria-expanded={isOpen} aria-controls={isOpen ? `${uid}-detail-${id}` : undefined}
           onClick={() => toggleOpen(id)}
         >
@@ -126,7 +128,7 @@ export function Table({
 
   return (
     <div
-      ref={wrapRef} className={styles.wrap} style={detail ? ({ "--table-detail-start": `${detailStart}px` } as CSSProperties) : undefined}
+      ref={wrapRef} className={styles.wrap} style={detail ? ({ "--table-detail-start": `${detailStart}px`, "--table-view-width": viewWidth ? `${viewWidth}px` : "100%" } as CSSProperties) : undefined}
       tabIndex={overflows ? 0 : undefined} role={overflows ? "region" : undefined} aria-label={overflows ? caption ?? "Table" : undefined}
     >
       <table className={[styles.table, styles[size], line === "thin" ? styles.thin : ""].join(" ")}>

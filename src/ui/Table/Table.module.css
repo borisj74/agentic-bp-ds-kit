@@ -49,10 +49,14 @@
 .valueMore > * { background: transparent; border-bottom: 0; }
 /* An open row's detail: one cell across the table, the content starting under the opensDetail column
    (--table-detail-start, less the cell's padding). It is at least --table-detail-min wide and fills the rest; the
-   spacer shrinks first, so a detail too wide for the room slides back to fit. */
+   spacer shrinks first, so a detail too wide for the room slides back to fit. It keeps to the visible width of the
+   box (--table-view-width), so it stays in view while a wide table scrolls sideways. */
 .table tbody tr.detailRow, .table tbody tr.detailRow:hover { background: var(--surface-flat); }
-.table tbody tr.detailRow > td { padding: var(--space-small) var(--space-medium) var(--space-medium); white-space: normal; }
-.detailBody { display: flex; }
+.table tbody tr.detailRow > td { padding: 0; white-space: normal; }
+.detailBody {
+  display: flex; box-sizing: border-box; position: sticky; inset-inline-start: 0;
+  width: var(--table-view-width, 100%); padding: var(--space-small) var(--space-medium) var(--space-medium);
+}
 .detailSpacer { flex: 0 1 max(0px, calc(var(--table-detail-start, 0px) - var(--space-medium))); min-width: 0; }
 .detailContent { flex: 1 0 min(100%, var(--table-detail-min)); min-width: 0; }
 
