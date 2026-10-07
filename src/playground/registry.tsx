@@ -270,6 +270,19 @@ const TABLE_SAMPLES: Record<string, unknown> = {
 const tableProps = (p: Props) =>
   Object.fromEntries(Object.entries(p).map(([k, v]) => [k, typeof v === "string" && v in TABLE_SAMPLES ? TABLE_SAMPLES[v] : v])) as unknown as TableProps;
 
+// The Form example's rate bands: the same Sandbox Environment bands, editable in a DataGrid that spans the form's row.
+const FORM_BAND_COLUMNS: DataGridColumn[] = [
+  { key: "currency", header: "Currency", type: "select", width: "140px", options: [{ value: "USD", label: "USD" }, { value: "EUR", label: "EUR" }, { value: "GBP", label: "GBP" }] },
+  { key: "upper", header: "Upper band" },
+  { key: "rate", header: "Rate" },
+];
+const formRateBands = (
+  <DataGrid
+    label="Rate bands" columns={FORM_BAND_COLUMNS} rowNumbers={false} canAddRows canRemoveRows
+    defaultRows={RATE_BANDS["Sandbox Environment"].map(([currency, upper, rate], i) => ({ id: `r${i + 1}`, currency, upper, rate }))}
+  />
+);
+
 // DataGrid samples. Contract examples name them as {conditionColumns}, {conditions}, {lineItemColumns}, {lineItems}.
 const CONDITION_COLUMNS: DataGridColumn[] = [
   { key: "field", header: "Field", type: "formula", placeholder: "Pick a field or write a formula", fields: [{ id: "Account.Status", label: "Account status" }, { id: "Invoice.Amount", label: "Invoice amount" }, { id: "Invoice.DueDate", label: "Due date" }], onCalculate: (f) => (f.trim() ? "Valid formula" : "Nothing to calculate") },
@@ -1373,12 +1386,12 @@ export const registry: Record<string, Entry> = {
     // Start labels and two or three columns need more room; narrow stages drop to one column on their own.
     render: ({ content, ...p }) => (
       <div style={{ width: (p.columns === 3 ? 960 : p.columns === 2 ? 640 : 480) + (p.labelPosition === "start" ? 160 : 0), maxWidth: "100%" }}>
-        <FormDemo key={JSON.stringify(p) + String(content)} {...(p as FormProps)} content={content as FormDemoContent | undefined} />
+        <FormDemo key={JSON.stringify(p) + String(content)} {...(p as FormProps)} content={content as FormDemoContent | undefined} grid={content === "rates" ? formRateBands : undefined} />
       </div>
     ),
     preview: { title: "Company details", description: "Shown on every invoice you send." },
     snippet: { onSubmit: "{save}", actions: "{actions}", children: '<Input label="Company" name="company" required />' },
-    extras: { content: { values: ["fields", "sections", "details"], default: "fields" }, message: { values: ["none", "error"], default: "none" } },
+    extras: { content: { values: ["fields", "sections", "details", "rates"], default: "fields" }, message: { values: ["none", "error"], default: "none" } },
     normalize: ({ message, ...p }) => (message === "error" ? { ...p, error: "We couldn't save your changes. Try again." } : p),
     hint: "Switch variant, content and message. The fields are live; Save submits.",
     column: true,

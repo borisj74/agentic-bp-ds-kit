@@ -67,7 +67,7 @@ import { Toolbar } from "@/ui/Toolbar/Toolbar";
 
 export type ModalDemoContent = "text" | "form";
 export type DrawerDemoContent = "details" | "form" | "blocks";
-export type FormDemoContent = "fields" | "sections" | "details";
+export type FormDemoContent = "fields" | "sections" | "details" | "rates";
 
 const COUNTRIES = [
   { value: "us", label: "United States" },
@@ -77,7 +77,8 @@ const COUNTRIES = [
 ];
 
 // Playground harness: the real Form filled with sample kit fields. Save shows what was submitted. Not a kit piece.
-export function FormDemo({ content = "fields", ...p }: Omit<FormProps, "children" | "sections" | "actions" | "onSubmit"> & { content?: FormDemoContent }) {
+// rates: a product's fields and its rate bands, a kit DataGrid passed in as grid.
+export function FormDemo({ content = "fields", grid, ...p }: Omit<FormProps, "children" | "sections" | "actions" | "onSubmit"> & { content?: FormDemoContent; grid?: ReactNode }) {
   const [saved, setSaved] = useState("");
   const size = p.variant === "card" ? "sm" : "md";
   const actions = (
@@ -98,6 +99,15 @@ export function FormDemo({ content = "fields", ...p }: Omit<FormProps, "children
           <FormDisplay label="Billing email" value="billing@acme.com" />
           <FormDisplay label="Payment terms" value="Net 30" />
           <FormDisplay label="Tax ID" />
+        </Form>
+      ) : content === "rates" ? (
+        // A DataGrid spans the row and, with start labels, starts at the section's edge under the title.
+        <Form {...p} actions={actions} onSubmit={onSubmit}>
+          <Input label="Product" name="name" defaultValue="Sandbox Environment" required />
+          <Input label="Product code" name="code" defaultValue="SBX-100" />
+          <Select label="Billing period" name="period" options={BILLING_PERIODS} defaultValue="monthly" />
+          <Input label="Unit" name="unit" defaultValue="API calls" />
+          {grid}
         </Form>
       ) : content === "sections" ? (
         <Form
@@ -143,6 +153,12 @@ export function FormDemo({ content = "fields", ...p }: Omit<FormProps, "children
     </div>
   );
 }
+
+const BILLING_PERIODS = [
+  { value: "monthly", label: "Monthly" },
+  { value: "quarterly", label: "Quarterly" },
+  { value: "yearly", label: "Yearly" },
+];
 
 // Parent accounts for the Form demo's Lookup field.
 const PARENT_ACCOUNTS: LookupRow[] = [

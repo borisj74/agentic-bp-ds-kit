@@ -1,6 +1,9 @@
+import { readFileSync } from "node:fs";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { DataGrid } from "@/ui/DataGrid/DataGrid";
 import { Form } from "@/ui/Form/Form";
+import { Input } from "@/ui/Input/Input";
 import { FormDisplay } from "@/ui/FormDisplay/FormDisplay";
 import { Modal } from "@/ui/Modal/Modal";
 import { Section } from "@/ui/Section/Section";
@@ -57,5 +60,40 @@ describe("columns", () => {
     );
     expect(fields(screen.getByRole("form", { name: "Contact" })).className).not.toMatch(/\bgrid\b/);
     expect(screen.getByText("Email").closest("dl")).toHaveAttribute("data-label", "top");
+  });
+
+  // K7: a DataGrid (like a product's rate bands) needs the whole row for its columns, and its column headers stand in
+  // for a label, so with start labels it starts at the section's edge. jsdom has no layout, so the rules are read
+  // from the CSS the grid's own box is scoped by.
+  const rules = (file: string) => readFileSync(file, "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ");
+
+  it("spans the row with a DataGrid in a columns Form, starting at the section's edge with start labels", () => {
+    render(
+      <Form title="Product pricing" columns={2} labelPosition="start">
+        <Input label="Product" name="name" />
+        <DataGrid label="Rate bands" columns={[{ key: "currency", header: "Currency" }]} defaultRows={[{ id: "r1", currency: "USD" }]} />
+      </Form>,
+    );
+    const grid = document.querySelector("[data-data-grid]")!;
+    expect(grid.parentElement).toBe(fields(screen.getByRole("form", { name: "Product pricing" })));
+    expect(grid.parentElement!.className).toMatch(/\bgrid\b.*\btwo\b.*\bstart\b/);
+    const columns = rules("src/ui/Form/columns.module.css");
+    expect(columns).toContain(".grid > [data-data-grid] { grid-column: 1 / -1; }");
+    expect(columns).toContain('.grid:is(.start, :has(> [data-label="start"])) > [data-data-grid] { margin-inline-start: 0; }');
+    // It comes after the rule that shifts unlabelled controls over, so at the same weight the 0 wins.
+    expect(columns.indexOf("> [data-data-grid] { margin-inline-start: 0; }")).toBeGreaterThan(columns.indexOf('> :not([data-label="start"]) { margin-inline-start: calc('));
+  });
+
+  it("starts a DataGrid at the section's edge in a one-column Form with start labels", () => {
+    render(
+      <Form title="Product pricing" labelPosition="start">
+        <Input label="Product" name="name" />
+        <DataGrid label="Rate bands" columns={[{ key: "currency", header: "Currency" }]} defaultRows={[{ id: "r1", currency: "USD" }]} />
+      </Form>,
+    );
+    expect(screen.getByRole("form", { name: "Product pricing" }).className).toMatch(/\bstart\b/);
+    const form = rules("src/ui/Form/Form.module.css");
+    expect(form).toContain(".start .fields > [data-data-grid] { margin-inline-start: 0; }");
+    expect(form.indexOf(".start .fields > [data-data-grid]")).toBeGreaterThan(form.indexOf('.start .fields > :not([data-label="start"]) { margin-inline-start: calc('));
   });
 });

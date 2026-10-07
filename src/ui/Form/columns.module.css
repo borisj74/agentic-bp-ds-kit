@@ -13,6 +13,8 @@
 .three { grid-template-columns: repeat(3, minmax(0, var(--layout-column-max))); }
 /* A Textarea spans the row. */
 .grid > :has(textarea) { grid-column: 1 / -1; }
+/* A DataGrid, like a list of rate bands, needs the whole row for its columns, so it spans the row too. */
+.grid > [data-data-grid] { grid-column: 1 / -1; }
 
 /* FormDisplay rows read as one list: each has its own line under it, so a gap between rows would break the list.
    A pair whose label wraps is taller than its neighbour, so every row in a line stretches to the tallest one and
@@ -24,6 +26,9 @@
 .grid:is(.start, :has(> [data-label="start"])) > :not([data-label="start"]) { margin-inline-start: calc(var(--input-label-width) + var(--space-small)); }
 /* Once the fields put their label on top (under 480px), there is no column to line up with. */
 @container (max-width: 480px) { .grid:is(.start, :has(> [data-label="start"])) > :not([data-label="start"]) { margin-inline-start: 0; } }
+/* A DataGrid has its own column headers instead of a label, so with start labels it starts at the section's edge,
+   under its title, rather than past the label column. */
+.grid:is(.start, :has(> [data-label="start"])) > [data-data-grid] { margin-inline-start: 0; }
 
 /* A field needs about 220px to be typed in, so three give way to two under 720px with labels on top, and under
    1080px with a 160px label column beside each field; two give way to one under 560px, or 720px with start labels. */

@@ -34,7 +34,7 @@
         2,
         3
       ],
-      "note": "2 puts fields side by side, left to right; 3 puts them in threes, for a long form on a wide page. A Textarea spans the row. Set, each column is at most 480px (--layout-column-max) and the fields stay at the start: on a wide page the space past the last column stays empty. Unset, the Form takes the columns of the FormPage or RecordPage it is in; outside one, the fields stack in one column that fills the form, as in a Modal or Drawer. Never more than 3. Columns give way as the form narrows: three become two under 720px (1080px with start labels), and two become one under 560px (720px with start labels)."
+      "note": "2 puts fields side by side, left to right; 3 puts them in threes, for a long form on a wide page. A Textarea spans the row, and so does a DataGrid (like a product's rate bands), which needs the width for its columns; with start labels the grid starts at the section's edge, since its column headers stand in for a label. Set, each column is at most 480px (--layout-column-max) and the fields stay at the start: on a wide page the space past the last column stays empty. Unset, the Form takes the columns of the FormPage or RecordPage it is in; outside one, the fields stack in one column that fills the form, as in a Modal or Drawer. Never more than 3. Columns give way as the form narrows: three become two under 720px (1080px with start labels), and two become one under 560px (720px with start labels)."
     },
     "children": {
       "type": "ReactNode",
@@ -158,6 +158,20 @@
             "title": "Company details",
             "columns": 3,
             "content": "fields"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Rate bands in a form",
+      "usage": "A DataGrid of rate bands in a two-column Form with start labels. The grid spans the row, and starts at the section's edge under the title, since its column headers stand in for a label.",
+      "items": [
+        {
+          "props": {
+            "title": "Product pricing",
+            "columns": 2,
+            "labelPosition": "start",
+            "content": "rates"
           }
         }
       ]

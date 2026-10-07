@@ -4,6 +4,14 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## Unreleased
+
+### Added
+- Form: example "Rate bands in a form": a two-column Form with start labels, a few Inputs and a DataGrid of rate bands (USD 10,000 1,800.00; 50,000 1,620.00; No limit 1,440.00).
+
+### Changed
+- A DataGrid inside a Form with `columns` spans the row, like a Textarea, since it needs the width for its columns. With start labels it starts at the section's edge, under the title, rather than past the label column: its column headers stand in for a label. The same holds in a one-column Form with start labels. The Form and DataGrid contracts say so.
+
 ## v0.4.9 — 2026-10-06
 
 ### Added

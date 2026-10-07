@@ -21,6 +21,9 @@
 .start .fields > :not([data-label="start"]) { margin-inline-start: calc(var(--input-label-width) + var(--space-small)); }
 /* Once the fields put their label on top (under 480px), there is no column to line up with. */
 @container (max-width: 480px) { .start .fields > :not([data-label="start"]) { margin-inline-start: 0; } }
+/* A DataGrid, like a list of rate bands, has its own column headers instead of a label, so it starts at the
+   section's edge, under its title, rather than past the label column. */
+.start .fields > [data-data-grid] { margin-inline-start: 0; }
 
 /* A block of FormDisplays (the only dl in a Form) reads as one list: each row has its own line under it, so a gap
    between the rows would break the list in two. Columns (2 and 3, side by side) live in columns.module.css. */
