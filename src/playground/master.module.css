@@ -112,7 +112,10 @@
 .wide { max-width: none; }
 .items { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-medium); }
 /* Form fields read top to bottom, like a real form. */
-.column { display: flex; flex-direction: column; align-items: center; gap: var(--space-large); }
+.column { display: flex; flex-direction: column; align-items: center; gap: var(--space-large); max-width: 100%; }
+/* A wide sample, like a three-column Form with start labels, keeps to the stage and gives way there, rather than
+   spilling past both sides of the card. */
+.column > * { max-width: 100%; }
 /* Rows of one list, like FormDisplay details: stacked with no gap, the row lines do the separating. */
 .flush { display: flex; flex-direction: column; align-items: center; gap: 0; }
 .cells { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--space-medium); }
