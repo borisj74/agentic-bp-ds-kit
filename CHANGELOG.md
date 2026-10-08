@@ -4,6 +4,19 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.5.0 — 2026-10-08 · Breaking
+
+### Removed
+- Section `columns`. A Section of FormDisplay rows or fields reads as one column, and it no longer takes the columns of the RecordPage around it.
+
+### Changed
+- RecordPage and FormPage keep `columns`, but it now reaches only a Form in their children, which lays its fields out in that many columns. Sections of rows, and Sections of Tables, are one column.
+- Catalog: the Section page drops its Columns example, and RecordPage drops the Columns chips that no longer changed anything on that record.
+
+### Breaking
+- `<Section columns={2}>` no longer compiles: drop the prop. Rows that were side by side now stack in one column.
+- A record whose details relied on `<RecordPage columns={2}>` to put its rows in two columns now reads as one column. Where fields really belong side by side, wrap them in a kit `Form` with its own `columns`.
+
 ## v0.4.10 — 2026-10-07
 
 ### Added
