@@ -27,20 +27,16 @@ describe("columns", () => {
     expect(fields(screen.getByRole("form", { name: "Plain" })).className).not.toMatch(/\bgrid\b/);
   });
 
-  it("gives a Section its own columns", () => {
-    render(<Section title="Rows" columns={3}><FormDisplay label="Account" value="A" /></Section>);
-    expect(body("Rows").className).toMatch(/\bgrid\b.*\bthree\b/);
-  });
-
-  it("passes a record's columns and labels to its Sections, unless a Section sets its own", () => {
+  // A Section of rows is one column: the record's columns reach the Forms in it, never the rows themselves.
+  it("keeps a record's Sections in one column and passes its labels down", () => {
     render(
       <RecordPage label="Account">
         <Section title="Account information"><FormDisplay label="Account" value="A" /></Section>
-        <Section title="Billing" columns={3}><FormDisplay label="Terms" value="Net 30" /></Section>
+        <Section title="Billing"><Form title="Terms"><FormDisplay label="Terms" value="Net 30" /></Form></Section>
       </RecordPage>,
     );
-    expect(body("Account Information").className).toMatch(/\btwo\b/);
-    expect(body("Billing").className).toMatch(/\bthree\b/);
+    expect(body("Account Information").className).not.toMatch(/\bgrid\b/);
+    expect(fields(screen.getByRole("form", { name: "Terms" })).className).toMatch(/\btwo\b/);
     expect(screen.getByText("Account").closest("dl")).toHaveAttribute("data-label", "start");
   });
 

@@ -1309,12 +1309,12 @@ function RecordMeter({ value, label, of }: { value: number; label: string; of: s
   );
 }
 
-// The rows go straight into the Section: the record sets the columns and the labels for every Section of them.
+// The rows go straight into the Section, one column, and the record sets their labels.
 function recordRows(fields: { label: string; value: ReactNode; help: string }[]) {
   return fields.map((f) => <FormDisplay key={f.label} label={f.label} value={f.value} help={f.help} />);
 }
 
-// A related list under the details: a Section of a Table keeps the full width while the rows above sit in columns.
+// A related list under the details: a Section of a Table, the full width like the rows above it.
 const RECORD_INVOICE_COLUMNS: TableColumn[] = [
   { key: "invoice", header: "Invoice" }, { key: "date", header: "Date" }, { key: "due", header: "Due" },
   { key: "amount", header: "Amount", numeric: true }, { key: "status", header: "Status" },
@@ -1326,7 +1326,7 @@ const RECORD_INVOICES = [
   { id: "r4", invoice: <Cell type="link" label="INV-29133" onClick={() => {}} />, date: "05/31/2026", due: "06/30/2026", amount: "$10,980.25", status: <Cell type="badge" label="Paid" intent="success" /> },
 ];
 
-export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop", columns = 2 }: { sticky?: boolean; shell?: boolean; stage?: string; columns?: FormColumns }) {
+export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop" }: { sticky?: boolean; shell?: boolean; stage?: string }) {
   const [tab, setTab] = useState("details");
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");
@@ -1338,7 +1338,7 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop",
 
   const record = (
     <RecordPage
-      label="Account" sticky={sticky} onStickyChange={setCompact} columns={columns}
+      label="Account" sticky={sticky} onStickyChange={setCompact}
       header={
         <PageHeader
           breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]}

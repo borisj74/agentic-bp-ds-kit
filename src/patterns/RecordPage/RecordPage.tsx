@@ -45,8 +45,8 @@ export function RecordPage({
         </div>
       )}
       {summary && <div className={styles.summary}>{summary}</div>}
-      {/* The record sets the columns and the labels once: every Section of FormDisplay rows (and any Form) in the
-          details follows them unless it sets its own. Sections of Tables keep the full width. */}
+      {/* The record sets the labels once, and every Section of FormDisplay rows (and any Form) in the details
+          follows unless it sets its own. columns reaches the Forms; a Section of rows is one column. */}
       <FormLayoutContext.Provider value={{ columns, labelPosition }}>
         <div className={styles.details}>{children}</div>
       </FormLayoutContext.Provider>
