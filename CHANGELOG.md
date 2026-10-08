@@ -4,6 +4,15 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.5.2 — 2026-10-08
+
+### Added
+- Section takes `columns` again (1, 2 or 3), and a Section without its own columns follows the RecordPage around it, as it did before v0.5.0. A Section of FormDisplay rows or fields can read side by side instead of as one long list. v0.5.0 removed the prop; this release puts it back.
+
+### Changed
+- A Section with columns now takes the width of the box around it. Measuring its own width for the columns had cost it its content width, so wherever the parent sized the Section by its content it fell to 0 wide and every value wrapped one letter to a line. That collapse is what v0.5.0 set out to end; the width fix ends it without losing the columns.
+- Section, RecordPage, FormDisplay and AccountFlow contracts, and the catalog's Section Columns example and RecordPage Columns controls, describe columns again.
+
 ## v0.5.1 — 2026-10-08
 
 ### Changed
