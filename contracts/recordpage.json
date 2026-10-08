@@ -104,18 +104,6 @@
           }
         }
       ]
-    },
-    {
-      "title": "Three columns",
-      "usage": "columns 3 puts the details in threes on a wide screen. Each column still stops at 480px, and the related table under the details keeps the full width.",
-      "items": [
-        {
-          "props": {
-            "sticky": true,
-            "columns": 3
-          }
-        }
-      ]
     }
   ]
 }

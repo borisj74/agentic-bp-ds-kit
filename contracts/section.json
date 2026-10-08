@@ -57,7 +57,7 @@
     "Long detail pages where people fold away parts they don't need: make them collapsible.",
     "Stacking titled blocks inside `.layout-content` so the page owns edge padding and between-section gap.",
     "A quieter heading line: line thin, often on subsections under a 2px section, or on every section of a dense page.",
-    "A record's details on a wide screen: columns 2 or 3 puts the FormDisplay rows side by side instead of one long list."
+    "A record's details as FormDisplay rows, one under the other in a single column; for fields side by side, put a Form with columns in the Section."
   ],
   "doNot": [
     "Do not invent a SectionHeader, SectionTitle or a heading with a border. Use Section.",
