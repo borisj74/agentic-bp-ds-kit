@@ -27,16 +27,27 @@ describe("columns", () => {
     expect(fields(screen.getByRole("form", { name: "Plain" })).className).not.toMatch(/\bgrid\b/);
   });
 
-  // A Section of rows is one column: the record's columns reach the Forms in it, never the rows themselves.
-  it("keeps a record's Sections in one column and passes its labels down", () => {
+  it("gives a Section its own columns", () => {
+    render(<Section title="Rows" columns={3}><FormDisplay label="Account" value="A" /></Section>);
+    expect(body("Rows").className).toMatch(/\bgrid\b.*\bthree\b/);
+  });
+
+  // A columns Section measures itself, which costs it its content width, so it has to take the width of the box it
+  // sits in — without that it falls to 0 wide wherever the parent sizes it by its content.
+  it("keeps a columns Section the full width of the box around it", () => {
+    expect(rules("src/ui/Section/Section.module.css"))
+      .toContain(".columns { container-type: inline-size; width: 100%; box-sizing: border-box; }");
+  });
+
+  it("passes a record's columns and labels to its Sections, unless a Section sets its own", () => {
     render(
       <RecordPage label="Account">
         <Section title="Account information"><FormDisplay label="Account" value="A" /></Section>
-        <Section title="Billing"><Form title="Terms"><FormDisplay label="Terms" value="Net 30" /></Form></Section>
+        <Section title="Billing" columns={3}><FormDisplay label="Terms" value="Net 30" /></Section>
       </RecordPage>,
     );
-    expect(body("Account Information").className).not.toMatch(/\bgrid\b/);
-    expect(fields(screen.getByRole("form", { name: "Terms" })).className).toMatch(/\btwo\b/);
+    expect(body("Account Information").className).toMatch(/\btwo\b/);
+    expect(body("Billing").className).toMatch(/\bthree\b/);
     expect(screen.getByText("Account").closest("dl")).toHaveAttribute("data-label", "start");
   });
 

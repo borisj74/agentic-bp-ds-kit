@@ -2,7 +2,7 @@
   "name": "Section",
   "path": "src/ui/Section/Section.tsx",
   "intent": "A titled block of a page, like Account information or Recent invoices: a header with a line under it, optional help and buttons, and the content below. It can collapse.",
-  "usage": "Use Section to split a page under its PageHeader into titled parts, each holding a Table, FormDisplay rows, a Scoreboard or a Form. It is one component: pass title and the content as children, or leave children out for a header only, like a heading above content laid out by the page. Page edge padding and gap between Section blocks come from layout classes (`.layout-content`), not from Section — see contracts/layout.json. help adds a ? icon after the title that opens a HelpPopover. actions holds kit Buttons at the end of the header. collapsible adds a chevron button before the title that hides and shows the content; it starts expanded unless defaultExpanded is false. A Section inside another Section's children is a sub-block: its title steps down to text-heading-xs on its own, so the outer title stays the louder one. Its stacked blocks sit one grid gutter apart. line sets the rule under the header: medium (2px, the default) or thin (1px). Each Section sets its own, so a page can keep 2px lines on its sections and give their subsections thin ones. A Section holds one column: its rows, fields or table run the full width it is given. Fields that should sit side by side go in a kit Form with its own columns. See contracts/section.json for the full contract.",
+  "usage": "Use Section to split a page under its PageHeader into titled parts, each holding a Table, FormDisplay rows, a Scoreboard or a Form. It is one component: pass title and the content as children, or leave children out for a header only, like a heading above content laid out by the page. Page edge padding and gap between Section blocks come from layout classes (`.layout-content`), not from Section — see contracts/layout.json. help adds a ? icon after the title that opens a HelpPopover. actions holds kit Buttons at the end of the header. collapsible adds a chevron button before the title that hides and shows the content; it starts expanded unless defaultExpanded is false. A Section inside another Section's children is a sub-block: its title steps down to text-heading-xs on its own, so the outer title stays the louder one. Its stacked blocks sit one grid gutter apart. line sets the rule under the header: medium (2px, the default) or thin (1px). Each Section sets its own, so a page can keep 2px lines on its sections and give their subsections thin ones. columns (1, 2 or 3) lays a Section of FormDisplay rows or kit fields out in columns, left to right: pass the rows or fields straight in as children, not wrapped in a div. Each column stops at --layout-column-max (480px) and the block stays at the start, so the space past the last column stays empty on a wide screen; the header and its line keep the full width. Columns give way as the Section narrows, like Form columns: three become two under 1080px with start labels (720px with labels on top), and two become one under 720px with start labels (560px on top). Inside a RecordPage the Section takes the record's columns and labelPosition unless it sets its own columns. A Table, Scoreboard or anything else that is not a field or a FormDisplay is never put in columns: a Section of those keeps the full width. See contracts/section.json for the full contract.",
   "props": {
     "title": {
       "type": "string",
@@ -33,6 +33,14 @@
       "default": "medium",
       "note": "The line under the header. medium is 2px, thin is 1px, both in the brand-faint color. It applies to this Section's own header only; a Section inside it sets its own."
     },
+    "columns": {
+      "enum": [
+        1,
+        2,
+        3
+      ],
+      "note": "Lays FormDisplay rows or kit fields, passed straight in as children, out in 1, 2 or 3 columns, left to right, each at most 480px (--layout-column-max) and kept at the start. A Textarea spans the row. Unset, the Section takes the columns of the RecordPage it is in; outside one, the content stacks at full width as before. Only rows and fields go into columns: a Section of a Table or anything else stays full width."
+    },
     "collapsible": {
       "type": "boolean",
       "default": false,
@@ -57,7 +65,7 @@
     "Long detail pages where people fold away parts they don't need: make them collapsible.",
     "Stacking titled blocks inside `.layout-content` so the page owns edge padding and between-section gap.",
     "A quieter heading line: line thin, often on subsections under a 2px section, or on every section of a dense page.",
-    "A record's details as FormDisplay rows, one under the other in a single column; for fields side by side, put a Form with columns in the Section."
+    "A record's details on a wide screen: columns 2 or 3 puts the FormDisplay rows side by side instead of one long list."
   ],
   "doNot": [
     "Do not invent a SectionHeader, SectionTitle or a heading with a border. Use Section.",
@@ -67,8 +75,9 @@
     "Do not put a Section around a Form's own sections. Form has sections.",
     "Do not add outer padding, margin, or gap on Section for page inset or between-section rhythm. The page uses `.layout-content` (or equivalent layout class); read contracts/layout.json.",
     "Do not invent a padded Section cousin or wrapper for spacing. Use layout classes.",
-    "Do not use raw hex.",
-    "Do not lay a Section's rows or fields out in columns by hand with a grid or a width. A Section is one column; use a Form with columns when fields belong side by side."
+    "Do not build a grid of FormDisplays or fields by hand, and do not stretch columns to fill a wide page. Use columns; it caps each column at 480px.",
+    "Do not use more than 3 columns, even on a 2560px or wider screen.",
+    "Do not use raw hex."
   ],
   "a11y": [
     "A section element named by its h2 title.",
@@ -129,6 +138,28 @@
             "collapsible": true,
             "defaultExpanded": false,
             "children": "{accountRows}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Columns",
+      "usage": "columns puts FormDisplay rows side by side, left to right. Each column stops at 480px and the block stays at the start, so a wide page leaves the space on the right empty; the header line keeps the full width.",
+      "items": [
+        {
+          "caption": "Two columns",
+          "props": {
+            "title": "Account information",
+            "columns": 2,
+            "children": "{columnRows}"
+          }
+        },
+        {
+          "caption": "Three columns",
+          "props": {
+            "title": "Account information",
+            "columns": 3,
+            "children": "{columnRows}"
           }
         }
       ]

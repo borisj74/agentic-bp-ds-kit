@@ -2,7 +2,7 @@
   "name": "RecordPage",
   "path": "src/patterns/RecordPage/RecordPage.tsx",
   "intent": "One record: its name and actions at the top, the tabs of what belongs to it, the numbers that matter, and its details in sections underneath.",
-  "usage": "Use RecordPage for a single record: an account, an invoice, a quote. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the tab, the sections and what is open. Pass the kit PageHeader as header, with the trail, the record name, its status Badge and the record actions. tabs takes a kit Tabs of what belongs to the record, with counts. notice writes anything that needs saying about the record, as a kit Callout. toolbar takes a kit Toolbar for what acts on the tab that is showing. summary takes a kit Scoreboard of the few numbers people came for. children are the details: kit Sections, each holding its FormDisplay rows straight in as children. labelPosition (default start) is set once on the RecordPage and every Section of rows, or Form, inside the details follows it unless it sets its own. columns (1, 2 or 3, default 2) reaches any Form in the details, which lays its fields out left to right, each column stopping at 480px (--layout-column-max) and staying at the start; a Section of FormDisplay rows reads as one column, and so does a Section holding a Table. Sections side by side use .layout-split from contracts/layout.json: two, three with .layout-split--thirds, or four with .layout-split--quarters. Only the name stays put; the tabs, the notice and the bar scroll away under it. onStickyChange says when the top has scrolled away: keep that boolean in the screen and pass it to the PageHeader as sticky, so the name shrinks to the kit's compact 52px bar whose trail ends in the record name. It goes in the AppShell page, which owns the page padding. See contracts/recordpage.json for the full contract.",
+  "usage": "Use RecordPage for a single record: an account, an invoice, a quote. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the tab, the sections and what is open. Pass the kit PageHeader as header, with the trail, the record name, its status Badge and the record actions. tabs takes a kit Tabs of what belongs to the record, with counts. notice writes anything that needs saying about the record, as a kit Callout. toolbar takes a kit Toolbar for what acts on the tab that is showing. summary takes a kit Scoreboard of the few numbers people came for. children are the details: kit Sections, each holding its FormDisplay rows straight in as children. columns (1, 2 or 3, default 2) and labelPosition (default start) are set once on the RecordPage and every Section of rows, or Form, inside the details follows them unless it sets its own; each column stops at 480px (--layout-column-max) and the rows stay at the start, so on a wide screen the space past the last column stays empty instead of stretching the rows. Never more than 3 columns, even at 2560px and wider. Related lists under the details, a Section holding a kit Table, keep the full width. Sections side by side use .layout-split from contracts/layout.json: two, three with .layout-split--thirds, or four with .layout-split--quarters. Only the name stays put; the tabs, the notice and the bar scroll away under it. onStickyChange says when the top has scrolled away: keep that boolean in the screen and pass it to the PageHeader as sticky, so the name shrinks to the kit's compact 52px bar whose trail ends in the record name. It goes in the AppShell page, which owns the page padding. See contracts/recordpage.json for the full contract.",
   "composes": [
     "PageHeader",
     "Tabs",
@@ -56,7 +56,7 @@
         3
       ],
       "default": 2,
-      "note": "How many columns a Form in children uses for its fields, each at most 480px, unless the Form sets its own. Sections of FormDisplay rows and Sections of Tables read as one column. Narrow pages drop to fewer columns on their own."
+      "note": "How many columns the details use: every Section of FormDisplay rows (and any Form) in children lays them out left to right in this many, each at most 480px, unless it sets its own columns. Sections of Tables stay full width. Narrow pages drop to fewer columns on their own."
     },
     "labelPosition": {
       "enum": [
@@ -82,8 +82,9 @@
     "Do not use it for a list of records. Use ListPage.",
     "Do not stack more than one Callout over the record; say the one thing that matters.",
     "Do not use raw hex.",
+    "Do not wrap the details in a Form just to get columns, or set a width on them. Pass columns to the RecordPage; the Sections follow.",
     "Do not use more than 3 columns, even on a 2560px or wider screen.",
-    "Do not lay a Section's rows out in columns by hand to fill a wide page. A Section of rows is one column; fields that belong side by side go in a Form."
+    "Do not put a related Table into columns. A Section holding a Table stays full width on its own."
   ],
   "a11y": [
     "The record is a region named after label, so a screen reader can jump to it.",
@@ -101,6 +102,18 @@
         {
           "props": {
             "sticky": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Three columns",
+      "usage": "columns 3 puts the details in threes on a wide screen. Each column still stops at 480px, and the related table under the details keeps the full width.",
+      "items": [
+        {
+          "props": {
+            "sticky": true,
+            "columns": 3
           }
         }
       ]
