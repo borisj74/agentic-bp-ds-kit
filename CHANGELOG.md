@@ -4,6 +4,14 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.5.3 — 2026-10-08
+
+### Changed
+- Start labels sit in a 234px column, not 160. Labels as ordinary as View Recent Invoices or Account Ledger Number used to wrap; they read on one line now. This moves every field, FormDisplay row and RadioGroup legend that uses `labelPosition="start"`.
+- `--layout-column-max` grows with it, 480px to 554px, so a field keeps its 308px: a column is still a label, a 12px gap and the field.
+- The widths where a start label gives up its column, and where columns give way to fewer, move by the label column for each column they hold, so a field is as wide as it was: 480 to 554 for one column, 719 to 867 for two, 1079 to 1301 for three. Labels on top are untouched at 720 and 560.
+- The fourteen contracts that stated 160px or 480px state 234px and 554px, as do the Grid foundation page and the playground hints.
+
 ## v0.5.2 — 2026-10-08
 
 ### Added
