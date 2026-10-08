@@ -1420,6 +1420,7 @@
   --side-nav-rail: 56px;
   --side-nav-rail-open: 170px;
   --side-nav-row: var(--ref-size-1300);
+  --side-nav-panel-head: var(--ref-size-1300);
   --side-nav-panel-row: var(--ref-size-1100);
   --side-nav-panel-min: 160px;
   --side-nav-panel-max: 280px;

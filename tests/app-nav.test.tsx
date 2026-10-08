@@ -28,4 +28,18 @@ describe("App nav", () => {
     render(<AppNav items={APP_NAV} endItems={APP_NAV_END} expanded />);
     for (const s of [...sections, ...APP_NAV_END]) expect(screen.getAllByText(s.label).length).toBeGreaterThan(0);
   });
+
+  // The menu is as wide as the longest link in the whole nav, so it does not resize from section to section: every
+  // section's links sit in a hidden sizer behind the menu, which jsdom cannot measure but can count.
+  it("keeps every section's links in a hidden sizer, so the menu is one width", () => {
+    const { container } = render(<AppNav items={APP_NAV} endItems={APP_NAV_END} />);
+    const sizer = container.querySelector('[class*="sizer"]')!;
+    expect(sizer).toHaveAttribute("aria-hidden", "true");
+    const measured = new Set([...sizer.querySelectorAll("span")].map((el) => el.textContent));
+    for (const s of [...sections, ...APP_NAV_END]) {
+      if (!(s.children ?? []).length) continue;
+      expect(measured.has(s.label)).toBe(true);
+      for (const c of s.children ?? []) if (!("divider" in c)) expect(measured.has(c.label)).toBe(true);
+    }
+  });
 });

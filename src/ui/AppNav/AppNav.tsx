@@ -209,6 +209,8 @@ export function AppNav({
   };
 
   const titleId = `${panelId}-title`;
+  // Both lists hold menus, so the widest link in either one sets the menu width.
+  const menuSections = sections.filter((item) => (item.children ?? []).length > 0);
   return (
     <nav
       ref={navRef} aria-label={label}
@@ -224,8 +226,18 @@ export function AppNav({
         {endItems.length > 0 && <ul className={[styles.list, styles.end].join(" ")}>{endItems.map(renderSection)}</ul>}
       </div>
       <div ref={panelRef} id={panelId} className={styles.panel} data-open={menuOpen} inert={!menuOpen} onKeyDown={onPanelKey}>
+        {/* Every section's labels, hidden and flat in the same grid cell as the menu, so the menu is as wide as the
+            longest link in the nav and keeps that width as people move from section to section. */}
+        <div aria-hidden="true" className={styles.sizer}>
+          {menuSections.map((item) => (
+            <div key={item.id}>
+              <span className={styles.sizerTitle}>{item.label}</span>
+              {(item.children ?? []).filter(isEntry<AppNavLink>).map((c) => <span key={c.id} className={styles.link}>{c.label}</span>)}
+            </div>
+          ))}
+        </div>
         {menuItem && (
-          <>
+          <div className={styles.content}>
             <div className={styles.header}>
               <span id={titleId} className={styles.title}>{menuItem.label}</span>
               <Tooltip content={pinned ? "Close navigation" : "Pin navigation open"} position="below">
@@ -255,7 +267,7 @@ export function AppNav({
             <button type="button" tabIndex={-1} aria-hidden="true" className={[styles.overflow, styles.down].join(" ")} onClick={() => scrollList(1)}>
               <Icon name="expand_more" size="md" />
             </button>
-          </>
+          </div>
         )}
       </div>
     </nav>

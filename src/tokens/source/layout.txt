@@ -177,11 +177,12 @@ page-header/gap|{ref/space/1100}
 page-header/height|80px
 page-header/height-sticky|52px
 
-# AppNav (Figma closed rail 557:29103, secondary navigation 1409:71403): rail 56 closed / 170 open, 48px rail rows, 40px panel rows.
-# 56 and 170 are past the ref scale. The panel fits its links between 160 and 280 wide.
+# AppNav (Figma closed rail 557:29103, secondary navigation 1409:71403): rail 56 closed / 170 open, 48px rail rows,
+# a 48px menu header over 40px menu rows. 56 and 170 are past the ref scale. The panel fits its links between 160 and 280 wide.
 side-nav/rail|56px
 side-nav/rail-open|170px
 side-nav/row|{ref/size/1300}
+side-nav/panel-head|{ref/size/1300}
 side-nav/panel-row|{ref/size/1100}
 side-nav/panel-min|160px
 side-nav/panel-max|280px
