@@ -4,6 +4,12 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.5.1 — 2026-10-08
+
+### Changed
+- AppNav: every section's menu is the same width, the longest link in the whole nav (still within `--side-nav-panel-min` and `--side-nav-panel-max`), so the menu no longer resizes as people move from section to section, with the rail expanded or collapsed.
+- AppNav: the menu's header row, which holds the section name and the pin, is 48px like a rail row, over 40px link rows. New token `--side-nav-panel-head`; the link rows keep `--side-nav-panel-row`.
+
 ## v0.5.0 — 2026-10-08 · Breaking
 
 ### Removed
