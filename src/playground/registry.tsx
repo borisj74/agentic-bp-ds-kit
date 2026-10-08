@@ -1426,7 +1426,7 @@ export const registry: Record<string, Entry> = {
       labels: { values: ["start", "top"], default: "start" },
       stage: { values: ["desktop", "laptop", "tablet", "phone", "1920", "2560", "3008"], default: "desktop" },
     },
-    hint: "Fill in the new account: the name is the only field that has to be filled in, and Create in the bar saves every group at once. Fold a group away, open one of the three that start closed, and scroll: the name and the notice stay at the top while the fields pass under them. Labels switches the whole form between a label column at the start of each field and a label over it. Columns lays the fields out in one, two or three; each column stops at 480px, so on a big screen the space past the last one stays empty, and the contacts table under the form keeps the full width. Three gives way to two when the page is too narrow for them. Stage 1920, 2560 and 3008 draws the frame at that screen's real width, scaled down to fit. Stage narrows the box the frame lives in, so watch the two columns become one on a phone.",
+    hint: "Fill in the new account: the name is the only field that has to be filled in, and Create in the bar saves every group at once. Fold a group away, open one of the three that start closed, and scroll: the name and the notice stay at the top while the fields pass under them. Labels switches the whole form between a label column at the start of each field and a label over it. Columns lays the fields out in one, two or three; each column stops at 554px, so on a big screen the space past the last one stays empty, and the contacts table under the form keeps the full width. Three gives way to two when the page is too narrow for them. Stage 1920, 2560 and 3008 draws the frame at that screen's real width, scaled down to fit. Stage narrows the box the frame lives in, so watch the two columns become one on a phone.",
     block: true,
     wide: true,
     page: <FormPageDemo shell />,
@@ -1754,7 +1754,7 @@ export const registry: Record<string, Entry> = {
     hide: ["children", "header", "tabs", "notice", "toolbar", "summary", "onStickyChange", "labelPosition", "label"],
     toggles: { sticky: { label: "Top stays put", default: true }, shell: { label: "In the app frame", default: true } },
     extras: { stage: { values: ["desktop", "laptop", "tablet", "phone", "1920", "2560", "3008"], default: "desktop" } },
-    hint: "Columns lays the details out in one, two or three; each column stops at 480px, so on a big screen the space past the last one stays empty, and the related invoices under the details keep the full width. Stage 1920, 2560 and 3008 draws the frame at that screen's real width, scaled down to fit. Stage narrows the box the frame lives in, so watch the record on a phone. Walk the record's tabs, fold a section of details away, dismiss the notice, and scroll: the name stays at the top and shrinks to one compact line whose trail ends in the record, while the tabs and the bar scroll away under it. Turn the frame off to see the record on its own.",
+    hint: "Columns lays the details out in one, two or three; each column stops at 554px, so on a big screen the space past the last one stays empty, and the related invoices under the details keep the full width. Stage 1920, 2560 and 3008 draws the frame at that screen's real width, scaled down to fit. Stage narrows the box the frame lives in, so watch the record on a phone. Walk the record's tabs, fold a section of details away, dismiss the notice, and scroll: the name stays at the top and shrinks to one compact line whose trail ends in the record, while the tabs and the bar scroll away under it. Turn the frame off to see the record on its own.",
     block: true,
     wide: true,
     page: <RecordPageDemo sticky shell />,
@@ -2186,7 +2186,7 @@ export const registry: Record<string, Entry> = {
     extras: { message: { values: ["none", "hint", "error"], default: "none" } },
     normalize: ({ message, ...p }) =>
       message === "error" ? { ...p, error: "Select a billing cycle to continue." } : message === "hint" ? { ...p, hint: "You can change this later." } : p,
-    hint: "Switch size, orientation, layout, label position and message. Descriptions and badges show in card layout. Label position start moves the legend into the 160px label column beside the options.",
+    hint: "Switch size, orientation, layout, label position and message. Descriptions and badges show in card layout. Label position start moves the legend into the 234px label column beside the options.",
     card: <RadioGroup legend="Billing cycle" defaultValue="annual" options={[{ value: "monthly", label: "Monthly" }, { value: "annual", label: "Annual" }]} />,
   },
   Illustration: {

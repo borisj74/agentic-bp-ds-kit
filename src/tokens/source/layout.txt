@@ -30,7 +30,7 @@ layout/sidebar|224px
 layout/rail|352px
 layout/metrics-min|192px
 # K2: the widest one column of a record or form view gets: a 160 start label, a 12 gap and a 308 field.
-layout/column-max|480px
+layout/column-max|554px
 layout/gutter/sm|{grid/gutter/sm}
 layout/gutter/md|{grid/gutter/md}
 layout/gutter/lg|{grid/gutter/lg}
@@ -105,8 +105,9 @@ dropdown/min-width|200px
 menu-item/height|{ref/size/800}
 menu-item/tile|{ref/size/900}
 
-# Input (Figma .form-field / label 3196:28121): start labels sit in a 120px column.
-input/label-width|160px
+# Input (Figma .form-field / label 3196:28121): start labels sit in their own column, 234 wide as in the product, so
+# labels as long as View Recent Invoices or Account Ledger Number stay on one line.
+input/label-width|234px
 
 # not in Figma: gap between a control and its focus ring, so the ring never touches buttons or fields.
 focus/offset|3px

@@ -1,5 +1,5 @@
 /* Columns for a Form's fields and for a Section of FormDisplay rows or fields: they fill left to right. Each column
-   stops at --layout-column-max (a 160 start label, a 12 gap and a 308 field) and the block stays at the start, so on
+   stops at --layout-column-max (a 234 start label, a 12 gap and a 308 field) and the block stays at the start, so on
    a wide screen the space past the last column stays empty instead of the fields stretching. Never more than 3.
    The box that holds the grid is the size container the breakpoints measure. */
 
@@ -24,17 +24,17 @@
 /* Start labels (a Form's labelPosition, or rows that carry their own): controls with no label column (Checkbox,
    Switch) shift over to line up with the fields. */
 .grid:is(.start, :has(> [data-label="start"])) > :not([data-label="start"]) { margin-inline-start: calc(var(--input-label-width) + var(--space-small)); }
-/* Once the fields put their label on top (under 480px), there is no column to line up with. */
-@container (max-width: 480px) { .grid:is(.start, :has(> [data-label="start"])) > :not([data-label="start"]) { margin-inline-start: 0; } }
+/* Once the fields put their label on top (under 554px), there is no column to line up with. */
+@container (max-width: 554px) { .grid:is(.start, :has(> [data-label="start"])) > :not([data-label="start"]) { margin-inline-start: 0; } }
 /* A DataGrid has its own column headers instead of a label, so with start labels it starts at the section's edge,
    under its title, rather than past the label column. */
 .grid:is(.start, :has(> [data-label="start"])) > [data-data-grid] { margin-inline-start: 0; }
 
 /* A field needs about 220px to be typed in, so three give way to two under 720px with labels on top, and under
-   1080px with a 160px label column beside each field; two give way to one under 560px, or 720px with start labels. */
-@container (max-width: 1079px) { .three:is(.start, :has(> [data-label="start"])) { grid-template-columns: repeat(2, minmax(0, var(--layout-column-max))); } }
-@container (max-width: 719px) {
-  .three { grid-template-columns: repeat(2, minmax(0, var(--layout-column-max))); }
-  :is(.two, .three):is(.start, :has(> [data-label="start"])) { grid-template-columns: minmax(0, var(--layout-column-max)); }
-}
+   1301px with a 234px label column beside each field; two give way to one under 560px, or 867px with start labels.
+   The start numbers are the plain ones plus the label column for each column they hold, so a field is as wide as
+   it was before the column grew. */
+@container (max-width: 1300px) { .three:is(.start, :has(> [data-label="start"])) { grid-template-columns: repeat(2, minmax(0, var(--layout-column-max))); } }
+@container (max-width: 866px) { :is(.two, .three):is(.start, :has(> [data-label="start"])) { grid-template-columns: minmax(0, var(--layout-column-max)); } }
+@container (max-width: 719px) { .three { grid-template-columns: repeat(2, minmax(0, var(--layout-column-max))); } }
 @container (max-width: 560px) { .two, .three { grid-template-columns: minmax(0, var(--layout-column-max)); } }

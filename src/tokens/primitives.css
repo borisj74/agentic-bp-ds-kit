@@ -1324,7 +1324,7 @@
   --layout-sidebar: 224px;
   --layout-rail: 352px;
   --layout-metrics-min: 192px;
-  --layout-column-max: 480px;
+  --layout-column-max: 554px;
   --layout-gutter-sm: var(--grid-gutter-sm);
   --layout-gutter-md: var(--grid-gutter-md);
   --layout-gutter-lg: var(--grid-gutter-lg);
@@ -1374,7 +1374,7 @@
   --dropdown-min-width: 200px;
   --menu-item-height: var(--ref-size-800);
   --menu-item-tile: var(--ref-size-900);
-  --input-label-width: 160px;
+  --input-label-width: 234px;
   --focus-offset: 3px;
   --textarea-height-sm: 100px;
   --textarea-height-md: 180px;

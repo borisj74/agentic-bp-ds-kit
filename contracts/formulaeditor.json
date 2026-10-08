@@ -2,7 +2,7 @@
   "name": "FormulaEditor",
   "path": "src/ui/FormulaEditor/FormulaEditor.tsx",
   "intent": "A monospace field for writing formulas and rules, with a toolbar that inserts fields, operators and functions and checks the syntax.",
-  "usage": "Use FormulaEditor for calculated fields, rules and validations. It is one form field: pass label, hint, error and help as props, same as Input, and it takes labelPosition from an enclosing Form. The toolbar inserts at the cursor. fields adds an Insert field menu that inserts {!Field.Id}; functions replaces the default function list. Check syntax runs onCheckSyntax, or a built-in bracket and quote check. onCalculate adds a Calculate button that shows its result under the field. See contracts/formulaeditor.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 480px, since a 160px label column would leave too little of the field to type in.",
+  "usage": "Use FormulaEditor for calculated fields, rules and validations. It is one form field: pass label, hint, error and help as props, same as Input, and it takes labelPosition from an enclosing Form. The toolbar inserts at the cursor. fields adds an Insert field menu that inserts {!Field.Id}; functions replaces the default function list. Check syntax runs onCheckSyntax, or a built-in bracket and quote check. onCalculate adds a Calculate button that shows its result under the field. See contracts/formulaeditor.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in.",
   "props": {
     "label": {
       "type": "string",
@@ -19,7 +19,7 @@
         "start"
       ],
       "default": "top",
-      "note": "start puts the label in a 160px column, lined up with the toolbar. Inside a Form, the Form's labelPosition applies unless this is set."
+      "note": "start puts the label in a 234px column, lined up with the toolbar. Inside a Form, the Form's labelPosition applies unless this is set."
     },
     "size": {
       "enum": [

@@ -1,4 +1,4 @@
-/* Figma input-text 925:1635 + .proposal / Input-text 5118:2158. Label on top (4px gap) or start (160px column). */
+/* Figma input-text 925:1635 + .proposal / Input-text 5118:2158. Label on top (4px gap) or start (234px column). */
 .input { display: flex; flex-direction: column; gap: var(--space-xxsmall); width: 100%; min-width: 0; font-family: var(--font-sans); }
 .sm { --h: var(--control-small); --fs: var(--font-size-small); }
 .md { --h: var(--control-medium); --fs: var(--font-size-regular); }
@@ -31,10 +31,10 @@
   padding-inline: var(--space-small) 0; text-align: end;
 }
 
-/* 480px: on a box that narrow a 160px label column leaves too little of the field to type in, so a start
+/* 554px: on a box that narrow a 234px label column leaves too little of the field to type in, so a start
    label goes back on top of it. CSS vars cannot appear in container queries. The box being measured is the
    Form around the field, which is a size container. */
-@container (max-width: 480px) {
+@container (max-width: 554px) {
   /* stretch, or the label and the field would each be only as wide as their content. */
   .start { flex-direction: column; align-items: stretch; gap: var(--space-xxsmall); }
   .start .labelRow {

@@ -19,8 +19,8 @@ const semanticRows: Section[] = [
     { token: "layout-rail", value: "352px", visual: "var" },
     { token: "layout-metrics-min", value: "192px", visual: "var" },
   ] },
-  { title: "Field column", prefix: "--layout-column-max", note: "The widest one column of fields or FormDisplay rows gets in a record or form view: a 160 label, a 12 gap and a 308 field. Up to 3 columns; past them the page stays empty.", rows: [
-    { token: "layout-column-max", value: "480px", visual: "var" },
+  { title: "Field column", prefix: "--layout-column-max", note: "The widest one column of fields or FormDisplay rows gets in a record or form view: a 234 label, a 12 gap and a 308 field. Up to 3 columns; past them the page stays empty.", rows: [
+    { token: "layout-column-max", value: "554px", visual: "var" },
   ] },
   { title: "Gutter", prefix: "--layout-gutter-*", note: "Space between columns and cards.", rows: [
     { token: "layout-gutter-sm", value: "12px", visual: "var" }, { token: "layout-gutter-md", value: "16px", visual: "var" },
