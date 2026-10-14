@@ -4,6 +4,17 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.6.0 — 2026-10-14 · Breaking
+
+### Changed
+- A list page scrolls as one page. The Toolbar holds at the top under the compact PageHeader bar, the Table's column names hold under the Toolbar, and the page name with whatever sits between it and the list — a summary, a notice — scrolls away behind the trail.
+- Under that pinned band is a scroll shadow: a lift that reaches both page edges while the bar and the table keep the page's side padding. It is drawn only once the band has pinned, and the column names give up their own line for as long as it is, so the two never stack. Without a table the bar is the whole band and the shadow sits under it.
+- RecordPage's bar holds under the compact header instead of leaving with the tabs. It was inside the block that scrolls away, and a sticky box can only hold inside its own parent.
+
+### Breaking
+- Table no longer keeps a scroll box of its own. A table wider than the page used to scroll sideways inside that box; now it makes the page scroll sideways. A box that scrolls on either axis is what a sticky header holds against, so the column names could not hold against the page while that box existed. This changes every Table in the kit, including ones in a record's Sections.
+- `contracts/table.json` no longer promises that the page never scrolls sideways. Check any screen with a wide table before moving it to this version.
+
 ## v0.5.3 — 2026-10-08
 
 ### Changed
