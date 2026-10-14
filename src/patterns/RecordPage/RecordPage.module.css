@@ -7,7 +7,7 @@
 
 /* The tabs, anything that needs saying, and the bar: one block, so they move as one. */
 .top { display: flex; flex-direction: column; gap: var(--space-medium); min-width: 0; }
-/* The name only: the tabs, the notice and the bar scroll away under it. The bar is the top of the page, so
+/* The name: the tabs and the notice scroll away under it, while the bar holds still beneath it. It is the top of the page, so
    it sits flush against the frame's bar: it pulls up through the page's own top inset (--layout-margin-md),
    which the bar's own block padding already stands in for. The inset still holds for everything under it. */
 .head {
@@ -25,7 +25,18 @@
 
 .tabs { min-width: 0; border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle); }
 .notice { min-width: 0; }
-.toolbar { min-width: 0; }
+/* The bar holds at the top while the record scrolls under it, right below the compact header bar: the offset is
+   that bar's own height less the page's inset, which is how far down the scroll box its underside sits once it is
+   stuck. It carries the page's fill, so the rows and sections pass under it rather than through it, and it stays
+   under the header bar, which is the louder of the two. */
+.toolbar {
+  min-width: 0; position: sticky; z-index: 1;
+  top: calc(var(--page-header-height-sticky) - var(--layout-margin-md));
+  background: var(--surface-flat);
+  /* It used to sit in the block above at --space-medium; as a child of the record it would take the section
+     gutter, so the extra is pulled back and the bar sits where it always did. */
+  margin-block-start: calc(var(--space-medium) - var(--layout-gutter-lg));
+}
 
 .summary { min-width: 0; }
 /* The sections of details, one under the other. */

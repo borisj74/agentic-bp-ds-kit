@@ -48,6 +48,56 @@ const INVOICES: Invoice[] = [
   { id: "INV-10499", account: "Dunder Mifflin Paper", status: "overdue", due: "2026-09-08", amount: 3985.75, paid: 0 },
   { id: "INV-10500", account: "Blue Sun Mining", status: "open", due: "2026-10-20", amount: 21440, paid: 0 },
   { id: "INV-10501", account: "Monarch Media", status: "partial", due: "2026-10-05", amount: 13600, paid: 6800 },
+  { id: "INV-10502", account: "Northwind Holdings", status: "open", due: "2026-07-01", amount: 53422.4, paid: 0 },
+  { id: "INV-10503", account: "Globex Corporation", status: "open", due: "2026-10-08", amount: 32359, paid: 0 },
+  { id: "INV-10504", account: "Initech Group", status: "open", due: "2026-07-15", amount: 7797, paid: 0 },
+  { id: "INV-10505", account: "Umbrella Health", status: "open", due: "2026-10-22", amount: 8225, paid: 0 },
+  { id: "INV-10506", account: "Stark Logistics", status: "open", due: "2026-07-01", amount: 19752.8, paid: 0 },
+  { id: "INV-10507", account: "Apex Digital Services", status: "open", due: "2026-10-08", amount: 54381, paid: 0 },
+  { id: "INV-10508", account: "Wayne Freight", status: "open", due: "2026-07-15", amount: 57942, paid: 0 },
+  { id: "INV-10509", account: "Hooli Cloud", status: "overdue", due: "2026-10-22", amount: 22338, paid: 0 },
+  { id: "INV-10510", account: "Soylent Foods", status: "overdue", due: "2026-07-01", amount: 27857.8, paid: 0 },
+  { id: "INV-10511", account: "Vandelay Industries", status: "overdue", due: "2026-10-08", amount: 28778, paid: 0 },
+  { id: "INV-10512", account: "Massive Dynamic", status: "overdue", due: "2026-07-15", amount: 57360, paid: 0 },
+  { id: "INV-10513", account: "Cyberdyne Systems", status: "overdue", due: "2026-10-22", amount: 28122, paid: 0 },
+  { id: "INV-10514", account: "Oscorp Energy", status: "paid", due: "2026-07-01", amount: 20011.5, paid: 20011.5 },
+  { id: "INV-10515", account: "Tyrell Robotics", status: "paid", due: "2026-10-08", amount: 31591, paid: 31591 },
+  { id: "INV-10516", account: "Pied Piper", status: "paid", due: "2026-07-15", amount: 1034, paid: 1034 },
+  { id: "INV-10517", account: "Gringotts Finance", status: "paid", due: "2026-10-22", amount: 32295, paid: 32295 },
+  { id: "INV-10518", account: "Acme Inc.", status: "paid", due: "2026-07-01", amount: 8628, paid: 8628 },
+  { id: "INV-10519", account: "Dunder Mifflin Paper", status: "partial", due: "2026-10-08", amount: 51146, paid: 38359.5 },
+  { id: "INV-10520", account: "Blue Sun Mining", status: "partial", due: "2026-07-15", amount: 10352, paid: 7764 },
+  { id: "INV-10521", account: "Monarch Media", status: "partial", due: "2026-10-22", amount: 15220, paid: 7610 },
+  { id: "INV-10522", account: "Aperture Labs", status: "void", due: "2026-07-01", amount: 61698.4, paid: 0 },
+  { id: "INV-10523", account: "Black Mesa Research", status: "open", due: "2026-10-08", amount: 54233, paid: 0 },
+  { id: "INV-10524", account: "Nakatomi Trading", status: "open", due: "2026-07-15", amount: 852, paid: 0 },
+  { id: "INV-10525", account: "Wonka Industries", status: "open", due: "2026-10-22", amount: 60927, paid: 0 },
+  { id: "INV-10526", account: "Sterling Cooper", status: "open", due: "2026-07-01", amount: 53443.5, paid: 0 },
+  { id: "INV-10527", account: "Prestige Worldwide", status: "open", due: "2026-10-08", amount: 57462, paid: 0 },
+  { id: "INV-10528", account: "Duff Brewing", status: "open", due: "2026-07-15", amount: 35507, paid: 0 },
+  { id: "INV-10529", account: "Gekko Capital", status: "open", due: "2026-10-22", amount: 45872, paid: 0 },
+  { id: "INV-10530", account: "Bluth Development", status: "overdue", due: "2026-07-01", amount: 44626.8, paid: 0 },
+  { id: "INV-10531", account: "Paper Street Soap", status: "overdue", due: "2026-10-08", amount: 21246, paid: 0 },
+  { id: "INV-10532", account: "Northwind Holdings", status: "overdue", due: "2026-07-15", amount: 2099, paid: 0 },
+  { id: "INV-10533", account: "Globex Corporation", status: "overdue", due: "2026-10-22", amount: 43064, paid: 0 },
+  { id: "INV-10534", account: "Initech Group", status: "overdue", due: "2026-07-01", amount: 59229.9, paid: 0 },
+  { id: "INV-10535", account: "Umbrella Health", status: "paid", due: "2026-10-08", amount: 7300, paid: 7300 },
+  { id: "INV-10536", account: "Stark Logistics", status: "paid", due: "2026-07-15", amount: 43221, paid: 43221 },
+  { id: "INV-10537", account: "Apex Digital Services", status: "paid", due: "2026-10-22", amount: 31074, paid: 31074 },
+  { id: "INV-10538", account: "Wayne Freight", status: "paid", due: "2026-07-01", amount: 25058.5, paid: 25058.5 },
+  { id: "INV-10539", account: "Hooli Cloud", status: "paid", due: "2026-10-08", amount: 43494, paid: 43494 },
+  { id: "INV-10540", account: "Soylent Foods", status: "partial", due: "2026-07-15", amount: 37457, paid: 28092.8 },
+  { id: "INV-10541", account: "Vandelay Industries", status: "partial", due: "2026-10-22", amount: 29127, paid: 21845.2 },
+  { id: "INV-10542", account: "Massive Dynamic", status: "partial", due: "2026-07-01", amount: 38982.9, paid: 15593.2 },
+  { id: "INV-10543", account: "Cyberdyne Systems", status: "void", due: "2026-10-08", amount: 12217, paid: 0 },
+  { id: "INV-10544", account: "Oscorp Energy", status: "open", due: "2026-07-15", amount: 57160, paid: 0 },
+  { id: "INV-10545", account: "Tyrell Robotics", status: "open", due: "2026-10-22", amount: 27690, paid: 0 },
+  { id: "INV-10546", account: "Pied Piper", status: "open", due: "2026-07-01", amount: 31352.5, paid: 0 },
+  { id: "INV-10547", account: "Gringotts Finance", status: "open", due: "2026-10-08", amount: 29724, paid: 0 },
+  { id: "INV-10548", account: "Acme Inc.", status: "open", due: "2026-07-15", amount: 12409, paid: 0 },
+  { id: "INV-10549", account: "Dunder Mifflin Paper", status: "open", due: "2026-10-22", amount: 19589, paid: 0 },
+  { id: "INV-10550", account: "Blue Sun Mining", status: "open", due: "2026-07-01", amount: 2087.57, paid: 0 },
+  { id: "INV-10551", account: "Monarch Media", status: "overdue", due: "2026-10-08", amount: 40701, paid: 0 },
 ];
 
 const STATUS_LABEL: Record<Status, string> = { open: "Open", overdue: "Overdue", partial: "Partially paid", paid: "Paid", void: "Void" };
@@ -102,6 +152,9 @@ type Note = Omit<ToastProps, "open" | "onClose"> & { key: number };
 
 export default function InvoicesPage() {
   const [navOpen, setNavOpen] = useState(false);
+  // The shell says when the top of the page has gone; the screen keeps it and hands it back to the
+  // PageHeader, which drops the name and keeps the trail on one compact line.
+  const [headerStuck, setHeaderStuck] = useState(false);
   const [section, setSection] = useState("billing-invoices");
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");
@@ -111,8 +164,7 @@ export default function InvoicesPage() {
   const [filters, setFilters] = useState<{ status?: string; due?: string }>({});
   const [off, setOff] = useState<{ status?: boolean; due?: boolean }>({});
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [picked, setPicked] = useState<string[]>([]);
+  const [pageSize, setPageSize] = useState(25);
   const [voiding, setVoiding] = useState<string[] | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
 
@@ -159,7 +211,6 @@ export default function InvoicesPage() {
     const ids = (voiding ?? []).filter((id) => byId(id).status !== "void");
     const before = invoices;
     setInvoices((all) => all.map((i) => (ids.includes(i.id) ? { ...i, status: "void" as const } : i)));
-    setPicked([]);
     setVoiding(null);
     notify({
       intent: "success",
@@ -213,7 +264,15 @@ export default function InvoicesPage() {
         }
         nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
-        pageHeader={<PageHeader title="Invoices" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />}
+        onPageHeaderStick={setHeaderStuck}
+        pageHeader={
+          // Scrolled, the name goes and the bar is one compact line of trail, with no shadow under it: the
+          // pinned list below carries its own edge.
+          <PageHeader
+            title="Invoices" sticky={headerStuck} shadow={false}
+            breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]}
+          />
+        }
       >
         <Section title="Summary" description="Where unpaid invoices stand today." collapsible>
           <Scoreboard
@@ -260,19 +319,6 @@ export default function InvoicesPage() {
               onMoreSelect={() => notify({ intent: "info", title: `Exporting ${shown.length} invoices`, description: "The CSV follows the current filters." })}
             />
           }
-          bulk={
-            picked.length > 0 ? (
-              <>
-                <strong style={{ fontSize: "var(--font-size-small)" }}>{`${picked.length} selected`}</strong>
-                <Button size="sm" iconStart="send" onClick={() => remind(picked)}>Send reminders</Button>
-                <Button size="sm" iconStart="download" onClick={() => download(picked)}>Download PDFs</Button>
-                <Button size="sm" emphasis="strong" intent="danger" iconStart="block" onClick={() => setVoiding(picked)}>Void</Button>
-                <span style={{ marginInlineStart: "auto" }}>
-                  <Button size="sm" emphasis="minimal" onClick={() => setPicked([])}>Clear</Button>
-                </span>
-              </>
-            ) : undefined
-          }
           pagination={
             <Pagination
               label="Invoice pages" total={shown.length} page={current} onPageChange={setPage}
@@ -287,7 +333,7 @@ export default function InvoicesPage() {
             />
           }
         >
-          <Table columns={COLUMNS} rows={rows} selectable selected={picked} onSelectionChange={setPicked} rowLabel="id" />
+          <Table columns={COLUMNS} rows={rows} rowLabel="id" />
         </ListPage>
       </AppShell>
 

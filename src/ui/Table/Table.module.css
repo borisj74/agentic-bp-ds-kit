@@ -2,7 +2,9 @@
    so the table answers to the room it actually has rather than to the window. */
 /* contain: paint keeps the sideways scroll to this box: without it a table wider than the page adds the page's
    own sideways scrollbar as well. */
-.wrap { max-width: 100%; overflow-x: auto; contain: paint; container-type: inline-size; }
+/* The table flows with the page: no overflow of its own, because a box that scrolls on either axis becomes what
+   a sticky header holds against, and the names have to hold against the page instead. */
+.wrap { max-width: 100%; container-type: inline-size; }
 .wrap:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(var(--border-width-medium) * -1); }
 
 .table {
@@ -21,6 +23,14 @@
    Each Cell gives up the line's height, so rows stay 36 / 40 and the header 40, as on their own. */
 .table th > *, .table td > * { border-bottom: 0; background: transparent; }
 .table thead th, .table thead td { border-bottom: var(--border-width-medium) solid var(--border-brand-faint); }
+/* The column names hold at the top of the page while the rows pass under them. How far down they stop is set by
+   whatever is pinned above: the pattern holding the table says so in --table-stick-top, and on its own the table
+   holds at the top of the page. They carry their own fill, since the rows would otherwise show through, and sit
+   above the frozen first column, which holds still sideways. The line under them is the header's own; a pattern
+   that draws its own edge across the pinned band clears it for as long as that lasts. */
+.table thead th, .table thead td {
+  position: sticky; top: var(--table-stick-top, 0px); z-index: 2; background: var(--surface-flat);
+}
 .table tbody td { border-bottom: var(--border-width-thin) solid var(--border-neutral-faint); }
 .sm th > * { min-height: calc(var(--header-cell-height-sm) - var(--border-width-medium)); }
 .md th > * { min-height: calc(var(--header-cell-height-md) - var(--border-width-medium)); }
@@ -92,6 +102,9 @@
     background: var(--surface-flat); box-shadow: var(--border-width-thin) 0 0 var(--border-neutral-faint);
   }
   .table :is(thead, tbody) tr > :first-child { inset-inline-start: 0; }
+  /* The header cell of a frozen column holds still both ways at once, so it stands above its own column and its
+     own row. */
+  .table thead tr > :is(:first-child, .select + *):not(.empty) { z-index: 3; }
   .table :is(thead, tbody) tr > .select + * { inset-inline-start: var(--control-large); }
   .table tbody tr:hover > :is(:first-child, .select + *) { background: var(--bg-neutral-min-hover); }
   .table tbody tr.selected > :is(:first-child, .select + *) { background: var(--bg-neutral-min-selected); }

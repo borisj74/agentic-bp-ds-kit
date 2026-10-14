@@ -25,7 +25,7 @@ export interface RecordPageProps {
 export function RecordPage({
   children, header, tabs, notice, toolbar, summary, sticky = true, onStickyChange, columns = 2, labelPosition = "start", label,
 }: RecordPageProps) {
-  const top = tabs || notice || toolbar;
+  const top = tabs || notice;
   // The marker above the header says when the top of the record has scrolled away, so the screen can swap
   // the kit PageHeader to its own compact bar.
   const mark = useStickMark(onStickyChange);
@@ -36,14 +36,16 @@ export function RecordPage({
       {/* Only the name stays at the top. It is a child of the record, not of the block under it, so it holds
           all the way down instead of leaving with the tabs. */}
       {header && <div className={[styles.head, sticky ? styles.stuck : ""].join(" ")}>{header}</div>}
-      {/* The tabs, the notice and the bar: one block that scrolls away under the name. */}
+      {/* The tabs and the notice: one block that scrolls away under the name. */}
       {top && (
         <div className={styles.top}>
           {tabs && <div className={styles.tabs}>{tabs}</div>}
           {notice && <div className={styles.notice}>{notice}</div>}
-          {toolbar && <div className={styles.toolbar}>{toolbar}</div>}
         </div>
       )}
+      {/* The bar is a child of the record, not of the block above it: a sticky box can only hold inside its own
+          parent, so in that block it would leave with the tabs instead of staying under the name. */}
+      {toolbar && <div className={styles.toolbar}>{toolbar}</div>}
       {summary && <div className={styles.summary}>{summary}</div>}
       {/* The record sets the columns and the labels once: every Section of FormDisplay rows (and any Form) in the
           details follows them unless it sets its own. Sections of Tables keep the full width. */}

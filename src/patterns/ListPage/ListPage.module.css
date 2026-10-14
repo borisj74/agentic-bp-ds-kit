@@ -2,14 +2,58 @@
    contracts/layout.json, and the page padding belongs to the AppShell page around it. */
 .list { display: flex; flex-direction: column; gap: var(--space-medium); min-width: 0; font-family: var(--font-sans); }
 
+/* The bar holds at the top while the page scrolls under it, right below the compact PageHeader bar: the offset
+   is that bar's height less the page's inset, which is how far down the scroll box its underside sits once the
+   name has gone. It carries the page's fill, so rows and cards pass under it rather than through it. */
+.bar, .bulk {
+  position: sticky; z-index: 2;
+  top: calc(var(--page-header-height-sticky) - var(--layout-margin-md));
+  background: var(--surface-flat);
+}
+.bar { min-width: 0; }
+
 /* The rows and their page bar as one block, nothing between them: the bar reads as the table's footer. */
 .body { display: flex; flex-direction: column; min-width: 0; }
-/* Table View runs to the bottom of the page: the list takes the page's free height and the table's box grows
-   into it, so the page bar sits at the foot of the page. With more rows than fit, the page scrolls as before.
-   List and Card views keep their own height. */
-.list:has(> .body table) { flex: 1 0 auto; }
-.list:has(> .body table) > .body { flex: 1 0 auto; }
-.list:has(> .body table) > .body > :first-child { flex: 1 0 auto; }
+
+/* Table View: no gap under the bar, so the bar and the column names read as one pinned band with the rows
+   passing under it. The table itself is not a box that scrolls — the page is the only scroller — so the names
+   hold against the page, stopping under the bar: the pattern measures the bar and says how far down in
+   --table-stick-top, which keeps up when the filter bar opens and makes the bar taller. */
+.list:has(> .body table) { gap: 0; }
+
+/* The scroll shadow under the pinned band: the lift that says rows are passing beneath it. The bar and the
+   table keep the page's side padding, so neither can cast anything that reaches the page edges; this is a box
+   of its own that does, bleeding out through the inset (--layout-margin-md). It sits in the flow right above
+   the table, so it pins exactly where the band stops: the bar's stick offset plus the column names' height. It
+   draws only once the band is actually pinned, so a list at rest shows nothing. */
+.scrollShadow {
+  /* A real line, not a shadow on a box of no height: a box-shadow is a copy of the border box, so a box 0 tall
+     casts nothing. It is as thick as the header's own line, and gives that height straight back to the flow,
+     so nothing moves. */
+  height: var(--border-width-medium); margin-block-end: calc(-1 * var(--border-width-medium));
+  position: sticky; z-index: 3;
+  /* Right at the foot of the band: the bar's stick offset plus the column names' height, which is zero when
+     the view has no table and the bar is the whole band. */
+  top: calc(var(--table-stick-top, 0px) + var(--table-head-height, 0px));
+  width: auto; margin-inline: calc(-1 * var(--layout-margin-md));
+}
+/* A grey rule across the whole page, with the bar's own elevation under it, so the band reads as lifted over
+   the rows going beneath. Neutral, not the header's brand line: that one is faint enough to disappear on white
+   once it leaves the table and has to carry the full width on its own. */
+/* No line, only the lift: the band is told apart from the rows by the shadow alone. --elevation-card, not
+   --elevation-bar, since the bar shadow pulls its blur back in with a negative spread and leaves nothing to
+   see. The box stays unpainted; a shadow is cast from its edges either way. */
+.scrollShadow[data-stuck] {
+  box-shadow: var(--elevation-card);
+  /* Clipped to its own top edge, with room left below: the shadow's blur is wider than its offset, so without
+     this it spills upward over the column names, and its own unpainted strip then shows white between the two
+     halves of it. Only what falls on the rows is kept. */
+  clip-path: inset(0 0 -100vh 0);
+}
+/* Pinned, this line is the only one: the header's own would show through the table's width in a different
+   colour and weight, so it goes. The width stays and only the colour clears, so the header keeps its height
+   and nothing jumps at the moment it pins. */
+.scrollShadow[data-stuck] ~ .body thead :is(th, td) { border-bottom-color: transparent; }
 /* Cards are separate blocks, not rows, so the page bar sits one grid gutter under them instead of flush. */
 .body:has(> :global(.layout-split), > :global(.layout-metrics)) { gap: var(--layout-gutter-md); }
 
