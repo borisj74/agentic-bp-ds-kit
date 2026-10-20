@@ -8,8 +8,10 @@ import { Icon } from "../Icon/Icon";
 import { titleCase } from "../titleCase";
 import styles from "./Section.module.css";
 
-export type SectionLine = "medium" | "thin";
+export type SectionLine = "medium" | "thin" | "none";
 export type SectionColumns = FieldColumns;
+export type SectionHeading = "md" | "sm" | "xs";
+export type SectionSpacing = "default" | "tight";
 
 export interface SectionProps {
   title: string;
@@ -19,6 +21,8 @@ export interface SectionProps {
   children?: ReactNode;
   line?: SectionLine;
   columns?: SectionColumns;
+  heading?: SectionHeading;
+  spacing?: SectionSpacing;
   collapsible?: boolean;
   expanded?: boolean;
   defaultExpanded?: boolean;
@@ -27,7 +31,8 @@ export interface SectionProps {
 
 // Figma COBALT section header 304:31917: chevron button, bold title, ? help, actions at the end, a brand-faint line under it.
 export function Section({
-  title, description, help, actions, children, line = "medium", columns: ownColumns, collapsible = false, expanded: openProp, defaultExpanded = true, onExpandedChange,
+  title, description, help, actions, children, line = "medium", columns: ownColumns, heading: headingSize, spacing = "default", collapsible = false,
+  expanded: openProp, defaultExpanded = true, onExpandedChange,
 }: SectionProps) {
   const uid = useId();
   const headingId = `${uid}-title`;
@@ -48,7 +53,13 @@ export function Section({
   };
 
   return (
-    <section className={[styles.section, line === "thin" ? styles.thin : "", columns ? styles.columns : ""].join(" ")} aria-labelledby={headingId}>
+    <section
+      className={[
+        styles.section, line === "thin" ? styles.thin : "", line === "none" ? styles.none : "", columns ? styles.columns : "",
+        headingSize ? styles[`heading-${headingSize}`] : "", spacing === "tight" ? styles.tight : "",
+      ].join(" ")}
+      aria-labelledby={headingId}
+    >
       <header className={styles.header}>
         <div className={styles.row}>
           {collapsible && (
@@ -66,9 +77,9 @@ export function Section({
             </HelpPopover>
           )}
           {help && <span id={helpId} className={styles.srOnly}>{help}</span>}
-          {actions && <div className={styles.actions}>{actions}</div>}
         </div>
         {description && <p className={styles.description}>{description}</p>}
+        {actions && <div className={styles.actions}>{actions}</div>}
       </header>
       {/* Header only: without children there is no body, so the section is just its heading row and line. */}
       {children != null && (

@@ -51,13 +51,13 @@ export function useWidth(ref: RefObject<HTMLElement | null>) {
 
 // The kit Legend, in the chart: decorative, because the screen-reader table already carries the numbers.
 export function Legend({ items, orientation = "horizontal", alignment = "center" }: {
-  items: { label: string; intent: ChartIntent; note?: string }[];
+  items: { label: string; intent: ChartIntent; note?: string; shape?: "square" | "line" }[];
   orientation?: "horizontal" | "vertical"; alignment?: "start" | "center" | "end";
 }) {
   return (
     <KitLegend
       decorative size="sm" orientation={orientation} alignment={alignment}
-      items={items.map((it) => ({ label: it.label, intent: it.intent, value: it.note }))}
+      items={items.map((it) => ({ label: it.label, intent: it.intent, value: it.note, shape: it.shape }))}
     />
   );
 }

@@ -11,7 +11,8 @@
         "id": "string? Used by hidden. Without it, the label.",
         "label": "string",
         "intent": "green | olive | cyan | orange | pink | gray | purple | yellow | red | mint? Without it, keys take the chart order: green, olive, cyan, orange, pink, gray, then the rest.",
-        "value": "string? A number after the name, like $482K or 32%."
+        "value": "string? A number after the name, like $482K or 32%.",
+        "shape": "\"square\" | \"line\" | \"dot\"? This key's own shape, over the legend's shape. A chart keys its dashed reference lines as lines beside its square bars."
       },
       "note": "One key per colour, in the same order as the drawing."
     },

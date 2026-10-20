@@ -4,6 +4,19 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.6.1 — 2026-10-20
+
+Kit edits made for the Utilization prototype that never reached a release, so v0.6.0 dropped them. They are back, on top of v0.6.0.
+
+### Added
+- BarChart: a series or a reference line can read against a second scale at the end of the chart (`axis: "end"`), for a unit of another size, like API requests beside credits. Its ticks share the start scale's grid lines; series on different scales sit side by side, and with `stacked` each scale stacks on its own.
+- Charts key their dashed reference lines in the legend as lines, after the series squares. Legend keys take their own `shape` for this.
+- Cell `progress` takes `intent`: info, success, warning or danger colour the bar, like amber for running low; neutral and highlight keep it blue.
+- Section `line="none"`, for a block inside a section that reads as one part of it; `heading` (md, sm, xs) to set the title size outright; and `spacing="tight"`, 8px from the header to a table that belongs right under its title.
+
+### Changed
+- Section actions line up with the bottom of the description when there is one, and with the title row when there isn't.
+
 ## v0.6.0 — 2026-10-14 · Breaking
 
 ### Changed

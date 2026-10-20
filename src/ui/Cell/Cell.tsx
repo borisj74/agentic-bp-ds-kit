@@ -25,6 +25,8 @@ export interface CellPerson { name: string; src?: string }
 export interface CellBadge { label: string; intent?: BadgeIntent }
 export type CellAction = ButtonPair & { label: string; icon?: string; onClick?: () => void };
 // An action with no emphasis takes the cell's own look: subtle in actions, minimal in actionIcons.
+// The Meter takes the four status colours; neutral and highlight leave the bar its default blue.
+const meterIntent = (i: BadgeIntent) => (i === "info" || i === "success" || i === "warning" || i === "danger" ? i : undefined);
 const actionLook = (a: CellAction, fallback: ButtonPair): ButtonPair => (a.emphasis ? ({ emphasis: a.emphasis, intent: a.intent } as ButtonPair) : fallback);
 
 export interface CellProps {
@@ -164,7 +166,8 @@ export function Cell({
     }
     case "progress":
       // A kit Meter bar that fills the cell, sm or md like the row. label names it; text shows the percent after it.
-      visual = <Meter value={Number(value) || 0} size={size} label={label ?? "Progress"} showValue={text} />;
+      // intent info, success, warning or danger colours the bar, like amber for running low; neutral keeps it blue.
+      visual = <Meter value={Number(value) || 0} size={size} label={label ?? "Progress"} showValue={text} intent={meterIntent(intent)} />;
       break;
     case "actions":
       visual = (

@@ -13,6 +13,8 @@ export interface LegendKey {
   label: string;
   intent?: LegendIntent;
   value?: string;
+  // This key's own shape, over the legend's: a chart's dashed reference lines key as lines beside its square bars.
+  shape?: LegendShape;
 }
 
 export interface LegendProps {
@@ -55,7 +57,7 @@ export function Legend({
   const body = (item: LegendKey, i: number, isOff: boolean) => (
     <>
       {/* An off key drops its colour and takes the grey from the stylesheet. */}
-      <span className={[styles.mark, styles[shape]].join(" ")} style={isOff ? undefined : { background: legendColor(legendIntent(i, item.intent)) }} />
+      <span className={[styles.mark, styles[item.shape ?? shape]].join(" ")} style={isOff ? undefined : { background: legendColor(legendIntent(i, item.intent)) }} />
       <span className={styles.text}>{item.label}</span>
       {item.value && <span className={styles.value}>{item.value}</span>}
     </>
