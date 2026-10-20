@@ -1,10 +1,10 @@
 "use client";
 import type { ChartFormat, ChartIntent } from "../Chart/chart";
 import {
-  XYChart, type ChartBarWidth, type ChartLegendPosition, type ChartLineSeries, type ChartMarker, type ChartOrientation, type ChartReferenceLine,
+  XYChart, type ChartAxis, type ChartBarWidth, type ChartLegendPosition, type ChartLineSeries, type ChartMarker, type ChartOrientation, type ChartReferenceLine,
 } from "../Chart/XYChart";
 
-export type { ChartFormat, ChartIntent, ChartLegendPosition, ChartMarker, ChartReferenceLine };
+export type { ChartAxis, ChartFormat, ChartIntent, ChartLegendPosition, ChartMarker, ChartReferenceLine };
 // An upright BarChart series can turn into a forecast part way: projectedFrom.
 export type ChartSeries = ChartLineSeries;
 export type BarChartOrientation = ChartOrientation;

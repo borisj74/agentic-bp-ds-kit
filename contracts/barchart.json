@@ -30,8 +30,8 @@
     "series": {
       "type": "ChartSeries[]",
       "required": true,
-      "itemShape": "{ name: string; values: number[]; intent?: ChartIntent; projectedFrom?: number }",
-      "note": "One entry per line or bar color, with one value per category. intent picks the color; by default series take green, olive, cyan, orange, pink, gray, then purple, yellow, red and mint. projectedFrom (upright charts) is the first category that is a forecast, counted from 0: its bars and the ones after it draw see-through in the same color, and the tooltip and table say projected."
+      "itemShape": "{ name: string; values: number[]; intent?: ChartIntent; projectedFrom?: number; axis?: \"start\" | \"end\" }",
+      "note": "One entry per line or bar color, with one value per category. intent picks the color; by default series take green, olive, cyan, orange, pink, gray, then purple, yellow, red and mint. projectedFrom (upright charts) is the first category that is a forecast, counted from 0: its bars and the ones after it draw see-through in the same color, and the tooltip and table say projected. axis end (upright charts) reads the series against a second scale drawn at the end of the chart, for a unit of another size, like requests beside credits; its ticks share the start scale's grid lines. Series on different scales sit side by side; with stacked, each scale stacks on its own."
     },
     "orientation": {
       "enum": [
@@ -128,8 +128,8 @@
     },
     "referenceLines": {
       "type": "ChartReferenceLine[]",
-      "itemShape": "{ value: number; label: string; intent?: ChartIntent; values?: number[] }",
-      "note": "Upright charts only. Dashed lines across the chart at a value, like a grant, a limit or a target, drawn over the bars so they stay visible where the bars pass them. label names it, like Grant; the chart writes the short value after it, at the end of the line, clear of the bars and of the marker's line and label. Neutral gray unless intent picks a color. The scale always reaches the highest line. values gives one level per category for a limit that changes during the period, like a grant a top-up raises: the line steps on the category it changed, and the label reports the level it ends at."
+      "itemShape": "{ value: number; label: string; intent?: ChartIntent; values?: number[]; axis?: \"start\" | \"end\" }",
+      "note": "Upright charts only. Dashed lines across the chart at a value, like a grant, a limit or a target, drawn over the bars so they stay visible where the bars pass them. label names it, like Grant; the chart writes the short value after it, at the end of the line, clear of the bars and of the marker's line and label. Neutral gray unless intent picks a color. The scale always reaches the highest line. values gives one level per category for a limit that changes during the period, like a grant a top-up raises: the line steps on the category it changed, and the label reports the level it ends at. axis end puts the line on the second scale, like a daily request limit. Each reference line also gets a line key in the chart's legend, after the series keys."
     },
     "marker": {
       "type": "ChartMarker",
@@ -163,7 +163,7 @@
     "The chart takes focus: the arrow keys (and Home and End) move through the categories, in either orientation, and show the same tooltip as pointing at them. Escape hides it.",
     "Colors come with a legend and the tooltip names each series, so color is not the only way to tell them apart.",
     "Reference lines and the marker are listed after the table for screen readers, like Grant: 1,150 and Today: Sep 23; a line that steps reports both ends, like Grant: 1,150 to 1,750. Forecast values say projected in the tooltip and the table.",
-      "Motion is subtle and optional (animate), and never plays when the person prefers reduced motion."
+    "Motion is subtle and optional (animate), and never plays when the person prefers reduced motion."
   ],
   "snippet": "<BarChart\n  label=\"Invoices by status by time\"\n  categories={weeks}\n  series={[\n    { name: \"Current\", values: current, intent: \"pink\" },\n    { name: \"Paid\", values: paid, intent: \"green\" },\n  ]}\n  format=\"currency\"\n  stacked\n/>",
   "examples": [

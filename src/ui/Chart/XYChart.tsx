@@ -7,10 +7,15 @@ import {
   type ChartFormat, type ChartIntent,
 } from "./chart";
 
+// Upright charts only: which value scale a series or a reference line reads against. end draws a second scale at the
+// end of the chart, for a unit of another size, like requests beside credits.
+export type ChartAxis = "start" | "end";
+
 export interface ChartSeries {
   name: string;
   values: number[];
   intent?: ChartIntent;
+  axis?: ChartAxis;
 }
 
 // Upright charts only: projectedFrom is the first category that is a forecast. A line turns dashed where it starts;
@@ -27,6 +32,8 @@ export interface ChartReferenceLine {
   // A limit that changes during the period, like a grant a top-up raises: one level per category, drawn as a step.
   // The label reports the level it ends at.
   values?: number[];
+  // Upright charts with a second scale: which scale the line reads against.
+  axis?: ChartAxis;
 }
 
 // Upright charts only: a thin line down the chart at one category, like today.
@@ -98,7 +105,10 @@ export function XYChart({
   const n = categories.length;
   const horizontal = kind === "bar" && orientation === "horizontal";
   const h = height ?? (horizontal ? Math.max(n, 1) * ROW + TOP + BOTTOM : 240);
-  const list = series.map((sr, k) => ({ ...sr, intent: intentAt(k, sr.intent), vals: categories.map((_, i) => Math.max(sr.values[i] ?? 0, 0)) }));
+  // A second scale: only upright charts draw it, and only when a series reads against it.
+  const dual = !horizontal && series.some((sr) => sr.axis === "end");
+  const axisOf = (a?: ChartAxis): ChartAxis => (dual && a === "end" ? "end" : "start");
+  const list = series.map((sr, k) => ({ ...sr, intent: intentAt(k, sr.intent), ax: axisOf(sr.axis), vals: categories.map((_, i) => Math.max(sr.values[i] ?? 0, 0)) }));
   const short = formatter(format, currency, true);
   const full = formatter(format, currency, false);
 
@@ -106,8 +116,8 @@ export function XYChart({
     return <ChartFrame label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={false}><ChartEmpty label={emptyLabel} height={h} /></ChartFrame>;
   }
 
-  // Stacks: each series sits on the sum of the ones before it.
-  const lower = list.map((_, k) => categories.map((__, i) => (stacked ? list.slice(0, k).reduce((sum, sr) => sum + sr.vals[i], 0) : 0)));
+  // Stacks: each series sits on the sum of the ones before it on the same scale.
+  const lower = list.map((me, k) => categories.map((__, i) => (stacked ? list.slice(0, k).filter((sr) => sr.ax === me.ax).reduce((sum, sr) => sum + sr.vals[i], 0) : 0)));
   const upper = list.map((sr, k) => sr.vals.map((v, i) => lower[k][i] + v));
   // Reference lines, the marker and projections run along a time axis, so upright charts draw them, lines and bars
   // alike; horizontal bars ignore them.
@@ -130,24 +140,36 @@ export function XYChart({
     return from === to ? full(to) : `${full(from)} to ${full(to)}`;
   };
   // A reference line above the data still sits inside the scale.
-  const max = Math.max(...upper.flat(), ...refs.flatMap((r) => [r.value, ...(stepped(r) ? r.values! : [])]), 0);
-  const ticks = niceTicks(max);
+  const levels = (r: ChartReferenceLine) => [r.value, ...(stepped(r) ? r.values! : [])];
+  const maxOn = (a: ChartAxis) => Math.max(...upper.filter((_, k) => list[k].ax === a).flat(), ...refs.filter((r) => axisOf(r.axis) === a).flatMap(levels), 0);
+  const ticks = niceTicks(maxOn("start"));
   const top = ticks[ticks.length - 1];
+  // The end scale has as many steps as the start one, so its labels share the start scale's grid lines.
+  const endStep = (() => {
+    if (!dual) return 1;
+    const rough = maxOn("end") / Math.max(ticks.length - 1, 1);
+    if (!(rough > 0)) return 1;
+    const pow = 10 ** Math.floor(Math.log10(rough));
+    return [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].map((m) => m * pow).find((q) => q >= rough) ?? 10 * pow;
+  })();
+  const endTicks = dual ? ticks.map((_, i) => i * endStep) : [];
+  const endTop = endTicks[endTicks.length - 1] ?? 1;
   const tickW = Math.max(...ticks.map((t) => short(t).length)) * CHAR;
+  const endTickW = dual ? Math.max(...endTicks.map((t) => short(t).length)) * CHAR : 0;
   const catW = Math.max(...categories.map((c) => c.length)) * CHAR + 12;
   // The widest value label, for the room past the longest horizontal bar.
   const valueW = Math.max(...list.flatMap((sr, k) => sr.vals.map((v, i) => short(stacked ? upper[k][i] : v).length))) * CHAR;
 
   // The plot box. Horizontal: category labels take up to 40% at the start; values or the last tick overhang the end.
   const x0 = horizontal ? Math.min(catW, Math.round(width * 0.4)) : tickW + 12;
-  const x1 = Math.max(width - (horizontal ? (showValues ? valueW + 8 : Math.max(RIGHT, Math.ceil(tickW / 2))) : RIGHT), x0 + 1);
+  const x1 = Math.max(width - (horizontal ? (showValues ? valueW + 8 : Math.max(RIGHT, Math.ceil(tickW / 2))) : dual ? endTickW + 12 : RIGHT), x0 + 1);
   const y0 = !horizontal && (showValues || mark) ? 20 : TOP;
   const y1 = h - BOTTOM;
 
   // c: the middle of category i's band. v: where a value lands on the value axis.
   const step = ((horizontal ? y1 - y0 : x1 - x0) / n);
   const c = (i: number) => (horizontal ? y0 : x0) + step * (i + 0.5);
-  const v = (val: number) => (horizontal ? x0 + (val / top) * (x1 - x0) : y1 - (val / top) * (y1 - y0));
+  const v = (val: number, a: ChartAxis = "start") => (horizontal ? x0 + (val / top) * (x1 - x0) : y1 - (val / (a === "end" ? endTop : top)) * (y1 - y0));
 
   // Thin out the category labels so they never overlap; horizontal ones shorten to fit the start.
   const every = Math.max(1, Math.ceil((horizontal ? LINE : catW) / step));
@@ -171,18 +193,22 @@ export function XYChart({
   // Bars share a band per category: one stack, or the series side by side. Wide bars fill most of the band; thin bars
   // are 8px each (never wider than a wide one would be), centred in it, so a long run of days reads as a light rhythm.
   const gap = 2;
-  const wide = step * (stacked ? 0.6 : 0.7);
-  const wideBar = stacked ? wide : (wide - gap * (list.length - 1)) / list.length;
+  // A slot is one bar's place in the band: one per series side by side, or one stack per scale.
+  const slots = stacked ? (dual ? 2 : 1) : list.length;
+  const slotOf = (k: number) => (stacked ? (dual && list[k].ax === "end" ? 1 : 0) : k);
+  const wide = step * (slots === 1 ? 0.6 : 0.7);
+  const wideBar = (wide - gap * (slots - 1)) / slots;
   const thin = kind === "bar" && barWidth === "thin";
   const bw = thin ? Math.min(THIN, wideBar) : wideBar;
-  const band = stacked ? bw : bw * list.length + gap * (list.length - 1);
-  const mid = (k: number) => (stacked ? 0 : -band / 2 + k * (bw + gap) + bw / 2);
+  const band = bw * slots + gap * (slots - 1);
+  const mid = (k: number) => (slots === 1 ? 0 : -band / 2 + slotOf(k) * (bw + gap) + bw / 2);
 
   // Thin bars round their two ends, like a Meter bar. A stack rounds only its outer ends: the first part with a value
   // at the baseline end and the last at the far end, so the joins between parts stay flat.
   const hasValue = (k: number, i: number) => list[k].vals[i] > 0;
-  const isFirst = (k: number, i: number) => !stacked || !list.slice(0, k).some((_, j) => hasValue(j, i));
-  const isLast = (k: number, i: number) => !stacked || !list.slice(k + 1).some((_, j) => hasValue(k + 1 + j, i));
+  const sameStack = (j: number, k: number) => list[j].ax === list[k].ax;
+  const isFirst = (k: number, i: number) => !stacked || !list.slice(0, k).some((_, j) => sameStack(j, k) && hasValue(j, i));
+  const isLast = (k: number, i: number) => !stacked || !list.slice(k + 1).some((_, j) => sameStack(k + 1 + j, k) && hasValue(k + 1 + j, i));
   // A box with its own radius at each corner: top-left, top-right, bottom-right, bottom-left.
   const roundBox = (x: number, y: number, w: number, hh: number, [tl, tr, br, bl]: number[]) => {
     const r = (q: number) => Math.min(q, w / 2, hh / 2);
@@ -197,8 +223,8 @@ export function XYChart({
   const bars = () => list.map((sr, k) => (
     <g key={sr.name} style={{ fill: intentVar(sr.intent) }}>
       {sr.vals.map((_, i) => {
-        const a = v(lower[k][i]);
-        const b = v(upper[k][i]);
+        const a = v(lower[k][i], sr.ax);
+        const b = v(upper[k][i], sr.ax);
         const len = Math.abs(b - a);
         const side = c(i) + mid(k) - bw / 2;
         const t = Math.max(bw, 1);
@@ -226,7 +252,7 @@ export function XYChart({
   ));
 
   const lines = () => {
-    const pts = (k: number, which: number[][]) => which[k].map((val, i) => `${c(i).toFixed(1)},${v(val).toFixed(1)}`);
+    const pts = (k: number, which: number[][]) => which[k].map((val, i) => `${c(i).toFixed(1)},${v(val, list[k].ax).toFixed(1)}`);
     return list.map((sr, k) => {
       const topPts = pts(k, upper);
       const floor = stacked ? pts(k, lower).reverse() : [`${c(n - 1).toFixed(1)},${y1}`, `${c(0).toFixed(1)},${y1}`];
@@ -253,14 +279,14 @@ export function XYChart({
   const marks = () => list.map((sr, k) => (
     <g key={sr.name} className={s.fade}>
       {(showPoints || (kind === "line" && active !== null)) && sr.vals.map((_, i) => (showPoints || i === active) && (
-        <circle key={i} cx={c(i)} cy={v(upper[k][i])} r={POINT} style={{ fill: "var(--surface-flat)", stroke: intentVar(sr.intent) }} strokeWidth={2} />
+        <circle key={i} cx={c(i)} cy={v(upper[k][i], sr.ax)} r={POINT} style={{ fill: "var(--surface-flat)", stroke: intentVar(sr.intent) }} strokeWidth={2} />
       ))}
       {showValues && (kind === "line" || !stacked || k === list.length - 1) && sr.vals.map((val, i) => {
         const at = kind === "bar" && !stacked ? val : upper[k][i];
         const across = kind === "bar" ? c(i) + mid(k) : c(i);
         return horizontal
           ? <text key={i} className={s.valueLabel} x={v(at) + 8} y={across} dy="0.35em">{short(at)}</text>
-          : <text key={i} className={s.valueLabel} x={across} y={v(at) - 8} textAnchor="middle">{short(at)}</text>;
+          : <text key={i} className={s.valueLabel} x={across} y={v(at, sr.ax) - 8} textAnchor="middle">{short(at)}</text>;
       })}
     </g>
   ));
@@ -270,7 +296,7 @@ export function XYChart({
     const edge = (i: number) => px(x0 + step * i);
     let d = "";
     for (let i = 0; i < n; i++) {
-      const y = px(v(levelAt(r, i)));
+      const y = px(v(levelAt(r, i), axisOf(r.axis)));
       d += `${i === 0 ? `M${edge(0)},${y}` : `V${y}`}H${edge(i + 1)}`;
     }
     return d;
@@ -289,7 +315,7 @@ export function XYChart({
         : (
           <line
             key={`${r.label}${r.value}`} className={s.reference} data-reference=""
-            x1={x0} x2={x1} y1={px(v(r.value))} y2={px(v(r.value))} strokeDasharray={DASH}
+            x1={x0} x2={x1} y1={px(v(r.value, axisOf(r.axis)))} y2={px(v(r.value, axisOf(r.axis)))} strokeDasharray={DASH}
             style={{ stroke: r.intent ? intentVar(r.intent) : undefined }}
           />
         )))}
@@ -311,13 +337,15 @@ export function XYChart({
     taken.push({ l, r: l + w, t: y0 - 19, b: y0 - 5 });
     taken.push({ l: markX - 3, r: markX + 3, t: y0, b: y1 });
   }
+  // The highest point drawn in a category, in pixels, across both scales.
+  const topAt = (i: number) => Math.min(...list.map((sr, k) => v(upper[k][i], sr.ax)));
   // What a reference label must not cover: the points of a line, or each category's bars from their top down.
   const dots: Box[] = !refs.length ? [] : line
-    ? list.flatMap((_, k) => upper[k].map((val, i) => ({ l: c(i) - POINT - 2, r: c(i) + POINT + 2, t: v(val) - POINT - 2, b: v(val) + POINT + 2 })))
-    : categories.map((_, i) => ({ l: c(i) - band / 2 - 2, r: c(i) + band / 2 + 2, t: v(Math.max(...upper.map((u) => u[i]))) - 2, b: y1 }));
+    ? list.flatMap((sr, k) => upper[k].map((val, i) => ({ l: c(i) - POINT - 2, r: c(i) + POINT + 2, t: v(val, sr.ax) - POINT - 2, b: v(val, sr.ax) + POINT + 2 })))
+    : categories.map((_, i) => ({ l: c(i) - band / 2 - 2, r: c(i) + band / 2 + 2, t: topAt(i) - 2, b: y1 }));
   const refPlaces = refs.map((r) => {
     const text = `${r.label} ${short(refLevel(r))}`;
-    const y = v(refLevel(r));
+    const y = v(refLevel(r), axisOf(r.axis));
     const sides = (y - y0 < 16 ? [y + 14, y - 6] : [y - 6, y + 14]).filter((base) => base - 11 >= 0 && base + 3 <= h);
     const fits = sides.map((base) => {
       let x = x1;
@@ -343,17 +371,19 @@ export function XYChart({
 
   const tip = active !== null && (() => {
     const end = Math.max(...upper.map((u) => u[active]));
+    // Upright: the top of the tallest bar or point in the category, on whichever scale it reads.
     const rows = [...list].reverse().map((sr) => ({ label: projected(sr, active) ? `${sr.name} (projected)` : sr.name, value: full(sr.vals[active]), intent: sr.intent }));
     // Horizontal: over the end of the bar, turned inward near the edge. Upright: over the top, turned inward at the ends.
     return horizontal
       ? <ChartTooltip x={v(end)} y={c(active) - band / 2} title={categories[active]} align={v(end) > x0 + (x1 - x0) * 0.7 ? "end" : "center"} rows={rows} />
-      : <ChartTooltip x={c(active)} y={v(end)} title={categories[active]} align={active === 0 && n > 2 ? "start" : active === n - 1 && n > 2 ? "end" : "center"} rows={rows} />;
+      : <ChartTooltip x={c(active)} y={topAt(active)} title={categories[active]} align={active === 0 && n > 2 ? "start" : active === n - 1 && n > 2 ? "end" : "center"} rows={rows} />;
   })();
 
   const px = (p: number) => Math.round(p) + 0.5;
 
   const keys = showLegend
-    ? <Legend items={list.map((sr) => ({ label: sr.name, intent: sr.intent }))} orientation={legendPosition === "end" ? "vertical" : "horizontal"} alignment={legendPosition === "end" ? "start" : "center"} />
+    // Reference lines key as lines after the series, so one row explains everything drawn.
+    ? <Legend items={[...list.map((sr) => ({ label: sr.name, intent: sr.intent })), ...refs.map((r) => ({ label: r.label, intent: r.intent ?? "gray" as ChartIntent, shape: "line" as const }))]} orientation={legendPosition === "end" ? "vertical" : "horizontal"} alignment={legendPosition === "end" ? "start" : "center"} />
     : null;
 
   const plot = (
@@ -370,6 +400,7 @@ export function XYChart({
                 : <text className={s.tick} x={x0 - 12} y={v(t)} dy="0.35em" textAnchor="end">{short(t)}</text>}
             </g>
           ))}
+          {endTicks.map((t) => <text key={`end${t}`} className={s.tick} x={x1 + 12} y={v(t, "end")} dy="0.35em" textAnchor="start">{short(t)}</text>)}
           {active !== null && (kind === "bar"
             ? (horizontal
               ? <rect className={s.hoverBand} x={x0} y={c(active) - step / 2} width={x1 - x0} height={step} />

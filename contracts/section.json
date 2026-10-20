@@ -28,10 +28,11 @@
     "line": {
       "enum": [
         "medium",
-        "thin"
+        "thin",
+        "none"
       ],
       "default": "medium",
-      "note": "The line under the header. medium is 2px, thin is 1px, both in the brand-faint color. It applies to this Section's own header only; a Section inside it sets its own."
+      "note": "The line under the header. medium is 2px, thin is 1px, both in the brand-faint color; none drops it, for a block inside a section that reads as one part of it. It applies to this Section's own header only; a Section inside it sets its own."
     },
     "columns": {
       "enum": [
@@ -58,6 +59,22 @@
     "onExpandedChange": {
       "type": "function",
       "note": "(expanded: boolean) => void"
+    },
+    "heading": {
+      "enum": [
+        "md",
+        "sm",
+        "xs"
+      ],
+      "note": "The title size, set outright. Without it the title is md at the top and steps down to xs inside another Section. sm (text-heading-sm, 16px semibold) matches a chart's own title, so blocks inside one Section read alike."
+    },
+    "spacing": {
+      "enum": [
+        "default",
+        "tight"
+      ],
+      "default": "default",
+      "note": "The space from the header to its content: default 16px, tight 8px for a table that belongs right under its title."
     }
   },
   "useWhen": [
