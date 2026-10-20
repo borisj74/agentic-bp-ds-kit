@@ -4,6 +4,23 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.6.2 — 2026-10-20
+
+### Changed
+- Every page holds its top the same way. A list, a record and a dashboard each pin a bar under the page name and bring a Table's column names to rest under that bar; they were doing it three different ways, or not at all, so screens drifted apart from one another. The measuring lives in one place now (`src/patterns/band.ts`).
+- AppShell shrinks the page name to the kit's compact bar on its own once the top of the page has scrolled away, so a screen passes a plain PageHeader and wires nothing. `onPageHeaderStick` still reports the boolean to screens that want it, and a PageHeader with `sticky` set keeps what it was given.
+- While a pinned band below is lifted, the page name's bar gives up its own line and shadow: two edges a few pixels apart read as a seam. A page with nothing pinned under the bar keeps them.
+- A held header gives up its own line as soon as the band pins, not when the first row reaches it, so there is no thin border under the column names and nothing flickers between the two states.
+- A record's and a dashboard's bar carry four pixels at their foot, so what passes under a held bar is not flush against it. The bar paints the strip and takes the measure off its margin, so nothing moves while the page sits unscrolled.
+- The catalog's own chrome is evenly inset: the content area is 28 all round (it was 40 at the start, 28 at the end), the top bar's end matches it, and the brand select carries its chevron further from its border.
+
+### Added
+- `--stick-frozen-cell`, `--stick-head-cell`, `--stick-frozen-head-cell`, `--stick-bar`, `--stick-lift` and `--stick-page-head`: one order for everything that holds still on a page, from the rows up. A piece that pins something takes its z-index from that scale instead of picking a number.
+
+### Fixed
+- A record's related list and a dashboard's tables pinned their column names at the very top of the page, crossing the page name on the way, because nothing told them where to stop. A dashboard's names also came to rest above its bar while rows were still in view.
+- Frozen first-column cells painted over a pinned bar: both were z-index 1 and the cells come later in the document. The new scale settles it.
+
 ## v0.6.1 — 2026-10-20
 
 Kit edits made for the Utilization prototype that never reached a release, so v0.6.0 dropped them. They are back, on top of v0.6.0.
