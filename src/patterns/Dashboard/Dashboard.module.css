@@ -27,7 +27,10 @@
      header, so the header's line and shadow fall onto the bar rather than being painted over by it. */
   position: sticky; top: calc(var(--page-header-height-sticky) - var(--layout-margin-md)); z-index: var(--stick-bar);
   margin-inline: calc(-1 * var(--layout-margin-md));
-  padding: var(--space-xsmall) var(--layout-margin-md);
+  /* A little more air at the foot than the head, so the groups passing under a held bar are not flush
+     against it; the extra comes off the margin, so nothing moves while the page sits unscrolled. */
+  padding: var(--space-xsmall) var(--layout-margin-md) calc(var(--space-xsmall) + var(--space-xxsmall));
+  margin-block-end: calc(-1 * var(--space-xxsmall));
 }
 
 .name { margin: 0; min-width: 0; color: var(--text-neutral-intense); }

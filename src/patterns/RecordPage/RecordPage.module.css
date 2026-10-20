@@ -36,6 +36,11 @@
   /* It used to sit in the block above at --space-medium; as a child of the record it would take the section
      gutter, so the extra is pulled back and the bar sits where it always did. */
   margin-block-start: calc(var(--space-medium) - var(--layout-gutter-lg));
+  /* A little air at its foot, so what passes under a held bar is not flush against it. The bar paints it, and
+     the same measure comes off the margin, so nothing moves while the page sits unscrolled. The names of a
+     Table in the tab stop below it too, since the bar is measured with it. */
+  padding-block-end: var(--space-xxsmall);
+  margin-block-end: calc(-1 * var(--space-xxsmall));
 }
 
 /* The lift under the pinned band, and the line the held column names give up for it: the same pair a list
