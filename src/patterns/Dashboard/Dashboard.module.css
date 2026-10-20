@@ -7,12 +7,25 @@
    so nothing scrolls past it in the side gutters, and pays the inset back as padding. No line or shadow of
    its own: the page header above it already draws one, and two would read as a frame. */
 .bar { min-width: 0; background: var(--surface-flat); }
+
+/* The lift under the pinned bar, from the same plumbing a list and a record use (src/patterns/band.ts). The
+   bar keeps the page's side padding, so it cannot cast anything that reaches the page edges; this box bleeds
+   out through the inset to do it. */
+.scrollShadow {
+  height: var(--border-width-medium); margin-block-end: calc(-1 * var(--border-width-medium));
+  position: sticky; z-index: var(--stick-lift);
+  top: calc(var(--table-stick-top, 0px) + var(--table-head-height, 0px));
+  width: auto; margin-inline: calc(-1 * var(--layout-margin-md));
+}
+/* Clipped to its own top edge, with room left below: the blur is wider than the offset and would otherwise
+   spill upward over the bar. */
+.scrollShadow[data-stuck] { box-shadow: var(--elevation-card); clip-path: inset(0 0 -100vh 0); }
 .stuck {
   /* Sticky offsets count from the page's padding box, one inset below the top edge, so the inset comes off
      the header's height: the bar lands directly under the compact bar with nothing showing between them. */
   /* A layer above the page's own blocks, so cards and charts scroll under it, and a layer below the page
      header, so the header's line and shadow fall onto the bar rather than being painted over by it. */
-  position: sticky; top: calc(var(--page-header-height-sticky) - var(--layout-margin-md)); z-index: 1;
+  position: sticky; top: calc(var(--page-header-height-sticky) - var(--layout-margin-md)); z-index: var(--stick-bar);
   margin-inline: calc(-1 * var(--layout-margin-md));
   padding: var(--space-xsmall) var(--layout-margin-md);
 }

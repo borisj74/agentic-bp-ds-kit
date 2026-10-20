@@ -15,6 +15,10 @@
    sliding under it. The frame decides the order of its own columns. */
 .nav { position: relative; z-index: 3; flex: none; min-width: 0; min-height: 0; }
 .page { position: relative; flex: 1 1 auto; min-width: 0; }
+/* Where a sticky table stops by default: under the bar, not at the top of the page, where its column names
+   would cross it on the way up. A pattern that pins something of its own under the bar — a list or a record,
+   whose toolbar holds there — says so again with the bar's height added. */
+.pinnedHead { --table-stick-top: calc(var(--page-header-height-sticky) - var(--layout-margin-md)); }
 
 /* The marker that says the top of the page has scrolled away. Out of the flow, so it adds neither height
    nor a gap to the page. */
@@ -34,7 +38,11 @@
    own inset (--layout-margin-md): it pins the bar flush to the top edge of the scroll box rather than one
    inset below it, so no strip of page shows above the bar and the bar is only as tall as itself. It never
    moves the bar above where it sits unscrolled. The line and shadow under it are the PageHeader's own. */
-.stuck { position: sticky; top: calc(-1 * var(--layout-margin-md)); z-index: 2; }
+.stuck { position: sticky; top: calc(-1 * var(--layout-margin-md)); z-index: var(--stick-page-head); }
+/* While a band under the bar is lifted — a list's bar and column names, which mark themselves — the bar gives
+   up its own line and shadow: two edges a few pixels apart read as a seam. Pages with nothing pinned below
+   keep theirs, since there is nothing else to say the content passes underneath. */
+.page:has([data-scroll-shadow][data-stuck]) .head header { box-shadow: none; }
 
 /* The assistant keeps its own width and its own line down its side, so the frame adds neither. */
 .assistant { flex: none; min-height: 0; }

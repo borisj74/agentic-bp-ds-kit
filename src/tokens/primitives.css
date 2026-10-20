@@ -1375,6 +1375,12 @@
   --menu-item-height: var(--ref-size-800);
   --menu-item-tile: var(--ref-size-900);
   --input-label-width: 234px;
+  --stick-frozen-cell: 1;
+  --stick-head-cell: 2;
+  --stick-frozen-head-cell: 3;
+  --stick-bar: 4;
+  --stick-lift: 5;
+  --stick-page-head: 6;
   --focus-offset: 3px;
   --textarea-height-sm: 100px;
   --textarea-height-md: 180px;

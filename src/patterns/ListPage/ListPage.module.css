@@ -6,7 +6,7 @@
    is that bar's height less the page's inset, which is how far down the scroll box its underside sits once the
    name has gone. It carries the page's fill, so rows and cards pass under it rather than through it. */
 .bar, .bulk {
-  position: sticky; z-index: 2;
+  position: sticky; z-index: var(--stick-bar);
   top: calc(var(--page-header-height-sticky) - var(--layout-margin-md));
   background: var(--surface-flat);
 }
@@ -31,7 +31,7 @@
      casts nothing. It is as thick as the header's own line, and gives that height straight back to the flow,
      so nothing moves. */
   height: var(--border-width-medium); margin-block-end: calc(-1 * var(--border-width-medium));
-  position: sticky; z-index: 3;
+  position: sticky; z-index: var(--stick-lift);
   /* Right at the foot of the band: the bar's stick offset plus the column names' height, which is zero when
      the view has no table and the bar is the whole band. */
   top: calc(var(--table-stick-top, 0px) + var(--table-head-height, 0px));
@@ -50,10 +50,11 @@
      halves of it. Only what falls on the rows is kept. */
   clip-path: inset(0 0 -100vh 0);
 }
-/* Pinned, this line is the only one: the header's own would show through the table's width in a different
-   colour and weight, so it goes. The width stays and only the colour clears, so the header keeps its height
-   and nothing jumps at the moment it pins. */
-.scrollShadow[data-stuck] ~ .body thead :is(th, td) { border-bottom-color: transparent; }
+/* Held, the column names carry no line of their own: what separates them from the rows is the lift, and a
+   line as well reads as the seam this pattern exists to lose. It goes the moment the band pins, not when the
+   first row reaches it, so nothing flickers in between. The width stays and only the colour clears, so the
+   header keeps its height and nothing jumps. */
+.list[data-band] .body thead :is(th, td) { border-bottom-color: transparent; }
 /* Cards are separate blocks, not rows, so the page bar sits one grid gutter under them instead of flush. */
 .body:has(> :global(.layout-split), > :global(.layout-metrics)) { gap: var(--layout-gutter-md); }
 

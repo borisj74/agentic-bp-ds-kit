@@ -152,9 +152,6 @@ type Note = Omit<ToastProps, "open" | "onClose"> & { key: number };
 
 export default function InvoicesPage() {
   const [navOpen, setNavOpen] = useState(false);
-  // The shell says when the top of the page has gone; the screen keeps it and hands it back to the
-  // PageHeader, which drops the name and keeps the trail on one compact line.
-  const [headerStuck, setHeaderStuck] = useState(false);
   const [section, setSection] = useState("billing-invoices");
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");
@@ -264,14 +261,10 @@ export default function InvoicesPage() {
         }
         nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
-        onPageHeaderStick={setHeaderStuck}
         pageHeader={
-          // Scrolled, the name goes and the bar is one compact line of trail, with no shadow under it: the
-          // pinned list below carries its own edge.
-          <PageHeader
-            title="Invoices" sticky={headerStuck} shadow={false}
-            breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]}
-          />
+          // Scrolled, the name goes and the bar is one compact line of trail: the frame says when, and takes
+          // the shadow off it, since the pinned list below carries the edge.
+          <PageHeader title="Invoices" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />
         }
       >
         <Section title="Summary" description="Where unpaid invoices stand today." collapsible>

@@ -109,6 +109,17 @@ menu-item/tile|{ref/size/900}
 # labels as long as View Recent Invoices or Account Ledger Number stay on one line.
 input/label-width|234px
 
+# not in Figma: the order things that hold still on a page stack in, from the rows up. A frozen first column
+# sits over the rows beside it; the column names sit over the rows under them; a frozen name cell is both at
+# once; a pinned bar covers every one of them as they pass; its lift sits over the bar; and the page name,
+# which everything else passes under, is above the lot.
+stick/frozen-cell|1
+stick/head-cell|2
+stick/frozen-head-cell|3
+stick/bar|4
+stick/lift|5
+stick/page-head|6
+
 # not in Figma: gap between a control and its focus ring, so the ring never touches buttons or fields.
 focus/offset|3px
 

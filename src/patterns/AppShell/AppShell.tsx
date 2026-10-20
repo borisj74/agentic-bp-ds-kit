@@ -1,5 +1,5 @@
 "use client";
-import type { ReactNode } from "react";
+import { cloneElement, isValidElement, useCallback, useState, type ReactElement, type ReactNode } from "react";
 import { useStickMark } from "../stick";
 import styles from "./AppShell.module.css";
 
@@ -31,9 +31,24 @@ export function AppShell({
 }: AppShellProps) {
   // A reading column is the same container the layout classes use elsewhere.
   const page = width === "full" ? children : <div className={`layout-container-${width}`}>{children}</div>;
-  // The marker above the page header says when the top of the page has scrolled away, so the screen can swap
-  // the kit PageHeader to its own compact bar.
-  const mark = useStickMark(onPageHeaderStick);
+  // The marker above the page header says when the top of the page has scrolled away. The frame keeps that
+  // boolean itself and hands it to the PageHeader, so every screen shrinks its name to the compact bar the same
+  // way without wiring anything; onPageHeaderStick still reports it to screens that want it for their own use.
+  const [stuck, setStuck] = useState(false);
+  const onStick = useCallback((value: boolean) => {
+    setStuck(value);
+    onPageHeaderStick?.(value);
+  }, [onPageHeaderStick]);
+  const mark = useStickMark(onStick);
+
+  // A screen that sets sticky itself keeps what it set; everything else follows the frame. Whether the bar
+  // draws its own edge is settled in CSS: a page with a pinned band under the bar carries the edge there.
+  type HeadProps = { sticky?: boolean };
+  const head = stickyPageHeader && isValidElement(pageHeader)
+    ? cloneElement(pageHeader as ReactElement<HeadProps>, {
+      sticky: (pageHeader as ReactElement<HeadProps>).props.sticky ?? stuck,
+    })
+    : pageHeader;
   return (
     // data-frame says this is the frame: panels that float out of the bar or the rail (menus, tooltips, the search
     // dropdown) keep inside it, so nothing hangs over what is beside a frame docked in a preview or a split view.
@@ -51,13 +66,13 @@ export function AppShell({
           <button type="button" className={styles.scrim} aria-label="Close navigation" onClick={onNavClose} />
         )}
         {/* Only the page scrolls, so a sticky page header sticks and the bar and the rail stay put. */}
-        <main className={["layout-content", styles.page].join(" ")}>
+        <main className={["layout-content", styles.page, pageHeader && stickyPageHeader ? styles.pinnedHead : ""].join(" ")}>
           {/* The page header stays at the top while the page scrolls under it. It pins flush to the top edge
               of the page rather than one inset below it, so no strip of page shows above the bar. */}
           {pageHeader && (
             <>
-              {stickyPageHeader && onPageHeaderStick && <div ref={mark} className={styles.mark} aria-hidden="true" />}
-              <div className={[styles.head, stickyPageHeader ? styles.stuck : ""].join(" ")}>{pageHeader}</div>
+              {stickyPageHeader && <div ref={mark} className={styles.mark} aria-hidden="true" />}
+              <div className={[styles.head, stickyPageHeader ? styles.stuck : ""].join(" ")}>{head}</div>
             </>
           )}
           {page}

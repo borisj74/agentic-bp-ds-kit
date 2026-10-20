@@ -29,7 +29,7 @@
    above the frozen first column, which holds still sideways. The line under them is the header's own; a pattern
    that draws its own edge across the pinned band clears it for as long as that lasts. */
 .table thead th, .table thead td {
-  position: sticky; top: var(--table-stick-top, 0px); z-index: 2; background: var(--surface-flat);
+  position: sticky; top: var(--table-stick-top, 0px); z-index: var(--stick-head-cell); background: var(--surface-flat);
 }
 .table tbody td { border-bottom: var(--border-width-thin) solid var(--border-neutral-faint); }
 .sm th > * { min-height: calc(var(--header-cell-height-sm) - var(--border-width-medium)); }
@@ -96,7 +96,7 @@
   /* Only the header and the rows freeze: the empty line and the total row span the table, so there is
      nothing in them to hold still. */
   .table :is(thead, tbody) tr > :is(:first-child, .select + *):not(.empty) {
-    position: sticky; z-index: 1;
+    position: sticky; z-index: var(--stick-frozen-cell);
     /* The frozen cell carries its own fill, since the row's fill scrolls away with the row. A line down its
        far edge, drawn outside the cell, says the rest of the row passes under it. */
     background: var(--surface-flat); box-shadow: var(--border-width-thin) 0 0 var(--border-neutral-faint);
@@ -104,7 +104,7 @@
   .table :is(thead, tbody) tr > :first-child { inset-inline-start: 0; }
   /* The header cell of a frozen column holds still both ways at once, so it stands above its own column and its
      own row. */
-  .table thead tr > :is(:first-child, .select + *):not(.empty) { z-index: 3; }
+  .table thead tr > :is(:first-child, .select + *):not(.empty) { z-index: var(--stick-frozen-head-cell); }
   .table :is(thead, tbody) tr > .select + * { inset-inline-start: var(--control-large); }
   .table tbody tr:hover > :is(:first-child, .select + *) { background: var(--bg-neutral-min-hover); }
   .table tbody tr.selected > :is(:first-child, .select + *) { background: var(--bg-neutral-min-selected); }

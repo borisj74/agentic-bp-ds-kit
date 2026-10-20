@@ -21,7 +21,7 @@
    own inset (--layout-margin-md): it pins the bar flush to the top edge of the scroll box rather than one
    inset below it, so there is no band above the bar to cover and the bar is only as tall as itself. It never
    moves the bar above where it sits unscrolled. The line and shadow under it are the PageHeader's own. */
-.stuck { position: sticky; top: calc(-1 * var(--layout-margin-md)); z-index: 2; }
+.stuck { position: sticky; top: calc(-1 * var(--layout-margin-md)); z-index: var(--stick-page-head); }
 
 .tabs { min-width: 0; border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle); }
 .notice { min-width: 0; }
@@ -30,13 +30,32 @@
    stuck. It carries the page's fill, so the rows and sections pass under it rather than through it, and it stays
    under the header bar, which is the louder of the two. */
 .toolbar {
-  min-width: 0; position: sticky; z-index: 1;
+  min-width: 0; position: sticky; z-index: var(--stick-bar);
   top: calc(var(--page-header-height-sticky) - var(--layout-margin-md));
   background: var(--surface-flat);
   /* It used to sit in the block above at --space-medium; as a child of the record it would take the section
      gutter, so the extra is pulled back and the bar sits where it always did. */
   margin-block-start: calc(var(--space-medium) - var(--layout-gutter-lg));
 }
+
+/* The lift under the pinned band, and the line the held column names give up for it: the same pair a list
+   draws, from the same plumbing (src/patterns/band.ts). The bar and the sections keep the page's side padding,
+   so neither can cast anything that reaches the page edges; this box bleeds out through the inset to do it. */
+.scrollShadow {
+  height: var(--border-width-medium); margin-block-end: calc(-1 * var(--border-width-medium));
+  position: sticky; z-index: var(--stick-lift);
+  top: calc(var(--table-stick-top, 0px) + var(--table-head-height, 0px));
+  width: auto; margin-inline: calc(-1 * var(--layout-margin-md));
+}
+/* Clipped to its own top edge, with room left below: the blur is wider than the offset and would otherwise
+   spill upward over the band. */
+.scrollShadow[data-stuck] { box-shadow: var(--elevation-card); clip-path: inset(0 0 -100vh 0); }
+/* While the band is pinned the name bar gives up its own line and shadow: the band under it carries the edge,
+   and two a few pixels apart read as a seam. The record holds its own PageHeader rather than handing it to the
+   frame, so the frame's rule for this cannot reach it. */
+.record[data-band] .head header { box-shadow: none; }
+/* Held, the column names carry no line of their own: the lift is what separates them from the rows. */
+.record[data-band] thead :is(th, td) { border-bottom-color: transparent; }
 
 .summary { min-width: 0; }
 /* The sections of details, one under the other. */
