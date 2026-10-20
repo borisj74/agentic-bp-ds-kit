@@ -1,13 +1,18 @@
 /* Figma COBALT section header 304:31917. The page supplies the side padding; the section is the header and its content. */
 .section { display: flex; flex-direction: column; gap: var(--space-medium); min-width: 0; font-family: var(--font-sans); }
 
-/* The header ends in the 2px brand-faint line, 8px under the row. */
+/* The header ends in the 2px brand-faint line, 8px under the row. The title row and description stack in the first
+   column; actions take the end column across both, sitting on the description's baseline row (bottom aligned). */
 .header {
-  display: flex; flex-direction: column; gap: var(--space-xxsmall);
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--space-xsmall); row-gap: var(--space-xxsmall);
   padding-bottom: var(--space-xsmall); border-bottom: var(--border-width-medium) solid var(--border-brand-faint);
 }
 /* line thin: a 1px rule. Only this section's own header, so a section inside keeps its own line. */
 .thin > .header { border-bottom-width: var(--border-width-thin); }
+/* line none: no rule, for a block inside a section that reads as one part of it, like a chart's own title. */
+.none > .header { border-bottom: 0; }
+/* spacing tight: 8px from the header to its content, for a table that belongs right under its title. */
+.tight { gap: var(--space-xsmall); }
 .row { display: flex; align-items: center; gap: var(--space-xsmall); min-height: var(--control-small); }
 .title {
   margin: 0; min-width: 0;
@@ -18,6 +23,11 @@
   font: var(--text-heading-xs-weight) var(--text-heading-xs-size) / var(--text-heading-xs-lh) var(--font-sans);
   letter-spacing: var(--text-heading-xs-ls);
 }
+/* heading sets the title size outright, whatever the nesting: md the page block, sm a block inside it (like a chart
+   title), xs a small one. Only this section's own title. */
+.heading-md > .header .title { font: var(--text-title-md-weight) var(--text-title-md-size) / var(--text-title-md-lh) var(--font-sans); letter-spacing: normal; }
+.heading-sm > .header .title { font: var(--text-heading-sm-weight) var(--text-heading-sm-size) / var(--text-heading-sm-lh) var(--font-sans); letter-spacing: var(--text-heading-sm-ls); }
+.heading-xs > .header .title { font: var(--text-heading-xs-weight) var(--text-heading-xs-size) / var(--text-heading-xs-lh) var(--font-sans); letter-spacing: var(--text-heading-xs-ls); }
 .description { margin: 0; font-size: var(--font-size-small); line-height: var(--line-height-snug); color: var(--text-neutral); }
 
 /* Same ? button as the field help icons. */
@@ -30,8 +40,11 @@
 .help:hover { color: var(--icon-neutral-strong); }
 .help:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
 
-/* Actions sit at the end of the row. */
-.actions { display: flex; align-items: center; gap: var(--space-xsmall); margin-inline-start: auto; }
+/* Actions sit at the end of the header. With a description they line up with its bottom; without one, with the
+   title row. */
+.row, .description { grid-column: 1; }
+.actions { grid-column: 2; grid-row: 1; align-self: end; display: flex; align-items: center; gap: var(--space-xsmall); }
+.header:has(> .description) > .actions { grid-row: 1 / span 2; }
 
 /* Blocks stacked in one section — a Scoreboard over its charts, a table over its report link — are one
    gutter apart (--layout-gutter-md, the grid gutter), so the section reads as one block of its own. */

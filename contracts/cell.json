@@ -96,7 +96,7 @@
     "intent": {
       "type": "BadgeIntent",
       "default": "neutral",
-      "note": "For badge and status. status colours the dot: neutral grey, then info, success, warning, danger and highlight."
+      "note": "For badge, status and progress. status colours the dot: neutral grey, then info, success, warning, danger and highlight. progress colours the bar: info, success, warning or danger; neutral (the default) and highlight keep it blue."
     },
     "badges": {
       "type": "CellBadge[]",
