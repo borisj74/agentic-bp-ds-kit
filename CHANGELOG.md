@@ -4,6 +4,18 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.0 — 2026-10-21
+
+### Breaking
+- DataGrid: `canRemoveRows` now draws an X, not a trash, and means what it says — the row comes out of this grid and nothing else in the app changes. Screens that meant a real delete add `canDeleteRows` beside it. No rename to run: the prop is the same, its icon and its meaning are narrower.
+- DataGrid: `canInsertRows` draws its + at the end of the row with the other actions, not at the start. The start of a row is spoken for — the expand chevron sits there and selection goes there next — so an action kept there has to move every time either arrives.
+
+### Added
+- DataGrid: `canDeleteRows` puts a trash in the action column for the destructive one. The row goes and so does the record behind it, everywhere it is used. The grid asks first in a kit AlertDialog and only then calls the new `onDeleteRow`; nothing happens on Cancel.
+- DataGrid: `deleteConfirm` words that confirmation. Without it the title names the row by its first column — Delete API calls (per 10K)? — and the description says the record goes everywhere and cannot be brought back.
+- DataGrid: two row actions stand on the row and any after that go in a More menu at the end, so the column keeps its width however many a grid turns on. With add, remove and delete all on, Delete is the one behind the menu, which suits the only one that cannot be undone.
+- The published Figma library carries the kit's rules as guidelines files, so Figma's agent designs on-system instead of from the variants alone: the rules, the tokens and layout, every component with its closed prop lists, the screen patterns, and the anti-patterns this system keeps catching. `npm run figma:guidelines` builds them from the contracts and the tokens into `docs/figma/guidelines/`, and uploading them is step 9 of RELEASING.md.
+
 ## v0.6.2 — 2026-10-20
 
 ### Changed

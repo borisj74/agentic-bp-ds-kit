@@ -1,6 +1,6 @@
 {
   "name": "create-agentic-bp-ds",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "description": "Start a new prototype from the Agentic BP DS kit in one command.",
   "type": "module",
   "bin": {
