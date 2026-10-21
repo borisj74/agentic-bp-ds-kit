@@ -1,5 +1,6 @@
 "use client";
 import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type FocusEvent, type KeyboardEvent, type ReactNode } from "react";
+import { AlertDialog } from "../AlertDialog/AlertDialog";
 import { Button } from "../Button/Button";
 import { Count } from "../Count/Count";
 import { DatePicker } from "../DatePicker/DatePicker";
@@ -41,6 +42,9 @@ export interface DataGridProps {
   rowNumbers?: boolean;
   canAddRows?: boolean;
   canRemoveRows?: boolean;
+  canDeleteRows?: boolean;
+  onDeleteRow?: (row: DataGridRow) => void;
+  deleteConfirm?: (row: DataGridRow) => { title: string; description: string };
   canInsertRows?: boolean;
   emptyLabel?: string;
   label?: string;
@@ -59,13 +63,16 @@ const spotSelector = (s: Spot) => `[data-cell="${CSS.escape(`${s.row}:${s.key}`)
 // Text and number save on Enter or when focus leaves; formula cells stay open until Done or Escape.
 export function DataGrid({
   columns, rows: rowsProp, defaultRows = [], onRowsChange, size: ownSize, line = "medium", rowNumbers = true,
-  canAddRows = false, canRemoveRows = false, canInsertRows = false, emptyLabel = "No rows yet.", label = "Data grid", stickyFirstColumn = true,
+  canAddRows = false, canRemoveRows = false, canDeleteRows = false, onDeleteRow, deleteConfirm, canInsertRows = false,
+  emptyLabel = "No rows yet.", label = "Data grid", stickyFirstColumn = true,
   detail, detailCount, expanded: expandedProp, defaultExpanded = [], onExpandedChange,
 }: DataGridProps) {
   // A surrounding Density changes the row through the density tokens, not the size.
   const size = ownSize ?? "md";
   const uid = useId();
   const added = useRef(0);
+  // The row waiting on its Delete confirmation, with the number it is named by.
+  const [confirming, setConfirming] = useState<{ row: DataGridRow; index: number } | null>(null);
   const tableRef = useRef<HTMLTableElement>(null);
   const returnTo = useRef<Spot | null>(null);
   const [innerRows, setInnerRows] = useState(defaultRows);
@@ -91,7 +98,6 @@ export function DataGrid({
   // Pinned columns sit one after another: the expand toggle, then #, then the first column, so each needs the
   // widths before it as its offset. An open detail is as wide as the visible grid, so it stays in view too.
   const wrapRef = useRef<HTMLDivElement>(null);
-  const insertRef = useRef<HTMLTableCellElement>(null);
   const toggleRef = useRef<HTMLTableCellElement>(null);
   const indexRef = useRef<HTMLTableCellElement>(null);
   // The opensDetail column's header: an open detail lines up under it (see detailStart below).
@@ -100,23 +106,22 @@ export function DataGrid({
   useLayoutEffect(() => {
     const wrap = wrapRef.current;
     const measure = () => {
-      // Pinned columns sit side by side: +, then the detail toggle, then #, then the first column.
-      const insert = insertRef.current?.getBoundingClientRect().width ?? 0;
+      // Pinned columns sit side by side: the detail toggle, then #, then the first column.
       const toggle = toggleRef.current?.getBoundingClientRect().width ?? 0;
       const index = indexRef.current?.getBoundingClientRect().width ?? 0;
       const view = wrap?.clientWidth ?? 0;
       // Where the opensDetail column starts in the visible part of the grid, so a detail can sit under it.
       const detailStart = Math.max(0, (detailColRef.current?.offsetLeft ?? 0) - (wrap?.scrollLeft ?? 0));
-      const next = { toggle: insert, index: insert + toggle, first: insert + toggle + index, view, detailStart };
+      const next = { toggle: 0, index: toggle, first: toggle + index, view, detailStart };
       setOffsets((old) => (old.toggle === next.toggle && old.index === next.index && old.first === next.first && old.view === next.view && old.detailStart === next.detailStart ? old : next));
     };
     measure();
     wrap?.addEventListener("scroll", measure, { passive: true });
     if (typeof ResizeObserver === "undefined") return () => wrap?.removeEventListener("scroll", measure);
     const observer = new ResizeObserver(measure);
-    [wrap, tableRef.current, insertRef.current, toggleRef.current, indexRef.current, detailColRef.current].forEach((el) => el && observer.observe(el));
+    [wrap, tableRef.current, toggleRef.current, indexRef.current, detailColRef.current].forEach((el) => el && observer.observe(el));
     return () => { observer.disconnect(); wrap?.removeEventListener("scroll", measure); };
-  }, [stickyFirstColumn, rowNumbers, detail, canInsertRows]);
+  }, [stickyFirstColumn, rowNumbers, detail]);
   const pin = stickyFirstColumn ? styles.sticky : "";
 
   const commit = (next: DataGridRow[]) => {
@@ -172,6 +177,12 @@ export function DataGrid({
     if (editing?.row === id) setEditing(null);
     commit(rows.filter((r) => r.id !== id));
   };
+  // The trash is the destructive one: the record goes with the row, so the screen hears about it separately.
+  // Asking first is the screen's job, since only it knows what the record is worth.
+  const deleteRow = (row: DataGridRow) => {
+    removeRow(row.id);
+    onDeleteRow?.(row);
+  };
 
   const onEditorKey = (col: DataGridColumn) => (e: KeyboardEvent) => {
     // Menus inside the editor (Insert function, Select) mark their own Escape handled.
@@ -185,8 +196,29 @@ export function DataGrid({
     close(true, false);
   };
 
-  const span = columns.length + (canInsertRows ? 1 : 0) + (toggleColumn ? 1 : 0) + (rowNumbers ? 1 : 0) + (canRemoveRows ? 1 : 0);
+  // Add, remove and delete share one column at the end of the row.
+  const actionColumn = canInsertRows || canRemoveRows || canDeleteRows;
+  const span = columns.length + (toggleColumn ? 1 : 0) + (rowNumbers ? 1 : 0) + (actionColumn ? 1 : 0);
   const firstKey = columns[0]?.key;
+
+  // Two actions stand on the row and the rest go in a More menu, so the column stays the same width however many
+  // a grid turns on. Add and remove are the everyday pair, so Delete is the one that moves: behind the menu, and
+  // then behind a confirmation, which suits the only one of the three that cannot be undone.
+  const visibleActions = 2;
+  const rowActions = (row: DataGridRow, i: number) => {
+    const all = [
+      canInsertRows && { id: "insert", label: `Add row below row ${i + 1}`, icon: "add", run: () => addRow(i) },
+      canRemoveRows && { id: "remove", label: `Remove row ${i + 1}`, icon: "close", run: () => removeRow(row.id) },
+      canDeleteRows && { id: "delete", label: `Delete row ${i + 1}`, icon: "delete", danger: true, run: () => setConfirming({ row, index: i + 1 }) },
+    ].filter(Boolean) as { id: string; label: string; icon: string; danger?: boolean; run: () => void }[];
+    return { visible: all.slice(0, visibleActions), overflow: all.slice(visibleActions) };
+  };
+  // What the confirmation says. Without wording from the screen it names the row by its first column, which is
+  // the one that names each row, and says plainly that the record goes with it.
+  const confirmWords = ({ row, index }: { row: DataGridRow; index: number }) => deleteConfirm?.(row) ?? {
+    title: `Delete ${(firstKey && row[firstKey]) || `row ${index}`}?`,
+    description: "This deletes it everywhere it is used, not only from this grid. It cannot be undone.",
+  };
 
   // Set for all: row 1's value goes to every row, or the column is cleared.
   const setForAllItems = (col: DataGridColumn) => {
@@ -298,7 +330,6 @@ export function DataGrid({
         >
           <thead>
             <tr>
-              {canInsertRows && <th ref={insertRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyInsert : ""].join(" ")}>{head(<HeaderCell size={size} line={line} />)}<span className={styles.srOnly}>Add row</span></th>}
               {toggleColumn && <th ref={toggleRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyToggle : ""].join(" ")}>{head(<HeaderCell size={size} line={line} />)}<span className={styles.srOnly}>Details</span></th>}
               {rowNumbers && <th ref={indexRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyIndex : ""].join(" ")}>{head(<HeaderCell size={size} line={line} alignment="center" label="#" />)}</th>}
               {columns.map((c) => (
@@ -318,7 +349,7 @@ export function DataGrid({
                   )}
                 </th>
               ))}
-              {canRemoveRows && <th scope="col" className={styles.hug}>{head(<HeaderCell size={size} line={line} />)}<span className={styles.srOnly}>Remove</span></th>}
+              {actionColumn && <th scope="col" className={styles.hug}>{head(<HeaderCell size={size} line={line} />)}<span className={styles.srOnly}>Actions</span></th>}
             </tr>
           </thead>
           <tbody>
@@ -331,13 +362,6 @@ export function DataGrid({
               return (
               <Fragment key={row.id}>
               <tr>
-                {canInsertRows && (
-                  <td className={[styles.insert, stickyFirstColumn ? styles.stickyInsert : ""].join(" ")}>
-                    <Tooltip content={`Add row below row ${i + 1}`} position="right">
-                      <Button emphasis="minimal" size="sm" iconOnly iconStart="add" onClick={() => addRow(i)}>{`Add row below row ${i + 1}`}</Button>
-                    </Tooltip>
-                  </td>
-                )}
                 {toggleColumn && (
                   <td className={[styles.toggle, stickyFirstColumn ? styles.stickyToggle : ""].join(" ")}>
                     {hasDetail(row.id) && (
@@ -352,13 +376,27 @@ export function DataGrid({
                 )}
                 {rowNumbers && <td className={[styles.index, stickyFirstColumn ? styles.stickyIndex : ""].join(" ")}>{i + 1}</td>}
                 {columns.map((c) => cell(row, i + 1, c))}
-                {canRemoveRows && (
-                  <td className={styles.remove}>
-                    <Tooltip content={`Remove row ${i + 1}`} position="left">
-                      <Button emphasis="minimal" size="sm" iconOnly iconStart="delete" onClick={() => removeRow(row.id)}>{`Remove row ${i + 1}`}</Button>
-                    </Tooltip>
-                  </td>
-                )}
+                {actionColumn && (() => {
+                  const { visible, overflow } = rowActions(row, i);
+                  return (
+                    <td className={styles.actions}>
+                      <span className={styles.actionRow}>
+                        {visible.map((a) => (
+                          <Tooltip key={a.id} content={a.label} position="left">
+                            <Button emphasis="minimal" size="sm" iconOnly iconStart={a.icon} onClick={a.run}>{a.label}</Button>
+                          </Tooltip>
+                        ))}
+                        {overflow.length > 0 && (
+                          <Dropdown
+                            label={`More actions, row ${i + 1}`} iconOnly icon="more_vert" emphasis="minimal" size="sm" alignment="right"
+                            items={overflow.map((a) => ({ id: a.id, label: a.label, icon: a.icon, danger: a.danger }))}
+                            onSelect={(id) => overflow.find((a) => a.id === id)?.run()}
+                          />
+                        )}
+                      </span>
+                    </td>
+                  );
+                })()}
               </tr>
               {isOpen && (
                 <tr>
@@ -386,6 +424,13 @@ export function DataGrid({
         <div className={styles.add}>
           <Button emphasis="minimal" size="sm" iconStart="add" onClick={() => addRow()}>Add row</Button>
         </div>
+      )}
+      {confirming && (
+        <AlertDialog
+          open {...confirmWords(confirming)} actionLabel="Delete" actionIntent="danger"
+          onCancel={() => setConfirming(null)}
+          onAction={() => { deleteRow(confirming.row); setConfirming(null); }}
+        />
       )}
     </div>
   );

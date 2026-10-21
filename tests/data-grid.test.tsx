@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
@@ -106,6 +106,58 @@ describe("DataGrid", () => {
     expect(next[1]).toMatchObject({ product: "", qty: "" });
     expect(next[2].id).toBe("r2");
     expect(screen.getByRole("button", { name: "Remove row 1" })).toBeInTheDocument();
+  });
+
+  it("stands two actions on the row and puts the rest in a More menu", async () => {
+    const user = userEvent.setup();
+    render(<DataGrid label="Items" columns={COLUMNS} defaultRows={ROWS} canInsertRows canRemoveRows canDeleteRows />);
+    const row = screen.getByRole("button", { name: "Add row below row 1" }).closest("tr")!;
+    const cells = [...row.querySelectorAll("td")];
+    const actions = cells[cells.length - 1];
+    // Add and remove are the everyday pair, so they stay on the row; delete moves behind the menu.
+    expect([...actions.querySelectorAll("button")].map((b) => b.textContent)).toEqual([
+      "addAdd row below row 1", "closeRemove row 1", "more_vertMore actions, row 1",
+    ]);
+    await user.click(screen.getByRole("button", { name: "More actions, row 1" }));
+    expect(screen.getByRole("menuitem", { name: /Delete row 1/ })).toBeInTheDocument();
+  });
+
+  it("leaves the action column alone when only two actions are on", () => {
+    render(<DataGrid label="Items" columns={COLUMNS} defaultRows={ROWS} canInsertRows canRemoveRows />);
+    expect(screen.queryByRole("button", { name: "More actions, row 1" })).not.toBeInTheDocument();
+  });
+
+  it("removes a row from the grid alone, and asks before deleting the record", async () => {
+    const user = userEvent.setup();
+    const onRowsChange = vi.fn();
+    const onDeleteRow = vi.fn();
+    render(
+      <DataGrid
+        label="Items" columns={COLUMNS} defaultRows={ROWS}
+        onRowsChange={onRowsChange} onDeleteRow={onDeleteRow} canRemoveRows canDeleteRows
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: "Remove row 1" }));
+    expect(onRowsChange.mock.lastCall?.[0].map((r: { id: string }) => r.id)).toEqual(["r2"]);
+    // X is the grid's own business: the screen hears nothing about a record, and nothing asks.
+    expect(onDeleteRow).not.toHaveBeenCalled();
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+
+    // Only two actions are on, so Delete is still on the row.
+    await user.click(screen.getByRole("button", { name: "Delete row 1" }));
+    const dialog = screen.getByRole("alertdialog", { name: "Delete Silver plan?" });
+    expect(dialog).toBeInTheDocument();
+    expect(onDeleteRow).not.toHaveBeenCalled();
+
+    await user.click(within(dialog).getByRole("button", { name: "Cancel" }));
+    expect(onDeleteRow).not.toHaveBeenCalled();
+    expect(onRowsChange.mock.lastCall?.[0]).toHaveLength(1);
+
+    await user.click(screen.getByRole("button", { name: "Delete row 1" }));
+    await user.click(within(screen.getByRole("alertdialog")).getByRole("button", { name: "Delete" }));
+    expect(onDeleteRow).toHaveBeenCalledTimes(1);
+    expect(onDeleteRow.mock.lastCall?.[0]).toMatchObject({ id: "r2" });
+    expect(onRowsChange.mock.lastCall?.[0]).toEqual([]);
   });
 
   it("shows date cells as a date picker with the formatted value", () => {

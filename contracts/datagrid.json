@@ -2,7 +2,7 @@
   "name": "DataGrid",
   "path": "src/ui/DataGrid/DataGrid.tsx",
   "intent": "An editable table: people click a cell to add or change its content, like rule conditions, line items or mappings.",
-  "usage": "Use DataGrid when people enter or change data in rows, not just read it. It is one component: pass columns and rows as data. Each column has a type: text and number cells edit in place with a kit Input, select cells are a kit Select, formula cells open a kit FormulaEditor in the cell, date cells are a kit DatePicker, and readOnly columns only show. Click a cell or press Enter to edit; Enter or leaving the cell saves, Escape cancels, Tab moves to the next cell. rowNumbers adds a # column. canAddRows adds an Add row button under the grid, canInsertRows a + at the start of each row that adds a row under it, and canRemoveRows a remove button on each row. Columns are at least 160 wide unless they hug. The first column (and #) stays pinned when the grid scrolls sideways. setForAll on a column adds a Set for all menu under its title. detail makes rows expandable, with settings or sub-rows under each row. Inside a Form with columns, the grid spans the row, and with start labels it starts at the section's edge, since its column headers stand in for a label. For read-only lists use Table. See contracts/datagrid.json for the full contract.",
+  "usage": "Use DataGrid when people enter or change data in rows, not just read it. It is one component: pass columns and rows as data. Each column has a type: text and number cells edit in place with a kit Input, select cells are a kit Select, formula cells open a kit FormulaEditor in the cell, date cells are a kit DatePicker, and readOnly columns only show. Click a cell or press Enter to edit; Enter or leaving the cell saves, Escape cancels, Tab moves to the next cell. rowNumbers adds a # column. canAddRows adds an Add row button under the grid; canInsertRows, canRemoveRows and canDeleteRows each add a button to the action column at the end of every row, in that order: + adds an empty row under this one, X takes the row out of this grid, and the trash deletes the record everywhere it is used. Two stand on the row and any after that go in a More menu at the end, so with all three on, Delete is in the menu. Keep remove and delete apart: a row people only meant to take off a quote is removed, not deleted. Delete asks first in a kit AlertDialog and only then calls onDeleteRow. Columns are at least 160 wide unless they hug. The first column (and #) stays pinned when the grid scrolls sideways. setForAll on a column adds a Set for all menu under its title. detail makes rows expandable, with settings or sub-rows under each row. Inside a Form with columns, the grid spans the row, and with start labels it starts at the section's edge, since its column headers stand in for a label. For read-only lists use Table. See contracts/datagrid.json for the full contract.",
   "props": {
     "columns": {
       "type": "DataGridColumn[]",
@@ -52,12 +52,25 @@
     "canRemoveRows": {
       "type": "boolean",
       "default": false,
-      "note": "A remove button at the end of each row, named by a kit Tooltip."
+      "note": "An X button in the action column, named Remove row 2 by a kit Tooltip. It takes the row out of this grid only; nothing else in the app changes. For a row that holds a saved record, pair it with canDeleteRows."
+    },
+    "canDeleteRows": {
+      "type": "boolean",
+      "default": false,
+      "note": "A trash button in the action column, named Delete row 2 by a kit Tooltip. It is the destructive one: the row goes, and so does the record behind it, everywhere in the app. It asks first in a kit AlertDialog — the grid owns that — and only on Delete does the row go and onDeleteRow run. With insert and remove also on it is the action that moves into the More menu."
+    },
+    "onDeleteRow": {
+      "type": "function",
+      "note": "(row: DataGridRow) => void. Runs once the person confirms the delete, with the row that went, so the screen can delete the record itself. onRowsChange runs too, with the row gone. Nothing runs if they cancel."
+    },
+    "deleteConfirm": {
+      "type": "function",
+      "note": "(row: DataGridRow) => { title: string; description: string }. What the delete confirmation says. Without it the title names the row by its first column (Delete API calls (per 10K)?, or Delete row 2? when that cell is empty) and the description says the record goes everywhere and cannot be brought back. Pass it to name the kind of record, like Delete usage identifier?"
     },
     "canInsertRows": {
       "type": "boolean",
       "default": false,
-      "note": "A + button at the start of each row, as in the Figma data grid, that adds an empty row just under it. Named by a kit Tooltip, like Add row below row 2. Pinned with # and the first column. Use it with canRemoveRows, whose button sits at the end of the row."
+      "note": "A + button in the action column at the end of each row that adds an empty row just under it. Named by a kit Tooltip, like Add row below row 2."
     },
     "emptyLabel": {
       "type": "string",
@@ -105,18 +118,20 @@
     "Do not invent an EditableCell, GridRow or a table of loose inputs. Pass columns with a type.",
     "Do not build your own expand arrows or a second table under a row. Pass detail.",
     "Do not put a Form around each row. Save the rows from onRowsChange.",
+    "Do not use the trash for a row people are only taking off this grid. X removes, the trash deletes the record for everyone.",
+    "Do not ask again before a delete from the screen. The grid already shows the AlertDialog; onDeleteRow runs after it.",
     "Do not use raw hex."
   ],
   "a11y": [
     "A native table named by label, with kit HeaderCell headers.",
     "Each editable cell is a button named by its column and row with its value, like Value, row 2: 100. Enter or click opens a kit Input, Select or FormulaEditor named the same way, and focus moves into it.",
     "Enter saves and Escape cancels; focus goes back to the cell. Tab moves to the next cell.",
-    "Remove row buttons are named Remove row 2 and show that in a Tooltip.",
+    "The action column at the end of a row holds up to two buttons in reading order — Add row below row 2, Remove row 2, Delete row 2 — each a kit Button named that way, with the same words in a kit Tooltip. Any past the first two go in a kit Dropdown named More actions, row 2, with Delete marked danger.",
     "Set for all is a kit Dropdown under the column title; the header is still the kit HeaderCell.",
     "With detail, each row that has one starts with a kit Button named Show details, row 2 (Hide when open), with aria-expanded and aria-controls pointing at the open detail, a group named Details, row 2. A row whose detail is null has no button.",
     "A date cell is a kit DatePicker named by its column and row, like Start date, row 2.",
-    "With canInsertRows, each row's + is a kit Button named Add row below row N; the new row goes right under it.",
-    "With an opensDetail column, the Count button is named N more, row 2, with aria-expanded and aria-controls pointing at the open detail."
+    "With an opensDetail column, the Count button is named N more, row 2, with aria-expanded and aria-controls pointing at the open detail.",
+    "Delete opens a kit AlertDialog: it holds focus until the person cancels or confirms, and Cancel has focus first."
   ],
   "snippet": "<DataGrid\n  label=\"Conditions\"\n  columns={[\n    { key: \"field\", header: \"Field\", type: \"formula\", fields: accountFields },\n    { key: \"condition\", header: \"Condition\", type: \"select\", options: conditions, width: \"200px\" },\n    { key: \"value\", header: \"Value\" },\n  ]}\n  rows={rules}\n  onRowsChange={setRules}\n  canAddRows\n  canRemoveRows\n/>",
   "examples": [
@@ -151,7 +166,7 @@
     },
     {
       "title": "Dates and details",
-      "usage": "Start and End are date cells. API calls opens to its rate bands, a nested grid with a Currency select, and starts open. Seat license has one price, so its detail is null and it has no toggle.",
+      "usage": "Start and End are date cells. API calls opens to its rate bands, a nested grid with a Currency select, and starts open. Seat license has one price, so its detail is null and it has no toggle. All three row actions are on, so the column at the end holds + and X, and Delete sits in the More menu: + adds a row under this one, X takes the row off this subscription, and Delete asks first, then takes the product out of the app.",
       "items": [
         {
           "props": {
@@ -163,7 +178,8 @@
               "t1"
             ],
             "canRemoveRows": true,
-            "canInsertRows": true
+            "canInsertRows": true,
+            "canDeleteRows": true
           }
         }
       ]

@@ -153,7 +153,7 @@ Props — `author`: `user` | `assistant`; `bubble`: boolean
 
 An editable table: people click a cell to add or change its content, like rule conditions, line items or mappings.
 
-Props — `size`: `sm` | `md` (default `md`); `line`: `medium` | `thin` (default `medium`); `rowNumbers`: boolean; `canAddRows`: boolean; `canRemoveRows`: boolean; `canInsertRows`: boolean; `stickyFirstColumn`: boolean
+Props — `size`: `sm` | `md` (default `md`); `line`: `medium` | `thin` (default `medium`); `rowNumbers`: boolean; `canAddRows`: boolean; `canRemoveRows`: boolean; `canDeleteRows`: boolean; `canInsertRows`: boolean; `stickyFirstColumn`: boolean
 
 - Do not use it to show data people only read. Use Table.
 - Do not invent an EditableCell, GridRow or a table of loose inputs. Pass columns with a type.
