@@ -17,4 +17,6 @@ How a new kit version goes out. A release is a git tag; the `npm create` install
 
    If it answers E404, your npm login has expired: run `npm login`, check `npm whoami`, and publish again. The registry can take a few minutes to show the new version.
 
+9. **Rebuild the Figma guidelines and upload them.** Run `npm run figma:guidelines`, then in the published Figma library open the file menu > Library > Manage guidelines..., replace the five files from `docs/figma/guidelines/`, and Apply changes. Figma hands these to its agent whenever anyone designs with the library, so a release that changed a prop, a token or a pattern leaves the agent working from the old rules until they are re-uploaded.
+
 A tag that is never published (like v0.3.0) is fine: say so in its CHANGELOG entry.

@@ -44,5 +44,7 @@ next-env.d.ts
 # token audit report (npm run audit:tokens)
 token-audit.json
 
-# figma mirror planning (local only)
-docs/figma/
+# figma mirror planning (local only), except the generated library guidelines,
+# which are uploaded at release time and worth seeing in a diff
+docs/figma/*
+!docs/figma/guidelines/
