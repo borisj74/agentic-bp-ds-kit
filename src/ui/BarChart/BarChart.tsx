@@ -33,6 +33,8 @@ export interface BarChartProps {
   emptyLabel?: string;
   referenceLines?: ChartReferenceLine[];
   marker?: ChartMarker;
+  selected?: number | null;
+  onSelectedChange?: (index: number | null) => void;
 }
 
 // Figma Persona Homepages 1139:11403: stacked bars per period, legend under the chart. Horizontal lists the categories down the start.

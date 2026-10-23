@@ -12,6 +12,7 @@ import { AvatarGroup, type AvatarGroupItem } from "@/ui/AvatarGroup/AvatarGroup"
 import { Badge } from "@/ui/Badge/Badge";
 import { BadgeAlt } from "@/ui/BadgeAlt/BadgeAlt";
 import { BarChart, type BarChartProps } from "@/ui/BarChart/BarChart";
+import { BarChartPick } from "./BarChartPick";
 import { Breadcrumb, type BreadcrumbItem } from "@/ui/Breadcrumb/Breadcrumb";
 import { Button } from "@/ui/Button/Button";
 import { Cascader, type CascaderOption, type CascaderProps } from "@/ui/Cascader/Cascader";
@@ -506,6 +507,17 @@ const CHART_SAMPLES: Record<string, unknown> = {
     { name: "AI Plan", values: [0, 0, 38, 70, 74, 66, 60, 72, 68, 70, 75, 68, 62, 70, 66, 64, 72, 5, 0, 0, 0], intent: "cyan" },
     { name: "Top-up", values: [...Array(17).fill(0), 55, 38, 41, 42], intent: "orange" },
   ],
+  // Clickable categories: the same month of credits by day and rolled up by week, so a pick can be a day or a week.
+  "{pickDays}": ["Oct 9", "Oct 10", "Oct 11", "Oct 12", "Oct 13", "Oct 14", "Oct 15", "Oct 16", "Oct 17", "Oct 18", "Oct 19"],
+  "{pickCredits}": [
+    { name: "Free credits", values: [40, 36, 12, 0, 0, 0, 0, 0, 0, 0, 0], intent: "green" },
+    { name: "AI plan", values: [0, 0, 24, 38, 72, 18, 9, 44, 51, 47, 39], intent: "cyan" },
+  ],
+  "{pickWeeks}": ["Sep 22", "Sep 29", "Oct 6", "Oct 13", "Oct 20"],
+  "{pickWeekCredits}": [
+    { name: "Free credits", values: [210, 154, 88, 0, 0], intent: "green" },
+    { name: "AI plan", values: [0, 62, 147, 243, 186], intent: "cyan" },
+  ],
   "{weeks}": ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6", "Week 7"],
   "{statuses}": [
     { name: "Current", values: [600000, 550000, 240000, 230000, 60000, 20000, 20000], intent: "pink" },
@@ -826,7 +838,7 @@ export const registry: Record<string, Entry> = {
   },
   BarChart: {
     // Sample data swaps in for its {names}; a white panel like a page. Keyed so switching a control plays the motion again.
-    render: (p) => <div style={chartPanel}><BarChart key={JSON.stringify(p)} {...chartProps<BarChartProps>(p)} /></div>,
+    render: (p) => <div style={chartPanel}><BarChartPick key={JSON.stringify(p)} {...chartProps<BarChartProps>(p)} /></div>,
     preview: {
       label: "Invoices by status by time", title: "Invoices by status", subtitle: "Last 7 weeks, all accounts",
       categories: "{weeks}", series: "{statuses}", format: "currency", stacked: true,
@@ -837,7 +849,7 @@ export const registry: Record<string, Entry> = {
       bars === "ranked"
         ? { ...p, title: "Open balance by customer", subtitle: "Top six, this period", categories: "{customers}", series: "{balances}", orientation: "horizontal", stacked: false, highlight: [0, 5] }
         : p,
-    hint: "Switch the bars and the orientation. Ranked picks out the top and bottom bar in the highlight intent. Turn the title, stacked, values, grid, legend and animate on and off.",
+    hint: "Click a bar to pick that category, or focus the chart and press Enter; click it again or press Clear to let go. Switch the bars and the orientation. Ranked picks out the top and bottom bar in the highlight intent. Turn the title, stacked, values, grid, legend and animate on and off.",
     block: true,
     card: <div style={{ width: "100%" }}><BarChart label="Invoices by status" categories={["W1", "W2", "W3", "W4"]} series={[{ name: "Paid", values: [3, 5, 4, 6] }, { name: "Sent", values: [2, 2, 3, 2] }]} stacked showLegend={false} height={96} animate={false} /></div>,
   },

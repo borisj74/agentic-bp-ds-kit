@@ -44,6 +44,110 @@ describe("BarChart", () => {
     });
   });
 
+  describe("picking a category", () => {
+    it("does nothing without a handler, however selected is set", () => {
+      const { container } = render(<BarChart label="Credits by day" categories={days} series={balances} stacked selected={1} animate={false} />);
+      // A pick the screen cannot clear would be a trap, so selected alone draws nothing and nothing is clickable.
+      expect(container.querySelector("[data-selected]")).toBeNull();
+      expect(screen.queryByRole("button")).toBeNull();
+      expect(container.querySelectorAll("[style*='opacity']")).toHaveLength(0);
+    });
+
+    it("gives every category a hit area over its whole band, named and out of the tab order", () => {
+      render(<BarChart label="Credits by day" categories={days} series={balances} stacked animate={false} onSelectedChange={() => {}} />);
+      const hits = screen.getAllByRole("button");
+      expect(hits).toHaveLength(days.length);
+      // Sep 3 is 30 free credits and 40 of the plan.
+      expect(hits[2]).toHaveAccessibleName("Sep 3, 70, select");
+      hits.forEach((b) => expect(b).toHaveAttribute("tabindex", "-1"));
+      // Bands are even and together they cover the plot, so a bar worth a pixel is as easy to hit as a tall one.
+      const widths = hits.map((b) => Number.parseFloat((b as HTMLElement).style.width));
+      widths.forEach((w) => expect(w).toBeCloseTo(widths[0], 5));
+    });
+
+    it("picks a category on click and clears it when the picked one is clicked again", async () => {
+      const onSelectedChange = vi.fn();
+      const { rerender } = render(<BarChart label="Credits by day" categories={days} series={balances} stacked animate={false} onSelectedChange={onSelectedChange} />);
+      fireEvent.click(screen.getAllByRole("button")[2]);
+      expect(onSelectedChange).toHaveBeenLastCalledWith(2);
+
+      rerender(<BarChart label="Credits by day" categories={days} series={balances} stacked animate={false} selected={2} onSelectedChange={onSelectedChange} />);
+      expect(screen.getAllByRole("button")[2]).toHaveAttribute("aria-pressed", "true");
+      fireEvent.click(screen.getAllByRole("button")[2]);
+      expect(onSelectedChange).toHaveBeenLastCalledWith(null);
+    });
+
+    it("rings the picked category, steps the rest back and says the pick out loud", () => {
+      const { container } = render(<BarChart label="Credits by day" categories={days} series={balances} stacked animate={false} selected={2} onSelectedChange={() => {}} />);
+      expect(container.querySelector("[data-selected]")).not.toBeNull();
+      // The picked category keeps its colour; every other one is muted, and the pick does not rest on colour alone.
+      const muted = [...container.querySelectorAll("svg rect")].filter((r) => (r as SVGElement).style.opacity.includes("muted"));
+      expect(muted.length).toBeGreaterThan(0);
+      expect(within(container.querySelector("table")!).getByRole("rowheader", { name: "Sep 3 (selected)" })).toBeInTheDocument();
+
+      fireEvent.click(screen.getAllByRole("button")[3]);
+      expect(screen.getByRole("status")).toHaveTextContent("Sep 4 selected");
+    });
+
+    it("picks the focused category with Enter, and leaves the pick alone on Escape", () => {
+      const onSelectedChange = vi.fn();
+      const { container } = render(<BarChart label="Credits by day" categories={days} series={balances} stacked animate={false} selected={1} onSelectedChange={onSelectedChange} />);
+      const figure = container.querySelector("figure")!;
+      figure.focus();
+      fireEvent.keyDown(figure, { key: "Home" });
+      fireEvent.keyDown(figure, { key: "Enter" });
+      expect(onSelectedChange).toHaveBeenLastCalledWith(0);
+      // Escape is the tooltip's key, not the pick's: the pick belongs to the screen under the chart.
+      fireEvent.keyDown(figure, { key: "Escape" });
+      expect(onSelectedChange).toHaveBeenCalledTimes(1);
+      expect(container.querySelector("[data-selected]")).not.toBeNull();
+    });
+
+    it("does not answer Enter twice when a hit area has been clicked and keeps focus", () => {
+      const onSelectedChange = vi.fn();
+      render(<BarChart label="Credits by day" categories={days} series={balances} stacked animate={false} onSelectedChange={onSelectedChange} />);
+      const hit = screen.getAllByRole("button")[1];
+      fireEvent.click(hit);
+      expect(onSelectedChange).toHaveBeenCalledTimes(1);
+      // The browser turns Enter on a focused button into a click; the chart must not pick a second time from the
+      // same key, or the two would cancel out and the pick would never move.
+      hit.focus();
+      fireEvent.keyDown(hit, { key: "Enter", bubbles: true });
+      expect(onSelectedChange).toHaveBeenCalledTimes(1);
+    });
+
+    it("picks a category on a chart with two scales, a reference line, a marker and a forecast", () => {
+      const onSelectedChange = vi.fn();
+      const { container } = render(
+        <BarChart
+          label="Credits and calls" categories={days} animate={false}
+          series={[
+            { name: "Credits", values: [60, 50, 30, 20], projectedFrom: 3 },
+            { name: "API calls", values: [4200, 5100, 5600, 6300], axis: "end" },
+          ]}
+          referenceLines={[{ value: 55, label: "Limit" }]} marker={{ category: 2, label: "Today" }}
+          selected={1} onSelectedChange={onSelectedChange}
+        />,
+      );
+      expect(container.querySelector("[data-selected]")).not.toBeNull();
+      expect(container.querySelector("[data-reference]")).not.toBeNull();
+      expect(container.querySelector("[data-marker]")).not.toBeNull();
+      // The forecast keeps its own fade, so an unpicked forecast bar is still the lighter of the two.
+      const forecast = container.querySelector("[data-projected]") as SVGElement;
+      expect(forecast.style.fillOpacity).toContain("muted");
+      expect(forecast.style.opacity).toContain("muted");
+      fireEvent.click(screen.getAllByRole("button")[3]);
+      expect(onSelectedChange).toHaveBeenLastCalledWith(3);
+    });
+
+    it("rings the picked bar on a horizontal chart too", () => {
+      const { container } = render(<BarChart label="Credits by day" categories={days} series={balances} orientation="horizontal" stacked animate={false} selected={1} onSelectedChange={() => {}} />);
+      const ring = container.querySelector("[data-selected]")!;
+      // Horizontal bars run from the start, so the ring is wider than it is tall.
+      expect(Number(ring.getAttribute("width"))).toBeGreaterThan(Number(ring.getAttribute("height")));
+    });
+  });
+
   it("rounds only the outer ends of a stack", () => {
     const { container } = render(<BarChart label="Credits by day" categories={days} series={balances} stacked barWidth="thin" animate={false} />);
     const [free, plan] = [...container.querySelectorAll("svg g")].filter((g) => g.querySelector("path[data-bar]"));
