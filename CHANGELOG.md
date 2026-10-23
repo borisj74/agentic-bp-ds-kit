@@ -4,6 +4,14 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.1 — 2026-10-23
+
+### Added
+- BarChart: clickable categories — `selected`, `onSelectedChange`. Click a bar (anywhere in its band, so a day worth one pixel is as easy to hit as a spike) to pick that category, and click it again to let go; Enter or Space does the same on the focused category. The picked category keeps its full colour inside the kit selection ring with its tick label in semibold, and the rest step back, so a screen can pick a day and list who used the credits that day. The pick is controlled: a chart with no `onSelectedChange` draws exactly as before.
+
+### Fixed
+- DataGrid built each row's action list while the row was drawing, which read a ref during render. The list is names and icons now, and what each action does is looked up when it is used.
+
 ## v0.7.0 — 2026-10-21
 
 ### Breaking

@@ -73,6 +73,8 @@ export interface XYChartProps {
   emptyLabel?: string;
   referenceLines?: ChartReferenceLine[];
   marker?: ChartMarker;
+  selected?: number | null;
+  onSelectedChange?: (index: number | null) => void;
 }
 
 // Room around the plot: axis labels below, value labels past the bars, labels at the start (about 7px a character at 12px).
@@ -96,11 +98,13 @@ export function XYChart({
   kind, label, title, subtitle, showHeader = true, categories, series, orientation = "vertical", highlight, highlightIntent = "orange",
   stacked = false, barWidth = "wide", area = false, showPoints = false, showValues = false,
   showGrid = true, showLegend = true, legendPosition = "bottom", animate = true, format = "number", currency = "USD", height, emptyLabel = "No data for this range.",
-  referenceLines = [], marker,
+  referenceLines = [], marker, selected = null, onSelectedChange,
 }: XYChartProps) {
   const plotRef = useRef<HTMLDivElement>(null);
   const width = useWidth(plotRef);
   const [active, setActive] = useState<number | null>(null);
+  // What the live region last said, so a pick is heard without the tooltip having to be read out.
+  const [said, setSaid] = useState("");
 
   const n = categories.length;
   const horizontal = kind === "bar" && orientation === "horizontal";
@@ -111,6 +115,16 @@ export function XYChart({
   const list = series.map((sr, k) => ({ ...sr, intent: intentAt(k, sr.intent), ax: axisOf(sr.axis), vals: categories.map((_, i) => Math.max(sr.values[i] ?? 0, 0)) }));
   const short = formatter(format, currency, true);
   const full = formatter(format, currency, false);
+  // Categories are clickable only when a screen is listening: without the handler the chart draws exactly as before,
+  // selected and all, since a pick nothing can clear would be a trap.
+  const clickable = Boolean(onSelectedChange);
+  const chosen = clickable && selected !== null && selected >= 0 && selected < categories.length ? selected : null;
+  // Clicking the picked category again clears it, so the chart never holds a pick the screen cannot undo.
+  const choose = (i: number) => {
+    const next = chosen === i ? null : i;
+    onSelectedChange?.(next);
+    setSaid(next === null ? "Selection cleared" : `${categories[i]} selected`);
+  };
 
   if (!n || !list.length) {
     return <ChartFrame label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={false}><ChartEmpty label={emptyLabel} height={h} /></ChartFrame>;
@@ -183,7 +197,12 @@ export function XYChart({
   };
   const onKeyDown = (e: KeyboardEvent) => {
     const keys: Record<string, number> = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+    // Escape puts the tooltip away, as it always has; it leaves the pick alone, which belongs to the screen below.
     if (e.key === "Escape") { setActive(null); return; }
+    // A hit area that has been clicked keeps focus, and the browser turns Enter on a button into a click of its own,
+    // so the chart only answers the key when the focus is on the chart itself. Otherwise the two would cancel out.
+    const onHit = e.target instanceof Element && e.target.closest("button");
+    if (clickable && !onHit && (e.key === "Enter" || e.key === " ") && active !== null) { e.preventDefault(); choose(active); return; }
     if (e.key === "Home" || e.key === "End") { e.preventDefault(); setActive(e.key === "Home" ? 0 : n - 1); return; }
     if (!(e.key in keys)) return;
     e.preventDefault();
@@ -234,6 +253,9 @@ export function XYChart({
         const style = {
           animationDelay: `${i * 30}ms`, fill: picked.has(i) ? intentVar(highlightIntent) : undefined,
           fillOpacity: ahead ? "var(--opacity-muted)" : undefined,
+          // While one category is picked the rest step back. This multiplies with a forecast's own fade, so a
+          // forecast bar in an unpicked category still reads as the lighter of the two.
+          opacity: chosen !== null && i !== chosen ? "var(--opacity-muted)" : undefined,
         };
         const forecast = ahead ? { "data-projected": "" } : {};
         const className = horizontal ? s.growX : s.grow;
@@ -369,6 +391,17 @@ export function XYChart({
     </g>
   );
 
+  // The ring around the picked category: the whole stack from the baseline to the top of the tallest bar, with a
+  // little air, so it reads as one thing picked rather than one series.
+  const RING = 3;
+  const ringBox = (i: number) => {
+    const end = Math.max(...list.map((sr, k) => v(upper[k][i], sr.ax)) , horizontal ? x0 : 0);
+    return horizontal
+      ? { x: x0, y: c(i) - band / 2 - RING, width: Math.max(end - x0 + RING, 2), height: band + RING * 2 }
+      : { x: c(i) - band / 2 - RING, y: topAt(i) - RING, width: band + RING * 2, height: Math.max(y1 - topAt(i) + RING, 2) };
+  };
+  const ring = () => chosen !== null && <rect className={s.selection} data-selected="" rx={ROUND} {...ringBox(chosen)} />;
+
   const tip = active !== null && (() => {
     const end = Math.max(...upper.map((u) => u[active]));
     // Upright: the top of the tallest bar or point in the category, on whichever scale it reads.
@@ -408,14 +441,33 @@ export function XYChart({
             : <line className={s.crosshair} x1={c(active)} x2={c(active)} y1={y0} y2={y1} />)}
           {line && guides()}
           {kind === "bar" ? bars() : lines()}
+          {ring()}
           {!line && guides()}
           {marks()}
           {guideLabels()}
-          {categories.map((t, i) => i % every === 0 && (horizontal
-            ? <text key={t + i} className={s.tick} x={x0 - 12} y={c(i)} dy="0.35em" textAnchor="end">{catText(t)}</text>
-            : <text key={t + i} className={s.tick} x={c(i)} y={y1 + 18} textAnchor="middle">{t}</text>))}
+          {/* Labels thin out so they never overlap, but the picked one is always drawn: its heavier weight is half of
+              what says it is picked, and a hidden label says nothing. */}
+          {categories.map((t, i) => (i % every === 0 || i === chosen) && (horizontal
+            ? <text key={t + i} className={[s.tick, i === chosen ? s.tickSelected : ""].join(" ")} x={x0 - 12} y={c(i)} dy="0.35em" textAnchor="end">{catText(t)}</text>
+            : <text key={t + i} className={[s.tick, i === chosen ? s.tickSelected : ""].join(" ")} x={c(i)} y={y1 + 18} textAnchor="middle">{t}</text>))}
         </svg>
       )}
+      {clickable && width > 0 && categories.map((t, i) => {
+        const total = list.reduce((sum, sr) => sum + sr.vals[i], 0);
+        const box = horizontal
+          ? { left: x0, top: c(i) - step / 2, width: x1 - x0, height: step }
+          : { left: c(i) - step / 2, top: y0, width: step, height: y1 - y0 };
+        // The whole band, not the painted bar, so a category worth one pixel is still easy to hit. Out of the tab
+        // order on purpose: the chart itself is the one stop, and the arrow keys move through the categories.
+        return (
+          <button
+            key={t + i} type="button" className={s.hit} style={box} tabIndex={-1}
+            aria-pressed={chosen === i} onClick={() => choose(i)}
+          >
+            <span className={s.srOnly}>{`${t}, ${full(total)}, select`}</span>
+          </button>
+        );
+      })}
       {tip}
     </div>
   );
@@ -427,7 +479,11 @@ export function XYChart({
       onKeyDown={onKeyDown} onBlur={() => setActive(null)}
     >
       {legendPosition === "end" ? <div className={s.beside}>{plot}{keys}</div> : legendPosition === "top" ? <>{keys}{plot}</> : <>{plot}{keys}</>}
-      <SrTable caption={label} columns={list.map((sr) => sr.name)} rows={categories.map((t, i) => ({ head: t, cells: list.map((sr) => (projected(sr, i) ? `${full(sr.vals[i])} (projected)` : full(sr.vals[i]))) }))} />
+      <SrTable
+        caption={label} columns={list.map((sr) => sr.name)}
+        rows={categories.map((t, i) => ({ head: i === chosen ? `${t} (selected)` : t, cells: list.map((sr) => (projected(sr, i) ? `${full(sr.vals[i])} (projected)` : full(sr.vals[i]))) }))}
+      />
+      {clickable && <p className={s.srOnly} role="status" aria-live="polite">{said}</p>}
       {(refs.length > 0 || mark) && (
         <ul className={s.srOnly}>
           {refs.map((r) => <li key={`${r.label}${r.value}`}>{`${r.label}: ${refText(r)}`}</li>)}

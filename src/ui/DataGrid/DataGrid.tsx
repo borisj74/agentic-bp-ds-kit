@@ -205,13 +205,20 @@ export function DataGrid({
   // a grid turns on. Add and remove are the everyday pair, so Delete is the one that moves: behind the menu, and
   // then behind a confirmation, which suits the only one of the three that cannot be undone.
   const visibleActions = 2;
-  const rowActions = (row: DataGridRow, i: number) => {
+  // Names and icons only: what each one does is looked up when it is used, so nothing that reads a ref is built
+  // while the row is drawing.
+  const rowActions = (i: number) => {
     const all = [
-      canInsertRows && { id: "insert", label: `Add row below row ${i + 1}`, icon: "add", run: () => addRow(i) },
-      canRemoveRows && { id: "remove", label: `Remove row ${i + 1}`, icon: "close", run: () => removeRow(row.id) },
-      canDeleteRows && { id: "delete", label: `Delete row ${i + 1}`, icon: "delete", danger: true, run: () => setConfirming({ row, index: i + 1 }) },
-    ].filter(Boolean) as { id: string; label: string; icon: string; danger?: boolean; run: () => void }[];
+      canInsertRows && { id: "insert", label: `Add row below row ${i + 1}`, icon: "add" },
+      canRemoveRows && { id: "remove", label: `Remove row ${i + 1}`, icon: "close" },
+      canDeleteRows && { id: "delete", label: `Delete row ${i + 1}`, icon: "delete", danger: true },
+    ].filter(Boolean) as { id: string; label: string; icon: string; danger?: boolean }[];
     return { visible: all.slice(0, visibleActions), overflow: all.slice(visibleActions) };
+  };
+  const runAction = (id: string, row: DataGridRow, i: number) => {
+    if (id === "insert") addRow(i);
+    else if (id === "remove") removeRow(row.id);
+    else setConfirming({ row, index: i + 1 });
   };
   // What the confirmation says. Without wording from the screen it names the row by its first column, which is
   // the one that names each row, and says plainly that the record goes with it.
@@ -359,6 +366,7 @@ export function DataGrid({
               const content = details.get(row.id);
               const isOpen = hasDetail(row.id) && expanded.includes(row.id);
               const detailId = `${uid}-detail-${row.id}`;
+              const { visible, overflow } = rowActions(i);
               return (
               <Fragment key={row.id}>
               <tr>
@@ -376,27 +384,24 @@ export function DataGrid({
                 )}
                 {rowNumbers && <td className={[styles.index, stickyFirstColumn ? styles.stickyIndex : ""].join(" ")}>{i + 1}</td>}
                 {columns.map((c) => cell(row, i + 1, c))}
-                {actionColumn && (() => {
-                  const { visible, overflow } = rowActions(row, i);
-                  return (
-                    <td className={styles.actions}>
-                      <span className={styles.actionRow}>
-                        {visible.map((a) => (
-                          <Tooltip key={a.id} content={a.label} position="left">
-                            <Button emphasis="minimal" size="sm" iconOnly iconStart={a.icon} onClick={a.run}>{a.label}</Button>
-                          </Tooltip>
-                        ))}
-                        {overflow.length > 0 && (
-                          <Dropdown
-                            label={`More actions, row ${i + 1}`} iconOnly icon="more_vert" emphasis="minimal" size="sm" alignment="right"
-                            items={overflow.map((a) => ({ id: a.id, label: a.label, icon: a.icon, danger: a.danger }))}
-                            onSelect={(id) => overflow.find((a) => a.id === id)?.run()}
-                          />
-                        )}
-                      </span>
-                    </td>
-                  );
-                })()}
+                {actionColumn && (
+                  <td className={styles.actions}>
+                    <span className={styles.actionRow}>
+                      {visible.map((a) => (
+                        <Tooltip key={a.id} content={a.label} position="left">
+                          <Button emphasis="minimal" size="sm" iconOnly iconStart={a.icon} onClick={() => runAction(a.id, row, i)}>{a.label}</Button>
+                        </Tooltip>
+                      ))}
+                      {overflow.length > 0 && (
+                        <Dropdown
+                          label={`More actions, row ${i + 1}`} iconOnly icon="more_vert" emphasis="minimal" size="sm" alignment="right"
+                          items={overflow.map((a) => ({ id: a.id, label: a.label, icon: a.icon, danger: a.danger }))}
+                          onSelect={(id) => runAction(id, row, i)}
+                        />
+                      )}
+                    </span>
+                  </td>
+                )}
               </tr>
               {isOpen && (
                 <tr>

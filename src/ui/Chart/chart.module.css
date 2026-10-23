@@ -33,6 +33,19 @@
 .marker { stroke: var(--border-neutral-intense); stroke-width: var(--border-width-thin); }
 .markerLabel { font-size: var(--text-label-sm-size); font-weight: var(--text-label-sm-weight); fill: var(--text-neutral); }
 
+/* A picked category: the kit's own selection ring around the whole stack, and its tick label in the heavier weight,
+   so the pick never rests on colour alone. The categories not picked step back with --opacity-muted. */
+.selection { fill: none; stroke: var(--outline-brand); stroke-width: var(--border-width-medium); }
+.tickSelected { font-weight: var(--font-weight-semibold); }
+/* One hit area per category, over its whole band: a bar worth a pixel is as easy to click as a tall one. They are
+   out of the tab order — the chart is the single stop and the arrow keys walk the categories — so they carry a
+   name for a reader that explores by touch or by object. */
+.hit {
+  position: absolute; margin: 0; padding: 0; border: 0; background: transparent; cursor: pointer;
+  border-radius: var(--radius-small);
+}
+.hit:focus { outline: none; }
+
 .legend {
   display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-xsmall) var(--space-large);
   margin: 0; padding: 0; list-style: none; font-size: var(--font-size-xsmall); color: var(--text-neutral-strong);
