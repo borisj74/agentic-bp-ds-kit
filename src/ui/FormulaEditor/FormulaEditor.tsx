@@ -27,6 +27,8 @@ export interface FormulaEditorProps {
   functions?: FormulaFunction[];
   onCheckSyntax?: (value: string) => string | null | undefined;
   onCalculate?: (value: string) => string;
+  onAiAssist?: () => void;
+  aiActive?: boolean;
   name?: string;
   id?: string;
   required?: boolean;
@@ -88,7 +90,7 @@ type Result = { intent: "success" | "error"; text: string } | null;
 
 export function FormulaEditor({
   label, hideLabel = false, labelPosition: ownLabelPosition, size = "sm", placeholder, value, defaultValue, onChange,
-  fields, functions = DEFAULT_FUNCTIONS, onCheckSyntax, onCalculate, name, id,
+  fields, functions = DEFAULT_FUNCTIONS, onCheckSyntax, onCalculate, onAiAssist, aiActive = false, name, id,
   required = false, disabled = false, readOnly = false, invalid = false, error, hint, help,
 }: FormulaEditorProps) {
   const labelPosition = useLabelPosition(ownLabelPosition);
@@ -157,6 +159,11 @@ export function FormulaEditor({
       <div className={field.body}>
         <div className={[styles.editor, bad ? styles.invalid : "", disabled ? styles.disabled : ""].join(" ")}>
           <div className={styles.toolbar} role="group" aria-label={`${label} tools`}>
+            {/* First in the row: asking for a formula comes before writing one by hand. Toggled on while the
+                assistant is open for this field, so it is clear where an answer will land. */}
+            {onAiAssist && (
+              <Button size="sm" iconStart="auto_awesome" toggle={aiActive} disabled={locked} onClick={onAiAssist}>AI assistant</Button>
+            )}
             {fields && fields.length > 0 && (
               <Dropdown
                 label="Insert field" icon="add" size="sm" searchable searchPlaceholder="Search fields" disabled={locked}

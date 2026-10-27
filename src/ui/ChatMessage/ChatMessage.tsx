@@ -43,6 +43,7 @@ export interface ChatMessageProps {
   onAction?: (action: ChatMessageActionId) => void;
   suggestions?: ChatSuggestion[];
   onSuggestion?: (id: string, label: string) => void;
+  apply?: { label: string; onApply: () => void };
   menu?: DropdownEntry[];
   onMenuSelect?: (id: string) => void;
   person?: ChatMessagePerson;
@@ -76,7 +77,7 @@ function Disclosure({ section }: { section: ChatMessageSection }) {
 // with their avatar; the assistant answers on the left under the AI mark, with its workings, buttons and suggestions.
 export function ChatMessage({
   author, text, children, bubble, status, sections, actions, pressed = [], onAction,
-  suggestions, onSuggestion, menu, onMenuSelect, person, label,
+  suggestions, onSuggestion, apply, menu, onMenuSelect, person, label,
 }: ChatMessageProps) {
   const mine = author === "user";
   // Both sides speak in a bubble: grey for the person, brand faint for the assistant. Pass bubble false
@@ -116,6 +117,13 @@ export function ChatMessage({
           {/* The workings open under the bubble, not inside it. */}
           {sections && sections.length > 0 && (
             <div className={styles.sections}>{sections.map((s) => <Disclosure key={s.id} section={s} />)}</div>
+          )}
+          {/* One action that puts the answer to work where it was asked. It says what it does in words, so it goes
+              above the icon row rather than in it, and never while the answer is still being written. */}
+          {apply && !mine && !status && (
+            <div className={styles.apply}>
+              <Button size="sm" onClick={apply.onApply}>{apply.label}</Button>
+            </div>
           )}
           {suggestions && suggestions.length > 0 && (
             <div className={styles.suggestions}>

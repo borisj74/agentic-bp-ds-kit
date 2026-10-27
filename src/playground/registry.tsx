@@ -4,7 +4,7 @@ import { Callout } from "@/ui/Callout/Callout";
 import { AnchorNav, type AnchorNavProps } from "@/ui/AnchorNav/AnchorNav";
 import { APP_NAV, APP_NAV_END } from "@/patterns/AppShell/appNav";
 import type { ListDetailLayout } from "@/patterns/ListDetail/ListDetail";
-import { AppShellDemo, DashboardDemo, FormPageDemo, AccountFlowDemo, GuidedProcessDemo, GuidedProcessPageDemo, SettingsPageDemo, ListDetailDemo, type ListDetailVariant, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, CellTypesDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
+import { AppShellDemo, DashboardDemo, FormPageDemo, AccountFlowDemo, GuidedProcessDemo, GuidedProcessPageDemo, SettingsPageDemo, ListDetailDemo, type ListDetailVariant, ListPageDemo, RecordPageDemo, AlertDialogDemo, AnchorNavDemo, ChatComposerDemo, ChatHeaderDemo, ChatListDemo, ChatMessageDemo, ChatWindowDemo, FormulaEditorDemo, CHAT_GROUPS, PLAYBOOK_ITEMS, LegendDemo, AppHeaderDemo, ButtonFilterDemo, CellTreeDemo, CellTypesDemo, SkeletonDemo, StepperDemo, type SkeletonDemoLayout, ToolbarDemo, DensityDemo, DrawerDemo, DropdownMenuDemo, FormDemo, ModalDemo, ToastDemo, calculate, type DrawerDemoContent, type FormDemoContent, type ModalDemoContent } from "./demos";
 import { Density, type DensityValue } from "@/ui/Density/Density";
 import { AppHeader, type AppHeaderProps } from "@/ui/AppHeader/AppHeader";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -297,12 +297,14 @@ const CONDITIONS: DataGridRow[] = [
 const LINE_ITEM_COLUMNS: DataGridColumn[] = [
   { key: "product", header: "Product" },
   { key: "sku", header: "SKU", readOnly: true, hug: true },
+  // A date nobody can move: it reads as the kit writes a date, not as the ISO day it is stored as.
+  { key: "from", header: "Billed from", type: "date", readOnly: true, hug: true },
   { key: "qty", header: "Qty", type: "number", hug: true, setForAll: true },
   { key: "price", header: "Unit price", type: "number" },
 ];
 const LINE_ITEMS: DataGridRow[] = [
-  { id: "l1", product: "Premium support", sku: "SUP-100", qty: "1", price: "1200.00" },
-  { id: "l2", product: "Seat license", sku: "LIC-020", qty: "25", price: "40.00" },
+  { id: "l1", product: "Premium support", sku: "SUP-100", from: "2027-01-01", qty: "1", price: "1200.00" },
+  { id: "l2", product: "Seat license", sku: "LIC-020", from: "2027-01-01", qty: "25", price: "40.00" },
 ];
 // Dates and details: subscriptions with date cells, each opening to its rate bands in a nested grid.
 const TERM_COLUMNS: DataGridColumn[] = [
@@ -1193,14 +1195,16 @@ export const registry: Record<string, Entry> = {
   },
   ChatMessage: {
     // The stage runs a short conversation, so the vote, the menu and the suggestions all work.
-    render: ({ conversation, ...p }) => {
+    render: ({ conversation, apply: askApply, ...p }) => {
       const author = (p.author as "user" | "assistant") ?? "assistant";
-      if (conversation) return <ChatMessageDemo {...(p as unknown as ChatMessageProps)} />;
+      // apply="{insertFormula}" stands in for the screen that would write the answer into the field it is attached to.
+      const apply = askApply ? { label: "Insert into formula", onApply: () => {} } : undefined;
+      if (conversation) return <ChatMessageDemo {...(p as unknown as ChatMessageProps)} apply={apply} />;
       // One turn on its own: the person asks in a bubble, the assistant answers with its buttons.
       const sample = author === "user"
         ? { text: "How many accounts are inactive?", person: { name: "Ana Petrovic" }, menu: CHAT_TURN_MENU }
         : { text: "42 accounts have had no activity for 90 days or more.", suggestions: [{ id: "new", label: "Create a new account" }] };
-      return <div style={{ width: "100%", maxWidth: 460 }}><ChatMessage {...sample} {...(p as unknown as ChatMessageProps)} author={author} /></div>;
+      return <div style={{ width: "100%", maxWidth: 460 }}><ChatMessage {...sample} {...(p as unknown as ChatMessageProps)} apply={apply} author={author} /></div>;
     },
     preview: { author: "assistant" },
     hide: ["children", "sections", "actions", "pressed", "suggestions", "menu", "person", "label", "onAction", "onSuggestion", "onMenuSelect"],
@@ -1668,10 +1672,11 @@ export const registry: Record<string, Entry> = {
     ),
   },
   FormulaEditor: {
-    // onCalculate="{calculate}" in a contract example turns on the playground's sample Calculate. Keyed so defaults re-apply.
+    // onCalculate="{calculate}" in a contract example turns on the playground's sample Calculate. onAiAssist="{assist}"
+    // stands in for the screen that would open the assistant. Keyed so defaults re-apply.
     render: (p) => (
       <div style={{ width: p.labelPosition === "start" ? 840 : 720, maxWidth: "100%" }}>
-        <FormulaEditor key={JSON.stringify(p)} {...(p as unknown as FormulaEditorProps)} onCalculate={p.onCalculate ? calculate : undefined} />
+        <FormulaEditorDemo key={JSON.stringify(p)} {...(p as unknown as FormulaEditorProps)} onCalculate={p.onCalculate ? calculate : undefined} assist={Boolean(p.onAiAssist)} />
       </div>
     ),
     preview: {

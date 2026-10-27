@@ -2,7 +2,7 @@
   "name": "FormulaEditor",
   "path": "src/ui/FormulaEditor/FormulaEditor.tsx",
   "intent": "A monospace field for writing formulas and rules, with a toolbar that inserts fields, operators and functions and checks the syntax.",
-  "usage": "Use FormulaEditor for calculated fields, rules and validations. It is one form field: pass label, hint, error and help as props, same as Input, and it takes labelPosition from an enclosing Form. The toolbar inserts at the cursor. fields adds an Insert field menu that inserts {!Field.Id}; functions replaces the default function list. Check syntax runs onCheckSyntax, or a built-in bracket and quote check. onCalculate adds a Calculate button that shows its result under the field. See contracts/formulaeditor.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in.",
+  "usage": "Use FormulaEditor for calculated fields, rules and validations. It is one form field: pass label, hint, error and help as props, same as Input, and it takes labelPosition from an enclosing Form. The toolbar inserts at the cursor. fields adds an Insert field menu that inserts {!Field.Id}; functions replaces the default function list. Check syntax runs onCheckSyntax, or a built-in bracket and quote check. onCalculate adds a Calculate button that shows its result under the field. onAiAssist adds an AI assistant button at the front of the toolbar for a screen that can answer with a formula; aiActive shows it toggled on while the assistant is attached to this field. See contracts/formulaeditor.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in.",
   "props": {
     "label": {
       "type": "string",
@@ -63,6 +63,15 @@
       "type": "function",
       "note": "(value: string) => string. Adds a Calculate button; its return shows as Result: … under the field. Throw an Error to show a problem."
     },
+    "onAiAssist": {
+      "type": "function",
+      "note": "() => void. Giving it puts an AI assistant button first in the toolbar, before Insert field. Use it to open the kit ChatWindow in the AppShell assistant with this field attached, so people can ask for a formula instead of writing one. Without it the toolbar is what it always was."
+    },
+    "aiActive": {
+      "type": "boolean",
+      "default": false,
+      "note": "The assistant is open for this field: the AI assistant button shows toggle on, so it is clear which field the answer will land in. The screen owns it, since only it knows what the assistant is attached to."
+    },
     "name": {
       "type": "string"
     },
@@ -110,13 +119,15 @@
     "Do not use for prose or notes. Use Textarea.",
     "Do not use for one-line values. Use Input.",
     "Do not put page actions like Save in the toolbar. They belong in the Form actions.",
-    "Do not use raw hex."
+    "Do not use raw hex.",
+    "Do not build the assistant button beside the editor by hand. Pass onAiAssist, or the editor has to be detached to hold it."
   ],
   "a11y": [
     "A real label is tied to the formula by id. The toolbar is a group named {label} tools.",
     "Insert menus are kit DropdownMenus: arrow keys, type to search, Enter to insert. Focus returns to the formula at the cursor.",
     "Check syntax and Calculate results are announced through a status region and linked with aria-describedby. A problem sets aria-invalid.",
-    "Focus shows a 2px brand ring around the whole editor; red when invalid."
+    "Focus shows a 2px brand ring around the whole editor; red when invalid.",
+    "The AI assistant button is a kit Button named AI assistant; with aiActive it carries aria-pressed, so a reader hears the assistant is open for this field."
   ],
   "snippet": "<FormulaEditor\n  label=\"Discount formula\"\n  fields={fields}\n  onCalculate={calculate}\n/>",
   "examples": [
@@ -241,6 +252,34 @@
           "props": {
             "label": "Large",
             "size": "lg"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Ask the assistant",
+      "usage": "With onAiAssist the toolbar opens with an AI assistant button, before Insert field. Press it: it toggles on while the assistant is open for this field, which is how a screen shows where the answer will land. The screen opens the kit ChatWindow beside the page with this field attached.",
+      "items": [
+        {
+          "props": {
+            "label": "New rate formula",
+            "defaultValue": "{!Amount} * 1.05",
+            "hint": "Runs on every price step.",
+            "fields": [
+              {
+                "id": "Amount",
+                "label": "Amount"
+              },
+              {
+                "id": "Account.Discount",
+                "label": "Account discount"
+              },
+              {
+                "id": "Invoice.Quantity",
+                "label": "Quantity"
+              }
+            ],
+            "onAiAssist": "{assist}"
           }
         }
       ]
