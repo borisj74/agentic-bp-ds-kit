@@ -445,7 +445,7 @@ Props — `labelPosition`: `top` | `start` (default `top`)
 
 A monospace field for writing formulas and rules, with a toolbar that inserts fields, operators and functions and checks the syntax.
 
-Props — `hideLabel`: boolean; `labelPosition`: `top` | `start` (default `top`); `size`: `sm` | `md` | `lg` (default `sm`); `required`: boolean; `disabled`: boolean; `readOnly`: boolean; `invalid`: boolean
+Props — `hideLabel`: boolean; `labelPosition`: `top` | `start` (default `top`); `size`: `sm` | `md` | `lg` (default `sm`); `aiActive`: boolean; `required`: boolean; `disabled`: boolean; `readOnly`: boolean; `invalid`: boolean
 
 - Do not invent CodeEditor, ExpressionInput, a formula toolbar or a Textarea with buttons above it.
 - Do not use for prose or notes. Use Textarea.
