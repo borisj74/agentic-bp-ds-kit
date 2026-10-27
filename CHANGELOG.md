@@ -4,6 +4,15 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.2 — 2026-10-27
+
+### Added
+- FormulaEditor: `onAiAssist` and `aiActive` — an "AI assistant" button at the start of the toolbar that opens the screen's assistant, and stays toggled on while it is open. Hidden unless the screen passes `onAiAssist`, and disabled with the rest of the toolbar when the formula is locked.
+- ChatMessage: `apply` — `{ label, onApply }` draws one button under an assistant answer, so a reply that works out a formula can put it straight into the editor. Only on assistant messages, never on your own or on a status line.
+
+### Changed
+- DataGrid: a `date` column marked `readOnly` now reads as a date (`Jan 1, 2027`) instead of printing the raw `2027-01-01`. Same wording the editable date cell shows, from one place, so a grid that mixes read and edit rows reads the same down the column.
+
 ## v0.7.1 — 2026-10-23
 
 ### Added

@@ -45,7 +45,7 @@ describe("ChatMessage apply", () => {
     await user.click(button);
     expect(onApply).toHaveBeenCalledTimes(1);
     // The icon row is unchanged and still closes the message.
-    const buttons = [...container.querySelectorAll("button")];
+    const buttons = [...container.querySelectorAll<HTMLElement>("button")];
     expect(buttons.indexOf(button)).toBeLessThan(buttons.findIndex((b) => b.textContent?.includes("Copy")));
 
     // Nothing to apply while the answer is still being written.
