@@ -59,8 +59,9 @@
 .message { clear: both; margin: var(--space-xsmall) 0 0; font-size: var(--font-size-xsmall); line-height: var(--line-height-snug); color: var(--text-neutral-subtle); }
 .messageError { color: var(--text-danger-strong); }
 
-/* Card layout: bordered rows, radio on the right. */
-.card { width: 100%; max-width: 480px; }
+/* Card layout: bordered rows, radio on the right. The group stops at a form column (label and cards together), so
+   with a start label the cards keep the field width a field keeps. */
+.card { width: 100%; max-width: var(--layout-column-max); }
 .card .options { gap: var(--space-xsmall); }
 .card .option {
   display: flex; justify-content: space-between; gap: var(--space-medium); box-sizing: border-box; width: 100%;

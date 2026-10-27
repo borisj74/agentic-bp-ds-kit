@@ -4,6 +4,11 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## Unreleased
+
+### Changed
+- RadioGroup: a card group stops at `--layout-column-max` (554px) instead of a fixed 480px. With a start label the cards are 308 wide again, the width a field keeps beside its label since v0.5.3; before, they had shrunk to 234.
+
 ## v0.7.2 — 2026-10-27
 
 ### Added
