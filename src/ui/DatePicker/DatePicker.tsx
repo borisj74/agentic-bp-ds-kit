@@ -68,7 +68,9 @@ const weeksOf = (view: Date) => {
   const start = addDays(view, -mondayIndex(view));
   return Array.from({ length: 6 }, (_, w) => Array.from({ length: 7 }, (_, i) => addDays(start, w * 7 + i)));
 };
-const short = (s?: string | null) => parse(s)?.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) ?? "";
+// How the kit writes a date, anywhere one is read rather than picked: Aug 1, 2026.
+export const formatDate = (s?: string | null) => parse(s)?.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) ?? "";
+const short = formatDate;
 const longName = (d: Date) => d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 const monthLabel = (d: Date) => d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
 const monthName = (month: number) => new Date(2000, month, 1).toLocaleDateString("en-US", { month: "long" });

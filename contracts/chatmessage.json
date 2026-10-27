@@ -2,7 +2,7 @@
   "name": "ChatMessage",
   "path": "src/ui/ChatMessage/ChatMessage.tsx",
   "intent": "One turn in a chat with the assistant: what the person asked, or what the assistant answered, with its workings, buttons and suggestions.",
-  "usage": "Use ChatMessage for each turn in an assistant panel. It is one component: pass author user or assistant. A person's turn sits on the right in a grey bubble with their avatar, and can carry a More menu for Edit and Copy. The assistant answers on the left under the AI mark, in a brand bubble of its own; pass bubble false for a long answer that should run as plain text down the panel. status shows the bubble glowing while it works, like Analyzing your request. sections opens its workings, like Reasoning 1 and Tool References 2. actions draws the row of buttons at the very bottom of an answer (copy, good work, needs work, share, read aloud), after the workings and the suggestions, never above the answer, and pressed keeps the one that was picked lit. suggestions writes what to ask next, each one a kit Button that sends itself, lined up on the left under the answer. See contracts/chatmessage.json for the full contract.",
+  "usage": "Use ChatMessage for each turn in an assistant panel. It is one component: pass author user or assistant. A person's turn sits on the right in a grey bubble with their avatar, and can carry a More menu for Edit and Copy. The assistant answers on the left under the AI mark, in a brand bubble of its own; pass bubble false for a long answer that should run as plain text down the panel. status shows the bubble glowing while it works, like Analyzing your request. sections opens its workings, like Reasoning 1 and Tool References 2. actions draws the row of buttons at the very bottom of an answer (copy, good work, needs work, share, read aloud), after the workings and the suggestions, never above the answer, and pressed keeps the one that was picked lit. suggestions writes what to ask next, each one a kit Button that sends itself, lined up on the left under the answer. apply adds one action under an assistant answer that uses it where it was asked, like Insert into formula writing a suggested formula into the field the assistant is attached to. See contracts/chatmessage.json for the full contract.",
   "props": {
     "author": {
       "enum": [
@@ -63,6 +63,10 @@
       "type": "(id: string, label: string) => void",
       "note": "A suggestion was picked. Send it as the next message."
     },
+    "apply": {
+      "type": "{ label: string; onApply: () => void }",
+      "note": "One action that puts the answer to work where it was asked, like Insert into formula on a suggested formula. It is a kit Button under the answer, before the suggestions, and there is only ever one: the icon row (copy, good, needs work, share, read aloud) stays what it is. Only an assistant answer takes it."
+    },
     "menu": {
       "type": "DropdownMenuEntry[]",
       "note": "The More menu beside a person's turn, like Edit message and Copy message. It shows on hover or focus."
@@ -89,14 +93,16 @@
     "Do not use it for an alert or a system notice. Use Callout or Toast.",
     "Do not put more than one action row on a turn.",
     "Do not use Accordion for the workings; sections already opens them.",
-    "Do not use raw hex."
+    "Do not use raw hex.",
+    "Do not put the apply action in the icon row, and do not pass more than one. An answer that needs two things done is two answers."
   ],
   "a11y": [
     "Each turn is an article named after who said it, so a screen reader can move turn by turn.",
     "The workings are a button with aria-expanded and the panel under it.",
     "Every button under a turn says what it does, with a kit Tooltip on hover and focus.",
     "The More menu is reachable with Tab even before the turn is hovered.",
-    "The glow stops when the person prefers reduced motion."
+    "The glow stops when the person prefers reduced motion.",
+    "The apply action is a kit Button with its own words, so what it does is said outright rather than left to an icon."
   ],
   "snippet": "<ChatMessage author=\"assistant\" text=\"You have 42 inactive accounts.\" onAction={(a) => {}} />",
   "examples": [
@@ -132,6 +138,19 @@
           "props": {
             "author": "assistant",
             "status": "Compiling recommendations"
+          }
+        }
+      ]
+    },
+    {
+      "title": "An answer you can use",
+      "usage": "apply puts one action under the answer, named for what it does: Insert into formula writes the suggested formula into the field the assistant is attached to. It sits above the icon row, which stays copy, good, needs work, share and read aloud.",
+      "items": [
+        {
+          "props": {
+            "author": "assistant",
+            "text": "Try {!Amount} * (1 + {!Account.Uplift}) for the second year, so the step follows the account uplift instead of a fixed rate.",
+            "apply": "{insertFormula}"
           }
         }
       ]

@@ -38,6 +38,7 @@ import { Density, type DensityValue } from "@/ui/Density/Density";
 import { Drawer, type DrawerProps } from "@/ui/Drawer/Drawer";
 import { Dropdown, type DropdownProps } from "@/ui/Dropdown/Dropdown";
 import { Form, type FormColumns, type FormLabelPosition, type FormProps } from "@/ui/Form/Form";
+import { FormulaEditor, type FormulaEditorProps } from "@/ui/FormulaEditor/FormulaEditor";
 import { FormDisplay } from "@/ui/FormDisplay/FormDisplay";
 import { Input } from "@/ui/Input/Input";
 import { BarChart } from "@/ui/BarChart/BarChart";
@@ -663,6 +664,21 @@ export function ChatMessageDemo(p: Omit<ChatMessageProps, "author">) {
         sections={CHAT_SECTIONS} suggestions={CHAT_SUGGESTIONS} pressed={vote} onAction={act} onSuggestion={(_, labelText) => setSaid(`Asked: ${labelText}`)}
       />
       {said && <p style={{ margin: 0, fontSize: "var(--font-size-xsmall)", color: "var(--text-neutral)" }}>{said}</p>}
+    </div>
+  );
+}
+
+// Playground harness: the real FormulaEditor with a stand-in for the screen that would open the assistant, so the
+// AI assistant button toggles the way it does in a product. Not a kit piece.
+export function FormulaEditorDemo({ assist, ...p }: FormulaEditorProps & { assist?: boolean }) {
+  const [open, setOpen] = useState(false);
+  if (!assist) return <FormulaEditor {...p} />;
+  return (
+    <div style={{ display: "grid", gap: "var(--space-small)" }}>
+      <FormulaEditor {...p} aiActive={open} onAiAssist={() => setOpen(!open)} />
+      <p style={{ margin: 0, fontSize: "var(--font-size-xsmall)", color: "var(--text-neutral)" }}>
+        {open ? `Assistant open, with ${p.label} attached. A screen opens the kit ChatWindow here.` : "Ask the assistant for a formula instead of writing one."}
+      </p>
     </div>
   );
 }

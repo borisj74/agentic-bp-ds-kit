@@ -52,6 +52,7 @@
 .actions { display: flex; align-items: center; gap: var(--space-xsmall); }
 
 /* Suggestions: what to ask next, each one a kit Button that sends itself. */
+.apply { display: flex; }
 .suggestions { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-xsmall); }
 
 /* The person's More menu: quiet until the message is hovered or something in it has focus. */

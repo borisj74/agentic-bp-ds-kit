@@ -3,7 +3,7 @@ import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState, type CSS
 import { AlertDialog } from "../AlertDialog/AlertDialog";
 import { Button } from "../Button/Button";
 import { Count } from "../Count/Count";
-import { DatePicker } from "../DatePicker/DatePicker";
+import { DatePicker, formatDate } from "../DatePicker/DatePicker";
 import { Dropdown } from "../Dropdown/Dropdown";
 import { FormulaEditor, type FormulaField } from "../FormulaEditor/FormulaEditor";
 import { HeaderCell, type HeaderCellLine } from "../HeaderCell/HeaderCell";
@@ -278,7 +278,10 @@ export function DataGrid({
         </span>
       );
     } else if (col.readOnly) {
-      body = <span className={[styles.value, type === "formula" ? styles.mono : ""].join(" ")}>{value}</span>;
+      // A date is stored as an ISO day but read as the kit writes one, so a column people cannot change does not
+      // read as code sitting next to the pickers in the same grid.
+      const shown = type === "date" ? formatDate(value) : value;
+      body = <span className={[styles.value, type === "formula" ? styles.mono : ""].join(" ")}>{shown}</span>;
     } else if (type === "select") {
       // Always a kit Select, like the Figma cell with its arrow button.
       body = (
