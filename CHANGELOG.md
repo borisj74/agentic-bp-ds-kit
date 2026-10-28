@@ -6,6 +6,9 @@ Releases marked **Breaking** rename or remove something, or change how a piece b
 
 ## Unreleased
 
+### Added
+- Catalog: BarChart example "Two scales" — credits on the start scale and API requests with their Request limit on a second scale at the end (`axis: "end"`, since v0.6.1), the first example to show it.
+
 ### Changed
 - RadioGroup: a card group stops at `--layout-column-max` (554px) instead of a fixed 480px. With a start label the cards are 308 wide again, the width a field keeps beside its label since v0.5.3; before, they had shrunk to 234.
 

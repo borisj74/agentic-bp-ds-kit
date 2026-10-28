@@ -548,6 +548,13 @@ const CHART_SAMPLES: Record<string, unknown> = {
   }],
   "{grantSteps}": [{ value: 1150, label: "Grant", intent: "red", values: [...Array(17).fill(1150), 1350, 1350, 1550, 1550, ...Array(9).fill(1750)] }],
   "{grantToday}": { category: 22, label: "Today" },
+  // Credits beside API requests, a unit a thousand times bigger: requests and their daily limit read on the end scale.
+  "{twoScaleMonths}": ["Apr", "May", "Jun", "Jul", "Aug", "Sep"],
+  "{twoScaleSeries}": [
+    { name: "Credits used", intent: "purple", values: [1200, 1450, 1380, 1720, 1900, 2150] },
+    { name: "API requests", intent: "cyan", axis: "end", values: [48000, 61000, 57000, 72000, 84000, 93000] },
+  ],
+  "{twoScaleLimit}": [{ value: 100000, label: "Request limit", intent: "red", axis: "end" }],
   "{paymentShare}": [
     { label: "Card", value: 55 }, { label: "ACH", value: 29 }, { label: "Wire", value: 13 }, { label: "Check", value: 3 },
   ],

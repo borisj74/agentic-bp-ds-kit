@@ -283,6 +283,20 @@
           }
         }
       ]
+    },
+    {
+      "title": "Two scales",
+      "usage": "Credits on the start scale and API requests, a unit a thousand times bigger, on a second scale at the end: axis end on the series and on its Request limit line. The end scale shares the start scale's grid lines, and the two series sit side by side.",
+      "items": [
+        {
+          "props": {
+            "label": "Credits and API requests by month",
+            "categories": "{twoScaleMonths}",
+            "series": "{twoScaleSeries}",
+            "referenceLines": "{twoScaleLimit}"
+          }
+        }
+      ]
     }
   ]
 }
