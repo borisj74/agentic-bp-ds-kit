@@ -4,7 +4,7 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
-## Unreleased
+## v0.7.3 — 2026-10-28
 
 ### Added
 - Catalog: BarChart example "Two scales" — credits on the start scale and API requests with their Request limit on a second scale at the end (`axis: "end"`, since v0.6.1), the first example to show it.
