@@ -91,13 +91,13 @@
     "Do not put search or filters in the table. Use a Toolbar above it.",
     "Do not use raw hex.",
     "Do not wrap it in your own scrolling box or set a width on it to make it fit a phone. It scrolls sideways and freezes its first column on its own.",
-    "Do not force a wide table into a narrow column by letting values break mid-word. Give it the room, let it scroll sideways in its own box, or give a long-name column a maxWidth so it ends with an ellipsis."
+    "Do not force a wide table into a narrow column by letting values break mid-word. Give it the room, let the page scroll sideways, or give a long-name column a maxWidth so it ends with an ellipsis."
   ],
   "a11y": [
     "A native table: caption, th scope=col headers (kit HeaderCell) and td cells. A column with no header, like row actions, gets a plain cell in the header row instead of an empty header.",
     "Row checkboxes are named Select plus the row label; the header one is Select all rows and is mixed when only some rows are selected. Selected rows set aria-selected.",
     "The empty message is a real cell spanning the columns, so screen readers read it in place.",
-    "On a narrow box the sideways scroll is the table's own box, so the page never scrolls sideways and the frozen first column keeps the row's name in view.",
+    "On a narrow page a wide table makes the page scroll sideways, and the frozen first column keeps the row's name in view.",
     "A table wider than its box scrolls sideways inside it; then the box is a focus stop named by caption (or Table), so the arrow keys scroll it (WCAG 2.1.1). When it fits, it adds no tab stop.",
     "A maxWidth column only cuts the value off on screen: the whole text stays in the cell for screen readers, and the cell's title shows it on hover.",
     "An opensDetail cell's Count button is named N more, row 2, with aria-expanded and aria-controls pointing at the open detail, a group named Details, row 2. Clicking it never selects or picks the row."

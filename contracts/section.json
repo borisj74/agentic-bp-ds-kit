@@ -92,7 +92,7 @@
     "Do not put a Section around a Form's own sections. Form has sections.",
     "Do not add outer padding, margin, or gap on Section for page inset or between-section rhythm. The page uses `.layout-content` (or equivalent layout class); read contracts/layout.json.",
     "Do not invent a padded Section cousin or wrapper for spacing. Use layout classes.",
-    "Do not build a grid of FormDisplays or fields by hand, and do not stretch columns to fill a wide page. Use columns; it caps each column at 480px.",
+    "Do not build a grid of FormDisplays or fields by hand, and do not stretch columns to fill a wide page. Use columns; it caps each column at 554px.",
     "Do not use more than 3 columns, even on a 2560px or wider screen.",
     "Do not use raw hex."
   ],
@@ -161,7 +161,7 @@
     },
     {
       "title": "Columns",
-      "usage": "columns puts FormDisplay rows side by side, left to right. Each column stops at 480px and the block stays at the start, so a wide page leaves the space on the right empty; the header line keeps the full width.",
+      "usage": "columns puts FormDisplay rows side by side, left to right. Each column stops at 554px and the block stays at the start, so a wide page leaves the space on the right empty; the header line keeps the full width.",
       "items": [
         {
           "caption": "Two columns",
