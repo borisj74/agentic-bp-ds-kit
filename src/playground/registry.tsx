@@ -560,7 +560,7 @@ const CHART_SAMPLES: Record<string, unknown> = {
     name: "Credits used", intent: "purple", projectedFrom: 23,
     values: [62, 120, 188, 258, 332, 398, 458, 530, 598, 668, 743, 811, 873, 943, 1009, 1073, 1150, 1222, 1300, 1380, 1462, 1552, 1595, 1683, 1771, 1859, 1947, 2035, 2123, 2211],
   }],
-  "{grantSteps}": [{ value: 1150, label: "Grant", intent: "red", values: [...Array(17).fill(1150), 1350, 1350, 1550, 1550, ...Array(9).fill(1750)] }],
+  "{grantSteps}": [{ value: 1150, label: "Grant", intent: "red", values: [...Array(17).fill(1150), 1350, 1350, 1550, 1550, ...Array(9).fill(1750)], note: { at: 17, label: "Top-up Sep 18 · granted 1,350" } }],
   "{grantToday}": { category: 22, label: "Today" },
   // Credits beside API requests, a unit a thousand times bigger: requests and their daily limit read on the end scale.
   "{twoScaleMonths}": ["Apr", "May", "Jun", "Jul", "Aug", "Sep"],
