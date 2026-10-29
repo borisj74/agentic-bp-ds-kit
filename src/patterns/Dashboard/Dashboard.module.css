@@ -33,6 +33,13 @@
   margin-block-end: calc(-1 * var(--space-xxsmall));
 }
 
+/* When the numbers were read: one line under the bar, at the page's left edge. The column gap is the section
+   rhythm, and this line belongs to the bar above it, so it pulls back to sit 16px under it. */
+.meta {
+  margin: calc(var(--space-medium) - var(--layout-gutter-lg)) 0 0; min-width: 0;
+  font-size: var(--font-size-small); line-height: var(--line-height-snug); color: var(--text-neutral);
+}
+
 .name { margin: 0; min-width: 0; color: var(--text-neutral-intense); }
 
 /* The blocks that stand in for the groups while the numbers load. */

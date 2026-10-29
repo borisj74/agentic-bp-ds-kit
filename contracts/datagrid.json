@@ -2,7 +2,7 @@
   "name": "DataGrid",
   "path": "src/ui/DataGrid/DataGrid.tsx",
   "intent": "An editable table: people click a cell to add or change its content, like rule conditions, line items or mappings.",
-  "usage": "Use DataGrid when people enter or change data in rows, not just read it. It is one component: pass columns and rows as data. Each column has a type: text and number cells edit in place with a kit Input, select cells are a kit Select, formula cells open a kit FormulaEditor in the cell, date cells are a kit DatePicker, and readOnly columns only show. Click a cell or press Enter to edit; Enter or leaving the cell saves, Escape cancels, Tab moves to the next cell. rowNumbers adds a # column. canAddRows adds an Add row button under the grid; canInsertRows, canRemoveRows and canDeleteRows each add a button to the action column at the end of every row, in that order: + adds an empty row under this one, X takes the row out of this grid, and the trash deletes the record everywhere it is used. Two stand on the row and any after that go in a More menu at the end, so with all three on, Delete is in the menu. Keep remove and delete apart: a row people only meant to take off a quote is removed, not deleted. Delete asks first in a kit AlertDialog and only then calls onDeleteRow. Columns are at least 160 wide unless they hug. The first column (and #) stays pinned when the grid scrolls sideways. setForAll on a column adds a Set for all menu under its title. detail makes rows expandable, with settings or sub-rows under each row. Inside a Form with columns, the grid spans the row, and with start labels it starts at the section's edge, since its column headers stand in for a label. For read-only lists use Table. See contracts/datagrid.json for the full contract.",
+  "usage": "Use DataGrid when people enter or change data in rows, not just read it. It is one component: pass columns and rows as data. Each column has a type: text and number cells edit in place with a kit Input, select cells are a kit Select, formula cells open a kit FormulaEditor in the cell, date cells are a kit DatePicker, and readOnly columns only show. Click a cell or press Enter to edit; Enter or leaving the cell saves, Escape cancels, Tab moves to the next cell. rowNumbers adds a # column. canAddRows adds an Add row button under the grid; canInsertRows, canRemoveRows and canDeleteRows each add a button to the action column at the end of every row, in that order: + adds an empty row under this one, X takes the row out of this grid, and the trash deletes the record everywhere it is used. Two stand on the row and any after that go in a More menu at the end, so with all three on, Delete is in the menu. Keep remove and delete apart: a row people only meant to take off a quote is removed, not deleted. Delete asks first in a kit AlertDialog and only then calls onDeleteRow. actionsFor picks, row by row, which of those a row shows, so a saved row can carry the trash and a row added since the X. selectable adds a checkbox column at the start, with select-all in the header, for actions on several rows at once. Columns are at least 160 wide unless they hug. The first column (and #) stays pinned when the grid scrolls sideways. setForAll on a column adds a Set for all menu under its title. detail makes rows expandable, with settings or sub-rows under each row. Inside a Form with columns, the grid spans the row, and with start labels it starts at the section's edge, since its column headers stand in for a label. For read-only lists use Table. See contracts/datagrid.json for the full contract.",
   "props": {
     "columns": {
       "type": "DataGridColumn[]",
@@ -72,6 +72,31 @@
       "default": false,
       "note": "A + button in the action column at the end of each row that adds an empty row just under it. Named by a kit Tooltip, like Add row below row 2."
     },
+    "actionsFor": {
+      "type": "function",
+      "note": "(row: DataGridRow) => (\"insert\" | \"remove\" | \"delete\")[]. Which of the actions the grid turns on this row shows, like the trash on a row that holds a saved record and the X on a row added since. Without it every row shows them all."
+    },
+    "selectable": {
+      "type": "boolean",
+      "default": false,
+      "note": "Adds a checkbox column at the start, with a select-all in the header, for acting on several rows at once (like Add pricing on the ticked rates). It is pinned with the first column."
+    },
+    "selected": {
+      "type": "string[]",
+      "note": "Controlled ids of the ticked rows."
+    },
+    "defaultSelected": {
+      "type": "string[]",
+      "note": "Starting ticks when selected is not controlled."
+    },
+    "onSelectionChange": {
+      "type": "function",
+      "note": "(ids: string[]) => void. Select all ticks every row in the grid; clearing it unticks only them, so ticks on rows a filter hides stay."
+    },
+    "rowLabel": {
+      "type": "string",
+      "note": "Column key whose value names each row checkbox, like Select Gold plan. Defaults to the first column."
+    },
     "emptyLabel": {
       "type": "string",
       "default": "No rows yet.",
@@ -116,6 +141,7 @@
   "doNot": [
     "Do not use it to show data people only read. Use Table.",
     "Do not invent an EditableCell, GridRow or a table of loose inputs. Pass columns with a type.",
+    "Do not put loose checkboxes beside the grid to pick rows. Pass selectable.",
     "Do not build your own expand arrows or a second table under a row. Pass detail.",
     "Do not put a Form around each row. Save the rows from onRowsChange.",
     "Do not use the trash for a row people are only taking off this grid. X removes, the trash deletes the record for everyone.",
@@ -131,7 +157,8 @@
     "With detail, each row that has one starts with a kit Button named Show details, row 2 (Hide when open), with aria-expanded and aria-controls pointing at the open detail, a group named Details, row 2. A row whose detail is null has no button.",
     "A date cell is a kit DatePicker named by its column and row, like Start date, row 2.",
     "With an opensDetail column, the Count button is named N more, row 2, with aria-expanded and aria-controls pointing at the open detail.",
-    "Delete opens a kit AlertDialog: it holds focus until the person cancels or confirms, and Cancel has focus first."
+    "Delete opens a kit AlertDialog: it holds focus until the person cancels or confirms, and Cancel has focus first.",
+    "With selectable, each row starts with a kit Checkbox named Select and the row's first value (or rowLabel's), like Select Gold plan, and the header holds a select-all kit HeaderCell checkbox that reads mixed when only some rows are ticked. Ticked rows carry aria-selected."
   ],
   "snippet": "<DataGrid\n  label=\"Conditions\"\n  columns={[\n    { key: \"field\", header: \"Field\", type: \"formula\", fields: accountFields },\n    { key: \"condition\", header: \"Condition\", type: \"select\", options: conditions, width: \"200px\" },\n    { key: \"value\", header: \"Value\" },\n  ]}\n  rows={rules}\n  onRowsChange={setRules}\n  canAddRows\n  canRemoveRows\n/>",
   "examples": [
@@ -180,6 +207,28 @@
             "canRemoveRows": true,
             "canInsertRows": true,
             "canDeleteRows": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Pick rows",
+      "usage": "A bulk edit: tick rows to act on them together. Saved rows carry the trash; a row added since carries the X.",
+      "items": [
+        {
+          "props": {
+            "label": "Rates",
+            "columns": "{rateColumns}",
+            "defaultRows": "{rates}",
+            "rowNumbers": false,
+            "selectable": true,
+            "defaultSelected": [
+              "p1",
+              "p2"
+            ],
+            "canRemoveRows": true,
+            "canDeleteRows": true,
+            "actionsFor": "{rateActions}"
           }
         }
       ]

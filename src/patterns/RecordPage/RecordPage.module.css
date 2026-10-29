@@ -52,6 +52,11 @@
   top: calc(var(--table-stick-top, 0px) + var(--table-head-height, 0px));
   width: auto; margin-inline: calc(-1 * var(--layout-margin-md));
 }
+/* The shadow box is part of the band, not a block of its own, so it takes no section gutter above it, and what
+   follows the bar sits --space-medium under it, as a Toolbar sits over its table inside a Section. Without these
+   the bar's content landed two gutters down. */
+.toolbar + .scrollShadow { margin-block-start: calc(-1 * var(--layout-gutter-lg)); }
+.scrollShadow + :is(.summary, .details) { margin-block-start: calc(var(--space-medium) - var(--layout-gutter-lg)); }
 /* Clipped to its own top edge, with room left below: the blur is wider than the offset and would otherwise
    spill upward over the band. */
 .scrollShadow[data-stuck] { box-shadow: var(--elevation-card); clip-path: inset(0 0 -100vh 0); }

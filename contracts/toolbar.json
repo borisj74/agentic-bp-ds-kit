@@ -64,6 +64,15 @@
       "type": "function",
       "note": "(query: string) => void. Adds View all results for <query> as the last row. The field then shows the query."
     },
+    "field": {
+      "type": "ReactNode",
+      "note": "One more control after the search: a kit DatePicker or Select, size sm, with labelPosition start, like Effective on. For a value that narrows the rows and changes often enough to stay on the bar instead of in the filter bar."
+    },
+    "selectedCount": {
+      "type": "number",
+      "default": 0,
+      "note": "How many rows are ticked, shown as N selected at the start of the actions, so the buttons read as acting on them. 0 shows nothing. Pair it with a selectable Table or DataGrid in a bulk edit."
+    },
     "views": {
       "type": "ToolbarView[]",
       "itemShape": "{ id: string; label: string }",
@@ -113,6 +122,7 @@
     "A page with several filters: they live in the filter bar, not across the page."
   ],
   "doNot": [
+    "Do not put a loose label and field, or a count of ticked rows, beside the toolbar. Pass field and selectedCount.",
     "Do not invent a FilterBar, ListToolbar or a local row of controls above a table.",
     "Do not open the filter bar when the screen loads. It starts closed; people open it with Filters, and filterCount still says the list is narrowed.",
     "Do not put more than one strong brand Button in actions.",
@@ -194,6 +204,21 @@
             "searchGroups": "{quickLinks}",
             "onSearchViewAll": "{searchAll}",
             "buttons": "subtle"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Bulk edit",
+      "usage": "A bulk edit bar: Effective on stays on the bar after the search, and the count of ticked rows leads the actions.",
+      "items": [
+        {
+          "props": {
+            "filters": "{filterChips}",
+            "onSearchChange": "{setQuery}",
+            "field": true,
+            "selectedCount": 10,
+            "actions": "{actions}"
           }
         }
       ]

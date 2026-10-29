@@ -343,7 +343,21 @@ const MORE_ROWS: DataGridRow[] = [
 ];
 const moreDetail = (row: DataGridRow) => rateBandTable(row.product);
 const moreCount = (row: DataGridRow) => rateBandCount(row.product);
+// Pick rows: a bulk edit of saved rates and one added since. Saved rows carry the trash, the new one the X.
+const RATE_COLUMNS: DataGridColumn[] = [
+  { key: "product", header: "Product", readOnly: true },
+  { key: "start", header: "Start date", type: "date", hug: true },
+  { key: "end", header: "End date", type: "date", placeholder: "Select date", hug: true },
+  { key: "rate", header: "Rate", type: "number", readOnly: true },
+];
+const RATES: DataGridRow[] = [
+  { id: "p1", product: "Gold plan", start: "2026-01-01", end: "", rate: "$1,000.00", saved: "yes" },
+  { id: "p2", product: "Silver plan", start: "2026-01-01", end: "", rate: "$95.00", saved: "yes" },
+  { id: "p3", product: "Gold plan", start: "2026-06-01", end: "", rate: "$1,100.00", saved: "" },
+];
+const rateActions = (row: DataGridRow) => (row.saved ? ["delete" as const] : ["remove" as const]);
 const GRID_SAMPLES: Record<string, unknown> = {
+  "{rateColumns}": RATE_COLUMNS, "{rates}": RATES, "{rateActions}": rateActions,
   "{conditionColumns}": CONDITION_COLUMNS, "{conditions}": CONDITIONS, "{lineItemColumns}": LINE_ITEM_COLUMNS, "{lineItems}": LINE_ITEMS,
   "{termColumns}": TERM_COLUMNS, "{terms}": TERMS, "{bandDetail}": bandDetail,
   "{moreColumns}": MORE_COLUMNS, "{moreRows}": MORE_ROWS, "{moreDetail}": moreDetail, "{moreCount}": moreCount,

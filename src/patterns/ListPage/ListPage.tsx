@@ -10,6 +10,8 @@ export type ListPageState = "ready" | "loading" | "empty" | "error";
 export interface ListPageProps {
   children: ReactNode;
   toolbar?: ReactNode;
+  // When the rows were read, like Updated 09:45 UTC: one quiet line under the bar.
+  meta?: string;
   pagination?: ReactNode;
   bulk?: ReactNode;
   state?: ListPageState;
@@ -24,7 +26,7 @@ export interface ListPageProps {
 // Skeleton or Callout standing in for the rows while there are none. A blueprint only: it composes kit
 // pieces and keeps no state of its own. It sits in the AppShell page, which owns the page padding.
 export function ListPage({
-  children, toolbar, pagination, bulk, state = "ready", empty, error, onRetry, loadingRows = 6, label,
+  children, toolbar, meta, pagination, bulk, state = "ready", empty, error, onRetry, loadingRows = 6, label,
 }: ListPageProps) {
   const rows = state === "ready";
   // The bar over the rows is the band that holds at the top of the page: the shared plumbing measures it,
@@ -42,6 +44,9 @@ export function ListPage({
       {/* The scroll shadow under the pinned band, which the bar and the table cannot cast themselves: they keep
           the page's side padding and this reaches the page edges. */}
       <div ref={shadowRef} aria-hidden="true" data-scroll-shadow="" className={styles.scrollShadow} />
+      {/* When the rows were read, once for the whole page, under the bar that refreshes them. The rows and their
+          captions never repeat it, and it goes while the bulk bar is up, since nothing is being read then. */}
+      {meta && !bulk && <p className={styles.meta}>{meta}</p>}
       {/* The rows and their pages are one block: the page bar is the table's footer, flush under it. */}
       <div className={styles.body}>
         {rows && children}
