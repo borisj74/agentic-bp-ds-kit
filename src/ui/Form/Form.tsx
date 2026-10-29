@@ -9,6 +9,7 @@ import grid from "./columns.module.css";
 export type FormVariant = "plain" | "card";
 export type FormLabelPosition = FieldLabelPosition;
 export type FormColumns = FieldColumns;
+export type FormLabelWidth = "sm" | "md" | "lg";
 
 export interface FormSection {
   title: string;
@@ -28,6 +29,7 @@ export interface FormProps {
   description?: string;
   variant?: FormVariant;
   labelPosition?: FormLabelPosition;
+  labelWidth?: FormLabelWidth;
   columns?: FormColumns;
   children?: ReactNode;
   sections?: FormSection[];
@@ -38,7 +40,7 @@ export interface FormProps {
 }
 
 export function Form({
-  title, description, variant = "plain", labelPosition: ownLabelPosition, columns: ownColumns, children, sections, actions, error, onSubmit, id,
+  title, description, variant = "plain", labelPosition: ownLabelPosition, labelWidth = "md", columns: ownColumns, children, sections, actions, error, onSubmit, id,
 }: FormProps) {
   const base = useId();
   const titleId = `${base}-title`;
@@ -54,9 +56,13 @@ export function Form({
     onSubmit?.(new FormData(e.currentTarget));
   };
 
-  const cls = [styles.form, styles[variant], labelPosition === "start" ? styles.start : ""];
+  // The label column only exists with start labels, so labelWidth is only read there. md is the kit's 234 and
+  // needs no class; the data attribute lets the fields and the columns move their breakpoints with the column.
+  const startLabels = labelPosition === "start";
+  const width = startLabels && labelWidth !== "md" ? labelWidth : undefined;
+  const cls = [styles.form, styles[variant], startLabels ? styles.start : "", width ? styles[width === "sm" ? "widthSm" : "widthLg"] : ""];
   // Set columns cap each column at --layout-column-max; unset, the fields fill the form.
-  const fields = [styles.fields, ...(columns ? [grid.grid, grid[["", "one", "two", "three"][columns]], labelPosition === "start" ? grid.start : ""] : [])].join(" ");
+  const fields = [styles.fields, ...(columns ? [grid.grid, grid[["", "one", "two", "three"][columns]], startLabels ? grid.start : ""] : [])].join(" ");
   return (
     // Fields inside take the Form's labelPosition unless they set their own. The page's columns stop here: the
     // Form lays its own fields out, so the Sections it titles them with take none.
@@ -64,6 +70,7 @@ export function Form({
     <form
       id={id}
       className={cls.join(" ")}
+      data-label-width={width}
       aria-labelledby={title ? titleId : undefined}
       aria-describedby={description ? descriptionId : undefined}
       onSubmit={submit}

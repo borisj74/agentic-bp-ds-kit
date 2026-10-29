@@ -21,6 +21,14 @@
 .start .fields > :not([data-label="start"]) { margin-inline-start: calc(var(--input-label-width) + var(--space-small)); }
 /* Once the fields put their label on top (under 554px), there is no column to line up with. */
 @container (max-width: 554px) { .start .fields > :not([data-label="start"]) { margin-inline-start: 0; } }
+/* labelWidth moves that turn with the column: a form keeps its labels beside the fields until the label column
+   plus a 308 field no longer fit, so sm holds on to 460 and lg gives up at 640. */
+@container (min-width: 461px) and (max-width: 554px) {
+  .widthSm.start .fields > :not([data-label="start"]) { margin-inline-start: calc(var(--input-label-width) + var(--space-small)); }
+}
+@container (min-width: 555px) and (max-width: 640px) {
+  .widthLg.start .fields > :not([data-label="start"]) { margin-inline-start: 0; }
+}
 /* A DataGrid, like a list of rate bands, has its own column headers instead of a label, so it starts at the
    section's edge, under its title, rather than past the label column. */
 .start .fields > [data-data-grid] { margin-inline-start: 0; }
@@ -40,3 +48,8 @@
   padding: var(--space-small) var(--space-medium);
   background: var(--bg-neutral-faint); border-top: var(--border-width-thin) solid var(--border-neutral-faint);
 }
+
+/* Start-label column width. md is the kit's 234 and sets nothing. Each step takes the field column with it, so the
+   field beside the label stays 308 whichever column the form picks. */
+.widthSm { --input-label-width: var(--input-label-width-sm); --layout-column-max: var(--layout-column-max-sm); }
+.widthLg { --input-label-width: var(--input-label-width-lg); --layout-column-max: var(--layout-column-max-lg); }

@@ -29,8 +29,11 @@ grid/breakpoint/2xl|1920px
 layout/sidebar|224px
 layout/rail|352px
 layout/metrics-min|192px
-# K2: the widest one column of a record or form view gets: a 160 start label, a 12 gap and a 308 field.
+# K2: the widest one column of a record or form view gets: a start label, a 12 gap and a 308 field. The three
+# steps match the three start-label columns below, so the field stays 308 whichever label column a Form picks.
+layout/column-max/sm|460px
 layout/column-max|554px
+layout/column-max/lg|640px
 layout/gutter/sm|{grid/gutter/sm}
 layout/gutter/md|{grid/gutter/md}
 layout/gutter/lg|{grid/gutter/lg}
@@ -106,8 +109,11 @@ menu-item/height|{ref/size/800}
 menu-item/tile|{ref/size/900}
 
 # Input (Figma .form-field / label 3196:28121): start labels sit in their own column, 234 wide as in the product, so
-# labels as long as View Recent Invoices or Account Ledger Number stay on one line.
+# labels as long as View Recent Invoices or Account Ledger Number stay on one line. A Form can pick a narrower or
+# wider column with labelWidth: sm for forms of short labels (Email, Status), lg where the names run long.
+input/label-width/sm|140px
 input/label-width|234px
+input/label-width/lg|320px
 
 # not in Figma: the order things that hold still on a page stack in, from the rows up. A frozen first column
 # sits over the rows beside it; the column names sit over the rows under them; a frozen name cell is both at

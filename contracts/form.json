@@ -2,7 +2,7 @@
   "name": "Form",
   "path": "src/ui/Form/Form.tsx",
   "intent": "One form: an optional title, kit fields (or titled sections of them) and the actions that save it.",
-  "usage": "Use Form to wrap kit fields (Input, Textarea, Select, DatePicker, Lookup, Cascader, FormulaEditor, Checkbox, RadioGroup, Switch) that save together. Read-only values go in FormDisplay rows; back-to-back rows sit flush as one list. Pass the fields as children, or as sections when they fall into groups like Company and Billing; each section is a titled group. labelPosition=\"start\" puts every field's label in a column at the beginning; columns={2} puts fields side by side, and columns={3} puts them in threes on a wide page. Once columns is set (1, 2 or 3), each column stops at 554px (--layout-column-max) and the fields stay at the start, so a wide page leaves the space on the right empty instead of stretching the fields; with columns unset, the fields fill the form, as in a Modal or Drawer. Inside a FormPage the Form takes the page's columns unless it sets its own. A long form of groups — a create page — takes sections with collapsible, and the save can sit outside the form: give the Form an id and the Button type=\"submit\" with form set to it, so one press still saves one form. actions holds kit Buttons: subtle first, one strong brand Button last with type=\"submit\". Enter in a field submits, and onSubmit gets the values by field name. Inside a Modal, skip the title (the Modal names it), give the Form an id, and put the Save Button in the Modal footer with form set to that id. See contracts/form.json for the full contract.",
+  "usage": "Use Form to wrap kit fields (Input, Textarea, Select, DatePicker, Lookup, Cascader, FormulaEditor, Checkbox, RadioGroup, Switch) that save together. Read-only values go in FormDisplay rows; back-to-back rows sit flush as one list. Pass the fields as children, or as sections when they fall into groups like Company and Billing; each section is a titled group. labelPosition=\"start\" puts every field's label in a column at the beginning, 234px wide unless labelWidth narrows or widens it; columns={2} puts fields side by side, and columns={3} puts them in threes on a wide page. Once columns is set (1, 2 or 3), each column stops at 554px (--layout-column-max) and the fields stay at the start, so a wide page leaves the space on the right empty instead of stretching the fields; with columns unset, the fields fill the form, as in a Modal or Drawer. Inside a FormPage the Form takes the page's columns unless it sets its own. A long form of groups — a create page — takes sections with collapsible, and the save can sit outside the form: give the Form an id and the Button type=\"submit\" with form set to it, so one press still saves one form. actions holds kit Buttons: subtle first, one strong brand Button last with type=\"submit\". Enter in a field submits, and onSubmit gets the values by field name. Inside a Modal, skip the title (the Modal names it), give the Form an id, and put the Save Button in the Modal footer with form set to that id. See contracts/form.json for the full contract.",
   "props": {
     "title": {
       "type": "string",
@@ -26,7 +26,16 @@
         "start"
       ],
       "default": "top",
-      "note": "Where the kit fields inside put their label. Unset inside a RecordPage, it takes the record's labelPosition. start puts it in a 234px column at the beginning; Checkbox, Switch and RadioGroup line up with the fields. Under 554px the fields put their label back on top, since a label column would leave too little of the field. A field's own labelPosition still wins."
+      "note": "Where the kit fields inside put their label. Unset inside a RecordPage, it takes the record's labelPosition. start puts it in a 234px column at the beginning, or the column labelWidth picks; Checkbox, Switch and RadioGroup line up with the fields. Under 554px the fields put their label back on top, since a label column would leave too little of the field. A field's own labelPosition still wins."
+    },
+    "labelWidth": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "How wide the start-label column is: sm 140px for a form of short names (Email, Status, Currency), md 234px, the product's own column, which fits a name as long as Account Ledger Number on one line, and lg 320px where the names run longer than that. Pick one for the whole form, never per field, or the labels in a column stop lining up. The field beside the label stays 308px at every step, so the column itself narrows or widens, and the points where the labels go back on top and where columns give way move with it: labels go on top under 460px (sm), 554px (md) or 640px (lg). Read only with labelPosition=\"start\"; with labels on top there is no column to size."
     },
     "columns": {
       "enum": [
@@ -34,7 +43,7 @@
         2,
         3
       ],
-      "note": "2 puts fields side by side, left to right; 3 puts them in threes, for a long form on a wide page. A Textarea spans the row, and so does a DataGrid (like a product's rate bands), which needs the width for its columns; with start labels the grid starts at the section's edge, since its column headers stand in for a label. Set, each column is at most 554px (--layout-column-max) and the fields stay at the start: on a wide page the space past the last column stays empty. Unset, the Form takes the columns of the FormPage or RecordPage it is in; outside one, the fields stack in one column that fills the form, as in a Modal or Drawer. Never more than 3. Columns give way as the form narrows: three become two under 720px (1301px with start labels), and two become one under 560px (867px with start labels)."
+      "note": "2 puts fields side by side, left to right; 3 puts them in threes, for a long form on a wide page. A Textarea spans the row, and so does a DataGrid (like a product's rate bands), which needs the width for its columns; with start labels the grid starts at the section's edge, since its column headers stand in for a label. Set, each column is at most 554px (--layout-column-max) and the fields stay at the start: on a wide page the space past the last column stays empty. Unset, the Form takes the columns of the FormPage or RecordPage it is in; outside one, the fields stack in one column that fills the form, as in a Modal or Drawer. Never more than 3. Columns give way as the form narrows: three become two under 720px (1301px with start labels), and two become one under 560px (867px with start labels). A narrower or wider labelWidth moves the start numbers with it: three become two under 1019px (sm) or 1559px (lg), two become one under 679px (sm) or 1039px (lg)."
     },
     "children": {
       "type": "ReactNode",
@@ -118,6 +127,20 @@
           "props": {
             "title": "Company details",
             "labelPosition": "start",
+            "content": "fields"
+          }
+        }
+      ]
+    },
+    {
+      "title": "A narrower label column",
+      "usage": "labelWidth=\"sm\" gives a form of short names a 140px column instead of 234px, so the labels sit beside the fields instead of across a gap. lg widens it to 320px where the names run long.",
+      "items": [
+        {
+          "props": {
+            "title": "Company details",
+            "labelPosition": "start",
+            "labelWidth": "sm",
             "content": "fields"
           }
         }
