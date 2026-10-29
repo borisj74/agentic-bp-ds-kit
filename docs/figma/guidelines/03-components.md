@@ -153,11 +153,11 @@ Props — `author`: `user` | `assistant`; `bubble`: boolean
 
 An editable table: people click a cell to add or change its content, like rule conditions, line items or mappings.
 
-Props — `size`: `sm` | `md` (default `md`); `line`: `medium` | `thin` (default `medium`); `rowNumbers`: boolean; `canAddRows`: boolean; `canRemoveRows`: boolean; `canDeleteRows`: boolean; `canInsertRows`: boolean; `stickyFirstColumn`: boolean
+Props — `size`: `sm` | `md` (default `md`); `line`: `medium` | `thin` (default `medium`); `rowNumbers`: boolean; `canAddRows`: boolean; `canRemoveRows`: boolean; `canDeleteRows`: boolean; `canInsertRows`: boolean; `selectable`: boolean; `stickyFirstColumn`: boolean
 
 - Do not use it to show data people only read. Use Table.
 - Do not invent an EditableCell, GridRow or a table of loose inputs. Pass columns with a type.
-- Do not build your own expand arrows or a second table under a row. Pass detail.
+- Do not put loose checkboxes beside the grid to pick rows. Pass selectable.
 
 ### HeaderCell
 
@@ -717,9 +717,9 @@ The bar above a list or table: find and filter on the left, view and actions on 
 
 Props — `filtersOpen`: boolean; `defaultFiltersOpen`: boolean; `buttons`: `raised` | `subtle` (default `raised`)
 
+- Do not put a loose label and field, or a count of ticked rows, beside the toolbar. Pass field and selectedCount.
 - Do not invent a FilterBar, ListToolbar or a local row of controls above a table.
 - Do not open the filter bar when the screen loads. It starts closed; people open it with Filters, and filterCount still says the list is narrowed.
-- Do not put more than one strong brand Button in actions.
 
 ## overlay
 

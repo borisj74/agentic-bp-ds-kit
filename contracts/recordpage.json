@@ -34,7 +34,7 @@
     },
     "toolbar": {
       "type": "ReactNode",
-      "note": "What acts on the tab that is showing: a kit Toolbar."
+      "note": "What acts on the tab that is showing: a kit Toolbar. The tab's content starts --space-medium (16px) under it, the same as a Toolbar over its table inside a Section."
     },
     "summary": {
       "type": "ReactNode",

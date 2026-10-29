@@ -34,6 +34,9 @@ export interface ChartReferenceLine {
   values?: number[];
   // Upright charts with a second scale: which scale the line reads against.
   axis?: ChartAxis;
+  // A stepped line only: a few words over the category the level changed on, like Top-up Sep 16 · granted 3,150, so
+  // the step says what changed it and when.
+  note?: { at: number; label: string };
 }
 
 // Upright charts only: a thin line down the chart at one category, like today.
@@ -384,8 +387,25 @@ export function XYChart({
     taken.push(textBox(place.x, place.base, text));
     return { key: `${r.label}${r.value}`, text, ...place };
   });
+  // A stepped line's note sits over the category the level changed on, above the higher of the two levels, or under
+  // them when there is no room. It gives way to the labels already placed.
+  const notePlaces = refs.flatMap((r) => {
+    if (!r.note || !stepped(r)) return [];
+    const at = Math.min(Math.max(Math.round(r.note.at), 0), n - 1);
+    const y = v(Math.max(levelAt(r, at), levelAt(r, Math.max(at - 1, 0))), axisOf(r.axis));
+    const text = r.note.label;
+    const w = text.length * CHAR;
+    const x = c(at);
+    const anchor: "start" | "end" | "middle" = x - x0 < w / 2 ? "start" : x1 - x < w / 2 ? "end" : "middle";
+    const right = anchor === "start" ? x + w : anchor === "end" ? x : x + w / 2;
+    const base = [y - 8, y + 16].filter((b) => b - 11 >= y0 - 12 && b + 3 <= h)
+      .find((b) => ![...taken, ...dots].some((o) => hit(textBox(right, b, text), o))) ?? y - 8;
+    taken.push(textBox(right, base, text));
+    return [{ key: `${r.label}note`, text, x, base, anchor }];
+  });
   const guideLabels = () => (
     <g className={s.fade}>
+      {notePlaces.map((p) => <text key={p.key} className={s.referenceLabel} x={p.x} y={p.base} textAnchor={p.anchor}>{p.text}</text>)}
       {refPlaces.map((p) => <text key={p.key} className={s.referenceLabel} x={p.x} y={p.base} textAnchor="end">{p.text}</text>)}
       {mark && <text className={s.markerLabel} x={markX} y={y0 - 8} textAnchor={markAnchor}>{mark.label}</text>}
     </g>
@@ -486,7 +506,7 @@ export function XYChart({
       {clickable && <p className={s.srOnly} role="status" aria-live="polite">{said}</p>}
       {(refs.length > 0 || mark) && (
         <ul className={s.srOnly}>
-          {refs.map((r) => <li key={`${r.label}${r.value}`}>{`${r.label}: ${refText(r)}`}</li>)}
+          {refs.map((r) => <li key={`${r.label}${r.value}`}>{`${r.label}: ${refText(r)}${r.note && stepped(r) ? ` (${r.note.label})` : ""}`}</li>)}
           {mark && <li>{`${mark.label}: ${categories[mark.category]}`}</li>}
         </ul>
       )}

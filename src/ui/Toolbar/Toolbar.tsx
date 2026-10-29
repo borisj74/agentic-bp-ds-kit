@@ -37,6 +37,8 @@ export interface ToolbarProps {
   searchGroups?: GlobalSearchGroup[];
   onSearchSelect?: (id: string) => void;
   onSearchViewAll?: (query: string) => void;
+  field?: ReactNode;
+  selectedCount?: number;
   views?: ToolbarView[];
   view?: string;
   onViewChange?: (id: string) => void;
@@ -69,7 +71,7 @@ function foldActions(actions: ReactNode): FoldedAction[] | null {
 // Figma toolbar 6057:15099 and filters-bar 3579:30240. Controls are size sm (28px) in a 44px bar.
 export function Toolbar({
   filters, filterCount = 0, filtersOpen: openProp, defaultFiltersOpen = false, onFiltersOpenChange, onReset, onApply, filterHelp,
-  searchValue, onSearchChange, searchPlaceholder = "Search in list", searchGroups, onSearchSelect, onSearchViewAll,
+  searchValue, onSearchChange, searchPlaceholder = "Search in list", searchGroups, onSearchSelect, onSearchViewAll, field: control, selectedCount = 0,
   views = [], view: viewProp, onViewChange, onRefresh, moreActions, onMoreSelect, actions, buttons = "raised", label = "List tools",
 }: ToolbarProps) {
   const barId = useId();
@@ -129,7 +131,7 @@ export function Toolbar({
   const hasSearch = Boolean(onSearchChange) || Boolean(searchGroups);
   const find = Boolean(filters) || hasSearch;
   const viewing = views.length > 0 || Boolean(onRefresh);
-  const hasEnd = Boolean(moreActions?.length) || Boolean(actions);
+  const hasEnd = Boolean(moreActions?.length) || Boolean(actions) || selectedCount > 0;
 
   // Under 1024px the controls keep to one line (under 640px the search takes a line of its own above it). When the
   // actions do not fit at the end of that line, they fold into
@@ -199,8 +201,10 @@ export function Toolbar({
     />
   );
   // Same order as the PageHeader: More (overflow) first, then the actions with the one strong brand Button last.
+  // How many rows are ticked leads the end of the bar, so the actions read as acting on them.
   const endControls = (
     <>
+      {selectedCount > 0 && <span className={styles.selected} role="status">{selectedCount} selected</span>}
       {moreActions && moreActions.length > 0 && (
         <Dropdown label="More" emphasis="minimal" size="sm" alignment="right" items={moreActions} onSelect={onMoreSelect} />
       )}
@@ -242,6 +246,7 @@ export function Toolbar({
               />
             </div>
           )}
+          {control && <div className={styles.field}>{control}</div>}
           {find && viewing && <span className={styles.divider} aria-hidden="true" />}
           {current && (
             <Dropdown

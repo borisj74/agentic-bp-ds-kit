@@ -46,4 +46,20 @@ describe("Toolbar", () => {
     await user.click(screen.getByRole("button", { name: "Refresh" }));
     expect(onRefresh).toHaveBeenCalledTimes(1);
   });
+
+  it("keeps a field after the search and says how many rows are ticked", () => {
+    render(
+      <Toolbar
+        label="Rate tools" onSearchChange={() => {}} field={<Button size="sm">Effective on</Button>} selectedCount={3}
+        actions={<Button size="sm">Add pricing</Button>}
+      />,
+    );
+    expect(screen.getByRole("button", { name: "Effective on" })).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("3 selected");
+  });
+
+  it("shows no count when nothing is ticked", () => {
+    render(<Toolbar label="Rate tools" selectedCount={0} actions={<Button size="sm">Add pricing</Button>} />);
+    expect(screen.queryByRole("status")).toBeNull();
+  });
 });

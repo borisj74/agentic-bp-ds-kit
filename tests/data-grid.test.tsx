@@ -218,4 +218,35 @@ describe("DataGrid", () => {
     const loose = selectors.filter((s) => /(^|\s)(td|th)(?![\w.-])/.test(s) && !/> (tbody|thead) > tr > (td|th)/.test(s) && !/(td|th)(\.|:has)/.test(s));
     expect(loose).toEqual([]);
   });
+
+  it("ticks rows one by one and all at once, and keeps ticks a filter hides", async () => {
+    const user = userEvent.setup();
+    const onSelectionChange = vi.fn();
+    render(<DataGrid label="Rates" columns={COLUMNS} rows={ROWS} selectable selected={["hidden"]} onSelectionChange={onSelectionChange} />);
+    await user.click(screen.getByRole("checkbox", { name: "Select Gold plan" }));
+    expect(onSelectionChange).toHaveBeenLastCalledWith(["hidden", "r1"]);
+    const all = within(screen.getByRole("table", { name: "Rates" }).querySelector("thead")!).getByRole("checkbox");
+    await user.click(all);
+    expect(onSelectionChange).toHaveBeenLastCalledWith(["hidden", "r1", "r2"]);
+  });
+
+  it("reads mixed when only some rows are ticked", () => {
+    render(<DataGrid label="Rates" columns={COLUMNS} rows={ROWS} selectable selected={["r1"]} />);
+    const all = within(screen.getByRole("table", { name: "Rates" }).querySelector("thead")!).getByRole("checkbox");
+    expect(all).toBePartiallyChecked();
+    expect(screen.getByRole("checkbox", { name: "Select Gold plan" })).toBeChecked();
+  });
+
+  it("shows only the actions actionsFor gives each row", () => {
+    render(
+      <DataGrid
+        label="Rates" columns={COLUMNS} rows={ROWS} canRemoveRows canDeleteRows
+        actionsFor={(row) => (row.id === "r1" ? ["delete"] : ["remove"])}
+      />,
+    );
+    expect(screen.getByRole("button", { name: "Delete row 1" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Remove row 1" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Remove row 2" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Delete row 2" })).toBeNull();
+  });
 });

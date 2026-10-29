@@ -2,6 +2,7 @@
 import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type FocusEvent, type KeyboardEvent, type ReactNode } from "react";
 import { AlertDialog } from "../AlertDialog/AlertDialog";
 import { Button } from "../Button/Button";
+import { Checkbox } from "../Checkbox/Checkbox";
 import { Count } from "../Count/Count";
 import { DatePicker, formatDate } from "../DatePicker/DatePicker";
 import { Dropdown } from "../Dropdown/Dropdown";
@@ -31,6 +32,7 @@ export interface DataGridColumn {
   opensDetail?: boolean;
 }
 export type DataGridRow = { id: string } & Record<string, string>;
+export type DataGridRowAction = "insert" | "remove" | "delete";
 
 export interface DataGridProps {
   columns: DataGridColumn[];
@@ -46,6 +48,12 @@ export interface DataGridProps {
   onDeleteRow?: (row: DataGridRow) => void;
   deleteConfirm?: (row: DataGridRow) => { title: string; description: string };
   canInsertRows?: boolean;
+  actionsFor?: (row: DataGridRow) => DataGridRowAction[];
+  selectable?: boolean;
+  selected?: string[];
+  defaultSelected?: string[];
+  onSelectionChange?: (ids: string[]) => void;
+  rowLabel?: string;
   emptyLabel?: string;
   label?: string;
   stickyFirstColumn?: boolean;
@@ -63,7 +71,8 @@ const spotSelector = (s: Spot) => `[data-cell="${CSS.escape(`${s.row}:${s.key}`)
 // Text and number save on Enter or when focus leaves; formula cells stay open until Done or Escape.
 export function DataGrid({
   columns, rows: rowsProp, defaultRows = [], onRowsChange, size: ownSize, line = "medium", rowNumbers = true,
-  canAddRows = false, canRemoveRows = false, canDeleteRows = false, onDeleteRow, deleteConfirm, canInsertRows = false,
+  canAddRows = false, canRemoveRows = false, canDeleteRows = false, onDeleteRow, deleteConfirm, canInsertRows = false, actionsFor,
+  selectable = false, selected: selectedProp, defaultSelected = [], onSelectionChange, rowLabel,
   emptyLabel = "No rows yet.", label = "Data grid", stickyFirstColumn = true,
   detail, detailCount, expanded: expandedProp, defaultExpanded = [], onExpandedChange,
 }: DataGridProps) {
@@ -95,33 +104,49 @@ export function DataGrid({
   // its toggle column.
   const toggleColumn = Boolean(detail) && !columns.some((c) => c.opensDetail);
 
+  // Ticked rows, by id, for actions on several rows at once. Select all ticks every row in the grid; clearing it
+  // unticks only them, so a screen that filters the rows keeps the ticks on rows it is not showing.
+  const [innerSelected, setInnerSelected] = useState(defaultSelected);
+  const selected = selectedProp ?? innerSelected;
+  const select = (next: string[]) => {
+    if (selectedProp === undefined) setInnerSelected(next);
+    onSelectionChange?.(next);
+  };
+  const ids = rows.map((r) => r.id);
+  const picked = ids.filter((id) => selected.includes(id));
+  const allPicked = ids.length > 0 && picked.length === ids.length;
+  const tickRow = (id: string, on: boolean) => select(on ? [...selected, id] : selected.filter((s) => s !== id));
+  const tickAll = (on: boolean) => select(on ? [...new Set([...selected, ...ids])] : selected.filter((s) => !ids.includes(s)));
+
   // Pinned columns sit one after another: the expand toggle, then #, then the first column, so each needs the
   // widths before it as its offset. An open detail is as wide as the visible grid, so it stays in view too.
   const wrapRef = useRef<HTMLDivElement>(null);
+  const selectRef = useRef<HTMLTableCellElement>(null);
   const toggleRef = useRef<HTMLTableCellElement>(null);
   const indexRef = useRef<HTMLTableCellElement>(null);
   // The opensDetail column's header: an open detail lines up under it (see detailStart below).
   const detailColRef = useRef<HTMLTableCellElement>(null);
-  const [offsets, setOffsets] = useState({ toggle: 0, index: 0, first: 0, view: 0, detailStart: 0 });
+  const [offsets, setOffsets] = useState({ select: 0, toggle: 0, index: 0, first: 0, view: 0, detailStart: 0 });
   useLayoutEffect(() => {
     const wrap = wrapRef.current;
     const measure = () => {
-      // Pinned columns sit side by side: the detail toggle, then #, then the first column.
+      // Pinned columns sit side by side: the row ticks, the detail toggle, then #, then the first column.
+      const select = selectRef.current?.getBoundingClientRect().width ?? 0;
       const toggle = toggleRef.current?.getBoundingClientRect().width ?? 0;
       const index = indexRef.current?.getBoundingClientRect().width ?? 0;
       const view = wrap?.clientWidth ?? 0;
       // Where the opensDetail column starts in the visible part of the grid, so a detail can sit under it.
       const detailStart = Math.max(0, (detailColRef.current?.offsetLeft ?? 0) - (wrap?.scrollLeft ?? 0));
-      const next = { toggle: 0, index: toggle, first: toggle + index, view, detailStart };
-      setOffsets((old) => (old.toggle === next.toggle && old.index === next.index && old.first === next.first && old.view === next.view && old.detailStart === next.detailStart ? old : next));
+      const next = { select: 0, toggle: select, index: select + toggle, first: select + toggle + index, view, detailStart };
+      setOffsets((old) => (old.select === next.select && old.toggle === next.toggle && old.index === next.index && old.first === next.first && old.view === next.view && old.detailStart === next.detailStart ? old : next));
     };
     measure();
     wrap?.addEventListener("scroll", measure, { passive: true });
     if (typeof ResizeObserver === "undefined") return () => wrap?.removeEventListener("scroll", measure);
     const observer = new ResizeObserver(measure);
-    [wrap, tableRef.current, toggleRef.current, indexRef.current, detailColRef.current].forEach((el) => el && observer.observe(el));
+    [wrap, tableRef.current, selectRef.current, toggleRef.current, indexRef.current, detailColRef.current].forEach((el) => el && observer.observe(el));
     return () => { observer.disconnect(); wrap?.removeEventListener("scroll", measure); };
-  }, [stickyFirstColumn, rowNumbers, detail]);
+  }, [stickyFirstColumn, rowNumbers, detail, selectable]);
   const pin = stickyFirstColumn ? styles.sticky : "";
 
   const commit = (next: DataGridRow[]) => {
@@ -198,7 +223,7 @@ export function DataGrid({
 
   // Add, remove and delete share one column at the end of the row.
   const actionColumn = canInsertRows || canRemoveRows || canDeleteRows;
-  const span = columns.length + (toggleColumn ? 1 : 0) + (rowNumbers ? 1 : 0) + (actionColumn ? 1 : 0);
+  const span = columns.length + (selectable ? 1 : 0) + (toggleColumn ? 1 : 0) + (rowNumbers ? 1 : 0) + (actionColumn ? 1 : 0);
   const firstKey = columns[0]?.key;
 
   // Two actions stand on the row and the rest go in a More menu, so the column stays the same width however many
@@ -207,12 +232,14 @@ export function DataGrid({
   const visibleActions = 2;
   // Names and icons only: what each one does is looked up when it is used, so nothing that reads a ref is built
   // while the row is drawing.
-  const rowActions = (i: number) => {
+  // actionsFor narrows them row by row, like the trash on a saved row and the X on a row added since.
+  const rowActions = (row: DataGridRow, i: number) => {
+    const own = actionsFor?.(row);
     const all = [
       canInsertRows && { id: "insert", label: `Add row below row ${i + 1}`, icon: "add" },
       canRemoveRows && { id: "remove", label: `Remove row ${i + 1}`, icon: "close" },
       canDeleteRows && { id: "delete", label: `Delete row ${i + 1}`, icon: "delete", danger: true },
-    ].filter(Boolean) as { id: string; label: string; icon: string; danger?: boolean }[];
+    ].filter((a) => a && (!own || own.includes(a.id as DataGridRowAction))) as { id: string; label: string; icon: string; danger?: boolean }[];
     return { visible: all.slice(0, visibleActions), overflow: all.slice(visibleActions) };
   };
   const runAction = (id: string, row: DataGridRow, i: number) => {
@@ -336,10 +363,15 @@ export function DataGrid({
       <div ref={wrapRef} className={styles.wrap}>
         <table
           ref={tableRef} className={[styles.table, styles[size]].join(" ")} aria-label={label}
-          style={{ "--data-grid-toggle-offset": `${offsets.toggle}px`, "--data-grid-index-offset": `${offsets.index}px`, "--data-grid-sticky-offset": `${offsets.first}px`, "--data-grid-view-width": `${offsets.view}px`, "--data-grid-detail-start": `${offsets.detailStart}px` } as CSSProperties}
+          style={{ "--data-grid-select-offset": `${offsets.select}px`, "--data-grid-toggle-offset": `${offsets.toggle}px`, "--data-grid-index-offset": `${offsets.index}px`, "--data-grid-sticky-offset": `${offsets.first}px`, "--data-grid-view-width": `${offsets.view}px`, "--data-grid-detail-start": `${offsets.detailStart}px` } as CSSProperties}
         >
           <thead>
             <tr>
+              {selectable && (
+                <th ref={selectRef} scope="col" className={[styles.hug, styles.select, stickyFirstColumn ? styles.stickySelect : ""].join(" ")}>
+                  {head(<HeaderCell size={size} line={line} alignment="center" checkbox checked={allPicked} indeterminate={picked.length > 0 && !allPicked} onCheckedChange={tickAll} />)}
+                </th>
+              )}
               {toggleColumn && <th ref={toggleRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyToggle : ""].join(" ")}>{head(<HeaderCell size={size} line={line} />)}<span className={styles.srOnly}>Details</span></th>}
               {rowNumbers && <th ref={indexRef} scope="col" className={[styles.hug, stickyFirstColumn ? styles.stickyIndex : ""].join(" ")}>{head(<HeaderCell size={size} line={line} alignment="center" label="#" />)}</th>}
               {columns.map((c) => (
@@ -369,10 +401,17 @@ export function DataGrid({
               const content = details.get(row.id);
               const isOpen = hasDetail(row.id) && expanded.includes(row.id);
               const detailId = `${uid}-detail-${row.id}`;
-              const { visible, overflow } = rowActions(i);
+              const { visible, overflow } = rowActions(row, i);
+              const on = selected.includes(row.id);
+              const name = (rowLabel ?? firstKey) ? row[(rowLabel ?? firstKey) as string] : "";
               return (
               <Fragment key={row.id}>
-              <tr>
+              <tr aria-selected={selectable ? on : undefined}>
+                {selectable && (
+                  <td className={[styles.select, stickyFirstColumn ? styles.stickySelect : ""].join(" ")}>
+                    <Checkbox size="sm" hideLabel label={`Select ${name || `row ${i + 1}`}`} checked={on} onChange={(v) => tickRow(row.id, v)} />
+                  </td>
+                )}
                 {toggleColumn && (
                   <td className={[styles.toggle, stickyFirstColumn ? styles.stickyToggle : ""].join(" ")}>
                     {hasDetail(row.id) && (

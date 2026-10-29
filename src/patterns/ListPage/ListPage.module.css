@@ -21,6 +21,11 @@
    --table-stick-top, which keeps up when the filter bar opens and makes the bar taller. */
 .list:has(> .body table) { gap: 0; }
 
+/* When the rows were read: one quiet line under the bar, at the page's left edge. Over a table the list has no
+   gap, so the line brings its own air above and below. */
+.meta { margin: 0; min-width: 0; font-size: var(--font-size-small); line-height: var(--line-height-snug); color: var(--text-neutral); }
+.list:has(> .body table) > .meta { padding-block: var(--space-small); }
+
 /* The scroll shadow under the pinned band: the lift that says rows are passing beneath it. The bar and the
    table keep the page's side padding, so neither can cast anything that reaches the page edges; this is a box
    of its own that does, bleeding out through the inset (--layout-margin-md). It sits in the flow right above

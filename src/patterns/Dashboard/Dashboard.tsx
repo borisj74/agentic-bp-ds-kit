@@ -9,6 +9,8 @@ export type DashboardState = "ready" | "loading" | "empty";
 export interface DashboardProps {
   children: ReactNode;
   toolbar?: ReactNode;
+  // When the numbers were read, like Updated 09:45 UTC: one quiet line under the bar.
+  meta?: string;
   name?: string;
   stickyToolbar?: boolean;
   state?: DashboardState;
@@ -22,7 +24,7 @@ export interface DashboardProps {
 // blueprint only: it composes kit pieces and keeps no state of its own. It sits in the AppShell page, under
 // the PageHeader, which owns the page padding.
 export function Dashboard({
-  children, toolbar, name, stickyToolbar = true, state = "ready", empty, loadingTiles = 3, label,
+  children, toolbar, meta, name, stickyToolbar = true, state = "ready", empty, loadingTiles = 3, label,
 }: DashboardProps) {
   const groups = state === "ready";
   // The bar is the band that holds at the top: the shared plumbing measures it and says where a Table in the
@@ -40,6 +42,9 @@ export function Dashboard({
       {/* The lift under the pinned bar, which the bar cannot cast itself: it keeps the page's side padding and
           this reaches the page edges. */}
       {toolbar && stickyToolbar && <div ref={shadowRef} aria-hidden="true" data-scroll-shadow="" className={styles.scrollShadow} />}
+      {/* When the numbers were read, once for the whole page, under the bar that refreshes them. Sections and
+          tables never repeat it. */}
+      {meta && <p className={styles.meta}>{meta}</p>}
       {/* Which dashboard this is: a heading, not a control. Switching between saved ones is the bar's job. */}
       {name && <h2 className={["text-heading-xl", styles.name].join(" ")}>{name}</h2>}
       {groups && children}

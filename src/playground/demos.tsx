@@ -408,6 +408,7 @@ export function ToolbarDemo(p: Record<string, unknown>) {
   const [values, setValues] = useState<Record<string, string | undefined>>(START);
   const [off, setOff] = useState<Record<string, boolean>>({});
   const [query, setQuery] = useState("");
+  const [effective, setEffective] = useState("2026-05-15");
   const chips = FILTER_SETS.map((f) => {
     const value = values[f.id];
     return (
@@ -439,6 +440,8 @@ export function ToolbarDemo(p: Record<string, unknown>) {
       onMoreSelect={() => {}}
       actions={p.actions ? <><Button size="sm">Export</Button><Button size="sm" emphasis="strong" intent="brand">Create</Button></> : undefined}
       buttons={p.buttons === "subtle" ? "subtle" : undefined}
+      field={p.field ? <DatePicker size="sm" labelPosition="start" label="Effective on" value={effective} onChange={(v) => setEffective(typeof v === "string" ? v : v.start ?? "")} /> : undefined}
+      selectedCount={typeof p.selectedCount === "number" ? p.selectedCount : undefined}
     />
   );
 }

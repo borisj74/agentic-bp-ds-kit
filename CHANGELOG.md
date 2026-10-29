@@ -4,6 +4,21 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## Unreleased
+
+From the price ramps, AI usage and account prototypes. Nothing is renamed or removed; a screen that passes none of the new props renders as before.
+
+### Added
+- DataGrid: row selection — `selectable`, `selected` / `defaultSelected`, `onSelectionChange` and `rowLabel`. A checkbox column pinned at the start, with a select-all in the header that shows a dash when only some rows are picked.
+- DataGrid: `actionsFor(row)` picks each row's own actions (`insert`, `remove`, `delete`), so saved rows can offer a real delete while new rows only come out of the grid.
+- Toolbar: `field` puts one control after the search, like an Effective on date that applies to the whole list, and `selectedCount` says N selected before More and the actions.
+- ListPage and Dashboard: `meta`, one quiet line under the bar saying when the numbers were read, like Updated 09:45 UTC. One per page; hidden on a list while its bulk bar is up.
+- BarChart and LineChart: a stepped reference line takes `note` — a few words over the category its level changed on, like Top-up Oct 16 · granted 3,150 — also read out in the chart's hidden list.
+
+### Changed
+- RecordPage: a tab's content starts 16px (`--space-medium`) under its toolbar, as a Toolbar sits over its table in a Section. The scroll shadow under the bar took a section gutter of its own, so the content landed about 44px down.
+- AppShell: the side nav's flyout covers the pinned bars of the page (the page is its own stacking context), instead of opening under a sticky toolbar.
+
 ## v0.7.4 — 2026-10-29
 
 ### Added

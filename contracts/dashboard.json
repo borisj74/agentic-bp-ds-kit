@@ -2,7 +2,7 @@
   "name": "Dashboard",
   "path": "src/patterns/Dashboard/Dashboard.tsx",
   "intent": "The home screen of a job: the numbers that matter, grouped, with the charts and lists that explain them.",
-  "usage": "Use Dashboard for a home screen that reports rather than lists: accounting, billing, revenue. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns which dashboard is showing, which groups are open and what the filters are. Pass the kit Toolbar as toolbar, with the filters, the search, the view and refresh; it stays at the top under the page header while the groups scroll, with a lift under it once it is holding. A Table in the groups brings its column names to rest under that bar, not at the top of the page where they would cross it: the dashboard measures the bar and says how far down in --table-stick-top. name is the dashboard that is showing, written as a heading; it is a name, not a control, so switching between saved dashboards goes in the Toolbar's view menu. children are the groups: one kit Section each, collapsible, and the blocks inside a group are collapsible Sections too, titled like All, Invoices or Revenue, with a kit HelpPopover on the title where the group needs explaining. Inside a group, lead with a kit Scoreboard of that group's few numbers, then the tiles that explain them: kit BarChart, LineChart or PieChart, a kit Table with its own Toolbar over it, for the filters and the export that belong to that table alone, a kit Timeline of what happened. A row holds up to five tiles, laid out with the classes from contracts/layout.json, not a grid of your own: .layout-split for two, .layout-split--thirds for three, and .layout-metrics with --fixed-4 or --fixed-5 for four or five. state swaps what stands in for the groups: loading draws kit Skeleton blocks in their shape and empty shows what you pass as empty. It goes in the AppShell page, under the PageHeader, which owns the page padding. See contracts/dashboard.json for the full contract.",
+  "usage": "Use Dashboard for a home screen that reports rather than lists: accounting, billing, revenue. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns which dashboard is showing, which groups are open and what the filters are. Pass the kit Toolbar as toolbar, with the filters, the search, the view and refresh; it stays at the top under the page header while the groups scroll, with a lift under it once it is holding. A Table in the groups brings its column names to rest under that bar, not at the top of the page where they would cross it: the dashboard measures the bar and says how far down in --table-stick-top. meta is when the numbers were read, one quiet line under the bar; the page carries one and nothing below repeats it. name is the dashboard that is showing, written as a heading; it is a name, not a control, so switching between saved dashboards goes in the Toolbar's view menu. children are the groups: one kit Section each, collapsible, and the blocks inside a group are collapsible Sections too, titled like All, Invoices or Revenue, with a kit HelpPopover on the title where the group needs explaining. Inside a group, lead with a kit Scoreboard of that group's few numbers, then the tiles that explain them: kit BarChart, LineChart or PieChart, a kit Table with its own Toolbar over it, for the filters and the export that belong to that table alone, a kit Timeline of what happened. A row holds up to five tiles, laid out with the classes from contracts/layout.json, not a grid of your own: .layout-split for two, .layout-split--thirds for three, and .layout-metrics with --fixed-4 or --fixed-5 for four or five. state swaps what stands in for the groups: loading draws kit Skeleton blocks in their shape and empty shows what you pass as empty. It goes in the AppShell page, under the PageHeader, which owns the page padding. See contracts/dashboard.json for the full contract.",
   "composes": [
     "Toolbar",
     "Dropdown",
@@ -26,6 +26,10 @@
     "toolbar": {
       "type": "ReactNode",
       "note": "The bar over the dashboard: a kit Toolbar with the filters, the search, the view and refresh."
+    },
+    "meta": {
+      "type": "string",
+      "note": "When the numbers were read, written as one quiet line under the bar at the page's left edge, like Updated 09:45 UTC. One per page: sections, tables and cards never repeat it. It belongs to the bar that refreshes them, so it sits 16px under it, closer than the section rhythm."
     },
     "name": {
       "type": "string",
@@ -71,7 +75,8 @@
     "Do not stack more than one strong brand Button across the whole dashboard.",
     "Do not use it to list records. Use ListPage.",
     "Do not add page padding around it. It sits in the AppShell page, which owns that.",
-    "Do not use raw hex."
+    "Do not use raw hex.",
+    "Do not repeat the meta stamp in a section description or a table caption. The page carries one."
   ],
   "a11y": [
     "The dashboard is a region named after label, so a screen reader can jump to it.",
