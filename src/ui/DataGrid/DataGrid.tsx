@@ -450,9 +450,11 @@ export function DataGrid({
                   {head(
                     rowParent && c.key === firstKey && parents.size > 0 ? (
                       <span className={styles.groupHead}>
+                        <span className={[styles.groupToggle, line === "thin" ? styles.headThin : ""].join(" ")}>
                         <Button emphasis="minimal" size="sm" iconOnly iconStart={allCollapsed ? "add_box" : "indeterminate_check_box"} aria-expanded={!allCollapsed} onClick={() => setCollapsed(allCollapsed ? [] : [...parents])}>
                           {allCollapsed ? "Show all rows" : "Hide rows under every group"}
                         </Button>
+                        </span>
                         <HeaderCell size={size} line={line} label={c.header} />
                       </span>
                     ) : <HeaderCell size={size} line={line} alignment={c.type === "number" ? "end" : "start"} label={c.header} />,

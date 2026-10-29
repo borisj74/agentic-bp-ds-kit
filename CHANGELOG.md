@@ -4,6 +4,13 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.8 — 2026-10-29
+
+A fix to v0.7.7's grouped rows. Screens without rowParent render exactly as on v0.7.7.
+
+### Changed
+- DataGrid: with `rowParent`, the header line now runs under the first column's group toggle too, so it is unbroken across the header like every other header cell.
+
 ## v0.7.7 — 2026-10-29
 
 DataGrid can now lay out a schedule: grouped rows, status marks, link cells and a total row. Everything is new and optional, so screens render exactly as on v0.7.6.

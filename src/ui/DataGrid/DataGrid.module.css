@@ -120,8 +120,12 @@
 .group { display: flex; align-items: center; padding-inline-start: calc(var(--data-grid-depth, 0) * var(--space-xlarge)); }
 .group > .value, .group > .cellButton { flex: 1; min-width: 0; }
 .groupSpace { flex: none; width: var(--space-xlarge); }
-.groupHead { display: flex; align-items: center; }
+/* The header's group toggle sits on the header line like the title beside it: its box stretches to the
+   HeaderCell's height and carries the same line, so the line runs unbroken across the whole header. */
+.groupHead { display: flex; align-items: stretch; }
 .groupHead > :last-child { flex: 1; min-width: 0; }
+.groupToggle { display: flex; align-items: center; border-bottom: var(--border-width-medium) solid var(--border-brand-faint); }
+.groupToggle.headThin { border-bottom-width: var(--border-width-thin); }
 
 /* A status mark after the value, like posted or not posted. */
 .status { display: inline-flex; flex: none; margin-inline-start: var(--space-xxsmall); }
