@@ -4,6 +4,11 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.4 — 2026-10-29
+
+### Added
+- Form: `labelWidth` — how wide the start-label column is. `sm` is 140px for a form of short names (Email, Status, Currency), `md` stays the product's own 234px, and `lg` is 320px where the names run longer. The field beside the label stays 308px at every step, so the column itself is what narrows or widens; the points where the labels go back on top and where columns give way move with it (labels on top under 460 / 554 / 640, three columns give way at 1019 / 1301 / 1559, two at 679 / 867 / 1039). Read only with `labelPosition="start"`, and set for the whole form, never one field, or the labels in a column stop lining up. A form that does not pass it renders exactly as before.
+
 ## v0.7.3 — 2026-10-28
 
 ### Added
