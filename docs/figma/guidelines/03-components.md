@@ -425,7 +425,7 @@ Props — `type`: `single` | `dual` (default `single`); `size`: `sm` | `md` | `l
 
 One form: an optional title, kit fields (or titled sections of them) and the actions that save it.
 
-Props — `variant`: `plain` | `card` (default `plain`); `labelPosition`: `top` | `start` (default `top`); `columns`: `1` | `2` | `3`
+Props — `variant`: `plain` | `card` (default `plain`); `labelPosition`: `top` | `start` (default `top`); `labelWidth`: `sm` | `md` | `lg` (default `md`); `columns`: `1` | `2` | `3`
 
 - Do not invent FieldSet, FieldGroup, FieldLegend, FormSection, FormActions or a local <form> wrapper.
 - Do not put a Form inside another Form.
