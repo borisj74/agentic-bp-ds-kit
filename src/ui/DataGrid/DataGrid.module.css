@@ -116,4 +116,35 @@
 .table td.empty { padding: var(--space-medium); text-align: center; color: var(--text-neutral); }
 .add { display: flex; }
 
+/* Grouped rows: the first cell holds the group's toggle, and each level under a group sits one toggle further in. */
+.group { display: flex; align-items: center; padding-inline-start: calc(var(--data-grid-depth, 0) * var(--space-xlarge)); }
+.group > .value, .group > .cellButton { flex: 1; min-width: 0; }
+.groupSpace { flex: none; width: var(--space-xlarge); }
+.groupHead { display: flex; align-items: center; }
+.groupHead > :last-child { flex: 1; min-width: 0; }
+
+/* A status mark after the value, like posted or not posted. */
+.status { display: inline-flex; flex: none; margin-inline-start: var(--space-xxsmall); }
+.numeric .withStatus, .numeric .linkValue { justify-content: flex-end; }
+.cellButton .status { order: 1; }
+/* tint: a faint fill in the status colour across the cell. */
+.table > tbody > tr > td.tint-success { background: var(--bg-success-faint); }
+.table > tbody > tr > td.tint-warning { background: var(--bg-warning-faint); }
+.table > tbody > tr > td.tint-danger { background: var(--bg-danger-faint); }
+.table > tbody > tr > td.tint-info { background: var(--bg-info-faint); }
+.table > tbody > tr > td.tint-neutral { background: var(--bg-neutral-subtle); }
+
+/* Link values: a read-only value that opens something, or an editable one drawn as a link. */
+.readOnly .linkValue, .readOnly .withStatus { display: flex; align-items: center; }
+.linkText { color: var(--text-brand); text-decoration: underline; text-underline-offset: 2px; }
+
+/* The total row at the bottom: read-only, on a stronger fill, so it reads apart from the rows it adds up. */
+.table > tbody > tr > td.totalCell { background: var(--bg-neutral-subtle); font-weight: var(--font-weight-medium); color: var(--text-neutral-strong); }
+/* In grouped rows the total's label lines up with the group names, past the toggle. */
+.readOnly .value.totalLabel { padding-inline-start: calc(var(--space-xlarge) + var(--space-small)); }
+
+/* The key to the status marks, under the grid. */
+.legend { display: flex; flex-wrap: wrap; gap: var(--space-medium); margin: 0; padding: 0; list-style: none; font-size: var(--font-size-xsmall); color: var(--text-neutral); }
+.legendItem { display: inline-flex; align-items: center; gap: var(--space-xxsmall); }
+
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

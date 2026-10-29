@@ -250,3 +250,56 @@ describe("DataGrid", () => {
     expect(screen.queryByRole("button", { name: "Delete row 2" })).toBeNull();
   });
 });
+
+describe("DataGrid schedule pieces", () => {
+  const columns: DataGridColumn[] = [
+    { key: "product", header: "Product", readOnly: true, hug: true },
+    { key: "jan", header: "Jan", type: "number", hug: true },
+  ];
+  const rows: DataGridRow[] = [
+    { id: "a", product: "Starter", parent: "", jan: "100.00" },
+    { id: "a-adj", product: "Manual adjustments", parent: "a", jan: "--" },
+  ];
+  const grid = (more: Partial<Parameters<typeof DataGrid>[0]> = {}) => (
+    <DataGrid
+      label="Schedule" rowNumbers={false} columns={columns} defaultRows={rows}
+      rowParent={(r) => r.parent || undefined} cellReadOnly={(r) => !r.parent}
+      cellLink={(r, key) => (key === "product" ? !r.parent : Boolean(r.parent))}
+      cellStatus={(r, key) => (key === "jan" && r.jan !== "--" ? { intent: "warning", label: "Unposted", tint: true } : undefined)}
+      totalRow={{ id: "total", product: "Period total", jan: "100.00" }}
+      legend={[{ intent: "success", label: "Posted" }, { intent: "warning", label: "Unposted" }]}
+      {...more}
+    />
+  );
+
+  it("hides and shows a group's rows from its toggle and the header's", async () => {
+    render(grid());
+    expect(screen.getByText("Manual adjustments")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Hide rows under Starter" }));
+    expect(screen.queryByText("Manual adjustments")).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: "Show all rows" }));
+    expect(screen.getByText("Manual adjustments")).toBeInTheDocument();
+  });
+
+  it("links a read-only value, edits a linked one, and keeps per-cell read only", async () => {
+    const onCellLink = vi.fn();
+    render(grid({ onCellLink }));
+    await userEvent.click(screen.getByRole("button", { name: "Starter" }));
+    expect(onCellLink).toHaveBeenCalledWith(expect.objectContaining({ id: "a" }), "product");
+    // The product row's month is read only; the adjustment's opens an editor.
+    expect(screen.queryByRole("button", { name: /Jan, row 1/ })).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: "Jan, row 2: --" }));
+    expect(screen.getByRole("spinbutton", { name: "Jan, row 2" })).toBeInTheDocument();
+  });
+
+  it("marks and tints a cell's status, draws the total row and the key", () => {
+    const { container } = render(grid());
+    const cell = container.querySelector('[data-cell="a:jan"]')!;
+    expect(cell.className).toContain("tint-warning");
+    expect(within(cell as HTMLElement).getByRole("img", { name: "Unposted" })).toBeInTheDocument();
+    expect(screen.getByText("Period total")).toBeInTheDocument();
+    const key = within(screen.getByRole("list", { name: "Key" }));
+    expect(key.getByText("Posted")).toBeInTheDocument();
+    expect(key.getByText("Unposted")).toBeInTheDocument();
+  });
+});

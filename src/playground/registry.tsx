@@ -356,8 +356,28 @@ const RATES: DataGridRow[] = [
   { id: "p3", product: "Gold plan", start: "2026-06-01", end: "", rate: "$1,100.00", saved: "" },
 ];
 const rateActions = (row: DataGridRow) => (row.saved ? ["delete" as const] : ["remove" as const]);
+// The Revenue schedule example: a product row per obligation with its adjustments grouped under it, three months.
+const SCHEDULE_MONTHS = ["Mar", "Apr", "May"];
+const SCHEDULE_COLUMNS: DataGridColumn[] = [
+  { key: "product", header: "Product/Adjustment", readOnly: true, hug: true },
+  ...SCHEDULE_MONTHS.map((m) => ({ key: m, header: `${m} 2026`, type: "number" as const, hug: true })),
+];
+const SCHEDULE_ROWS: DataGridRow[] = [
+  { id: "s1", parent: "", product: "Starter Plan", Mar: "8,860.24", Apr: "8,860.24", May: "8,860.24" },
+  { id: "s1-adj", parent: "s1", product: "Manual adjustments", Mar: "500.00", Apr: "--", May: "--" },
+  { id: "s2", parent: "", product: "Growth Plan", Mar: "8,422.23", Apr: "8,422.23", May: "8,422.23" },
+  { id: "s2-adj", parent: "s2", product: "Manual adjustments", Mar: "--", Apr: "300.00", May: "--" },
+];
+const scheduleStatus = (row: DataGridRow, key: string) =>
+  !SCHEDULE_MONTHS.includes(key) || row[key] === "--" ? undefined
+    : key === "Mar" ? { intent: "success" as const, label: "Posted" } : { intent: "warning" as const, label: "Unposted", tint: true };
 const GRID_SAMPLES: Record<string, unknown> = {
   "{rateColumns}": RATE_COLUMNS, "{rates}": RATES, "{rateActions}": rateActions,
+  "{scheduleColumns}": SCHEDULE_COLUMNS, "{scheduleRows}": SCHEDULE_ROWS, "{scheduleStatus}": scheduleStatus,
+  "{scheduleParent}": (row: DataGridRow) => row.parent || undefined, "{scheduleReadOnly}": (row: DataGridRow) => !row.parent,
+  "{scheduleLink}": (row: DataGridRow, key: string) => (key === "product" ? !row.parent : Boolean(row.parent)),
+  "{scheduleTotal}": { id: "total", product: "Period total", Mar: "17,782.47", Apr: "17,582.47", May: "17,282.47" },
+  "{scheduleLegend}": [{ intent: "success", label: "Posted" }, { intent: "warning", label: "Unposted" }],
   "{conditionColumns}": CONDITION_COLUMNS, "{conditions}": CONDITIONS, "{lineItemColumns}": LINE_ITEM_COLUMNS, "{lineItems}": LINE_ITEMS,
   "{termColumns}": TERM_COLUMNS, "{terms}": TERMS, "{bandDetail}": bandDetail,
   "{moreColumns}": MORE_COLUMNS, "{moreRows}": MORE_ROWS, "{moreDetail}": moreDetail, "{moreCount}": moreCount,

@@ -8,7 +8,9 @@ import { DatePicker, formatDate } from "../DatePicker/DatePicker";
 import { Dropdown } from "../Dropdown/Dropdown";
 import { FormulaEditor, type FormulaField } from "../FormulaEditor/FormulaEditor";
 import { HeaderCell, type HeaderCellLine } from "../HeaderCell/HeaderCell";
+import { Icon } from "../Icon/Icon";
 import { Input } from "../Input/Input";
+import { Link } from "../Link/Link";
 import { Select, type SelectOption } from "../Select/Select";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./DataGrid.module.css";
@@ -33,6 +35,13 @@ export interface DataGridColumn {
 }
 export type DataGridRow = { id: string } & Record<string, string>;
 export type DataGridRowAction = "insert" | "remove" | "delete";
+export type DataGridStatusIntent = "success" | "warning" | "danger" | "info" | "neutral";
+// A mark after a cell's value, like posted or not posted, and (tint) a faint fill of its colour across the cell.
+export interface DataGridCellStatus { intent: DataGridStatusIntent; label: string; icon?: string; tint?: boolean }
+export interface DataGridLegendItem { intent: DataGridStatusIntent; label: string; icon?: string }
+const STATUS_ICON: Record<DataGridStatusIntent, string> = {
+  success: "check_circle", warning: "remove_circle", danger: "error", info: "info", neutral: "radio_button_unchecked",
+};
 
 export interface DataGridProps {
   columns: DataGridColumn[];
@@ -62,6 +71,16 @@ export interface DataGridProps {
   expanded?: string[];
   defaultExpanded?: string[];
   onExpandedChange?: (ids: string[]) => void;
+  rowParent?: (row: DataGridRow) => string | undefined;
+  collapsed?: string[];
+  defaultCollapsed?: string[];
+  onCollapsedChange?: (ids: string[]) => void;
+  cellStatus?: (row: DataGridRow, key: string) => DataGridCellStatus | undefined;
+  cellReadOnly?: (row: DataGridRow, key: string) => boolean;
+  cellLink?: (row: DataGridRow, key: string) => boolean;
+  onCellLink?: (row: DataGridRow, key: string) => void;
+  totalRow?: DataGridRow;
+  legend?: DataGridLegendItem[];
 }
 
 type Spot = { row: string; key: string };
@@ -75,6 +94,8 @@ export function DataGrid({
   selectable = false, selected: selectedProp, defaultSelected = [], onSelectionChange, rowLabel,
   emptyLabel = "No rows yet.", label = "Data grid", stickyFirstColumn = true,
   detail, detailCount, expanded: expandedProp, defaultExpanded = [], onExpandedChange,
+  rowParent, collapsed: collapsedProp, defaultCollapsed = [], onCollapsedChange,
+  cellStatus, cellReadOnly, cellLink, onCellLink, totalRow, legend,
 }: DataGridProps) {
   // A surrounding Density changes the row through the density tokens, not the size.
   const size = ownSize ?? "md";
@@ -103,6 +124,24 @@ export function DataGrid({
   // A column with opensDetail opens rows from its own cells (a "+N more" button after the value), so the grid drops
   // its toggle column.
   const toggleColumn = Boolean(detail) && !columns.some((c) => c.opensDetail);
+
+  // Grouped rows: a row whose rowParent names another row sits under it, and the parent's toggle in the first
+  // column hides and shows its rows. The toggle in the first column's header does every group at once.
+  const [innerCollapsed, setInnerCollapsed] = useState(defaultCollapsed);
+  const collapsed = collapsedProp ?? innerCollapsed;
+  const setCollapsed = (next: string[]) => {
+    if (collapsedProp === undefined) setInnerCollapsed(next);
+    onCollapsedChange?.(next);
+  };
+  const parentOf = new Map(rows.map((r) => [r.id, rowParent?.(r)]));
+  const parents = new Set([...parentOf.values()].filter((p): p is string => Boolean(p)));
+  const hidden = (id: string) => {
+    for (let p = parentOf.get(id); p; p = parentOf.get(p)) if (collapsed.includes(p)) return true;
+    return false;
+  };
+  const depth = (id: string) => { let n = 0; for (let p = parentOf.get(id); p; p = parentOf.get(p)) n += 1; return n; };
+  const allCollapsed = parents.size > 0 && [...parents].every((p) => collapsed.includes(p));
+  const toggleGroup = (id: string) => setCollapsed(collapsed.includes(id) ? collapsed.filter((x) => x !== id) : [...collapsed, id]);
 
   // Ticked rows, by id, for actions on several rows at once. Select all ticks every row in the grid; clearing it
   // unticks only them, so a screen that filters the rows keeps the ticks on rows it is not showing.
@@ -283,7 +322,17 @@ export function DataGrid({
     const name = `${col.header}, row ${n}`;
     const type = col.type ?? "text";
     const isEditing = editing?.row === row.id && editing.key === col.key;
-    const cls = [type === "number" ? styles.numeric : "", isEditing ? styles.editing : "", col.readOnly ? styles.readOnly : "", col.hug ? styles.hugCell : "", col.key === firstKey ? pin : ""].join(" ");
+    const readOnly = col.readOnly || Boolean(cellReadOnly?.(row, col.key));
+    const link = Boolean(cellLink?.(row, col.key));
+    const status = cellStatus?.(row, col.key);
+    const cls = [
+      type === "number" ? styles.numeric : "", isEditing ? styles.editing : "", readOnly ? styles.readOnly : "", col.hug ? styles.hugCell : "",
+      col.key === firstKey ? pin : "", status?.tint && !isEditing ? styles[`tint-${status.intent}`] : "",
+    ].join(" ");
+    // The status mark sits after the value; its label is read out with the value.
+    const mark = status && (
+      <span className={styles.status}><Icon name={status.icon ?? STATUS_ICON[status.intent]} size="sm" intent={status.intent === "neutral" ? "subtle" : status.intent} filled label={status.label} /></span>
+    );
 
     let body;
     if (col.readOnly && col.opensDetail) {
@@ -304,11 +353,14 @@ export function DataGrid({
           ) : null}
         </span>
       );
-    } else if (col.readOnly) {
+    } else if (readOnly && link) {
+      // A value that opens something, like the product a schedule row is for.
+      body = <span className={[styles.value, styles.linkValue].join(" ")}><Link onClick={() => onCellLink?.(row, col.key)}>{value}</Link>{mark}</span>;
+    } else if (readOnly) {
       // A date is stored as an ISO day but read as the kit writes one, so a column people cannot change does not
       // read as code sitting next to the pickers in the same grid.
       const shown = type === "date" ? formatDate(value) : value;
-      body = <span className={[styles.value, type === "formula" ? styles.mono : ""].join(" ")}>{shown}</span>;
+      body = <span className={[styles.value, type === "formula" ? styles.mono : "", mark ? styles.withStatus : ""].join(" ")}>{shown}{mark}</span>;
     } else if (type === "select") {
       // Always a kit Select, like the Figma cell with its arrow button.
       body = (
@@ -343,9 +395,25 @@ export function DataGrid({
       );
     } else {
       body = (
-        <button type="button" className={styles.cellButton} aria-label={`${name}: ${value || "empty"}`} onClick={() => open(row, col)}>
-          <span className={[value ? styles.value : styles.placeholder, type === "formula" ? styles.mono : ""].join(" ")}>{value || col.placeholder}</span>
+        <button type="button" className={styles.cellButton} aria-label={`${name}: ${value || "empty"}${status ? `, ${status.label}` : ""}`} onClick={() => open(row, col)}>
+          <span className={[value ? styles.value : styles.placeholder, type === "formula" ? styles.mono : "", link ? styles.linkText : ""].join(" ")}>{value || col.placeholder}</span>
+          {mark}
         </button>
+      );
+    }
+    // In grouped rows the first column carries the group's toggle, and rows under a group sit in from it.
+    if (rowParent && col.key === firstKey) {
+      const isParent = parents.has(row.id);
+      const shut = collapsed.includes(row.id);
+      body = (
+        <span className={styles.group} style={{ "--data-grid-depth": depth(row.id) } as CSSProperties}>
+          {isParent ? (
+            <Button emphasis="minimal" size="sm" iconOnly iconStart={shut ? "add_box" : "indeterminate_check_box"} aria-expanded={!shut} onClick={() => toggleGroup(row.id)}>
+              {`${shut ? "Show" : "Hide"} rows under ${value || `row ${n}`}`}
+            </Button>
+          ) : <span className={styles.groupSpace} aria-hidden="true" />}
+          {body}
+        </span>
       );
     }
     return (
@@ -380,7 +448,14 @@ export function DataGrid({
                   style={c.width ? { width: c.width } : undefined}
                 >
                   {head(
-                    <HeaderCell size={size} line={line} alignment={c.type === "number" ? "end" : "start"} label={c.header} />,
+                    rowParent && c.key === firstKey && parents.size > 0 ? (
+                      <span className={styles.groupHead}>
+                        <Button emphasis="minimal" size="sm" iconOnly iconStart={allCollapsed ? "add_box" : "indeterminate_check_box"} aria-expanded={!allCollapsed} onClick={() => setCollapsed(allCollapsed ? [] : [...parents])}>
+                          {allCollapsed ? "Show all rows" : "Hide rows under every group"}
+                        </Button>
+                        <HeaderCell size={size} line={line} label={c.header} />
+                      </span>
+                    ) : <HeaderCell size={size} line={line} alignment={c.type === "number" ? "end" : "start"} label={c.header} />,
                     c.setForAll ? (
                       <Dropdown
                         label="Set for all" emphasis="minimal" size="sm" alignment={c.type === "number" ? "right" : "left"}
@@ -398,6 +473,7 @@ export function DataGrid({
             {rows.length === 0 ? (
               <tr><td colSpan={span} className={styles.empty}>{emptyLabel}</td></tr>
             ) : rows.map((row, i) => {
+              if (hidden(row.id)) return null;
               const content = details.get(row.id);
               const isOpen = hasDetail(row.id) && expanded.includes(row.id);
               const detailId = `${uid}-detail-${row.id}`;
@@ -464,9 +540,32 @@ export function DataGrid({
               </Fragment>
               );
             })}
+            {totalRow && rows.length > 0 && (
+              <tr className={styles.total}>
+                {selectable && <td className={[styles.totalCell, styles.select, stickyFirstColumn ? styles.stickySelect : ""].join(" ")} />}
+                {toggleColumn && <td className={[styles.totalCell, styles.toggle, stickyFirstColumn ? styles.stickyToggle : ""].join(" ")} />}
+                {rowNumbers && <td className={[styles.totalCell, styles.index, stickyFirstColumn ? styles.stickyIndex : ""].join(" ")} />}
+                {columns.map((c) => (
+                  <td key={c.key} className={[styles.totalCell, styles.readOnly, c.type === "number" ? styles.numeric : "", c.hug ? styles.hugCell : "", c.key === firstKey ? pin : ""].join(" ")}>
+                    <span className={[styles.value, rowParent && c.key === firstKey ? styles.totalLabel : ""].join(" ")}>{totalRow[c.key] ?? ""}</span>
+                  </td>
+                ))}
+                {actionColumn && <td className={[styles.totalCell, styles.actions].join(" ")} />}
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
+      {legend && legend.length > 0 && (
+        <ul className={styles.legend} aria-label="Key">
+          {legend.map((l) => (
+            <li key={l.label} className={styles.legendItem}>
+              <Icon name={l.icon ?? STATUS_ICON[l.intent]} size="sm" intent={l.intent === "neutral" ? "subtle" : l.intent} filled />
+              {l.label}
+            </li>
+          ))}
+        </ul>
+      )}
       {canAddRows && (
         <div className={styles.add}>
           <Button emphasis="minimal" size="sm" iconStart="add" onClick={() => addRow()}>Add row</Button>

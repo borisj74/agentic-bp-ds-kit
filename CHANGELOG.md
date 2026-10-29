@@ -4,6 +4,19 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.7 — 2026-10-29
+
+DataGrid can now lay out a schedule: grouped rows, status marks, link cells and a total row. Everything is new and optional, so screens render exactly as on v0.7.6.
+
+### Added
+- DataGrid `rowParent`: groups rows under a parent row. The parent gets a square toggle at the start of its first cell that hides and shows its rows, and the first column's header gets one toggle for every group. `collapsed`, `defaultCollapsed` and `onCollapsedChange` hold which groups are shut.
+- DataGrid `cellStatus`: a filled status icon after a cell's value, like a green Posted check or an orange Unposted mark, named for screen readers. `tint` fills the cell with the intent's faint background.
+- DataGrid `cellReadOnly`: makes single cells read only, on top of a column's `readOnly`.
+- DataGrid `cellLink` and `onCellLink`: draw a value as a link. A read-only one is a kit Link that calls `onCellLink`; one that edits is underlined in the brand colour and still opens its editor.
+- DataGrid `totalRow`: a read-only total at the bottom of the grid, like Period total.
+- DataGrid `legend`: a key under the grid to the status icons, like Posted and Unposted.
+- DataGrid catalog example: Revenue schedule.
+
 ## v0.7.6 — 2026-10-29
 
 A catalog example, no kit changes. Screens render exactly as on v0.7.5.

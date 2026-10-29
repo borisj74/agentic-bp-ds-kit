@@ -132,6 +132,48 @@
     "onExpandedChange": {
       "type": "function",
       "note": "(ids: string[]) => void. Runs when a row opens or closes."
+    },
+    "rowParent": {
+      "type": "function",
+      "note": "(row: DataGridRow) => string | undefined. Groups rows: a row whose rowParent returns another row's id sits under that row, one step in. The parent shows a square toggle (indeterminate_check_box open, add_box shut) at the start of its first cell that hides and shows its rows, and the first column's header holds one toggle for every group. Keep a group's rows right after their parent in rows."
+    },
+    "collapsed": {
+      "type": "string[]",
+      "note": "Controlled ids of the parent rows whose rows are hidden."
+    },
+    "defaultCollapsed": {
+      "type": "string[]",
+      "note": "Starting shut groups when collapsed is not controlled."
+    },
+    "onCollapsedChange": {
+      "type": "function",
+      "note": "(ids: string[]) => void. Runs when a group opens or shuts, or the header toggle does them all."
+    },
+    "cellStatus": {
+      "type": "function",
+      "itemShape": "(row: DataGridRow, key: string) => { intent: \"success\" | \"warning\" | \"danger\" | \"info\" | \"neutral\"; label: string; icon?: string; tint?: boolean } | undefined",
+      "note": "A filled status icon after the cell's value, like posted (success, check_circle) or not posted (warning, remove_circle); icon overrides the intent's glyph and label names it for screen readers. tint fills the cell with the intent's faint background (bg-*-faint), like months not posted yet. Return undefined for a plain cell."
+    },
+    "cellReadOnly": {
+      "type": "function",
+      "note": "(row: DataGridRow, key: string) => boolean. Read only cell by cell, on top of a column's readOnly: a schedule's product rows only show, while their adjustment rows edit."
+    },
+    "cellLink": {
+      "type": "function",
+      "note": "(row: DataGridRow, key: string) => boolean. Draws the cell's value as a link. On a read-only cell it is a kit Link that calls onCellLink; on a cell that edits, the value is underlined in the brand colour and clicking it opens the editor as usual."
+    },
+    "onCellLink": {
+      "type": "function",
+      "note": "(row: DataGridRow, key: string) => void. Runs when a read-only link cell is clicked, like a product name opening its record."
+    },
+    "totalRow": {
+      "type": "DataGridRow",
+      "note": "A row at the bottom that adds the others up, like Period total: read only, on bg-neutral-subtle, medium weight. Its value per column key; it is never selectable, grouped or given actions."
+    },
+    "legend": {
+      "type": "DataGridLegendItem[]",
+      "itemShape": "{ intent: \"success\" | \"warning\" | \"danger\" | \"info\" | \"neutral\"; label: string; icon?: string }",
+      "note": "A key under the grid to the cellStatus icons, like Posted and Unposted: each item is the same filled icon, then its name."
     }
   },
   "useWhen": [
@@ -258,6 +300,28 @@
             "columns": "{conditionColumns}",
             "defaultRows": [],
             "canAddRows": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Revenue schedule",
+      "usage": "A schedule grouped by product. Each product row (read only, its name a link) has its Manual adjustments row under it, opened and shut by the square toggle; the header's toggle does every group. January to March carry a green posted mark; later months an orange unposted mark on a faint warning fill. Adjustments edit in place and read as links (-- when empty). Period total sits at the bottom, and the key under the grid names the two marks.",
+      "items": [
+        {
+          "props": {
+            "label": "Revenue schedule",
+            "size": "sm",
+            "line": "thin",
+            "rowNumbers": false,
+            "columns": "{scheduleColumns}",
+            "defaultRows": "{scheduleRows}",
+            "rowParent": "{scheduleParent}",
+            "cellReadOnly": "{scheduleReadOnly}",
+            "cellLink": "{scheduleLink}",
+            "cellStatus": "{scheduleStatus}",
+            "totalRow": "{scheduleTotal}",
+            "legend": "{scheduleLegend}"
           }
         }
       ]
