@@ -31,8 +31,10 @@
 .searchPlaceholder { color: var(--text-neutral-subtle); }
 /* The GlobalSearch dropdown, fixed and portaled over the search field. useFloating places it and makes it visible. */
 .searchPanel { position: fixed; top: 0; left: 0; z-index: var(--z-overlay); visibility: hidden; max-width: calc(100vw - var(--space-medium)); }
-/* field: one more control after the search, like an Effective on DatePicker with its label at the start. */
-.field { flex: none; margin-inline-start: var(--space-small); }
+/* field: one more control after the search, like an Effective on DatePicker with its label at the start. A row of
+   its own, so a screen can pass two controls (a Dropdown and a Button, say) and they sit on the bar's own rhythm
+   instead of touching. */
+.field { display: flex; align-items: center; gap: var(--space-xsmall); flex: none; margin-inline-start: var(--space-small); }
 /* selectedCount: N selected, before the actions it is about. */
 .selected { font-size: var(--font-size-small); font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); white-space: nowrap; margin-inline-end: var(--space-xsmall); }
 .divider { align-self: stretch; width: var(--border-width-thin); background: var(--border-neutral-subtle); }

@@ -201,17 +201,40 @@ ${layout.doNot.map((d) => `- ${noContractRefs(d)}`).join("\n")}
 
 // ----------------------------------------------------------- 03 components
 
+// A callback cannot be drawn, so its own line would only cost the agent tokens.
+const isCallback = (type = "") => type === "function" || type.includes("=>");
+
+// Row and item shapes carry their field notes in the contract. Inside Figma only
+// the field names matter, so each one becomes `name` or `name?`.
+const shape = (itemShape) => {
+  if (typeof itemShape === "string") return itemShape.length < 120 ? ` ${itemShape}` : "";
+  if (!itemShape || typeof itemShape !== "object") return "";
+  const fields = Object.entries(itemShape)
+    .map(([field, value]) => field + (String(value).split(/\s/)[0].includes("?") ? "?" : ""));
+  return fields.length ? ` { ${fields.join(", ")} }` : "";
+};
+
 const componentEntry = (meta) => {
   const c = json(meta.contract);
-  const props = Object.entries(c.props ?? {}).map(([name, p]) => {
+  const entries = Object.entries(c.props ?? {});
+  const props = entries.map(([name, p]) => {
     if (p.enum) return `\`${name}\`: ${p.enum.map((v) => `\`${v}\``).join(" | ")}${p.default !== undefined ? ` (default \`${p.default}\`)` : ""}`;
-    if (p.type === "boolean") return `\`${name}\`: boolean`;
-    return null;
+    if (p.type === "boolean") return `\`${name}\`: boolean${p.default !== undefined ? ` (default \`${p.default}\`)` : ""}`;
+    if (isCallback(p.type)) return null;
+    return `\`${name}\`: \`${p.type}\`${shape(p.itemShape)}`;
   }).filter(Boolean);
+  // on* is a handler the agent can ignore. The rest are accessors a screen passes
+  // to decide what a row or cell looks like, so they belong next to the props.
+  const callbacks = entries.filter(([, p]) => !p.enum && isCallback(p.type)).map(([name]) => name);
+  const names = (list) => list.map((name) => `\`${name}\``).join(", ");
+  const accessors = callbacks.filter((name) => !/^on[A-Z]/.test(name));
+  const events = callbacks.filter((name) => /^on[A-Z]/.test(name));
   return [
     `### ${c.name}`,
     firstSentence(c.intent),
     props.length ? `Props — ${props.join("; ")}` : null,
+    accessors.length ? `Functions — ${names(accessors)}` : null,
+    events.length ? `Events — ${names(events)}` : null,
     c.doNot?.length ? c.doNot.slice(0, 3).map((d) => `- ${noContractRefs(d)}`).join("\n") : null,
   ].filter(Boolean).join("\n\n");
 };

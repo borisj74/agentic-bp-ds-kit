@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -56,6 +57,23 @@ describe("Toolbar", () => {
     );
     expect(screen.getByRole("button", { name: "Effective on" })).toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent("3 selected");
+  });
+
+  // Regression: the field slot was a plain block, so two controls passed in a fragment touched with no gap.
+  it("holds two field controls in one slot, spaced like the bar", () => {
+    render(
+      <Toolbar
+        label="Rate tools" onSearchChange={() => {}}
+        field={<><Button size="sm">Effective on</Button><Button size="sm">Collapse all</Button></>}
+      />,
+    );
+    const effective = screen.getByRole("button", { name: "Effective on" });
+    const collapse = screen.getByRole("button", { name: "Collapse all" });
+    expect(effective.parentElement).toBe(collapse.parentElement);
+
+    // jsdom applies no CSS Module rules, so the slot's own spacing is read off the stylesheet.
+    const css = readFileSync("src/ui/Toolbar/Toolbar.module.css", "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ");
+    expect(css).toContain(".field { display: flex; align-items: center; gap: var(--space-xsmall);");
   });
 
   it("shows no count when nothing is ticked", () => {

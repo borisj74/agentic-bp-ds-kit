@@ -66,7 +66,7 @@
     },
     "field": {
       "type": "ReactNode",
-      "note": "One more control after the search: a kit DatePicker or Select, size sm, with labelPosition start, like Effective on. For a value that narrows the rows and changes often enough to stay on the bar instead of in the filter bar."
+      "note": "One more control after the search: a kit DatePicker or Select, size sm, with labelPosition start, like Effective on. For a value that narrows the rows and changes often enough to stay on the bar instead of in the filter bar. It can hold more than one control: the slot is a row spaced like the rest of the bar, so pass them in a fragment rather than spacing them yourself."
     },
     "selectedCount": {
       "type": "number",
@@ -218,6 +218,21 @@
             "onSearchChange": "{setQuery}",
             "field": true,
             "selectedCount": 10,
+            "actions": "{actions}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Two controls in the field slot",
+      "usage": "field can hold more than one control. The slot is a row spaced like the rest of the bar, so pass them in a fragment and leave the spacing to it.",
+      "items": [
+        {
+          "props": {
+            "onSearchChange": "{setQuery}",
+            "field": "pair",
+            "views": "{views}",
+            "onRefresh": "{reload}",
             "actions": "{actions}"
           }
         }

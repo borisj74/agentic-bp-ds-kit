@@ -440,7 +440,13 @@ export function ToolbarDemo(p: Record<string, unknown>) {
       onMoreSelect={() => {}}
       actions={p.actions ? <><Button size="sm">Export</Button><Button size="sm" emphasis="strong" intent="brand">Create</Button></> : undefined}
       buttons={p.buttons === "subtle" ? "subtle" : undefined}
-      field={p.field ? <DatePicker size="sm" labelPosition="start" label="Effective on" value={effective} onChange={(v) => setEffective(typeof v === "string" ? v : v.start ?? "")} /> : undefined}
+      field={p.field ? (
+        <>
+          <DatePicker size="sm" labelPosition="start" label="Effective on" value={effective} onChange={(v) => setEffective(typeof v === "string" ? v : v.start ?? "")} />
+          {/* pair: two controls in the one slot, so the example shows the slot spacing them itself. */}
+          {p.field === "pair" && <Button size="sm" iconStart="unfold_less">Collapse all</Button>}
+        </>
+      ) : undefined}
       selectedCount={typeof p.selectedCount === "number" ? p.selectedCount : undefined}
     />
   );

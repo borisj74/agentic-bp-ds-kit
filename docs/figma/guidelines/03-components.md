@@ -10,7 +10,7 @@ the list leaves out.
 
 Photo or initials for one person.
 
-Props — `size`: `xs` | `sm` | `md` | `lg` (default `md`); `shape`: `circle` | `square` (default `circle`); `decorative`: boolean
+Props — `name`: `string`; `src`: `string`; `initials`: `string`; `size`: `xs` | `sm` | `md` | `lg` (default `md`); `shape`: `circle` | `square` (default `circle`); `decorative`: boolean (default `false`)
 
 - Do not invent a local Avatar.
 - Do not use for status or category labels.
@@ -20,7 +20,7 @@ Props — `size`: `xs` | `sm` | `md` | `lg` (default `md`); `shape`: `circle` | 
 
 Overlapping row of kit Avatars with a +N count for the rest.
 
-Props — `size`: `xs` | `sm` | `md` | `lg` (default `md`); `shape`: `circle` | `square` (default `circle`)
+Props — `label`: `string`; `size`: `xs` | `sm` | `md` | `lg` (default `md`); `shape`: `circle` | `square` (default `circle`); `max`: `number`; `items`: `AvatarGroupItem[]` { name, src?, initials? }
 
 - Do not invent a local avatar stack.
 - Do not put anything but people in the group.
@@ -30,7 +30,7 @@ Props — `size`: `xs` | `sm` | `md` | `lg` (default `md`); `shape`: `circle` | 
 
 Triggers an action.
 
-Props — `emphasis`: `strong` | `subtle` | `minimal` (default `subtle`); `intent`: `brand` | `neutral` | `danger` (default `neutral`); `size`: `sm` | `md` | `lg` (default `md`); `iconSize`: `sm` | `md` | `lg` | `xl`; `iconOnly`: boolean; `loading`: boolean; `toggle`: boolean; `disabled`: boolean; `fullWidth`: boolean; `type`: `button` | `submit` | `reset` (default `button`)
+Props — `emphasis`: `strong` | `subtle` | `minimal` (default `subtle`); `intent`: `brand` | `neutral` | `danger` (default `neutral`); `size`: `sm` | `md` | `lg` (default `md`); `iconStart`: `string`; `iconEnd`: `string`; `iconSize`: `sm` | `md` | `lg` | `xl`; `iconOnly`: boolean (default `false`); `loading`: boolean (default `false`); `toggle`: boolean; `disabled`: boolean (default `false`); `fullWidth`: boolean (default `false`); `type`: `button` | `submit` | `reset` (default `button`); `children`: `ReactNode`
 
 - Do not use for in-text navigation (use Link).
 - Do not put two strong brand Buttons in one view.
@@ -40,7 +40,7 @@ Props — `emphasis`: `strong` | `subtle` | `minimal` (default `subtle`); `inten
 
 Joined row of kit Buttons that share one size and act as one control cluster.
 
-Props — `size`: `sm` | `md` | `lg` (default `md`); `disabled`: boolean
+Props — `label`: `string`; `size`: `sm` | `md` | `lg` (default `md`); `disabled`: boolean (default `false`); `children`: `Button[]`
 
 - Do not invent a local button group or segmented control.
 - Do not mix sizes inside one group.
@@ -50,7 +50,9 @@ Props — `size`: `sm` | `md` | `lg` (default `md`); `disabled`: boolean
 
 Filter chip for lists and tables: shows the filter name or its chosen value, opens its options, and turns an applied filter on or off.
 
-Props — `size`: `sm` | `md` | `lg` (default `md`); `open`: boolean; `disabled`: boolean; `toggle`: `on` | `off`; `hasDropdown`: boolean
+Props — `size`: `sm` | `md` | `lg` (default `md`); `open`: boolean (default `false`); `disabled`: boolean (default `false`); `count`: `number`; `value`: `string`; `toggle`: `on` | `off`; `hasDropdown`: boolean (default `true`); `children`: `string`
+
+Events — `onToggle`, `onClick`
 
 - Do not invent a local split button, filter chip or dropdown trigger. Use Dropdown trigger=filter for the menu.
 - Do not use for page actions or view switches. Use Button or a Dropdown.
@@ -60,7 +62,7 @@ Props — `size`: `sm` | `md` | `lg` (default `md`); `open`: boolean; `disabled`
 
 Draws one Material Symbols Outlined glyph at a kit size, colored by the parent text color or a semantic icon role.
 
-Props — `size`: `xs` | `sm` | `md` | `lg` | `xl` (default `md`); `intent`: `inherit` | `neutral` | `subtle` | `brand` | `info` | `success` | `warning` | `danger` (default `inherit`); `filled`: boolean
+Props — `name`: `string`; `size`: `xs` | `sm` | `md` | `lg` | `xl` (default `md`); `intent`: `inherit` | `neutral` | `subtle` | `brand` | `info` | `success` | `warning` | `danger` (default `inherit`); `filled`: boolean (default `false`); `label`: `string`
 
 - Do not inline SVGs or emoji.
 - Do not size with custom px; use size enum.
@@ -71,7 +73,7 @@ Props — `size`: `xs` | `sm` | `md` | `lg` | `xl` (default `md`); `intent`: `in
 
 A piece of drawn artwork from the product, like the picture over an empty page.
 
-Props — `name`: `ai-chip` | `chat-search`; `size`: `sm` | `md` | `lg` (default `md`); `animated`: boolean
+Props — `name`: `ai-chip` | `chat-search`; `size`: `sm` | `md` | `lg` (default `md`); `animated`: boolean (default `false`); `label`: `string`
 
 - Do not paste an SVG into a screen or a pattern. Add the artwork here instead.
 - Do not use it for an icon. Use Icon.
@@ -81,7 +83,7 @@ Props — `name`: `ai-chip` | `chat-search`; `size`: `sm` | `md` | `lg` (default
 
 Brand logo: the full wordmark or the mark alone, in fixed brand colors.
 
-Props — `type`: `default` | `symbol` (default `default`)
+Props — `type`: `default` | `symbol` (default `default`); `label`: `string`
 
 - Do not recolor, retint or tokenize the logo. Brand colors are fixed.
 - Do not redraw it, use an image of it, or paste the SVG into a screen. Use this component.
@@ -91,7 +93,7 @@ Props — `type`: `default` | `symbol` (default `default`)
 
 AI logo for AI features: full logo or icon, in fixed brand colors.
 
-Props — `type`: `default` | `symbol` (default `default`); `intent`: `color` | `monochrome` | `white` | `filled` (default `color`)
+Props — `type`: `default` | `symbol` (default `default`); `intent`: `color` | `monochrome` | `white` | `filled` (default `color`); `label`: `string`
 
 - Do not recolor, retint or tokenize the logo. Brand colors are fixed.
 - Do not redraw it, use an image of it, or paste the SVG into a screen.
@@ -103,7 +105,9 @@ Props — `type`: `default` | `symbol` (default `default`); `intent`: `color` | 
 
 Values side by side as bars, one group or stack per category, like invoices by status for each week.
 
-Props — `showHeader`: boolean; `orientation`: `vertical` | `horizontal` (default `vertical`); `highlightIntent`: `green` | `olive` | `cyan` | `orange` | `pink` | `gray` | `purple` | `yellow` | `red` | `mint` (default `orange`); `stacked`: boolean; `barWidth`: `wide` | `thin` (default `wide`); `showValues`: boolean; `showGrid`: boolean; `showLegend`: boolean; `legendPosition`: `top` | `bottom` | `end` (default `bottom`); `animate`: boolean; `format`: `number` | `currency` | `percent` (default `number`)
+Props — `label`: `string`; `title`: `string`; `subtitle`: `string`; `showHeader`: boolean (default `true`); `categories`: `string[]`; `series`: `ChartSeries[]` { name: string; values: number[]; intent?: ChartIntent; projectedFrom?: number; axis?: "start" | "end" }; `orientation`: `vertical` | `horizontal` (default `vertical`); `highlight`: `number | number[]`; `highlightIntent`: `green` | `olive` | `cyan` | `orange` | `pink` | `gray` | `purple` | `yellow` | `red` | `mint` (default `orange`); `stacked`: boolean (default `false`); `barWidth`: `wide` | `thin` (default `wide`); `showValues`: boolean (default `false`); `showGrid`: boolean (default `true`); `showLegend`: boolean (default `true`); `legendPosition`: `top` | `bottom` | `end` (default `bottom`); `animate`: boolean (default `true`); `format`: `number` | `currency` | `percent` (default `number`); `currency`: `string`; `height`: `number`; `emptyLabel`: `string`; `referenceLines`: `ChartReferenceLine[]`; `marker`: `ChartMarker` { category: number; label: string }; `selected`: `number | null`
+
+Events — `onSelectedChange`
 
 - Do not use it for a long, smooth trend. Use LineChart.
 - Do not use it for one share of a total. Use PieChart.
@@ -113,7 +117,9 @@ Props — `showHeader`: boolean; `orientation`: `vertical` | `horizontal` (defau
 
 A full calendar of events by month, week, day or as a list, where people browse dates, filter calendars and add, edit or delete events.
 
-Props — `view`: `month` | `week` | `day` | `list`; `defaultView`: `month` | `week` | `day` | `list` (default `month`); `weekStart`: `sunday` | `monday` (default `sunday`); `readOnly`: boolean
+Props — `label`: `string`; `events`: `CalendarEvent[]`; `defaultEvents`: `CalendarEvent[]`; `calendars`: `CalendarSource[]` { id: string; name: string; intent?: CalendarIntent; hidden?: boolean }; `view`: `month` | `week` | `day` | `list`; `defaultView`: `month` | `week` | `day` | `list` (default `month`); `views`: `CalendarView[]`; `date`: `string`; `defaultDate`: `string`; `weekStart`: `sunday` | `monday` (default `sunday`); `startHour`: `number`; `readOnly`: boolean (default `false`)
+
+Events — `onEventsChange`, `onEventClick`, `onViewChange`, `onDateChange`
 
 - Do not use it to pick one date or a range in a form. Use DatePicker.
 - Do not use it for a timeline of one record's history or a list of due dates. Use Table.
@@ -123,7 +129,9 @@ Props — `view`: `month` | `week` | `day` | `list`; `defaultView`: `month` | `w
 
 One item in a grid or list of options people compare and pick, like a proposal line, product or plan: title, details, a price and a status note, with an optional image and a select checkbox.
 
-Props — `messageIntent`: `success` | `warning` | `danger` | `info` (default `success`); `selectable`: boolean; `selected`: boolean; `defaultSelected`: boolean; `disabled`: boolean
+Props — `title`: `string`; `overline`: `string`; `badge`: `string`; `badgeIntent`: `BadgeIntent`; `description`: `string`; `amount`: `string`; `message`: `string`; `messageIntent`: `success` | `warning` | `danger` | `info` (default `success`); `image`: `string`; `imageAlt`: `string`; `icon`: `string`; `selectable`: boolean (default `false`); `selected`: boolean; `defaultSelected`: boolean (default `false`); `disabled`: boolean (default `false`); `href`: `string`; `actions`: `CardAction[]` { id: string; label: string; icon: string }; `menu`: `DropdownMenuEntry[]`
+
+Events — `onSelectedChange`, `onClick`, `onAction`
 
 - Do not build a card from a div with a border, or add a ProductCard, ProposalCard or CardFooter. Use Card.
 - Do not use it for page sections. Use Section.
@@ -133,7 +141,9 @@ Props — `messageIntent`: `success` | `warning` | `danger` | `info` (default `s
 
 Content for one table cell: text, a number, a date, a link, a redirect to another page, a person, a file, a status, a trend, progress, a switch, row actions or a row menu, a tree row, with an optional row checkbox.
 
-Props — `type`: `text` | `link` | `avatar` | `avatarGroup` | `file` | `payment` | `badge` | `badges` | `trendPositive` | `trendNegative` | `progress` | `actions` | `actionIcons` | `actionMenu` | `checkbox` | `tree` | `number` | `date` | `status` | `switch` | `popupTrigger` | `textBlock` | `redirect` (default `text`); `size`: `sm` | `md` (default `md`); `alignment`: `start` | `center` | `end` (default `start`); `text`: boolean; `checkbox`: boolean; `checked`: boolean; `defaultChecked`: boolean; `expanded`: boolean; `showLines`: boolean; `treeToggle`: `chevron` | `box` (default `box`)
+Props — `type`: `text` | `link` | `avatar` | `avatarGroup` | `file` | `payment` | `badge` | `badges` | `trendPositive` | `trendNegative` | `progress` | `actions` | `actionIcons` | `actionMenu` | `checkbox` | `tree` | `number` | `date` | `status` | `switch` | `popupTrigger` | `textBlock` | `redirect` (default `text`); `size`: `sm` | `md` (default `md`); `alignment`: `start` | `center` | `end` (default `start`); `text`: boolean (default `true`); `checkbox`: boolean (default `false`); `label`: `string`; `href`: `string`; `name`: `string`; `src`: `string`; `people`: `CellPerson[]` { name, src? }; `icon`: `string`; `intent`: `BadgeIntent`; `badges`: `CellBadge[]` { label, intent? }; `value`: `string | number`; `actions`: `CellAction[]` { label, icon?, emphasis, intent, onClick? }; `menu`: `CellAction[]`; `checked`: boolean; `defaultChecked`: boolean; `level`: `number`; `expanded`: boolean; `showLines`: boolean (default `true`); `treeToggle`: `chevron` | `box` (default `box`)
+
+Events — `onClick`, `onCheckedChange`, `onExpandedChange`
 
 - Do not invent a local table cell, Tag, Trend, FileIcon, PaymentMethod or ActionCell.
 - Do not draw a progress bar in a cell. Use type progress; it is a kit Meter.
@@ -143,7 +153,11 @@ Props — `type`: `text` | `link` | `avatar` | `avatarGroup` | `file` | `payment
 
 One turn in a chat with the assistant: what the person asked, or what the assistant answered, with its workings, buttons and suggestions.
 
-Props — `author`: `user` | `assistant`; `bubble`: boolean
+Props — `author`: `user` | `assistant`; `text`: `string`; `children`: `ReactNode`; `bubble`: boolean; `status`: `string`; `sections`: `ChatMessageSection[]` { id, label, count?, content, defaultOpen? }; `actions`: `ChatMessageActionId[]`; `pressed`: `ChatMessageActionId[]`; `suggestions`: `ChatSuggestion[]` { id, label }; `menu`: `DropdownMenuEntry[]`; `person`: `{ name?: string; src?: string; initials?: string }`; `label`: `string`
+
+Functions — `apply`
+
+Events — `onAction`, `onSuggestion`, `onMenuSelect`
 
 - Do not build a bubble from your own divs, or add a ChatBubble, MessageRow or AiAvatar. Pass the props.
 - Do not use it for an alert or a system notice. Use Callout or Toast.
@@ -153,7 +167,11 @@ Props — `author`: `user` | `assistant`; `bubble`: boolean
 
 An editable table: people click a cell to add or change its content, like rule conditions, line items or mappings.
 
-Props — `size`: `sm` | `md` (default `md`); `line`: `medium` | `thin` (default `medium`); `rowNumbers`: boolean; `canAddRows`: boolean; `canRemoveRows`: boolean; `canDeleteRows`: boolean; `canInsertRows`: boolean; `selectable`: boolean; `stickyFirstColumn`: boolean
+Props — `columns`: `DataGridColumn[]`; `rows`: `DataGridRow[]` { id: string; [key: string]: string }; `defaultRows`: `DataGridRow[]`; `size`: `sm` | `md` (default `md`); `line`: `medium` | `thin` (default `medium`); `rowNumbers`: boolean (default `true`); `canAddRows`: boolean (default `false`); `canRemoveRows`: boolean (default `false`); `canDeleteRows`: boolean (default `false`); `canInsertRows`: boolean (default `false`); `selectable`: boolean (default `false`); `selected`: `string[]`; `defaultSelected`: `string[]`; `rowLabel`: `string`; `emptyLabel`: `string`; `label`: `string`; `stickyFirstColumn`: boolean (default `true`); `expanded`: `string[]`; `defaultExpanded`: `string[]`; `collapsed`: `string[]`; `defaultCollapsed`: `string[]`; `totalRow`: `DataGridRow`; `legend`: `DataGridLegendItem[]` { intent: "success" | "warning" | "danger" | "info" | "neutral"; label: string; icon?: string }
+
+Functions — `deleteConfirm`, `actionsFor`, `detail`, `detailCount`, `rowParent`, `cellStatus`, `cellReadOnly`, `cellLink`
+
+Events — `onRowsChange`, `onDeleteRow`, `onSelectionChange`, `onExpandedChange`, `onCollapsedChange`, `onCellLink`
 
 - Do not use it to show data people only read. Use Table.
 - Do not invent an EditableCell, GridRow or a table of loose inputs. Pass columns with a type.
@@ -163,7 +181,9 @@ Props — `size`: `sm` | `md` (default `md`); `line`: `medium` | `thin` (default
 
 Column title for a data table: uppercase label, optional select-all checkbox, optional sort, with a brand-faint bottom border, 2px or 1px.
 
-Props — `size`: `sm` | `md` (default `md`); `alignment`: `start` | `center` | `end` (default `start`); `line`: `medium` | `thin` (default `medium`); `checkbox`: boolean; `checked`: boolean; `defaultChecked`: boolean; `indeterminate`: boolean; `sortable`: boolean; `sort`: `none` | `asc` | `desc` (default `none`)
+Props — `label`: `string`; `size`: `sm` | `md` (default `md`); `alignment`: `start` | `center` | `end` (default `start`); `line`: `medium` | `thin` (default `medium`); `checkbox`: boolean (default `false`); `checked`: boolean; `defaultChecked`: boolean; `indeterminate`: boolean (default `false`); `sortable`: boolean (default `false`); `sort`: `none` | `asc` | `desc` (default `none`)
+
+Events — `onCheckedChange`, `onSort`
 
 - Do not invent a local th, TableHeader, ColumnTitle or SortButton.
 - Do not use Cell for column titles, or HeaderCell in body rows.
@@ -173,7 +193,9 @@ Props — `size`: `sm` | `md` (default `md`); `alignment`: `start` | `center` | 
 
 The key to a drawing: a small colour mark per name, so people can read what each colour means.
 
-Props — `orientation`: `horizontal` | `vertical` (default `horizontal`); `alignment`: `start` | `center` | `end` (default `center`); `shape`: `square` | `line` | `dot` (default `square`); `size`: `sm` | `md` (default `md`); `decorative`: boolean
+Props — `items`: `LegendKey[]` { id?, label, intent, value?, shape }; `orientation`: `horizontal` | `vertical` (default `horizontal`); `alignment`: `start` | `center` | `end` (default `center`); `shape`: `square` | `line` | `dot` (default `square`); `size`: `sm` | `md` (default `md`); `hidden`: `string[]`; `defaultHidden`: `string[]`; `label`: `string`; `decorative`: boolean (default `false`)
+
+Events — `onHiddenChange`
 
 - Do not add a second legend under a kit chart; the chart draws its own. Use showLegend and legendPosition to place it.
 - Do not use it as a list of filters or tags. Use Badge or FilterButton.
@@ -183,7 +205,7 @@ Props — `orientation`: `horizontal` | `vertical` (default `horizontal`); `alig
 
 How values change over time as lines or filled areas, one per series, like revenue by month or invoices approved by day.
 
-Props — `showHeader`: boolean; `area`: boolean; `stacked`: boolean; `showPoints`: boolean; `showValues`: boolean; `showGrid`: boolean; `showLegend`: boolean; `legendPosition`: `top` | `bottom` | `end` (default `bottom`); `animate`: boolean; `format`: `number` | `currency` | `percent` (default `number`)
+Props — `label`: `string`; `title`: `string`; `subtitle`: `string`; `showHeader`: boolean (default `true`); `categories`: `string[]`; `series`: `ChartSeries[]` { name: string; values: number[]; intent?: ChartIntent; projectedFrom?: number }; `area`: boolean (default `false`); `stacked`: boolean (default `false`); `showPoints`: boolean (default `false`); `showValues`: boolean (default `false`); `showGrid`: boolean (default `true`); `showLegend`: boolean (default `true`); `legendPosition`: `top` | `bottom` | `end` (default `bottom`); `animate`: boolean (default `true`); `format`: `number` | `currency` | `percent` (default `number`); `currency`: `string`; `height`: `number`; `emptyLabel`: `string`; `referenceLines`: `ChartReferenceLine[]` { value: number; label: string; intent?: ChartIntent; values?: number[]; note?: { at: number; label: string } }; `marker`: `ChartMarker` { category: number; label: string }
 
 - Do not use it for categories without an order, like regions. Use BarChart.
 - Do not use it for one share of a total. Use PieChart.
@@ -193,7 +215,9 @@ Props — `showHeader`: boolean; `area`: boolean; `stacked`: boolean; `showPoint
 
 A list of records, one a row: a primary and a secondary line with an avatar, icon or image before them, and badges, actions, a chevron or a drag handle after, grouped under headers when the list is long, and stepping into nested lists in place.
 
-Props — `size`: `sm` | `md` | `lg` (default `md`); `collapsible`: boolean; `stickyGroups`: boolean; `selection`: `none` | `single` | `multiple` (default `none`); `interaction`: `none` | `drill` | `drag` (default `none`); `nesting`: `step` | `expand` (default `step`)
+Props — `label`: `string`; `items`: `ListViewItem[]` { id, primary, secondary?, group?, avatar?, icon?, image?, badge?, badgeIntent?, badgePosition, unread?, message?, messageIntent, actions, disabled?, children?, menu? }; `groups`: `ListViewGroup[]` { id: string; title: string }; `size`: `sm` | `md` | `lg` (default `md`); `collapsible`: boolean (default `false`); `stickyGroups`: boolean (default `false`); `collapsed`: `string[]`; `defaultCollapsed`: `string[]`; `selection`: `none` | `single` | `multiple` (default `none`); `selected`: `string[]`; `defaultSelected`: `string[]`; `interaction`: `none` | `drill` | `drag` (default `none`); `path`: `string[]`; `defaultPath`: `string[]`; `nesting`: `step` | `expand` (default `step`); `expanded`: `string[]`; `defaultExpanded`: `string[]`; `detail`: `ReactNode`
+
+Events — `onItemsChange`, `onCollapsedChange`, `onSelectedChange`, `onOpen`, `onAction`, `onPathChange`, `onExpandedChange`
 
 - Do not use it for values people compare across columns. Use Table or DataGrid.
 - Do not use it for a short set of links. Use LinkList.
@@ -203,7 +227,9 @@ Props — `size`: `sm` | `md` | `lg` (default `md`); `collapsible`: boolean; `st
 
 A way in to somewhere: the name of a place, a line about what is in it, and a colored icon square.
 
-Props — `intent`: `brand` | `green` | `olive` | `cyan` | `orange` | `pink` | `gray` | `purple` | `yellow` | `red` | `mint` (default `brand`); `disabled`: boolean
+Props — `title`: `string`; `description`: `string`; `icon`: `string`; `intent`: `brand` | `green` | `olive` | `cyan` | `orange` | `pink` | `gray` | `purple` | `yellow` | `red` | `mint` (default `brand`); `href`: `string`; `disabled`: boolean (default `false`)
+
+Events — `onClick`
 
 - Do not use it to compare or pick options; that is Card.
 - Do not put buttons or fields inside it. The whole tile is one link.
@@ -213,7 +239,7 @@ Props — `intent`: `brand` | `green` | `olive` | `cyan` | `orange` | `pink` | `
 
 How a whole splits into a few parts, as a donut or a solid pie, like payments by method.
 
-Props — `showHeader`: boolean; `donut`: boolean; `size`: `sm` | `md` | `lg` (default `md`); `showTotal`: boolean; `showLegend`: boolean; `legendPosition`: `end` | `bottom` (default `end`); `alignment`: `start` | `center` (default `start`); `animate`: boolean; `format`: `number` | `currency` | `percent` (default `number`)
+Props — `label`: `string`; `title`: `string`; `subtitle`: `string`; `showHeader`: boolean (default `true`); `data`: `PieChartSlice[]` { label: string; value: number; intent?: ChartIntent }; `donut`: boolean (default `true`); `size`: `sm` | `md` | `lg` (default `md`); `showTotal`: boolean (default `true`); `totalLabel`: `string`; `showLegend`: boolean (default `true`); `legendPosition`: `end` | `bottom` (default `end`); `alignment`: `start` | `center` (default `start`); `maxSlices`: `number`; `otherLabel`: `string`; `animate`: boolean (default `true`); `format`: `number` | `currency` | `percent` (default `number`); `currency`: `string`; `emptyLabel`: `string`
 
 - Do not use it for many parts or values over time. Use BarChart or LineChart.
 - Do not switch the legend to bottom only to centre the chart. Use alignment center.
@@ -223,7 +249,9 @@ Props — `showHeader`: boolean; `donut`: boolean; `size`: `sm` | `md` | `lg` (d
 
 A strip of key numbers at the top of a screen, like open invoices, revenue or overdue amount, each with an optional trend and spark chart.
 
-Props — `selectable`: boolean; `scroll`: boolean
+Props — `items`: `ScoreboardItem[]`; `selectable`: boolean (default `false`); `selected`: `string | null`; `defaultSelected`: `string | null`; `scroll`: boolean (default `true`); `label`: `string`
+
+Events — `onSelectedChange`
 
 - Do not build a metric row from your own divs or cards, or add a MetricCard, ScoreCard or Sparkline. Pass items.
 - Do not use the chart as a real chart; it only shows the shape of the trend. Use a chart for readable data.
@@ -233,7 +261,11 @@ Props — `selectable`: boolean; `scroll`: boolean
 
 A semantic table of rows and columns, like invoices or accounts, with optional row selection, a caption and a total.
 
-Props — `size`: `sm` | `md` (default `md`); `line`: `medium` | `thin` (default `medium`); `selectable`: boolean
+Props — `columns`: `TableColumn[]`; `rows`: `TableRow[]` { id?: string; [key: string]: ReactNode }; `size`: `sm` | `md` (default `md`); `line`: `medium` | `thin` (default `medium`); `caption`: `string`; `footer`: `TableFooter` { label: string; value: ReactNode }; `emptyLabel`: `string`; `selectable`: boolean (default `false`); `selected`: `string[]`; `defaultSelected`: `string[]`; `rowLabel`: `string`
+
+Functions — `detail`, `detailCount`
+
+Events — `onSelectionChange`, `onRowClick`
 
 - Do not invent TableHeader, TableRow, TableCell or a local grid of divs. Pass columns and rows.
 - Do not draw cell content yourself. Use kit Cell types for badges, people, links and row actions.
@@ -243,7 +275,9 @@ Props — `size`: `sm` | `md` (default `md`); `line`: `medium` | `thin` (default
 
 What happened on a record, newest first: a circled icon per entry joined by a line, with the note, links and action for each one.
 
-Props — `size`: `sm` | `md` (default `md`)
+Props — `items`: `TimelineItem[]` { id, title, timestamp?, subtitle?, icon?, intent, notes?, links, action, menu? }; `size`: `sm` | `md` (default `md`); `label`: `string`
+
+Events — `onMenuSelect`
 
 - Do not build a feed from your own divs, or add a TimelineItem, ActivityCard or FeedRow. Pass items.
 - Do not use it for steps in a flow. Use Steps.
@@ -253,7 +287,9 @@ Props — `size`: `sm` | `md` (default `md`)
 
 A nested list people open and close level by level, like teams in an organization, project folders or account hierarchies, to pick, check or reorder items.
 
-Props — `selection`: `none` | `single` | `multiple` (default `single`); `showIcons`: boolean; `showLines`: boolean; `reorderable`: boolean; `size`: `sm` | `md` | `lg`
+Props — `label`: `string`; `items`: `TreeItem[]` { id: string; label: string; icon?: string; disabled?: boolean; children?: TreeItem[] }; `defaultItems`: `TreeItem[]`; `selection`: `none` | `single` | `multiple` (default `single`); `selected`: `string[]`; `defaultSelected`: `string[]`; `expanded`: `string[]`; `defaultExpanded`: `string[]`; `showIcons`: boolean (default `false`); `showLines`: boolean (default `true`); `reorderable`: boolean (default `false`); `size`: `sm` | `md` | `lg`
+
+Events — `onItemsChange`, `onSelectedChange`, `onExpandedChange`
 
 - Do not use it for a flat list. Use Table, Select or RadioGroup.
 - Do not use it for main app navigation. Use AppNav.
@@ -262,6 +298,8 @@ Props — `selection`: `none` | `single` | `multiple` (default `single`); `showI
 ### UsageList
 
 A list of usage limits, one a row: the limit's name, how much is used of it, a bar, and a short note, like API calls, storage and seats on a plan.
+
+Props — `items`: `UsageListItem[]` { id, label, used, limit, unit?, note? }; `label`: `string`
 
 - Do not build usage rows from a Table with a Meter column, or from loose bars and text. Use UsageList.
 - Do not use it for task progress, like an upload or a setup checklist. Use Meter or Steps.
@@ -273,7 +311,9 @@ A list of usage limits, one a row: the limit's name, how much is used of it, a b
 
 Short status or category label.
 
-Props — `intent`: `neutral` | `hollow` | `info` | `success` | `warning` | `danger` | `highlight` (default `neutral`); `emphasis`: `subtle` | `strong` | `faint` (default `subtle`); `size`: `sm` | `md` | `lg` (default `sm`); `iconOnly`: boolean; `removable`: boolean; `disabled`: boolean
+Props — `intent`: `neutral` | `hollow` | `info` | `success` | `warning` | `danger` | `highlight` (default `neutral`); `emphasis`: `subtle` | `strong` | `faint` (default `subtle`); `size`: `sm` | `md` | `lg` (default `sm`); `icon`: `string`; `iconOnly`: boolean (default `false`); `removable`: boolean (default `false`); `disabled`: boolean (default `false`); `children`: `string`
+
+Events — `onRemove`
 
 - Do not invent a local Badge, Tag, Chip or Pill.
 - Do not use as a button or link. Only the close button is interactive.
@@ -283,7 +323,9 @@ Props — `intent`: `neutral` | `hollow` | `info` | `success` | `warning` | `dan
 
 Alternate status or category label: tinted fill with a matching border, in three sizes.
 
-Props — `intent`: `neutral` | `brand` | `success` | `warning` | `danger` | `info` (default `neutral`); `size`: `sm` | `md` | `lg` (default `md`); `removable`: boolean; `disabled`: boolean
+Props — `intent`: `neutral` | `brand` | `success` | `warning` | `danger` | `info` (default `neutral`); `size`: `sm` | `md` | `lg` (default `md`); `removable`: boolean (default `false`); `disabled`: boolean (default `false`); `children`: `string`
+
+Events — `onRemove`
 
 - Do not use BadgeAlt where Badge fits. Badge is the default.
 - Do not mix Badge and BadgeAlt on one screen.
@@ -293,7 +335,9 @@ Props — `intent`: `neutral` | `brand` | `success` | `warning` | `danger` | `in
 
 Inline message that stays on the page, with an optional action and dismiss.
 
-Props — `intent`: `info` | `success` | `warning` | `danger` (default `info`); `closeButton`: boolean
+Props — `intent`: `info` | `success` | `warning` | `danger` (default `info`); `title`: `string`; `actionLabel`: `string`; `closeButton`: boolean (default `false`); `children`: `ReactNode`
+
+Events — `onAction`, `onDismiss`
 
 - Do not invent a local Callout, Banner or Notice.
 - Do not use for short status labels on rows or cards.
@@ -303,7 +347,7 @@ Props — `intent`: `info` | `success` | `warning` | `danger` (default `info`); 
 
 Small number badge for counts, like unread items on a nav link or tab.
 
-Props — `intent`: `info` | `danger` | `neutral` (default `info`); `size`: `sm` | `md` | `lg` (default `md`); `subtle`: boolean; `disabled`: boolean
+Props — `intent`: `info` | `danger` | `neutral` (default `info`); `size`: `sm` | `md` | `lg` (default `md`); `subtle`: boolean (default `false`); `disabled`: boolean (default `false`); `count`: `number`; `max`: `number`; `label`: `string`
 
 - Do not invent a local counter or notification dot.
 - Do not put words in a Count. Use Badge.
@@ -313,7 +357,7 @@ Props — `intent`: `info` | `danger` | `neutral` (default `info`); `size`: `sm`
 
 What a list, page or panel shows when it has nothing yet: an icon, a title, a line of help and the action that fills it.
 
-Props — `iconStyle`: `well` | `plain` (default `well`); `outlined`: boolean; `headingLevel`: `2` | `3` | `4` (default `3`)
+Props — `title`: `string`; `description`: `string`; `icon`: `string`; `iconStyle`: `well` | `plain` (default `well`); `media`: `ReactNode`; `actions`: `ReactNode`; `outlined`: boolean (default `false`); `headingLevel`: `2` | `3` | `4` (default `3`)
 
 - Do not invent EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription or EmptyContent. Pass props.
 - Do not use it for page messages like errors or warnings. Use Callout.
@@ -323,7 +367,7 @@ Props — `iconStyle`: `well` | `plain` (default `well`); `outlined`: boolean; `
 
 How far along or how full something is, from 0 to 100, as a bar, a ring or a half ring, with optional red, amber and green zones.
 
-Props — `shape`: `bar` | `circle` | `semicircle` (default `bar`); `size`: `sm` | `md` | `lg` (default `md`); `thresholds`: `none` | `bar` | `plotArea` | `all` (default `none`); `intent`: `info` | `success` | `warning` | `danger`; `referenceLines`: boolean; `showValue`: boolean
+Props — `value`: `number | "indeterminate"`; `label`: `string`; `shape`: `bar` | `circle` | `semicircle` (default `bar`); `size`: `sm` | `md` | `lg` (default `md`); `thresholds`: `none` | `bar` | `plotArea` | `all` (default `none`); `intent`: `info` | `success` | `warning` | `danger`; `referenceLines`: boolean (default `false`); `showValue`: boolean (default `false`); `datatip`: `string`
 
 - Do not use it for a short wait of unknown length in the spot that is loading. Show a Spinner. indeterminate is for a bar that sits with the work, like a loading Toast, or that will get a value later.
 - Do not use indeterminate with circle or semicircle; it is bar only.
@@ -333,7 +377,7 @@ Props — `shape`: `bar` | `circle` | `semicircle` (default `bar`); `size`: `sm`
 
 The older 20-tall progress bar with its percent written on or beside it, for screens that still use the legacy look.
 
-Props — `showLabel`: boolean; `labelPosition`: `center` | `right` (default `center`)
+Props — `value`: `number`; `label`: `string`; `valueLabel`: `string`; `showLabel`: boolean (default `true`); `labelPosition`: `center` | `right` (default `center`)
 
 - Do not use it for waits of unknown length. Show a spinner instead.
 - Do not stack several bars for one process. Use one bar with a clear label.
@@ -343,7 +387,7 @@ Props — `showLabel`: boolean; `labelPosition`: `center` | `right` (default `ce
 
 Gray placeholder shapes in the layout of content that is still loading, like lines of text, an avatar or an image, so the page keeps its shape until the data arrives.
 
-Props — `shape`: `text` | `circle` | `rect` (default `text`); `size`: `sm` | `md` | `lg` (default `md`); `animation`: `shimmer` | `pulse` | `none` (default `shimmer`); `loading`: boolean
+Props — `shape`: `text` | `circle` | `rect` (default `text`); `lines`: `number`; `size`: `sm` | `md` | `lg` (default `md`); `width`: `string | number`; `height`: `string | number`; `animation`: `shimmer` | `pulse` | `none` (default `shimmer`); `loading`: boolean (default `true`); `children`: `ReactNode`; `label`: `string`
 
 - Do not use it for a short status line. Use TextLoader.
 - Do not use it when the amount done is known. Use Meter.
@@ -353,7 +397,7 @@ Props — `shape`: `text` | `circle` | `rect` (default `text`); `size`: `sm` | `
 
 A small ring of ticks in the brand color that turns while something loads and the wait is short and unknown.
 
-Props — `size`: `sm` | `md` | `lg` (default `md`); `showLabel`: boolean
+Props — `size`: `sm` | `md` | `lg` (default `md`); `label`: `string`; `showLabel`: boolean (default `false`)
 
 - Do not put it in a Button. Use Button loading.
 - Do not use it when the amount done is known. Use Meter.
@@ -363,7 +407,7 @@ Props — `size`: `sm` | `md` | `lg` (default `md`); `showLabel`: boolean
 
 Short text with a soft wave of light running through it, for a moment of work whose end is unknown, like Generating response… or Syncing invoices….
 
-Props — `size`: `sm` | `md` | `lg` (default `md`); `speed`: `slow` | `normal` | `fast` (default `normal`)
+Props — `children`: `string`; `size`: `sm` | `md` | `lg` (default `md`); `speed`: `slow` | `normal` | `fast` (default `normal`)
 
 - Do not use it for headings or body copy.
 - Do not use it for long text; keep it to a few words.
@@ -373,7 +417,9 @@ Props — `size`: `sm` | `md` | `lg` (default `md`); `speed`: `slow` | `normal` 
 
 A short note that floats in after an action, like Saved successfully, and goes away on its own after a few seconds, with an optional Undo.
 
-Props — `open`: boolean; `intent`: `info` | `success` | `warning` | `danger` (default `info`)
+Props — `open`: boolean; `title`: `string`; `description`: `string`; `intent`: `info` | `success` | `warning` | `danger` (default `info`); `actionLabel`: `string`; `progress`: `number | "indeterminate"`; `duration`: `number | null`
+
+Events — `onClose`, `onAction`
 
 - Do not use it for errors people must fix or read later. Use Callout on the page.
 - Do not put more than one action in a toast.
@@ -385,7 +431,9 @@ Props — `open`: boolean; `intent`: `info` | `success` | `warning` | `danger` (
 
 Pick one item from options that nest several levels deep by walking columns left to right, like a field on a related object (Invoice / Account / Owner) or a region / country / city.
 
-Props — `variant`: `field` | `panel` (default `field`); `changeOnSelect`: boolean; `searchable`: boolean; `hasLegend`: boolean; `size`: `sm` | `md` | `lg`; `labelPosition`: `top` | `start`; `hideLabel`: boolean; `required`: boolean; `disabled`: boolean; `invalid`: boolean
+Props — `label`: `string`; `options`: `CascaderOption[]`; `value`: `string[]`; `defaultValue`: `string[]`; `variant`: `field` | `panel` (default `field`); `changeOnSelect`: boolean (default `false`); `searchable`: boolean (default `false`); `hasLegend`: boolean (default `true`); `placeholder`: `string`; `size`: `sm` | `md` | `lg`; `labelPosition`: `top` | `start`; `hideLabel`: boolean (default `false`); `name`: `string`; `required`: boolean (default `false`); `disabled`: boolean (default `false`); `invalid`: boolean (default `false`); `error`: `string`; `hint`: `string`; `help`: `string`; `emptyLabel`: `string`
+
+Events — `onChange`
 
 - Do not use it for a flat list. Use Select.
 - Do not use it to browse or arrange a hierarchy without picking. Use TreeView.
@@ -395,7 +443,9 @@ Props — `variant`: `field` | `panel` (default `field`); `changeOnSelect`: bool
 
 The box people write to the assistant in: what the question is about, what is attached, the words, and the toolbar that sends it.
 
-Props — `scoped`: boolean; `defaultScoped`: boolean; `selecting`: boolean; `dictating`: boolean; `mode`: `quick` | `deep` (default `quick`); `disabled`: boolean
+Props — `value`: `string`; `defaultValue`: `string`; `placeholder`: `string`; `hints`: `string[]`; `scopeLabel`: `string`; `scoped`: boolean; `defaultScoped`: boolean (default `false`); `attachments`: `ChatComposerAttachment[]` { id, label }; `addMenu`: `DropdownMenuEntry[]`; `selecting`: boolean (default `false`); `dictating`: boolean (default `false`); `mode`: `quick` | `deep` (default `quick`); `disabled`: boolean (default `false`); `label`: `string`
+
+Events — `onChange`, `onSend`, `onScopedChange`, `onScopeClose`, `onAttachmentRemove`, `onAdd`, `onSelectingChange`, `onDictatingChange`, `onModeChange`
 
 - Do not build the box from Textarea and Buttons, or add a MessageBox, PromptInput or SendButton. Use this.
 - Do not use it for an ordinary form field. Use Textarea.
@@ -405,7 +455,9 @@ Props — `scoped`: boolean; `defaultScoped`: boolean; `selecting`: boolean; `di
 
 Checkbox for multi-select and confirmations.
 
-Props — `size`: `sm` | `md` | `lg` (default `md`); `checked`: boolean; `defaultChecked`: boolean; `indeterminate`: boolean; `error`: boolean; `disabled`: boolean; `hideLabel`: boolean
+Props — `size`: `sm` | `md` | `lg` (default `md`); `checked`: boolean; `defaultChecked`: boolean (default `false`); `indeterminate`: boolean (default `false`); `error`: boolean (default `false`); `disabled`: boolean (default `false`); `hideLabel`: boolean (default `false`); `label`: `string`; `name`: `string`; `id`: `string`
+
+Events — `onChange`
 
 - Do not invent a local Checkbox.
 - Do not use for one choice from several.
@@ -415,7 +467,9 @@ Props — `size`: `sm` | `md` | `lg` (default `md`); `checked`: boolean; `defaul
 
 A date field that opens a calendar to pick one date, or a range between two dates.
 
-Props — `type`: `single` | `dual` (default `single`); `size`: `sm` | `md` | `lg` (default `md`); `labelPosition`: `top` | `start` (default `top`); `hideLabel`: boolean; `presets`: boolean; `monthYear`: `title` | `menus` (default `title`); `required`: boolean; `disabled`: boolean; `invalid`: boolean
+Props — `label`: `string`; `type`: `single` | `dual` (default `single`); `size`: `sm` | `md` | `lg` (default `md`); `labelPosition`: `top` | `start` (default `top`); `hideLabel`: boolean (default `false`); `placeholder`: `string`; `value`: `string | DatePickerRange`; `defaultValue`: `string | DatePickerRange`; `minDate`: `string`; `maxDate`: `string`; `presets`: boolean (default `true`); `monthYear`: `title` | `menus` (default `title`); `name`: `string`; `id`: `string`; `required`: boolean (default `false`); `disabled`: boolean (default `false`); `invalid`: boolean (default `false`); `error`: `string`; `hint`: `string`; `help`: `string`
+
+Events — `onChange`
 
 - Do not invent a local Calendar, DateRangePicker, Popover or native input type=date.
 - Do not use two DatePickers for a start and end. Use type dual.
@@ -425,7 +479,9 @@ Props — `type`: `single` | `dual` (default `single`); `size`: `sm` | `md` | `l
 
 One form: an optional title, kit fields (or titled sections of them) and the actions that save it.
 
-Props — `variant`: `plain` | `card` (default `plain`); `labelPosition`: `top` | `start` (default `top`); `labelWidth`: `sm` | `md` | `lg` (default `md`); `columns`: `1` | `2` | `3`
+Props — `title`: `string`; `description`: `string`; `variant`: `plain` | `card` (default `plain`); `labelPosition`: `top` | `start` (default `top`); `labelWidth`: `sm` | `md` | `lg` (default `md`); `columns`: `1` | `2` | `3`; `children`: `ReactNode`; `sections`: `FormSection[]`; `actions`: `ReactNode`; `error`: `string`; `id`: `string`
+
+Events — `onSubmit`
 
 - Do not invent FieldSet, FieldGroup, FieldLegend, FormSection, FormActions or a local <form> wrapper.
 - Do not put a Form inside another Form.
@@ -435,7 +491,7 @@ Props — `variant`: `plain` | `card` (default `plain`); `labelPosition`: `top` 
 
 A read-only label and value, like a form field that shows data instead of editing it.
 
-Props — `labelPosition`: `top` | `start` (default `top`)
+Props — `label`: `string`; `value`: `ReactNode`; `labelPosition`: `top` | `start` (default `top`); `help`: `string`; `empty`: `string`
 
 - Do not put a gap or margin between stacked FormDisplays, or pass them to a Section one by one. Wrap the stack in one plain div, unless the Section has columns: then pass the rows straight in.
 - Do not lay rows side by side with your own grid or flex. Use Section or Form columns.
@@ -445,7 +501,9 @@ Props — `labelPosition`: `top` | `start` (default `top`)
 
 A monospace field for writing formulas and rules, with a toolbar that inserts fields, operators and functions and checks the syntax.
 
-Props — `hideLabel`: boolean; `labelPosition`: `top` | `start` (default `top`); `size`: `sm` | `md` | `lg` (default `sm`); `aiActive`: boolean; `required`: boolean; `disabled`: boolean; `readOnly`: boolean; `invalid`: boolean
+Props — `label`: `string`; `hideLabel`: boolean (default `false`); `labelPosition`: `top` | `start` (default `top`); `size`: `sm` | `md` | `lg` (default `sm`); `placeholder`: `string`; `value`: `string`; `defaultValue`: `string`; `fields`: `FormulaField[]` { id: string; label: string }; `functions`: `FormulaFunction[]` { name: string; syntax?: string; description?: string }; `aiActive`: boolean (default `false`); `name`: `string`; `id`: `string`; `required`: boolean (default `false`); `disabled`: boolean (default `false`); `readOnly`: boolean (default `false`); `invalid`: boolean (default `false`); `error`: `string`; `hint`: `string`; `help`: `string`
+
+Events — `onChange`, `onCheckSyntax`, `onCalculate`, `onAiAssist`
 
 - Do not invent CodeEditor, ExpressionInput, a formula toolbar or a Textarea with buttons above it.
 - Do not use for prose or notes. Use Textarea.
@@ -455,7 +513,9 @@ Props — `hideLabel`: boolean; `labelPosition`: `top` | `start` (default `top`)
 
 Single-line text entry with its own label, hint, error and character count.
 
-Props — `hideLabel`: boolean; `labelPosition`: `top` | `start` (default `top`); `size`: `sm` | `md` | `lg` (default `md`); `type`: `text` | `email` | `password` | `search` | `number` | `tel` | `url` | `file` (default `text`); `multiple`: boolean; `required`: boolean; `disabled`: boolean; `readOnly`: boolean; `invalid`: boolean
+Props — `label`: `string`; `hideLabel`: boolean (default `false`); `labelPosition`: `top` | `start` (default `top`); `size`: `sm` | `md` | `lg` (default `md`); `type`: `text` | `email` | `password` | `search` | `number` | `tel` | `url` | `file` (default `text`); `placeholder`: `string`; `value`: `string`; `defaultValue`: `string`; `accept`: `string`; `multiple`: boolean (default `false`); `name`: `string`; `id`: `string`; `autoComplete`: `string`; `required`: boolean (default `false`); `disabled`: boolean (default `false`); `readOnly`: boolean (default `false`); `invalid`: boolean (default `false`); `error`: `string`; `hint`: `string`; `help`: `string`; `prefix`: `string`; `suffix`: `string`; `iconStart`: `string`; `iconEnd`: `string`; `maxLength`: `number`
+
+Events — `onChange`, `onFilesChange`
 
 - Do not invent a local Field, FieldLabel, FieldDescription, FieldError, FormItem, InputGroup or SearchInput.
 - Do not build a local tooltip for help. Pass help; it shows in the kit HelpPopover.
@@ -465,7 +525,11 @@ Props — `hideLabel`: boolean; `labelPosition`: `top` | `start` (default `top`)
 
 A form field for picking one record from a long list, like a product or an account, through a searchable table in a wide Modal.
 
-Props — `clearable`: boolean; `size`: `sm` | `md` | `lg`; `labelPosition`: `top` | `start`; `hideLabel`: boolean; `required`: boolean; `disabled`: boolean; `invalid`: boolean; `multiple`: boolean; `trigger`: `field` | `button` (default `field`)
+Props — `label`: `string`; `columns`: `TableColumn[]`; `rows`: `LookupRow[]`; `value`: `string | null`; `defaultValue`: `string | null`; `labelKey`: `string`; `title`: `string`; `icon`: `string`; `searchPlaceholder`: `string`; `pageSize`: `number`; `clearable`: boolean (default `true`); `placeholder`: `string`; `emptyLabel`: `string`; `size`: `sm` | `md` | `lg`; `labelPosition`: `top` | `start`; `hideLabel`: boolean (default `false`); `name`: `string`; `required`: boolean (default `false`); `disabled`: boolean (default `false`); `invalid`: boolean (default `false`); `error`: `string`; `hint`: `string`; `help`: `string`; `multiple`: boolean (default `false`); `trigger`: `field` | `button` (default `field`); `buttonIcon`: `string`; `confirmLabel`: `string`
+
+Functions — `detail`, `detailCount`
+
+Events — `onChange`, `onConfirm`
 
 - Do not use it for a short list of plain options. Use Select.
 - Do not use it for a path through nested levels. Use Cascader.
@@ -475,7 +539,9 @@ Props — `clearable`: boolean; `size`: `sm` | `md` | `lg`; `labelPosition`: `to
 
 Pick exactly one option from a short visible list.
 
-Props — `size`: `sm` | `md` | `lg` (default `md`); `orientation`: `vertical` | `horizontal` (default `vertical`); `layout`: `list` | `card` (default `list`); `disabled`: boolean; `hideLegend`: boolean; `labelPosition`: `top` | `start` (default `top`)
+Props — `size`: `sm` | `md` | `lg` (default `md`); `orientation`: `vertical` | `horizontal` (default `vertical`); `layout`: `list` | `card` (default `list`); `disabled`: boolean (default `false`); `hideLegend`: boolean (default `false`); `labelPosition`: `top` | `start` (default `top`); `legend`: `string`; `name`: `string`; `value`: `string`; `defaultValue`: `string`; `error`: `string`; `hint`: `string`; `options`: `RadioGroupOption[]` { value, label, description?, badge?, badgeIntent?, disabled?, hideLabel? }
+
+Events — `onChange`
 
 - Do not invent a Radio, RadioItem or RadioLegend cousin.
 - Do not use for independent yes/no choices. Use Checkbox.
@@ -485,7 +551,9 @@ Props — `size`: `sm` | `md` | `lg` (default `md`); `orientation`: `vertical` |
 
 One choice from two to five options, shown as kit minimal Buttons side by side.
 
-Props — `hideLabel`: boolean; `size`: `sm` | `md` | `lg` (default `md`); `fullWidth`: boolean; `disabled`: boolean
+Props — `label`: `string`; `hideLabel`: boolean (default `false`); `options`: `SegmentedControlOption[]` { value: string; label: string; icon?: string; disabled?: boolean }; `value`: `string`; `defaultValue`: `string`; `size`: `sm` | `md` | `lg` (default `md`); `fullWidth`: boolean (default `false`); `disabled`: boolean (default `false`); `name`: `string`
+
+Events — `onChange`
 
 - Do not invent ToggleGroup, ToggleButtons, Segmented or a ButtonGroup with a pressed button. Options are already kit Buttons.
 - Do not use for more than five options or long labels. Use Select.
@@ -495,7 +563,9 @@ Props — `hideLabel`: boolean; `size`: `sm` | `md` | `lg` (default `md`); `full
 
 Choose one or several options from a list.
 
-Props — `size`: `sm` | `md` | `lg` (default `md`); `labelPosition`: `top` | `start` (default `top`); `itemCheck`: `check` | `checkbox` (default `check`); `hideLabel`: boolean; `multiple`: boolean; `searchable`: boolean; `required`: boolean; `disabled`: boolean; `invalid`: boolean; `menuWidth`: `default` | `field` (default `default`)
+Props — `label`: `string`; `options`: `SelectOption[]` { value, label, disabled? }; `size`: `sm` | `md` | `lg` (default `md`); `labelPosition`: `top` | `start` (default `top`); `itemCheck`: `check` | `checkbox` (default `check`); `hideLabel`: boolean (default `false`); `multiple`: boolean (default `false`); `placeholder`: `string`; `value`: `string | string[]`; `defaultValue`: `string | string[]`; `maxVisible`: `number`; `searchable`: boolean (default `false`); `searchPlaceholder`: `string`; `name`: `string`; `id`: `string`; `required`: boolean (default `false`); `disabled`: boolean (default `false`); `invalid`: boolean (default `false`); `error`: `string`; `hint`: `string`; `help`: `string`; `menuWidth`: `default` | `field` (default `default`)
+
+Events — `onChange`
 
 - Do not use a native select.
 - Do not invent SelectTrigger, SelectContent, SelectItem, MultiSelect, Combobox or Tag.
@@ -505,7 +575,9 @@ Props — `size`: `sm` | `md` | `lg` (default `md`); `labelPosition`: `top` | `s
 
 An on/off setting that takes effect right away.
 
-Props — `hideLabel`: boolean; `size`: `sm` | `md` | `lg` (default `md`); `checked`: boolean; `defaultChecked`: boolean; `disabled`: boolean
+Props — `label`: `string`; `hideLabel`: boolean (default `false`); `description`: `string`; `size`: `sm` | `md` | `lg` (default `md`); `checked`: boolean; `defaultChecked`: boolean (default `false`); `disabled`: boolean (default `false`); `name`: `string`; `id`: `string`
+
+Events — `onChange`
 
 - Do not invent Toggle, ToggleGroup, SwitchGroup or a local pill switch.
 - Do not use for choices that wait for a Save button, or for agreeing to terms. Use Checkbox.
@@ -515,7 +587,9 @@ Props — `hideLabel`: boolean; `size`: `sm` | `md` | `lg` (default `md`); `chec
 
 Multi-line text entry for notes, descriptions and code, with its own label, hint, error and character count.
 
-Props — `hideLabel`: boolean; `labelPosition`: `top` | `start` (default `top`); `size`: `sm` | `md` | `lg` (default `md`); `type`: `text` | `code` (default `text`); `required`: boolean; `disabled`: boolean; `readOnly`: boolean; `invalid`: boolean
+Props — `label`: `string`; `hideLabel`: boolean (default `false`); `labelPosition`: `top` | `start` (default `top`); `size`: `sm` | `md` | `lg` (default `md`); `type`: `text` | `code` (default `text`); `placeholder`: `string`; `value`: `string`; `defaultValue`: `string`; `name`: `string`; `id`: `string`; `required`: boolean (default `false`); `disabled`: boolean (default `false`); `readOnly`: boolean (default `false`); `invalid`: boolean (default `false`); `error`: `string`; `hint`: `string`; `help`: `string`; `maxLength`: `number`
+
+Events — `onChange`
 
 - Do not invent a local Field, FieldLabel, FieldError, CodeEditor or NotesBox.
 - Do not use for one-line values. Use Input.
@@ -527,6 +601,8 @@ Props — `hideLabel`: boolean; `labelPosition`: `top` | `start` (default `top`)
 
 List of short sections where one opens at a time.
 
+Props — `defaultExpanded`: `string`; `items`: `AccordionItem[]` { id, title, content }
+
 - Do not invent a local Accordion, Collapse or Disclosure.
 - Do not open more than one item at a time.
 - Do not use for switching between peer views of the same data.
@@ -535,7 +611,9 @@ List of short sections where one opens at a time.
 
 A track of slides people page through with previous and next buttons, swipe or the arrow keys, like a gallery or featured cards.
 
-Props — `orientation`: `horizontal` | `vertical` (default `horizontal`); `slidesPerView`: `1` | `2` | `3` | `4` (default `1`); `alignment`: `start` | `center` (default `start`); `loop`: boolean; `showControls`: boolean; `showIndex`: boolean
+Props — `items`: `ReactNode[]`; `orientation`: `horizontal` | `vertical` (default `horizontal`); `slidesPerView`: `1` | `2` | `3` | `4` (default `1`); `alignment`: `start` | `center` (default `start`); `loop`: boolean (default `false`); `showControls`: boolean (default `true`); `showIndex`: boolean (default `false`); `label`: `string`
+
+Events — `onIndexChange`
 
 - Do not add CarouselContent, CarouselItem, CarouselPrevious or CarouselNext. Pass items.
 - Do not use it to switch views. Use Tabs.
@@ -545,7 +623,7 @@ Props — `orientation`: `horizontal` | `vertical` (default `horizontal`); `slid
 
 Arrows at both ends of a row or column that is too long to fit, so people can move it along without a scrollbar.
 
-Props — `orientation`: `horizontal` | `vertical` (default `horizontal`)
+Props — `children`: `ReactNode`; `orientation`: `horizontal` | `vertical` (default `horizontal`); `step`: `number`; `label`: `string`
 
 - Do not use it for paged slides or a gallery. Use Carousel.
 - Do not use it to page a table. Use Pagination.
@@ -555,7 +633,7 @@ Props — `orientation`: `horizontal` | `vertical` (default `horizontal`)
 
 Sets the density tokens for everything inside it: Compact, Default or Comfortable spacing, control and icon sizes, and font sizes, like the BP Foundations density modes.
 
-Props — `value`: `compact` | `default` | `comfortable` (default `default`)
+Props — `value`: `compact` | `default` | `comfortable` (default `default`); `children`: `ReactNode`
 
 - Do not set size on every control to fake a density. Wrap them in Density.
 - Do not invent DensityProvider, SizeProvider or a local size context.
@@ -565,7 +643,9 @@ Props — `value`: `compact` | `default` | `comfortable` (default `default`)
 
 A titled block of a page, like Account information or Recent invoices: a header with a line under it, optional help and buttons, and the content below.
 
-Props — `line`: `medium` | `thin` | `none` (default `medium`); `columns`: `1` | `2` | `3`; `collapsible`: boolean; `expanded`: boolean; `defaultExpanded`: boolean; `heading`: `md` | `sm` | `xs`; `spacing`: `default` | `tight` (default `default`)
+Props — `title`: `string`; `description`: `string`; `help`: `string`; `actions`: `ReactNode`; `children`: `ReactNode`; `line`: `medium` | `thin` | `none` (default `medium`); `columns`: `1` | `2` | `3`; `collapsible`: boolean (default `false`); `expanded`: boolean; `defaultExpanded`: boolean (default `true`); `heading`: `md` | `sm` | `xs`; `spacing`: `default` | `tight` (default `default`)
+
+Events — `onExpandedChange`
 
 - Do not invent a SectionHeader, SectionTitle or a heading with a border. Use Section.
 - Do not override the header line with CSS or draw a border above the content. Use line.
@@ -577,7 +657,9 @@ Props — `line`: `medium` | `thin` | `none` (default `medium`); `columns`: `1` 
 
 A list of the sections on one long page, which jumps to a section and shows the one the page is at.
 
-Props — `variant`: `rail` | `menu` (default `rail`); `spy`: boolean
+Props — `items`: `AnchorNavItem[]` { id, label }; `active`: `string`; `defaultActive`: `string`; `variant`: `rail` | `menu` (default `rail`); `spy`: boolean (default `true`); `offset`: `number`; `label`: `string`
+
+Events — `onActiveChange`
 
 - Do not use it for app navigation. Use AppNav.
 - Do not use it to switch views on one screen. Use Tabs.
@@ -587,7 +669,9 @@ Props — `variant`: `rail` | `menu` (default `rail`); `spy`: boolean
 
 The product's top bar: logo and environment on the start, global search in the centre, utility icons, the user and their company on the end.
 
-Props — `navOpen`: boolean; `environmentIntent`: `success` | `info` | `warning` | `danger` | `highlight` | `neutral` (default `success`); `search`: boolean; `searchVariant`: `list` | `tabs` (default `list`); `searchIconStyle`: `tile` | `plain` (default `tile`); `darkMode`: boolean; `density`: `compact` | `default` | `comfortable`
+Props — `navOpen`: boolean (default `false`); `logo`: `ReactNode`; `homeHref`: `string`; `environment`: `string`; `environmentIntent`: `success` | `info` | `warning` | `danger` | `highlight` | `neutral` (default `success`); `search`: boolean (default `true`); `searchPlaceholder`: `string`; `searchShortcut`: `string`; `searchGroups`: `CommandGroup[]` { heading?: string; items: { id; label; description?; icon?; shortcut?; disabled? }[] }; `searchVariant`: `list` | `tabs` (default `list`); `searchIconStyle`: `tile` | `plain` (default `tile`); `searchScopes`: `CommandScope[]` { value: string; label: string }; `searchScope`: `string`; `actions`: `AppHeaderAction[]` { id: string; label: string; icon: string }; `user`: `AppHeaderUser` { name: string; src?: string }; `company`: `AppHeaderCompany` { name: string; logo?: ReactNode }; `darkMode`: boolean (default `false`); `density`: `compact` | `default` | `comfortable`
+
+Events — `onNavToggle`, `onSearch`, `onSearchSelect`, `onSearchScopeChange`, `onAction`, `onUserSettings`, `onDarkModeChange`, `onDensityChange`, `onLogout`
 
 - Do not invent TopBar, NavBar, Header, GlobalSearch, UserBadge, UserMenu or CompanyBadge.
 - Do not put the page title, breadcrumbs or page actions in it. They belong in the page.
@@ -597,7 +681,9 @@ Props — `navOpen`: boolean; `environmentIntent`: `success` | `info` | `warning
 
 The app's main navigation: a brand rail of sections on the left, each with an optional second-level menu that flies out beside it.
 
-Props — `expanded`: boolean; `pinned`: boolean; `defaultPinned`: boolean
+Props — `items`: `SideNavEntry[]` { id: string; label: string; icon: string; href?: string; children?: SideNavChild[] } | { divider: true }; `endItems`: `SideNavItem[]`; `current`: `string`; `defaultCurrent`: `string`; `expanded`: boolean (default `false`); `pinned`: boolean; `defaultPinned`: boolean (default `false`); `label`: `string`
+
+Events — `onNavigate`, `onPinnedChange`
 
 - Do not invent a Sidebar, NavRail, Flyout or local menu beside it.
 - Do not put page actions, filters or tabs in it. Those belong in the page.
@@ -607,7 +693,7 @@ Props — `expanded`: boolean; `pinned`: boolean; `defaultPinned`: boolean
 
 Path to the current page as a trail of links.
 
-Props — `separator`: `slash` | `chevron` (default `slash`); `current`: boolean
+Props — `separator`: `slash` | `chevron` (default `slash`); `maxItems`: `number`; `items`: `BreadcrumbItem[]` { label, href?, onClick? }; `current`: boolean (default `true`)
 
 - Do not invent a local Breadcrumb, BreadcrumbItem or BreadcrumbLink.
 - Do not make the current page a link.
@@ -617,7 +703,9 @@ Props — `separator`: `slash` | `chevron` (default `slash`); `current`: boolean
 
 The bar at the top of the assistant: its mark and name, then start a new chat, go full screen, the options menu and close.
 
-Props — `expanded`: boolean; `planMode`: boolean
+Props — `title`: `string`; `expanded`: boolean (default `false`); `chatsCount`: `number`; `playbooksCount`: `number`; `planMode`: boolean (default `false`); `menu`: `DropdownMenuEntry[]`; `label`: `string`
+
+Events — `onNewChat`, `onExpandedChange`, `onClose`, `onPlanModeChange`, `onMenuSelect`
 
 - Do not use it as the app's top bar. Use AppHeader.
 - Do not use it as a page title. Use PageHeader.
@@ -627,7 +715,11 @@ Props — `expanded`: boolean; `planMode`: boolean
 
 The saved chats or playbooks beside the assistant: a titled panel with a search box and rows that open what they name.
 
-Props — `searchable`: boolean
+Props — `title`: `string`; `items`: `ChatListItem[]` { id, label, icon?, menu? }; `groups`: `ChatListGroup[]` { id, label, items, defaultOpen? }; `selected`: `string`; `searchable`: boolean (default `true`); `searchPlaceholder`: `string`; `query`: `string`; `createLabel`: `string`; `closeLabel`: `string`; `emptyLabel`: `string`
+
+Functions — `more`
+
+Events — `onSelect`, `onQueryChange`, `onCreate`, `onClose`, `onItemMenuSelect`
 
 - Do not use it for app navigation. Use AppNav.
 - Do not use it for a list of records people sort and filter. Use Table.
@@ -637,7 +729,9 @@ Props — `searchable`: boolean
 
 A search field over a grouped list of pages, records and actions.
 
-Props — `variant`: `list` | `tabs` (default `list`); `iconStyle`: `tile` | `plain` (default `tile`); `size`: `sm` | `md` (default `md`); `hints`: boolean; `autoFocus`: boolean
+Props — `groups`: `CommandGroup[]` { heading?, items }; `variant`: `list` | `tabs` (default `list`); `iconStyle`: `tile` | `plain` (default `tile`); `size`: `sm` | `md` (default `md`); `label`: `string`; `placeholder`: `string`; `empty`: `string`; `defaultQuery`: `string`; `hints`: boolean (default `true`); `scopes`: `CommandScope[]` { value: string; label: string }; `scope`: `string`; `defaultScope`: `string`; `autoFocus`: boolean (default `false`)
+
+Events — `onScopeChange`, `onSelect`, `onViewAll`
 
 - Do not invent CommandInput, CommandList, CommandItem, CommandGroup, CommandEmpty, CommandDialog or SearchPanel.
 - Do not use for a short list of actions from a button. Use Dropdown.
@@ -647,7 +741,9 @@ Props — `variant`: `list` | `tabs` (default `list`); `iconStyle`: `tile` | `pl
 
 The pieces of a process walked one step at a time: a dark panel for a step, the dark list of every step beside the page, the header over a step, and the footer under it.
 
-Props — `part`: `panel` | `steps` | `header` | `footer` (default `panel`); `started`: boolean; `placement`: `auto` | `side` | `band` (default `auto`); `shade`: `1` | `2` | `3` | `4` | `5` (default `1`); `side`: `start` | `end` (default `end`)
+Props — `part`: `panel` | `steps` | `header` | `footer` (default `panel`); `title`: `string`; `subtitle`: `string`; `steps`: `GuidedProcessStep[]` { title, status, statusText?, tasks }; `current`: `number`; `started`: boolean (default `true`); `placement`: `auto` | `side` | `band` (default `auto`); `shade`: `1` | `2` | `3` | `4` | `5` (default `1`); `startLabel`: `string`; `side`: `start` | `end` (default `end`); `stepTitle`: `string`; `total`: `number`; `actions`: `GuidedProcessAction[]` { id, label, icon?, emphasis, intent?, type, form?, disabled? }; `updated`: `string`
+
+Events — `onStart`, `onCancel`, `onClose`, `onStepsOpen`, `onAction`
 
 - Do not use it for a short flow inside a Modal or a Drawer. Use Steps.
 - Do not use it for page sections that can be visited in any order. Use Tabs or AnchorNav.
@@ -657,7 +753,9 @@ Props — `part`: `panel` | `steps` | `header` | `footer` (default `panel`); `st
 
 Inline text that takes people somewhere: a record, a list or another page.
 
-Props — `intent`: `brand` | `neutral` (default `brand`); `external`: boolean; `disabled`: boolean
+Props — `children`: `ReactNode`; `href`: `string`; `intent`: `brand` | `neutral` (default `brand`); `external`: boolean (default `false`); `disabled`: boolean (default `false`)
+
+Events — `onClick`
 
 - Do not use Link for an action that changes data, like Delete or Save. Use Button.
 - Do not use Link in a table cell. Use a link Cell.
@@ -667,6 +765,8 @@ Props — `intent`: `brand` | `neutral` (default `brand`); `external`: boolean; 
 
 A column of links, one a row with a chevron at the end, like an account's quick links.
 
+Props — `items`: `LinkListItem[]` { id, label, href?, onClick, icon?, description?, external? }; `label`: `string`
+
 - Do not use it for actions that change data. Use Buttons or a Dropdown.
 - Do not use it for page navigation across the app. Use AppNav or Tabs.
 - Do not put it in a Card or draw a box round it yourself. Put it in a Section.
@@ -675,7 +775,9 @@ A column of links, one a row with a chevron at the end, like an account's quick 
 
 The top of a page's content: where it sits (breadcrumb), what it is (title, badge, and an optional icon) and the page actions.
 
-Props — `badgeIntent`: `neutral` | `info` | `success` | `warning` | `danger` | `highlight` (default `neutral`); `sticky`: boolean; `shadow`: boolean
+Props — `title`: `string`; `breadcrumbs`: `BreadcrumbItem[]` { label: string; href?: string; onClick?: () => void }; `back`: `PageHeaderBack` { label: string; href?: string; onClick?: () => void }; `icon`: `string`; `badge`: `string`; `badgeIntent`: `neutral` | `info` | `success` | `warning` | `danger` | `highlight` (default `neutral`); `actions`: `ReactNode`; `moreActions`: `DropdownMenuEntry[]` { id: string; label: string; icon?: string; danger?: boolean } | { divider: true }; `sticky`: boolean (default `false`); `shadow`: boolean (default `true`)
+
+Events — `onMoreSelect`
 
 - Do not invent ContentHeader, PageTitle, TitleBar or a local heading row.
 - Do not put the app's logo, search or user in it. That is the AppHeader.
@@ -685,7 +787,9 @@ Props — `badgeIntent`: `neutral` | `info` | `success` | `warning` | `danger` |
 
 The bar under a long table that moves between pages, says which rows are showing, and lets people pick how many rows a page holds.
 
-Props — `showRange`: boolean; `showPageSize`: boolean
+Props — `total`: `number`; `page`: `number`; `defaultPage`: `number`; `pageSize`: `number`; `defaultPageSize`: `number`; `pageSizes`: `number[]`; `showRange`: boolean (default `true`); `showPageSize`: boolean (default `true`); `label`: `string`
+
+Events — `onPageChange`, `onPageSizeChange`
 
 - Do not use it to switch views or steps. Use Tabs.
 - Do not build page buttons from a ButtonGroup or loose Buttons. Use Pagination.
@@ -695,7 +799,9 @@ Props — `showRange`: boolean; `showPageSize`: boolean
 
 A row of numbered steps that shows where a person is in a flow of a few steps: done, current and still to come.
 
-Props — `size`: `sm` | `md` (default `md`); `fill`: boolean
+Props — `steps`: `string[]`; `current`: `number`; `size`: `sm` | `md` (default `md`); `fill`: boolean (default `false`); `label`: `string`
+
+Events — `onStepClick`
 
 - Do not use it for page sections the person can visit in any order. Use Tabs.
 - Do not use it for a single amount done. Use Meter.
@@ -705,7 +811,9 @@ Props — `size`: `sm` | `md` (default `md`); `fill`: boolean
 
 A row of tabs that switches between related views in the same place.
 
-Props — `size`: `sm` | `md` | `lg` (default `sm`); `expand`: boolean; `border`: boolean
+Props — `items`: `TabItem[]`; `label`: `string`; `value`: `string`; `defaultValue`: `string`; `size`: `sm` | `md` | `lg` (default `sm`); `expand`: boolean (default `false`); `border`: boolean (default `true`)
+
+Events — `onChange`
 
 - Do not invent TabList, Tab, TabPanel, TabsTrigger or a local tab strip. It is one component.
 - Do not use for app or page navigation. Use the side nav.
@@ -715,7 +823,9 @@ Props — `size`: `sm` | `md` | `lg` (default `sm`); `expand`: boolean; `border`
 
 The bar above a list or table: find and filter on the left, view and actions on the right, with a filter bar that opens under it.
 
-Props — `filtersOpen`: boolean; `defaultFiltersOpen`: boolean; `buttons`: `raised` | `subtle` (default `raised`)
+Props — `filters`: `ReactNode`; `filterCount`: `number`; `filtersOpen`: boolean; `defaultFiltersOpen`: boolean (default `false`); `filterHelp`: `string`; `searchValue`: `string`; `searchPlaceholder`: `string`; `searchGroups`: `CommandGroup[]` { heading?: string; items: { id: string; label: string; description?: string; icon?: string }[] }; `field`: `ReactNode`; `selectedCount`: `number`; `views`: `ToolbarView[]` { id: string; label: string }; `view`: `string`; `moreActions`: `DropdownMenuEntry[]` { id: string; label: string; icon?: string; danger?: boolean } | { divider: true }; `actions`: `ReactNode`; `buttons`: `raised` | `subtle` (default `raised`); `label`: `string`
+
+Events — `onFiltersOpenChange`, `onReset`, `onApply`, `onSearchChange`, `onSearchSelect`, `onSearchViewAll`, `onViewChange`, `onRefresh`, `onMoreSelect`
 
 - Do not put a loose label and field, or a count of ticked rows, beside the toolbar. Pass field and selectedCount.
 - Do not invent a FilterBar, ListToolbar or a local row of controls above a table.
@@ -727,7 +837,9 @@ Props — `filtersOpen`: boolean; `defaultFiltersOpen`: boolean; `buttons`: `rai
 
 Overlay that stops the user until they cancel or confirm.
 
-Props — `open`: boolean; `actionIntent`: `brand` | `danger` (default `brand`); `size`: `sm` | `md` (default `md`)
+Props — `open`: boolean; `title`: `string`; `description`: `string`; `cancelLabel`: `string`; `actionLabel`: `string`; `actionIntent`: `brand` | `danger` (default `brand`); `size`: `sm` | `md` (default `md`)
+
+Events — `onCancel`, `onAction`
 
 - Do not invent a local confirm dialog or use window.confirm.
 - Do not put forms, tables or extra actions inside.
@@ -737,7 +849,9 @@ Props — `open`: boolean; `actionIntent`: `brand` | `danger` (default `brand`);
 
 A panel that slides in from the right edge for a detail view or an edit form about something on the page, while the page stays in view behind it.
 
-Props — `open`: boolean; `size`: `narrow` | `medium` | `wide` | `extended` (default `narrow`); `showClose`: boolean
+Props — `open`: boolean; `title`: `string`; `description`: `string`; `size`: `narrow` | `medium` | `wide` | `extended` (default `narrow`); `showClose`: boolean (default `true`); `children`: `ReactNode`; `footer`: `ReactNode`
+
+Events — `onClose`
 
 - Do not use it for main navigation. Use AppNav.
 - Do not open a drawer from inside another drawer.
@@ -747,7 +861,9 @@ Props — `open`: boolean; `size`: `narrow` | `medium` | `wide` | `extended` (de
 
 A short list of actions or options that opens from a Button or a FilterButton.
 
-Props — `trigger`: `button` | `filter` | `field` (default `button`); `emphasis`: `strong` | `subtle` | `minimal` (default `subtle`); `intent`: `brand` | `neutral` | `danger` (default `neutral`); `size`: `sm` | `md` | `lg` (default `md`); `iconOnly`: boolean; `alignment`: `left` | `right` (default `left`); `disabled`: boolean; `closeOnSelect`: boolean; `open`: boolean; `multiple`: boolean; `muted`: boolean; `toggle`: `on` | `off`; `searchable`: boolean; `menuWidth`: `default` | `field` (default `default`)
+Props — `label`: `string`; `items`: `DropdownMenuEntry[]` { id, label, description?, icon?, danger?, disabled?, selected?, checkbox?, count? }; `trigger`: `button` | `filter` | `field` (default `button`); `emphasis`: `strong` | `subtle` | `minimal` (default `subtle`); `intent`: `brand` | `neutral` | `danger` (default `neutral`); `size`: `sm` | `md` | `lg` (default `md`); `icon`: `string`; `iconOnly`: boolean (default `false`); `count`: `number`; `alignment`: `left` | `right` (default `left`); `disabled`: boolean (default `false`); `closeOnSelect`: boolean (default `true`); `open`: boolean; `multiple`: boolean (default `false`); `id`: `string`; `text`: `string`; `muted`: boolean (default `false`); `badge`: `string`; `toggle`: `on` | `off`; `labelledBy`: `string`; `describedBy`: `string`; `searchable`: boolean (default `false`); `searchPlaceholder`: `string`; `empty`: `string`; `menuWidth`: `default` | `field` (default `default`)
+
+Events — `onOpenChange`, `onSelect`, `onToggle`
 
 - Do not invent DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, MenuDivider, ContextMenu or Popover cousins.
 - Do not use for choosing a value in a form. Use Select.
@@ -757,7 +873,7 @@ Props — `trigger`: `button` | `filter` | `field` (default `button`); `emphasis
 
 A small help panel with an optional title and a short paragraph, opened from a ? icon beside a label or setting.
 
-Props — `position`: `above` | `below` | `left` | `right` (default `below`); `open`: boolean; `disabled`: boolean
+Props — `title`: `string`; `content`: `string`; `position`: `above` | `below` | `left` | `right` (default `below`); `delay`: `number`; `open`: boolean; `disabled`: boolean (default `false`); `children`: `ReactElement`
 
 - Do not invent Popover, HoverCard, InfoTip, ContextInfo or a local help panel.
 - Do not use for an icon button's name. Use Tooltip.
@@ -767,7 +883,9 @@ Props — `position`: `above` | `below` | `left` | `right` (default `below`); `o
 
 A window over the page for a short task, a form or extra detail.
 
-Props — `open`: boolean; `size`: `sm` | `md` | `lg` | `xl` | `fullscreen` (default `sm`); `showClose`: boolean
+Props — `open`: boolean; `title`: `string`; `description`: `string`; `icon`: `string`; `size`: `sm` | `md` | `lg` | `xl` | `fullscreen` (default `sm`); `showClose`: boolean (default `true`); `children`: `ReactNode`; `footer`: `ReactNode`
+
+Events — `onClose`
 
 - Do not invent Dialog, DialogTrigger, DialogContent, ModalCard, Sheet or CommandDialog.
 - Do not use for a must-choose confirm. Use AlertDialog.
@@ -777,7 +895,7 @@ Props — `open`: boolean; `size`: `sm` | `md` | `lg` | `xl` | `fullscreen` (def
 
 Brief extra text on hover or keyboard focus of one trigger.
 
-Props — `position`: `above` | `below` | `left` | `right` (default `above`); `open`: boolean; `disabled`: boolean
+Props — `content`: `string`; `position`: `above` | `below` | `left` | `right` (default `above`); `delay`: `number`; `open`: boolean; `disabled`: boolean (default `false`); `children`: `ReactElement`
 
 - Do not invent Popover, HoverCard, InfoTip or a local tooltip. For a titled help panel, use HelpPopover.
 - Do not put required instructions in a tooltip. Use the field's hint.

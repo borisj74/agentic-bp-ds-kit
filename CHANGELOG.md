@@ -4,6 +4,14 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.11 — 2026-10-29
+
+A fix to the Toolbar field slot, and more of each component's props in the Figma guidelines.
+
+### Changed
+- Toolbar `field` is now a row of its own, spaced like the rest of the bar. Pass two controls in a fragment (a Dropdown and a Collapse all Button, say) and they sit 8px apart instead of touching. One control looks exactly as it did on v0.7.10, so nothing to change on existing screens.
+- The Figma guidelines the library hands its agent now list every prop, not only the enum and boolean ones. Each component's line carries its value props with their types and its row and item field names, a Functions line for the accessors that decide how a row or cell looks (`rowParent`, `cellStatus`, `cellLink`), and an Events line for the `on*` handlers. Props added in v0.7.7 to v0.7.10 — PageHeader `back` among them — reached the agent not at all before this.
+
 ## v0.7.10 — 2026-10-29
 
 A back arrow on PageHeader. New and optional, so screens render exactly as on v0.7.9.
