@@ -24,10 +24,7 @@
 
 /* The bar: parts side by side with a 2px gap, each with its own corners, so the split reads without a line
    between them. The track owns no background of its own; a left part is the empty one. */
-.track { position: relative; display: flex; align-items: stretch; gap: var(--usage-bar-gap); height: var(--control-small); }
-/* The allowance end: a thin rule standing a little above and below the bar, so an overspend after it reads as
-   past the end. Only drawn when there is one. */
-.allowanceEnd { position: absolute; top: calc(var(--space-xxsmall) * -1); bottom: calc(var(--space-xxsmall) * -1); width: var(--border-width-thin); background: var(--border-neutral-strong); }
+.track { display: flex; align-items: stretch; gap: var(--usage-bar-gap); height: var(--control-small); }
 .part { flex: none; min-width: var(--usage-bar-gap); border-radius: var(--radius-medium); }
 .left { background: var(--bg-neutral-subtle); }
 .outside { background: var(--bg-danger); }

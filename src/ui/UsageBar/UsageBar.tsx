@@ -62,10 +62,9 @@ export function UsageBar({ segments, figures, showLegend = true, label = "Usage"
   const over = outside.reduce((sum, s) => sum + amount(s), 0);
   const used = inside.filter((s) => kindOf(s) === "used").reduce((sum, s) => sum + amount(s), 0);
   // The bar is as wide as the allowance and anything spent past it, so an overspend reads as what it cost without
-  // the bar spilling out of the box it sits in. The marker shows where the allowance ran out.
+  // the bar spilling out of the box it sits in. Its red, its caption and its legend key say it is past the end.
   const span = total + over;
   const share = (s: UsageBarSegment) => (span > 0 ? amount(s) / span : 0);
-  const allowanceEnd = span > 0 ? total / span : 1;
 
   // Used parts take the chart order where they set no intent of their own. A recent sliver belongs to the part
   // before it, so it does not take a colour of its own from the order.
@@ -88,13 +87,16 @@ export function UsageBar({ segments, figures, showLegend = true, label = "Usage"
 
   // One key per used intent, then the empty track and, where there is one, the overspend. Parts of one intent
   // share a key, so an AI plan used and its last hour are one entry, not two.
-  const keys: { id: string; label: string; intent: LegendIntent }[] = [];
+  const keys: { id: string; label: string; intent?: LegendIntent; shape?: "outline" }[] = [];
   for (const s of drawn) {
     if (s.kind !== "used" || !s.intent) continue;
     if (keys.some((k) => k.intent === s.intent)) continue;
     keys.push({ id: s.id, label: s.legend ?? s.label ?? s.intent, intent: s.intent });
   }
-  if (drawn.some((s) => s.kind === "left")) keys.push({ id: "left", label: "Left to use", intent: "gray" });
+  // What is left is keyed as the empty box rather than one more colour, the same grey the track itself takes.
+  // A left part can name the key itself, for a bar whose period says it better, like Left today.
+  const left = drawn.find((s) => s.kind === "left");
+  if (left) keys.push({ id: "left", label: left.legend ?? "Left to use", shape: "outline" });
   if (outside.length) keys.push({ id: "outside", label: "Over the allowance", intent: "red" });
 
   // Screen readers hear the split in order: how much of the allowance is used, then every part worth naming.
@@ -112,7 +114,9 @@ export function UsageBar({ segments, figures, showLegend = true, label = "Usage"
             // Every place keeps its box whether or not it holds a figure. The one at "start" is held to the share
             // of the bar before the first part still to spend, so the one at "left" begins exactly over it — and
             // gives that width up, rather than squeezing its neighbour, once the three would not fit on the line.
-            const style = place === "start" ? ({ flex: `0 1 ${offset * 100}%` } as CSSProperties) : undefined;
+            // With nothing left to spend there is no part to line up with, so it takes its own width instead;
+            // held to a share of 0 it would collapse to a word a row.
+            const style = place === "start" && offset > 0 ? ({ flex: `0 1 ${offset * 100}%` } as CSSProperties) : undefined;
             return (
               <div key={place} className={[styles.figure, styles[placeClass[place]]].join(" ")} style={style}>
                 {figure && (
@@ -136,8 +140,6 @@ export function UsageBar({ segments, figures, showLegend = true, label = "Usage"
         aria-valuenow={used}
         aria-valuetext={`${num(used)} used of ${num(total)}${over ? `, ${num(over)} over the allowance` : ""}`}
       >
-        {/* Where the allowance ran out, so the red part after it reads as past the end rather than part of it. */}
-        {over > 0 && <span className={styles.allowanceEnd} style={{ insetInlineStart: `${allowanceEnd * 100}%` }} aria-hidden="true" />}
         {drawn.map((s) => (
           <span
             key={s.id}

@@ -79,7 +79,7 @@ describe("UsageBar", () => {
     expect(drawn[2]).toBe("");
   });
 
-  it("draws an outside part past the allowance without counting it in, and marks where the allowance ran out", () => {
+  it("draws an outside part after the allowance without counting it in", () => {
     const { container } = render(
       <UsageBar
         label="Credits this period"
@@ -96,12 +96,49 @@ describe("UsageBar", () => {
     // Every part fits inside the bar, so an overspend cannot push it out of the box it sits in.
     const total = parts().reduce((sum, p) => sum + parseFloat((p as HTMLElement).style.width.match(/([\d.]+)%/)![1]), 0);
     expect(total).toBeCloseTo(100, 1);
-    expect(container.querySelector("[class*=allowanceEnd]")).not.toBeNull();
+    // Its red, its caption and its legend key say it is past the end; no rule is drawn for it.
+    expect(container.querySelector("[class*=allowanceEnd]")).toBeNull();
+    expect(key("Over the allowance", container)).not.toBeNull();
   });
 
-  it("marks nothing when the allowance was not passed", () => {
-    const { container } = render(<UsageBar label="Credits this period" segments={SEGMENTS} />);
-    expect(container.querySelector("[class*=allowanceEnd]")).toBeNull();
+  it("takes its own width at the start when there is nothing left to spend", () => {
+    const { container } = render(
+      <UsageBar
+        label="Credits this period"
+        segments={[
+          { id: "free", value: 150, intent: "mint", label: "Free credits" },
+          { id: "plan", value: 1000, intent: "purple", label: "AI plan" },
+          { id: "over", value: 1429, kind: "outside", label: "1,429 over the allowance" },
+        ]}
+        figures={[
+          { value: "1,150", label: "used so far", at: "start" },
+          { value: "1,429", label: "over the allowance · $2,143.50 so far", at: "end", intent: "danger" },
+        ]}
+      />,
+    );
+    // Held to a share of 0 it would collapse to a word a row, since no part is still to spend.
+    const start = container.querySelector("[class*=atStart]") as HTMLElement;
+    expect(start.style.flex).toBe("");
+  });
+
+  it("keys what is left as an outline, named by the left part where it names itself", () => {
+    const { container } = render(
+      <UsageBar
+        label="API requests today"
+        segments={[
+          { id: "used", value: 2100, intent: "gray", label: "API requests", legend: "API requests used today" },
+          { id: "left", value: 7900, kind: "left", label: "7,900 left today", legend: "Left today" },
+        ]}
+      />,
+    );
+    const legend = container.querySelector("[class*=legend]") as HTMLElement;
+    expect(within(legend).getByText("Left today")).toBeInTheDocument();
+    expect(within(legend).queryByText("Left to use")).toBeNull();
+    // An outline key is the empty box, so it carries no colour of its own.
+    const marks = [...legend.querySelectorAll("[class*=mark]")] as HTMLElement[];
+    expect(marks[0].style.background).toBe("var(--bg-gray)");
+    expect(marks[1].className).toMatch(/outline/);
+    expect(marks[1].style.background).toBe("");
   });
 
   it("keys the legend once per used colour, then what is left and what went over", () => {

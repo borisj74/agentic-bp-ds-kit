@@ -2,7 +2,7 @@
   "name": "Legend",
   "path": "src/ui/Legend/Legend.tsx",
   "intent": "The key to a drawing: a small colour mark per name, so people can read what each colour means.",
-  "usage": "Use Legend as the key to anything drawn in the chart colours. The kit charts already draw one inside, so reach for it on its own when the key sits somewhere else: over a group of charts that share their colours, beside a map, or under a colour-coded bar. It is one component: pass items. orientation runs the keys across or down, shape picks a square, a line or a dot, and value writes a number after each name. With onHiddenChange the keys become buttons that switch a series off, and it tells you which are off so you can drop them from your data. See contracts/legend.json for the full contract.",
+  "usage": "Use Legend as the key to anything drawn in the chart colours. The kit charts already draw one inside, so reach for it on its own when the key sits somewhere else: over a group of charts that share their colours, beside a map, or under a colour-coded bar. It is one component: pass items. orientation runs the keys across or down, shape picks a square, a line, a dot or an outline, and value writes a number after each name. An outline key is the empty box, for what is left rather than used \u2014 a usage bar keys what is still to spend that way beside its filled parts \u2014 and it takes no intent. With onHiddenChange the keys become buttons that switch a series off, and it tells you which are off so you can drop them from your data. See contracts/legend.json for the full contract.",
   "props": {
     "items": {
       "type": "LegendKey[]",
@@ -12,7 +12,7 @@
         "label": "string",
         "intent": "green | olive | cyan | orange | pink | gray | purple | yellow | red | mint? Without it, keys take the chart order: green, olive, cyan, orange, pink, gray, then the rest.",
         "value": "string? A number after the name, like $482K or 32%.",
-        "shape": "\"square\" | \"line\" | \"dot\"? This key's own shape, over the legend's shape. A chart keys its dashed reference lines as lines beside its square bars."
+        "shape": "\"square\" | \"line\" | \"dot\" | \"outline\"? This key's own shape, over the legend's shape. A chart keys its dashed reference lines as lines beside its square bars, and a usage bar keys what is left as an outline beside its filled parts."
       },
       "note": "One key per colour, in the same order as the drawing."
     },
@@ -37,10 +37,11 @@
       "enum": [
         "square",
         "line",
-        "dot"
+        "dot",
+        "outline"
       ],
       "default": "square",
-      "note": "square for bars and areas, line for a LineChart, dot for points on a map or a scatter."
+      "note": "square for bars and areas, line for a LineChart, dot for points on a map or a scatter, outline for what is empty rather than coloured, like the part of a bar still to be used. An outline key takes no intent."
     },
     "size": {
       "enum": [
@@ -112,7 +113,7 @@
     },
     {
       "title": "Shapes",
-      "usage": "Square for bars, line for a LineChart, dot for points.",
+      "usage": "Square for bars, line for a LineChart, dot for points, outline for what is empty rather than coloured.",
       "items": [
         {
           "props": {
@@ -129,6 +130,12 @@
         {
           "props": {
             "shape": "dot",
+            "items": "{series}"
+          }
+        },
+        {
+          "props": {
+            "shape": "outline",
             "items": "{series}"
           }
         }
