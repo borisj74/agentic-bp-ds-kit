@@ -4,7 +4,7 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
-## Unreleased
+## v0.7.5 — 2026-10-29
 
 From the price ramps, AI usage and account prototypes. Nothing is renamed or removed; a screen that passes none of the new props renders as before.
 
