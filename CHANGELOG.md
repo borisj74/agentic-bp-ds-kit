@@ -4,6 +4,13 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.12 — 2026-10-29
+
+A new component: UsageBar.
+
+### Added
+- **UsageBar** — one bar for everything available in a period, split into the parts it came from. Use it where an allowance has more than one source, like free credits, a plan and a top-up, and people need to see in one line where it went and how much is left. Pass `segments`, each with an `id`, a `value` and a `kind`: `used` takes a chart colour, `left` is the empty track, and `outside` is what was spent past the allowance. Each part can carry a `label` and a `note`, written under it as wide as the part; a part too narrow for its caption goes without one. `recent` draws a darker sliver of the same colour for the last hour, day or week. `figures` writes up to three big numbers above the bar — at the start, over the first part still to spend, and at the end — each able to take a warning or danger colour. The kit Legend sits under it unless you pass `showLegend` false. An overspend is drawn after a marker showing where the allowance ran out, and is left out of what the bar measures, so the bar still reads against what was available.
+
 ## v0.7.11 — 2026-10-29
 
 A fix to the Toolbar field slot, and more of each component's props in the Figma guidelines.
