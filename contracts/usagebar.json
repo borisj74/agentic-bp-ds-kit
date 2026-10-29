@@ -1,0 +1,150 @@
+{
+  "name": "UsageBar",
+  "path": "src/ui/UsageBar/UsageBar.tsx",
+  "intent": "One bar for everything available in a period, split into the parts it is made of: what each part used, what is left, and anything spent past the allowance.",
+  "usage": "Use UsageBar when a single allowance comes from more than one source and people need to see, in one line, where it went and how much is left — free credits, a plan and a top-up, say. It is one component: pass segments, each with an id, a value and a kind. kind \"used\" takes a chart intent and draws in that colour; kind \"left\" is the empty track and takes no intent; kind \"outside\" is what was spent past the allowance, draws red after the end, and is not counted in the total the other parts share. A segment with recent true draws as a darker sliver of the same intent right after its part, for the last hour, day or week. Each part can carry a label and a note, written under it as wide as the part; a part too narrow for its own caption leaves it out. figures writes up to three big numbers above the bar — at \"start\", at \"left\" (the first part that is left) and at \"end\", right-aligned — each with a small line under it, and each able to take a warning or danger intent. The legend under the bar is the kit Legend, one key per used intent plus Left to use and, when there is one, Over the allowance; turn it off with showLegend false. label names the bar for screen readers. Put it in a Section or Card, which gives it its title; the bar draws no box of its own. See contracts/usagebar.json for the full contract.",
+  "props": {
+    "segments": {
+      "type": "UsageBarSegment[]",
+      "required": true,
+      "itemShape": {
+        "id": "string",
+        "value": "number How much of the allowance this part is, in the same unit as every other part.",
+        "kind": "\"used\" | \"left\" | \"outside\"? What the part is. Default used.",
+        "intent": "green | olive | cyan | orange | pink | gray | purple | yellow | red | mint? The part's colour, on a used part only. Without it, used parts take the chart order.",
+        "label": "string? The bold line under the part, like Free credits or 670 left in the AI plan.",
+        "note": "string? The quieter line under the label, like 150 used · ran out Oct 12.",
+        "recent": "boolean? Draws the part as a darker sliver of its intent, for what was used in the last hour, day or week. Default false.",
+        "legend": "string? The name this part takes in the legend. Without it, parts of one intent share the first label."
+      },
+      "note": "The parts in the order they are drawn. Keep it short: two to eight, not counting recent slivers."
+    },
+    "figures": {
+      "type": "UsageBarFigure[]",
+      "itemShape": {
+        "value": "string The big number, already written, like 1,170 or $156.00.",
+        "label": "string The small line under it, like left · 71% · lasts to the end of the period at this pace.",
+        "at": "\"start\" | \"left\" | \"end\" Where it sits: the start of the bar, the start of the first left part, or the end, right-aligned.",
+        "intent": "\"warning\" | \"danger\"? Colours the number amber or red, for an allowance running out or already past."
+      },
+      "note": "Up to three, one per place. Leave it out for a bar with no figures above it."
+    },
+    "showLegend": {
+      "type": "boolean",
+      "default": true,
+      "note": "The kit Legend under the bar, centred. Turn it off where the captions already name every part."
+    },
+    "label": {
+      "type": "string",
+      "default": "Usage",
+      "note": "Names the bar for screen readers, like Credits this period."
+    }
+  },
+  "useWhen": [
+    "An allowance that comes from more than one source — free credits, a plan, a top-up — and people need to see where it went in one line.",
+    "A usage or billing page where what is left matters as much as what is used, including use past the allowance.",
+    "A period view where each part needs its own caption, like when a part ran out or when the next one renews."
+  ],
+  "doNot": [
+    "Do not use it for one limit with one number. Use Meter, or UsageList for several limits each with their own bar.",
+    "Do not use it to compare periods or trends. Use BarChart or LineChart.",
+    "Do not build it from a stacked BarChart with text under it, and do not add a local cousin like SegmentedBar or AllowanceBar.",
+    "Do not pass percents as values. Pass the real amounts; the bar works out the widths.",
+    "Do not count an outside part in the allowance. Pass it as kind outside and leave the used and left parts to add up to what was available.",
+    "Do not rely on colour alone: give every part worth naming a label, since the captions carry the meaning.",
+    "Do not put it in a Card and a Section at once, or draw a box round it yourself.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "A group named by label, holding a meter whose text says how much of the allowance is used.",
+    "Every part is listed for screen readers with its label, note and amount, so the split is read in order and never left to colour.",
+    "The bar is not focusable: it shows a state and takes no input.",
+    "The legend is decorative here, since the captions already name the parts."
+  ],
+  "snippet": "<Section title=\"Credits this period\">\n  <UsageBar\n    label=\"Credits this period\"\n    figures={[\n      { value: \"480\", label: \"used so far · 24 today so far\", at: \"start\" },\n      { value: \"1,170\", label: \"left · 71% · lasts to the end of the period at this pace\", at: \"left\" },\n      { value: \"1,650\", label: \"available\", at: \"end\" },\n    ]}\n    segments={[\n      { id: \"free\", value: 150, intent: \"mint\", label: \"Free credits\", note: \"150 used · ran out Oct 12\", legend: \"Free credits\" },\n      { id: \"plan\", value: 330, intent: \"purple\", label: \"AI plan\", note: \"330 used\", legend: \"AI plan\" },\n      { id: \"plan-left\", value: 670, kind: \"left\", label: \"670 left in the AI plan\", note: \"renews Nov 9\" },\n      { id: \"topup-left\", value: 500, kind: \"left\", label: \"500 left in the top-up\", note: \"no end date\" },\n    ]}\n  />\n</Section>",
+  "examples": [
+    {
+      "title": "Used and left",
+      "usage": "An allowance from two sources: free credits and the AI plan used, the rest of the plan and a top-up still to spend. The figures read used, left and available.",
+      "items": [
+        {
+          "props": {
+            "label": "Credits this period",
+            "figures": [
+              { "value": "480", "label": "used so far · 24 today so far", "at": "start" },
+              { "value": "1,170", "label": "left · 71% · lasts to the end of the period at this pace", "at": "left" },
+              { "value": "1,650", "label": "available", "at": "end" }
+            ],
+            "segments": [
+              { "id": "free", "value": 150, "intent": "mint", "label": "Free credits", "note": "150 used · ran out Oct 12", "legend": "Free credits" },
+              { "id": "plan", "value": 330, "intent": "purple", "label": "AI plan", "note": "330 used", "legend": "AI plan" },
+              { "id": "plan-left", "value": 670, "kind": "left", "label": "670 left in the AI plan", "note": "renews Nov 9" },
+              { "id": "topup-left", "value": 500, "kind": "left", "label": "500 left in the top-up", "note": "no end date" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Over the allowance",
+      "usage": "An outside part draws past the end in red and is not counted in the allowance. The end figure takes danger, and the part still left takes warning.",
+      "items": [
+        {
+          "props": {
+            "label": "Credits this period",
+            "figures": [
+              { "value": "1,186", "label": "used so far", "at": "start" },
+              { "value": "464", "label": "left in the top-up", "at": "left", "intent": "warning" },
+              { "value": "104", "label": "over the allowance · $156.00", "at": "end", "intent": "danger" }
+            ],
+            "segments": [
+              { "id": "free", "value": 150, "intent": "mint", "label": "Free credits", "note": "all used", "legend": "Free credits" },
+              { "id": "plan", "value": 1000, "intent": "purple", "label": "AI plan", "note": "all used · renews Nov 9", "legend": "AI plan" },
+              { "id": "topup", "value": 36, "intent": "orange", "label": "Top-up", "note": "36 used", "legend": "Top-up" },
+              { "id": "topup-left", "value": 464, "kind": "left", "label": "464 left in the top-up", "note": "no end date" },
+              { "id": "over", "value": 104, "kind": "outside", "label": "104 over the allowance", "note": "billed at $1.50 each" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "The last hour",
+      "usage": "recent draws a darker sliver of the same intent right after its part, for what went in the last hour. It is too narrow for a caption of its own.",
+      "items": [
+        {
+          "props": {
+            "label": "Credits this period",
+            "figures": [
+              { "value": "491", "label": "used so far · 11 in the last hour", "at": "start" },
+              { "value": "1,159", "label": "left · 70%", "at": "left" }
+            ],
+            "segments": [
+              { "id": "free", "value": 150, "intent": "mint", "label": "Free credits", "note": "150 used · ran out Oct 12", "legend": "Free credits" },
+              { "id": "plan", "value": 330, "intent": "purple", "label": "AI plan", "note": "330 used", "legend": "AI plan" },
+              { "id": "plan-hour", "value": 11, "intent": "purple", "recent": true, "legend": "In the last hour" },
+              { "id": "plan-left", "value": 659, "kind": "left", "label": "659 left in the AI plan", "note": "renews Nov 9" },
+              { "id": "topup-left", "value": 500, "kind": "left", "label": "500 left in the top-up", "note": "no end date" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Without figures or legend",
+      "usage": "The bar and its captions on their own, for a panel whose numbers are already written above it.",
+      "items": [
+        {
+          "props": {
+            "label": "Credits this period",
+            "showLegend": false,
+            "segments": [
+              { "id": "plan", "value": 820, "intent": "purple", "label": "AI plan", "note": "820 used" },
+              { "id": "plan-left", "value": 830, "kind": "left", "label": "830 left", "note": "renews Nov 9" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

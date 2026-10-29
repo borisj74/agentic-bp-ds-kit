@@ -1070,6 +1070,23 @@
       ]
     },
     {
+      "name": "UsageBar",
+      "contract": "contracts/usagebar.json",
+      "category": "data",
+      "tags": [
+        "usage bar",
+        "segmented bar",
+        "stacked bar",
+        "allowance",
+        "credits",
+        "used and left",
+        "grant",
+        "top-up",
+        "budget",
+        "quota"
+      ]
+    },
+    {
       "name": "UsageList",
       "contract": "contracts/usagelist.json",
       "category": "data",

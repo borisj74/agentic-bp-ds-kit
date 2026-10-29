@@ -1,0 +1,58 @@
+/* Figma AI usage Utilization 789:53222: the figures above, one bar for the whole allowance, a caption under each
+   part, and the legend under that. The bar and the caption row share one set of widths, so every caption sits
+   under the part it names. */
+/* One gap for the bar and the caption row, so a caption is exactly as wide as the part above it. Each width is
+   its share of the track less its share of the gaps, which keeps the parts inside the track however many there are. */
+.usageBar { --usage-bar-gap: var(--border-width-medium); --usage-bar-figure-min: 16ch; display: flex; flex-direction: column; gap: var(--space-xsmall); font-family: var(--font-sans); container-type: inline-size; }
+
+/* figures: three places on one line. start sits against the start edge and is held to the share of the bar
+   before the first part still to spend, so the one at left begins exactly over that part; end keeps the end.
+   The one at left keeps a floor of its own and start gives way once they would not both fit: the more of the
+   allowance is spent the further along left sits, and without the floor its line is squeezed to a word a row
+   exactly when it matters most. It slides off its part rather than shredding; end never gives up its text. */
+.figures { display: flex; align-items: flex-start; }
+.figure { display: flex; flex-direction: column; gap: var(--space-xxsmall); min-width: 0; }
+.atStart { flex: 0 0 auto; min-width: 0; padding-inline-end: var(--space-small); box-sizing: border-box; }
+.atLeft { flex: 1 1 auto; min-width: var(--usage-bar-figure-min); padding-inline-end: var(--space-small); box-sizing: border-box; }
+.atEnd { flex: 0 0 auto; margin-inline-start: auto; text-align: end; }
+
+/* The kit's own big-number type, as on Scoreboard, so a figure here and a metric there are one size. */
+.figureValue { font-size: var(--text-ref-metric-size); font-weight: var(--text-ref-metric-weight); line-height: var(--text-ref-metric-lh); letter-spacing: var(--text-ref-metric-ls); color: var(--text-neutral-intense); }
+.figureValue.warning { color: var(--text-warning); }
+.figureValue.danger { color: var(--text-danger); }
+.figureLabel { font-size: var(--font-size-small); color: var(--text-neutral-subtle); }
+
+/* The bar: parts side by side with a 2px gap, each with its own corners, so the split reads without a line
+   between them. The track owns no background of its own; a left part is the empty one. */
+.track { position: relative; display: flex; align-items: stretch; gap: var(--usage-bar-gap); height: var(--control-small); }
+/* The allowance end: a thin rule standing a little above and below the bar, so an overspend after it reads as
+   past the end. Only drawn when there is one. */
+.allowanceEnd { position: absolute; top: calc(var(--space-xxsmall) * -1); bottom: calc(var(--space-xxsmall) * -1); width: var(--border-width-thin); background: var(--border-neutral-strong); }
+.part { flex: none; min-width: var(--usage-bar-gap); border-radius: var(--radius-medium); }
+.left { background: var(--bg-neutral-subtle); }
+.outside { background: var(--bg-danger); }
+/* recent takes its colour inline, one step stronger than the part it follows. */
+.recent { border-radius: var(--radius-medium); }
+
+/* captions: the same widths as the parts, so each one is as wide as what it names and wraps inside it. */
+.captions { display: flex; align-items: flex-start; gap: var(--usage-bar-gap); }
+/* The same floor as a part, so a sliver too thin to compute stays the same width in both rows and the captions
+   after it keep their place under what they name. */
+.caption { display: flex; flex-direction: column; gap: var(--space-xxsmall); min-width: var(--usage-bar-gap); padding-inline-end: var(--space-xsmall); box-sizing: border-box; }
+.captionLabel { font-size: var(--font-size-small); font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); overflow-wrap: break-word; }
+.captionLabel.danger { color: var(--text-danger); }
+.captionNote { font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); overflow-wrap: break-word; }
+
+.legend { margin-block-start: var(--space-xsmall); }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Under 640px the captions cannot hold a line each at their part's width, so they stack under the bar at full
+   width instead, in the order the parts are drawn. */
+@container (max-width: 640px) {
+  .captions { flex-direction: column; gap: var(--space-xsmall); }
+  .caption { width: 100% !important; padding-inline-end: 0; }
+  .figures { flex-wrap: wrap; gap: var(--space-medium); }
+  .atStart { flex: 0 0 auto !important; }
+  .atLeft { min-width: 0; }
+}
