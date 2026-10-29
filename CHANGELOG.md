@@ -4,6 +4,21 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.13 — 2026-10-29
+
+Fixes to UsageBar from using it on a real account, and a fourth shape for Legend.
+
+### Added
+- Legend `shape` takes `outline`: the empty box, for what is left rather than used. It takes the grey a bar's empty track takes, with a thin edge, and carries no colour of its own. Set it for the whole legend or for one key.
+- UsageBar: two more examples in the catalog — an account with nothing left and an overspend, and a single limit drawn in the chart grey, like API requests against a daily limit.
+
+### Changed
+- UsageBar keys what is left as an outline rather than a grey square, so it no longer reads as one more colour. A `left` segment can name that key itself with `legend`, like `Left today`; without one it stays `Left to use`.
+- UsageBar no longer draws a rule where the allowance ran out. An `outside` part follows the allowance after the usual gap; its red, its caption and its legend key already say it is past the end.
+
+### Fixed
+- UsageBar: the figure at the start collapsed to one word a row when no part was left to spend. It was held to the share of the bar before the first part still to spend, which is nothing when everything is used. It now takes its own width whenever there is no part to line up with.
+
 ## v0.7.12 — 2026-10-29
 
 A new component: UsageBar.
