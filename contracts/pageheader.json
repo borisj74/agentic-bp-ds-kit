@@ -2,7 +2,7 @@
   "name": "PageHeader",
   "path": "src/ui/PageHeader/PageHeader.tsx",
   "intent": "The top of a page's content: where it sits (breadcrumb), what it is (title, badge, and an optional icon) and the page actions. Below the AppHeader.",
-  "usage": "Put one PageHeader at the top of each page, under the AppHeader. It is one component: breadcrumbs are the page's parents, all links, starting with Home and then its side-nav section; the header closes the trail with the title as the current crumb, so it always reads Home › section › this page (like Home › Accounts › Northwind Traders). Then the title row with an optional badge, and an icon before the title only when you pass one (none by default), and the page actions on the end. actions are kit Buttons, size sm, with the one strong brand Button last; moreActions puts less-used actions in a More menu before them. sticky is the compact bar for when the page scrolls: one line whose trail ends in the page title, with a raised shadow unless shadow is false. See contracts/pageheader.json for the full contract. On a phone-width header, under 640px of its own width, the title row takes the full width and the actions move onto their own row under it, starting at the start edge; the compact sticky bar stays one 52px line, keeping only the page name in its trail, shortened with an ellipsis when it runs long. The bar adds no side padding of its own: the page inset comes from the layout class around it (contracts/layout.json), so the title lines up with the Sections under it. The bar is the top of the page, so it sits flush against the frame's bar with no page inset above it; the pattern holding it (AppShell, RecordPage) takes care of that.",
+  "usage": "Put one PageHeader at the top of each page, under the AppHeader. It is one component: breadcrumbs are the page's parents, all links, starting with Home and then its side-nav section; the header closes the trail with the title as the current crumb, so it always reads Home › section › this page (like Home › Accounts › Northwind Traders). Then the title row with an optional badge, an icon before the title only when you pass one (none by default), and the page actions on the end. back puts a minimal arrow_back Button at the start of the title line, for a record page that was opened from a list: its label names where it goes and shows as a tooltip. actions are kit Buttons, size sm, with the one strong brand Button last; moreActions puts less-used actions in a More menu before them. sticky is the compact bar for when the page scrolls: one line whose trail ends in the page title, with a raised shadow unless shadow is false. See contracts/pageheader.json for the full contract. On a phone-width header, under 640px of its own width, the title row takes the full width and the actions move onto their own row under it, starting at the start edge; the compact sticky bar stays one 52px line, keeping only the page name in its trail, shortened with an ellipsis when it runs long. The bar adds no side padding of its own: the page inset comes from the layout class around it (contracts/layout.json), so the title lines up with the Sections under it. The bar is the top of the page, so it sits flush against the frame's bar with no page inset above it; the pattern holding it (AppShell, RecordPage) takes care of that.",
   "props": {
     "title": {
       "type": "string",
@@ -13,6 +13,11 @@
       "type": "BreadcrumbItem[]",
       "itemShape": "{ label: string; href?: string; onClick?: () => void }",
       "note": "The parents of this page, all links: Home first, then the side-nav section, then any parent record. PageHeader adds the title as the last, current crumb, so the trail always reads Home › section › this page. On the section's own page, like the Accounts list, the title is the section itself, so pass only Home and the trail reads Home › Accounts."
+    },
+    "back": {
+      "type": "PageHeaderBack",
+      "itemShape": "{ label: string; href?: string; onClick?: () => void }",
+      "note": "Optional. A minimal icon-only Button (arrow_back, drawn one size up at icon md) at the start of the title line, before the icon, that goes back to where the page was opened from. label is its accessible name and its tooltip, so write where it goes, like Back to accounts. onClick wins; otherwise href is followed; with neither, it goes back one step in history. The breadcrumb is still the page's place in the app, so pass back only as a shortcut beside it, never instead of it. In sticky it moves to the start of the compact bar, before the trail."
     },
     "icon": {
       "type": "string",
@@ -60,7 +65,8 @@
   "useWhen": [
     "The top of every page: record pages, lists, settings.",
     "A page that scrolls: switch to sticky once the title scrolls away.",
-    "Every screen in an AppShell: pass Home and the side-nav section as breadcrumbs, and any parent record between them and the page."
+    "Every screen in an AppShell: pass Home and the side-nav section as breadcrumbs, and any parent record between them and the page.",
+    "A record page opened from a list, where back to that list is the common next step: pass back beside the breadcrumbs."
   ],
   "doNot": [
     "Do not invent ContentHeader, PageTitle, TitleBar or a local heading row.",
@@ -69,13 +75,15 @@
     "Do not use raw hex.",
     "Do not give it side padding to inset the page. Wrap the page in .layout-content, which owns that inset.",
     "Do not leave Home out of breadcrumbs, and do not pass the page title as a crumb yourself. PageHeader adds it as the current crumb.",
-    "Do not repeat the section as a crumb on the section's own page, like Home › Accounts › Accounts. Pass only Home there."
+    "Do not repeat the section as a crumb on the section's own page, like Home › Accounts › Accounts. Pass only Home there.",
+    "Do not pass back instead of breadcrumbs, and do not write its label as just Back. Name where it goes, like Back to accounts."
   ],
   "a11y": [
     "A header with the page's h1. In sticky the h1 stays, hidden, and the trail marks the title as the current page.",
     "The breadcrumb is the kit Breadcrumb (a nav named Breadcrumb). More is a kit Dropdown.",
     "The icon is decorative; the title names the page.",
-    "The last crumb is the page title, marked aria-current page and not a link."
+    "The last crumb is the page title, marked aria-current page and not a link.",
+    "back is an icon-only kit Button whose accessible name is its label, with that label as a kit Tooltip."
   ],
   "snippet": "<PageHeader\n  breadcrumbs={[{ label: \"Home\", href: \"/\" }, { label: \"Billing\", href: \"/billing\" }, { label: \"Invoices\", href: \"/invoices\" }]}\n  title=\"INV-1042\"\n  badge=\"Draft\"\n  moreActions={moreActions}\n  actions={<>\n    <Button size=\"sm\">Send</Button>\n    <Button size=\"sm\" emphasis=\"strong\" intent=\"brand\">Approve</Button>\n  </>}\n/>",
   "examples": [
@@ -204,6 +212,34 @@
             "icon": "folder_open",
             "title": "INV-1042",
             "badge": "Draft",
+            "actionButtons": "off"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Back to the list",
+      "usage": "back puts an arrow at the start of the title line. Its label says where it goes and is also its tooltip.",
+      "items": [
+        {
+          "props": {
+            "breadcrumbs": [
+              {
+                "label": "Home",
+                "href": "#"
+              },
+              {
+                "label": "Accounts",
+                "href": "#"
+              }
+            ],
+            "back": {
+              "label": "Back to accounts",
+              "href": "#"
+            },
+            "title": "Northwind Traders",
+            "badge": "Active",
+            "badgeIntent": "success",
             "actionButtons": "off"
           }
         }

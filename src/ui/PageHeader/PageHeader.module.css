@@ -52,3 +52,9 @@
 
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
+/* back: the kit Button (minimal, icon-only, sm) at the start of the title line. Its arrow is drawn at icon md, one up from the sm Button's own, so it carries the title line; the button keeps its 28 square, so
+   the title sits one 8px gap after it; the trail above stays at the start edge, as in the product's own
+   record page. flex: none so a long title cannot squeeze the arrow. In sticky there is no title row, so the
+   whole line becomes a row and the arrow leads the trail. */
+.back { flex: none; }
+.stickyTitle { flex-direction: row; align-items: center; justify-content: flex-start; gap: var(--space-xsmall); }

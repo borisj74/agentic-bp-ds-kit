@@ -2134,12 +2134,13 @@ export const registry: Record<string, Entry> = {
     card: <Button>Open modal</Button>,
   },
   PageHeader: {
-    // actionButtons and titleIcon are playground-only: one adds a subtle and the one strong brand Button as actions,
-    // the other puts the optional icon before the title. No icon by default.
-    render: ({ actionButtons, titleIcon, ...p }) => (
+    // actionButtons, titleIcon and backArrow are playground-only: one adds a subtle and the one strong brand
+    // Button as actions, one puts the optional icon before the title, one the back arrow. Both off by default.
+    render: ({ actionButtons, titleIcon, backArrow, ...p }) => (
       <PageHeader
         {...(p as unknown as PageHeaderProps)} onMoreSelect={() => {}}
         icon={titleIcon === "on" ? "folder_open" : (p as unknown as PageHeaderProps).icon}
+        back={backArrow === "on" ? { label: "Back to invoices", onClick: () => {} } : (p as unknown as PageHeaderProps).back}
         actions={actionButtons === "off" ? undefined : <><Button size="sm">Send</Button><Button size="sm" emphasis="strong" intent="brand">Approve</Button></>}
       />
     ),
@@ -2155,8 +2156,8 @@ export const registry: Record<string, Entry> = {
       ],
     },
     snippet: { actions: "{actions}" },
-    extras: { titleIcon: { values: ["off", "on"], default: "off" }, actionButtons: { values: ["on", "off"], default: "on" } },
-    hint: "Toggle sticky and shadow, pick a badge intent, turn the title icon on, and turn the action buttons off. More opens the overflow menu.",
+    extras: { titleIcon: { values: ["off", "on"], default: "off" }, backArrow: { values: ["off", "on"], default: "off" }, actionButtons: { values: ["on", "off"], default: "on" } },
+    hint: "Toggle sticky and shadow, pick a badge intent, turn the title icon or the back arrow on, and turn the action buttons off. More opens the overflow menu.",
     block: true,
     wide: true,
     card: (

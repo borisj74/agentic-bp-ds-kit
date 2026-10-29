@@ -4,6 +4,13 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.10 — 2026-10-29
+
+A back arrow on PageHeader. New and optional, so screens render exactly as on v0.7.9.
+
+### Added
+- PageHeader `back`: a minimal arrow at the start of the title line that goes back to where the page was opened from, for a record page opened from a list. `{ label, href?, onClick? }` — `label` names where it goes ("Back to accounts") and is both the button's name for screen readers and its tooltip. `onClick` wins; otherwise `href` is followed; with neither, it goes back one step in history. The breadcrumb still tells you where the page sits, so pass `back` beside it, never instead of it. In `sticky` the arrow leads the compact bar, before the trail.
+
 ## v0.7.9 — 2026-10-29
 
 A catalog example, no kit changes. Screens render exactly as on v0.7.8.
