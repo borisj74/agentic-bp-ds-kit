@@ -5,7 +5,7 @@ import styles from "./Legend.module.css";
 export type LegendIntent = "green" | "olive" | "cyan" | "orange" | "pink" | "gray" | "purple" | "yellow" | "red" | "mint";
 export type LegendOrientation = "horizontal" | "vertical";
 export type LegendAlignment = "start" | "center" | "end";
-export type LegendShape = "square" | "line" | "dot";
+export type LegendShape = "square" | "line" | "dot" | "outline";
 export type LegendSize = "sm" | "md";
 
 export interface LegendKey {
@@ -13,7 +13,8 @@ export interface LegendKey {
   label: string;
   intent?: LegendIntent;
   value?: string;
-  // This key's own shape, over the legend's: a chart's dashed reference lines key as lines beside its square bars.
+  // This key's own shape, over the legend's: a chart's dashed reference lines key as lines beside its square
+  // bars, or an outline for what is empty rather than coloured, like the part of a bar still to be used.
   shape?: LegendShape;
 }
 
@@ -54,14 +55,19 @@ export function Legend({
   };
 
   const cls = [styles.legend, styles[orientation], styles[alignment], styles[size]].join(" ");
-  const body = (item: LegendKey, i: number, isOff: boolean) => (
-    <>
-      {/* An off key drops its colour and takes the grey from the stylesheet. */}
-      <span className={[styles.mark, styles[item.shape ?? shape]].join(" ")} style={isOff ? undefined : { background: legendColor(legendIntent(i, item.intent)) }} />
-      <span className={styles.text}>{item.label}</span>
-      {item.value && <span className={styles.value}>{item.value}</span>}
-    </>
-  );
+  const body = (item: LegendKey, i: number, isOff: boolean) => {
+    // outline keys what is empty rather than coloured, so it takes the stylesheet's empty box and no intent.
+    const mark = item.shape ?? shape;
+    const filled = !isOff && mark !== "outline";
+    return (
+      <>
+        {/* An off key drops its colour and takes the grey from the stylesheet. */}
+        <span className={[styles.mark, styles[mark]].join(" ")} style={filled ? { background: legendColor(legendIntent(i, item.intent)) } : undefined} />
+        <span className={styles.text}>{item.label}</span>
+        {item.value && <span className={styles.value}>{item.value}</span>}
+      </>
+    );
+  };
 
   // Decorative: the chart it belongs to already reads its numbers out, so the keys are skipped.
   return (

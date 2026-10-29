@@ -19,10 +19,13 @@
 .text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .value { color: var(--text-neutral); font-variant-numeric: tabular-nums; }
 
-/* The key itself: a small square, a line like the chart's stroke, or a dot. */
+/* The key itself: a small square, a line like the chart's stroke, a dot, or an outline. */
 .mark { flex: none; width: var(--chart-swatch); height: var(--chart-swatch); border-radius: var(--radius-small); }
 .line { width: var(--space-medium); height: var(--border-width-medium); border-radius: var(--radius-full); }
 .dot { border-radius: var(--radius-full); }
+/* outline: the empty box, for what is left rather than used. It takes the same grey a bar's empty track takes,
+   with an edge, so it reads as nothing in it rather than as one more colour. It carries no intent. */
+.outline { background: var(--bg-neutral-subtle); box-shadow: inset 0 0 0 var(--border-width-thin) var(--border-neutral-strong); }
 
 /* Keys that switch a series on and off. Off keeps its place, greyed out. */
 .button { display: inline-flex; align-items: center; gap: var(--space-xsmall); min-width: 0; min-height: var(--target-min); margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; }
@@ -30,3 +33,4 @@
 .button:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--space-xxxsmall); border-radius: var(--radius-small); }
 .off { color: var(--text-neutral-subtle); }
 .off .mark { background: var(--bg-neutral-intense); }
+.off .outline { background: var(--bg-neutral-subtle); }
