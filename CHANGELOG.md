@@ -4,6 +4,13 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.6 — 2026-10-29
+
+A catalog example, no kit changes. Screens render exactly as on v0.7.5.
+
+### Changed
+- BarChart: the catalog's Against a grant example now shows its step note, Top-up Sep 18 · granted 1,350, over the first step of the grant line, so it matches the Figma example.
+
 ## v0.7.5 — 2026-10-29
 
 From the price ramps, AI usage and account prototypes. Nothing is renamed or removed; a screen that passes none of the new props renders as before.
