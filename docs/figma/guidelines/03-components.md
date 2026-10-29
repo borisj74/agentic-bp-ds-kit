@@ -295,6 +295,16 @@ Events — `onItemsChange`, `onSelectedChange`, `onExpandedChange`
 - Do not use it for main app navigation. Use AppNav.
 - Do not use it for sections of one page that open and close. Use Accordion.
 
+### UsageBar
+
+One bar for everything available in a period, split into the parts it is made of: what each part used, what is left, and anything spent past the allowance.
+
+Props — `segments`: `UsageBarSegment[]` { id, value, kind, intent, label?, note?, recent?, legend? }; `figures`: `UsageBarFigure[]` { value, label, at, intent }; `showLegend`: boolean (default `true`); `label`: `string`
+
+- Do not use it for one limit with one number. Use Meter, or UsageList for several limits each with their own bar.
+- Do not use it to compare periods or trends. Use BarChart or LineChart.
+- Do not build it from a stacked BarChart with text under it, and do not add a local cousin like SegmentedBar or AllowanceBar.
+
 ### UsageList
 
 A list of usage limits, one a row: the limit's name, how much is used of it, a bar, and a short note, like API calls, storage and seats on a plan.

@@ -75,6 +75,7 @@ import { Timeline, type TimelineItem, type TimelineProps } from "@/ui/Timeline/T
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 import { Tooltip, type TooltipProps } from "@/ui/Tooltip/Tooltip";
 import { TreeView, type TreeItem, type TreeViewProps } from "@/ui/TreeView/TreeView";
+import { UsageBar, type UsageBarFigure, type UsageBarSegment } from "@/ui/UsageBar/UsageBar";
 import { UsageList, type UsageListItem } from "@/ui/UsageList/UsageList";
 
 export type Props = Record<string, unknown>;
@@ -127,6 +128,18 @@ const USAGE_ITEMS: UsageListItem[] = [
   { id: "storage", label: "Storage", used: 32, limit: 50, unit: "GB" },
   { id: "api", label: "API calls", used: 8420, limit: 10000, note: "Resets on Oct 1" },
   { id: "seats", label: "Seats", used: 12, limit: 12, note: "All seats in use" },
+];
+// UsageBar sample: credits from three sources, part spent and part still to spend.
+const USAGE_BAR_SEGMENTS: UsageBarSegment[] = [
+  { id: "free", value: 150, intent: "mint", label: "Free credits", note: "150 used · ran out Oct 12", legend: "Free credits" },
+  { id: "plan", value: 330, intent: "purple", label: "AI plan", note: "330 used", legend: "AI plan" },
+  { id: "plan-left", value: 670, kind: "left", label: "670 left in the AI plan", note: "renews Nov 9" },
+  { id: "topup-left", value: 500, kind: "left", label: "500 left in the top-up", note: "no end date" },
+];
+const USAGE_BAR_FIGURES: UsageBarFigure[] = [
+  { value: "480", label: "used so far · 24 today so far", at: "start" },
+  { value: "1,170", label: "left · 71% · lasts to the end of the period at this pace", at: "left" },
+  { value: "1,650", label: "available", at: "end" },
 ];
 // ListView sample rows: invoices with a status badge, split into two groups when the Groups switch is on.
 const LIST_VIEW_ITEMS: ListViewItem[] = [
@@ -2074,6 +2087,28 @@ export const registry: Record<string, Entry> = {
     card: (
       <div style={{ width: "100%" }}>
         <TreeView label="Workspace" items={[{ id: "org", label: "Organization", children: [TREE_ITEMS[0].children![1]] }]} expanded={["org", "design"]} selection="multiple" selected={["sienna", "ammar"]} showIcons size="sm" />
+      </div>
+    ),
+  },
+  UsageBar: {
+    // A white panel like a Section's content, wide enough for the captions to sit under their parts.
+    render: (p) => (
+      <div style={{ width: 720, maxWidth: "100%", padding: "var(--space-medium)", background: "var(--surface-flat)", borderRadius: "var(--radius-medium)" }}>
+        <UsageBar
+          {...(p as object)}
+          segments={(p.segments as UsageBarSegment[] | undefined) ?? USAGE_BAR_SEGMENTS}
+          figures={p.segments ? (p.figures as UsageBarFigure[] | undefined) : USAGE_BAR_FIGURES}
+        />
+      </div>
+    ),
+    preview: { label: "Credits this period", segments: USAGE_BAR_SEGMENTS, figures: USAGE_BAR_FIGURES },
+    hide: ["segments", "figures"],
+    hint: "One bar for the whole allowance: what each source used, what is left, and the captions under each part. Variants show use over the allowance, a last-hour sliver, and the bar on its own.",
+    block: true,
+    wide: true,
+    card: (
+      <div style={{ width: 300 }}>
+        <UsageBar label="Credits this period" showLegend={false} segments={USAGE_BAR_SEGMENTS} />
       </div>
     ),
   },
