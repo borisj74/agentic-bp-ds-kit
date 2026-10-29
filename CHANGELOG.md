@@ -4,6 +4,13 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.9 — 2026-10-29
+
+A catalog example, no kit changes. Screens render exactly as on v0.7.8.
+
+### Changed
+- DataGrid: the Revenue schedule catalog example uses the default medium (2px) line under its header.
+
 ## v0.7.8 — 2026-10-29
 
 A fix to v0.7.7's grouped rows. Screens without rowParent render exactly as on v0.7.7.

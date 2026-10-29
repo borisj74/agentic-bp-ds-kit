@@ -312,7 +312,6 @@
           "props": {
             "label": "Revenue schedule",
             "size": "sm",
-            "line": "thin",
             "rowNumbers": false,
             "columns": "{scheduleColumns}",
             "defaultRows": "{scheduleRows}",
