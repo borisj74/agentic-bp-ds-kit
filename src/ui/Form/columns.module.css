@@ -1,5 +1,6 @@
 /* Columns for a Form's fields and for a Section of FormDisplay rows or fields: they fill left to right. Each column
-   stops at --layout-column-max (a 234 start label, a 12 gap and a 308 field) and the block stays at the start, so on
+   stops at --layout-column-max (a start label, a 12 gap and a 308 field; 554 unless the Form picked labelWidth) and
+   the block stays at the start, so on
    a wide screen the space past the last column stays empty instead of the fields stretching. Never more than 3.
    The box that holds the grid is the size container the breakpoints measure. */
 
@@ -26,6 +27,13 @@
 .grid:is(.start, :has(> [data-label="start"])) > :not([data-label="start"]) { margin-inline-start: calc(var(--input-label-width) + var(--space-small)); }
 /* Once the fields put their label on top (under 554px), there is no column to line up with. */
 @container (max-width: 554px) { .grid:is(.start, :has(> [data-label="start"])) > :not([data-label="start"]) { margin-inline-start: 0; } }
+/* A Form that picked a narrower or wider label column (labelWidth) moves that turn with it. */
+@container (min-width: 461px) and (max-width: 554px) {
+  :global([data-label-width="sm"]) .grid:is(.start, :has(> [data-label="start"])) > :not([data-label="start"]) { margin-inline-start: calc(var(--input-label-width) + var(--space-small)); }
+}
+@container (min-width: 555px) and (max-width: 640px) {
+  :global([data-label-width="lg"]) .grid:is(.start, :has(> [data-label="start"])) > :not([data-label="start"]) { margin-inline-start: 0; }
+}
 /* A DataGrid has its own column headers instead of a label, so with start labels it starts at the section's edge,
    under its title, rather than past the label column. */
 .grid:is(.start, :has(> [data-label="start"])) > [data-data-grid] { margin-inline-start: 0; }
@@ -36,5 +44,19 @@
    it was before the column grew. */
 @container (max-width: 1300px) { .three:is(.start, :has(> [data-label="start"])) { grid-template-columns: repeat(2, minmax(0, var(--layout-column-max))); } }
 @container (max-width: 866px) { :is(.two, .three):is(.start, :has(> [data-label="start"])) { grid-template-columns: minmax(0, var(--layout-column-max)); } }
+/* Those two start numbers follow labelWidth as well, since each column carries the label column it was given:
+   three give way at 1019 (sm) or 1559 (lg), two at 679 (sm) or 1039 (lg). */
+@container (min-width: 1019px) and (max-width: 1300px) {
+  :global([data-label-width="sm"]) .three:is(.start, :has(> [data-label="start"])) { grid-template-columns: repeat(3, minmax(0, var(--layout-column-max))); }
+}
+@container (min-width: 1301px) and (max-width: 1558px) {
+  :global([data-label-width="lg"]) .three:is(.start, :has(> [data-label="start"])) { grid-template-columns: repeat(2, minmax(0, var(--layout-column-max))); }
+}
+@container (min-width: 679px) and (max-width: 866px) {
+  :global([data-label-width="sm"]) :is(.two, .three):is(.start, :has(> [data-label="start"])) { grid-template-columns: repeat(2, minmax(0, var(--layout-column-max))); }
+}
+@container (min-width: 867px) and (max-width: 1038px) {
+  :global([data-label-width="lg"]) :is(.two, .three):is(.start, :has(> [data-label="start"])) { grid-template-columns: minmax(0, var(--layout-column-max)); }
+}
 @container (max-width: 719px) { .three { grid-template-columns: repeat(2, minmax(0, var(--layout-column-max))); } }
 @container (max-width: 560px) { .two, .three { grid-template-columns: minmax(0, var(--layout-column-max)); } }

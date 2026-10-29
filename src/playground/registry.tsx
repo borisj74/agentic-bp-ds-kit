@@ -33,7 +33,7 @@ import { ButtonGroup } from "@/ui/ButtonGroup/ButtonGroup";
 import { DataGrid, type DataGridColumn, type DataGridProps, type DataGridRow } from "@/ui/DataGrid/DataGrid";
 import { DatePicker, type DatePickerProps } from "@/ui/DatePicker/DatePicker";
 import { Dropdown, type DropdownEntry, type DropdownProps } from "@/ui/Dropdown/Dropdown";
-import { Form, type FormProps } from "@/ui/Form/Form";
+import { Form, type FormProps, type FormLabelWidth } from "@/ui/Form/Form";
 import { GuidedProcess, type GuidedProcessAction, type GuidedProcessPanelProps, type GuidedProcessStep } from "@/ui/GuidedProcess/GuidedProcess";
 import { FormDisplay, type FormDisplayProps } from "@/ui/FormDisplay/FormDisplay";
 import { EmptyState, type EmptyStateProps } from "@/ui/EmptyState/EmptyState";
@@ -1408,7 +1408,7 @@ export const registry: Record<string, Entry> = {
     // FormDemo fills the real Form with sample kit fields. content and message are playground-only. Keyed so defaults re-apply.
     // Start labels and two or three columns need more room; narrow stages drop to one column on their own.
     render: ({ content, ...p }) => (
-      <div style={{ width: (p.columns === 3 ? 960 : p.columns === 2 ? 640 : 480) + (p.labelPosition === "start" ? 160 : 0), maxWidth: "100%" }}>
+      <div style={{ width: (p.columns === 3 ? 960 : p.columns === 2 ? 640 : 480) + (p.labelPosition === "start" ? { sm: 80, md: 160, lg: 240 }[(p.labelWidth as FormLabelWidth | undefined) ?? "md"] : 0), maxWidth: "100%" }}>
         <FormDemo key={JSON.stringify(p) + String(content)} {...(p as FormProps)} content={content as FormDemoContent | undefined} grid={content === "rates" ? formRateBands : undefined} />
       </div>
     ),

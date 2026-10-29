@@ -19,8 +19,15 @@ const semanticRows: Section[] = [
     { token: "layout-rail", value: "352px", visual: "var" },
     { token: "layout-metrics-min", value: "192px", visual: "var" },
   ] },
-  { title: "Field column", prefix: "--layout-column-max", note: "The widest one column of fields or FormDisplay rows gets in a record or form view: a 234 label, a 12 gap and a 308 field. Up to 3 columns; past them the page stays empty.", rows: [
+  { title: "Field column", prefix: "--layout-column-max", note: "The widest one column of fields or FormDisplay rows gets in a record or form view: a start label, a 12 gap and a 308 field. The three steps follow the Form's labelWidth, so the field stays 308 whichever label column it picks. Up to 3 columns; past them the page stays empty.", rows: [
+    { token: "layout-column-max-sm", value: "460px", visual: "var" },
     { token: "layout-column-max", value: "554px", visual: "var" },
+    { token: "layout-column-max-lg", value: "640px", visual: "var" },
+  ] },
+  { title: "Start-label column", prefix: "--input-label-width-*", note: "How wide a field's label column is with labels at the start. md is the product's own 234, which fits a name as long as Account Ledger Number on one line; a Form picks another with labelWidth.", rows: [
+    { token: "input-label-width-sm", value: "140px", visual: "var" },
+    { token: "input-label-width", value: "234px", visual: "var" },
+    { token: "input-label-width-lg", value: "320px", visual: "var" },
   ] },
   { title: "Gutter", prefix: "--layout-gutter-*", note: "Space between columns and cards.", rows: [
     { token: "layout-gutter-sm", value: "12px", visual: "var" }, { token: "layout-gutter-md", value: "16px", visual: "var" },
