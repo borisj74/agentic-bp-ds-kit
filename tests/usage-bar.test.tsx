@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { UsageBar, type UsageBarSegment } from "@/ui/UsageBar/UsageBar";
@@ -121,6 +122,30 @@ describe("UsageBar", () => {
     expect(key("Over the allowance", container)).not.toBeNull();
   });
 
+  it("gives the figure at the start a basis it can give up, and the one at left a floor", () => {
+    const { container } = render(
+      <UsageBar
+        label="Credits this period"
+        segments={[
+          { id: "plan", value: 1186, intent: "purple", label: "AI plan" },
+          { id: "topup-left", value: 464, kind: "left", label: "464 left in the top-up" },
+        ]}
+        figures={[
+          { value: "1,186", label: "used so far", at: "start" },
+          { value: "464", label: "left in the top-up", at: "left", intent: "warning" },
+          { value: "104", label: "over the allowance · $156.00", at: "end", intent: "danger" },
+        ]}
+      />,
+    );
+    // 71.88% of the bar is spent, so without a floor the one at left would be left a sliver of the line.
+    const start = container.querySelector("[class*=atStart]") as HTMLElement;
+    expect(start.style.flex).toBe("0 1 71.87878787878788%");
+    const rules = readFileSync("src/ui/UsageBar/UsageBar.module.css", "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ");
+    expect(rules).toContain("--usage-bar-figure-min: 16ch;");
+    expect(rules).toContain(".atLeft { flex: 1 1 auto; min-width: var(--usage-bar-figure-min);");
+    expect(rules).toContain(".atStart { flex: 0 0 auto; min-width: 0;");
+  });
+
   it("drops the legend when the captions already name the parts", () => {
     render(<UsageBar label="Credits this period" segments={SEGMENTS} showLegend={false} />);
     expect(screen.queryByText("Left to use")).toBeNull();
@@ -155,8 +180,11 @@ describe("UsageBar", () => {
       />,
     );
     // 150 and 330 of 1,650 are spent, so the one at left starts at 29.09% — over the first left part.
+    // 0 1 rather than 0 0: the start box gives its width up once the three figures would not fit on the line,
+    // so the one at left keeps its floor and slides off its part instead of being squeezed to a word a row.
     const start = container.querySelector("[class*=atStart]") as HTMLElement;
     expect(start.style.flex).toContain("29.09");
+    expect(start.style.flex.startsWith("0 1 ")).toBe(true);
     expect(screen.getByText("1,170")).toBeInTheDocument();
     expect(screen.getByText("available")).toBeInTheDocument();
   });

@@ -3,14 +3,17 @@
    under the part it names. */
 /* One gap for the bar and the caption row, so a caption is exactly as wide as the part above it. Each width is
    its share of the track less its share of the gaps, which keeps the parts inside the track however many there are. */
-.usageBar { --usage-bar-gap: var(--border-width-medium); display: flex; flex-direction: column; gap: var(--space-xsmall); font-family: var(--font-sans); container-type: inline-size; }
+.usageBar { --usage-bar-gap: var(--border-width-medium); --usage-bar-figure-min: 16ch; display: flex; flex-direction: column; gap: var(--space-xsmall); font-family: var(--font-sans); container-type: inline-size; }
 
 /* figures: three places on one line. start sits against the start edge and is held to the share of the bar
-   before the first part still to spend, so the one at left begins exactly over that part; end keeps the end. */
+   before the first part still to spend, so the one at left begins exactly over that part; end keeps the end.
+   The one at left keeps a floor of its own and start gives way once they would not both fit: the more of the
+   allowance is spent the further along left sits, and without the floor its line is squeezed to a word a row
+   exactly when it matters most. It slides off its part rather than shredding; end never gives up its text. */
 .figures { display: flex; align-items: flex-start; }
 .figure { display: flex; flex-direction: column; gap: var(--space-xxsmall); min-width: 0; }
 .atStart { flex: 0 0 auto; min-width: 0; padding-inline-end: var(--space-small); box-sizing: border-box; }
-.atLeft { flex: 1 1 auto; min-width: 0; padding-inline-end: var(--space-small); box-sizing: border-box; }
+.atLeft { flex: 1 1 auto; min-width: var(--usage-bar-figure-min); padding-inline-end: var(--space-small); box-sizing: border-box; }
 .atEnd { flex: 0 0 auto; margin-inline-start: auto; text-align: end; }
 
 /* The kit's own big-number type, as on Scoreboard, so a figure here and a metric there are one size. */
@@ -51,4 +54,5 @@
   .caption { width: 100% !important; padding-inline-end: 0; }
   .figures { flex-wrap: wrap; gap: var(--space-medium); }
   .atStart { flex: 0 0 auto !important; }
+  .atLeft { min-width: 0; }
 }

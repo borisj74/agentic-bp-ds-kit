@@ -110,8 +110,9 @@ export function UsageBar({ segments, figures, showLegend = true, label = "Usage"
           {places.map((place) => {
             const figure = figureAt(place);
             // Every place keeps its box whether or not it holds a figure. The one at "start" is held to the share
-            // of the bar before the first part still to spend, so the one at "left" begins exactly over it.
-            const style = place === "start" ? ({ flex: `0 0 ${offset * 100}%` } as CSSProperties) : undefined;
+            // of the bar before the first part still to spend, so the one at "left" begins exactly over it — and
+            // gives that width up, rather than squeezing its neighbour, once the three would not fit on the line.
+            const style = place === "start" ? ({ flex: `0 1 ${offset * 100}%` } as CSSProperties) : undefined;
             return (
               <div key={place} className={[styles.figure, styles[placeClass[place]]].join(" ")} style={style}>
                 {figure && (
