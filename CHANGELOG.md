@@ -4,6 +4,21 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.15 — 2026-10-30
+
+A table too wide for its box now scrolls inside it, and freezes its first column.
+
+### Changed
+- Table: a table wider than its box takes the sideways scroll itself, so the page never slides sideways with it. The first column, which names the row, freezes against the start edge at any width while the rest of the row slides under it — before this it only froze under 640px. With `selectable`, the checkbox column freezes with it.
+- A table that fits its box is unchanged: no scroll of its own, and its column names still hold at the top of the page through `--table-stick-top`.
+
+### Fixed
+- Table marked its box a focus stop when the table overflowed, so arrow keys could scroll it, but the box could not scroll. Tabbing into it did nothing. It scrolls now.
+- The Table contract said both that the table keeps no scroll box of its own and that a wide table scrolls inside its box. Both halves now say the same thing.
+
+### Worth knowing
+- A cell can only hold still against whatever scrolls. Once a table's box scrolls, its column names hold at the top of that box rather than the top of the page. So a table that is only a little too wide trades names pinned to the page for a frozen first column. Tables that fit are not affected.
+
 ## v0.7.14 — 2026-10-30
 
 Bigger figures on UsageBar, and a legend key for the part used most recently.
