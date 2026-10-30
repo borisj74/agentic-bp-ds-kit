@@ -37,6 +37,9 @@
 /* The same floor as a part, so a sliver too thin to compute stays the same width in both rows and the captions
    after it keep their place under what they name. */
 .caption { display: flex; flex-direction: column; gap: var(--space-xxsmall); min-width: var(--usage-bar-gap); padding-inline-end: var(--space-xsmall); box-sizing: border-box; }
+/* A part too narrow to hold a caption has an empty one, and the padding would be its floor: the box could not go
+   under 8px however thin its part, and every caption after it would sit that much past what it names. */
+.caption:empty { padding-inline-end: 0; }
 .captionLabel { font-size: var(--font-size-small); font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); overflow-wrap: break-word; }
 .captionLabel.danger { color: var(--text-danger); }
 .captionNote { font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); overflow-wrap: break-word; }
