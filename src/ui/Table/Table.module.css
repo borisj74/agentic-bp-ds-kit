@@ -1,10 +1,13 @@
-/* Wide tables scroll inside their own box; the page never scrolls sideways. The box is the size container,
-   so the table answers to the room it actually has rather than to the window. */
-/* contain: paint keeps the sideways scroll to this box: without it a table wider than the page adds the page's
-   own sideways scrollbar as well. */
-/* The table flows with the page: no overflow of its own, because a box that scrolls on either axis becomes what
-   a sticky header holds against, and the names have to hold against the page instead. */
+/* The box is the size container, so the table answers to the room it actually has rather than to the window.
+   While the table fits, the box has no overflow of its own and the column names hold against the page.
+   Once it does not fit, the box takes the sideways scroll — the page never slides — and from then on it is what
+   the names and the frozen first column hold against. That is the trade: a column can only hold still against
+   whatever scrolls, so a table wide enough to need a frozen first column gives up names pinned to the page. */
 .wrap { max-width: 100%; container-type: inline-size; }
+.scrolls { overflow-x: auto; }
+/* Inside its own box the names hold at its top edge; --table-stick-top measures from the top of the page, which
+   is not what they hold against any more. */
+.scrolls .table thead th, .scrolls .table thead td { top: 0; }
 .wrap:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(var(--border-width-medium) * -1); }
 
 .table {
@@ -86,27 +89,27 @@
   text-align: start; font-size: var(--font-size-small); color: var(--text-neutral);
 }
 
-/* 640px = --grid-breakpoint-sm: CSS vars cannot appear in container or media queries.
-   On a phone-width box the first column, which names the row, is frozen against the start edge and the rest of
-   the row slides under it as the table scrolls sideways. */
-@container (max-width: 640px) {
-  /* The checkbox column is frozen with the name beside it, so a row can still be ticked while it is read.
-     Its width is pinned, since the next column is held exactly that far in. */
-  .select { width: var(--control-large); min-width: var(--control-large); max-width: var(--control-large); }
-  /* Only the header and the rows freeze: the empty line and the total row span the table, so there is
-     nothing in them to hold still. */
-  .table :is(thead, tbody) tr > :is(:first-child, .select + *):not(.empty) {
-    position: sticky; z-index: var(--stick-frozen-cell);
-    /* The frozen cell carries its own fill, since the row's fill scrolls away with the row. A line down its
-       far edge, drawn outside the cell, says the rest of the row passes under it. */
-    background: var(--surface-flat); box-shadow: var(--border-width-thin) 0 0 var(--border-neutral-faint);
-  }
-  .table :is(thead, tbody) tr > :first-child { inset-inline-start: 0; }
-  /* The header cell of a frozen column holds still both ways at once, so it stands above its own column and its
-     own row. */
-  .table thead tr > :is(:first-child, .select + *):not(.empty) { z-index: var(--stick-frozen-head-cell); }
-  .table :is(thead, tbody) tr > .select + * { inset-inline-start: var(--control-large); }
-  .table tbody tr:hover > :is(:first-child, .select + *) { background: var(--bg-neutral-min-hover); }
-  .table tbody tr.selected > :is(:first-child, .select + *) { background: var(--bg-neutral-min-selected); }
-  .table tbody tr.selected:hover > :is(:first-child, .select + *) { background: var(--bg-neutral-min-selected-hover); }
+/* The first column, which names the row, is frozen against the start edge while the rest of the row slides under
+   it. It is drawn whenever the box scrolls, at any width, since that is exactly when the name would otherwise be
+   the first thing to leave. It cannot be drawn while the page is the thing scrolling: a cell held at the start
+   edge holds against whatever scrolls, so it would pin to the page's own edge and slide out from under the table,
+   under the side nav. */
+/* The checkbox column is frozen with the name beside it, so a row can still be ticked while it is read.
+   Its width is pinned, since the next column is held exactly that far in. */
+.scrolls .select { width: var(--control-large); min-width: var(--control-large); max-width: var(--control-large); }
+/* Only the header and the rows freeze: the empty line and the total row span the table, so there is
+   nothing in them to hold still. */
+.scrolls .table :is(thead, tbody) tr > :is(:first-child, .select + *):not(.empty) {
+  position: sticky; z-index: var(--stick-frozen-cell);
+  /* The frozen cell carries its own fill, since the row's fill scrolls away with the row. A line down its
+     far edge, drawn outside the cell, says the rest of the row passes under it. */
+  background: var(--surface-flat); box-shadow: var(--border-width-thin) 0 0 var(--border-neutral-faint);
 }
+.scrolls .table :is(thead, tbody) tr > :first-child { inset-inline-start: 0; }
+/* The header cell of a frozen column holds still both ways at once, so it stands above its own column and its
+   own row. */
+.scrolls .table thead tr > :is(:first-child, .select + *):not(.empty) { z-index: var(--stick-frozen-head-cell); }
+.scrolls .table :is(thead, tbody) tr > .select + * { inset-inline-start: var(--control-large); }
+.scrolls .table tbody tr:hover > :is(:first-child, .select + *) { background: var(--bg-neutral-min-hover); }
+.scrolls .table tbody tr.selected > :is(:first-child, .select + *) { background: var(--bg-neutral-min-selected); }
+.scrolls .table tbody tr.selected:hover > :is(:first-child, .select + *) { background: var(--bg-neutral-min-selected-hover); }
