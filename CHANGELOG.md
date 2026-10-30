@@ -4,6 +4,17 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.14 — 2026-10-30
+
+Bigger figures on UsageBar, and a legend key for the part used most recently.
+
+### Added
+- Legend keys take `strong`: the strong step of the key's colour, for a darker part drawn in the same colour as the whole it came out of.
+- UsageBar: a `recent` segment that sets `legend` now takes its own key, in that darker colour, right after the key of the part it follows. A `recent` segment without a `legend` still shares that key, so nothing changes unless you name one.
+
+### Changed
+- UsageBar figures now use the kit display type, 26px, instead of the 16px metric type. They are the first thing read on the bar, so they stand clear of the captions under it.
+
 ## v0.7.13 — 2026-10-29
 
 Fixes to UsageBar from using it on a real account, and a fourth shape for Legend.
