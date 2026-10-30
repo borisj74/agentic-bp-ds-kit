@@ -62,6 +62,30 @@ describe("UsageBar", () => {
     expect(caption("In the last hour", container)).toBeNull();
   });
 
+  // Regression: the caption of a part too narrow to hold one still carried its end padding, and with
+  // box-sizing: border-box that padding was its floor — a 4.5px sliver had an 8px caption, and every caption
+  // after it sat 2.5px past the part it names.
+  it("lets the caption of a part too narrow to hold one shrink to its part", () => {
+    const { container } = render(
+      <UsageBar
+        label="Credits this period"
+        segments={[
+          { id: "plan", value: 330, intent: "purple", label: "AI plan" },
+          { id: "hour", value: 11, intent: "purple", recent: true },
+          { id: "left", value: 1309, kind: "left", label: "1,309 left" },
+        ]}
+      />,
+    );
+    const captions = [...container.querySelectorAll("[class*=caption]")].filter((c) => c.className.match(/caption\b|caption_/));
+    // The sliver's caption is rendered, and empty: nothing to say at that width.
+    const sliver = [...container.querySelector("[class*=captions]")!.children][1];
+    expect(sliver.children).toHaveLength(0);
+    expect(captions.length).toBeGreaterThan(0);
+    // jsdom applies no CSS Module rules, so the floor is read off the stylesheet.
+    const css = readFileSync("src/ui/UsageBar/UsageBar.module.css", "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ");
+    expect(css).toContain(".caption:empty { padding-inline-end: 0; }");
+  });
+
   it("draws a recent sliver one step stronger than the part it follows", () => {
     render(
       <UsageBar
