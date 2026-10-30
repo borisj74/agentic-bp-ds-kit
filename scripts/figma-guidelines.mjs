@@ -232,12 +232,16 @@ const componentEntry = (meta) => {
   const names = (list) => list.map((name) => `\`${name}\``).join(", ");
   const accessors = callbacks.filter((name) => !/^on[A-Z]/.test(name));
   const events = callbacks.filter((name) => /^on[A-Z]/.test(name));
+  // The whole usage paragraph, not a trim of it: a contract opens with what the piece is and how data goes in,
+  // and only says how it behaves further down — a wide Table scrolls inside its box in sentence 10 of 14. Cut to
+  // the first few sentences and the agent gets what the line above already told it, and none of the behaviour.
   return [
     `### ${c.name}`,
     firstSentence(c.intent),
     props.length ? `Props — ${props.join("; ")}` : null,
     accessors.length ? `Functions — ${names(accessors)}` : null,
     events.length ? `Events — ${names(events)}` : null,
+    c.usage ? noContractRefs(c.usage) : null,
     c.doNot?.length ? c.doNot.slice(0, 3).map((d) => `- ${noContractRefs(d)}`).join("\n") : null,
   ].filter(Boolean).join("\n\n");
 };
