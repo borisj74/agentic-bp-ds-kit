@@ -4,6 +4,13 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.17 — 2026-10-30
+
+The pattern contracts now say what a too-wide Table does.
+
+### Fixed
+- ListPage, Dashboard and RecordPage each described a Table's column names as holding under the page's own bar, and ListPage said the page is the only thing that scrolls. Since v0.7.15 a table wider than its box scrolls inside that box and holds its names at the top of it, so all three said something that is not true of a wide table. Each now says what happens and why. No behaviour changed; only the contracts and the Figma guidelines built from them.
+
 ## v0.7.16 — 2026-10-30
 
 A UsageBar caption fix, and the Figma guidelines now carry how each component behaves.
