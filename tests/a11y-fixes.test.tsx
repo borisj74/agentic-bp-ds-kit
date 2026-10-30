@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Avatar } from "@/ui/Avatar/Avatar";
@@ -92,6 +93,33 @@ describe("Table scroll box", () => {
     vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(400);
     render(<Table columns={COLUMNS} rows={ROWS} caption="Invoices" />);
     expect(screen.queryByRole("region")).not.toBeInTheDocument();
+  });
+
+  // The focus stop exists so the arrow keys can scroll the box, so the box has to be the thing that scrolls.
+  // Before this it was a region that announced itself as scrollable and then did nothing.
+  it("takes the sideways scroll itself when the table is wider than its box", () => {
+    vi.spyOn(HTMLElement.prototype, "scrollWidth", "get").mockReturnValue(900);
+    vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(400);
+    const { container } = render(<Table columns={COLUMNS} rows={ROWS} caption="Invoices" />);
+    expect(container.querySelector("[class*=wrap]")!.className).toMatch(/scrolls/);
+  });
+
+  it("leaves the box alone when the table fits, so its names still hold against the page", () => {
+    vi.spyOn(HTMLElement.prototype, "scrollWidth", "get").mockReturnValue(400);
+    vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(400);
+    const { container } = render(<Table columns={COLUMNS} rows={ROWS} caption="Invoices" />);
+    expect(container.querySelector("[class*=wrap]")!.className).not.toMatch(/scrolls/);
+  });
+
+  // jsdom applies no CSS Module rules, so what the class carries is read off the stylesheet.
+  it("freezes the first column against the start edge only while the box scrolls", () => {
+    const css = readFileSync("src/ui/Table/Table.module.css", "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ");
+    expect(css).toContain(".scrolls { overflow-x: auto; }");
+    expect(css).toContain(".scrolls .table :is(thead, tbody) tr > :first-child { inset-inline-start: 0; }");
+    // Inside its own box the names hold at its top edge, not at the page offset.
+    expect(css).toContain(".scrolls .table thead th, .scrolls .table thead td { top: 0; }");
+    // The old phone-only freeze is gone: it is the scrolling that decides now, not the width.
+    expect(css).not.toContain("@container (max-width: 640px)");
   });
 });
 

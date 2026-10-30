@@ -49,7 +49,8 @@ export function Table({
   const size = ownSize ?? "md";
   const [innerSelected, setInnerSelected] = useState(defaultSelected);
   const selected = selectedProp ?? innerSelected;
-  // A table wider than its box scrolls sideways; then the box is a focus stop so the arrow keys scroll it (WCAG 2.1.1).
+  // A table wider than its box takes the sideways scroll itself, so the page never slides; the box is then a
+  // focus stop so the arrow keys scroll it (WCAG 2.1.1), and its first column freezes against the start edge.
   const wrapRef = useRef<HTMLDivElement>(null);
   const [overflows, setOverflows] = useState(false);
   // Rows opened from an opensDetail column's Count button, and where that column starts in the visible box, so an
@@ -128,7 +129,7 @@ export function Table({
 
   return (
     <div
-      ref={wrapRef} className={styles.wrap} style={detail ? ({ "--table-detail-start": `${detailStart}px`, "--table-view-width": viewWidth ? `${viewWidth}px` : "100%" } as CSSProperties) : undefined}
+      ref={wrapRef} className={[styles.wrap, overflows ? styles.scrolls : ""].join(" ")} style={detail ? ({ "--table-detail-start": `${detailStart}px`, "--table-view-width": viewWidth ? `${viewWidth}px` : "100%" } as CSSProperties) : undefined}
       tabIndex={overflows ? 0 : undefined} role={overflows ? "region" : undefined} aria-label={overflows ? caption ?? "Table" : undefined}
     >
       <table className={[styles.table, styles[size], line === "thin" ? styles.thin : ""].join(" ")}>
