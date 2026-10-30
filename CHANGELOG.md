@@ -4,6 +4,16 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.16 — 2026-10-30
+
+A UsageBar caption fix, and the Figma guidelines now carry how each component behaves.
+
+### Fixed
+- UsageBar: the caption of a part too narrow to hold one kept its end padding, and that padding was the box's floor, so it could not shrink to its part. A 4.5px sliver had an 8px caption and every caption after it sat 2.5px past the part it names. Found by the Figma recreation check.
+
+### Changed
+- The Figma guidelines (`npm run figma:guidelines`) now include each component's full usage paragraph, so the agent drawing with the library knows how a piece behaves and not only what props it takes — that a wide Table scrolls inside its box and freezes its first column, for instance. The set grows from 108 KB to 170 KB, within Figma's 200 KB cap. Re-upload them through Library > Manage guidelines… to pick this up.
+
 ## v0.7.15 — 2026-10-30
 
 A table too wide for its box now scrolls inside it, and freezes its first column.
