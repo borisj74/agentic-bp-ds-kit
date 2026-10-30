@@ -141,7 +141,7 @@ Events — `onSelectedChange`, `onClick`, `onAction`
 
 Content for one table cell: text, a number, a date, a link, a redirect to another page, a person, a file, a status, a trend, progress, a switch, row actions or a row menu, a tree row, with an optional row checkbox.
 
-Props — `type`: `text` | `link` | `avatar` | `avatarGroup` | `file` | `payment` | `badge` | `badges` | `trendPositive` | `trendNegative` | `progress` | `actions` | `actionIcons` | `actionMenu` | `checkbox` | `tree` | `number` | `date` | `status` | `switch` | `popupTrigger` | `textBlock` | `redirect` (default `text`); `size`: `sm` | `md` (default `md`); `alignment`: `start` | `center` | `end` (default `start`); `text`: boolean (default `true`); `checkbox`: boolean (default `false`); `label`: `string`; `href`: `string`; `name`: `string`; `src`: `string`; `people`: `CellPerson[]` { name, src? }; `icon`: `string`; `intent`: `BadgeIntent`; `badges`: `CellBadge[]` { label, intent? }; `value`: `string | number`; `actions`: `CellAction[]` { label, icon?, emphasis, intent, onClick? }; `menu`: `CellAction[]`; `checked`: boolean; `defaultChecked`: boolean; `level`: `number`; `expanded`: boolean; `showLines`: boolean (default `true`); `treeToggle`: `chevron` | `box` (default `box`)
+Props — `type`: `text` | `link` | `avatar` | `avatarGroup` | `file` | `payment` | `badge` | `badges` | `trendPositive` | `trendNegative` | `progress` | `actions` | `actionIcons` | `actionMenu` | `checkbox` | `tree` | `number` | `date` | `status` | `switch` | `popupTrigger` | `textBlock` | `redirect` (default `text`); `size`: `sm` | `md` (default `md`); `alignment`: `start` | `center` | `end` (default `start`); `text`: boolean (default `true`); `checkbox`: boolean (default `false`); `label`: `string`; `href`: `string`; `name`: `string`; `src`: `string`; `people`: `CellPerson[]` { name, src? }; `icon`: `string`; `intent`: `BadgeIntent`; `badges`: `CellBadge[]` { label, intent? }; `value`: `string | number`; `actions`: `CellAction[]` { label, icon?, emphasis?, intent?, onClick? }; `menu`: `CellAction[]`; `checked`: boolean; `defaultChecked`: boolean; `level`: `number`; `expanded`: boolean; `showLines`: boolean (default `true`); `treeToggle`: `chevron` | `box` (default `box`)
 
 Events — `onClick`, `onCheckedChange`, `onExpandedChange`
 
@@ -193,7 +193,7 @@ Events — `onCheckedChange`, `onSort`
 
 The key to a drawing: a small colour mark per name, so people can read what each colour means.
 
-Props — `items`: `LegendKey[]` { id?, label, intent, value?, shape, strong? }; `orientation`: `horizontal` | `vertical` (default `horizontal`); `alignment`: `start` | `center` | `end` (default `center`); `shape`: `square` | `line` | `dot` | `outline` (default `square`); `size`: `sm` | `md` (default `md`); `hidden`: `string[]`; `defaultHidden`: `string[]`; `label`: `string`; `decorative`: boolean (default `false`)
+Props — `items`: `LegendKey[]` { id?, label, intent?, value?, shape?, strong? }; `orientation`: `horizontal` | `vertical` (default `horizontal`); `alignment`: `start` | `center` | `end` (default `center`); `shape`: `square` | `line` | `dot` | `outline` (default `square`); `size`: `sm` | `md` (default `md`); `hidden`: `string[]`; `defaultHidden`: `string[]`; `label`: `string`; `decorative`: boolean (default `false`)
 
 Events — `onHiddenChange`
 
@@ -215,7 +215,7 @@ Props — `label`: `string`; `title`: `string`; `subtitle`: `string`; `showHeade
 
 A list of records, one a row: a primary and a secondary line with an avatar, icon or image before them, and badges, actions, a chevron or a drag handle after, grouped under headers when the list is long, and stepping into nested lists in place.
 
-Props — `label`: `string`; `items`: `ListViewItem[]` { id, primary, secondary?, group?, avatar?, icon?, image?, badge?, badgeIntent?, badgePosition, unread?, message?, messageIntent, actions, disabled?, children?, menu? }; `groups`: `ListViewGroup[]` { id: string; title: string }; `size`: `sm` | `md` | `lg` (default `md`); `collapsible`: boolean (default `false`); `stickyGroups`: boolean (default `false`); `collapsed`: `string[]`; `defaultCollapsed`: `string[]`; `selection`: `none` | `single` | `multiple` (default `none`); `selected`: `string[]`; `defaultSelected`: `string[]`; `interaction`: `none` | `drill` | `drag` (default `none`); `path`: `string[]`; `defaultPath`: `string[]`; `nesting`: `step` | `expand` (default `step`); `expanded`: `string[]`; `defaultExpanded`: `string[]`; `detail`: `ReactNode`
+Props — `label`: `string`; `items`: `ListViewItem[]` { id, primary, secondary?, group?, avatar?, icon?, image?, badge?, badgeIntent?, badgePosition?, unread?, message?, messageIntent?, actions?, disabled?, children?, menu? }; `groups`: `ListViewGroup[]` { id: string; title: string }; `size`: `sm` | `md` | `lg` (default `md`); `collapsible`: boolean (default `false`); `stickyGroups`: boolean (default `false`); `collapsed`: `string[]`; `defaultCollapsed`: `string[]`; `selection`: `none` | `single` | `multiple` (default `none`); `selected`: `string[]`; `defaultSelected`: `string[]`; `interaction`: `none` | `drill` | `drag` (default `none`); `path`: `string[]`; `defaultPath`: `string[]`; `nesting`: `step` | `expand` (default `step`); `expanded`: `string[]`; `defaultExpanded`: `string[]`; `detail`: `ReactNode`
 
 Events — `onItemsChange`, `onCollapsedChange`, `onSelectedChange`, `onOpen`, `onAction`, `onPathChange`, `onExpandedChange`
 
@@ -275,7 +275,7 @@ Events — `onSelectionChange`, `onRowClick`
 
 What happened on a record, newest first: a circled icon per entry joined by a line, with the note, links and action for each one.
 
-Props — `items`: `TimelineItem[]` { id, title, timestamp?, subtitle?, icon?, intent, notes?, links, action, menu? }; `size`: `sm` | `md` (default `md`); `label`: `string`
+Props — `items`: `TimelineItem[]` { id, title, timestamp?, subtitle?, icon?, intent?, notes?, links, action?, menu? }; `size`: `sm` | `md` (default `md`); `label`: `string`
 
 Events — `onMenuSelect`
 
@@ -299,7 +299,7 @@ Events — `onItemsChange`, `onSelectedChange`, `onExpandedChange`
 
 One bar for everything available in a period, split into the parts it is made of: what each part used, what is left, and anything spent past the allowance.
 
-Props — `segments`: `UsageBarSegment[]` { id, value, kind, intent, label?, note?, recent?, legend? }; `figures`: `UsageBarFigure[]` { value, label, at, intent }; `showLegend`: boolean (default `true`); `label`: `string`
+Props — `segments`: `UsageBarSegment[]` { id, value, kind?, intent?, label?, note?, recent?, legend? }; `figures`: `UsageBarFigure[]` { value, label, at, intent? }; `showLegend`: boolean (default `true`); `label`: `string`
 
 - Do not use it for one limit with one number. Use Meter, or UsageList for several limits each with their own bar.
 - Do not use it to compare periods or trends. Use BarChart or LineChart.
@@ -751,7 +751,7 @@ Events — `onScopeChange`, `onSelect`, `onViewAll`
 
 The pieces of a process walked one step at a time: a dark panel for a step, the dark list of every step beside the page, the header over a step, and the footer under it.
 
-Props — `part`: `panel` | `steps` | `header` | `footer` (default `panel`); `title`: `string`; `subtitle`: `string`; `steps`: `GuidedProcessStep[]` { title, status, statusText?, tasks }; `current`: `number`; `started`: boolean (default `true`); `placement`: `auto` | `side` | `band` (default `auto`); `shade`: `1` | `2` | `3` | `4` | `5` (default `1`); `startLabel`: `string`; `side`: `start` | `end` (default `end`); `stepTitle`: `string`; `total`: `number`; `actions`: `GuidedProcessAction[]` { id, label, icon?, emphasis, intent?, type, form?, disabled? }; `updated`: `string`
+Props — `part`: `panel` | `steps` | `header` | `footer` (default `panel`); `title`: `string`; `subtitle`: `string`; `steps`: `GuidedProcessStep[]` { title, status?, statusText?, tasks }; `current`: `number`; `started`: boolean (default `true`); `placement`: `auto` | `side` | `band` (default `auto`); `shade`: `1` | `2` | `3` | `4` | `5` (default `1`); `startLabel`: `string`; `side`: `start` | `end` (default `end`); `stepTitle`: `string`; `total`: `number`; `actions`: `GuidedProcessAction[]` { id, label, icon?, emphasis?, intent?, type?, form?, disabled? }; `updated`: `string`
 
 Events — `onStart`, `onCancel`, `onClose`, `onStepsOpen`, `onAction`
 
@@ -775,7 +775,7 @@ Events — `onClick`
 
 A column of links, one a row with a chevron at the end, like an account's quick links.
 
-Props — `items`: `LinkListItem[]` { id, label, href?, onClick, icon?, description?, external? }; `label`: `string`
+Props — `items`: `LinkListItem[]` { id, label, href?, onClick?, icon?, description?, external? }; `label`: `string`
 
 - Do not use it for actions that change data. Use Buttons or a Dropdown.
 - Do not use it for page navigation across the app. Use AppNav or Tabs.

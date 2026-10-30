@@ -209,8 +209,11 @@ const isCallback = (type = "") => type === "function" || type.includes("=>");
 const shape = (itemShape) => {
   if (typeof itemShape === "string") return itemShape.length < 120 ? ` ${itemShape}` : "";
   if (!itemShape || typeof itemShape !== "object") return "";
+  // A field reads "<type>? <what it is>", so what marks it optional is the question mark that closes the type,
+  // not one inside the description. Taking the first word instead loses it on every union type.
+  const optional = (value) => /^[^?]*\?(\s|$)/.test(String(value));
   const fields = Object.entries(itemShape)
-    .map(([field, value]) => field + (String(value).split(/\s/)[0].includes("?") ? "?" : ""));
+    .map(([field, value]) => field + (optional(value) ? "?" : ""));
   return fields.length ? ` { ${fields.join(", ")} }` : "";
 };
 
