@@ -85,13 +85,16 @@ export function UsageBar({ segments, figures, showLegend = true, label = "Usage"
   const gaps = Math.max(drawn.length - 1, 0);
   const widthOf = (width: number) => `calc(${width * 100}% - ${width} * var(--usage-bar-gap) * ${gaps})`;
 
-  // One key per used intent, then the empty track and, where there is one, the overspend. Parts of one intent
-  // share a key, so an AI plan used and its last hour are one entry, not two.
-  const keys: { id: string; label: string; intent?: LegendIntent; shape?: "outline" }[] = [];
+  // One key per used colour, then the empty track and, where there is one, the overspend. Parts of one colour
+  // share a key. A recent sliver is the strong step of its part's colour, so it only takes a key of its own
+  // where it names one, and that key lands right after the part it came out of.
+  const keys: { id: string; label: string; intent?: LegendIntent; shape?: "outline"; strong?: boolean }[] = [];
   for (const s of drawn) {
     if (s.kind !== "used" || !s.intent) continue;
-    if (keys.some((k) => k.intent === s.intent)) continue;
-    keys.push({ id: s.id, label: s.legend ?? s.label ?? s.intent, intent: s.intent });
+    if (s.recent && !s.legend) continue;
+    const strong = Boolean(s.recent);
+    if (keys.some((k) => k.intent === s.intent && Boolean(k.strong) === strong)) continue;
+    keys.push({ id: s.id, label: s.legend ?? s.label ?? s.intent, intent: s.intent, ...(strong ? { strong: true } : {}) });
   }
   // What is left is keyed as the empty box rather than one more colour, the same grey the track itself takes.
   // A left part can name the key itself, for a bar whose period says it better, like Left today.

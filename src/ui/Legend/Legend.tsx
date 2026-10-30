@@ -16,6 +16,9 @@ export interface LegendKey {
   // This key's own shape, over the legend's: a chart's dashed reference lines key as lines beside its square
   // bars, or an outline for what is empty rather than coloured, like the part of a bar still to be used.
   shape?: LegendShape;
+  // The strong step of the key's colour, for a darker part drawn in the same colour as the one it belongs to,
+  // like the slice of a usage bar used in the last hour sitting beside the whole it came out of.
+  strong?: boolean;
 }
 
 export interface LegendProps {
@@ -33,7 +36,7 @@ export interface LegendProps {
 
 const INTENTS: LegendIntent[] = ["green", "olive", "cyan", "orange", "pink", "gray", "purple", "yellow", "red", "mint"];
 export const legendIntent = (i: number, intent?: LegendIntent) => intent ?? INTENTS[i % INTENTS.length];
-export const legendColor = (intent: LegendIntent) => `var(--bg-${intent})`;
+export const legendColor = (intent: LegendIntent, strong = false) => `var(--bg-${intent}${strong ? "-strong" : ""})`;
 
 const keyOf = (item: LegendKey) => item.id ?? item.label;
 
@@ -62,7 +65,7 @@ export function Legend({
     return (
       <>
         {/* An off key drops its colour and takes the grey from the stylesheet. */}
-        <span className={[styles.mark, styles[mark]].join(" ")} style={filled ? { background: legendColor(legendIntent(i, item.intent)) } : undefined} />
+        <span className={[styles.mark, styles[mark]].join(" ")} style={filled ? { background: legendColor(legendIntent(i, item.intent), item.strong) } : undefined} />
         <span className={styles.text}>{item.label}</span>
         {item.value && <span className={styles.value}>{item.value}</span>}
       </>

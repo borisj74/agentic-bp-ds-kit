@@ -2,7 +2,7 @@
   "name": "UsageBar",
   "path": "src/ui/UsageBar/UsageBar.tsx",
   "intent": "One bar for everything available in a period, split into the parts it is made of: what each part used, what is left, and anything spent past the allowance.",
-  "usage": "Use UsageBar when a single allowance comes from more than one source and people need to see, in one line, where it went and how much is left — free credits, a plan and a top-up, say. It is one component: pass segments, each with an id, a value and a kind. kind \"used\" takes a chart intent and draws in that colour; kind \"left\" is the empty track and takes no intent; kind \"outside\" is what was spent past the allowance: it follows the last part of the allowance, draws red, and is not counted in what the bar measures. Its colour, its caption and its legend key say it is past the end, so nothing else marks where the allowance ran out. A segment with recent true draws as a darker sliver of the same intent right after its part, for the last hour, day or week. Each part can carry a label and a note, written under it as wide as the part; a part too narrow for its own caption leaves it out. figures writes up to three numbers above the bar — at \"start\", at \"left\" (the first part that is left) and at \"end\", right-aligned — each with a small line under it, and each able to take a warning or danger intent. The legend under the bar is the kit Legend, one key per used intent plus Left to use, keyed as an outline rather than a colour, and, when there is one, Over the allowance; turn it off with showLegend false. label names the bar for screen readers. Put it in a Section or Card, which gives it its title; the bar draws no box of its own. See contracts/usagebar.json for the full contract.",
+  "usage": "Use UsageBar when a single allowance comes from more than one source and people need to see, in one line, where it went and how much is left — free credits, a plan and a top-up, say. It is one component: pass segments, each with an id, a value and a kind. kind \"used\" takes a chart intent and draws in that colour; kind \"left\" is the empty track and takes no intent; kind \"outside\" is what was spent past the allowance: it follows the last part of the allowance, draws red, and is not counted in what the bar measures. Its colour, its caption and its legend key say it is past the end, so nothing else marks where the allowance ran out. A segment with recent true draws as a darker sliver of the same intent right after its part, for the last hour, day or week; give it a legend and it takes its own key in that darker colour, as the hourly bar does with Used in the last hour. Each part can carry a label and a note, written under it as wide as the part; a part too narrow for its own caption leaves it out. figures writes up to three numbers above the bar, in the kit display type, — at \"start\", at \"left\" (the first part that is left) and at \"end\", right-aligned — each with a small line under it, and each able to take a warning or danger intent. The legend under the bar is the kit Legend, one key per used intent plus Left to use, keyed as an outline rather than a colour, and, when there is one, Over the allowance; turn it off with showLegend false. label names the bar for screen readers. Put it in a Section or Card, which gives it its title; the bar draws no box of its own. See contracts/usagebar.json for the full contract.",
   "props": {
     "segments": {
       "type": "UsageBarSegment[]",
@@ -14,8 +14,8 @@
         "intent": "green | olive | cyan | orange | pink | gray | purple | yellow | red | mint? The part's colour, on a used part only. Without it, used parts take the chart order.",
         "label": "string? The bold line under the part, like Free credits or 670 left in the AI plan.",
         "note": "string? The quieter line under the label, like 150 used · ran out Oct 12.",
-        "recent": "boolean? Draws the part as a darker sliver of its intent, for what was used in the last hour, day or week. Default false.",
-        "legend": "string? The name this part takes in the legend. Without it, parts of one intent share the first label, and the part that is left is keyed Left to use."
+        "recent": "boolean? Draws the part as a darker sliver of its intent, for what was used in the last hour, day or week. With a legend it takes its own key in that darker colour, right after the part it came out of; without one it shares that part\u0027s key. Default false.",
+        "legend": "string? The name this part takes in the legend. Without it, parts of one intent share the first label, a recent sliver takes no key of its own, and the part that is left is keyed Left to use."
       },
       "note": "The parts in the order they are drawn. Keep it short: two to eight, not counting recent slivers."
     },
@@ -110,7 +110,7 @@
     },
     {
       "title": "The last hour",
-      "usage": "recent draws a darker sliver of the same intent right after its part, for what went in the last hour. It is too narrow for a caption of its own.",
+      "usage": "recent draws a darker sliver of the same intent right after its part, for what went in the last hour. It is too narrow for a caption of its own, so its legend names it.",
       "items": [
         {
           "props": {
@@ -122,7 +122,7 @@
             "segments": [
               { "id": "free", "value": 150, "intent": "mint", "label": "Free credits", "note": "150 used · ran out Oct 12", "legend": "Free credits" },
               { "id": "plan", "value": 330, "intent": "purple", "label": "AI plan", "note": "330 used", "legend": "AI plan" },
-              { "id": "plan-hour", "value": 11, "intent": "purple", "recent": true, "legend": "In the last hour" },
+              { "id": "plan-hour", "value": 11, "intent": "purple", "recent": true, "legend": "Used in the last hour" },
               { "id": "plan-left", "value": 659, "kind": "left", "label": "659 left in the AI plan", "note": "renews Nov 9" },
               { "id": "topup-left", "value": 500, "kind": "left", "label": "500 left in the top-up", "note": "no end date" }
             ]

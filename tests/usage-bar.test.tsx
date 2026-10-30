@@ -141,20 +141,40 @@ describe("UsageBar", () => {
     expect(marks[1].style.background).toBe("");
   });
 
+  it("gives a recent sliver its own key, in the strong step, where it names one", () => {
+    const { container } = render(
+      <UsageBar
+        label="Credits this period"
+        segments={[
+          { id: "free", value: 150, intent: "mint", label: "Free credits", legend: "Free credits" },
+          { id: "plan", value: 330, intent: "purple", label: "AI plan", legend: "AI plan" },
+          { id: "hour", value: 11, intent: "purple", recent: true, legend: "Used in the last hour" },
+          { id: "left", value: 1159, kind: "left", label: "1,159 left" },
+        ]}
+      />,
+    );
+    const legend = container.querySelector("[class*=legend]") as HTMLElement;
+    const marks = [...legend.querySelectorAll("[class*=mark]")] as HTMLElement[];
+    // The four keys of the hourly bar, the sliver's sitting right after the part it came out of.
+    expect([...legend.querySelectorAll("[class*=text]")].map((t) => t.textContent))
+      .toEqual(["Free credits", "AI plan", "Used in the last hour", "Left to use"]);
+    expect(marks[1].style.background).toBe("var(--bg-purple)");
+    expect(marks[2].style.background).toBe("var(--bg-purple-strong)");
+  });
+
   it("keys the legend once per used colour, then what is left and what went over", () => {
     const { container } = render(
       <UsageBar
         label="Credits this period"
         segments={[
           ...SEGMENTS,
-          { id: "hour", value: 11, intent: "purple", recent: true, legend: "In the last hour" },
+          { id: "hour", value: 11, intent: "purple", recent: true },
           { id: "over", value: 104, kind: "outside", label: "104 over the allowance" },
         ]}
       />,
     );
-    // The last hour shares the AI plan's purple, so it is one key, not two.
+    // A recent sliver that names no key of its own shares the AI plan's, so purple is one key, not two.
     expect(key("AI plan", container)).not.toBeNull();
-    expect(key("In the last hour", container)).toBeNull();
     expect(key("Left to use", container)).not.toBeNull();
     expect(key("Over the allowance", container)).not.toBeNull();
   });
@@ -179,6 +199,7 @@ describe("UsageBar", () => {
     expect(start.style.flex).toBe("0 1 71.87878787878788%");
     const rules = readFileSync("src/ui/UsageBar/UsageBar.module.css", "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ");
     expect(rules).toContain("--usage-bar-figure-min: 16ch;");
+    expect(rules).toContain(".figureValue { font-size: var(--text-display-size);");
     expect(rules).toContain(".atLeft { flex: 1 1 auto; min-width: var(--usage-bar-figure-min);");
     expect(rules).toContain(".atStart { flex: 0 0 auto; min-width: 0;");
   });

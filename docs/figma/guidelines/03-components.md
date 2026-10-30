@@ -193,7 +193,7 @@ Events — `onCheckedChange`, `onSort`
 
 The key to a drawing: a small colour mark per name, so people can read what each colour means.
 
-Props — `items`: `LegendKey[]` { id?, label, intent, value?, shape }; `orientation`: `horizontal` | `vertical` (default `horizontal`); `alignment`: `start` | `center` | `end` (default `center`); `shape`: `square` | `line` | `dot` | `outline` (default `square`); `size`: `sm` | `md` (default `md`); `hidden`: `string[]`; `defaultHidden`: `string[]`; `label`: `string`; `decorative`: boolean (default `false`)
+Props — `items`: `LegendKey[]` { id?, label, intent, value?, shape, strong? }; `orientation`: `horizontal` | `vertical` (default `horizontal`); `alignment`: `start` | `center` | `end` (default `center`); `shape`: `square` | `line` | `dot` | `outline` (default `square`); `size`: `sm` | `md` (default `md`); `hidden`: `string[]`; `defaultHidden`: `string[]`; `label`: `string`; `decorative`: boolean (default `false`)
 
 Events — `onHiddenChange`
 
