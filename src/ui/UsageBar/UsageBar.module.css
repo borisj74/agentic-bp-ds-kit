@@ -16,8 +16,9 @@
 .atLeft { flex: 1 1 auto; min-width: var(--usage-bar-figure-min); padding-inline-end: var(--space-small); box-sizing: border-box; }
 .atEnd { flex: 0 0 auto; margin-inline-start: auto; text-align: end; }
 
-/* The kit's own big-number type, as on Scoreboard, so a figure here and a metric there are one size. */
-.figureValue { font-size: var(--text-ref-metric-size); font-weight: var(--text-ref-metric-weight); line-height: var(--text-ref-metric-lh); letter-spacing: var(--text-ref-metric-ls); color: var(--text-neutral-intense); }
+/* The kit's display type: the figures are the first thing read on the bar, so they stand well clear of the 14px
+   captions under it. The design draws them at 32px, which the scale does not hold; 26 is the largest it has. */
+.figureValue { font-size: var(--text-display-size); font-weight: var(--text-display-weight); line-height: var(--text-display-lh); letter-spacing: var(--text-display-ls); color: var(--text-neutral-intense); }
 .figureValue.warning { color: var(--text-warning); }
 .figureValue.danger { color: var(--text-danger); }
 .figureLabel { font-size: var(--font-size-small); color: var(--text-neutral-subtle); }

@@ -31,6 +31,17 @@ describe("Legend", () => {
     expect(mark.style.background).toBe("");
   });
 
+  // strong keys a darker part drawn in the same colour as the whole it came out of.
+  it("paints a strong key the strong step of its colour", () => {
+    const { container } = render(
+      <Legend
+        label="Credits"
+        items={[{ label: "AI plan", intent: "purple" }, { label: "Used in the last hour", intent: "purple", strong: true }]}
+      />,
+    );
+    expect(marks(container).map((m) => m.style.background)).toEqual(["var(--bg-purple)", "var(--bg-purple-strong)"]);
+  });
+
   it("still names the keys", () => {
     render(<Legend label="Credits" items={[{ label: "Used", intent: "purple" }, { label: "Left to use", shape: "outline" }]} />);
     expect(screen.getByRole("list", { name: "Credits" })).toBeInTheDocument();
