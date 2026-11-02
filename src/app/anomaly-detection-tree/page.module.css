@@ -1,0 +1,93 @@
+/* The tree, its cards and its lines: the kit has no flow view, so these are local to this screen. */
+.frame { height: 100dvh; }
+
+.summary { display: flex; flex-direction: column; gap: var(--space-xxsmall); font-size: var(--font-size-small); line-height: var(--line-height-normal); color: var(--text-neutral-strong); }
+.summary p { margin: 0; }
+.summaryLead { font-size: var(--font-size-regular); font-weight: var(--font-weight-medium); }
+.problem { display: flex; gap: var(--space-xxsmall); align-items: center; color: var(--text-warning); }
+
+.strip { display: flex; flex-direction: column; gap: var(--space-xxsmall); }
+.stripRow { display: flex; gap: var(--space-xsmall); align-items: center; min-width: 0; }
+.stripLead { flex: 0 1 auto; min-width: 0; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--font-size-small); font-weight: var(--font-weight-medium); color: var(--text-neutral-strong); }
+.stripLeadOpen { white-space: normal; }
+.stripNote { flex: none; margin-inline-start: auto; font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); white-space: nowrap; }
+
+.workspace { flex: 1 1 auto; min-height: 520px; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-medium); }
+
+.progress { display: flex; flex-direction: column; gap: var(--space-small); }
+.progressHead { display: flex; justify-content: space-between; gap: var(--space-small); font-size: var(--font-size-small); color: var(--text-neutral-strong); }
+.progressHead strong { font-weight: var(--font-weight-semibold); }
+.quiet { color: var(--text-neutral-subtle); }
+.score { display: flex; flex-direction: column; gap: var(--space-small); font-size: var(--font-size-small); line-height: var(--line-height-normal); color: var(--text-neutral-strong); }
+.score p { margin: 0; }
+.score .quiet { color: var(--text-neutral-subtle); }
+.scoreHead { display: flex; gap: var(--space-small); align-items: center; font-size: var(--font-size-regular); font-weight: var(--font-weight-semibold); }
+.canvasTop { position: absolute; inset-inline-start: var(--space-small); inset-block-start: var(--space-small); z-index: 3; display: flex; gap: var(--space-xsmall); align-items: center; }
+.detailsButton { border-radius: var(--radius-medium); background: var(--surface-flat); box-shadow: var(--elevation-card); }
+.scope { padding: var(--space-xxxsmall) var(--space-xsmall); border-radius: var(--radius-medium); background: var(--surface-flat); box-shadow: var(--elevation-card); font-size: var(--font-size-xsmall); color: var(--text-neutral); }
+.addStep { position: absolute; inset-inline-end: var(--space-small); inset-block-start: var(--space-small); z-index: 3; border-radius: var(--radius-medium); background: var(--surface-flat); box-shadow: var(--elevation-card); }
+/* The Drawer covers the end of the page, so the page makes room: the summary and the tree stay in view. */
+.withDrawer { padding-inline-end: var(--drawer-medium); }
+/* Floats over the canvas when asked for, and steps aside while a block is dragged so the + under it can be reached. */
+.build { position: absolute; inset-inline-end: var(--space-small); inset-block: var(--space-small); z-index: 4; box-sizing: border-box; width: 240px; padding: var(--space-small); overflow: auto; border-radius: var(--radius-surface); background: var(--surface-floating); box-shadow: var(--elevation-popover); }
+.buildDragging { opacity: var(--opacity-500); pointer-events: none; }
+.buildClose { position: absolute; inset-inline-end: var(--space-xsmall); inset-block-start: var(--space-xsmall); z-index: 1; }
+.source { touch-action: none; cursor: grab; }
+.items { display: flex; flex-direction: column; gap: var(--space-xsmall); }
+
+.canvasArea { position: relative; min-height: 0; }
+.canvas { position: absolute; inset: 0; overflow: auto; border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-surface); background: var(--surface-sunken); cursor: grab; user-select: none; }
+.panning, .panning * { cursor: grabbing; }
+.tools { position: absolute; inset-inline-start: var(--space-small); inset-block-end: var(--space-medium); z-index: 3; border-radius: var(--radius-medium); background: var(--surface-flat); box-shadow: var(--elevation-card); }
+.tree { width: max-content; margin-inline: auto; padding: var(--space-large) var(--space-large) var(--space-xxlarge); }
+
+.seq { display: flex; flex-direction: column; align-items: center; }
+.line { width: var(--border-width-thin); height: var(--space-small); background: var(--border-neutral-strong); }
+.lineLabel { padding-block: var(--space-xxxsmall); font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); white-space: nowrap; }
+.insert { display: flex; flex-direction: column; align-items: center; }
+.plus { border-radius: var(--radius-medium); background: var(--surface-flat); }
+
+/* While a block is dragged, each + opens up into a place to drop it. */
+.slot { box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: var(--tree-card-width); height: var(--space-xlarge); border: var(--border-width-thin) dashed var(--border-brand); border-radius: var(--radius-medium); background: var(--bg-brand-faint); font-size: var(--font-size-xsmall); color: var(--text-brand); }
+.slotRefused { border-color: var(--border-neutral); background: transparent; color: var(--text-neutral-subtle); opacity: var(--opacity-600); }
+.slotOver { border-style: solid; border-width: var(--border-width-medium); background: var(--bg-brand-subtle); }
+.slotOverRefused { border-color: var(--border-danger); background: var(--bg-danger-faint); color: var(--text-danger); opacity: 1; }
+
+.guide { box-sizing: border-box; display: flex; flex-direction: column; gap: var(--space-xsmall); align-items: flex-start; width: var(--tree-card-width); padding: var(--space-small); border: var(--border-width-thin) dashed var(--border-brand); border-radius: var(--radius-surface); background: var(--bg-brand-faint); cursor: default; }
+.cardWrap { position: relative; width: var(--tree-card-width); }
+.card {
+  box-sizing: border-box; display: flex; gap: var(--space-small); align-items: flex-start; width: 100%; min-height: 64px;
+  padding: var(--space-small) var(--space-xlarge) var(--space-small) var(--space-small);
+  border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-surface);
+  background: var(--surface-raised); box-shadow: var(--elevation-card); cursor: grab; outline: none; touch-action: none;
+}
+.cardMoving { opacity: var(--opacity-500); }
+/* The card and its values read as one surface, split by a line. */
+.cardWithValues { border-end-start-radius: 0; border-end-end-radius: 0; min-height: 0; box-shadow: none; }
+/* Selected wraps the whole card, not only its top half. */
+.cardWithValues.selected, .cardWithValues:focus-visible { border-color: var(--border-neutral-subtle); outline: none; }
+.cardWrapPicked { border-radius: var(--radius-surface); outline: var(--border-width-medium) solid var(--border-brand); }
+.values { box-sizing: border-box; display: flex; flex-direction: column; gap: var(--space-xxsmall); align-items: flex-start; padding: var(--space-xsmall) var(--space-small); border: var(--border-width-thin) solid var(--border-neutral-subtle); border-block-start: 0; border-end-start-radius: var(--radius-surface); border-end-end-radius: var(--radius-surface); background: var(--surface-raised); box-shadow: var(--elevation-card); cursor: default; }
+.valueRow { display: flex; align-items: center; justify-content: space-between; gap: var(--space-xsmall); align-self: stretch; }
+.card:hover { border-color: var(--border-neutral-strong); }
+.card:focus-visible, .selected { border-color: var(--border-brand); outline: var(--border-width-thin) solid var(--border-brand); }
+/* During a run the tree only reports, so its cards don't act like buttons. */
+.cardStatic, .cardStatic:hover { padding-inline-end: var(--space-small); border-color: var(--border-neutral-subtle); cursor: default; }
+.tile { flex: none; display: flex; align-items: center; justify-content: center; width: var(--space-xxlarge); height: var(--space-xxlarge); border-radius: var(--radius-medium); background: var(--bg-brand-faint); color: var(--icon-brand); }
+.copy { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-xxsmall); align-items: flex-start; }
+.title { font-size: var(--font-size-small); font-weight: var(--font-weight-semibold); line-height: var(--line-height-snug); color: var(--text-neutral-strong); }
+.text { font-size: var(--font-size-xsmall); line-height: var(--line-height-snug); color: var(--text-neutral); }
+.cardMenu { position: absolute; inset-block-start: var(--space-xsmall); inset-inline-end: var(--space-xxsmall); }
+
+/* A split: a bar across the tops of its paths, drawn half from each path so it stops at the outer two. */
+.paths { display: flex; align-items: flex-start; }
+.path { position: relative; display: flex; flex-direction: column; align-items: center; padding-inline: var(--space-small); }
+.path::before { content: ""; position: absolute; inset-block-start: 0; inset-inline: 0; height: var(--border-width-thin); background: var(--border-neutral-strong); }
+.path:first-child::before { inset-inline-start: 50%; }
+.path:last-child::before { inset-inline-end: 50%; }
+.path:only-child::before { display: none; }
+.pathLabel { padding: var(--space-xxxsmall) var(--space-xsmall); border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-pill); background: var(--surface-flat); font-size: var(--font-size-xsmall); font-weight: var(--font-weight-medium); color: var(--text-neutral-strong); white-space: nowrap; }
+.pathEnd { padding-block-start: var(--space-xxsmall); font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); white-space: nowrap; }
+
+.ghost { position: fixed; z-index: var(--z-overlay); pointer-events: none; transform: translate(-50%, -50%); display: flex; gap: var(--space-xsmall); align-items: center; padding: var(--space-xsmall) var(--space-small); border: var(--border-width-thin) solid var(--border-brand); border-radius: var(--radius-medium); background: var(--surface-floating); box-shadow: var(--elevation-popover); font-size: var(--font-size-small); font-weight: var(--font-weight-medium); color: var(--text-neutral-strong); white-space: nowrap; }
+.why { position: fixed; z-index: var(--z-overlay); pointer-events: none; max-width: 280px; padding: var(--space-xxsmall) var(--space-xsmall); border: var(--border-width-thin) solid var(--border-danger); border-radius: var(--radius-medium); background: var(--surface-floating); box-shadow: var(--elevation-popover); font-size: var(--font-size-xsmall); line-height: var(--line-height-snug); color: var(--text-neutral-strong); }

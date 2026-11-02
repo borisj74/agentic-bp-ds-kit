@@ -1,0 +1,76 @@
+/* The canvas, its blocks and the lines between them: the kit has no node canvas, so these three are local to this screen. */
+.frame { height: 100dvh; }
+
+.workspace { flex: 1 1 auto; min-height: 560px; display: grid; grid-template-columns: 176px minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: var(--space-medium); }
+/* The Drawer covers the end of the page, so the page makes room: the summary and the block being edited stay in view. */
+.withDrawer { padding-inline-end: var(--drawer-medium); }
+.palette { grid-row: 1 / span 2; display: flex; flex-direction: column; gap: var(--space-xsmall); min-width: 0; }
+.source { touch-action: none; }
+
+/* Room for the usual few lines, so the canvas doesn't jump under the pointer as the summary changes. */
+.summary { display: flex; flex-direction: column; gap: var(--space-xxsmall); min-height: 88px; margin: 0; font-size: var(--font-size-small); line-height: var(--line-height-normal); color: var(--text-neutral-strong); }
+.summary p { margin: 0; }
+.summaryLead { font-size: var(--font-size-regular); font-weight: var(--font-weight-medium); }
+.problem { display: flex; gap: var(--space-xxsmall); align-items: center; color: var(--text-warning); }
+
+.need { display: flex; gap: var(--space-xxsmall); align-items: center; font-size: var(--font-size-small); color: var(--text-neutral-strong); }
+.needs { display: flex; flex-direction: column; gap: var(--space-xxsmall); }
+
+.canvasArea { position: relative; min-height: 0; }
+/* The dots scroll with the canvas and scale with it, so they read as the surface the blocks sit on. */
+.canvas {
+  position: absolute; inset: 0; overflow: auto;
+  border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-surface);
+  background-color: var(--surface-sunken);
+  background-image: radial-gradient(var(--border-neutral) 1px, transparent 1px);
+  background-size: calc(var(--space-large) * var(--canvas-zoom)) calc(var(--space-large) * var(--canvas-zoom));
+  background-attachment: local;
+}
+.sizer { position: relative; }
+.plane { position: absolute; inset-block-start: 0; inset-inline-start: 0; transform-origin: 0 0; }
+.empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.tools { position: absolute; inset-inline-start: var(--space-small); inset-block-end: var(--space-medium); z-index: 3; border-radius: var(--radius-medium); background: var(--surface-flat); box-shadow: var(--elevation-card); }
+
+.lines { position: absolute; inset-block-start: 0; inset-inline-start: 0; pointer-events: none; overflow: visible; }
+.hit { fill: none; stroke: transparent; stroke-width: 16px; pointer-events: stroke; cursor: pointer; outline: none; }
+.line { fill: none; stroke: var(--border-neutral-intense); stroke-width: var(--border-width-medium); pointer-events: none; }
+.hit:hover + .line, .lineOn { stroke: var(--border-brand); }
+.arrow { fill: var(--border-neutral-intense); }
+.arrowOn { fill: var(--border-brand); }
+.pendingLine { fill: none; stroke: var(--border-brand); stroke-width: var(--border-width-medium); stroke-dasharray: var(--space-xxsmall) var(--space-xxsmall); }
+.removeLine { position: absolute; transform: translate(-50%, -50%); z-index: 3; background: var(--surface-flat); border-radius: var(--radius-medium); }
+.suggestLine { fill: none; stroke: var(--border-neutral); stroke-width: var(--border-width-thin); stroke-dasharray: var(--space-xxsmall) var(--space-xxsmall); }
+.suggest { position: absolute; transform: translateY(-50%); z-index: 2; white-space: nowrap; background: var(--surface-flat); border-radius: var(--radius-medium); }
+.dropMenu { position: absolute; transform: translate(-50%, -50%); z-index: 3; background: var(--surface-flat); border-radius: var(--radius-medium); }
+
+.node {
+  position: absolute; z-index: 1; box-sizing: border-box; display: flex; flex-direction: column;
+  border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-surface);
+  background: var(--surface-raised); box-shadow: var(--elevation-card);
+  font-family: var(--font-sans); color: var(--text-neutral-strong);
+  cursor: grab; touch-action: none; user-select: none; outline: none;
+}
+.node:focus-visible, .selected { border-color: var(--border-brand); outline: var(--border-width-thin) solid var(--border-brand); }
+.dragging { z-index: 2; cursor: grabbing; }
+.canDrop { border-color: var(--border-brand); outline: var(--border-width-medium) solid var(--border-brand-subtle); }
+.cannotDrop { opacity: var(--opacity-500); }
+.overRefused { border-color: var(--border-danger); opacity: 1; }
+
+.nodeHead { flex: none; box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xxsmall); padding-inline: var(--space-xsmall); font-size: var(--font-size-xsmall); font-weight: var(--font-weight-semibold); white-space: nowrap; }
+.nodeBody {
+  flex: none; box-sizing: border-box; padding-inline: var(--space-xsmall); overflow: hidden;
+  font-size: var(--font-size-xsmall); line-height: var(--line-height-snug); color: var(--text-neutral);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+}
+.unset { color: var(--text-warning); }
+.outputRow { flex: none; box-sizing: border-box; display: flex; align-items: center; justify-content: flex-end; padding-inline-end: var(--space-small); font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); white-space: nowrap; }
+
+/* A 24px target around a 12px dot, half over the block's edge. */
+.port { position: absolute; width: var(--space-xlarge); height: var(--space-xlarge); transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; }
+.port::after { content: ""; box-sizing: border-box; width: var(--space-small); height: var(--space-small); border: var(--border-width-medium) solid var(--border-neutral-intense); border-radius: var(--radius-full); background: var(--surface-flat); }
+.portOut { cursor: crosshair; }
+.portOut:hover::after, .portOn::after { border-color: var(--border-brand); background: var(--bg-brand-faint); }
+.portLinked::after { background: var(--border-neutral-intense); }
+
+.ghost { position: fixed; z-index: var(--z-overlay); pointer-events: none; transform: translate(-50%, -50%); box-shadow: var(--elevation-popover); }
+.why { position: fixed; z-index: var(--z-overlay); pointer-events: none; max-width: 280px; padding: var(--space-xxsmall) var(--space-xsmall); border: var(--border-width-thin) solid var(--border-danger); border-radius: var(--radius-medium); background: var(--surface-floating); box-shadow: var(--elevation-popover); font-size: var(--font-size-xsmall); line-height: var(--line-height-snug); color: var(--text-neutral-strong); }
