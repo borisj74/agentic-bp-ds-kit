@@ -10,9 +10,6 @@ import { Button } from "@/ui/Button/Button";
 import { Callout } from "@/ui/Callout/Callout";
 import { Cell } from "@/ui/Cell/Cell";
 import { EmptyState } from "@/ui/EmptyState/EmptyState";
-import { Form } from "@/ui/Form/Form";
-import { Input } from "@/ui/Input/Input";
-import { Modal } from "@/ui/Modal/Modal";
 import { PageHeader } from "@/ui/PageHeader/PageHeader";
 import { Table } from "@/ui/Table/Table";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
@@ -35,24 +32,16 @@ function statusOf(r: RuleRecord): { label: string; intent: Intent } {
 export function RulesList({ records, onOpen, onCreate, onCopy, onDelete }: {
   records: RuleRecord[];
   onOpen: (id: string) => void;
-  onCreate: (name: string) => void;
+  onCreate: () => void;
   onCopy: (id: string) => void;
   onDelete: (id: string) => void;
 }) {
   const [navOpen, setNavOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [creating, setCreating] = useState(false);
-  const [name, setName] = useState("");
-  const [nameError, setNameError] = useState<string | undefined>();
   const [deleting, setDeleting] = useState<string | null>(null);
   const q = query.trim().toLowerCase();
   const shown = records.filter((r) => !q || r.rule.name.toLowerCase().includes(q));
   const doomed = records.find((r) => r.id === deleting);
-  const create = () => {
-    if (!name.trim()) { setNameError("Give this rule a name."); return; }
-    setCreating(false);
-    onCreate(name.trim());
-  };
   return (
     <div style={{ height: "100dvh" }}>
       <AppShell
@@ -68,7 +57,7 @@ export function RulesList({ records, onOpen, onCreate, onCopy, onDelete }: {
           <PageHeader
             title="Anomaly detection"
             breadcrumbs={[{ label: "Home", href: "#" }, { label: "Settings", href: "#" }]}
-            actions={<Button size="sm" emphasis="strong" intent="brand" iconStart="add" onClick={() => { setName(""); setNameError(undefined); setCreating(true); }}>New rule</Button>}
+            actions={<Button size="sm" emphasis="strong" intent="brand" iconStart="add" onClick={onCreate}>New rule</Button>}
           />
         }
       >
@@ -115,18 +104,6 @@ export function RulesList({ records, onOpen, onCreate, onCopy, onDelete }: {
           />
         </ListPage>
       </AppShell>
-
-      <Modal
-        open={creating} title="New rule" size="md" onClose={() => setCreating(false)}
-        footer={<>
-          <Button size="sm" onClick={() => setCreating(false)}>Cancel</Button>
-          <Button size="sm" emphasis="strong" intent="brand" onClick={create}>Create rule</Button>
-        </>}
-      >
-        <Form labelPosition="start" labelWidth="sm">
-          <Input label="Name" required value={name} error={nameError} onChange={(v) => { setName(v); setNameError(undefined); }} />
-        </Form>
-      </Modal>
 
       <AlertDialog
         open={Boolean(doomed)} title={`Delete ${doomed?.rule.name || "this rule"}?`} description="This can't be undone."

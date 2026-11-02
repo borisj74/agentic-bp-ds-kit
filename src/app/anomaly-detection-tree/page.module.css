@@ -54,6 +54,7 @@
 .slotOverRefused { border-color: var(--border-danger); background: var(--bg-danger-faint); color: var(--text-danger); opacity: 1; }
 
 .guide { box-sizing: border-box; display: flex; flex-direction: column; gap: var(--space-xsmall); align-items: flex-start; width: var(--tree-card-width); padding: var(--space-small); border: var(--border-width-thin) dashed var(--border-brand); border-radius: var(--radius-surface); background: var(--bg-brand-faint); cursor: default; }
+.guideField { align-self: stretch; }
 .cardWrap { position: relative; width: var(--tree-card-width); }
 .card {
   box-sizing: border-box; display: flex; gap: var(--space-small); align-items: flex-start; width: 100%; min-height: 64px;

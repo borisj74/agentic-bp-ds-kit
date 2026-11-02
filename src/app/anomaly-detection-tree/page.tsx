@@ -12,6 +12,7 @@ import { Callout } from "@/ui/Callout/Callout";
 import { Drawer } from "@/ui/Drawer/Drawer";
 import { Dropdown } from "@/ui/Dropdown/Dropdown";
 import { Icon } from "@/ui/Icon/Icon";
+import { Input } from "@/ui/Input/Input";
 import { PageHeader } from "@/ui/PageHeader/PageHeader";
 import { Section } from "@/ui/Section/Section";
 import { Steps } from "@/ui/Steps/Steps";
@@ -92,6 +93,10 @@ interface TreeUi {
   openValues: string | null;
   next: { seq: string; index: number; kind: BlockKind } | null;
   blank: boolean;
+  naming: boolean;
+  ruleName: string;
+  onName: (name: string) => void;
+  onNamed: () => void;
   dragged: Dragged | null;
   spotsById: Map<string, Spot>;
   readOnly: boolean;
@@ -139,8 +144,8 @@ export default function AnomalyTreePage() {
     return () => clearTimeout(timer);
   }, [records, openId]);
 
-  const create = (name: string) => {
-    const made = newRecord(blankRule(name));
+  const create = () => {
+    const made = newRecord(blankRule());
     setRecords((all) => [made, ...all]);
     setOpenId(made.id);
   };
@@ -187,6 +192,8 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
   const [dragged, setDragged] = useState<Dragged | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
   const [checking, setChecking] = useState(false);
+  // A new rule's first step is its name. The card stays until it's confirmed, so it doesn't vanish on the first letter typed.
+  const [naming, setNaming] = useState(!rule.name.trim());
   const [buildOpen, setBuildOpen] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
   // The Values card showing its chips. One at a time; an empty one always shows them, so Add value is right there.
@@ -463,7 +470,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
   // Scrolling zooms, so dragging the empty canvas is how the view moves. A press on its scrollbars is left alone.
   const startPan = (e: ReactPointerEvent<HTMLDivElement>) => {
     const box = canvas.current;
-    if (!box || e.button !== 0 || (e.target as Element).closest(building ? "[data-step], [data-values], button" : "button")) return;
+    if (!box || e.button !== 0 || (e.target as Element).closest(building ? "[data-step], [data-values], [data-naming], button" : "button")) return;
     setSelected(null);
     setOpenValues(null);
     const r = box.getBoundingClientRect();
@@ -486,6 +493,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
   };
 
   const ui: TreeUi = {
+    naming, ruleName: rule.name, onName: (name) => setRule((r) => ({ ...r, name }), "name"), onNamed: () => setNaming(false),
     selected, openValues, next: building ? nextNeeded(rule) : null, blank: rule.steps.length === 0, dragged, spotsById, readOnly: !building, counts,
     refusal: refusalFor,
     onRows: (id, rows) => { setOpenValues(id); setRule((r) => patchStep(r, id, { rows })); },
@@ -743,12 +751,30 @@ function PathColumn({ path, inModelPath, before, ui }: { path: Path; inModelPath
 
 // The clear next move at the end of an unfinished path, so nobody has to know the order of steps up front.
 function NextGuide({ spot, kind, ui }: { spot: Spot; kind: BlockKind; ui: TreeUi }) {
+  if (ui.naming) return <NameGuide ui={ui} />;
   return (
     <div className={styles.guide}>
       <span className={styles.title}>{`Next: ${blockLabel(kind)}`}</span>
       <span className={styles.text}>{NEXT_WHY[kind]}</span>
       {ui.blank && <span className={styles.text}>Only want some invoices? Press + above to add a Condition first.</span>}
       <Button size="sm" iconStart={iconOf(kind)} onClick={() => ui.onInsert(spot, item(kind))}>{`Add ${blockLabel(kind)}`}</Button>
+    </div>
+  );
+}
+
+function NameGuide({ ui }: { ui: TreeUi }) {
+  const [error, setError] = useState<string | undefined>();
+  const box = useRef<HTMLDivElement>(null);
+  useEffect(() => { box.current?.querySelector("input")?.focus(); }, []);
+  const done = () => { if (ui.ruleName.trim()) ui.onNamed(); else setError("Give this rule a name."); };
+  return (
+    <div ref={box} className={styles.guide} data-naming onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); done(); } }}>
+      <span className={styles.title}>Name this rule</span>
+      <span className={styles.text}>Say what it checks, so it&apos;s easy to find in the list later.</span>
+      <div className={styles.guideField}>
+        <Input label="Rule name" required value={ui.ruleName} error={error} onChange={(v) => { ui.onName(v); setError(undefined); }} />
+      </div>
+      <Button size="sm" onClick={done}>Continue</Button>
     </div>
   );
 }
