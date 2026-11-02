@@ -1,4 +1,4 @@
-import { FLAG_COUNTS, INVOICES_FOUND, INVOICES_TOTAL, type Result } from "../anomaly-detection/data";
+import { FLAG_COUNTS, INVOICES_FOUND, INVOICES_TOTAL, SEED_CONFIGS, type Result, type Status } from "../anomaly-detection/data";
 import { blockLabel, blockUnset, freshId, newBlock, outputs, seedGraph, type ActionBlock, type Block, type BlockKind, type Graph, type InvoicesBlock, type Link, type WatchRow } from "../anomaly-detection-nodes/graph";
 
 // The rule as a tree: a list of steps, where a Condition or a Model ends its list and splits into paths.
@@ -37,7 +37,26 @@ export function seedRule(): Rule {
   };
 }
 
-export const blankRule = (): Rule => ({ name: "", start: newBlock("invoices", 0, 0) as InvoicesBlock, steps: [], blank: true });
+export const blankRule = (name = ""): Rule => ({ name, start: newBlock("invoices", 0, 0) as InvoicesBlock, steps: [], blank: true });
+
+// One rule in the list and how far its run has got. Runs live here, above the screens, so they keep going when someone leaves.
+export type Stage = "build" | "training" | "results" | "applying" | "ready" | "on";
+export interface RuleRecord {
+  id: string; rule: Rule; stage: Stage; progress: number; paused: boolean; live: boolean;
+  held: boolean; detailsFor: Stage | null; result: Result | null; trained: string;
+}
+const STAGE_OF: Record<Status, Stage> = {
+  draft: "build", stopped: "build", training: "training", results: "results", needsChanges: "results",
+  applying: "applying", ready: "ready", active: "on", paused: "on",
+};
+export const newRecord = (rule: Rule): RuleRecord => ({
+  id: freshId("rule"), rule, stage: "build", progress: 0, paused: false, live: false, held: false, detailsFor: null, result: null, trained: "—",
+});
+// The same sample rules as the wizard's list, each holding the example tree under its own name.
+export const seedRecords = (): RuleRecord[] => SEED_CONFIGS.map((c) => {
+  const rule = { ...seedRule(), name: c.setup.name };
+  return { ...newRecord(rule), id: c.id, stage: STAGE_OF[c.status], progress: c.progress, trained: c.trained, result: c.trained === "—" ? null : resultOf(rule) };
+});
 
 // What a rule still needs next and where it goes: the first required step its first unfinished path doesn't have.
 export function nextNeeded(rule: Rule): { seq: string; index: number; kind: BlockKind } | null {

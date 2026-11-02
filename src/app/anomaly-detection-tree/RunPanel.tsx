@@ -4,11 +4,10 @@ import { Callout } from "@/ui/Callout/Callout";
 import { Meter } from "@/ui/Meter/Meter";
 import { Section } from "@/ui/Section/Section";
 import { RESULT_INTENT, RESULT_WORD, type Result } from "../anomaly-detection/data";
+import type { Stage } from "./tree";
 import styles from "./page.module.css";
 
 // What a run says at each stage, beside the tree. The wording follows the wizard's own run screens.
-
-export type Stage = "build" | "training" | "results" | "applying" | "ready" | "on";
 
 // How far training or applying has got. A real progress bar, since the header's Badge is only for status.
 export function RunProgress({ stage, progress, checked }: { stage: Stage; progress: number; checked: number }) {

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { AppShell } from "@/patterns/AppShell/AppShell";
 import { APP_NAV, APP_NAV_END } from "@/patterns/AppShell/appNav";
 import { AlertDialog } from "@/ui/AlertDialog/AlertDialog";
@@ -17,13 +17,14 @@ import { Section } from "@/ui/Section/Section";
 import { Steps } from "@/ui/Steps/Steps";
 import { Toast, type ToastProps } from "@/ui/Toast/Toast";
 import { BlockSettings } from "../anomaly-detection-nodes/BlockSettings";
-import { AGG_OPTIONS } from "../anomaly-detection/data";
+import { AGG_OPTIONS, TODAY } from "../anomaly-detection/data";
 import { ACTION_OPTIONS, BLOCKS, VALUE_OPTIONS, blockLabel, blockText, blockUnset, freshId, summarize, type BlockKind, type ValuesBlock, type WatchRow } from "../anomaly-detection-nodes/graph";
 import { CheckData } from "./CheckData";
-import { RunPanel, RunProgress, type Stage } from "./RunPanel";
+import { RulesList } from "./RulesList";
+import { RunPanel, RunProgress } from "./RunPanel";
 import {
-  ROOT, bestSpot, blankRule, countRule, findStep, insertStep, missingSteps, moveRefusal, moveStep, nextNeeded, patchStep, removeStep, resultOf, seedRule, setModelBranches, spotId, spots, toGraph, whyNot,
-  type BuildItem, type Counts, type Path, type Rule, type Spot, type Step,
+  ROOT, bestSpot, blankRule, countRule, findStep, insertStep, missingSteps, moveRefusal, moveStep, newRecord, nextNeeded, patchStep, removeStep, resultOf, seedRecords, setModelBranches, spotId, spots, toGraph, whyNot,
+  type BuildItem, type Counts, type Path, type Rule, type RuleRecord, type Spot, type Stage, type Step,
 } from "./tree";
 import styles from "./page.module.css";
 
@@ -105,26 +106,89 @@ interface TreeUi {
   onInsert: (spot: Spot, it: BuildItem) => void;
 }
 
+// The list and the rule being looked at. Runs tick along here, so leaving a rule's page doesn't stop its run.
 export default function AnomalyTreePage() {
+  const [records, setRecords] = useState<RuleRecord[]>(seedRecords);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [notes, setNotes] = useState<Note[]>([]);
+  const noteKey = useRef(0);
+  const onPatch = useCallback((id: string, change: Partial<RuleRecord>) => {
+    setRecords((all) => all.map((r) => (r.id === id ? { ...r, ...change } : r)));
+  }, []);
+  // The Stop dialog holds a run's clock, so it can't finish behind it.
+  useEffect(() => {
+    if (!records.some((r) => (r.stage === "training" || r.stage === "applying") && !r.held)) return;
+    const timer = setTimeout(() => {
+      const running = records.filter((r) => (r.stage === "training" || r.stage === "applying") && !r.held);
+      setRecords((all) => all.map((r) => {
+        if (!running.some((x) => x.id === r.id)) return r;
+        if (r.progress < 100) return { ...r, progress: Math.min(100, r.progress + (r.stage === "training" ? 4 : 5)) };
+        return r.stage === "training"
+          ? { ...r, stage: "results", progress: 0, detailsFor: "results", result: resultOf(r.rule), trained: TODAY }
+          : { ...r, stage: "ready", progress: 0, detailsFor: "ready" };
+      }));
+      const finished = running.filter((r) => r.progress >= 100 && r.id !== openId);
+      if (finished.length) {
+        const r = finished[0];
+        setNotes([{
+          key: ++noteKey.current, intent: "success", actionLabel: "Open", onAction: () => setOpenId(r.id),
+          title: `${r.rule.name}: ${r.stage === "training" ? "results are ready" : "ready to turn on"}`,
+        }]);
+      }
+    }, RUN_TICK);
+    return () => clearTimeout(timer);
+  }, [records, openId]);
+
+  const create = (name: string) => {
+    const made = newRecord(blankRule(name));
+    setRecords((all) => [made, ...all]);
+    setOpenId(made.id);
+  };
+  const copy = (id: string) => {
+    setRecords((all) => {
+      const from = all.find((r) => r.id === id);
+      return from ? [{ ...newRecord({ ...from.rule, name: `${from.rule.name} copy` }) }, ...all] : all;
+    });
+    setNotes([{ key: ++noteKey.current, intent: "success", title: "Copy saved as a draft" }]);
+  };
+  const remove = (id: string) => {
+    const gone = records.find((r) => r.id === id);
+    setRecords((all) => all.filter((r) => r.id !== id));
+    setNotes([{ key: ++noteKey.current, intent: "success", title: `${gone?.rule.name || "Rule"} deleted` }]);
+  };
+  const open = records.find((r) => r.id === openId);
+  return (
+    <>
+      {open
+        ? <RuleEditor key={open.id} record={open} onPatch={onPatch} onBack={() => setOpenId(null)} />
+        : <RulesList records={records} onOpen={setOpenId} onCreate={create} onCopy={copy} onDelete={remove} />}
+      {notes.map(({ key, ...n }) => (
+        <Toast key={key} {...n} open onClose={() => setNotes((all) => all.filter((x) => x.key !== key))} />
+      ))}
+    </>
+  );
+}
+
+function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: (id: string, change: Partial<RuleRecord>) => void; onBack: () => void }) {
   const [navOpen, setNavOpen] = useState(false);
-  const [history, setHistory] = useState<History>(() => ({ past: [], present: seedRule(), future: [], key: null }));
+  const [history, setHistory] = useState<History>(() => ({ past: [], present: record.rule, future: [], key: null }));
   const rule = history.present;
-  const [zoom, setZoom] = useState(START_ZOOM);
+  useEffect(() => { onPatch(record.id, { rule }); }, [rule, record.id, onPatch]);
+  const { stage, progress, paused, live, detailsFor, held: stopping } = record;
+  const setStage = (next: Stage) => onPatch(record.id, { stage: next });
+  const setProgress = (next: number) => onPatch(record.id, { progress: next });
+  const setStopping = (next: boolean) => onPatch(record.id, { held: next });
+  const setPaused = (next: boolean) => onPatch(record.id, { paused: next });
+  const setLive = (next: boolean) => onPatch(record.id, { live: next });
+  const setDetailsFor = (next: Stage | null) => onPatch(record.id, { detailsFor: next });
+  const [zoom, setZoom] = useState(rule.blank ? 1 : START_ZOOM);
   const [selected, setSelected] = useState<string | null>(null);
   const [editing, setEditing] = useState<string | null>(null);
   const [dragged, setDragged] = useState<Dragged | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
-  const [stage, setStage] = useState<Stage>("build");
-  const [progress, setProgress] = useState(0);
-  const [stopping, setStopping] = useState(false);
   const [checking, setChecking] = useState(false);
-  const [paused, setPaused] = useState(false);
-  // True once detection is on and the rule is back in editing: the last trained version keeps running meanwhile.
-  const [live, setLive] = useState(false);
   const [buildOpen, setBuildOpen] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
-  // The stage whose details Drawer is open. Results and Ready open theirs on arrival, because they need reading before the next press.
-  const [detailsFor, setDetailsFor] = useState<Stage | null>(null);
   // The Values card showing its chips. One at a time; an empty one always shows them, so Add value is right there.
   const [openValues, setOpenValues] = useState<string | null>(null);
   const [panning, setPanning] = useState(false);
@@ -193,18 +257,6 @@ export default function AnomalyTreePage() {
     const r = el.getBoundingClientRect();
     moveView(box, r.left + anchor.fx * r.width - anchor.x, r.top + anchor.fy * r.height - anchor.y, setOffset);
   }, [zoom]);
-  // Training and applying tick along. The Stop dialog holds the clock, so a run can't finish behind it.
-  useEffect(() => {
-    if (stopping || (stage !== "training" && stage !== "applying")) return;
-    const timer = setTimeout(() => {
-      if (progress < 100) { setProgress(Math.min(100, progress + (stage === "training" ? 4 : 5))); return; }
-      const next = stage === "training" ? "results" : "ready";
-      setProgress(0);
-      setStage(next);
-      setDetailsFor(next);
-    }, RUN_TICK);
-    return () => clearTimeout(timer);
-  }, [stage, progress, stopping]);
   // A new step takes focus and comes into view, wherever in the tree it landed.
   useEffect(() => {
     if (!focusNext.current) return;
@@ -271,20 +323,6 @@ export default function AnomalyTreePage() {
     setEditing(null);
     notify({ intent: "info", title: "Step deleted", actionLabel: "Undo", onAction: undo });
   };
-  const startOver = (next: Rule, startZoom: number, title: string) => {
-    setRule(() => next);
-    setSelected(null);
-    setEditing(null);
-    setOpenValues(null);
-    setLive(false);
-    setPaused(false);
-    setZoom(startZoom);
-    setOffset({ x: 0, y: 0 });
-    canvas.current?.scrollTo(0, 0);
-    notify({ intent: "success", title, actionLabel: "Undo", onAction: undo });
-  };
-  const reset = () => startOver(seedRule(), START_ZOOM, "Back to the example rule");
-  const startBlank = () => startOver(blankRule(), 1, "Started a blank rule");
 
   const train = () => {
     if (missing.length) {
@@ -481,11 +519,9 @@ export default function AnomalyTreePage() {
         pageHeader={
           <PageHeader
             title={rule.name || "Untitled rule"}
-            breadcrumbs={[{ label: "Home", href: "#" }, { label: "Settings", href: "#" }, { label: "Anomaly detection", href: "/anomaly-detection" }]}
+            breadcrumbs={[{ label: "Home", href: "#" }, { label: "Settings", href: "#" }, { label: "Anomaly detection", onClick: onBack }]}
             badge={header.badge || undefined} badgeIntent={header.badgeIntent}
             actions={header.actions}
-            moreActions={building ? [{ id: "blank", label: "Start blank", icon: "add" }, { id: "reset", label: "Reset example", icon: "restart_alt" }] : undefined}
-            onMoreSelect={(id) => (id === "blank" ? startBlank() : reset())}
           />
         }
       >
