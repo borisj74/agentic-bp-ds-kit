@@ -15,17 +15,16 @@ import { Icon } from "@/ui/Icon/Icon";
 import { Input } from "@/ui/Input/Input";
 import { PageHeader } from "@/ui/PageHeader/PageHeader";
 import { Section } from "@/ui/Section/Section";
-import { Select } from "@/ui/Select/Select";
 import { Steps } from "@/ui/Steps/Steps";
 import { Toast, type ToastProps } from "@/ui/Toast/Toast";
 import { BlockSettings } from "../anomaly-detection-nodes/BlockSettings";
 import { AGG_OPTIONS, TODAY } from "../anomaly-detection/data";
-import { ACTION_OPTIONS, BLOCKS, RECORD_OPTIONS, actionOptions, blockLabel, blockText, blockUnset, freshId, recordOf, summarize, type BlockKind, type RecordType, type ValuesBlock, type WatchRow } from "../anomaly-detection-nodes/graph";
+import { ACTION_OPTIONS, BLOCKS, RECORDS, RECORD_OPTIONS, actionOptions, blockLabel, blockText, blockUnset, freshId, recordOf, summarize, type BlockKind, type RecordType, type ValuesBlock, type WatchRow } from "../anomaly-detection-nodes/graph";
 import { CheckData } from "./CheckData";
 import { RulesList } from "./RulesList";
 import { RunPanel, RunProgress } from "./RunPanel";
 import {
-  ROOT, bestSpot, blankRule, countRule, findStep, insertStep, missingSteps, moveRefusal, moveStep, newRecord, nextNeeded, patchStep, removeStep, resultOf, seedRecords, setModelBranches, spotId, spots, toGraph, whyNot,
+  ROOT, bestSpot, blankRule, countRule, isChoosing, findStep, insertStep, missingSteps, moveRefusal, moveStep, newRecord, nextNeeded, patchStep, removeStep, resultOf, seedRecords, setModelBranches, spotId, spots, toGraph, whyNot,
   type BuildItem, type Counts, type Path, type Rule, type RuleRecord, type Spot, type Stage, type Step,
 } from "./tree";
 import styles from "./page.module.css";
@@ -344,7 +343,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
       const more = missing.length - 1;
       notify({ intent: "warning", title: "This rule isn't ready to train", description: `${missing[0].text}${more ? ` And ${more} more to fix.` : ""}` });
       // The name lives in the Invoices settings, so go straight there.
-      setEditing(missing[0].id === rule.start.id && !rule.name.trim() ? rule.start.id : null);
+      setEditing(missing[0].id === rule.start.id && !rule.name.trim() && !isChoosing(rule) ? rule.start.id : null);
       setOpenValues(null);
       setSelected(missing[0].id);
       const el = stepEl(missing[0].id);
@@ -501,7 +500,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
   };
 
   const ui: TreeUi = {
-    type, onRecord: (next) => setRule((r) => patchStep(r, r.start.id, { record: next })), naming, ruleName: rule.name, onName: (name) => setRule((r) => ({ ...r, name }), "name"), onNamed: () => setNaming(false),
+    type, onRecord: (next) => { setNotes([]); setRule((r) => patchStep(r, r.start.id, { record: next })); }, naming, ruleName: rule.name, onName: (name) => setRule((r) => ({ ...r, name }), "name"), onNamed: () => setNaming(false),
     selected, openValues, next: building ? nextNeeded(rule) : null, blank: rule.steps.length === 0, dragged, spotsById, readOnly: !building, counts,
     refusal: refusalFor,
     onRows: (id, rows) => { setOpenValues(id); setRule((r) => patchStep(r, id, { rows })); },
@@ -566,7 +565,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
               >
                 {summaryOpen ? "Show less" : "Show more"}
               </Button>
-              {!editStep && <span className={styles.stripNote}>{`Nothing happens to ${type.many} until you turn it on.`}</span>}
+              {!editStep && !isChoosing(rule) && <span className={styles.stripNote}>{`Nothing happens to ${type.many} until you turn it on.`}</span>}
             </div>
             {summaryOpen && (
               <div className={styles.summary}>
@@ -590,7 +589,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
                 {counts && <span className={styles.scope}>{counts === sampleCounts ? "Counts from the 5% sample" : `Counts from all past ${type.many}`}</span>}
               </div>
             )}
-            {building && !editStep && !buildOpen && (
+            {building && !editStep && !buildOpen && !isChoosing(rule) && (
               <div className={styles.addStep}>
                 <Button size="sm" iconStart="add" aria-expanded={false} onClick={() => setBuildOpen(true)}>Add step</Button>
               </div>
@@ -610,15 +609,21 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
               <div style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}>
                 <div ref={tree} className={styles.tree} role="group" aria-label="Rule steps" style={{ zoom, "--tree-card-width": `${CARD_WIDTH}px` } as CSSProperties}>
                   <div className={styles.seq}>
-                    <span className={styles.lineLabel}>When this happens</span>
-                    <Card step={rule.start} ui={ui} before={[]} />
-                    <Sequence seq={ROOT} steps={rule.steps} before={["invoices"]} ui={ui} firstLabel="This will then happen" />
+                    {isChoosing(rule)
+                      ? <h2 className={styles.choiceTitle}>What should this rule check?</h2>
+                      : <span className={styles.lineLabel}>When this happens</span>}
+                    {isChoosing(rule) ? <StartChoice ui={ui} /> : (
+                      <>
+                        <Card step={rule.start} ui={ui} before={[]} />
+                        <Sequence seq={ROOT} steps={rule.steps} before={["invoices"]} ui={ui} firstLabel="This will then happen" />
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
 
-            {building && !editStep && buildOpen && (
+            {building && !editStep && buildOpen && !isChoosing(rule) && (
             <div className={[styles.build, dragged ? styles.buildDragging : ""].join(" ")} onKeyDown={(e) => { if (e.key === "Escape") setBuildOpen(false); }}>
               <div className={styles.buildClose}>
                 <Button size="sm" iconOnly emphasis="minimal" iconStart="close" onClick={() => setBuildOpen(false)}>Close</Button>
@@ -770,6 +775,26 @@ function NextGuide({ spot, kind, ui }: { spot: Spot; kind: BlockKind; ui: TreeUi
   );
 }
 
+// The start of a new rule: what it checks. One kind per rule, because the model learns what's normal for that kind.
+function StartChoice({ ui }: { ui: TreeUi }) {
+  return (
+    <div className={styles.seq} data-naming>
+      <div className={styles.choices} role="group" aria-label="What should this rule check?">
+        {Object.entries(RECORDS).map(([key, r]) => (
+          <button key={key} type="button" className={[styles.card, styles.cardOption].join(" ")} onClick={() => ui.onRecord(key)}>
+            <span className={styles.tile}><Icon name={r.icon} size="md" /></span>
+            <span className={styles.copy}>
+              <span className={styles.title}>{r.label}</span>
+              <span className={styles.text}>{`${r.filter} · last 12 months`}</span>
+            </span>
+          </button>
+        ))}
+      </div>
+      <span className={styles.choiceNote}>One kind per rule, because the model learns what&apos;s normal for that kind. This can&apos;t change later.</span>
+    </div>
+  );
+}
+
 function NameGuide({ ui }: { ui: TreeUi }) {
   const [error, setError] = useState<string | undefined>();
   const box = useRef<HTMLDivElement>(null);
@@ -782,14 +807,7 @@ function NameGuide({ ui }: { ui: TreeUi }) {
       <div className={styles.guideField}>
         <Input label="Rule name" required value={ui.ruleName} error={error} onChange={(v) => { ui.onName(v); setError(undefined); }} />
       </div>
-      {ui.blank && (
-        <div className={styles.guideField}>
-          <Select
-            label="What to check" options={RECORD_OPTIONS} value={recordKey(ui.type)} onChange={(v) => ui.onRecord(v as string)}
-            hint="One kind per rule, because the model learns what's normal for that kind. This can't change later."
-          />
-        </div>
-      )}
+
       <Button size="sm" onClick={done}>Continue</Button>
     </div>
   );
@@ -838,7 +856,7 @@ function Card({ step, ui, before }: { step: Step; ui: TreeUi; before: BlockKind[
   const picked = ui.selected === step.id || ui.openValues === step.id;
   const body = (
     <>
-      <span className={styles.tile}><Icon name={iconOf(step.kind)} size="md" /></span>
+      <span className={styles.tile}><Icon name={step.kind === "invoices" ? ui.type.icon : iconOf(step.kind)} size="md" /></span>
       <span className={styles.copy}>
         <span className={styles.title}>{stepLabel(step.kind, ui.type)}</span>
         {!blockUnset(step) && !chips && <span className={styles.text}>{blockText(step, recordKey(ui.type))}</span>}

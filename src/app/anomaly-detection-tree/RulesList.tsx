@@ -15,7 +15,7 @@ import { Table } from "@/ui/Table/Table";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 import { RESULT_INTENT, resultLabel, type Intent } from "../anomaly-detection/data";
 import { blockText, recordOf } from "../anomaly-detection-nodes/graph";
-import { resultOf, type RuleRecord } from "./tree";
+import { isChoosing, resultOf, type RuleRecord } from "./tree";
 
 // Where a rule stands, in a word. How far a run has got belongs on the rule's own page, as a progress bar.
 function statusOf(r: RuleRecord): { label: string; intent: Intent } {
@@ -85,7 +85,7 @@ export function RulesList({ records, onOpen, onCreate, onCopy, onDelete }: {
               return {
                 id: r.id,
                 name: <Cell type="link" label={r.rule.name || "Untitled rule"} onClick={() => onOpen(r.id)} />,
-                checks: `${recordOf(r.rule.start.record).label} · ${blockText(r.rule.start)}`,
+                checks: isChoosing(r.rule) ? "Not picked yet" : `${recordOf(r.rule.start.record).label} · ${blockText(r.rule.start)}`,
                 status: <Cell type="badge" label={status.label} intent={status.intent} />,
                 result: r.result ? <Cell type="badge" label={resultLabel(r.result)} intent={RESULT_INTENT[r.result.kind]} /> : "Not trained yet",
                 trained: r.trained,

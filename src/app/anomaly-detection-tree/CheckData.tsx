@@ -14,6 +14,21 @@ interface Row { id: string; record: string; group: string; closed: string; [valu
 const invoiceRows: Row[] = SAMPLE_INVOICES.map((i) => ({ id: i.id, record: i.invoice, group: i.profile, closed: i.closed, rate: i.rate, qty: i.qty, cost: i.cost }));
 // Sample rows for the record types the review hasn't covered yet.
 const SAMPLES: Record<string, Row[]> = {
+  charge: [
+    { id: "1", record: "CHG-20418", group: "Acme Corporation · Monthly", closed: "31 Oct 2026", rate: "$125.00", qty: "40", cost: "$5,000.00" },
+    { id: "2", record: "CHG-20402", group: "Globex Industries · Monthly", closed: "31 Oct 2026", rate: "$89.50", qty: "120", cost: "$10,740.00" },
+    { id: "3", record: "CHG-20351", group: "BlueOcean Strategies · Monthly", closed: "30 Sep 2026", rate: "$142.50", qty: "60", cost: "$8,550.00" },
+  ],
+  payment: [
+    { id: "1", record: "PAY-71840", group: "Acme Corporation", closed: "29 Oct 2026", paymentAmount: "$5,000.00", daysToPay: "14" },
+    { id: "2", record: "PAY-71812", group: "NexGen Enterprises", closed: "22 Oct 2026", paymentAmount: "$54,000.00", daysToPay: "61" },
+    { id: "3", record: "PAY-71766", group: "Globex Industries", closed: "30 Sep 2026", paymentAmount: "$10,740.00", daysToPay: "21" },
+  ],
+  "credit memo": [
+    { id: "1", record: "CM-3120", group: "RedStone Capital", closed: "27 Oct 2026", creditAmount: "$1,420.00", invoiceShare: "10%" },
+    { id: "2", record: "CM-3098", group: "Vertex Systems", closed: "12 Oct 2026", creditAmount: "$9,600.00", invoiceShare: "50%" },
+    { id: "3", record: "CM-3071", group: "ClearPath Analytics", closed: "30 Sep 2026", creditAmount: "$745.00", invoiceShare: "3%" },
+  ],
   "usage record": [
     { id: "1", record: "USG-88213", group: "Acme Corporation", closed: "31 Oct 2026", volume: "12,400", ratedAmount: "$1,240.00" },
     { id: "2", record: "USG-88190", group: "Globex Industries", closed: "31 Oct 2026", volume: "8,050", ratedAmount: "$644.00" },

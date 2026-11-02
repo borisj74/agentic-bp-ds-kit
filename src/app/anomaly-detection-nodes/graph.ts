@@ -46,7 +46,7 @@ export const NO_VALUE_OPS = ["empty", "notEmpty"];
 
 // What a rule can check. Everything but invoices is a placeholder to react to: the review only covered invoices.
 export interface RecordType {
-  label: string; one: string; many: string; filter: string; which: string; newOnes: string; when: string; odd: string;
+  icon: string; label: string; one: string; many: string; filter: string; which: string; newOnes: string; when: string; odd: string;
   group: string; groupOne: string; compareHint: string; valueHint: string;
   compare: { value: string; label: string }[]; values: { value: string; label: string }[]; fields: { value: string; label: string }[]; anomalies: string[];
 }
@@ -55,22 +55,45 @@ const ACCOUNT = { value: "account", label: "Account" };
 const PRODUCT = { value: "product", label: "Product" };
 export const RECORDS: Record<string, RecordType> = {
   invoice: {
-    label: "Invoices", one: "invoice", many: "invoices", filter: "Closed, original", which: "Closed, original invoices only", newOnes: "new closed invoices",
+    icon: "receipt_long", label: "Invoices", one: "invoice", many: "invoices", filter: "Closed, original", which: "Closed, original invoices only", newOnes: "new closed invoices",
     when: "Each invoice is checked when its status changes to Closed. Open invoices are not checked, because they can still change.",
     odd: "unusual charges", group: "Billing profiles", groupOne: "Billing profile",
     compareHint: "Billing profile suits most checks: each customer is compared with their own history.", valueHint: "rate, quantity or cost",
     compare: COMPARE_OPTIONS, values: VALUE_OPTIONS, fields: CONDITION_FIELDS, anomalies: ANOMALY_FILTER.map((a) => a.id),
   },
+  charge: {
+    icon: "request_page", label: "Invoice charges", one: "charge", many: "charges", filter: "On closed invoices", which: "Charges on closed, original invoices only", newOnes: "new charges on closed invoices",
+    when: "Each charge is checked when its invoice closes. Charges on open invoices are not checked, because they can still change.",
+    odd: "unusual charges", group: "Billing profiles", groupOne: "Billing profile",
+    compareHint: "Billing profile suits most checks: each customer is compared with their own history.", valueHint: "rate, quantity or cost",
+    compare: COMPARE_OPTIONS, values: VALUE_OPTIONS.filter((v) => ["rate", "qty", "cost", "standard"].includes(v.value)), fields: CONDITION_FIELDS, anomalies: ["Duplicate charge", "Missing recurring fee", "Rate"],
+  },
   usage: {
-    label: "Usage records", one: "usage record", many: "usage records", filter: "Rated, final", which: "Rated, final usage records only", newOnes: "new rated usage records",
+    icon: "speed", label: "Usage records", one: "usage record", many: "usage records", filter: "Rated, final", which: "Rated, final usage records only", newOnes: "new rated usage records",
     when: "Each usage record is checked once it's rated. Records still being processed are not checked.",
     odd: "unusual usage", group: "Accounts", groupOne: "Account",
     compareHint: "Account suits most checks: each customer is compared with their own history.", valueHint: "volume or rated amount",
     compare: [ACCOUNT, PRODUCT, { value: "usageId", label: "Usage identifier" }],
     values: [{ value: "volume", label: "Volume" }, { value: "ratedAmount", label: "Rated amount" }], fields: OTHER_FIELDS, anomalies: ["Usage spike", "Usage drop"],
   },
+  payment: {
+    icon: "payments", label: "Payments", one: "payment", many: "payments", filter: "Settled", which: "Settled payments only", newOnes: "new settled payments",
+    when: "Each payment is checked once it settles. Pending payments are not checked, because they can still change.",
+    odd: "unusual payments", group: "Accounts", groupOne: "Account",
+    compareHint: "Account suits most checks: each customer is compared with their own history.", valueHint: "amount or days to pay",
+    compare: [ACCOUNT, { value: "paymentMethod", label: "Payment method" }],
+    values: [{ value: "paymentAmount", label: "Payment amount" }, { value: "daysToPay", label: "Days to pay" }], fields: OTHER_FIELDS, anomalies: ["Unusual amount", "Late payment"],
+  },
+  credit: {
+    icon: "credit_score", label: "Credit memos", one: "credit memo", many: "credit memos", filter: "Approved", which: "Approved credit memos only", newOnes: "new approved credit memos",
+    when: "Each credit memo is checked once it's approved. Drafts are not checked, because they can still change.",
+    odd: "unusual credits", group: "Accounts", groupOne: "Account",
+    compareHint: "Account suits most checks: each customer is compared with their own history.", valueHint: "credit amount",
+    compare: [ACCOUNT, PRODUCT],
+    values: [{ value: "creditAmount", label: "Credit amount" }, { value: "invoiceShare", label: "Share of invoice" }], fields: OTHER_FIELDS, anomalies: ["Unusual credit", "Repeat credit"],
+  },
   quote: {
-    label: "Quotes", one: "quote", many: "quotes", filter: "Accepted, latest version", which: "Accepted, latest version quotes only", newOnes: "new accepted quotes",
+    icon: "request_quote", label: "Quotes", one: "quote", many: "quotes", filter: "Accepted, latest version", which: "Accepted, latest version quotes only", newOnes: "new accepted quotes",
     when: "Each quote is checked when it's accepted. Drafts are not checked, because they can still change.",
     odd: "unusual quotes", group: "Accounts", groupOne: "Account",
     compareHint: "Account suits most checks: each customer is compared with their own history.", valueHint: "total or discount",
@@ -79,7 +102,7 @@ export const RECORDS: Record<string, RecordType> = {
   },
 };
 export const RECORD_OPTIONS = Object.entries(RECORDS).map(([value, r]) => ({ value, label: r.label }));
-export const recordOf = (record?: string) => RECORDS[record ?? "invoice"];
+export const recordOf = (record?: string) => RECORDS[record || "invoice"];
 export const actionOptions = (r: RecordType) => ACTION_OPTIONS.map((a) => (a.value === "hold" ? { ...a, label: `Hold ${r.one}` } : a));
 const ALL_COMPARE = [...COMPARE_OPTIONS, ...Object.values(RECORDS).flatMap((r) => r.compare)];
 const ALL_VALUES = Object.values(RECORDS).flatMap((r) => r.values);

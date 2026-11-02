@@ -37,6 +37,8 @@ export function seedRule(): Rule {
   };
 }
 
+// A new rule says what it checks first, so its start card begins empty.
+export const isChoosing = (rule: Rule) => Boolean(rule.blank) && !rule.start.record;
 export const blankRule = (name = ""): Rule => ({ name, start: newBlock("invoices", 0, 0) as InvoicesBlock, steps: [], blank: true });
 
 // One rule in the list and how far its run has got. Runs live here, above the screens, so they keep going when someone leaves.
@@ -251,6 +253,7 @@ export function findStep(rule: Rule, id: string | null): Step | null {
 
 // What stops this rule being trained, top to bottom, each with the card to go and fix.
 export function missingSteps(rule: Rule): { id: string; text: string }[] {
+  if (isChoosing(rule)) return [{ id: rule.start.id, text: "Pick what this rule checks." }];
   const found: { id: string; text: string }[] = [];
   const walk = (steps: Step[], before: BlockKind[], from: string) => {
     if (!steps.length) { found.push({ id: from, text: "Add a Model, so the rule can find anomalies." }); return; }
