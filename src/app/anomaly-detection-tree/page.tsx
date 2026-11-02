@@ -337,8 +337,6 @@ export default function AnomalyTreePage() {
     build: runHeader(live ? "Active" : "", "success", <>
       <Button size="sm" iconOnly iconStart="undo" disabled={!history.past.length} onClick={undo}>Undo</Button>
       <Button size="sm" iconOnly iconStart="redo" disabled={!history.future.length} onClick={redo}>Redo</Button>
-      <Button size="sm" iconStart="restart_alt" onClick={reset}>Reset example</Button>
-      <Button size="sm" iconStart="add" onClick={startBlank}>Start blank</Button>
       {/* Start training in the Check data Drawer is the one strong Button while that's open. */}
       {checking
         ? <Button size="sm" iconStart="model_training" onClick={train}>{live ? "Train new version" : "Train model"}</Button>
@@ -485,6 +483,8 @@ export default function AnomalyTreePage() {
             breadcrumbs={[{ label: "Home", href: "#" }, { label: "Settings", href: "#" }, { label: "Anomaly detection", href: "/anomaly-detection" }]}
             badge={header.badge || undefined} badgeIntent={header.badgeIntent}
             actions={header.actions}
+            moreActions={building ? [{ id: "blank", label: "Start blank", icon: "add" }, { id: "reset", label: "Reset example", icon: "restart_alt" }] : undefined}
+            onMoreSelect={(id) => (id === "blank" ? startBlank() : reset())}
           />
         }
       >
