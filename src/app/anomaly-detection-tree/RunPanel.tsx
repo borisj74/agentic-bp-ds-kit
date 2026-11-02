@@ -10,23 +10,40 @@ import styles from "./page.module.css";
 
 export type Stage = "build" | "training" | "results" | "applying" | "ready" | "on";
 
-export function RunPanel({ stage, progress, result, checked, paused }: {
-  stage: Stage; progress: number; result: Result; checked: number; paused: boolean;
+// How far training or applying has got. A real progress bar, since the header's Badge is only for status.
+export function RunProgress({ stage, progress, checked }: { stage: Stage; progress: number; checked: number }) {
+  if (stage === "training") {
+    return (
+      <div className={styles.progress}>
+        <div className={styles.progressHead}>
+          <strong>Training the model: {progress}% done</strong>
+          <span className={styles.quiet}>Usually 10 to 15 minutes</span>
+        </div>
+        <Meter label="Training progress" value={progress} size="md" />
+      </div>
+    );
+  }
+  if (stage === "applying") {
+    return (
+      <div className={styles.progress}>
+        <div className={styles.progressHead}>
+          <strong>Applying to all invoices: {Math.round((checked * progress) / 100).toLocaleString("en-US")} of {checked.toLocaleString("en-US")}</strong>
+        </div>
+        <Meter label="Invoices checked" value={progress} size="md" />
+      </div>
+    );
+  }
+  return null;
+}
+
+export function RunPanel({ stage, result, checked, paused }: {
+  stage: Stage; result: Result; checked: number; paused: boolean;
 }) {
   const all = checked.toLocaleString("en-US");
   if (stage === "training") {
     return (
       <>
         <Callout closeButton intent="info" title="You can leave this page">Training keeps running in the background. Nothing happens to invoices.</Callout>
-        <Section title="Training the model" heading="sm" line="thin" spacing="tight">
-          <div className={styles.progress}>
-            <div className={styles.progressHead}>
-              <strong>{progress}% done</strong>
-              <span className={styles.quiet}>Usually 10 to 15 minutes</span>
-            </div>
-            <Meter label="Training progress" value={progress} size="md" />
-          </div>
-        </Section>
       </>
     );
   }
@@ -65,18 +82,7 @@ export function RunPanel({ stage, progress, result, checked, paused }: {
     );
   }
   if (stage === "applying") {
-    const done = Math.round((checked * progress) / 100).toLocaleString("en-US");
-    return (
-      <>
-        <Callout closeButton intent="info" title="You can leave this page">This keeps running in the background and can take a while with many invoices. Nothing happens to invoices.</Callout>
-        <Section title="Applying to all invoices" heading="sm" line="thin" spacing="tight">
-          <div className={styles.progress}>
-            <div className={styles.progressHead}><strong>{done} of {all} invoices</strong></div>
-            <Meter label="Invoices checked" value={progress} size="md" />
-          </div>
-        </Section>
-      </>
-    );
+    return <Callout closeButton intent="info" title="You can leave this page">This keeps running in the background and can take a while with many invoices. Nothing happens to invoices.</Callout>;
   }
   if (stage === "ready") {
     return (

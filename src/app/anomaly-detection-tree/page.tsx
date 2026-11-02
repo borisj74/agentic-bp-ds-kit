@@ -20,7 +20,7 @@ import { BlockSettings } from "../anomaly-detection-nodes/BlockSettings";
 import { AGG_OPTIONS } from "../anomaly-detection/data";
 import { ACTION_OPTIONS, BLOCKS, VALUE_OPTIONS, blockLabel, blockText, blockUnset, freshId, summarize, type BlockKind, type ValuesBlock, type WatchRow } from "../anomaly-detection-nodes/graph";
 import { CheckData } from "./CheckData";
-import { RunPanel, type Stage } from "./RunPanel";
+import { RunPanel, RunProgress, type Stage } from "./RunPanel";
 import {
   ROOT, bestSpot, blankRule, countRule, findStep, insertStep, missingSteps, moveRefusal, moveStep, nextNeeded, patchStep, removeStep, resultOf, seedRule, setModelBranches, spotId, spots, toGraph, whyNot,
   type BuildItem, type Counts, type Path, type Rule, type Spot, type Step,
@@ -342,21 +342,22 @@ export default function AnomalyTreePage() {
         ? <Button size="sm" iconStart="model_training" onClick={train}>{live ? "Train new version" : "Train model"}</Button>
         : <Button size="sm" emphasis="strong" intent="brand" iconStart="model_training" onClick={train}>{live ? "Train new version" : "Train model"}</Button>}
     </>),
-    training: runHeader(`Training · ${progress}%`, "info", <>
+    // Where a run has got is for the Steps bar and progress bar. The Badge only says something about the rule itself.
+    training: runHeader("", "info", <>
       {skipAhead}
       <Button size="sm" emphasis="minimal" intent="danger" iconStart="stop_circle" onClick={() => setStopping(true)}>Stop training</Button>
     </>),
     results: result.kind === "poor"
       ? runHeader("Needs changes", "warning", <Button size="sm" emphasis="strong" intent="brand" iconStart="tune" onClick={editRule}>Edit rule and retrain</Button>)
-      : runHeader("Results ready", "info", <>
+      : runHeader("", "info", <>
         <Button size="sm" iconStart="tune" onClick={editRule}>Edit rule and retrain</Button>
         <Button size="sm" emphasis="strong" intent="brand" iconStart="play_arrow" onClick={applyToAll}>Apply to all invoices</Button>
       </>),
-    applying: runHeader(`Applying to invoices · ${progress}%`, "info", <>
+    applying: runHeader("", "info", <>
       {skipAhead}
       <Button size="sm" emphasis="strong" intent="brand" iconStart="power_settings_new" disabled>Turn on detection</Button>
     </>),
-    ready: runHeader("Ready to turn on", "info", <>
+    ready: runHeader("", "info", <>
       <Button size="sm" iconStart="tune" onClick={editRule}>Edit rule and retrain</Button>
       <Button size="sm" emphasis="strong" intent="brand" iconStart="power_settings_new" onClick={turnOn}>Turn on detection</Button>
     </>),
@@ -499,6 +500,7 @@ export default function AnomalyTreePage() {
           </Callout>
         )}
         {!building && <Steps steps={RUN_STEPS} current={RUN_STEP[stage]} fill label="Rule progress" />}
+        <RunProgress stage={stage} progress={progress} checked={fullCounts.checked} />
 
         {/* The summary stays in view as one line, so the canvas gets the width and the rule can still be read in words. */}
         {building && (
@@ -638,7 +640,7 @@ export default function AnomalyTreePage() {
           footer={<Button size="sm" onClick={() => setDetailsFor(null)}>Close</Button>}
         >
           <div className="layout-stack">
-            <RunPanel stage={stage} progress={progress} result={result} checked={fullCounts.checked} paused={paused} />
+            <RunPanel stage={stage} result={result} checked={fullCounts.checked} paused={paused} />
             <Section title="What this rule does" heading="sm" line="thin" spacing="tight">
               <div className={styles.summary}>
                 {summary.lines.map((line, i) => <p key={line} className={i === 0 ? styles.summaryLead : undefined}>{line}</p>)}
