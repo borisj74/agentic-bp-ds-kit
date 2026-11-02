@@ -339,6 +339,11 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
   };
 
   const train = () => {
+    if (naming && !isChoosing(rule)) {
+      notify({ intent: "warning", title: "Give this rule a name first" });
+      canvas.current?.querySelector<HTMLInputElement>("[data-naming] input")?.focus();
+      return;
+    }
     if (missing.length) {
       const more = missing.length - 1;
       notify({ intent: "warning", title: "This rule isn't ready to train", description: `${missing[0].text}${more ? ` And ${more} more to fix.` : ""}` });
@@ -589,7 +594,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
                 {counts && <span className={styles.scope}>{counts === sampleCounts ? "Counts from the 5% sample" : `Counts from all past ${type.many}`}</span>}
               </div>
             )}
-            {building && !editStep && !buildOpen && !isChoosing(rule) && (
+            {building && !editStep && !buildOpen && !isChoosing(rule) && !naming && (
               <div className={styles.addStep}>
                 <Button size="sm" iconStart="add" aria-expanded={false} onClick={() => setBuildOpen(true)}>Add step</Button>
               </div>
@@ -616,6 +621,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
                       <>
                         <Card step={rule.start} ui={ui} before={[]} />
                         <Sequence seq={ROOT} steps={rule.steps} before={["invoices"]} ui={ui} firstLabel="This will then happen" />
+                        {building && naming && <NameGuide ui={ui} />}
                       </>
                     )}
                   </div>
@@ -623,7 +629,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
               </div>
             </div>
 
-            {building && !editStep && buildOpen && !isChoosing(rule) && (
+            {building && !editStep && buildOpen && !isChoosing(rule) && !naming && (
             <div className={[styles.build, dragged ? styles.buildDragging : ""].join(" ")} onKeyDown={(e) => { if (e.key === "Escape") setBuildOpen(false); }}>
               <div className={styles.buildClose}>
                 <Button size="sm" iconOnly emphasis="minimal" iconStart="close" onClick={() => setBuildOpen(false)}>Close</Button>
@@ -745,7 +751,7 @@ function Sequence({ seq, steps, before, ui, firstLabel }: {
         );
       })}
       {spotAt(steps.length) && !ui.readOnly && <InsertPoint spot={spotAt(steps.length)!} ui={ui} label={steps.length === 0 ? firstLabel : undefined} />}
-      {spotAt(steps.length) && ui.next?.seq === seq && ui.next.index === steps.length && !ui.dragged && <NextGuide spot={spotAt(steps.length)!} kind={ui.next.kind} ui={ui} />}
+      {spotAt(steps.length) && ui.next?.seq === seq && ui.next.index === steps.length && !ui.dragged && !ui.naming && <NextGuide spot={spotAt(steps.length)!} kind={ui.next.kind} ui={ui} />}
     </>
   );
 }
@@ -764,7 +770,6 @@ function PathColumn({ path, inModelPath, before, ui }: { path: Path; inModelPath
 
 // The clear next move at the end of an unfinished path, so nobody has to know the order of steps up front.
 function NextGuide({ spot, kind, ui }: { spot: Spot; kind: BlockKind; ui: TreeUi }) {
-  if (ui.naming) return <NameGuide ui={ui} />;
   return (
     <div className={styles.guide}>
       <span className={styles.title}>{`Next: ${blockLabel(kind)}`}</span>
@@ -803,7 +808,7 @@ function NameGuide({ ui }: { ui: TreeUi }) {
   return (
     <div ref={box} className={styles.guide} data-naming onKeyDown={(e) => { if (e.key === "Enter" && (e.target as HTMLElement).tagName === "INPUT") { e.preventDefault(); done(); } }}>
       <span className={styles.title}>Name this rule</span>
-      <span className={styles.text}>Say what it checks, so it&apos;s easy to find in the list later.</span>
+      <span className={styles.text}>Say what it checks, so it&apos;s easy to find in the list. You can change this later.</span>
       <div className={styles.guideField}>
         <Input label="Rule name" required value={ui.ruleName} error={error} onChange={(v) => { ui.onName(v); setError(undefined); }} />
       </div>
@@ -814,6 +819,16 @@ function NameGuide({ ui }: { ui: TreeUi }) {
 }
 
 function InsertPoint({ spot, ui, label }: { spot: Spot; ui: TreeUi; label?: string }) {
+  // Naming comes first, so there's no + until that's done.
+  if (ui.naming) {
+    return (
+      <div className={styles.insert}>
+        <div className={styles.line} />
+        {label && <span className={styles.lineLabel}>{label}</span>}
+        <div className={styles.line} />
+      </div>
+    );
+  }
   const id = spotId(spot);
   const dragged = ui.dragged;
   const refused = dragged ? Boolean(ui.refusal(spot)) : false;
@@ -866,7 +881,7 @@ function Card({ step, ui, before }: { step: Step; ui: TreeUi; before: BlockKind[
       </span>
     </>
   );
-  if (ui.readOnly) return <div className={styles.cardWrap}><div data-step={step.id} className={[styles.card, styles.cardStatic].join(" ")}>{body}</div></div>;
+  if (ui.readOnly || ui.naming) return <div className={styles.cardWrap}><div data-step={step.id} className={[styles.card, styles.cardStatic].join(" ")}>{body}</div></div>;
   return (
     <div className={[styles.cardWrap, chips && picked ? styles.cardWrapPicked : ""].join(" ")}>
       <div
