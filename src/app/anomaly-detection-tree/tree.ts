@@ -1,5 +1,5 @@
 import { FLAG_COUNTS, INVOICES_FOUND, INVOICES_TOTAL, SEED_CONFIGS, type Result, type Status } from "../anomaly-detection/data";
-import { blockLabel, blockUnset, freshId, newBlock, outputs, seedGraph, type ActionBlock, type Block, type BlockKind, type Graph, type InvoicesBlock, type Link, type WatchRow } from "../anomaly-detection-nodes/graph";
+import { blockLabel, blockUnset, freshId, newBlock, outputs, recordOf, seedGraph, type ActionBlock, type Block, type BlockKind, type Graph, type InvoicesBlock, type Link, type WatchRow } from "../anomaly-detection-nodes/graph";
 
 // The rule as a tree: a list of steps, where a Condition or a Model ends its list and splits into paths.
 // There is nothing to arrange or wire up, so a rule can't have loose blocks or broken lines.
@@ -146,7 +146,8 @@ const newPath = (key: string, label: string, steps: Step[] = []): Path => ({ id:
 export function insertStep(rule: Rule, seq: string, index: number, item: BuildItem): { rule: Rule; id: string } {
   const block = newBlock(item.kind, 0, 0);
   const id = block.id;
-  const made: Step = item.act ? ({ ...block, act: item.act } as ActionBlock) : block;
+  const made: Step = item.act ? ({ ...block, act: item.act } as ActionBlock)
+    : block.kind === "comparePer" ? { ...block, per: [recordOf(rule.start.record).compare[0].value] } : block;
   return {
     id,
     rule: updateSeq(rule, seq, (steps) => {
@@ -271,7 +272,7 @@ export function missingSteps(rule: Rule): { id: string; text: string }[] {
     found.push({ id: steps[steps.length - 1].id, text: "This path stops before it reaches a Model." });
   };
   walk(rule.steps, [], rule.start.id);
-  if (!rule.name.trim()) found.push({ id: rule.start.id, text: "Give this rule a name, in Invoices." });
+  if (!rule.name.trim()) found.push({ id: rule.start.id, text: `Give this rule a name, in ${recordOf(rule.start.record).label}.` });
   return found;
 }
 
@@ -302,6 +303,7 @@ const SAMPLE_SHARE = 0.05;
 const YES_SHARE = INVOICES_FOUND / INVOICES_TOTAL;
 const FLAG_RATE = { good: 0.07, fair: 0.07, poor: 0.18 };
 const FLAG_TOTAL = Object.values(FLAG_COUNTS).reduce((a, b) => a + b, 0);
+const OTHER_FLAG_SHARE = 0.25;
 
 // Sample counts for the tree: how many invoices reach each step and go down each path, so they always add up.
 export function countRule(rule: Rule, scope: "sample" | "all", result: Result): Counts {
@@ -314,7 +316,7 @@ export function countRule(rule: Rule, scope: "sample" | "all", result: Result): 
         counts.steps.set(s.id, flagged);
         let left = flagged;
         s.paths?.filter((p) => p.key !== "otherwise").forEach((p) => {
-          const n = Math.round((flagged * (FLAG_COUNTS[p.key] ?? 0)) / FLAG_TOTAL);
+          const n = Math.round(flagged * (p.key in FLAG_COUNTS ? FLAG_COUNTS[p.key] / FLAG_TOTAL : OTHER_FLAG_SHARE));
           counts.paths.set(p.id, n);
           left -= n;
         });
@@ -355,5 +357,5 @@ export function toGraph(rule: Rule): Graph {
     }
   };
   walk(rule.steps, rule.start.id, "out");
-  return { name: rule.name, nodes, links };
+  return { name: rule.name, nodes, links, record: rule.start.record };
 }

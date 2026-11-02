@@ -6,7 +6,7 @@ import { AGG_OPTIONS, ANOMALY_FILTER, COMPARE_OPTIONS, FIELD_PATHS, FIELD_VALUES
 export type BlockKind = "invoices" | "condition" | "comparePer" | "values" | "model" | "action";
 export interface WatchRow { id: string; field: string; agg: string }
 interface At { id: string; x: number; y: number }
-export type InvoicesBlock = At & { kind: "invoices"; dateField: string; lookback: string };
+export type InvoicesBlock = At & { kind: "invoices"; dateField: string; lookback: string; record?: string };
 export type ConditionBlock = At & { kind: "condition"; field: string | null; op: string; value: string };
 export type ComparePerBlock = At & { kind: "comparePer"; per: string[] };
 export type ValuesBlock = At & { kind: "values"; rows: WatchRow[] };
@@ -14,7 +14,7 @@ export type ModelBlock = At & { kind: "model"; branches: string[] };
 export type ActionBlock = At & { kind: "action"; act: string };
 export type Block = InvoicesBlock | ConditionBlock | ComparePerBlock | ValuesBlock | ModelBlock | ActionBlock;
 export interface Link { id: string; from: string; port: string; to: string }
-export interface Graph { name: string; nodes: Block[]; links: Link[] }
+export interface Graph { name: string; nodes: Block[]; links: Link[]; record?: string }
 export interface Port { id: string; label: string }
 
 export const BLOCKS: { kind: BlockKind; label: string; icon: string }[] = [
@@ -43,6 +43,46 @@ export const VALUE_OPTIONS = [
 // Reopened is left out on purpose: the locked conditions cover it, as they do in the wizard's field picker.
 export const CONDITION_FIELDS = Object.keys(FIELD_VALUES).filter((f) => f !== "reopened").map((f) => ({ value: f, label: FIELD_PATHS[f] }));
 export const NO_VALUE_OPS = ["empty", "notEmpty"];
+
+// What a rule can check. Everything but invoices is a placeholder to react to: the review only covered invoices.
+export interface RecordType {
+  label: string; one: string; many: string; filter: string; which: string; newOnes: string; when: string; odd: string;
+  group: string; groupOne: string; compareHint: string; valueHint: string;
+  compare: { value: string; label: string }[]; values: { value: string; label: string }[]; fields: { value: string; label: string }[]; anomalies: string[];
+}
+const OTHER_FIELDS = CONDITION_FIELDS.filter((f) => f.value === "currency" || f.value === "entity");
+const ACCOUNT = { value: "account", label: "Account" };
+const PRODUCT = { value: "product", label: "Product" };
+export const RECORDS: Record<string, RecordType> = {
+  invoice: {
+    label: "Invoices", one: "invoice", many: "invoices", filter: "Closed, original", which: "Closed, original invoices only", newOnes: "new closed invoices",
+    when: "Each invoice is checked when its status changes to Closed. Open invoices are not checked, because they can still change.",
+    odd: "unusual charges", group: "Billing profiles", groupOne: "Billing profile",
+    compareHint: "Billing profile suits most checks: each customer is compared with their own history.", valueHint: "rate, quantity or cost",
+    compare: COMPARE_OPTIONS, values: VALUE_OPTIONS, fields: CONDITION_FIELDS, anomalies: ANOMALY_FILTER.map((a) => a.id),
+  },
+  usage: {
+    label: "Usage records", one: "usage record", many: "usage records", filter: "Rated, final", which: "Rated, final usage records only", newOnes: "new rated usage records",
+    when: "Each usage record is checked once it's rated. Records still being processed are not checked.",
+    odd: "unusual usage", group: "Accounts", groupOne: "Account",
+    compareHint: "Account suits most checks: each customer is compared with their own history.", valueHint: "volume or rated amount",
+    compare: [ACCOUNT, PRODUCT, { value: "usageId", label: "Usage identifier" }],
+    values: [{ value: "volume", label: "Volume" }, { value: "ratedAmount", label: "Rated amount" }], fields: OTHER_FIELDS, anomalies: ["Usage spike", "Usage drop"],
+  },
+  quote: {
+    label: "Quotes", one: "quote", many: "quotes", filter: "Accepted, latest version", which: "Accepted, latest version quotes only", newOnes: "new accepted quotes",
+    when: "Each quote is checked when it's accepted. Drafts are not checked, because they can still change.",
+    odd: "unusual quotes", group: "Accounts", groupOne: "Account",
+    compareHint: "Account suits most checks: each customer is compared with their own history.", valueHint: "total or discount",
+    compare: [ACCOUNT, PRODUCT, { value: "salesRep", label: "Sales rep" }],
+    values: [{ value: "quoteTotal", label: "Quote total" }, { value: "discount", label: "Discount" }], fields: OTHER_FIELDS, anomalies: ["Unusual discount", "Unusual total"],
+  },
+};
+export const RECORD_OPTIONS = Object.entries(RECORDS).map(([value, r]) => ({ value, label: r.label }));
+export const recordOf = (record?: string) => RECORDS[record ?? "invoice"];
+export const actionOptions = (r: RecordType) => ACTION_OPTIONS.map((a) => (a.value === "hold" ? { ...a, label: `Hold ${r.one}` } : a));
+const ALL_COMPARE = [...COMPARE_OPTIONS, ...Object.values(RECORDS).flatMap((r) => r.compare)];
+const ALL_VALUES = Object.values(RECORDS).flatMap((r) => r.values);
 
 const labelOf = (options: { value: string; label: string }[], value: string) => options.find((o) => o.value === value)?.label ?? value;
 const fieldName = (field: string) => FIELD_PATHS[field].split(" / ").pop()!;
@@ -173,21 +213,22 @@ export function openSteps(g: Graph, selected: string | null): { node: Block; por
 }
 
 // The one line on a block.
-export function blockText(node: Block): string {
+export function blockText(node: Block, record?: string): string {
+  const type = recordOf(node.kind === "invoices" ? node.record : record);
   switch (node.kind) {
-    case "invoices": return `Closed, original · last ${labelOf(LOOKBACK_OPTIONS, node.lookback)}`;
+    case "invoices": return `${type.filter} · last ${labelOf(LOOKBACK_OPTIONS, node.lookback)}`;
     case "condition": return conditionUnfinished(node) ? "Pick a field and a value" : conditionWords(node, true, false);
-    case "comparePer": return node.per.length ? node.per.map((p) => labelOf(COMPARE_OPTIONS, p)).join(", ") : "Pick what to compare per";
-    case "values": return watching(node).length ? node.rows.filter((r) => r.field).map((r) => `${labelOf(VALUE_OPTIONS, r.field)} (${lower(labelOf(AGG_OPTIONS, r.agg))})`).join(", ") : "Pick at least one value";
+    case "comparePer": return node.per.length ? node.per.map((p) => labelOf(ALL_COMPARE, p)).join(", ") : "Pick what to compare per";
+    case "values": return watching(node).length ? node.rows.filter((r) => r.field).map((r) => `${labelOf(ALL_VALUES, r.field)} (${lower(labelOf(AGG_OPTIONS, r.agg))})`).join(", ") : "Pick at least one value";
     case "model": return "Flags what looks unusual";
-    case "action": return labelOf(ACTION_OPTIONS, node.act);
+    case "action": return labelOf(actionOptions(type), node.act);
   }
 }
 export const blockUnset = (node: Block) =>
   (node.kind === "condition" && conditionUnfinished(node)) || (node.kind === "comparePer" && !node.per.length) || (node.kind === "values" && !watching(node).length);
 
 const conditionUnfinished = (c: ConditionBlock) => !c.field || (!NO_VALUE_OPS.includes(c.op) && !c.value);
-const watching = (v: ValuesBlock) => [...new Set(v.rows.filter((r) => r.field).map((r) => lower(labelOf(VALUE_OPTIONS, r.field))))];
+const watching = (v: ValuesBlock) => [...new Set(v.rows.filter((r) => r.field).map((r) => lower(labelOf(ALL_VALUES, r.field))))];
 
 // The condition in words. The No side of a block reads as its opposite.
 function conditionWords(c: ConditionBlock, yes: boolean, lowerField: boolean) {
@@ -202,6 +243,7 @@ interface Step { node: Block; port: string | null }
 
 // Read the graph as sentences: one for each way from Invoices to a Model, then what happens to its flags.
 export function summarize(g: Graph): { lines: string[]; problems: string[] } {
+  const type = recordOf(g.record);
   const lines: string[] = [];
   const skipped: string[] = [];
   const problems: string[] = [];
@@ -226,17 +268,17 @@ export function summarize(g: Graph): { lines: string[]; problems: string[] } {
         if (node.field === "cycle" && node.op !== "empty" && node.op !== "notEmpty" && positive) adjectives.push(lower(labelOf(FIELD_VALUES.cycle, node.value)));
         else wheres.push(conditionWords(node, yes, true));
       }
-      if (node.kind === "comparePer") node.per.forEach((p) => per.add(lower(labelOf(COMPARE_OPTIONS, p))));
+      if (node.kind === "comparePer") node.per.forEach((p) => per.add(lower(labelOf(ALL_COMPARE, p))));
       if (node.kind === "values") watching(node).forEach((v) => values.add(v));
     }
-    const which = `closed, original ${adjectives.map((a) => `${a} `).join("")}invoices${wheres.length ? ` where ${listWords(wheres)}` : ""}`;
+    const which = `${lower(type.filter)} ${adjectives.map((a) => `${a} `).join("")}${type.many}${wheres.length ? ` where ${listWords(wheres)}` : ""}`;
     note(lines, `Check ${which} from the last ${labelOf(LOOKBACK_OPTIONS, invoices.lookback)}${per.size ? `, per ${listWords([...per])}` : ""}${values.size ? `, watching ${listWords([...values])}` : ""}.`);
     if (!per.size) note(problems, "Add a Compare per block before the Model, so it knows what to compare against.");
     if (!values.size) note(problems, "Add a Values to watch block before the Model, so it knows what to look at.");
     const then = outputs(model).map((p) => {
       const action = next(model, p.id);
       const word = p.id === "otherwise" ? (model.branches.length ? "Anything else" : "Any flag") : p.label;
-      return `${word}: ${action?.kind === "action" ? lower(labelOf(ACTION_OPTIONS, action.act)) : "no action"}.`;
+      return `${word}: ${action?.kind === "action" ? lower(labelOf(actionOptions(type), action.act)) : "no action"}.`;
     });
     note(lines, then.join(" "));
   };
@@ -249,7 +291,7 @@ export function summarize(g: Graph): { lines: string[]; problems: string[] } {
     if (!ports.length) { note(problems, `The path stops at ${blockLabel(node.kind)} before it reaches a Model.`); return; }
     if (node.kind === "condition" && !conditionUnfinished(node)) {
       const open = outputs(node).find((p) => !next(node, p.id));
-      if (open) note(skipped, `Invoices where ${conditionWords(node, open.id === "yes", true)} aren't checked.`);
+      if (open) note(skipped, `${type.label} where ${conditionWords(node, open.id === "yes", true)} aren't checked.`);
     }
     for (const p of ports) {
       const after = next(node, p.id)!;

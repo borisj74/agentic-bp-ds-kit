@@ -15,11 +15,12 @@ import { Icon } from "@/ui/Icon/Icon";
 import { Input } from "@/ui/Input/Input";
 import { PageHeader } from "@/ui/PageHeader/PageHeader";
 import { Section } from "@/ui/Section/Section";
+import { Select } from "@/ui/Select/Select";
 import { Steps } from "@/ui/Steps/Steps";
 import { Toast, type ToastProps } from "@/ui/Toast/Toast";
 import { BlockSettings } from "../anomaly-detection-nodes/BlockSettings";
 import { AGG_OPTIONS, TODAY } from "../anomaly-detection/data";
-import { ACTION_OPTIONS, BLOCKS, VALUE_OPTIONS, blockLabel, blockText, blockUnset, freshId, summarize, type BlockKind, type ValuesBlock, type WatchRow } from "../anomaly-detection-nodes/graph";
+import { ACTION_OPTIONS, BLOCKS, RECORD_OPTIONS, actionOptions, blockLabel, blockText, blockUnset, freshId, recordOf, summarize, type BlockKind, type RecordType, type ValuesBlock, type WatchRow } from "../anomaly-detection-nodes/graph";
 import { CheckData } from "./CheckData";
 import { RulesList } from "./RulesList";
 import { RunPanel, RunProgress } from "./RunPanel";
@@ -60,11 +61,14 @@ const RUN_STEPS = ["Build rule", "Train", "Results", "Turn on"];
 const RUN_STEP: Record<Stage, number> = { build: 1, training: 2, results: 3, applying: 4, ready: 4, on: 5 };
 const RUN_TICK = 400;
 // What each required step is for, in plain words, shown when it's the next thing a rule needs.
-const NEXT_WHY: Partial<Record<BlockKind, string>> = {
-  comparePer: "What each invoice is compared against. Billing profile suits most checks: each customer is compared with their own history.",
-  values: "The numbers that could look unusual, like rate, quantity or cost.",
-  model: "Learns what normal looks like from past invoices, then flags what doesn't fit.",
-};
+const nextWhy = (kind: BlockKind, type: RecordType) => ({
+  comparePer: `What each ${type.one} is compared against. ${type.compareHint}`,
+  values: `The numbers that could look unusual, like ${type.valueHint}.`,
+  model: `Learns what normal looks like from past ${type.many}, then flags what doesn't fit.`,
+}[kind as string]);
+// An Action reads as what it does to this rule's kind of record.
+const itemLabel = (it: BuildItem, type: RecordType) => (it.act ? actionOptions(type).find((a) => a.value === it.act)?.label ?? it.label : it.label);
+const stepLabel = (kind: BlockKind, type: RecordType) => (kind === "invoices" ? type.label : blockLabel(kind));
 const DETAILS_TITLE: Record<Stage, string> = { build: "", training: "Training", results: "Results", applying: "Applying", ready: "Ready to turn on", on: "Detection" };
 // Move the view by scrolling as far as it goes; the rest becomes an offset on the tree.
 const moveView = (box: HTMLElement, dx: number, dy: number, setOffset: (update: (o: { x: number; y: number }) => { x: number; y: number }) => void) => {
@@ -75,6 +79,7 @@ const moveView = (box: HTMLElement, dx: number, dy: number, setOffset: (update: 
   const restY = dy - (box.scrollTop - scrollTop);
   if (restX || restY) setOffset((o) => ({ x: o.x - restX, y: o.y - restY }));
 };
+const recordKey = (type: RecordType) => RECORD_OPTIONS.find((o) => o.label === type.label)!.value;
 const countWord = (n: number, one: string) => `${n.toLocaleString("en-US")} ${one}${n === 1 ? "" : "s"}`;
 
 type Note = Omit<ToastProps, "open" | "onClose"> & { key: number };
@@ -93,6 +98,8 @@ interface TreeUi {
   openValues: string | null;
   next: { seq: string; index: number; kind: BlockKind } | null;
   blank: boolean;
+  type: RecordType;
+  onRecord: (record: string) => void;
   naming: boolean;
   ruleName: string;
   onName: (name: string) => void;
@@ -278,6 +285,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
 
   const graph = useMemo(() => toGraph(rule), [rule]);
   const summary = useMemo(() => summarize(graph), [graph]);
+  const type = recordOf(rule.start.record);
   const missing = useMemo(() => missingSteps(rule), [rule]);
   const allSpots = useMemo(() => spots(rule), [rule]);
   const spotsById = useMemo(() => new Map(allSpots.map((s) => [spotId(s), s])), [allSpots]);
@@ -369,7 +377,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
     setStage("on");
     setPaused(false);
     setLive(false);
-    notify({ intent: "success", title: "Detection is on", description: "Only new closed invoices are checked from now on." });
+    notify({ intent: "success", title: "Detection is on", description: `Only ${type.newOnes} are checked from now on.` });
   };
   const editRule = () => {
     if (stage === "on") setLive(!paused);
@@ -396,7 +404,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
       ? runHeader("Needs changes", "warning", <Button size="sm" emphasis="strong" intent="brand" iconStart="tune" onClick={editRule}>Edit rule and retrain</Button>)
       : runHeader("", "info", <>
         <Button size="sm" iconStart="tune" onClick={editRule}>Edit rule and retrain</Button>
-        <Button size="sm" emphasis="strong" intent="brand" iconStart="play_arrow" onClick={applyToAll}>Apply to all invoices</Button>
+        <Button size="sm" emphasis="strong" intent="brand" iconStart="play_arrow" onClick={applyToAll}>{`Apply to all ${type.many}`}</Button>
       </>),
     applying: runHeader("", "info", <>
       {skipAhead}
@@ -493,7 +501,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
   };
 
   const ui: TreeUi = {
-    naming, ruleName: rule.name, onName: (name) => setRule((r) => ({ ...r, name }), "name"), onNamed: () => setNaming(false),
+    type, onRecord: (next) => setRule((r) => patchStep(r, r.start.id, { record: next })), naming, ruleName: rule.name, onName: (name) => setRule((r) => ({ ...r, name }), "name"), onNamed: () => setNaming(false),
     selected, openValues, next: building ? nextNeeded(rule) : null, blank: rule.steps.length === 0, dragged, spotsById, readOnly: !building, counts,
     refusal: refusalFor,
     onRows: (id, rows) => { setOpenValues(id); setRule((r) => patchStep(r, id, { rows })); },
@@ -544,7 +552,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
           </Callout>
         )}
         {!building && <Steps steps={RUN_STEPS} current={RUN_STEP[stage]} fill label="Rule progress" />}
-        <RunProgress stage={stage} progress={progress} checked={fullCounts.checked} />
+        <RunProgress stage={stage} progress={progress} checked={fullCounts.checked} type={type} />
 
         {/* The summary stays in view as one line, so the canvas gets the width and the rule can still be read in words. */}
         {building && (
@@ -558,7 +566,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
               >
                 {summaryOpen ? "Show less" : "Show more"}
               </Button>
-              {!editStep && <span className={styles.stripNote}>Nothing happens to invoices until you turn it on.</span>}
+              {!editStep && <span className={styles.stripNote}>{`Nothing happens to ${type.many} until you turn it on.`}</span>}
             </div>
             {summaryOpen && (
               <div className={styles.summary}>
@@ -566,7 +574,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
                 {missing.map((m) => (
                   <p key={`${m.id}${m.text}`} className={styles.problem}><Icon name="warning" size="sm" intent="warning" />{m.text}</p>
                 ))}
-                <p>Training learns from past invoices. Turning on is what starts checking new ones.</p>
+                <p>Training learns from past {type.many}. Turning on is what starts checking new ones.</p>
               </div>
             )}
           </div>
@@ -579,7 +587,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
                 <span className={styles.detailsButton}>
                   <Button size="sm" iconStart="info" onClick={() => setDetailsFor(stage)}>Details</Button>
                 </span>
-                {counts && <span className={styles.scope}>{counts === sampleCounts ? "Counts from the 5% sample" : "Counts from all past invoices"}</span>}
+                {counts && <span className={styles.scope}>{counts === sampleCounts ? "Counts from the 5% sample" : `Counts from all past ${type.many}`}</span>}
               </div>
             )}
             {building && !editStep && !buildOpen && (
@@ -626,7 +634,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
                             onPointerDown={(e) => startDrag(e, it)}
                             onClick={() => { if (!swallowClick.current) addByPress(it); }}
                           >
-                            {it.label}
+                            {itemLabel(it, type)}
                           </Button>
                         ))}
                       </div>
@@ -642,14 +650,14 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
 
       {dragged && (
         <div className={styles.ghost} style={{ left: dragged.x, top: dragged.y }}>
-          <Icon name={dragged.item.icon} size="sm" intent="brand" />{dragged.item.label}
+          <Icon name={dragged.item.icon} size="sm" intent="brand" />{itemLabel(dragged.item, type)}
         </div>
       )}
       {dragged && overWhy && <div className={styles.why} role="status" style={{ left: dragged.x + 16, top: dragged.y + 24 }}>{overWhy}</div>}
 
       {editStep && (
         <Drawer
-          open title={blockLabel(editStep.kind)} size="medium" onClose={() => setEditing(null)}
+          open title={stepLabel(editStep.kind, type)} size="medium" onClose={() => setEditing(null)}
           footer={<>
             {editStep.kind !== "invoices" && <Button size="sm" emphasis="minimal" intent="danger" iconStart="delete" onClick={() => remove(editStep.id)}>Delete step</Button>}
             <Button size="sm" onClick={() => setEditing(null)}>Done</Button>
@@ -674,7 +682,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
             <Button size="sm" emphasis="strong" intent="brand" iconStart="model_training" onClick={startTraining}>Start training</Button>
           </>}
         >
-          <CheckData rule={rule} lead={summary.lines[0] ?? ""} matching={fullCounts.checked} />
+          <CheckData rule={rule} lead={summary.lines[0] ?? ""} matching={fullCounts.checked} type={type} />
         </Drawer>
       )}
 
@@ -684,7 +692,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
           footer={<Button size="sm" onClick={() => setDetailsFor(null)}>Close</Button>}
         >
           <div className="layout-stack">
-            <RunPanel stage={stage} result={result} checked={fullCounts.checked} paused={paused} />
+            <RunPanel stage={stage} result={result} checked={fullCounts.checked} paused={paused} type={type} />
             <Section title="What this rule does" heading="sm" line="thin" spacing="tight">
               <div className={styles.summary}>
                 {summary.lines.map((line, i) => <p key={line} className={i === 0 ? styles.summaryLead : undefined}>{line}</p>)}
@@ -742,7 +750,7 @@ function PathColumn({ path, inModelPath, before, ui }: { path: Path; inModelPath
   return (
     <div className={styles.path}>
       <div className={styles.line} />
-      <span className={styles.pathLabel}>{count === undefined ? path.label : `${path.label} · ${countWord(count, inModelPath ? "flag" : "invoice")}`}</span>
+      <span className={styles.pathLabel}>{count === undefined ? path.label : `${path.label} · ${countWord(count, inModelPath ? "flag" : ui.type.one)}`}</span>
       <Sequence seq={path.id} steps={path.steps} before={before} ui={ui} />
       {path.steps.length === 0 && <span className={styles.pathEnd}>{inModelPath ? "No action" : "Not checked"}</span>}
     </div>
@@ -755,8 +763,8 @@ function NextGuide({ spot, kind, ui }: { spot: Spot; kind: BlockKind; ui: TreeUi
   return (
     <div className={styles.guide}>
       <span className={styles.title}>{`Next: ${blockLabel(kind)}`}</span>
-      <span className={styles.text}>{NEXT_WHY[kind]}</span>
-      {ui.blank && <span className={styles.text}>Only want some invoices? Press + above to add a Condition first.</span>}
+      <span className={styles.text}>{nextWhy(kind, ui.type)}</span>
+      {ui.blank && <span className={styles.text}>Only want some {ui.type.many}? Press + above to add a Condition first.</span>}
       <Button size="sm" iconStart={iconOf(kind)} onClick={() => ui.onInsert(spot, item(kind))}>{`Add ${blockLabel(kind)}`}</Button>
     </div>
   );
@@ -768,12 +776,20 @@ function NameGuide({ ui }: { ui: TreeUi }) {
   useEffect(() => { box.current?.querySelector("input")?.focus(); }, []);
   const done = () => { if (ui.ruleName.trim()) ui.onNamed(); else setError("Give this rule a name."); };
   return (
-    <div ref={box} className={styles.guide} data-naming onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); done(); } }}>
+    <div ref={box} className={styles.guide} data-naming onKeyDown={(e) => { if (e.key === "Enter" && (e.target as HTMLElement).tagName === "INPUT") { e.preventDefault(); done(); } }}>
       <span className={styles.title}>Name this rule</span>
       <span className={styles.text}>Say what it checks, so it&apos;s easy to find in the list later.</span>
       <div className={styles.guideField}>
         <Input label="Rule name" required value={ui.ruleName} error={error} onChange={(v) => { ui.onName(v); setError(undefined); }} />
       </div>
+      {ui.blank && (
+        <div className={styles.guideField}>
+          <Select
+            label="What to check" options={RECORD_OPTIONS} value={recordKey(ui.type)} onChange={(v) => ui.onRecord(v as string)}
+            hint="One kind per rule, because the model learns what's normal for that kind. This can't change later."
+          />
+        </div>
+      )}
       <Button size="sm" onClick={done}>Continue</Button>
     </div>
   );
@@ -799,7 +815,7 @@ function InsertPoint({ spot, ui, label }: { spot: Spot; ui: TreeUi; label?: stri
             label="Add a step here" iconOnly icon="add" size="sm"
             items={offered.map((it) => {
               const why = whyNot(it.kind, spot);
-              return { id: it.id, label: it.label, icon: it.icon, disabled: Boolean(why), description: why ?? undefined };
+              return { id: it.id, label: itemLabel(it, ui.type), icon: it.icon, disabled: Boolean(why), description: why ?? undefined };
             })}
             onSelect={(picked) => ui.onInsert(spot, findItem(picked))}
           />
@@ -824,11 +840,11 @@ function Card({ step, ui, before }: { step: Step; ui: TreeUi; before: BlockKind[
     <>
       <span className={styles.tile}><Icon name={iconOf(step.kind)} size="md" /></span>
       <span className={styles.copy}>
-        <span className={styles.title}>{blockLabel(step.kind)}</span>
-        {!blockUnset(step) && !chips && <span className={styles.text}>{blockText(step)}</span>}
+        <span className={styles.title}>{stepLabel(step.kind, ui.type)}</span>
+        {!blockUnset(step) && !chips && <span className={styles.text}>{blockText(step, recordKey(ui.type))}</span>}
         {blockUnset(step) && <Badge intent="warning" size="sm" icon="warning">Fill in information</Badge>}
         {missing.map((k) => <Badge key={k} intent="warning" size="sm" icon="warning">{`Needs ${blockLabel(k)}`}</Badge>)}
-        {count !== undefined && <Badge intent={step.kind === "model" ? "warning" : "neutral"} size="sm">{step.kind === "model" ? `${count.toLocaleString("en-US")} flagged` : countWord(count, "invoice")}</Badge>}
+        {count !== undefined && <Badge intent={step.kind === "model" ? "warning" : "neutral"} size="sm">{step.kind === "model" ? `${count.toLocaleString("en-US")} flagged` : countWord(count, ui.type.one)}</Badge>}
       </span>
     </>
   );
@@ -838,7 +854,7 @@ function Card({ step, ui, before }: { step: Step; ui: TreeUi; before: BlockKind[
       <div
         data-step={step.id} role="button" tabIndex={0}
         aria-expanded={step.kind === "values" ? chips : undefined}
-        aria-label={`${blockLabel(step.kind)}: ${blockText(step)}. Enter ${step.kind === "values" ? "shows its values" : "opens settings"}${step.kind === "invoices" ? "" : ", Delete removes"}.`}
+        aria-label={`${stepLabel(step.kind, ui.type)}: ${blockText(step, recordKey(ui.type))}. Enter ${step.kind === "values" ? "shows its values" : "opens settings"}${step.kind === "invoices" ? "" : ", Delete removes"}.`}
         className={[styles.card, chips ? styles.cardWithValues : "", ui.selected === step.id ? styles.selected : "", ui.dragged?.moving === step.id ? styles.cardMoving : ""].join(" ")}
         onPointerDown={(e) => ui.onCardDown(e, step)}
         onClick={() => ui.onCardClick(step)} onFocus={() => ui.onSelect(step.id)} onKeyDown={onKey}
@@ -847,7 +863,7 @@ function Card({ step, ui, before }: { step: Step; ui: TreeUi; before: BlockKind[
       </div>
       <div className={styles.cardMenu}>
         <Dropdown
-          label={`${blockLabel(step.kind)} options`} iconOnly emphasis="minimal" size="sm" alignment="right"
+          label={`${stepLabel(step.kind, ui.type)} options`} iconOnly emphasis="minimal" size="sm" alignment="right"
           items={[
             { id: "edit", label: "Edit", icon: "edit" },
             ...(step.kind === "invoices" ? [] : [{ divider: true as const }, { id: "delete", label: "Delete", icon: "delete", danger: true }]),
@@ -863,8 +879,8 @@ function Card({ step, ui, before }: { step: Step; ui: TreeUi; before: BlockKind[
 // Beside the card's button rather than inside it, since a button can't hold other controls.
 function ValueChips({ step, ui }: { step: ValuesBlock; ui: TreeUi }) {
   const rows = step.rows.filter((r) => r.field);
-  const free = VALUE_OPTIONS.filter((o) => !rows.some((r) => r.field === o.value));
-  const nameOf = (field: string) => VALUE_OPTIONS.find((o) => o.value === field)?.label ?? field;
+  const free = ui.type.values.filter((o) => !rows.some((r) => r.field === o.value));
+  const nameOf = (field: string) => ui.type.values.find((o) => o.value === field)?.label ?? field;
   const aggOf = (agg: string) => AGG_OPTIONS.find((o) => o.value === agg)?.label ?? agg;
   const change = (id: string, agg: string) => ui.onRows(step.id, step.rows.map((r) => (r.id === id ? { ...r, agg } : r)));
   return (

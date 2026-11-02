@@ -4,13 +4,14 @@ import { Callout } from "@/ui/Callout/Callout";
 import { Meter } from "@/ui/Meter/Meter";
 import { Section } from "@/ui/Section/Section";
 import { RESULT_INTENT, RESULT_WORD, type Result } from "../anomaly-detection/data";
+import type { RecordType } from "../anomaly-detection-nodes/graph";
 import type { Stage } from "./tree";
 import styles from "./page.module.css";
 
 // What a run says at each stage, beside the tree. The wording follows the wizard's own run screens.
 
 // How far training or applying has got. A real progress bar, since the header's Badge is only for status.
-export function RunProgress({ stage, progress, checked }: { stage: Stage; progress: number; checked: number }) {
+export function RunProgress({ stage, progress, checked, type }: { stage: Stage; progress: number; checked: number; type: RecordType }) {
   if (stage === "training") {
     return (
       <div className={styles.progress}>
@@ -26,23 +27,23 @@ export function RunProgress({ stage, progress, checked }: { stage: Stage; progre
     return (
       <div className={styles.progress}>
         <div className={styles.progressHead}>
-          <strong>Applying to all invoices: {Math.round((checked * progress) / 100).toLocaleString("en-US")} of {checked.toLocaleString("en-US")}</strong>
+          <strong>Applying to all {type.many}: {Math.round((checked * progress) / 100).toLocaleString("en-US")} of {checked.toLocaleString("en-US")}</strong>
         </div>
-        <Meter label="Invoices checked" value={progress} size="md" />
+        <Meter label={`${type.label} checked`} value={progress} size="md" />
       </div>
     );
   }
   return null;
 }
 
-export function RunPanel({ stage, result, checked, paused }: {
-  stage: Stage; result: Result; checked: number; paused: boolean;
+export function RunPanel({ stage, result, checked, paused, type }: {
+  stage: Stage; result: Result; checked: number; paused: boolean; type: RecordType;
 }) {
   const all = checked.toLocaleString("en-US");
   if (stage === "training") {
     return (
       <>
-        <Callout closeButton intent="info" title="You can leave this page">Training keeps running in the background. Nothing happens to invoices.</Callout>
+        <Callout closeButton intent="info" title="You can leave this page">Training keeps running in the background. Nothing happens to {type.many}.</Callout>
       </>
     );
   }
@@ -58,13 +59,13 @@ export function RunPanel({ stage, result, checked, paused }: {
             </div>
             {poor ? (
               <>
-                <p>It misses most unusual charges and would flag many normal invoices. Don&apos;t turn it on yet.</p>
+                <p>It misses most {type.odd} and would flag many normal {type.many}. Don&apos;t turn it on yet.</p>
                 <p className={styles.quiet}>Too many values add noise. Watch fewer of them, then train again. Standard rate and Tax amount move with Rate and Cost.</p>
               </>
             ) : (
               <>
-                <p>It catches most unusual charges, with a few false flags. In a test, it found about 6 in 10 planted problems, and 6 in 10 of its flags were real.</p>
-                <p className={styles.quiet}>So far it has only seen a 5% sample, and nothing has happened to any invoice. Next: apply it to all your invoices.</p>
+                <p>It catches most {type.odd}, with a few false flags. In a test, it found about 6 in 10 planted problems, and 6 in 10 of its flags were real.</p>
+                <p className={styles.quiet}>So far it has only seen a 5% sample, and nothing has happened to any {type.one}. Next: apply it to all your {type.many}.</p>
               </>
             )}
           </div>
@@ -81,20 +82,20 @@ export function RunPanel({ stage, result, checked, paused }: {
     );
   }
   if (stage === "applying") {
-    return <Callout closeButton intent="info" title="You can leave this page">This keeps running in the background and can take a while with many invoices. Nothing happens to invoices.</Callout>;
+    return <Callout closeButton intent="info" title="You can leave this page">This keeps running in the background and can take a while with many {type.many}. Nothing happens to {type.many}.</Callout>;
   }
   if (stage === "ready") {
     return (
       <>
-        <Callout closeButton intent="success" title={`All ${all} invoices checked`}>The model is ready. Turn on detection to start checking new invoices.</Callout>
-        <Callout closeButton intent="info" title="What happens when you turn it on">Each invoice is checked when its status changes to Closed. Open invoices are not checked, because they can still change. The steps after the Model start applying to new flags.</Callout>
+        <Callout closeButton intent="success" title={`All ${all} ${type.many} checked`}>The model is ready. Turn on detection to start checking new {type.many}.</Callout>
+        <Callout closeButton intent="info" title="What happens when you turn it on">{type.when} The steps after the Model start applying to new flags.</Callout>
       </>
     );
   }
   if (stage === "on") {
     return paused
-      ? <Callout closeButton intent="warning" title="Detection is paused">New invoices aren&apos;t checked and the steps after the Model don&apos;t run.</Callout>
-      : <Callout closeButton intent="success" title="Detection is on">Only new closed invoices are checked from now on. The counts on the tree are past invoices, and none of them were changed.</Callout>;
+      ? <Callout closeButton intent="warning" title="Detection is paused">New {type.many} aren&apos;t checked and the steps after the Model don&apos;t run.</Callout>
+      : <Callout closeButton intent="success" title="Detection is on">Only {type.newOnes} are checked from now on. The counts on the tree are past {type.many}, and none of them were changed.</Callout>;
   }
   return null;
 }

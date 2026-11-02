@@ -14,7 +14,7 @@ import { PageHeader } from "@/ui/PageHeader/PageHeader";
 import { Table } from "@/ui/Table/Table";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 import { RESULT_INTENT, resultLabel, type Intent } from "../anomaly-detection/data";
-import { blockText } from "../anomaly-detection-nodes/graph";
+import { blockText, recordOf } from "../anomaly-detection-nodes/graph";
 import { resultOf, type RuleRecord } from "./tree";
 
 // Where a rule stands, in a word. How far a run has got belongs on the rule's own page, as a progress bar.
@@ -61,8 +61,8 @@ export function RulesList({ records, onOpen, onCreate, onCopy, onDelete }: {
           />
         }
       >
-        <Callout closeButton intent="info" title="Anomaly detection finds unusual charges on closed invoices">
-          Each rule learns what normal looks like for one kind of charge, then flags invoices that don&apos;t fit.
+        <Callout closeButton intent="info" title="Anomaly detection finds unusual records">
+          Each rule learns what normal looks like for one kind of record, then flags the ones that don&apos;t fit.
         </Callout>
         <ListPage
           label="Anomaly detection rules"
@@ -74,7 +74,7 @@ export function RulesList({ records, onOpen, onCreate, onCopy, onDelete }: {
             rowLabel="id"
             columns={[
               { key: "name", header: "Name", emphasis: true },
-              { key: "invoices", header: "Which invoices" },
+              { key: "checks", header: "What it checks" },
               { key: "status", header: "Status" },
               { key: "result", header: "Result" },
               { key: "trained", header: "Last trained" },
@@ -85,7 +85,7 @@ export function RulesList({ records, onOpen, onCreate, onCopy, onDelete }: {
               return {
                 id: r.id,
                 name: <Cell type="link" label={r.rule.name || "Untitled rule"} onClick={() => onOpen(r.id)} />,
-                invoices: blockText(r.rule.start),
+                checks: `${recordOf(r.rule.start.record).label} · ${blockText(r.rule.start)}`,
                 status: <Cell type="badge" label={status.label} intent={status.intent} />,
                 result: r.result ? <Cell type="badge" label={resultLabel(r.result)} intent={RESULT_INTENT[r.result.kind]} /> : "Not trained yet",
                 trained: r.trained,
