@@ -57,6 +57,7 @@
 .guideField { align-self: stretch; }
 .choiceTitle { margin: 0 0 var(--space-medium); font-size: var(--font-size-xlarge); font-weight: var(--font-weight-semibold); line-height: var(--line-height-snug); color: var(--text-neutral-strong); }
 .choiceNote { padding-block-start: var(--space-medium); font-size: var(--font-size-small); color: var(--text-neutral-subtle); white-space: nowrap; }
+.choiceAsk { padding-block-start: var(--space-small); }
 .choices { display: grid; grid-template-columns: repeat(3, var(--tree-card-width)); gap: var(--space-medium); }
 /* Each choice is the start card it will become. */
 .cardOption { width: var(--tree-card-width); padding-inline-end: var(--space-small); font-family: inherit; text-align: start; cursor: pointer; }

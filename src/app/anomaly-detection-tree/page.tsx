@@ -22,7 +22,9 @@ import { AGG_OPTIONS, TODAY } from "../anomaly-detection/data";
 import { ACTION_OPTIONS, BLOCKS, RECORDS, RECORD_OPTIONS, actionOptions, blockLabel, blockText, blockUnset, freshId, recordOf, summarize, type BlockKind, type RecordType, type ValuesBlock, type WatchRow } from "../anomaly-detection-nodes/graph";
 import { CheckData } from "./CheckData";
 import { RulesList } from "./RulesList";
+import { RuleAssistant } from "./RuleAssistant";
 import { RunPanel, RunProgress } from "./RunPanel";
+import type { Draft } from "./assistant";
 import {
   ROOT, bestSpot, blankRule, countRule, isChoosing, findStep, insertStep, missingSteps, moveRefusal, moveStep, newRecord, nextNeeded, patchStep, removeStep, resultOf, seedRecords, setModelBranches, spotId, spots, toGraph, whyNot,
   type BuildItem, type Counts, type Path, type Rule, type RuleRecord, type Spot, type Stage, type Step,
@@ -115,6 +117,7 @@ interface TreeUi {
   onSelect: (id: string) => void;
   onRemove: (id: string) => void;
   onInsert: (spot: Spot, it: BuildItem) => void;
+  onAsk: () => void;
 }
 
 // The list and the rule being looked at. Runs tick along here, so leaving a rule's page doesn't stop its run.
@@ -202,6 +205,8 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
   const [naming, setNaming] = useState(!rule.name.trim());
   const [buildOpen, setBuildOpen] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
+  const fitNext = useRef(false);
   // The Values card showing its chips. One at a time; an empty one always shows them, so Add value is right there.
   const [openValues, setOpenValues] = useState<string | null>(null);
   const [panning, setPanning] = useState(false);
@@ -314,6 +319,13 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
     setOffset({ x: 0, y: 0 });
     box.scrollTo(0, 0);
   };
+  // A rule BP AI drafted lands whole, so the view fits it once it's drawn.
+  useEffect(() => {
+    if (!fitNext.current) return;
+    fitNext.current = false;
+    fit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rule]);
 
   const place = (spot: Spot, it: BuildItem) => {
     const why = whyNot(it.kind, spot);
@@ -388,6 +400,33 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
     setProgress(0);
     setStage("build");
   };
+  // What BP AI can do to the rule. Each goes through the same history as a hand edit, so Undo takes it back.
+  const draft = (d: Draft) => {
+    fitNext.current = true;
+    setNotes([]);
+    setNaming(false);
+    setSelected(null);
+    setOpenValues(null);
+    setRule(() => d.rule);
+  };
+  const needed = building ? nextNeeded(rule) : null;
+  const addNext = () => {
+    const spot = needed && spotsById.get(spotId(needed));
+    if (needed && spot) place(spot, item(needed.kind));
+  };
+  const fewerValues = () => {
+    editRule();
+    setRule((r) => graph.nodes.reduce((acc, n) => (n.kind === "values" ? patchStep(acc, n.id, { rows: n.rows.filter((x) => x.field).slice(0, 2) }) : acc), r));
+  };
+  const modelIds = graph.nodes.filter((n) => n.kind === "model").map((n) => n.id);
+  const assistant = (
+    <RuleAssistant
+      stage={stage} choosing={isChoosing(rule)} empty={rule.steps.length === 0} type={type}
+      summary={summary.lines} next={needed ? { label: blockLabel(needed.kind), why: nextWhy(needed.kind, type) ?? "" } : null} missing={missing[0]?.text ?? null}
+      result={result} sample={sampleCounts.steps.get(rule.start.id) ?? 0} flagged={modelIds.reduce((sum, id) => sum + (sampleCounts.steps.get(id) ?? 0), 0)}
+      onDraft={draft} onAddNext={addNext} onFewerValues={fewerValues} onClose={() => setAiOpen(false)}
+    />
+  );
   const runHeader = (badge: string, badgeIntent: "info" | "warning" | "success" | "neutral", actions: ReactNode) => ({ badge, badgeIntent, actions });
   const skipAhead = <Button size="sm" emphasis="minimal" iconStart="fast_forward" onClick={() => setProgress(100)}>Skip ahead</Button>;
   const header = {
@@ -522,6 +561,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
     onSelect: setSelected,
     onRemove: remove,
     onInsert: place,
+    onAsk: () => setAiOpen(true),
   };
 
   return (
@@ -531,9 +571,11 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
           <AppHeader
             navOpen={navOpen} onNavToggle={() => setNavOpen((o) => !o)}
             environment="DEV" searchShortcut="Ctrl+K" onSearch={notHere}
+            actions={[{ id: "ai", label: "BP AI", icon: "auto_awesome" }]} onAction={() => setAiOpen((o) => !o)}
             user={{ name: "Sayra Bunch" }} company={{ name: "CCC" }}
           />
         }
+        assistant={assistant} assistantOpen={aiOpen}
         nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current="settings-ai-settings" onNavigate={notHere} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         pageHeader={
@@ -591,6 +633,11 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
                 <span className={styles.detailsButton}>
                   <Button size="sm" iconStart="info" onClick={() => setDetailsFor(stage)}>Details</Button>
                 </span>
+                {!aiOpen && (
+                  <span className={styles.detailsButton}>
+                    <Button size="sm" iconStart="auto_awesome" onClick={() => setAiOpen(true)}>{stage === "results" ? "Explain results" : "Ask BP AI"}</Button>
+                  </span>
+                )}
                 {counts && <span className={styles.scope}>{counts === sampleCounts ? "Counts from the 5% sample" : `Counts from all past ${type.many}`}</span>}
               </div>
             )}
@@ -796,6 +843,9 @@ function StartChoice({ ui }: { ui: TreeUi }) {
         ))}
       </div>
       <span className={styles.choiceNote}>One kind per rule, because the model learns what&apos;s normal for that kind. This can&apos;t change later.</span>
+      <div className={styles.choiceAsk}>
+        <Button size="sm" iconStart="auto_awesome" onClick={ui.onAsk}>Describe it to BP AI instead</Button>
+      </div>
     </div>
   );
 }
