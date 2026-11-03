@@ -61,9 +61,10 @@ export function draftRule(text: string): Draft {
 export function startersFor(stage: Stage, choosing: boolean, empty: boolean, poor: boolean): Starter[] {
   if (choosing || empty) {
     return [
-      { id: "draft-hold", label: "Hold invoices when a customer's total jumps well above their usual" },
-      { id: "draft-usage", label: "Let the billing team know about unusual usage per product" },
-      { id: "draft-late", label: "Flag payments that come in much later than usual" },
+      // Short enough to sit on one line in the 395 panel: the kit's starter Buttons don't wrap.
+      { id: "draft-hold", label: "Hold invoices when a total spikes" },
+      { id: "draft-usage", label: "Notify billing about unusual usage" },
+      { id: "draft-late", label: "Flag payments that come in late" },
     ];
   }
   if (stage === "build") return [{ id: "next", label: "What should I add next?" }, { id: "explain", label: "Explain this rule in plain words" }];
