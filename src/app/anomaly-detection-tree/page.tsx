@@ -427,6 +427,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
       onDraft={draft} onAddNext={addNext} onFewerValues={fewerValues} onClose={() => setAiOpen(false)}
     />
   );
+  const notStarted = isChoosing(rule) || naming || rule.steps.length === 0;
   const runHeader = (badge: string, badgeIntent: "info" | "warning" | "success" | "neutral", actions: ReactNode) => ({ badge, badgeIntent, actions });
   const skipAhead = <Button size="sm" emphasis="minimal" iconStart="fast_forward" onClick={() => setProgress(100)}>Skip ahead</Button>;
   const header = {
@@ -434,9 +435,10 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
       <Button size="sm" iconOnly iconStart="undo" disabled={!history.past.length} onClick={undo}>Undo</Button>
       <Button size="sm" iconOnly iconStart="redo" disabled={!history.future.length} onClick={redo}>Redo</Button>
       {/* Start training in the Check data Drawer is the one strong Button while that's open. */}
+      {/* Nothing to train until the rule has a kind, a name and a first step. */}
       {checking
         ? <Button size="sm" iconStart="model_training" onClick={train}>{live ? "Train new version" : "Train model"}</Button>
-        : <Button size="sm" emphasis="strong" intent="brand" iconStart="model_training" onClick={train}>{live ? "Train new version" : "Train model"}</Button>}
+        : <Button size="sm" emphasis="strong" intent="brand" iconStart="model_training" disabled={notStarted} onClick={train}>{live ? "Train new version" : "Train model"}</Button>}
     </>),
     // Where a run has got is for the Steps bar and progress bar. The Badge only says something about the rule itself.
     training: runHeader("", "info", <>
