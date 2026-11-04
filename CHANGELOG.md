@@ -4,6 +4,16 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.8.0 — 2026-11-04 · Breaking
+
+A section title stands on its own.
+
+### Breaking
+- `Section` drops `description`, and a `Form` section (`sections[].description`) drops it with it, since a form section is drawn by Section. No rename to run: `tsc` flags every call site. A sentence about a section goes in the section's own content, where the reader is already looking, or becomes `help` — the question mark beside the title, which opens it in a HelpPopover. PageHeader is now the only piece that carries a line under its title.
+
+### Changed
+- The install options on `/start/installation` and each pattern on `/start/patterns` now open with that sentence as the first paragraph of their body. The Summary sections on the invoices and dashboard screens said what the Scoreboard under them already said, so those lines are gone.
+
 ## v0.7.18 — 2026-11-04
 
 Every field can pick its own start-label column.
