@@ -2,7 +2,7 @@
   "name": "DatePicker",
   "path": "src/ui/DatePicker/DatePicker.tsx",
   "intent": "A date field that opens a calendar to pick one date, or a range between two dates. Looks like Input.",
-  "usage": "Use DatePicker for dates in forms and filters. type single picks one day; type dual picks a start and an end across two months, with quick ranges like Last week. monthYear menus turns the month and year over the days into two menus, for dates far from today, like a date of birth; the arrows stay beside them. Picks stay pending until Apply; Cancel, Escape or a click outside leave the value as it was. Dates are ISO strings (YYYY-MM-DD); a range is { start, end }. Label, hint, error, help and sizes work like Input. See contracts/datepicker.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in.",
+  "usage": "Use DatePicker for dates in forms and filters. type single picks one day; type dual picks a start and an end across two months, with quick ranges like Last week. monthYear menus turns the month and year over the days into two menus, for dates far from today, like a date of birth; the arrows stay beside them. Picks stay pending until Apply; Cancel, Escape or a click outside leave the value as it was. Dates are ISO strings (YYYY-MM-DD); a range is { start, end }. Label, hint, error, help and sizes work like Input. See contracts/datepicker.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in. labelWidth puts it on a narrower or wider column (140px or 320px) and moves that turn with it, to 460px or 640px.",
   "props": {
     "label": {
       "type": "string",
@@ -32,6 +32,15 @@
         "start"
       ],
       "default": "top"
+    },
+    "labelWidth": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "How wide its own start-label column is: sm 140px for a short name (Email, Status, Currency), md 234px, the product's own column, and lg 320px where the name runs longer than that. Only for a field standing on its own, outside a Form: inside one, let the Form's labelWidth set the column, or the labels down a column stop lining up. The field beside the label keeps its width at every step, and the point where the label goes back on top moves with the column: under 460px (sm), 554px (md) or 640px (lg). Read only with labelPosition=\"start\"; with the label on top there is no column to size."
     },
     "hideLabel": {
       "type": "boolean",

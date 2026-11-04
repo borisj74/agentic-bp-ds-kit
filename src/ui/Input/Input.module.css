@@ -43,22 +43,32 @@
   }
 }
 
-/* A Form that picked a narrower or wider label column (labelWidth) moves that turn with it: the field still wants
-   its 308 beside the label, so sm keeps its column down to 460 and lg gives it up at 640. */
+/* A narrower or wider label column (labelWidth, on the Form or on this field) moves that turn with it: the field
+   still wants its 308 beside the label, so sm keeps its column down to 460 and lg gives it up at 640. The Form
+   stamps the attribute for every field inside it; a field that picked its own step carries the class itself. */
 @container (min-width: 461px) and (max-width: 554px) {
-  :global([data-label-width="sm"]) .start { flex-direction: row; align-items: flex-start; gap: var(--space-small); }
-  :global([data-label-width="sm"]) .start .labelRow {
+  :global([data-label-width="sm"]) .start,
+  .widthSm.start { flex-direction: row; align-items: flex-start; gap: var(--space-small); }
+  :global([data-label-width="sm"]) .start .labelRow,
+  .widthSm.start .labelRow {
     justify-content: flex-end; width: var(--input-label-width); min-height: var(--h);
     padding-inline: var(--space-small) 0; text-align: end;
   }
 }
 @container (min-width: 555px) and (max-width: 640px) {
-  :global([data-label-width="lg"]) .start { flex-direction: column; align-items: stretch; gap: var(--space-xxsmall); }
-  :global([data-label-width="lg"]) .start .labelRow {
+  :global([data-label-width="lg"]) .start,
+  .widthLg.start { flex-direction: column; align-items: stretch; gap: var(--space-xxsmall); }
+  :global([data-label-width="lg"]) .start .labelRow,
+  .widthLg.start .labelRow {
     justify-content: flex-start; width: auto; min-height: 0;
     padding-inline: 0; text-align: start;
   }
 }
+
+/* The field's own label column, when it does not take the one the Form (or the kit) gives it. md is the kit's 234
+   and sets nothing. Shared by every field that imports this module. */
+.widthSm { --input-label-width: var(--input-label-width-sm); }
+.widthLg { --input-label-width: var(--input-label-width-lg); }
 
 .body { display: flex; flex-direction: column; gap: var(--space-xxsmall); flex: 1; min-width: 0; }
 

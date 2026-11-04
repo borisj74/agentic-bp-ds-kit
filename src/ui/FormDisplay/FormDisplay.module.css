@@ -24,3 +24,7 @@
   background: var(--bg-neutral-faint); text-align: end;
 }
 .start .value { flex: 1; display: flex; align-items: center; padding-block: var(--space-xsmall); }
+
+/* The row's own label column, when it does not take the one the Form (or the kit) gives it. md sets nothing. */
+.widthSm { --input-label-width: var(--input-label-width-sm); }
+.widthLg { --input-label-width: var(--input-label-width-lg); }

@@ -3,7 +3,7 @@ import { useId, useRef, useState, type KeyboardEvent, type ReactNode } from "rea
 import { Button } from "../Button/Button";
 import { Cell } from "../Cell/Cell";
 import { useDensitySize } from "../Density/Density";
-import { useLabelPosition } from "../Form/FormContext";
+import { labelWidthClass, useLabelPosition } from "../Form/FormContext";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 import { Icon } from "../Icon/Icon";
 import { Input } from "../Input/Input";
@@ -19,6 +19,7 @@ import styles from "./Lookup.module.css";
 
 export type LookupSize = "sm" | "md" | "lg";
 export type LookupLabelPosition = "top" | "start";
+export type LookupLabelWidth = "sm" | "md" | "lg";
 export type LookupTrigger = "field" | "button";
 
 export interface LookupProps {
@@ -38,6 +39,7 @@ export interface LookupProps {
   emptyLabel?: string;
   size?: LookupSize;
   labelPosition?: LookupLabelPosition;
+  labelWidth?: LookupLabelWidth;
   hideLabel?: boolean;
   name?: string;
   required?: boolean;
@@ -64,11 +66,13 @@ const text = (v: unknown) => (typeof v === "string" || typeof v === "number" ? S
 export function Lookup({
   label, columns, rows, value, defaultValue = null, onChange, labelKey: labelKeyProp, title, icon = "folder_open",
   searchPlaceholder, pageSize: initialPageSize = 10, clearable = true, placeholder, emptyLabel = "No matches.",
-  size: ownSize, labelPosition: ownLabelPosition, hideLabel = false, name, required = false, disabled = false,
+  size: ownSize, labelPosition: ownLabelPosition, labelWidth, hideLabel = false, name, required = false, disabled = false,
   invalid = false, error, hint, help, multiple = false, trigger = "field", buttonIcon, confirmLabel = "Add selected", onConfirm, detail, detailCount,
 }: LookupProps) {
   const size = useDensitySize(ownSize);
   const labelPosition = useLabelPosition(ownLabelPosition);
+  // The label column this field stands on. With no label there is no column, and md is the kit's 234.
+  const width = hideLabel ? undefined : labelWidthClass(labelWidth);
   const uid = useId();
   const fieldId = `${uid}-field`;
   const messageId = `${uid}-message`;
@@ -181,7 +185,7 @@ export function Lookup({
     );
   }
 
-  const cls = [field.input, field[size], hideLabel ? "" : field[labelPosition], bad ? field.invalid : "", disabled ? field.disabled : ""];
+  const cls = [field.input, field[size], hideLabel ? "" : field[labelPosition], width ? field[width] : "", bad ? field.invalid : "", disabled ? field.disabled : ""];
   return (
     <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
       <div className={hideLabel ? field.srOnly : field.labelRow}>

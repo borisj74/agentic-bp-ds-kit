@@ -47,6 +47,15 @@
       "default": "top",
       "note": "Where the legend sits. start puts it in a 234px column at the beginning, right-aligned, with the options beside it, the same column as a field's label. Inside a Form, the Form's labelPosition applies unless this is set. Under 554px a start legend goes back on top."
     },
+    "labelWidth": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "How wide its own start-label column is: sm 140px for a short name (Email, Status, Currency), md 234px, the product's own column, and lg 320px where the name runs longer than that. Only for a group standing on its own, outside a Form: inside one, let the Form's labelWidth set the column, or the labels down a column stop lining up. The options beside the label keeps its width at every step, and the point where the label goes back on top moves with the column: under 460px (sm), 554px (md) or 640px (lg). Read only with labelPosition=\"start\"; with the label on top there is no column to size."
+    },
     "legend": {
       "type": "string",
       "required": true

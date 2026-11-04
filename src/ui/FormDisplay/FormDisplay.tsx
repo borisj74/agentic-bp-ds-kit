@@ -1,6 +1,6 @@
 "use client";
 import { useId, type ReactNode } from "react";
-import { useLabelPosition } from "../Form/FormContext";
+import { labelWidthClass, useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 // The help button matches the one on Input.
@@ -8,22 +8,26 @@ import field from "../Input/Input.module.css";
 import styles from "./FormDisplay.module.css";
 
 export type FormDisplayLabelPosition = "top" | "start";
+export type FormDisplayLabelWidth = "sm" | "md" | "lg";
 
 export interface FormDisplayProps {
   label: string;
   value?: ReactNode;
   labelPosition?: FormDisplayLabelPosition;
+  labelWidth?: FormDisplayLabelWidth;
   help?: string;
   empty?: string;
 }
 
-export function FormDisplay({ label, value, labelPosition: ownLabelPosition, help, empty = "—" }: FormDisplayProps) {
+export function FormDisplay({ label, value, labelPosition: ownLabelPosition, labelWidth, help, empty = "—" }: FormDisplayProps) {
   const labelPosition = useLabelPosition(ownLabelPosition);
+  // The label column this row stands on. md is the kit's 234.
+  const width = labelWidthClass(labelWidth);
   const helpId = useId();
   const blank = value === undefined || value === null || value === "";
   return (
     // A one-pair description list: screen readers read the label, then the value.
-    <dl className={[styles.display, styles[labelPosition]].join(" ")} data-label={labelPosition}>
+    <dl className={[styles.display, styles[labelPosition], width ? styles[width] : ""].join(" ")} data-label={labelPosition}>
       <dt className={styles.term}>
         {label}
         {help && (

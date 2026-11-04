@@ -2,7 +2,7 @@
 import { useId, useState } from "react";
 import { useDensitySize } from "../Density/Density";
 import { Dropdown, type DropdownEntry, type DropdownWidth } from "../Dropdown/Dropdown";
-import { useLabelPosition } from "../Form/FormContext";
+import { labelWidthClass, useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 // Label, help, hint and error share Input's styles so all form fields match.
@@ -10,6 +10,7 @@ import field from "../Input/Input.module.css";
 
 export type SelectSize = "sm" | "md" | "lg";
 export type SelectLabelPosition = "top" | "start";
+export type SelectLabelWidth = "sm" | "md" | "lg";
 export type SelectItemCheck = "check" | "checkbox";
 export interface SelectOption { value: string; label: string; disabled?: boolean }
 
@@ -18,6 +19,7 @@ export interface SelectProps {
   options: SelectOption[];
   hideLabel?: boolean;
   labelPosition?: SelectLabelPosition;
+  labelWidth?: SelectLabelWidth;
   size?: SelectSize;
   placeholder?: string;
   value?: string | string[];
@@ -40,11 +42,13 @@ export interface SelectProps {
 }
 
 export function Select({
-  label, options, hideLabel = false, labelPosition: ownLabelPosition, size: ownSize, placeholder = "Select", value, defaultValue, onChange,
+  label, options, hideLabel = false, labelPosition: ownLabelPosition, labelWidth, size: ownSize, placeholder = "Select", value, defaultValue, onChange,
   multiple = false, itemCheck = "check", maxVisible, searchable = false, searchPlaceholder, name, id, required = false, disabled = false, invalid = false, error, hint, help, menuWidth = "default",
 }: SelectProps) {
   const size = useDensitySize(ownSize);
   const labelPosition = useLabelPosition(ownLabelPosition);
+  // The label column this field stands on. With no label there is no column, and md is the kit's 234.
+  const width = hideLabel ? undefined : labelWidthClass(labelWidth);
   const uid = useId();
   const fieldId = id ?? `${uid}-field`;
   const labelId = `${uid}-label`;
@@ -70,7 +74,7 @@ export function Select({
     checkbox: multiple && itemCheck === "checkbox" ? true : undefined,
   }));
 
-  const cls = [field.input, field[size], hideLabel ? "" : field[labelPosition], bad ? field.invalid : "", disabled ? field.disabled : ""];
+  const cls = [field.input, field[size], hideLabel ? "" : field[labelPosition], width ? field[width] : "", bad ? field.invalid : "", disabled ? field.disabled : ""];
   return (
     <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
       <div className={hideLabel ? field.srOnly : field.labelRow}>

@@ -2,7 +2,7 @@
 import { useId, useRef, useState, type ChangeEvent } from "react";
 import { Button } from "../Button/Button";
 import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
-import { useLabelPosition } from "../Form/FormContext";
+import { labelWidthClass, useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 // Label, help, hint and error share Input's styles so all form fields match.
@@ -11,6 +11,7 @@ import styles from "./FormulaEditor.module.css";
 
 export type FormulaEditorSize = "sm" | "md" | "lg";
 export type FormulaEditorLabelPosition = "top" | "start";
+export type FormulaEditorLabelWidth = "sm" | "md" | "lg";
 export interface FormulaField { id: string; label: string }
 export interface FormulaFunction { name: string; syntax?: string; description?: string }
 
@@ -18,6 +19,7 @@ export interface FormulaEditorProps {
   label: string;
   hideLabel?: boolean;
   labelPosition?: FormulaEditorLabelPosition;
+  labelWidth?: FormulaEditorLabelWidth;
   size?: FormulaEditorSize;
   placeholder?: string;
   value?: string;
@@ -89,11 +91,13 @@ function checkBrackets(formula: string): string | null {
 type Result = { intent: "success" | "error"; text: string } | null;
 
 export function FormulaEditor({
-  label, hideLabel = false, labelPosition: ownLabelPosition, size = "sm", placeholder, value, defaultValue, onChange,
+  label, hideLabel = false, labelPosition: ownLabelPosition, labelWidth, size = "sm", placeholder, value, defaultValue, onChange,
   fields, functions = DEFAULT_FUNCTIONS, onCheckSyntax, onCalculate, onAiAssist, aiActive = false, name, id,
   required = false, disabled = false, readOnly = false, invalid = false, error, hint, help,
 }: FormulaEditorProps) {
   const labelPosition = useLabelPosition(ownLabelPosition);
+  // The label column this field stands on. With no label there is no column, and md is the kit's 234.
+  const width = hideLabel ? undefined : labelWidthClass(labelWidth);
   const autoId = useId();
   const areaId = id ?? autoId;
   const messageId = `${areaId}-message`;
@@ -142,7 +146,7 @@ export function FormulaEditor({
     }
   };
 
-  const cls = [field.input, styles.root, hideLabel ? "" : field[labelPosition]];
+  const cls = [field.input, styles.root, hideLabel ? "" : field[labelPosition], width ? field[width] : ""];
   return (
     <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
       <div className={hideLabel ? field.srOnly : field.labelRow}>

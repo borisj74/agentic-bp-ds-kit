@@ -2,7 +2,7 @@
   "name": "Input",
   "path": "src/ui/Input/Input.tsx",
   "intent": "Single-line text entry with its own label, hint, error and character count. The label sits on top, at the start, or is hidden.",
-  "usage": "Use Input for short text: names, emails, amounts, search. It is one component: pass label, hint and error as props, no Field wrapper. Always pass label; set hideLabel when the screen already makes the purpose clear, like a search box. required adds a red asterisk and the native required attribute. error shows a red border and a message under the field; invalid shows the red border alone. prefix and suffix are text inside the field, like https:// or USD. maxLength adds a live counter. type=\"file\" opens the native file picker; accept limits the file types and multiple allows more than one. See contracts/input.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in.",
+  "usage": "Use Input for short text: names, emails, amounts, search. It is one component: pass label, hint and error as props, no Field wrapper. Always pass label; set hideLabel when the screen already makes the purpose clear, like a search box. required adds a red asterisk and the native required attribute. error shows a red border and a message under the field; invalid shows the red border alone. prefix and suffix are text inside the field, like https:// or USD. maxLength adds a live counter. type=\"file\" opens the native file picker; accept limits the file types and multiple allows more than one. See contracts/input.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in. labelWidth puts it on a narrower or wider column (140px or 320px) and moves that turn with it, to 460px or 640px.",
   "props": {
     "label": {
       "type": "string",
@@ -21,6 +21,15 @@
       ],
       "default": "top",
       "note": "start puts the label in a 234px column beside the field, for dense forms. The label is right-aligned, 12px from the field."
+    },
+    "labelWidth": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "How wide its own start-label column is: sm 140px for a short name (Email, Status, Currency), md 234px, the product's own column, and lg 320px where the name runs longer than that. Only for a field standing on its own, outside a Form: inside one, let the Form's labelWidth set the column, or the labels down a column stop lining up. The field beside the label keeps its width at every step, and the point where the label goes back on top moves with the column: under 460px (sm), 554px (md) or 640px (lg). Read only with labelPosition=\"start\"; with the label on top there is no column to size."
     },
     "size": {
       "enum": [
@@ -186,6 +195,28 @@
             "label": "Company",
             "labelPosition": "start",
             "placeholder": "Acme Inc."
+          }
+        }
+      ]
+    },
+    {
+      "title": "A narrower label column",
+      "usage": "A field outside a Form sets its own column with labelWidth: sm gives a short name a 140px column instead of 234px, so the label sits beside the field instead of across a gap. Inside a Form, the Form's labelWidth sets the column for every field in it.",
+      "items": [
+        {
+          "props": {
+            "label": "Status",
+            "labelPosition": "start",
+            "labelWidth": "sm",
+            "placeholder": "Active"
+          }
+        },
+        {
+          "props": {
+            "label": "Account Ledger Number",
+            "labelPosition": "start",
+            "labelWidth": "lg",
+            "placeholder": "ACC-2041"
           }
         }
       ]

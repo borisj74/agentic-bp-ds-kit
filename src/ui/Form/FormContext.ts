@@ -2,6 +2,7 @@
 import { createContext, useContext } from "react";
 
 export type FieldLabelPosition = "top" | "start";
+export type FieldLabelWidth = "sm" | "md" | "lg";
 export type FieldColumns = 1 | 2 | 3;
 
 // Form shares its layout with the kit fields inside it. RecordPage and FormPage share theirs with the Sections
@@ -13,6 +14,14 @@ export const FormLayoutContext = createContext<{ labelPosition?: FieldLabelPosit
 export function useLabelPosition(own?: FieldLabelPosition): FieldLabelPosition {
   const form = useContext(FormLayoutContext);
   return own ?? form.labelPosition ?? "top";
+}
+
+// A field in a Form already stands on the Form's column: the Form sets --input-label-width, which the field reads.
+// So labelWidth is not inherited through this context — it names the step this one field departs on, and md, the
+// kit's 234, needs no class at all. A field's own step moves its own column, not the controls lined up beside it.
+export function labelWidthClass(own?: FieldLabelWidth): "widthSm" | "widthLg" | undefined {
+  if (own === undefined || own === "md") return undefined;
+  return own === "sm" ? "widthSm" : "widthLg";
 }
 
 // A Form's or Section's own columns win, then the page's. Unset everywhere, there are no columns: the content

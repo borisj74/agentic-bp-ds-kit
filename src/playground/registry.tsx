@@ -79,6 +79,11 @@ import { UsageBar, type UsageBarFigure, type UsageBarSegment } from "@/ui/UsageB
 import { UsageList, type UsageListItem } from "@/ui/UsageList/UsageList";
 
 export type Props = Record<string, unknown>;
+// A start label needs a box wide enough for its column beside the field. A field on the sm or lg column needs that
+// box narrower or wider than the kit's 234 by exactly the difference, so md keeps the width it always had.
+const COLUMN_STEP = { sm: -94, md: 0, lg: 86 } as const;
+const fieldBox = (p: Props, top: number, start: number) =>
+  p.labelPosition === "start" ? start + COLUMN_STEP[(p.labelWidth as "sm" | "md" | "lg" | undefined) ?? "md"] : top;
 // Contract examples name the sample as {sections} and {endSections}; swap in the real arrays.
 const sideNavProps = (p: Props) => ({
   ...p,
@@ -1376,7 +1381,7 @@ export const registry: Record<string, Entry> = {
   DatePicker: {
     // Keyed so a changed default value applies again. The wrapper gives the full-width field a form-like width.
     render: (p) => (
-      <div style={{ width: p.labelPosition === "start" ? 440 : 320, maxWidth: "100%" }}>
+      <div style={{ width: fieldBox(p, 320, 440), maxWidth: "100%" }}>
         <DatePicker key={JSON.stringify(p)} {...(p as unknown as DatePickerProps)} />
       </div>
     ),
@@ -1729,7 +1734,7 @@ export const registry: Record<string, Entry> = {
     // onCalculate="{calculate}" in a contract example turns on the playground's sample Calculate. onAiAssist="{assist}"
     // stands in for the screen that would open the assistant. Keyed so defaults re-apply.
     render: (p) => (
-      <div style={{ width: p.labelPosition === "start" ? 840 : 720, maxWidth: "100%" }}>
+      <div style={{ width: fieldBox(p, 720, 840), maxWidth: "100%" }}>
         <FormulaEditorDemo key={JSON.stringify(p)} {...(p as unknown as FormulaEditorProps)} onCalculate={p.onCalculate ? calculate : undefined} assist={Boolean(p.onAiAssist)} />
       </div>
     ),
@@ -1773,7 +1778,7 @@ export const registry: Record<string, Entry> = {
   Input: {
     // Keyed so a changed default value applies again. The wrapper gives the full-width field a form-like width.
     render: (p) => (
-      <div style={{ width: p.labelPosition === "start" ? 440 : 320, maxWidth: "100%" }}>
+      <div style={{ width: fieldBox(p, 320, 440), maxWidth: "100%" }}>
         <Input key={JSON.stringify(p)} {...(p as unknown as InputProps)} />
       </div>
     ),
@@ -1796,7 +1801,7 @@ export const registry: Record<string, Entry> = {
   Select: {
     // Keyed so switching multiple starts with an empty value of the right shape.
     render: (p) => (
-      <div style={{ width: p.labelPosition === "start" ? 440 : 320, maxWidth: "100%" }}>
+      <div style={{ width: fieldBox(p, 320, 440), maxWidth: "100%" }}>
         <Select key={JSON.stringify(p)} {...(p as unknown as SelectProps)} options={(p.options as SelectProps["options"] | undefined) ?? []} />
       </div>
     ),
@@ -2127,7 +2132,7 @@ export const registry: Record<string, Entry> = {
   Textarea: {
     // Keyed so a changed default value applies again. The wrapper gives the full-width field a form-like width.
     render: (p) => (
-      <div style={{ width: p.labelPosition === "start" ? 520 : 400, maxWidth: "100%" }}>
+      <div style={{ width: fieldBox(p, 400, 520), maxWidth: "100%" }}>
         <Textarea key={JSON.stringify(p)} {...(p as unknown as TextareaProps)} />
       </div>
     ),
@@ -2146,7 +2151,7 @@ export const registry: Record<string, Entry> = {
   Lookup: {
     // Sample products swap in for their {names}. Keyed so switching controls starts fresh. A form-like width.
     render: (p) => (
-      <div style={{ width: p.labelPosition === "start" ? 440 : 320, maxWidth: "100%" }}>
+      <div style={{ width: fieldBox(p, 320, 440), maxWidth: "100%" }}>
         <Lookup key={JSON.stringify(p)} {...lookupProps(p)} />
       </div>
     ),
