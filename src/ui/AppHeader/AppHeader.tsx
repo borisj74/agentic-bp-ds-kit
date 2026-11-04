@@ -9,6 +9,7 @@ import { useDensity, type DensitySize } from "../Density/Density";
 import { Dropdown } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import { Logo } from "../Logo/Logo";
+import { LogoAI } from "../LogoAI/LogoAI";
 import { RadioGroup } from "../RadioGroup/RadioGroup";
 import { Switch } from "../Switch/Switch";
 import { Tooltip } from "../Tooltip/Tooltip";
@@ -20,6 +21,8 @@ export type AppHeaderDensity = "compact" | "default" | "comfortable";
 export interface AppHeaderAction { id: string; label: string; icon: string }
 export interface AppHeaderUser { name: string; src?: string }
 export interface AppHeaderCompany { name: string; logo?: ReactNode }
+// The BP AI button: it opens and closes the AppShell assistant, and shows pressed while it is open.
+export interface AppHeaderAssistant { label?: string; open?: boolean; onToggle: () => void }
 
 export interface AppHeaderProps {
   onNavToggle?: () => void;
@@ -39,6 +42,7 @@ export interface AppHeaderProps {
   searchScopes?: GlobalSearchScope[];
   searchScope?: string;
   onSearchScopeChange?: (scope: string) => void;
+  assistant?: AppHeaderAssistant;
   actions?: AppHeaderAction[];
   onAction?: (id: string) => void;
   user?: AppHeaderUser;
@@ -65,7 +69,7 @@ export function AppHeader({
   onNavToggle, navOpen = false, logo, homeHref, environment, environmentIntent = "success",
   search = true, searchPlaceholder = "Search", searchShortcut, onSearch,
   searchGroups, searchVariant = "list", searchIconStyle = "tile", onSearchSelect, searchScopes, searchScope, onSearchScopeChange,
-  actions = [], onAction, user, company,
+  assistant, actions = [], onAction, user, company,
   onUserSettings, darkMode = false, onDarkModeChange, density: densityProp, onDensityChange, onLogout,
 }: AppHeaderProps) {
   // Its own density prop (the value in the account menu) wins, else a surrounding Density.
@@ -217,7 +221,18 @@ export function AppHeader({
               </Tooltip>
             </span>
           )}
-          {search && actions.length > 0 && <span className={`${styles.divider} ${styles.dividerCompact}`} aria-hidden="true" />}
+          {search && (assistant || actions.length > 0) && <span className={`${styles.divider} ${styles.dividerCompact}`} aria-hidden="true" />}
+          {/* BP AI comes first in the end group, before the utility icons. The bar never moves when the assistant
+              opens beside the page, so the button stays under the pointer. On a phone bar only the mark shows. */}
+          {assistant && (
+            <button
+              type="button" className={`${styles.ai} ${styles[`ai-${ctl}`]}`} aria-pressed={Boolean(assistant.open)}
+              onClick={assistant.onToggle}
+            >
+              <span className={styles.aiMark} aria-hidden="true"><LogoAI type="symbol" intent="white" /></span>
+              <span className={styles.aiLabel}>{assistant.label ?? "BP AI"}</span>
+            </button>
+          )}
           {actions.length > 0 && (
             <div className={styles.actions}>
               {actions.map((a) => (

@@ -281,6 +281,8 @@ export function AppHeaderDemo(p: AppHeaderProps) {
   const [darkMode, setDarkMode] = useState(Boolean(p.darkMode));
   const [density, setDensity] = useState<AppHeaderDensity>(p.density ?? "default");
   const [navOpen, setNavOpen] = useState(Boolean(p.navOpen));
+  // assistant in props turns on BP AI; here pressing it flips a local open flag, as the AppShell assistant would.
+  const [aiOpen, setAiOpen] = useState(Boolean(p.assistant?.open));
   // onNavToggle="{toggleNav}" in props turns on the menu button; here it flips a local open flag.
   // Dark mode sets the theme on the block around it, so the switch changes what you are looking at.
   return (
@@ -289,6 +291,7 @@ export function AppHeaderDemo(p: AppHeaderProps) {
         {...p} darkMode={darkMode} onDarkModeChange={setDarkMode} density={density} onDensityChange={setDensity}
         onUserSettings={() => {}} onLogout={() => {}}
         navOpen={navOpen} onNavToggle={p.onNavToggle ? () => setNavOpen((o) => !o) : undefined}
+        assistant={p.assistant ? { ...p.assistant, open: aiOpen, onToggle: () => setAiOpen((o) => !o) } : undefined}
       />
     </div>
   );
@@ -1046,6 +1049,7 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
             searchShortcut="Ctrl+K" searchGroups={SHELL_SEARCH} searchVariant="list" searchIconStyle="tile"
             searchScopes={SHELL_SEARCH_SCOPES} searchScope={scope} onSearchScopeChange={setScope}
             onSearchSelect={() => {}}
+            assistant={{ open: chatOpen, onToggle: () => setChatOpen((o) => !o) }}
             actions={SHELL_HEADER_ACTIONS} onAction={() => {}}
             user={{ name: "Ana Petrovic" }} company={{ name: "Northwind Holdings" }}
             darkMode={dark} onDarkModeChange={setDark}
@@ -1062,7 +1066,6 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
             sticky={compact}
             actions={
               <>
-                <Button size="sm" iconStart="auto_awesome" onClick={() => setChatOpen((o) => !o)}>Ask the assistant</Button>
                 <Button size="sm" emphasis="strong" intent="brand">New invoice</Button>
               </>
             }
@@ -1722,6 +1725,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
           <AppHeader
             navOpen={navOpen} onNavToggle={() => setNavOpen((o) => !o)}
             environment="UAT-2" searchShortcut="Ctrl+K" searchGroups={SHELL_SEARCH} searchScopes={SHELL_SEARCH_SCOPES}
+            assistant={{ open: chatOpen, onToggle: () => setChatOpen((o) => !o) }}
             actions={SHELL_HEADER_ACTIONS} onAction={() => {}}
             user={{ name: "Ana Petrovic" }} company={{ name: "Northwind Holdings" }}
             darkMode={dark} onDarkModeChange={setDark}
@@ -1738,7 +1742,6 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
             sticky={compact}
             actions={
               <>
-                <Button size="sm" iconStart="auto_awesome" onClick={() => setChatOpen((o) => !o)}>Ask the assistant</Button>
                 <Button size="sm" emphasis="strong" intent="brand" iconStart="add">New dashboard</Button>
               </>
             }

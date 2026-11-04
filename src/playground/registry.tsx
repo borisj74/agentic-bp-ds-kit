@@ -1646,7 +1646,7 @@ export const registry: Record<string, Entry> = {
       stickyPageHeader: { label: "Page header stays put", default: true },
     },
     extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
-    hint: "Open the menu button to widen the rail, walk the side nav, and press Ask the assistant to bring the assistant in beside the page. Scroll the page: the page header stays at the top and shrinks to one compact line whose trail ends in the page name. Stage narrows the box the frame lives in, so watch the rail go on a phone. Width caps the page to a reading column; it does not resize the frame.",
+    hint: "Open the menu button to widen the rail, walk the side nav, and press BP AI in the header to bring the assistant in beside the page. Scroll the page: the page header stays at the top and shrinks to one compact line whose trail ends in the page name. Stage narrows the box the frame lives in, so watch the rail go on a phone. Width caps the page to a reading column; it does not resize the frame.",
     block: true,
     wide: true,
     page: <AppShellDemo assistant stage="desktop" width="full" />,
@@ -1664,6 +1664,7 @@ export const registry: Record<string, Entry> = {
       onNavToggle: "{toggleNav}",
       environment: "UAT-2",
       searchShortcut: "Ctrl+K",
+      assistant: { label: "BP AI", onToggle: "{toggleAssistant}" },
       searchScopes: [
         { value: "products", label: "Products" },
         { value: "accounts", label: "Accounts" },
@@ -1689,7 +1690,7 @@ export const registry: Record<string, Entry> = {
       company: { name: "Acme Inc." },
     },
     snippet: { onSearch: "{openSearch}", onUserSettings: "{openSettings}", onDarkModeChange: "{setDarkMode}", onDensityChange: "{setDensity}", onLogout: "{logOut}" },
-    hint: "This stage is narrow, so the header is compact: menu button, logo symbol, search as an icon. Variants show it full width. Click the avatar for the account menu.",
+    hint: "This stage is narrow, so the header is compact: menu button, logo symbol, search as an icon. Variants show it full width. Click the avatar for the account menu, and BP AI to see it pressed.",
     block: true,
     wide: true,
     card: (

@@ -67,6 +67,25 @@ a.home:focus-visible { outline: var(--border-width-medium) solid var(--outline-b
 .actions { display: flex; align-items: center; gap: var(--space-xxsmall); }
 /* The phone stand-in for the row of icons: one more button. Off until the bar is that narrow. */
 .actionsMenu { display: none; }
+/* BP AI (BP Components Global Header 7954:2382): a bold button in the AI brand blend, brand into success, with the
+   white AI mark and its name, before the utility icons. Pressed while the assistant is open: the strong brand
+   alone, so it reads as on. Its height follows the header's button size. */
+.ai {
+  position: relative; flex: none; display: inline-flex; align-items: center; gap: var(--space-xxsmall);
+  margin: 0 var(--space-xsmall) 0 0; padding: 0 var(--space-xsmall); border: 0; border-radius: var(--radius-medium);
+  background: linear-gradient(90deg, var(--bg-brand), var(--bg-success)); color: var(--text-neutral-min-static);
+  font-family: var(--font-sans); font-size: var(--text-ref-label-button-size); font-weight: var(--text-ref-label-button-weight);
+  line-height: var(--text-ref-label-button-lh); letter-spacing: var(--text-ref-label-button-ls); white-space: nowrap; cursor: pointer;
+}
+.ai:hover { background: linear-gradient(90deg, var(--bg-brand-hover), var(--bg-success)); }
+.ai[aria-pressed="true"] { background: var(--bg-brand-strong); }
+.ai:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
+.ai-sm { height: var(--control-small); }
+.ai-md { height: var(--control-small); }
+.ai-lg { height: var(--control-medium); padding: 0 var(--space-small); }
+.aiMark { display: inline-flex; line-height: 0; }
+.aiMark svg { width: auto; height: var(--icon-size-small); }
+.aiLabel { display: inline-block; }
 .env { display: inline-flex; }
 .divider { flex: none; width: var(--border-width-thin); height: var(--control-small); margin: 0 var(--space-small); background: var(--border-neutral-subtle); }
 .dividerCompact { display: none; }
@@ -132,6 +151,9 @@ button.user:focus-visible { outline: var(--border-width-medium) solid var(--outl
   .env { display: none; }
   .actions { display: none; }
   .actionsMenu { display: flex; align-items: center; }
+  /* BP AI keeps its place as the mark alone; the name stays for screen readers. */
+  .ai { padding: 0; width: var(--control-small); justify-content: center; }
+  .aiLabel { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
 
 /* Very narrow: the company badge goes; the avatar still says who is signed in. */
