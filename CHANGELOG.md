@@ -4,6 +4,14 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.7.18 — 2026-11-04
+
+Every field can pick its own start-label column.
+
+### Added
+- `labelWidth` on Input, Textarea, Select, DatePicker, Cascader, Lookup, FormulaEditor, RadioGroup and FormDisplay: how wide that field's own start-label column is, `sm` 140px, `md` 234px (the kit's own) or `lg` 320px. Until now the column width lived only on Form, so a field standing on its own — a bare `labelPosition="start"` field, as the catalog is full of — sat on the 234px column whatever its label said, and a short name like Status floated 170px past the start of its column. The field keeps its own width at every step, and the point where the label goes back on top of the field moves with the column: 460px (sm), 554px (md) or 640px (lg).
+- A field in a Form still stands on the Form's column, since the Form sets the width the field reads. `labelWidth` on a field is for one outside a Form; inside one, keep setting it on the Form, or the labels down a column stop lining up. `md` changes nothing, so every screen built before this renders as it did.
+
 ## v0.7.17 — 2026-10-30
 
 The pattern contracts now say what a too-wide Table does.
