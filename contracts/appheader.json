@@ -92,6 +92,11 @@
       "type": "function",
       "note": "(scope: string) => void"
     },
+    "assistant": {
+      "type": "AppHeaderAssistant",
+      "itemShape": "{ label?: string; open?: boolean; onToggle: () => void }",
+      "note": "The BP AI button, before the utility icons: the AI mark and its name (label, BP AI by default) in the AI brand blend. onToggle opens and closes the AppShell assistant; pass open (the screen's assistantOpen) so it shows pressed while the assistant is open. The bar never moves when the assistant opens, so this is the one place to open it from on every screen. On a phone-width bar only the mark shows; the name stays its accessible name."
+    },
     "actions": {
       "type": "AppHeaderAction[]",
       "itemShape": "{ id: string; label: string; icon: string }",
@@ -142,14 +147,16 @@
     }
   },
   "useWhen": [
-    "The top bar of the product shell, above every page."
+    "The top bar of the product shell, above every page.",
+    "The way into the assistant on any screen: pass assistant, wired to the AppShell assistantOpen."
   ],
   "doNot": [
     "Do not invent TopBar, NavBar, Header, GlobalSearch, UserBadge, UserMenu or CompanyBadge.",
     "Do not put the page title, breadcrumbs or page actions in it. They belong in the page.",
     "Do not put more than three icon actions in it.",
     "Do not recolor the logo. Use environmentIntent for the tag, not custom colors.",
-    "Do not use raw hex."
+    "Do not use raw hex.",
+    "Do not add a page-header Ask AI button to open the assistant. Pass assistant to the AppHeader; its button stays put when the panel opens."
   ],
   "a11y": [
     "A header landmark. The logo link is named Home.",
@@ -157,19 +164,24 @@
     "The search trigger is a button with visible text; with searchGroups it has aria-haspopup and aria-expanded, and focus moves into the dropdown search field. Escape (with an empty query) or a click outside closes it and returns focus to the trigger. The shortcut hint is hidden from screen readers.",
     "Icon actions are kit Buttons named by their label, which also shows in a Tooltip on hover and focus.",
     "The avatar is a button named Account: {name} that opens the account menu (aria-haspopup, aria-expanded). Focus moves into the menu; Escape closes it and returns focus to the avatar; a click outside or tabbing away closes it.",
-    "On a phone-width bar the icon actions are one more menu button, so the same actions are still named and reachable."
+    "On a phone-width bar the icon actions are one more menu button, so the same actions are still named and reachable.",
+    "BP AI is a button named by its label (BP AI) with aria-pressed while the assistant is open. On a phone-width bar the name is visually hidden but still read."
   ],
-  "snippet": "<AppHeader\n  onNavToggle={toggleNav}\n  navOpen={navOpen}\n  environment=\"UAT-2\"\n  searchShortcut=\"Ctrl+K\"\n  onSearch={openSearch}\n  actions={actions}\n  user={{ name: \"Maya Chen\" }}\n  company={{ name: \"Acme Inc.\" }}\n  onUserSettings={openSettings}\n  darkMode={dark}\n  onDarkModeChange={setDark}\n  density={density}\n  onDensityChange={setDensity}\n  onLogout={logOut}\n/>",
+  "snippet": "<AppHeader\n  onNavToggle={toggleNav}\n  navOpen={navOpen}\n  environment=\"UAT-2\"\n  searchShortcut=\"Ctrl+K\"\n  onSearch={openSearch}\n  assistant={{ open: chatOpen, onToggle: () => setChatOpen((o) => !o) }}\n  actions={actions}\n  user={{ name: \"Maya Chen\" }}\n  company={{ name: \"Acme Inc.\" }}\n  onUserSettings={openSettings}\n  darkMode={dark}\n  onDarkModeChange={setDark}\n  density={density}\n  onDensityChange={setDensity}\n  onLogout={logOut}\n/>",
   "examples": [
     {
       "title": "Full header",
-      "usage": "Menu button, logo, environment, search with a Recent dropdown, three utility icons, the user and their company.",
+      "usage": "Menu button, logo, environment, search with a Recent dropdown, BP AI, three utility icons, the user and their company.",
       "items": [
         {
           "props": {
             "onNavToggle": "{toggleNav}",
             "environment": "UAT-2",
             "searchShortcut": "Ctrl+K",
+            "assistant": {
+              "label": "BP AI",
+              "onToggle": "{toggleAssistant}"
+            },
             "actions": [
               {
                 "id": "help",
@@ -235,6 +247,46 @@
                 ]
               }
             ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Assistant open",
+      "usage": "While the AppShell assistant is open, BP AI shows pressed; pressing it again closes the assistant.",
+      "items": [
+        {
+          "props": {
+            "environment": "UAT-2",
+            "searchShortcut": "Ctrl+K",
+            "assistant": {
+              "label": "BP AI",
+              "open": true,
+              "onToggle": "{toggleAssistant}"
+            },
+            "actions": [
+              {
+                "id": "help",
+                "label": "Help",
+                "icon": "help"
+              },
+              {
+                "id": "news",
+                "label": "What's new",
+                "icon": "campaign"
+              },
+              {
+                "id": "feedback",
+                "label": "Feedback",
+                "icon": "chat_info"
+              }
+            ],
+            "user": {
+              "name": "Maya Chen"
+            },
+            "company": {
+              "name": "Acme Inc."
+            }
           }
         }
       ]
