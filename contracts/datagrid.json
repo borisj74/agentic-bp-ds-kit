@@ -72,6 +72,10 @@
       "default": false,
       "note": "A + button in the action column at the end of each row that adds an empty row just under it. Named by a kit Tooltip, like Add row below row 2."
     },
+    "insertLabel": {
+      "type": "string",
+      "note": "What the + button is named and its kit Tooltip says, for a grid whose rows have a name of their own, like Add condition. Without it, Add row below row 2."
+    },
     "actionsFor": {
       "type": "function",
       "note": "(row: DataGridRow) => (\"insert\" | \"remove\" | \"delete\")[]. Which of the actions the grid turns on this row shows, like the trash on a row that holds a saved record and the X on a row added since. Without it every row shows them all."

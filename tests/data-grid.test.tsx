@@ -108,6 +108,15 @@ describe("DataGrid", () => {
     expect(screen.getByRole("button", { name: "Remove row 1" })).toBeInTheDocument();
   });
 
+  it("names the + button with insertLabel when rows have a name of their own", async () => {
+    const user = userEvent.setup();
+    const onRowsChange = vi.fn();
+    render(<DataGrid label="Conditions" columns={COLUMNS} defaultRows={ROWS} onRowsChange={onRowsChange} canInsertRows insertLabel="Add condition" />);
+    expect(screen.queryByRole("button", { name: "Add row below row 1" })).not.toBeInTheDocument();
+    await user.click(screen.getAllByRole("button", { name: "Add condition" })[0]);
+    expect(onRowsChange.mock.lastCall?.[0]).toHaveLength(3);
+  });
+
   it("stands two actions on the row and puts the rest in a More menu", async () => {
     const user = userEvent.setup();
     render(<DataGrid label="Items" columns={COLUMNS} defaultRows={ROWS} canInsertRows canRemoveRows canDeleteRows />);
