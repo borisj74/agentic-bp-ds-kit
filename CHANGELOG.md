@@ -4,6 +4,16 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.8.1 — 2026-11-04
+
+BP AI opens the assistant from the app header.
+
+### Added
+- AppHeader `assistant` (`{ label?, open?, onToggle }`): a BP AI button before the utility icons, as the BP product header has it — the white AI mark and its name on the AI brand blend. Wire `onToggle` to the AppShell `assistantOpen` and pass `open`, and it shows pressed while the assistant is open. The bar never moves when the assistant opens beside the page, so the button stays under the pointer, where a page-header button slides away by the panel's width. On a phone-width bar only the mark shows; its name is still read.
+
+### Changed
+- The AppShell demos open the assistant from BP AI in the header instead of an Ask the assistant button in the page header, and the AppHeader contract now says not to put one there.
+
 ## v0.8.0 — 2026-11-04 · Breaking
 
 A section title stands on its own.
