@@ -118,7 +118,6 @@ export function FormDemo({ content = "fields", grid, ...p }: Omit<FormProps, "ch
           sections={[
             {
               title: "Profile",
-              description: "How people see you in the app.",
               content: (
                 <>
                   <Input label="Full name" name="name" defaultValue="Maya Chen" required />
@@ -128,7 +127,6 @@ export function FormDemo({ content = "fields", grid, ...p }: Omit<FormProps, "ch
             },
             {
               title: "Notifications",
-              description: "Choose what we email you about.",
               content: (
                 <>
                   <Switch label="Invoice paid" name="paid" defaultChecked />
@@ -1092,7 +1090,7 @@ export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omi
           </ChatWindow>
         }
       >
-        <Section title="Summary" description="Where billing stands this month." collapsible>
+        <Section title="Summary" collapsible>
           <Scoreboard items={SHELL_SCORES} selectable defaultSelected="overdue" scroll label="Billing summary" />
         </Section>
         <Section title="Invoices" collapsible actions={<Button size="sm" iconStart="download">Export</Button>}>
@@ -2044,7 +2042,7 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
       />
       {saved && <Callout intent="success">{saved}</Callout>}
       {/* A related list after the form keeps the full width while the fields above sit in columns. */}
-      <Section title="Contacts" description="People who get invoices and notices for this account." actions={<Button size="sm" iconStart="add">Add contact</Button>}>
+      <Section title="Contacts" actions={<Button size="sm" iconStart="add">Add contact</Button>}>
         <Table columns={FORM_CONTACT_COLUMNS} rows={FORM_CONTACTS} />
       </Section>
     </FormPage>
@@ -2540,7 +2538,7 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
   );
   const prodStart = (prodPage - 1) * prodSize;
   const productList = (
-    <Section title="Account products" description={`${products.length} records on this account`}>
+    <Section title="Account products">
       <Table columns={FLOW_PRODUCT_COLUMNS} rows={products.slice(prodStart, prodStart + prodSize).map(flowProductRow)} emptyLabel="No products on this account yet." />
       <Pagination total={products.length} page={prodPage} onPageChange={setProdPage} pageSize={prodSize} onPageSizeChange={(n) => { setProdSize(n); setProdPage(1); }} label="Account products" />
     </Section>

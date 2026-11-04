@@ -1,8 +1,8 @@
 /* Figma COBALT section header 304:31917. The page supplies the side padding; the section is the header and its content. */
 .section { display: flex; flex-direction: column; gap: var(--space-medium); min-width: 0; font-family: var(--font-sans); }
 
-/* The header ends in the 2px brand-faint line, 8px under the row. The title row and description stack in the first
-   column; actions take the end column across both, sitting on the description's baseline row (bottom aligned). */
+/* The header ends in the 2px brand-faint line, 8px under the row. The title row takes the first column and the
+   actions the end one. A section title stands on its own: nothing is written under it. */
 .header {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--space-xsmall); row-gap: var(--space-xxsmall);
   padding-bottom: var(--space-xsmall); border-bottom: var(--border-width-medium) solid var(--border-brand-faint);
@@ -28,8 +28,6 @@
 .heading-md > .header .title { font: var(--text-title-md-weight) var(--text-title-md-size) / var(--text-title-md-lh) var(--font-sans); letter-spacing: normal; }
 .heading-sm > .header .title { font: var(--text-heading-sm-weight) var(--text-heading-sm-size) / var(--text-heading-sm-lh) var(--font-sans); letter-spacing: var(--text-heading-sm-ls); }
 .heading-xs > .header .title { font: var(--text-heading-xs-weight) var(--text-heading-xs-size) / var(--text-heading-xs-lh) var(--font-sans); letter-spacing: var(--text-heading-xs-ls); }
-.description { margin: 0; font-size: var(--font-size-small); line-height: var(--line-height-snug); color: var(--text-neutral); }
-
 /* Same ? button as the field help icons. */
 .help {
   position: relative; display: inline-flex; flex: none; margin: 0; padding: 0; border: 0; background: none;
@@ -40,11 +38,9 @@
 .help:hover { color: var(--icon-neutral-strong); }
 .help:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }
 
-/* Actions sit at the end of the header. With a description they line up with its bottom; without one, with the
-   title row. */
-.row, .description { grid-column: 1; }
+/* Actions sit at the end of the header, on the title row. */
+.row { grid-column: 1; }
 .actions { grid-column: 2; grid-row: 1; align-self: end; display: flex; align-items: center; gap: var(--space-xsmall); }
-.header:has(> .description) > .actions { grid-row: 1 / span 2; }
 
 /* Blocks stacked in one section — a Scoreboard over its charts, a table over its report link — are one
    gutter apart (--layout-gutter-md, the grid gutter), so the section reads as one block of its own. */

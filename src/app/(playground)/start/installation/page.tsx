@@ -40,8 +40,9 @@ export default function Installation() {
           </div>
 
           <div id="npm">
-            <Section title="Option 1: One command" description="Recommended. Makes a new folder with the latest release of the kit and installs it.">
+            <Section title="Option 1: One command">
               <div className={docs.prose}>
+                <p>Recommended. Makes a new folder with the latest release of the kit and installs it.</p>
                 <p>Run this in the folder where you keep your projects. Change <code>my-prototype</code> to any name.</p>
                 <CodeBlock code="npm create agentic-bp-ds@latest my-prototype" />
                 <p>Then go into the folder and start it:</p>
@@ -51,8 +52,9 @@ export default function Installation() {
           </div>
 
           <div id="template">
-            <Section title="Option 2: GitHub template" description="For a prototype that lives in its own GitHub repository, to share or deploy.">
+            <Section title="Option 2: GitHub template">
               <div className={docs.prose}>
+                <p>For a prototype that lives in its own GitHub repository, to share or deploy.</p>
                 <ol>
                   <li>Open <code>github.com/borisj74/agentic-bp-ds-kit</code>.</li>
                   <li>Click <strong>Use this template</strong>, then <strong>Create a new repository</strong>, and name it.</li>
@@ -64,8 +66,9 @@ export default function Installation() {
           </div>
 
           <div id="clone">
-            <Section title="Option 3: Clone the kit" description="For changing the kit itself: adding a component or fixing one.">
+            <Section title="Option 3: Clone the kit">
               <div className={docs.prose}>
+                <p>For changing the kit itself: adding a component or fixing one.</p>
                 <CodeBlock code={"git clone https://github.com/borisj74/agentic-bp-ds-kit.git\ncd agentic-bp-ds-kit\nnpm install\nnpm run dev"} />
               </div>
             </Section>

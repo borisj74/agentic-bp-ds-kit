@@ -15,7 +15,6 @@ export type SectionSpacing = "default" | "tight";
 
 export interface SectionProps {
   title: string;
-  description?: string;
   help?: string;
   actions?: ReactNode;
   children?: ReactNode;
@@ -31,7 +30,7 @@ export interface SectionProps {
 
 // Figma COBALT section header 304:31917: chevron button, bold title, ? help, actions at the end, a brand-faint line under it.
 export function Section({
-  title, description, help, actions, children, line = "medium", columns: ownColumns, heading: headingSize, spacing = "default", collapsible = false,
+  title, help, actions, children, line = "medium", columns: ownColumns, heading: headingSize, spacing = "default", collapsible = false,
   expanded: openProp, defaultExpanded = true, onExpandedChange,
 }: SectionProps) {
   const uid = useId();
@@ -78,7 +77,6 @@ export function Section({
           )}
           {help && <span id={helpId} className={styles.srOnly}>{help}</span>}
         </div>
-        {description && <p className={styles.description}>{description}</p>}
         {actions && <div className={styles.actions}>{actions}</div>}
       </header>
       {/* Header only: without children there is no body, so the section is just its heading row and line. */}

@@ -13,7 +13,6 @@ export type FormLabelWidth = "sm" | "md" | "lg";
 
 export interface FormSection {
   title: string;
-  description?: string;
   help?: string;
   actions?: ReactNode;
   content: ReactNode;
@@ -88,7 +87,7 @@ export function Form({
         {sections
           ? sections.map((s) => (
               <Section
-                key={s.title} title={s.title} description={s.description} help={s.help} actions={s.actions} line={s.line}
+                key={s.title} title={s.title} help={s.help} actions={s.actions} line={s.line}
                 collapsible={s.collapsible} expanded={s.expanded} defaultExpanded={s.defaultExpanded} onExpandedChange={s.onExpandedChange}
               >
                 <div className={fields}>{s.content}</div>
