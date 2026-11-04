@@ -51,7 +51,7 @@
     },
     "sections": {
       "type": "FormSection[]",
-      "itemShape": "{ title: string; description?: string; help?: string; actions?: ReactNode; content: ReactNode; line?: \"medium\" | \"thin\"; collapsible?: boolean; expanded?: boolean; defaultExpanded?: boolean; onExpandedChange?: (expanded: boolean) => void }",
+      "itemShape": "{ title: string; help?: string; actions?: ReactNode; content: ReactNode; line?: \"medium\" | \"thin\"; collapsible?: boolean; expanded?: boolean; defaultExpanded?: boolean; onExpandedChange?: (expanded: boolean) => void }",
       "note": "Titled groups of fields. Each is a kit Section, so it brings the kit's heading row and line, takes help for the question mark beside its title, and folds away with collapsible. The screen can hold which ones are open. actions puts kit Buttons, size sm, at the end of the group's header, for things that act on that group, like Back to search or Override rate, instead of placing buttons among the fields. line thin gives the group a 1px header line instead of 2px."
     },
     "actions": {
@@ -88,7 +88,7 @@
   ],
   "a11y": [
     "A native form element, named by its title and described by its description.",
-    "Each section is a kit Section named by its heading; its description is read with it, and folding one takes its fields out of the reading order.",
+    "Each section is a kit Section named by its heading, and folding one takes its fields out of the reading order.",
     "error is a danger Callout, announced when it appears.",
     "Enter in a field submits. Native required checks run before onSubmit."
   ],

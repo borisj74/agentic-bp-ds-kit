@@ -79,8 +79,9 @@ export default async function UsingPatterns() {
             const composes = (c as typeof c & { composes?: string[] }).composes ?? [];
             return (
               <div key={p.name} id={slug(p.name)}>
-                <Section title={p.name} description={c.intent}>
+                <Section title={p.name}>
                   <div className={docs.prose}>
+                    <p>{c.intent}</p>
                     {c.useWhen?.length > 0 && (
                       <>
                         <p className={docs.label}>Use it for</p>

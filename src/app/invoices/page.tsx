@@ -267,7 +267,7 @@ export default function InvoicesPage() {
           <PageHeader title="Invoices" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />
         }
       >
-        <Section title="Summary" description="Where unpaid invoices stand today." collapsible>
+        <Section title="Summary" collapsible>
           <Scoreboard
             label="Invoice totals"
             items={[
