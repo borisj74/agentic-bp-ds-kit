@@ -2,7 +2,7 @@
   "name": "Cascader",
   "path": "src/ui/Cascader/Cascader.tsx",
   "intent": "Pick one item from options that nest several levels deep by walking columns left to right, like a field on a related object (Invoice / Account / Owner) or a region / country / city.",
-  "usage": "Use Cascader when the choice sits at the end of a path and people need to see each level: fields on related records, categories, locations. It is one component: pass options, each with a value, a label and, when it opens another level, children. variant field is a form field that opens the columns in a dropdown and shows the picked path (Invoice / Account / Owner); variant panel draws the columns inline, like the field picker in a modal, with the page showing the choice. Each row can carry a path in brackets (the related object or id), a type badge (Text, Num, Date) and a relation mark: parent ([+], opens the related record's fields) or children (», opens related child records). A legend under the columns explains the marks when any row has one. Only the last level can be picked unless changeOnSelect lets any level be the answer. searchable adds a search box that lists every matching path. See contracts/cascader.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in.",
+  "usage": "Use Cascader when the choice sits at the end of a path and people need to see each level: fields on related records, categories, locations. It is one component: pass options, each with a value, a label and, when it opens another level, children. variant field is a form field that opens the columns in a dropdown and shows the picked path (Invoice / Account / Owner); variant panel draws the columns inline, like the field picker in a modal, with the page showing the choice. Each row can carry a path in brackets (the related object or id), a type badge (Text, Num, Date) and a relation mark: parent ([+], opens the related record's fields) or children (», opens related child records). A legend under the columns explains the marks when any row has one. Only the last level can be picked unless changeOnSelect lets any level be the answer. searchable adds a search box that lists every matching path. See contracts/cascader.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in. labelWidth puts it on a narrower or wider column (140px or 320px) and moves that turn with it, to 460px or 640px.",
   "props": {
     "label": {
       "type": "string",
@@ -70,6 +70,15 @@
         "start"
       ],
       "note": "For field, like Select. Follows Form."
+    },
+    "labelWidth": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "How wide its own start-label column is: sm 140px for a short name (Email, Status, Currency), md 234px, the product's own column, and lg 320px where the name runs longer than that. Only for a field standing on its own, outside a Form: inside one, let the Form's labelWidth set the column, or the labels down a column stop lining up. The field beside the label keeps its width at every step, and the point where the label goes back on top moves with the column: under 460px (sm), 554px (md) or 640px (lg). Read only with labelPosition=\"start\"; with the label on top there is no column to size."
     },
     "hideLabel": {
       "type": "boolean",

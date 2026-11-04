@@ -1,6 +1,6 @@
 "use client";
 import { useId, useState, type ChangeEvent } from "react";
-import { useLabelPosition } from "../Form/FormContext";
+import { labelWidthClass, useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 // Label, help, hint and error share Input's styles so both fields read the same in one form.
@@ -10,11 +10,13 @@ import styles from "./Textarea.module.css";
 export type TextareaSize = "sm" | "md" | "lg";
 export type TextareaType = "text" | "code";
 export type TextareaLabelPosition = "top" | "start";
+export type TextareaLabelWidth = "sm" | "md" | "lg";
 
 export interface TextareaProps {
   label: string;
   hideLabel?: boolean;
   labelPosition?: TextareaLabelPosition;
+  labelWidth?: TextareaLabelWidth;
   size?: TextareaSize;
   type?: TextareaType;
   placeholder?: string;
@@ -34,10 +36,12 @@ export interface TextareaProps {
 }
 
 export function Textarea({
-  label, hideLabel = false, labelPosition: ownLabelPosition, size = "md", type = "text", placeholder, value, defaultValue,
+  label, hideLabel = false, labelPosition: ownLabelPosition, labelWidth, size = "md", type = "text", placeholder, value, defaultValue,
   onChange, name, id, required = false, disabled = false, readOnly = false, invalid = false, error, hint, help, maxLength,
 }: TextareaProps) {
   const labelPosition = useLabelPosition(ownLabelPosition);
+  // The label column this field stands on. With no label there is no column, and md is the kit's 234.
+  const width = hideLabel ? undefined : labelWidthClass(labelWidth);
   const autoId = useId();
   const areaId = id ?? autoId;
   const messageId = `${areaId}-message`;
@@ -54,7 +58,7 @@ export function Textarea({
     onChange?.(e.target.value);
   };
 
-  const cls = [field.input, styles.textarea, hideLabel ? "" : field[labelPosition]];
+  const cls = [field.input, styles.textarea, hideLabel ? "" : field[labelPosition], width ? field[width] : ""];
   return (
     <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
       <div className={hideLabel ? field.srOnly : field.labelRow}>

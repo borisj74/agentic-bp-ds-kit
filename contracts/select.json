@@ -2,7 +2,7 @@
   "name": "Select",
   "path": "src/ui/Select/Select.tsx",
   "intent": "Choose one or several options from a list. A field that opens the kit Dropdown. Looks like Input.",
-  "usage": "Use Select to pick a value from a fixed list in a form or filter: country, status, owner, tags. One pick closes the menu; with multiple the menu stays open and each pick toggles. The field shows the picked labels; with maxVisible it shows the first few and a +N badge. Label, hint, error, help, required and sizes work like Input. For 2 to 5 options that should stay visible, use RadioGroup. See contracts/select.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in.",
+  "usage": "Use Select to pick a value from a fixed list in a form or filter: country, status, owner, tags. One pick closes the menu; with multiple the menu stays open and each pick toggles. The field shows the picked labels; with maxVisible it shows the first few and a +N badge. Label, hint, error, help, required and sizes work like Input. For 2 to 5 options that should stay visible, use RadioGroup. See contracts/select.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in. labelWidth puts it on a narrower or wider column (140px or 320px) and moves that turn with it, to 460px or 640px.",
   "props": {
     "label": {
       "type": "string",
@@ -33,6 +33,15 @@
         "start"
       ],
       "default": "top"
+    },
+    "labelWidth": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "How wide its own start-label column is: sm 140px for a short name (Email, Status, Currency), md 234px, the product's own column, and lg 320px where the name runs longer than that. Only for a field standing on its own, outside a Form: inside one, let the Form's labelWidth set the column, or the labels down a column stop lining up. The field beside the label keeps its width at every step, and the point where the label goes back on top moves with the column: under 460px (sm), 554px (md) or 640px (lg). Read only with labelPosition=\"start\"; with the label on top there is no column to size."
     },
     "itemCheck": {
       "enum": [

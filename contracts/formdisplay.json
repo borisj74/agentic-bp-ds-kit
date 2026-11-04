@@ -20,6 +20,11 @@
       "default": "top",
       "note": "start: label in a 234px column on a faint fill, right-aligned. top: label above the value. Inside a Form, the Form's labelPosition applies unless this is set; inside a RecordPage, the record's."
     },
+    "labelWidth": {
+      "enum": ["sm", "md", "lg"],
+      "default": "md",
+      "note": "How wide its own start-label column is: sm 140px for a short name (Email, Status, Currency), md 234px, the product's own column, and lg 320px where the name runs longer than that. Only for a row standing on its own, outside a Form: inside one, let the Form's labelWidth set the column, or the labels down a column stop lining up. The value beside the label keeps its width at every step, and the point where the label goes back on top moves with the column: under 460px (sm), 554px (md) or 640px (lg). Read only with labelPosition=\"start\"; with the label on top there is no column to size."
+    },
     "help": {
       "type": "string",
       "note": "Help icon beside the label. The text shows in a HelpPopover titled with the label, on hover, keyboard focus or click."

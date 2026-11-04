@@ -4,7 +4,7 @@ import { useDensitySize, usePortalDensity } from "../Density/Density";
 import { createPortal } from "react-dom";
 import { Button } from "../Button/Button";
 import { Dropdown } from "../Dropdown/Dropdown";
-import { useLabelPosition } from "../Form/FormContext";
+import { labelWidthClass, useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 // Label, help, hint, error and the field box share Input's styles so all form fields match.
@@ -15,6 +15,7 @@ import styles from "./DatePicker.module.css";
 export type DatePickerType = "single" | "dual";
 export type DatePickerSize = "sm" | "md" | "lg";
 export type DatePickerLabelPosition = "top" | "start";
+export type DatePickerLabelWidth = "sm" | "md" | "lg";
 export type DatePickerMonthYear = "title" | "menus";
 export interface DatePickerRange { start: string; end: string }
 export type DatePickerValue = string | DatePickerRange;
@@ -24,6 +25,7 @@ export interface DatePickerProps {
   type?: DatePickerType;
   hideLabel?: boolean;
   labelPosition?: DatePickerLabelPosition;
+  labelWidth?: DatePickerLabelWidth;
   size?: DatePickerSize;
   placeholder?: string;
   value?: DatePickerValue;
@@ -96,11 +98,13 @@ function presetRanges(today: Date) {
 }
 
 export function DatePicker({
-  label, type = "single", hideLabel = false, labelPosition: ownLabelPosition, size: ownSize, placeholder, value, defaultValue, onChange,
+  label, type = "single", hideLabel = false, labelPosition: ownLabelPosition, labelWidth, size: ownSize, placeholder, value, defaultValue, onChange,
   minDate, maxDate, presets = true, monthYear = "title", name, id, required = false, disabled = false, invalid = false, error, hint, help,
 }: DatePickerProps) {
   const size = useDensitySize(ownSize);
   const labelPosition = useLabelPosition(ownLabelPosition);
+  // The label column this field stands on. With no label there is no column, and md is the kit's 234.
+  const width = hideLabel ? undefined : labelWidthClass(labelWidth);
   const uid = useId();
   const density = usePortalDensity(); // the portalled popup keeps the surrounding Density
   const triggerId = id ?? `${uid}-field`;
@@ -353,7 +357,7 @@ export function DatePicker({
     );
   };
 
-  const cls = [field.input, field[size], hideLabel ? "" : field[labelPosition], bad ? field.invalid : "", disabled ? field.disabled : ""];
+  const cls = [field.input, field[size], hideLabel ? "" : field[labelPosition], width ? field[width] : "", bad ? field.invalid : "", disabled ? field.disabled : ""];
   const text = range ? "Select dates" : "Select date";
   return (
     <div ref={rootRef} className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>

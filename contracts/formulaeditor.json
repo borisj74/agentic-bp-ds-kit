@@ -2,7 +2,7 @@
   "name": "FormulaEditor",
   "path": "src/ui/FormulaEditor/FormulaEditor.tsx",
   "intent": "A monospace field for writing formulas and rules, with a toolbar that inserts fields, operators and functions and checks the syntax.",
-  "usage": "Use FormulaEditor for calculated fields, rules and validations. It is one form field: pass label, hint, error and help as props, same as Input, and it takes labelPosition from an enclosing Form. The toolbar inserts at the cursor. fields adds an Insert field menu that inserts {!Field.Id}; functions replaces the default function list. Check syntax runs onCheckSyntax, or a built-in bracket and quote check. onCalculate adds a Calculate button that shows its result under the field. onAiAssist adds an AI assistant button at the front of the toolbar for a screen that can answer with a formula; aiActive shows it toggled on while the assistant is attached to this field. See contracts/formulaeditor.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in.",
+  "usage": "Use FormulaEditor for calculated fields, rules and validations. It is one form field: pass label, hint, error and help as props, same as Input, and it takes labelPosition from an enclosing Form. The toolbar inserts at the cursor. fields adds an Insert field menu that inserts {!Field.Id}; functions replaces the default function list. Check syntax runs onCheckSyntax, or a built-in bracket and quote check. onCalculate adds a Calculate button that shows its result under the field. onAiAssist adds an AI assistant button at the front of the toolbar for a screen that can answer with a formula; aiActive shows it toggled on while the assistant is attached to this field. See contracts/formulaeditor.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in. labelWidth puts it on a narrower or wider column (140px or 320px) and moves that turn with it, to 460px or 640px.",
   "props": {
     "label": {
       "type": "string",
@@ -20,6 +20,15 @@
       ],
       "default": "top",
       "note": "start puts the label in a 234px column, lined up with the toolbar. Inside a Form, the Form's labelPosition applies unless this is set."
+    },
+    "labelWidth": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "How wide its own start-label column is: sm 140px for a short name (Email, Status, Currency), md 234px, the product's own column, and lg 320px where the name runs longer than that. Only for a editor standing on its own, outside a Form: inside one, let the Form's labelWidth set the column, or the labels down a column stop lining up. The editor beside the label keeps its width at every step, and the point where the label goes back on top moves with the column: under 460px (sm), 554px (md) or 640px (lg). Read only with labelPosition=\"start\"; with the label on top there is no column to size."
     },
     "size": {
       "enum": [

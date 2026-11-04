@@ -1,7 +1,7 @@
 "use client";
 import { useId, useRef, useState, type ChangeEvent } from "react";
 import { useDensitySize } from "../Density/Density";
-import { useLabelPosition } from "../Form/FormContext";
+import { labelWidthClass, useLabelPosition } from "../Form/FormContext";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 import styles from "./Input.module.css";
@@ -9,11 +9,13 @@ import styles from "./Input.module.css";
 export type InputSize = "sm" | "md" | "lg";
 export type InputType = "text" | "email" | "password" | "search" | "number" | "tel" | "url" | "file";
 export type InputLabelPosition = "top" | "start";
+export type InputLabelWidth = "sm" | "md" | "lg";
 
 export interface InputProps {
   label: string;
   hideLabel?: boolean;
   labelPosition?: InputLabelPosition;
+  labelWidth?: InputLabelWidth;
   size?: InputSize;
   type?: InputType;
   placeholder?: string;
@@ -41,7 +43,7 @@ export interface InputProps {
 }
 
 export function Input({
-  label, hideLabel = false, labelPosition: ownLabelPosition, size: ownSize, type = "text", placeholder, value, defaultValue,
+  label, hideLabel = false, labelPosition: ownLabelPosition, labelWidth, size: ownSize, type = "text", placeholder, value, defaultValue,
   onChange, accept, multiple = false, onFilesChange, name, id, autoComplete, required = false, disabled = false, readOnly = false,
   invalid = false, error, hint, help, prefix, suffix, iconStart, iconEnd, maxLength: maxLengthProp,
 }: InputProps) {
@@ -50,6 +52,8 @@ export function Input({
   const isFile = type === "file";
   const maxLength = isFile ? undefined : maxLengthProp;
   const labelPosition = useLabelPosition(ownLabelPosition);
+  // The label column this field stands on. With no label there is no column, and md is the kit's 234.
+  const width = hideLabel ? undefined : labelWidthClass(labelWidth);
   const autoId = useId();
   const inputId = id ?? autoId;
   const messageId = `${inputId}-message`;
@@ -80,7 +84,7 @@ export function Input({
     onChange?.(e.target.value);
   };
 
-  const cls = [styles.input, styles[size], hideLabel ? "" : styles[labelPosition], bad ? styles.invalid : "", disabled ? styles.disabled : ""];
+  const cls = [styles.input, styles[size], hideLabel ? "" : styles[labelPosition], width ? styles[width] : "", bad ? styles.invalid : "", disabled ? styles.disabled : ""];
   return (
     // data-label lets a start-label Form line up controls that have no label column.
     <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>

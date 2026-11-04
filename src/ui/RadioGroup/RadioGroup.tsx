@@ -1,7 +1,7 @@
 "use client";
 import { useId, useState } from "react";
 import { useDensitySize } from "../Density/Density";
-import { useLabelPosition, type FieldLabelPosition } from "../Form/FormContext";
+import { labelWidthClass, useLabelPosition, type FieldLabelPosition, type FieldLabelWidth } from "../Form/FormContext";
 import { Badge, type BadgeIntent } from "../Badge/Badge";
 import styles from "./RadioGroup.module.css";
 
@@ -24,6 +24,7 @@ export interface RadioGroupProps {
   disabled?: boolean;
   hideLegend?: boolean;
   labelPosition?: FieldLabelPosition;
+  labelWidth?: FieldLabelWidth;
   legend: string;
   name?: string;
   value?: string;
@@ -41,6 +42,7 @@ export function RadioGroup({
   disabled = false,
   hideLegend = false,
   labelPosition: ownLabelPosition,
+  labelWidth,
   legend,
   name,
   value,
@@ -53,6 +55,8 @@ export function RadioGroup({
   const size = useDensitySize(ownSize);
   // Own position first, then the Form around it, then top, the same order the kit fields follow.
   const labelPosition = useLabelPosition(ownLabelPosition);
+  // The label column the legend stands on. With the legend hidden there is no column, and md is the kit's 234.
+  const width = hideLegend ? undefined : labelWidthClass(labelWidth);
   const uid = useId();
   const groupName = name ?? uid;
   const controlled = value !== undefined;
@@ -64,7 +68,7 @@ export function RadioGroup({
 
   return (
     <fieldset
-      className={[styles.group, styles[size], card ? styles.card : "", error ? styles.error : "", !hideLegend && labelPosition === "start" ? styles.startLabel : ""].join(" ")}
+      className={[styles.group, styles[size], card ? styles.card : "", error ? styles.error : "", !hideLegend && labelPosition === "start" ? styles.startLabel : "", width ? styles[width] : ""].join(" ")}
       // Tells a Form with labels at the start that this group already sits in the label column.
       data-label={hideLegend ? undefined : labelPosition}
       disabled={disabled}

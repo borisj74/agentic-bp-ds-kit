@@ -3,7 +3,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type FocusEvent, t
 import { createPortal } from "react-dom";
 import { Badge } from "../Badge/Badge";
 import { useDensitySize, usePortalDensity } from "../Density/Density";
-import { useLabelPosition } from "../Form/FormContext";
+import { labelWidthClass, useLabelPosition } from "../Form/FormContext";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 import { Icon } from "../Icon/Icon";
 import { Input } from "../Input/Input";
@@ -16,6 +16,7 @@ export type CascaderVariant = "field" | "panel";
 export type CascaderRelation = "parent" | "children";
 export type CascaderSize = "sm" | "md" | "lg";
 export type CascaderLabelPosition = "top" | "start";
+export type CascaderLabelWidth = "sm" | "md" | "lg";
 
 export interface CascaderOption {
   value: string;
@@ -40,6 +41,7 @@ export interface CascaderProps {
   placeholder?: string;
   size?: CascaderSize;
   labelPosition?: CascaderLabelPosition;
+  labelWidth?: CascaderLabelWidth;
   hideLabel?: boolean;
   name?: string;
   required?: boolean;
@@ -93,11 +95,13 @@ const relationsIn = (options: CascaderOption[]): Set<CascaderRelation> => {
 // cascader spec: pick by walking columns left to right.
 export function Cascader({
   label, options, value, defaultValue, onChange, variant = "field", changeOnSelect = false, searchable = false, hasLegend = true,
-  placeholder = "Select", size: ownSize, labelPosition: ownLabelPosition, hideLabel = false, name, required = false,
+  placeholder = "Select", size: ownSize, labelPosition: ownLabelPosition, labelWidth, hideLabel = false, name, required = false,
   disabled = false, invalid = false, error, hint, help, emptyLabel = "No matches.",
 }: CascaderProps) {
   const size = useDensitySize(ownSize);
   const labelPosition = useLabelPosition(ownLabelPosition);
+  // The label column this field stands on. With no label there is no column, and md is the kit's 234.
+  const width = hideLabel ? undefined : labelWidthClass(labelWidth);
   const uid = useId();
   const density = usePortalDensity(); // the portalled popup keeps the surrounding Density
   const triggerId = `${uid}-field`;
@@ -392,7 +396,7 @@ export function Cascader({
   if (!isField) return <div className={styles.panelWrap} role="group" aria-label={label}>{body}</div>;
 
   const text = picked.map((o) => o.label).join(" / ");
-  const cls = [field.input, field[size], hideLabel ? "" : field[labelPosition], bad ? field.invalid : "", disabled ? field.disabled : ""];
+  const cls = [field.input, field[size], hideLabel ? "" : field[labelPosition], width ? field[width] : "", bad ? field.invalid : "", disabled ? field.disabled : ""];
   return (
     <div ref={rootRef} className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
       <div className={hideLabel ? field.srOnly : field.labelRow}>

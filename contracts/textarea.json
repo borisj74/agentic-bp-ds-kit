@@ -2,7 +2,7 @@
   "name": "Textarea",
   "path": "src/ui/Textarea/Textarea.tsx",
   "intent": "Multi-line text entry for notes, descriptions and code, with its own label, hint, error and character count. Looks and behaves like Input.",
-  "usage": "Use Textarea for text that runs over one line: notes, descriptions, messages, formulas. Pass label, hint, error and help as props, same as Input. size sets the starting height (100 / 180 / 240+ px); people can drag it taller. type code switches to a monospace font for formulas and snippets. maxLength shows a live count under the field. See contracts/textarea.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in.",
+  "usage": "Use Textarea for text that runs over one line: notes, descriptions, messages, formulas. Pass label, hint, error and help as props, same as Input. size sets the starting height (100 / 180 / 240+ px); people can drag it taller. type code switches to a monospace font for formulas and snippets. maxLength shows a live count under the field. See contracts/textarea.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in. labelWidth puts it on a narrower or wider column (140px or 320px) and moves that turn with it, to 460px or 640px.",
   "props": {
     "label": {
       "type": "string",
@@ -21,6 +21,15 @@
       ],
       "default": "top",
       "note": "start puts the label in a 234px column beside the field, lined up with the first line."
+    },
+    "labelWidth": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "How wide its own start-label column is: sm 140px for a short name (Email, Status, Currency), md 234px, the product's own column, and lg 320px where the name runs longer than that. Only for a field standing on its own, outside a Form: inside one, let the Form's labelWidth set the column, or the labels down a column stop lining up. The box beside the label keeps its width at every step, and the point where the label goes back on top moves with the column: under 460px (sm), 554px (md) or 640px (lg). Read only with labelPosition=\"start\"; with the label on top there is no column to size."
     },
     "size": {
       "enum": [
