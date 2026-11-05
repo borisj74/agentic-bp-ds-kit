@@ -2,15 +2,15 @@
 // Shared parts for BarChart, LineChart and PieChart: colors, number formats, the axis scale, the legend,
 // the tooltip and the screen-reader table. Internal to the charts; screens use the chart components.
 import { useLayoutEffect, useState, type KeyboardEvent, type ReactNode, type RefObject } from "react";
-import { Legend as KitLegend, type LegendIntent } from "../Legend/Legend";
+import { Legend as KitLegend, INTENTS, type LegendIntent } from "../Legend/Legend";
 import styles from "./chart.module.css";
 
 // The chart intents are the kit Legend keys, so a chart and its Legend always agree.
 export type ChartIntent = LegendIntent;
 export type ChartFormat = "number" | "currency" | "percent";
 
-// Figma Persona Homepages series order: green, olive, cyan, orange, pink, gray, then the rest of the category palette.
-export const INTENTS: ChartIntent[] = ["green", "olive", "cyan", "orange", "pink", "gray", "purple", "yellow", "red", "mint"];
+// The kit's one series order lives with the Legend, since a chart draws its own keys with it.
+export { INTENTS };
 export const intentAt = (i: number, intent?: ChartIntent) => intent ?? INTENTS[i % INTENTS.length];
 export const intentVar = (intent: ChartIntent) => `var(--bg-${intent})`;
 

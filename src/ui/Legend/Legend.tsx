@@ -34,7 +34,11 @@ export interface LegendProps {
   decorative?: boolean;
 }
 
-const INTENTS: LegendIntent[] = ["green", "olive", "cyan", "orange", "pink", "gray", "purple", "yellow", "red", "mint"];
+// BP's series order, from its data visualization guidance: the hues a chart, a legend, a usage bar or a calendar
+// hands out when nothing picks one, so two of them beside each other name the same thing the same colour. One list
+// for the whole kit; everything that paints a series reads it from here. Red is not in it: it is the danger colour,
+// so a series only takes red by asking for it, and never because it happened to be tenth.
+export const INTENTS: LegendIntent[] = ["pink", "orange", "gray", "cyan", "mint", "green", "olive", "yellow", "purple"];
 export const legendIntent = (i: number, intent?: LegendIntent) => intent ?? INTENTS[i % INTENTS.length];
 export const legendColor = (intent: LegendIntent, strong = false) => `var(--bg-${intent}${strong ? "-strong" : ""})`;
 

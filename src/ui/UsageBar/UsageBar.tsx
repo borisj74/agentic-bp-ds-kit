@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Legend, type LegendIntent } from "../Legend/Legend";
+import { Legend, INTENTS, type LegendIntent } from "../Legend/Legend";
 import styles from "./UsageBar.module.css";
 
 export type UsageBarKind = "used" | "left" | "outside";
@@ -31,8 +31,6 @@ export interface UsageBarProps {
   label?: string;
 }
 
-// The chart order, so a UsageBar and a chart beside it name the same thing the same colour.
-const INTENTS: LegendIntent[] = ["green", "olive", "cyan", "orange", "pink", "gray", "purple", "yellow", "red", "mint"];
 
 // A part under this share of the bar has no room for its own caption, so it goes without one. The recent sliver
 // is the usual case: eleven credits out of sixteen hundred is a few pixels wide.
@@ -66,7 +64,7 @@ export function UsageBar({ segments, figures, showLegend = true, label = "Usage"
   const span = total + over;
   const share = (s: UsageBarSegment) => (span > 0 ? amount(s) / span : 0);
 
-  // Used parts take the chart order where they set no intent of their own. A recent sliver belongs to the part
+  // Used parts take the kit's series order where they set no intent of their own. A recent sliver belongs to the part
   // before it, so it does not take a colour of its own from the order.
   let next = 0;
   const drawn = segments.map((s) => {

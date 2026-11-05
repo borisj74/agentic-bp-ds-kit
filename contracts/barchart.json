@@ -31,7 +31,7 @@
       "type": "ChartSeries[]",
       "required": true,
       "itemShape": "{ name: string; values: number[]; intent?: ChartIntent; projectedFrom?: number; axis?: \"start\" | \"end\" }",
-      "note": "One entry per line or bar color, with one value per category. intent picks the color; by default series take green, olive, cyan, orange, pink, gray, then purple, yellow, red and mint. projectedFrom (upright charts) is the first category that is a forecast, counted from 0: its bars and the ones after it draw see-through in the same color, and the tooltip and table say projected. axis end (upright charts) reads the series against a second scale drawn at the end of the chart, for a unit of another size, like requests beside credits; its ticks share the start scale's grid lines. Series on different scales sit side by side; with stacked, each scale stacks on its own."
+      "note": "One entry per line or bar color, with one value per category. intent picks the color; by default series take the kit's series order, pink, orange, gray, cyan, mint, green, olive, yellow and purple; red is the danger colour and is never handed out, so a bar only draws red by asking for it. projectedFrom (upright charts) is the first category that is a forecast, counted from 0: its bars and the ones after it draw see-through in the same color, and the tooltip and table say projected. axis end (upright charts) reads the series against a second scale drawn at the end of the chart, for a unit of another size, like requests beside credits; its ticks share the start scale's grid lines. Series on different scales sit side by side; with stacked, each scale stacks on its own."
     },
     "orientation": {
       "enum": [

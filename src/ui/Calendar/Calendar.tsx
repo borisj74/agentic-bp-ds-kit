@@ -11,6 +11,7 @@ import { Dropdown } from "../Dropdown/Dropdown";
 import { EmptyState } from "../EmptyState/EmptyState";
 import { Form } from "../Form/Form";
 import { Input } from "../Input/Input";
+import { INTENTS as SERIES_INTENTS } from "../Legend/Legend";
 import { Segmented } from "../Segmented/Segmented";
 import { Select } from "../Select/Select";
 import { Switch } from "../Switch/Switch";
@@ -60,7 +61,8 @@ export interface CalendarProps {
 }
 
 // Calendars without an intent take these in turn, after the Figma calendar list: PTO, personal, shifts, holidays, a manager's.
-const INTENTS: CalendarIntent[] = ["orange", "cyan", "green", "purple", "pink", "olive", "yellow", "mint", "red", "gray"];
+// The kit's one series order, the same list a chart or a legend hands out.
+const INTENTS: CalendarIntent[] = SERIES_INTENTS;
 const VIEW_LABELS: Record<CalendarView, string> = { month: "Month", week: "Week", day: "Day", list: "List" };
 const ALL_VIEWS: CalendarView[] = ["month", "week", "day", "list"];
 // Month days show this many events, then +N more.

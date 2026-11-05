@@ -4,6 +4,18 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.9.0 — 2026-11-05 · Breaking
+
+Series colours follow BP's order, and red is kept for danger.
+
+### Breaking
+- Every chart, Legend, UsageBar and Calendar hands out colours in BP's documented series order — pink, orange, gray, cyan, mint, green, olive, yellow, purple — instead of the kit's old green, olive, cyan, orange, pink, gray, purple, yellow, red, mint. **Red is no longer handed out at all**: it is the danger colour, so a tenth series taking it read as a problem it was not. A series only draws red now by asking for it, and past the ninth the order starts again. Nothing is renamed or removed — `intent` still takes all ten hues, including red — but any chart that let the kit pick its colours changes colour on upgrade. Pass `intent` on each series to keep the colours a screen had.
+- Calendar used a third order of its own (orange, cyan, green, purple, pink, olive, yellow, mint, red, gray), so a Calendar and a chart on one screen coloured the same thing differently. It now reads the same list as everything else.
+
+### Changed
+- The order lives in one place, `INTENTS` in `src/ui/Legend/Legend.tsx`, and Chart, UsageBar and Calendar read it from there instead of each keeping a copy.
+- Series colours stay on the 500 step. BP's own charts bind the 400 step and use 500 for hover, so the kit draws one step darker than BP's data visualization on purpose.
+
 ## v0.8.2 — 2026-11-05
 
 Prop notes reach the Figma agent.

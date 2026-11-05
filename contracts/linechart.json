@@ -31,7 +31,7 @@
       "type": "ChartSeries[]",
       "required": true,
       "itemShape": "{ name: string; values: number[]; intent?: ChartIntent; projectedFrom?: number }",
-      "note": "One entry per line or bar color, with one value per category. intent picks the color; by default series take green, olive, cyan, orange, pink, gray, then purple, yellow, red and mint. projectedFrom is the first category that is a forecast, counted from 0: the line is dashed from the last actual point on, and the tooltip and table say projected."
+      "note": "One entry per line or bar color, with one value per category. intent picks the color; by default series take the kit's series order, pink, orange, gray, cyan, mint, green, olive, yellow and purple; red is the danger colour and is never handed out, so a line only draws red by asking for it. projectedFrom is the first category that is a forecast, counted from 0: the line is dashed from the last actual point on, and the tooltip and table say projected."
     },
     "area": {
       "type": "boolean",

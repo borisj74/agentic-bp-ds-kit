@@ -245,8 +245,8 @@ describe("UsageBar", () => {
       />,
     );
     const drawn = parts().map((p) => (p as HTMLElement).style.background);
-    expect(drawn[0]).toBe("var(--bg-green)");
-    expect(drawn[1]).toBe("var(--bg-olive)");
+    expect(drawn[0]).toBe("var(--bg-pink)");
+    expect(drawn[1]).toBe("var(--bg-orange)");
   });
 
   it("holds the figure at the start to the share of the bar before the first part still to spend", () => {

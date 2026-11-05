@@ -42,6 +42,20 @@ describe("Legend", () => {
     expect(marks(container).map((m) => m.style.background)).toEqual(["var(--bg-purple)", "var(--bg-purple-strong)"]);
   });
 
+  // BP's series order, and red held out of it: red means danger, so a tenth series taking it would read as a
+  // problem it is not. A key only draws red by asking for it, and past the ninth the order starts again.
+  it("hands out BP's series order and never red", () => {
+    const { container } = render(
+      <Legend label="Series" items={[...Array(10)].map((_, i) => ({ label: `Series ${i + 1}` }))} />,
+    );
+    const drawn = marks(container).map((m) => m.style.background);
+    expect(drawn.slice(0, 9)).toEqual(
+      ["pink", "orange", "gray", "cyan", "mint", "green", "olive", "yellow", "purple"].map((h) => `var(--bg-${h})`),
+    );
+    expect(drawn).not.toContain("var(--bg-red)");
+    expect(drawn[9]).toBe("var(--bg-pink)");
+  });
+
   it("still names the keys", () => {
     render(<Legend label="Credits" items={[{ label: "Used", intent: "purple" }, { label: "Left to use", shape: "outline" }]} />);
     expect(screen.getByRole("list", { name: "Credits" })).toBeInTheDocument();

@@ -11,7 +11,7 @@
         "id": "string",
         "value": "number How much of the allowance this part is, in the same unit as every other part.",
         "kind": "\"used\" | \"left\" | \"outside\"? What the part is. Default used.",
-        "intent": "green | olive | cyan | orange | pink | gray | purple | yellow | red | mint? The part's colour, on a used part only. Without it, used parts take the chart order.",
+        "intent": "green | olive | cyan | orange | pink | gray | purple | yellow | red | mint? The part's colour, on a used part only. Without it, used parts take the kit's series order, which leaves red out as the danger colour.",
         "label": "string? The bold line under the part, like Free credits or 670 left in the AI plan.",
         "note": "string? The quieter line under the label, like 150 used · ran out Oct 12.",
         "recent": "boolean? Draws the part as a darker sliver of its intent, for what was used in the last hour, day or week. With a legend it takes its own key in that darker colour, right after the part it came out of; without one it shares that part\u0027s key. Default false.",

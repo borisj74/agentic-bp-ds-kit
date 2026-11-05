@@ -10,7 +10,7 @@
       "itemShape": {
         "id": "string? Used by hidden. Without it, the label.",
         "label": "string",
-        "intent": "green | olive | cyan | orange | pink | gray | purple | yellow | red | mint? Without it, keys take the chart order: green, olive, cyan, orange, pink, gray, then the rest.",
+        "intent": "green | olive | cyan | orange | pink | gray | purple | yellow | red | mint? Without it, keys take the kit's series order: pink, orange, gray, cyan, mint, green, olive, yellow and purple. Red is left out of it, since it is the danger colour.",
         "value": "string? A number after the name, like $482K or 32%.",
         "shape": "\"square\" | \"line\" | \"dot\" | \"outline\"? This key's own shape, over the legend's shape. A chart keys its dashed reference lines as lines beside its square bars, and a usage bar keys what is left as an outline beside its filled parts.",
         "strong": "boolean? The strong step of this key's colour, for a darker part drawn in the same colour as the whole it came out of, like a usage bar's last hour beside its AI plan. Default false."
