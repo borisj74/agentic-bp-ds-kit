@@ -4,6 +4,16 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.9.2 — 2026-11-05
+
+The catalog hides a control that cannot do anything.
+
+### Fixed
+- On BarChart's Master, the Highlight intent control did nothing with the stacked bars. `highlightIntent` only paints the categories named in `highlight`, and only the ranked bars name any, so the control sat there taking clicks and changing nothing. It now shows with the ranked bars and is gone with the stacked ones. The component was right; the catalog was offering a choice it could not act on.
+
+### Changed
+- A catalog entry's `hide` can be a function of the current state, not only a fixed list of props, for a control that means something in one of the entry's modes and nothing in another.
+
 ## v0.9.1 — 2026-11-05
 
 One-series charts pick their own colour.

@@ -97,8 +97,9 @@ export interface Entry {
   preview: Props;
   /** Master hint. Defaults to "Toggle ... to preview every X combination." */
   hint?: string;
-  /** Contract props kept out of the control panel, e.g. a controlled open flag. */
-  hide?: string[];
+  /** Contract props kept out of the control panel, e.g. a controlled open flag. A function reads the current
+   *  state, for a control that only means something in one of the entry's modes. */
+  hide?: string[] | ((p: Props) => string[]);
   /** Code-only props for snippets, e.g. { onCancel: "{close}" }. Values in braces print as expressions. */
   snippet?: Props;
   /** Full-width piece. Stage and examples stack it at a readable width. */
@@ -908,6 +909,8 @@ export const registry: Record<string, Entry> = {
       categories: "{weeks}", series: "{statuses}", format: "currency", stacked: true,
     },
     extras: { bars: { values: ["stacked", "ranked"], default: "stacked" } },
+    // highlightIntent paints the bars named in highlight, and only the ranked bars name any.
+    hide: (p) => (p.bars === "ranked" ? [] : ["highlightIntent"]),
     // Ranked: one series sorted longest first, with the top and bottom bars picked out, as in the Figma.
     normalize: ({ bars, ...p }) =>
       bars === "ranked"

@@ -92,7 +92,11 @@ export function Master({ contract }: { contract: Contract }) {
   const keys = Object.keys(contract.props);
   const childType = contract.props.children?.type ?? "";
   const childName = childType.endsWith("[]") ? childType.slice(0, -2) : "";
-  const skip = new Set(["children", ...(entry.hide ?? [])]);
+  // A control the current state makes idle is worse than no control: BarChart's highlight intent only paints the
+  // bars named in highlight, which the ranked bars set and the stacked ones do not. An entry can therefore read
+  // the state to say what it hides.
+  const hidden = typeof entry.hide === "function" ? entry.hide(state) : entry.hide ?? [];
+  const skip = new Set(["children", ...hidden]);
   const enums = Object.entries(contract.props).filter(([k, v]) => v.enum && !skip.has(k)).sort(([a], [b]) => Number(b === "size") - Number(a === "size"))
     .concat(Object.entries(entry.extras ?? {}).map(([k, v]) => [k, { enum: v.values }]));
   const bools = Object.entries(contract.props).filter(([k, v]) => v.type === "boolean" && !skip.has(k) && !entry.toggles?.[k]);
@@ -106,7 +110,7 @@ export function Master({ contract }: { contract: Contract }) {
     for (const k of [...keys, ...Object.keys(src).filter((x) => !keys.includes(x))]) {
       const v = src[k], def = contract.props[k];
       // Hidden props stay out of code unless the entry supplies a code-only value (e.g. open={open}).
-      if (v === undefined || entry.extras?.[k] || (entry.toggles?.[k] && !contract.props[k]) || (entry.hide?.includes(k) && entry.snippet?.[k] === undefined)) continue;
+      if (v === undefined || entry.extras?.[k] || (entry.toggles?.[k] && !contract.props[k]) || (hidden.includes(k) && entry.snippet?.[k] === undefined)) continue;
       // Booleans print only when they differ from the default: on as the bare name, off (when on by default) as ={false}.
       if (v === false && def?.default === true) out[k] = "{false}";
       else if (def?.enum || (v === true && def?.default !== true) || (typeof v === "number" && v !== def?.default) || Array.isArray(v) || (typeof v === "string" && v && v !== def?.default)) out[k] = v;
