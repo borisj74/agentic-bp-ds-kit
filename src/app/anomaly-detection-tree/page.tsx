@@ -157,6 +157,14 @@ export default function AnomalyTreePage() {
     setRecords((all) => [made, ...all]);
     setOpenId(made.id);
   };
+  // A rule BP AI drafted from the list opens straight away, with BP AI still open beside it.
+  const [fromAi, setFromAi] = useState(false);
+  const createDrafted = (d: Draft) => {
+    const made = newRecord(d.rule);
+    setRecords((all) => [made, ...all]);
+    setFromAi(true);
+    setOpenId(made.id);
+  };
   const copy = (id: string) => {
     setRecords((all) => {
       const from = all.find((r) => r.id === id);
@@ -173,8 +181,8 @@ export default function AnomalyTreePage() {
   return (
     <>
       {open
-        ? <RuleEditor key={open.id} record={open} onPatch={onPatch} onBack={() => setOpenId(null)} />
-        : <RulesList records={records} onOpen={setOpenId} onCreate={create} onCopy={copy} onDelete={remove} />}
+        ? <RuleEditor key={open.id} record={open} aiAtStart={fromAi} onPatch={onPatch} onBack={() => { setFromAi(false); setOpenId(null); }} />
+        : <RulesList records={records} onOpen={(id) => { setFromAi(false); setOpenId(id); }} onCreate={() => { setFromAi(false); create(); }} onDraft={createDrafted} onCopy={copy} onDelete={remove} />}
       {notes.map(({ key, ...n }) => (
         <Toast key={key} {...n} open onClose={() => setNotes((all) => all.filter((x) => x.key !== key))} />
       ))}
@@ -182,7 +190,7 @@ export default function AnomalyTreePage() {
   );
 }
 
-function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: (id: string, change: Partial<RuleRecord>) => void; onBack: () => void }) {
+function RuleEditor({ record, aiAtStart, onPatch, onBack }: { record: RuleRecord; aiAtStart: boolean; onPatch: (id: string, change: Partial<RuleRecord>) => void; onBack: () => void }) {
   const [navOpen, setNavOpen] = useState(false);
   const [history, setHistory] = useState<History>(() => ({ past: [], present: record.rule, future: [], key: null }));
   const rule = history.present;
@@ -204,8 +212,8 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
   const [naming, setNaming] = useState(!rule.name.trim());
   const [buildOpen, setBuildOpen] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
-  const [aiOpen, setAiOpen] = useState(false);
-  const fitNext = useRef(false);
+  const [aiOpen, setAiOpen] = useState(aiAtStart);
+  const fitNext = useRef(aiAtStart);
   // The Values card showing its chips. One at a time; an empty one always shows them, so Add value is right there.
   const [openValues, setOpenValues] = useState<string | null>(null);
   const [panning, setPanning] = useState(false);

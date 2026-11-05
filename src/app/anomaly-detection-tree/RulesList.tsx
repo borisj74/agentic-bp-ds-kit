@@ -15,6 +15,8 @@ import { Table } from "@/ui/Table/Table";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 import { RESULT_INTENT, resultLabel, type Intent } from "../anomaly-detection/data";
 import { blockText, recordOf } from "../anomaly-detection-nodes/graph";
+import { RuleAssistant } from "./RuleAssistant";
+import type { Draft } from "./assistant";
 import { isChoosing, resultOf, type RuleRecord } from "./tree";
 
 // Where a rule stands, in a word. How far a run has got belongs on the rule's own page, as a progress bar.
@@ -29,14 +31,16 @@ function statusOf(r: RuleRecord): { label: string; intent: Intent } {
   }
 }
 
-export function RulesList({ records, onOpen, onCreate, onCopy, onDelete }: {
+export function RulesList({ records, onOpen, onCreate, onDraft, onCopy, onDelete }: {
   records: RuleRecord[];
   onOpen: (id: string) => void;
   onCreate: () => void;
+  onDraft: (draft: Draft) => void;
   onCopy: (id: string) => void;
   onDelete: (id: string) => void;
 }) {
   const [navOpen, setNavOpen] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [deleting, setDeleting] = useState<string | null>(null);
   const q = query.trim().toLowerCase();
@@ -48,9 +52,19 @@ export function RulesList({ records, onOpen, onCreate, onCopy, onDelete }: {
         header={
           <AppHeader
             navOpen={navOpen} onNavToggle={() => setNavOpen((o) => !o)} environment="DEV" searchShortcut="Ctrl+K"
+            assistant={{ open: aiOpen, onToggle: () => setAiOpen((o) => !o) }}
             user={{ name: "Sayra Bunch" }} company={{ name: "CCC" }}
           />
         }
+        // From the list, BP AI only drafts: a drafted rule opens as a new rule, with BP AI still beside it.
+        assistant={
+          <RuleAssistant
+            stage="build" choosing empty type={recordOf("invoice")} summary={[]} next={null} missing={null}
+            result={{ kind: "good", score: 0 }} sample={0} flagged={0}
+            onDraft={onDraft} onAddNext={() => {}} onFewerValues={() => {}} onClose={() => setAiOpen(false)}
+          />
+        }
+        assistantOpen={aiOpen}
         nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current="settings-ai-settings" expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
         pageHeader={
