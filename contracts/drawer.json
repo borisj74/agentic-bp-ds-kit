@@ -25,6 +25,7 @@
         "extended"
       ],
       "default": "narrow",
+      "noteForFigma": true,
       "note": "Width 360 / 460 / 590 / 1100, never wider than the screen. Full height; the body scrolls."
     },
     "showClose": {

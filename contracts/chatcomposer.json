@@ -31,6 +31,7 @@
     },
     "scopeLabel": {
       "type": "string",
+      "noteForFigma": true,
       "note": "What the question can be scoped to, like Accounts page. Pass it only on a screen there is something to scope to; without it there is no scope row."
     },
     "scoped": {
@@ -91,6 +92,7 @@
         "deep"
       ],
       "default": "quick",
+      "noteForFigma": true,
       "note": "quick answers fast; deep thinks longer. The button stays lit on deep. It only shows when onModeChange is set."
     },
     "onModeChange": {

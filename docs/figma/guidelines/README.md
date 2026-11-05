@@ -20,6 +20,28 @@ npm run figma:guidelines
 | `04-patterns.md` | every pattern contract in `contracts/` |
 | `05-antipatterns.md` | written in the generator |
 
+## Prop notes
+
+`03-components.md` gives every component its property list, and under it the few
+prop notes that were marked for Figma. A prop's `note` in the contract is written
+for someone reading code, and most of it says how the piece behaves, which the
+agent cannot draw; all 970 of them would also put the files well past the 200 KB
+cap. So a note comes through only when the contract marks it:
+
+```json
+"actions": {
+  "type": "ReactNode",
+  "noteForFigma": true,
+  "note": "Icon buttons at the end of the footer, named by the action and the card. Two at most."
+}
+```
+
+Mark a note when it carries something the property line cannot show — a count or
+a size, which values pair with which, or where the prop may be used. Leave it
+unmarked when it explains a callback, a piece of state, or what a screen reader
+hears. Keep the marked set small: each one is read on every prompt against the
+library, and the total is already close to the cap.
+
 ## Uploading
 
 Open the library's Figma Design file, then file menu > Library >

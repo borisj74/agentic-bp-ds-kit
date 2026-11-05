@@ -6,6 +6,7 @@
   "props": {
     "title": {
       "type": "string",
+      "noteForFigma": true,
       "note": "The item name, an h3. Two lines at most. Without it, the overline (or else the description) names the card and its checkbox."
     },
     "overline": {
@@ -90,6 +91,7 @@
     "actions": {
       "type": "CardAction[]",
       "itemShape": "{ id: string; label: string; icon: string }",
+      "noteForFigma": true,
       "note": "Icon buttons at the end of the footer, named by the action and the card. Two at most."
     },
     "menu": {

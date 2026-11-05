@@ -12,6 +12,7 @@
     "hideLabel": {
       "type": "boolean",
       "default": false,
+      "noteForFigma": true,
       "note": "Track only, like in a table cell. The switch keeps its natural width."
     },
     "description": {

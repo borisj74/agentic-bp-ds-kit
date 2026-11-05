@@ -49,6 +49,7 @@
         3
       ],
       "default": 2,
+      "noteForFigma": true,
       "note": "How many columns the fields use: the Form in children lays its fields out left to right in this many, each at most 480px, unless it sets its own columns. Narrow pages drop to fewer columns on their own."
     },
     "label": {

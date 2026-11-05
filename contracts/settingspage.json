@@ -12,6 +12,7 @@
     "children": {
       "type": "ReactNode",
       "required": true,
+      "noteForFigma": true,
       "note": "The ways in: kit Tiles, one per place, each with its own intent."
     },
     "intro": {

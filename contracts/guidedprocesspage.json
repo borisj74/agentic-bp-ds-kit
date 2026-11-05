@@ -48,6 +48,7 @@
     "stepsOpen": {
       "type": "boolean",
       "default": false,
+      "noteForFigma": true,
       "note": "Step: the steps drawer is open. Only shows under 1024 of box width; wider, the steps are always there."
     },
     "onStepsClose": {

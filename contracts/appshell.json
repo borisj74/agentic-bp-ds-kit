@@ -73,6 +73,7 @@
         "2xl"
       ],
       "default": "full",
+      "noteForFigma": true,
       "note": "How wide the page runs inside the frame. full fills the space; the rest hold it to a reading column, centred. It caps the page only: the bar, the rail and the assistant keep their own widths."
     }
   },

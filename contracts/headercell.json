@@ -6,6 +6,7 @@
   "props": {
     "label": {
       "type": "string",
+      "noteForFigma": true,
       "note": "Column title, shown uppercase. Omit for a checkbox-only or empty column."
     },
     "size": {
@@ -23,6 +24,7 @@
         "end"
       ],
       "default": "start",
+      "noteForFigma": true,
       "note": "end for numbers and amounts. center for a checkbox-only or actions column."
     },
     "line": {

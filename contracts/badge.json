@@ -15,6 +15,7 @@
         "highlight"
       ],
       "default": "neutral",
+      "noteForFigma": true,
       "note": "hollow = outline only. highlight = purple, for new or featured."
     },
     "emphasis": {
@@ -37,6 +38,7 @@
     },
     "icon": {
       "type": "string",
+      "noteForFigma": true,
       "note": "Material Symbols name. Leading icon (12px, 16px at lg), or the only content when iconOnly."
     },
     "iconOnly": {
@@ -57,6 +59,7 @@
     "children": {
       "type": "string",
       "required": true,
+      "noteForFigma": true,
       "note": "One to three words. Also the label for icon-only badges."
     },
     "onRemove": {

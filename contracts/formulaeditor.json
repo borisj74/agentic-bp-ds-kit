@@ -79,6 +79,7 @@
     "aiActive": {
       "type": "boolean",
       "default": false,
+      "noteForFigma": true,
       "note": "The assistant is open for this field: the AI assistant button shows toggle on, so it is clear which field the answer will land in. The screen owns it, since only it knows what the assistant is attached to."
     },
     "name": {

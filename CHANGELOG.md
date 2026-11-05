@@ -4,6 +4,13 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.8.2 — 2026-11-05
+
+Prop notes reach the Figma agent.
+
+### Changed
+- The Figma guidelines generator now writes a prop's `note` into `03-components.md` when its contract marks it `noteForFigma: true`, each on its own line under the component's property list. Until now no prop note was emitted at all, so rules that only the note carries — Toolbar `field` holding more than one control, Card `actions` stopping at two, Drawer's four widths — never reached the agent designing with the library. 70 notes across 45 contracts are marked: the ones carrying a count, a size, which values pair, or where the prop may be used. A note that explains a callback, a piece of state or what a screen reader hears stays out, and so do the nine field `labelWidth` notes, which say the same thing nine times. Nothing in the kit itself changes; re-upload the guidelines to pick it up.
+
 ## v0.8.1 — 2026-11-04
 
 BP AI opens the assistant from the app header.

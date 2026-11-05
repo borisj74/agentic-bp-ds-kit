@@ -41,6 +41,7 @@
         "minimal"
       ],
       "default": "subtle",
+      "noteForFigma": true,
       "note": "Button trigger only. Same pairs as Button: strong with brand or danger, subtle with neutral, minimal with neutral, brand or danger."
     },
     "intent": {
@@ -50,6 +51,7 @@
         "danger"
       ],
       "default": "neutral",
+      "noteForFigma": true,
       "note": "Button trigger only. Required with emphasis strong."
     },
     "size": {
@@ -63,16 +65,19 @@
     },
     "icon": {
       "type": "string",
+      "noteForFigma": true,
       "note": "Leading icon on the Button trigger. Icon-only defaults to more_vert."
     },
     "iconOnly": {
       "type": "boolean",
       "default": false,
+      "noteForFigma": true,
       "note": "Icon-only Button trigger, like a row More menu. label stays as its name."
     },
     "count": {
       "type": "number",
       "default": 0,
+      "noteForFigma": true,
       "note": "Filter trigger only. Applied filters shown as a Count."
     },
     "alignment": {
@@ -131,10 +136,12 @@
         "on",
         "off"
       ],
+      "noteForFigma": true,
       "note": "trigger filter only: the filter's on/off state. See FilterButton."
     },
     "onToggle": {
       "type": "function",
+      "noteForFigma": true,
       "note": "trigger filter only: () => void. Splits the filter button: the name turns it on or off, the chevron opens the menu."
     },
     "labelledBy": {
@@ -165,6 +172,7 @@
         "field"
       ],
       "default": "default",
+      "noteForFigma": true,
       "note": "default: the menu is at least 200 wide. field: the menu is only as wide as the trigger. Select passes it through."
     }
   },

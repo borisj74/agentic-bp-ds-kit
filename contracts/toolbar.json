@@ -66,6 +66,7 @@
     },
     "field": {
       "type": "ReactNode",
+      "noteForFigma": true,
       "note": "One more control after the search: a kit DatePicker or Select, size sm, with labelPosition start, like Effective on. For a value that narrows the rows and changes often enough to stay on the bar instead of in the filter bar. It can hold more than one control: the slot is a row spaced like the rest of the bar, so pass them in a fragment rather than spacing them yourself."
     },
     "selectedCount": {
@@ -101,6 +102,7 @@
     },
     "actions": {
       "type": "ReactNode",
+      "noteForFigma": true,
       "note": "Kit Buttons size sm: subtle first, one strong brand Button last. At most five visible actions including More. To fold into the Actions menu on a narrow bar, each must be a kit Button whose children are its text label (an icon-only Button already passes its name that way); picked from the menu, its onClick runs with no event. Anything else and the actions stay a row that wraps."
     },
     "buttons": {

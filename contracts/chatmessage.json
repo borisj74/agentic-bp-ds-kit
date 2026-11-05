@@ -65,6 +65,7 @@
     },
     "apply": {
       "type": "{ label: string; onApply: () => void }",
+      "noteForFigma": true,
       "note": "One action that puts the answer to work where it was asked, like Insert into formula on a suggested formula. It is a kit Button under the answer, before the suggestions, and there is only ever one: the icon row (copy, good, needs work, share, read aloud) stays what it is. Only an assistant answer takes it."
     },
     "menu": {

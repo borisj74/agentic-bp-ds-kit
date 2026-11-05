@@ -126,6 +126,7 @@
         "field"
       ],
       "default": "default",
+      "noteForFigma": true,
       "note": "default: the menu is at least 200 wide. field: the menu is only as wide as the field, for a narrow Select like rows per page."
     }
   },

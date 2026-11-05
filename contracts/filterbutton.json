@@ -40,6 +40,7 @@
     },
     "onToggle": {
       "type": "function",
+      "noteForFigma": true,
       "note": "() => void. With a filter set, the name part becomes its own button that turns it on or off, and only the chevron opens the options."
     },
     "hasDropdown": {

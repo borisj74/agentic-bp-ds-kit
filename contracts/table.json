@@ -8,6 +8,7 @@
       "type": "TableColumn[]",
       "required": true,
       "itemShape": "{ key: string; header?: string; alignment?: \"start\" | \"center\" | \"end\"; numeric?: boolean; emphasis?: boolean; width?: string; maxWidth?: string; opensDetail?: boolean }",
+      "noteForFigma": true,
       "note": "key picks the row value. numeric aligns to the end with tabular digits. emphasis makes the column's text medium weight, like the record id. width is a CSS width, like 30%. maxWidth is a CSS width, like 240px: a long text or link value stops there and ends with an ellipsis instead of widening the table, and the whole value shows on hover and stays for screen readers. Use it for long names, like products; values that must read in full, like amounts and dates, keep their room. opensDetail (with detail and detailCount) puts a kit Button holding a Count of the row's other values after the cell's value; it opens and closes the row's detail under the row, lined up under that column."
     },
     "rows": {

@@ -29,6 +29,7 @@
     },
     "meta": {
       "type": "string",
+      "noteForFigma": true,
       "note": "When the numbers were read, written as one quiet line under the bar at the page's left edge, like Updated 09:45 UTC. One per page: sections, tables and cards never repeat it. It belongs to the bar that refreshes them, so it sits 16px under it, closer than the section rhythm."
     },
     "name": {

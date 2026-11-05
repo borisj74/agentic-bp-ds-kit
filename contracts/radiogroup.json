@@ -19,6 +19,7 @@
         "horizontal"
       ],
       "default": "vertical",
+      "noteForFigma": true,
       "note": "Horizontal only for two or three short labels. Card layout is always vertical."
     },
     "layout": {
@@ -91,6 +92,7 @@
         "disabled": "boolean?",
         "hideLabel": "boolean?"
       },
+      "noteForFigma": true,
       "note": "Two to six. description and badge show in card layout. hideLabel keeps an option's label for screen readers only and shows the bare circle (list layout), for a choice whose row already says it."
     },
     "onChange": {

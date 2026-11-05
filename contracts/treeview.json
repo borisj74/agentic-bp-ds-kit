@@ -30,6 +30,7 @@
         "multiple"
       ],
       "default": "single",
+      "noteForFigma": true,
       "note": "single: one highlighted row. multiple: a checkbox on each row; a folder checks its whole branch. none: rows only open and close."
     },
     "selected": {

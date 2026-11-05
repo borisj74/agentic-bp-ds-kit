@@ -37,6 +37,7 @@
     "planMode": {
       "type": "boolean",
       "default": false,
+      "noteForFigma": true,
       "note": "Plan Mode is on: its row in the menu is ticked and a Plan Mode badge sits beside the name. On a bar narrower than 480px the badge shows its icon only, still named Plan Mode, so the title stays whole."
     },
     "onPlanModeChange": {

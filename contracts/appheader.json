@@ -15,6 +15,7 @@
     },
     "logo": {
       "type": "ReactNode",
+      "noteForFigma": true,
       "note": "Defaults to the kit Logo, which drops to its symbol on narrow bars. Pass your own only for a white-label product."
     },
     "homeHref": {
@@ -48,6 +49,7 @@
     },
     "searchShortcut": {
       "type": "string",
+      "noteForFigma": true,
       "note": "Hint on the right of the search, like Ctrl+K. Shown only; it is not a key binding yet. Hidden under 1000px."
     },
     "onSearch": {
@@ -95,11 +97,13 @@
     "assistant": {
       "type": "AppHeaderAssistant",
       "itemShape": "{ label?: string; open?: boolean; onToggle: () => void }",
+      "noteForFigma": true,
       "note": "The BP AI button, before the utility icons: the AI mark and its name (label, BP AI by default) in the AI brand blend. onToggle opens and closes the AppShell assistant; pass open (the screen's assistantOpen) so it shows pressed while the assistant is open. The bar never moves when the assistant opens, so this is the one place to open it from on every screen. On a phone-width bar only the mark shows; the name stays its accessible name."
     },
     "actions": {
       "type": "AppHeaderAction[]",
       "itemShape": "{ id: string; label: string; icon: string }",
+      "noteForFigma": true,
       "note": "Up to three icon buttons, each named by a Tooltip. On a phone-width bar they move behind one more button; only one of the two is shown, so neither is reached twice by the keyboard."
     },
     "onAction": {

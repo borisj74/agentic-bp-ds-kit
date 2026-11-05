@@ -12,10 +12,12 @@
         "footer"
       ],
       "default": "panel",
+      "noteForFigma": true,
       "note": "panel is one step as a dark column; steps is every step beside the page; header goes over the step; footer goes under it. Each part takes only its own props."
     },
     "title": {
       "type": "string",
+      "noteForFigma": true,
       "note": "Panel: the process name, over the first column only. Header: required, the process name over the step title."
     },
     "subtitle": {
@@ -111,6 +113,7 @@
         "form": "string? The id of the Form a submit action sends.",
         "disabled": "boolean?"
       },
+      "noteForFigma": true,
       "note": "Footer. The step's buttons in order; the last moves the process on. From 600 to 1023 of box width every one but the last goes in a More menu; under 600 those with an icon are a row of lg icon-only Buttons with xl icons over the last action and the rest share a More menu."
     },
     "onAction": {

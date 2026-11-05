@@ -72,6 +72,7 @@
         "thin"
       ],
       "default": "wide",
+      "noteForFigma": true,
       "note": "wide: bars fill most of their category's space, with square corners. thin: every bar is 8px, like a medium Meter bar, with its rounded ends; a stack rounds only its two outer ends. For long runs of periods, like a month of days. Pointing anywhere in a category still shows its tooltip."
     },
     "showValues": {
@@ -134,6 +135,7 @@
     "marker": {
       "type": "ChartMarker",
       "itemShape": "{ category: number; label: string }",
+      "noteForFigma": true,
       "note": "Upright charts only. A thin line down the chart at one category, counted from 0, with its label over the top, like Today."
     },
     "selected": {

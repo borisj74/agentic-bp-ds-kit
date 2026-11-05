@@ -35,6 +35,7 @@
         "lg"
       ],
       "default": "md",
+      "noteForFigma": true,
       "note": "How wide the start-label column is: sm 140px for a form of short names (Email, Status, Currency), md 234px, the product's own column, which fits a name as long as Account Ledger Number on one line, and lg 320px where the names run longer than that. Pick one for the whole form: the fields inside read the Form's column, so setting labelWidth on a field in a form makes the labels down that column stop lining up. A field's own labelWidth is for one standing outside a Form. The field beside the label stays 308px at every step, so the column itself narrows or widens, and the points where the labels go back on top and where columns give way move with it: labels go on top under 460px (sm), 554px (md) or 640px (lg). Read only with labelPosition=\"start\"; with labels on top there is no column to size."
     },
     "columns": {
@@ -43,6 +44,7 @@
         2,
         3
       ],
+      "noteForFigma": true,
       "note": "2 puts fields side by side, left to right; 3 puts them in threes, for a long form on a wide page. A Textarea spans the row, and so does a DataGrid (like a product's rate bands), which needs the width for its columns; with start labels the grid starts at the section's edge, since its column headers stand in for a label. Set, each column is at most 554px (--layout-column-max) and the fields stay at the start: on a wide page the space past the last column stays empty. Unset, the Form takes the columns of the FormPage or RecordPage it is in; outside one, the fields stack in one column that fills the form, as in a Modal or Drawer. Never more than 3. Columns give way as the form narrows: three become two under 720px (1301px with start labels), and two become one under 560px (867px with start labels). A narrower or wider labelWidth moves the start numbers with it: three become two under 1019px (sm) or 1559px (lg), two become one under 679px (sm) or 1039px (lg)."
     },
     "children": {

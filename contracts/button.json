@@ -46,6 +46,7 @@
         "lg",
         "xl"
       ],
+      "noteForFigma": true,
       "note": "Icon size, 16 / 20 / 24 / 32. Leave out to follow the Button: 16 on sm, 20 on md and lg. Use a larger icon on an icon-only lg Button where the icon alone carries the action, like a phone footer."
     },
     "iconOnly": {

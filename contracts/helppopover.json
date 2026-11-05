@@ -6,6 +6,7 @@
   "props": {
     "title": {
       "type": "string",
+      "noteForFigma": true,
       "note": "Bold header on a faint band. Leave it out for body text only."
     },
     "content": {

@@ -19,6 +19,7 @@
         "tabs"
       ],
       "default": "list",
+      "noteForFigma": true,
       "note": "list shows every group with its heading. tabs adds a kit Tabs strip under the search: All, then one tab per group heading, like Records / Reports / Sections. A heading tab shows only that group; with a query each tab shows its result count."
     },
     "iconStyle": {

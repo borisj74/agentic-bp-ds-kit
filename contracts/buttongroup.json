@@ -15,6 +15,7 @@
         "lg"
       ],
       "default": "md",
+      "noteForFigma": true,
       "note": "Applied to every Button in the group. Buttons inside do not set their own size. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown)."
     },
     "disabled": {

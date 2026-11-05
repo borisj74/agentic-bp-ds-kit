@@ -36,6 +36,8 @@ Triggers an action.
 
 Props — `emphasis`: `strong` | `subtle` | `minimal` (default `subtle`); `intent`: `brand` | `neutral` | `danger` (default `neutral`); `size`: `sm` | `md` | `lg` (default `md`); `iconStart`: `string`; `iconEnd`: `string`; `iconSize`: `sm` | `md` | `lg` | `xl`; `iconOnly`: boolean (default `false`); `loading`: boolean (default `false`); `toggle`: boolean; `disabled`: boolean (default `false`); `fullWidth`: boolean (default `false`); `type`: `button` | `submit` | `reset` (default `button`); `children`: `ReactNode`
 
+- `iconSize` — Icon size, 16 / 20 / 24 / 32. Leave out to follow the Button: 16 on sm, 20 on md and lg. Use a larger icon on an icon-only lg Button where the icon alone carries the action, like a phone footer.
+
 Pick an emphasis and an intent. Use one strong brand Button per view for the main action. Use subtle (the default) for quieter paths like cancel or back, and minimal for low-emphasis actions. Intent danger is only for work that cannot be undone. Only these pairs exist: strong with brand or danger, subtle with neutral, minimal with neutral, brand or danger. Accessibility is built in: native button, focus ring, loading and disabled states, and a label for icon-only buttons.
 
 - Do not use for in-text navigation (use Link).
@@ -48,6 +50,8 @@ Joined row of kit Buttons that share one size and act as one control cluster.
 
 Props — `label`: `string`; `size`: `sm` | `md` | `lg` (default `md`); `disabled`: boolean (default `false`); `children`: `Button[]`
 
+- `size` — Applied to every Button in the group. Buttons inside do not set their own size. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown).
+
 Use a group for related actions that share one size, like a view switch, a cancel and save pair, or a toolbar. The group sets size and disabled for every Button inside it. Only kit Buttons go in a group.
 
 - Do not invent a local button group or segmented control.
@@ -59,6 +63,8 @@ Use a group for related actions that share one size, like a view switch, a cance
 Filter chip for lists and tables: shows the filter name or its chosen value, opens its options, and turns an applied filter on or off.
 
 Props — `size`: `sm` | `md` | `lg` (default `md`); `open`: boolean (default `false`); `disabled`: boolean (default `false`); `count`: `number`; `value`: `string`; `toggle`: `on` | `off`; `hasDropdown`: boolean (default `true`); `children`: `string`
+
+- `onToggle` — () => void. With a filter set, the name part becomes its own button that turns it on or off, and only the chevron opens the options.
 
 Events — `onToggle`, `onClick`
 
@@ -99,6 +105,8 @@ Brand logo: the full wordmark or the mark alone, in fixed brand colors.
 
 Props — `type`: `default` | `symbol` (default `default`); `label`: `string`
 
+- `type` — default = mark + wordmark (145 x 28). symbol = mark only (22 x 32 frame).
+
 Use the default wordmark in app headers and sign-in screens. Use the symbol alone where space is tight, like a collapsed sidebar. Brand colors are fixed and never follow the theme tokens. In dark theme the wordmark text switches to the white reverse; the mark never changes.
 
 - Do not recolor, retint or tokenize the logo. Brand colors are fixed.
@@ -110,6 +118,8 @@ Use the default wordmark in app headers and sign-in screens. Use the symbol alon
 AI logo for AI features: full logo or icon, in fixed brand colors.
 
 Props — `type`: `default` | `symbol` (default `default`); `intent`: `color` | `monochrome` | `white` | `filled` (default `color`); `label`: `string`
+
+- `type` — default = mark + AI text (55 x 28). symbol = mark only (33 x 28).
 
 Use LogoAI to mark AI features, like an assistant panel header or an AI suggestion. Use Logo for the product brand itself. color is the default. Use white on dark or photo backgrounds, monochrome where color is not allowed, and filled for a stand-alone tile. In dark theme the AI text of the color logo switches to white.
 
@@ -124,6 +134,9 @@ Use LogoAI to mark AI features, like an assistant panel header or an AI suggesti
 Values side by side as bars, one group or stack per category, like invoices by status for each week.
 
 Props — `label`: `string`; `title`: `string`; `subtitle`: `string`; `showHeader`: boolean (default `true`); `categories`: `string[]`; `series`: `ChartSeries[]` { name: string; values: number[]; intent?: ChartIntent; projectedFrom?: number; axis?: "start" | "end" }; `orientation`: `vertical` | `horizontal` (default `vertical`); `highlight`: `number | number[]`; `highlightIntent`: `green` | `olive` | `cyan` | `orange` | `pink` | `gray` | `purple` | `yellow` | `red` | `mint` (default `orange`); `stacked`: boolean (default `false`); `barWidth`: `wide` | `thin` (default `wide`); `showValues`: boolean (default `false`); `showGrid`: boolean (default `true`); `showLegend`: boolean (default `true`); `legendPosition`: `top` | `bottom` | `end` (default `bottom`); `animate`: boolean (default `true`); `format`: `number` | `currency` | `percent` (default `number`); `currency`: `string`; `height`: `number`; `emptyLabel`: `string`; `referenceLines`: `ChartReferenceLine[]`; `marker`: `ChartMarker` { category: number; label: string }; `selected`: `number | null`
+
+- `barWidth` — wide: bars fill most of their category's space, with square corners. thin: every bar is 8px, like a medium Meter bar, with its rounded ends; a stack rounds only its two outer ends. For long runs of periods, like a month of days. Pointing anywhere in a category still shows its tooltip.
+- `marker` — Upright charts only. A thin line down the chart at one category, counted from 0, with its label over the top, like Today.
 
 Events — `onSelectedChange`
 
@@ -153,6 +166,9 @@ One item in a grid or list of options people compare and pick, like a proposal l
 
 Props — `title`: `string`; `overline`: `string`; `badge`: `string`; `badgeIntent`: `BadgeIntent`; `description`: `string`; `amount`: `string`; `message`: `string`; `messageIntent`: `success` | `warning` | `danger` | `info` (default `success`); `image`: `string`; `imageAlt`: `string`; `icon`: `string`; `selectable`: boolean (default `false`); `selected`: boolean; `defaultSelected`: boolean (default `false`); `disabled`: boolean (default `false`); `href`: `string`; `actions`: `CardAction[]` { id: string; label: string; icon: string }; `menu`: `DropdownMenuEntry[]`
 
+- `title` — The item name, an h3. Two lines at most. Without it, the overline (or else the description) names the card and its checkbox.
+- `actions` — Icon buttons at the end of the footer, named by the action and the card. Two at most.
+
 Events — `onSelectedChange`, `onClick`, `onAction`
 
 Use Card for items people scan side by side and often pick from. It is one component: pass the parts you need as props; every part is optional (header, badge, overline, title, description, amount, message, image, footer). The header row holds a badge and an overline, like a request code. description is two lines at most. amount is the price or key number. message is a short status line with an icon, colored by messageIntent. image shows a photo tile at the top right, or icon an icon tile. selectable adds a footer checkbox; clicking anywhere on the card toggles it, and the selected card turns blue. disabled greys the card out. href or onClick make the card open what it shows, like an account in a card view of a list: the title becomes the one link, its hit area covers the whole card, hover lifts the card and keyboard focus rings it. A card either opens something or is picked, not both. Lay cards out with the layout grid classes. actions and menu put the record's actions at the end of the footer, beside the checkbox: the ones it is used for as icon buttons, the rest behind More. Give a Card the same actions as the record's Table row and ListView row, so switching views never changes what can be done.
@@ -166,6 +182,11 @@ Use Card for items people scan side by side and often pick from. It is one compo
 Content for one table cell: text, a number, a date, a link, a redirect to another page, a person, a file, a status, a trend, progress, a switch, row actions or a row menu, a tree row, with an optional row checkbox.
 
 Props — `type`: `text` | `link` | `avatar` | `avatarGroup` | `file` | `payment` | `badge` | `badges` | `trendPositive` | `trendNegative` | `progress` | `actions` | `actionIcons` | `actionMenu` | `checkbox` | `tree` | `number` | `date` | `status` | `switch` | `popupTrigger` | `textBlock` | `redirect` (default `text`); `size`: `sm` | `md` (default `md`); `alignment`: `start` | `center` | `end` (default `start`); `text`: boolean (default `true`); `checkbox`: boolean (default `false`); `label`: `string`; `href`: `string`; `name`: `string`; `src`: `string`; `people`: `CellPerson[]` { name, src? }; `icon`: `string`; `intent`: `BadgeIntent`; `badges`: `CellBadge[]` { label, intent? }; `value`: `string | number`; `actions`: `CellAction[]` { label, icon?, emphasis?, intent?, onClick? }; `menu`: `CellAction[]`; `checked`: boolean; `defaultChecked`: boolean; `level`: `number`; `expanded`: boolean; `showLines`: boolean (default `true`); `treeToggle`: `chevron` | `box` (default `box`)
+
+- `size` — Row height 36 / 40 px. sm holds one line only (a textBlock at sm stops at the cell edge with an ellipsis); content with a second line (a name over an email) uses md. Side padding 12 px at both sizes, same as HeaderCell. Avatars stay xs (24 px), Badge and Checkbox small (20 / 16 px), so rows keep their height. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown).
+- `alignment` — Same as HeaderCell: end for numbers and amounts, center for a checkbox-only column. type number defaults to end.
+- `checkbox` — Leading row Checkbox before the value, labeled Select {label or name}. For a column with only the Checkbox, use type checkbox.
+- `actions` — For actions (labeled, up to 3), actionIcons (icon only, up to 3, label becomes the name and a kit Tooltip) and actionMenu (menu items, danger intent becomes a danger item). onClick runs when picked.
 
 Events — `onClick`, `onCheckedChange`, `onExpandedChange`
 
@@ -181,6 +202,8 @@ One turn in a chat with the assistant: what the person asked, or what the assist
 
 Props — `author`: `user` | `assistant`; `text`: `string`; `children`: `ReactNode`; `bubble`: boolean; `status`: `string`; `sections`: `ChatMessageSection[]` { id, label, count?, content, defaultOpen? }; `actions`: `ChatMessageActionId[]`; `pressed`: `ChatMessageActionId[]`; `suggestions`: `ChatSuggestion[]` { id, label }; `menu`: `DropdownMenuEntry[]`; `person`: `{ name?: string; src?: string; initials?: string }`; `label`: `string`
 
+- `apply` — One action that puts the answer to work where it was asked, like Insert into formula on a suggested formula. It is a kit Button under the answer, before the suggestions, and there is only ever one: the icon row (copy, good, needs work, share, read aloud) stays what it is. Only an assistant answer takes it.
+
 Functions — `apply`
 
 Events — `onAction`, `onSuggestion`, `onMenuSelect`
@@ -195,7 +218,14 @@ Use ChatMessage for each turn in an assistant panel. It is one component: pass a
 
 An editable table: people click a cell to add or change its content, like rule conditions, line items or mappings.
 
-Props — `columns`: `DataGridColumn[]`; `rows`: `DataGridRow[]` { id: string; [key: string]: string }; `defaultRows`: `DataGridRow[]`; `size`: `sm` | `md` (default `md`); `line`: `medium` | `thin` (default `medium`); `rowNumbers`: boolean (default `true`); `canAddRows`: boolean (default `false`); `canRemoveRows`: boolean (default `false`); `canDeleteRows`: boolean (default `false`); `canInsertRows`: boolean (default `false`); `selectable`: boolean (default `false`); `selected`: `string[]`; `defaultSelected`: `string[]`; `rowLabel`: `string`; `emptyLabel`: `string`; `label`: `string`; `stickyFirstColumn`: boolean (default `true`); `expanded`: `string[]`; `defaultExpanded`: `string[]`; `collapsed`: `string[]`; `defaultCollapsed`: `string[]`; `totalRow`: `DataGridRow`; `legend`: `DataGridLegendItem[]` { intent: "success" | "warning" | "danger" | "info" | "neutral"; label: string; icon?: string }
+Props — `columns`: `DataGridColumn[]`; `rows`: `DataGridRow[]` { id: string; [key: string]: string }; `defaultRows`: `DataGridRow[]`; `size`: `sm` | `md` (default `md`); `line`: `medium` | `thin` (default `medium`); `rowNumbers`: boolean (default `true`); `canAddRows`: boolean (default `false`); `canRemoveRows`: boolean (default `false`); `canDeleteRows`: boolean (default `false`); `canInsertRows`: boolean (default `false`); `insertLabel`: `string`; `selectable`: boolean (default `false`); `selected`: `string[]`; `defaultSelected`: `string[]`; `rowLabel`: `string`; `emptyLabel`: `string`; `label`: `string`; `stickyFirstColumn`: boolean (default `true`); `expanded`: `string[]`; `defaultExpanded`: `string[]`; `collapsed`: `string[]`; `defaultCollapsed`: `string[]`; `totalRow`: `DataGridRow`; `legend`: `DataGridLegendItem[]` { intent: "success" | "warning" | "danger" | "info" | "neutral"; label: string; icon?: string }
+
+- `columns` — type defaults to text. options for select. date cells are always a kit DatePicker (size sm); their value is an ISO date, YYYY-MM-DD, shown formatted, and placeholder fills the empty field. A readOnly date column has no picker: it writes the same formatted date as plain text in the row's own font, so a column people cannot change does not read as code. fields and onCalculate for formula, passed to the FormulaEditor. hug makes the column only as wide as its content; otherwise it is at least 160 wide. width is a CSS width. searchable adds a search field at the top of a select column's list that filters options by label, for long lists like a product catalog; searchPlaceholder names it (default Search). setForAll adds a Set for all menu under the column title: Use row 1 value copies the first row's value to every row, Clear all rows empties the column. opensDetail (on a readOnly column, with detail and detailCount) puts a kit Button holding a Count of the other values after the cell's value that opens and closes the row's detail, and the grid drops its toggle column. The open detail lines up under that column (at least --data-grid-detail-min wide, 360px) and slides back toward the start when it would run past the grid's visible edge: use it when the cell shows the first of several values, like the first rate band.
+- `canRemoveRows` — An X button in the action column, named Remove row 2 by a kit Tooltip. It takes the row out of this grid only; nothing else in the app changes. For a row that holds a saved record, pair it with canDeleteRows.
+- `canDeleteRows` — A trash button in the action column, named Delete row 2 by a kit Tooltip. It is the destructive one: the row goes, and so does the record behind it, everywhere in the app. It asks first in a kit AlertDialog — the grid owns that — and only on Delete does the row go and onDeleteRow run. With insert and remove also on it is the action that moves into the More menu.
+- `detail` — (row: DataGridRow) => ReactNode. Makes rows expandable: a toggle column comes first, and an open row shows this under it in one cell across the grid, kept to the grid's visible width. Return null for a row with nothing to show: it gets no toggle and cannot open, so the toggle itself says the row has more, like rate tiers. Put kit pieces in it: a Form of settings, a nested DataGrid (size sm) for sub-rows people edit like rate bands, or a Table (size sm) for sub-rows they only read. The grid's own cell look stays on its own cells, so a Table inside keeps the Table look.
+- `cellLink` — (row: DataGridRow, key: string) => boolean. Draws the cell's value as a link. On a read-only cell it is a kit Link that calls onCellLink; on a cell that edits, the value is underlined in the brand colour and clicking it opens the editor as usual.
+- `totalRow` — A row at the bottom that adds the others up, like Period total: read only, on bg-neutral-subtle, medium weight. Its value per column key; it is never selectable, grouped or given actions.
 
 Functions — `deleteConfirm`, `actionsFor`, `detail`, `detailCount`, `rowParent`, `cellStatus`, `cellReadOnly`, `cellLink`
 
@@ -212,6 +242,9 @@ Use DataGrid when people enter or change data in rows, not just read it. It is o
 Column title for a data table: uppercase label, optional select-all checkbox, optional sort, with a brand-faint bottom border, 2px or 1px.
 
 Props — `label`: `string`; `size`: `sm` | `md` (default `md`); `alignment`: `start` | `center` | `end` (default `start`); `line`: `medium` | `thin` (default `medium`); `checkbox`: boolean (default `false`); `checked`: boolean; `defaultChecked`: boolean; `indeterminate`: boolean (default `false`); `sortable`: boolean (default `false`); `sort`: `none` | `asc` | `desc` (default `none`)
+
+- `label` — Column title, shown uppercase. Omit for a checkbox-only or empty column.
+- `alignment` — end for numbers and amounts. center for a checkbox-only or actions column.
 
 Events — `onCheckedChange`, `onSort`
 
@@ -252,6 +285,8 @@ Use LineChart for trends across ordered categories, usually time. It is one comp
 A list of records, one a row: a primary and a secondary line with an avatar, icon or image before them, and badges, actions, a chevron or a drag handle after, grouped under headers when the list is long, and stepping into nested lists in place.
 
 Props — `label`: `string`; `items`: `ListViewItem[]` { id, primary, secondary?, group?, avatar?, icon?, image?, badge?, badgeIntent?, badgePosition?, unread?, message?, messageIntent?, actions?, disabled?, children?, menu? }; `groups`: `ListViewGroup[]` { id: string; title: string }; `size`: `sm` | `md` | `lg` (default `md`); `collapsible`: boolean (default `false`); `stickyGroups`: boolean (default `false`); `collapsed`: `string[]`; `defaultCollapsed`: `string[]`; `selection`: `none` | `single` | `multiple` (default `none`); `selected`: `string[]`; `defaultSelected`: `string[]`; `interaction`: `none` | `drill` | `drag` (default `none`); `path`: `string[]`; `defaultPath`: `string[]`; `nesting`: `step` | `expand` (default `step`); `expanded`: `string[]`; `defaultExpanded`: `string[]`; `detail`: `ReactNode`
+
+- `selection` — single: a click picks one row, shown light blue between brand lines. multiple: a checkbox on each row; checked rows are light blue. none: rows only show, open or move.
 
 Events — `onItemsChange`, `onCollapsedChange`, `onSelectedChange`, `onOpen`, `onAction`, `onPathChange`, `onExpandedChange`
 
@@ -307,6 +342,8 @@ A semantic table of rows and columns, like invoices or accounts, with optional r
 
 Props — `columns`: `TableColumn[]`; `rows`: `TableRow[]` { id?: string; [key: string]: ReactNode }; `size`: `sm` | `md` (default `md`); `line`: `medium` | `thin` (default `medium`); `caption`: `string`; `footer`: `TableFooter` { label: string; value: ReactNode }; `emptyLabel`: `string`; `selectable`: boolean (default `false`); `selected`: `string[]`; `defaultSelected`: `string[]`; `rowLabel`: `string`
 
+- `columns` — key picks the row value. numeric aligns to the end with tabular digits. emphasis makes the column's text medium weight, like the record id. width is a CSS width, like 30%. maxWidth is a CSS width, like 240px: a long text or link value stops there and ends with an ellipsis instead of widening the table, and the whole value shows on hover and stays for screen readers. Use it for long names, like products; values that must read in full, like amounts and dates, keep their room. opensDetail (with detail and detailCount) puts a kit Button holding a Count of the row's other values after the cell's value; it opens and closes the row's detail under the row, lined up under that column.
+
 Functions — `detail`, `detailCount`
 
 Events — `onSelectionChange`, `onRowClick`
@@ -337,6 +374,8 @@ A nested list people open and close level by level, like teams in an organizatio
 
 Props — `label`: `string`; `items`: `TreeItem[]` { id: string; label: string; icon?: string; disabled?: boolean; children?: TreeItem[] }; `defaultItems`: `TreeItem[]`; `selection`: `none` | `single` | `multiple` (default `single`); `selected`: `string[]`; `defaultSelected`: `string[]`; `expanded`: `string[]`; `defaultExpanded`: `string[]`; `showIcons`: boolean (default `false`); `showLines`: boolean (default `true`); `reorderable`: boolean (default `false`); `size`: `sm` | `md` | `lg`
 
+- `selection` — single: one highlighted row. multiple: a checkbox on each row; a folder checks its whole branch. none: rows only open and close.
+
 Events — `onItemsChange`, `onSelectedChange`, `onExpandedChange`
 
 Use TreeView for data that nests: folders and files, an org chart, parent and child accounts, product categories. It comes in two looks from one component: simple (chevrons and guide lines, one row selected) and advanced (selection multiple, showIcons and reorderable: checkboxes, folder icons and drag handles). It is one component: pass items, each with an id, a label and, for a folder, children. Chevrons open and close folders; faint guide lines join each level to its parent (showLines). selection single highlights one row (clicking a folder also opens it); multiple adds a checkbox to each row that checks a folder's whole branch and shows a dash when only part of it is checked; none only opens and closes. showIcons adds a folder or file icon (or the item's own). reorderable adds a drag handle: drag a row above or below another, or onto a folder to move it inside. The handle is also a button that opens a Move menu (up, down, into the folder above, out of its folder), so nothing needs dragging. Alt with the arrow keys makes the same moves on the focused row, and Shift+F10 opens the menu. Items, selection and open folders can each be controlled or left to the tree.
@@ -350,6 +389,8 @@ Use TreeView for data that nests: folders and files, an org chart, parent and ch
 One bar for everything available in a period, split into the parts it is made of: what each part used, what is left, and anything spent past the allowance.
 
 Props — `segments`: `UsageBarSegment[]` { id, value, kind?, intent?, label?, note?, recent?, legend? }; `figures`: `UsageBarFigure[]` { value, label, at, intent? }; `showLegend`: boolean (default `true`); `label`: `string`
+
+- `figures` — Up to three, one per place. Leave it out for a bar with no figures above it.
 
 Use UsageBar when a single allowance comes from more than one source and people need to see, in one line, where it went and how much is left — free credits, a plan and a top-up, say. It is one component: pass segments, each with an id, a value and a kind. kind "used" takes a chart intent and draws in that colour; kind "left" is the empty track and takes no intent; kind "outside" is what was spent past the allowance: it follows the last part of the allowance, draws red, and is not counted in what the bar measures. Its colour, its caption and its legend key say it is past the end, so nothing else marks where the allowance ran out. A segment with recent true draws as a darker sliver of the same intent right after its part, for the last hour, day or week; give it a legend and it takes its own key in that darker colour, as the hourly bar does with Used in the last hour. Each part can carry a label and a note, written under it as wide as the part; a part too narrow for its own caption leaves it out. figures writes up to three numbers above the bar, in the kit display type, — at "start", at "left" (the first part that is left) and at "end", right-aligned — each with a small line under it, and each able to take a warning or danger intent. The legend under the bar is the kit Legend, one key per used intent plus Left to use, keyed as an outline rather than a colour, and, when there is one, Over the allowance; turn it off with showLegend false. label names the bar for screen readers. Put it in a Section or Card, which gives it its title; the bar draws no box of its own.
 
@@ -376,6 +417,10 @@ Use UsageList to show how much of each limit is used, like a plan or account usa
 Short status or category label.
 
 Props — `intent`: `neutral` | `hollow` | `info` | `success` | `warning` | `danger` | `highlight` (default `neutral`); `emphasis`: `subtle` | `strong` | `faint` (default `subtle`); `size`: `sm` | `md` | `lg` (default `sm`); `icon`: `string`; `iconOnly`: boolean (default `false`); `removable`: boolean (default `false`); `disabled`: boolean (default `false`); `children`: `string`
+
+- `intent` — hollow = outline only. highlight = purple, for new or featured.
+- `icon` — Material Symbols name. Leading icon (12px, 16px at lg), or the only content when iconOnly.
+- `children` — One to three words. Also the label for icon-only badges.
 
 Events — `onRemove`
 
@@ -519,6 +564,8 @@ Pick one item from options that nest several levels deep by walking columns left
 
 Props — `label`: `string`; `options`: `CascaderOption[]`; `value`: `string[]`; `defaultValue`: `string[]`; `variant`: `field` | `panel` (default `field`); `changeOnSelect`: boolean (default `false`); `searchable`: boolean (default `false`); `hasLegend`: boolean (default `true`); `placeholder`: `string`; `size`: `sm` | `md` | `lg`; `labelPosition`: `top` | `start`; `labelWidth`: `sm` | `md` | `lg` (default `md`); `hideLabel`: boolean (default `false`); `name`: `string`; `required`: boolean (default `false`); `disabled`: boolean (default `false`); `invalid`: boolean (default `false`); `error`: `string`; `hint`: `string`; `help`: `string`; `emptyLabel`: `string`
 
+- `hasLegend` — The legend bar under the columns, explaining the relation marks. Shows only when some option has a relation.
+
 Events — `onChange`
 
 Use Cascader when the choice sits at the end of a path and people need to see each level: fields on related records, categories, locations. It is one component: pass options, each with a value, a label and, when it opens another level, children. variant field is a form field that opens the columns in a dropdown and shows the picked path (Invoice / Account / Owner); variant panel draws the columns inline, like the field picker in a modal, with the page showing the choice. Each row can carry a path in brackets (the related object or id), a type badge (Text, Num, Date) and a relation mark: parent ([+], opens the related record's fields) or children (», opens related child records). A legend under the columns explains the marks when any row has one. Only the last level can be picked unless changeOnSelect lets any level be the answer. searchable adds a search box that lists every matching path. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in. labelWidth puts it on a narrower or wider column (140px or 320px) and moves that turn with it, to 460px or 640px.
@@ -532,6 +579,9 @@ Use Cascader when the choice sits at the end of a path and people need to see ea
 The box people write to the assistant in: what the question is about, what is attached, the words, and the toolbar that sends it.
 
 Props — `value`: `string`; `defaultValue`: `string`; `placeholder`: `string`; `hints`: `string[]`; `scopeLabel`: `string`; `scoped`: boolean; `defaultScoped`: boolean (default `false`); `attachments`: `ChatComposerAttachment[]` { id, label }; `addMenu`: `DropdownMenuEntry[]`; `selecting`: boolean (default `false`); `dictating`: boolean (default `false`); `mode`: `quick` | `deep` (default `quick`); `disabled`: boolean (default `false`); `label`: `string`
+
+- `scopeLabel` — What the question can be scoped to, like Accounts page. Pass it only on a screen there is something to scope to; without it there is no scope row.
+- `mode` — quick answers fast; deep thinks longer. The button stays lit on deep. It only shows when onModeChange is set.
 
 Events — `onChange`, `onSend`, `onScopedChange`, `onScopeClose`, `onAttachmentRemove`, `onAdd`, `onSelectingChange`, `onDictatingChange`, `onModeChange`
 
@@ -561,6 +611,8 @@ A date field that opens a calendar to pick one date, or a range between two date
 
 Props — `label`: `string`; `type`: `single` | `dual` (default `single`); `size`: `sm` | `md` | `lg` (default `md`); `labelPosition`: `top` | `start` (default `top`); `labelWidth`: `sm` | `md` | `lg` (default `md`); `hideLabel`: boolean (default `false`); `placeholder`: `string`; `value`: `string | DatePickerRange`; `defaultValue`: `string | DatePickerRange`; `minDate`: `string`; `maxDate`: `string`; `presets`: boolean (default `true`); `monthYear`: `title` | `menus` (default `title`); `name`: `string`; `id`: `string`; `required`: boolean (default `false`); `disabled`: boolean (default `false`); `invalid`: boolean (default `false`); `error`: `string`; `hint`: `string`; `help`: `string`
 
+- `presets` — Type dual only: Today, Yesterday, This week, Last week, This month, Last month, This year, Last year.
+
 Events — `onChange`
 
 Use DatePicker for dates in forms and filters. type single picks one day; type dual picks a start and an end across two months, with quick ranges like Last week. monthYear menus turns the month and year over the days into two menus, for dates far from today, like a date of birth; the arrows stay beside them. Picks stay pending until Apply; Cancel, Escape or a click outside leave the value as it was. Dates are ISO strings (YYYY-MM-DD); a range is { start, end }. Label, hint, error, help and sizes work like Input. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in. labelWidth puts it on a narrower or wider column (140px or 320px) and moves that turn with it, to 460px or 640px.
@@ -574,6 +626,9 @@ Use DatePicker for dates in forms and filters. type single picks one day; type d
 One form: an optional title, kit fields (or titled sections of them) and the actions that save it.
 
 Props — `title`: `string`; `description`: `string`; `variant`: `plain` | `card` (default `plain`); `labelPosition`: `top` | `start` (default `top`); `labelWidth`: `sm` | `md` | `lg` (default `md`); `columns`: `1` | `2` | `3`; `children`: `ReactNode`; `sections`: `FormSection[]`; `actions`: `ReactNode`; `error`: `string`; `id`: `string`
+
+- `labelWidth` — How wide the start-label column is: sm 140px for a form of short names (Email, Status, Currency), md 234px, the product's own column, which fits a name as long as Account Ledger Number on one line, and lg 320px where the names run longer than that. Pick one for the whole form: the fields inside read the Form's column, so setting labelWidth on a field in a form makes the labels down that column stop lining up. A field's own labelWidth is for one standing outside a Form. The field beside the label stays 308px at every step, so the column itself narrows or widens, and the points where the labels go back on top and where columns give way move with it: labels go on top under 460px (sm), 554px (md) or 640px (lg). Read only with labelPosition="start"; with labels on top there is no column to size.
+- `columns` — 2 puts fields side by side, left to right; 3 puts them in threes, for a long form on a wide page. A Textarea spans the row, and so does a DataGrid (like a product's rate bands), which needs the width for its columns; with start labels the grid starts at the section's edge, since its column headers stand in for a label. Set, each column is at most 554px (--layout-column-max) and the fields stay at the start: on a wide page the space past the last column stays empty. Unset, the Form takes the columns of the FormPage or RecordPage it is in; outside one, the fields stack in one column that fills the form, as in a Modal or Drawer. Never more than 3. Columns give way as the form narrows: three become two under 720px (1301px with start labels), and two become one under 560px (867px with start labels). A narrower or wider labelWidth moves the start numbers with it: three become two under 1019px (sm) or 1559px (lg), two become one under 679px (sm) or 1039px (lg).
 
 Events — `onSubmit`
 
@@ -601,6 +656,8 @@ A monospace field for writing formulas and rules, with a toolbar that inserts fi
 
 Props — `label`: `string`; `hideLabel`: boolean (default `false`); `labelPosition`: `top` | `start` (default `top`); `labelWidth`: `sm` | `md` | `lg` (default `md`); `size`: `sm` | `md` | `lg` (default `sm`); `placeholder`: `string`; `value`: `string`; `defaultValue`: `string`; `fields`: `FormulaField[]` { id: string; label: string }; `functions`: `FormulaFunction[]` { name: string; syntax?: string; description?: string }; `aiActive`: boolean (default `false`); `name`: `string`; `id`: `string`; `required`: boolean (default `false`); `disabled`: boolean (default `false`); `readOnly`: boolean (default `false`); `invalid`: boolean (default `false`); `error`: `string`; `hint`: `string`; `help`: `string`
 
+- `aiActive` — The assistant is open for this field: the AI assistant button shows toggle on, so it is clear which field the answer will land in. The screen owns it, since only it knows what the assistant is attached to.
+
 Events — `onChange`, `onCheckSyntax`, `onCalculate`, `onAiAssist`
 
 Use FormulaEditor for calculated fields, rules and validations. It is one form field: pass label, hint, error and help as props, same as Input, and it takes labelPosition from an enclosing Form. The toolbar inserts at the cursor. fields adds an Insert field menu that inserts {!Field.Id}; functions replaces the default function list. Check syntax runs onCheckSyntax, or a built-in bracket and quote check. onCalculate adds a Calculate button that shows its result under the field. onAiAssist adds an AI assistant button at the front of the toolbar for a screen that can answer with a formula; aiActive shows it toggled on while the assistant is attached to this field. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in. labelWidth puts it on a narrower or wider column (140px or 320px) and moves that turn with it, to 460px or 640px.
@@ -614,6 +671,8 @@ Use FormulaEditor for calculated fields, rules and validations. It is one form f
 Single-line text entry with its own label, hint, error and character count.
 
 Props — `label`: `string`; `hideLabel`: boolean (default `false`); `labelPosition`: `top` | `start` (default `top`); `labelWidth`: `sm` | `md` | `lg` (default `md`); `size`: `sm` | `md` | `lg` (default `md`); `type`: `text` | `email` | `password` | `search` | `number` | `tel` | `url` | `file` (default `text`); `placeholder`: `string`; `value`: `string`; `defaultValue`: `string`; `accept`: `string`; `multiple`: boolean (default `false`); `name`: `string`; `id`: `string`; `autoComplete`: `string`; `required`: boolean (default `false`); `disabled`: boolean (default `false`); `readOnly`: boolean (default `false`); `invalid`: boolean (default `false`); `error`: `string`; `hint`: `string`; `help`: `string`; `prefix`: `string`; `suffix`: `string`; `iconStart`: `string`; `iconEnd`: `string`; `maxLength`: `number`
+
+- `type` — file opens the native file picker. value, defaultValue, placeholder, prefix, suffix and maxLength do not apply to it. number shows kit up and down chevrons at the end instead of the browser spinner; arrow keys still step by 1.
 
 Events — `onChange`, `onFilesChange`
 
@@ -645,6 +704,9 @@ Pick exactly one option from a short visible list.
 
 Props — `size`: `sm` | `md` | `lg` (default `md`); `orientation`: `vertical` | `horizontal` (default `vertical`); `layout`: `list` | `card` (default `list`); `disabled`: boolean (default `false`); `hideLegend`: boolean (default `false`); `labelPosition`: `top` | `start` (default `top`); `labelWidth`: `sm` | `md` | `lg` (default `md`); `legend`: `string`; `name`: `string`; `value`: `string`; `defaultValue`: `string`; `error`: `string`; `hint`: `string`; `options`: `RadioGroupOption[]` { value, label, description?, badge?, badgeIntent?, disabled?, hideLabel? }
 
+- `orientation` — Horizontal only for two or three short labels. Card layout is always vertical.
+- `options` — Two to six. description and badge show in card layout. hideLabel keeps an option's label for screen readers only and shows the bare circle (list layout), for a choice whose row already says it.
+
 Events — `onChange`
 
 Use RadioGroup for one choice from two to six options that should stay visible, like a billing cycle. Use Checkbox for independent yes/no choices. The legend names the group; hide it only when a heading already names it. labelPosition start moves the legend into the 234px label column beside the options, so the group lines up with the fields around it. Card layout suits choices that need a description.
@@ -673,6 +735,8 @@ Choose one or several options from a list.
 
 Props — `label`: `string`; `options`: `SelectOption[]` { value, label, disabled? }; `size`: `sm` | `md` | `lg` (default `md`); `labelPosition`: `top` | `start` (default `top`); `labelWidth`: `sm` | `md` | `lg` (default `md`); `itemCheck`: `check` | `checkbox` (default `check`); `hideLabel`: boolean (default `false`); `multiple`: boolean (default `false`); `placeholder`: `string`; `value`: `string | string[]`; `defaultValue`: `string | string[]`; `maxVisible`: `number`; `searchable`: boolean (default `false`); `searchPlaceholder`: `string`; `name`: `string`; `id`: `string`; `required`: boolean (default `false`); `disabled`: boolean (default `false`); `invalid`: boolean (default `false`); `error`: `string`; `hint`: `string`; `help`: `string`; `menuWidth`: `default` | `field` (default `default`)
 
+- `menuWidth` — default: the menu is at least 200 wide. field: the menu is only as wide as the field, for a narrow Select like rows per page.
+
 Events — `onChange`
 
 Use Select to pick a value from a fixed list in a form or filter: country, status, owner, tags. One pick closes the menu; with multiple the menu stays open and each pick toggles. The field shows the picked labels; with maxVisible it shows the first few and a +N badge. Label, hint, error, help, required and sizes work like Input. For 2 to 5 options that should stay visible, use RadioGroup. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in. labelWidth puts it on a narrower or wider column (140px or 320px) and moves that turn with it, to 460px or 640px.
@@ -686,6 +750,8 @@ Use Select to pick a value from a fixed list in a form or filter: country, statu
 An on/off setting that takes effect right away.
 
 Props — `label`: `string`; `hideLabel`: boolean (default `false`); `description`: `string`; `size`: `sm` | `md` | `lg` (default `md`); `checked`: boolean; `defaultChecked`: boolean (default `false`); `disabled`: boolean (default `false`); `name`: `string`; `id`: `string`
+
+- `hideLabel` — Track only, like in a table cell. The switch keeps its natural width.
 
 Events — `onChange`
 
@@ -767,6 +833,10 @@ A titled block of a page, like Account information or Recent invoices: a header 
 
 Props — `title`: `string`; `help`: `string`; `actions`: `ReactNode`; `children`: `ReactNode`; `line`: `medium` | `thin` | `none` (default `medium`); `columns`: `1` | `2` | `3`; `collapsible`: boolean (default `false`); `expanded`: boolean; `defaultExpanded`: boolean (default `true`); `heading`: `md` | `sm` | `xs`; `spacing`: `default` | `tight` (default `default`)
 
+- `children` — The section's content. Leave it out for a header only: the title row and its line, with nothing below.
+- `line` — The line under the header. medium is 2px, thin is 1px, both in the brand-faint color; none drops it, for a block inside a section that reads as one part of it. It applies to this Section's own header only; a Section inside it sets its own.
+- `columns` — Lays FormDisplay rows or kit fields, passed straight in as children, out in 1, 2 or 3 columns, left to right, each at most 554px (--layout-column-max) and kept at the start. A Textarea spans the row. Unset, the Section takes the columns of the RecordPage it is in; outside one, the content stacks at full width as before. Only rows and fields go into columns: a Section of a Table or anything else stays full width.
+
 Events — `onExpandedChange`
 
 Use Section to split a page under its PageHeader into titled parts, each holding a Table, FormDisplay rows, a Scoreboard or a Form. It is one component: pass title and the content as children, or leave children out for a header only, like a heading above content laid out by the page. Page edge padding and gap between Section blocks come from layout classes (`.layout-content`), not from Section —. help adds a ? icon after the title that opens a HelpPopover, which is where a sentence about the section goes: the title itself stands alone, with nothing written under it. actions holds kit Buttons at the end of the header. collapsible adds a chevron button before the title that hides and shows the content; it starts expanded unless defaultExpanded is false. A Section inside another Section's children is a sub-block: its title steps down to text-heading-xs on its own, so the outer title stays the louder one. Its stacked blocks sit one grid gutter apart. line sets the rule under the header: medium (2px, the default) or thin (1px). Each Section sets its own, so a page can keep 2px lines on its sections and give their subsections thin ones. columns (1, 2 or 3) lays a Section of FormDisplay rows or kit fields out in columns, left to right: pass the rows or fields straight in as children, not wrapped in a div. Each column stops at --layout-column-max (554px) and the block stays at the start, so the space past the last column stays empty on a wide screen; the header and its line keep the full width. Columns give way as the Section narrows, like Form columns: three become two under 1301px with start labels (720px with labels on top), and two become one under 867px with start labels (560px on top). Inside a RecordPage the Section takes the record's columns and labelPosition unless it sets its own columns. A Table, Scoreboard or anything else that is not a field or a FormDisplay is never put in columns: a Section of those keeps the full width.
@@ -797,6 +867,11 @@ The product's top bar: logo and environment on the start, global search in the c
 
 Props — `navOpen`: boolean (default `false`); `logo`: `ReactNode`; `homeHref`: `string`; `environment`: `string`; `environmentIntent`: `success` | `info` | `warning` | `danger` | `highlight` | `neutral` (default `success`); `search`: boolean (default `true`); `searchPlaceholder`: `string`; `searchShortcut`: `string`; `searchGroups`: `CommandGroup[]` { heading?: string; items: { id; label; description?; icon?; shortcut?; disabled? }[] }; `searchVariant`: `list` | `tabs` (default `list`); `searchIconStyle`: `tile` | `plain` (default `tile`); `searchScopes`: `CommandScope[]` { value: string; label: string }; `searchScope`: `string`; `assistant`: `AppHeaderAssistant` { label?: string; open?: boolean; onToggle: () => void }; `actions`: `AppHeaderAction[]` { id: string; label: string; icon: string }; `user`: `AppHeaderUser` { name: string; src?: string }; `company`: `AppHeaderCompany` { name: string; logo?: ReactNode }; `darkMode`: boolean (default `false`); `density`: `compact` | `default` | `comfortable`
 
+- `logo` — Defaults to the kit Logo, which drops to its symbol on narrow bars. Pass your own only for a white-label product.
+- `searchShortcut` — Hint on the right of the search, like Ctrl+K. Shown only; it is not a key binding yet. Hidden under 1000px.
+- `assistant` — The BP AI button, before the utility icons: the AI mark and its name (label, BP AI by default) in the AI brand blend. onToggle opens and closes the AppShell assistant; pass open (the screen's assistantOpen) so it shows pressed while the assistant is open. The bar never moves when the assistant opens, so this is the one place to open it from on every screen. On a phone-width bar only the mark shows; the name stays its accessible name.
+- `actions` — Up to three icon buttons, each named by a Tooltip. On a phone-width bar they move behind one more button; only one of the two is shown, so neither is reached twice by the keyboard.
+
 Events — `onNavToggle`, `onSearch`, `onSearchSelect`, `onSearchScopeChange`, `onAction`, `onUserSettings`, `onDarkModeChange`, `onDensityChange`, `onLogout`
 
 Put one AppHeader at the top of the app shell, full width. onNavToggle adds the menu button that opens the side nav. It is one component: logo, environment, search, actions, user and company come from props, and it uses kit Logo, Badge, Button, Tooltip and Avatar inside. environment tags the instance (UAT-2, Sandbox) so people know where they are. With searchGroups, the search opens a kit GlobalSearch in its place: one search box that grows down into the results (Recent items, scopes, arrow keys and Enter); otherwise it runs onSearch; searchShortcut only shows a hint. actions are icon buttons named by a Tooltip. The avatar opens an account menu with the name, User settings, Dark mode, Density & text size and Log out; each row shows only when its handler is passed. The header follows density: its bar, search and buttons shrink in compact and grow in comfortable. Under 800px it turns compact: the logo becomes the symbol and the search becomes an icon button beside the other icons. Under 640px, the kit's mobile break, it turns phone-sized: the environment tag goes, and the row of icon actions becomes one more button holding the same actions, so onAction still tells you which was picked. Under 480px the company badge goes too; the avatar still says who is signed in. The bar answers to its own width, not the window's. Page titles, breadcrumbs and page actions belong in the page, not here.
@@ -810,6 +885,8 @@ Put one AppHeader at the top of the app shell, full width. onNavToggle adds the 
 The app's main navigation: a brand rail of sections on the left, each with an optional second-level menu that flies out beside it.
 
 Props — `items`: `SideNavEntry[]` { id: string; label: string; icon: string; href?: string; children?: SideNavChild[] } | { divider: true }; `endItems`: `SideNavItem[]`; `current`: `string`; `defaultCurrent`: `string`; `expanded`: boolean (default `false`); `pinned`: boolean; `defaultPinned`: boolean (default `false`); `label`: `string`
+
+- `items` — Rail sections, top to bottom. In the app shell this is always the full app nav, APP_NAV from @/patterns/AppShell/appNav (with APP_NAV_END as endItems); never a shorter or made-up list. icon is a Material Symbols name. children is the second-level menu: { id, label, href? } links and { divider: true } lines.
 
 Events — `onNavigate`, `onPinnedChange`
 
@@ -836,6 +913,8 @@ Use Breadcrumb above a page title to show where the page sits in the app. The la
 The bar at the top of the assistant: its mark and name, then start a new chat, go full screen, the options menu and close.
 
 Props — `title`: `string`; `expanded`: boolean (default `false`); `chatsCount`: `number`; `playbooksCount`: `number`; `planMode`: boolean (default `false`); `menu`: `DropdownMenuEntry[]`; `label`: `string`
+
+- `planMode` — Plan Mode is on: its row in the menu is ticked and a Plan Mode badge sits beside the name. On a bar narrower than 480px the badge shows its icon only, still named Plan Mode, so the title stays whole.
 
 Events — `onNewChat`, `onExpandedChange`, `onClose`, `onPlanModeChange`, `onMenuSelect`
 
@@ -867,6 +946,8 @@ A search field over a grouped list of pages, records and actions.
 
 Props — `groups`: `CommandGroup[]` { heading?, items }; `variant`: `list` | `tabs` (default `list`); `iconStyle`: `tile` | `plain` (default `tile`); `size`: `sm` | `md` (default `md`); `label`: `string`; `placeholder`: `string`; `empty`: `string`; `defaultQuery`: `string`; `hints`: boolean (default `true`); `scopes`: `CommandScope[]` { value: string; label: string }; `scope`: `string`; `defaultScope`: `string`; `autoFocus`: boolean (default `false`)
 
+- `variant` — list shows every group with its heading. tabs adds a kit Tabs strip under the search: All, then one tab per group heading, like Records / Reports / Sections. A heading tab shows only that group; with a query each tab shows its result count.
+
 Events — `onScopeChange`, `onSelect`, `onViewAll`
 
 Use GlobalSearch for quick jumps and actions across the app, like a global search. It is one component: pass groups of items as data. Typing filters by label and description, and the typed text shows bold in each label. Arrow keys move the highlight and Enter picks; Escape clears the search. It shows inline; a ⌘K palette comes later. variant tabs turns the group headings into tabs (All, Records, Reports.), like the global search. scopes adds a menu in the search row to narrow what it looks through. onViewAll adds a View all results row at the end. AppHeader and Toolbar open it over their search field, so the field grows into the results.
@@ -880,6 +961,10 @@ Use GlobalSearch for quick jumps and actions across the app, like a global searc
 The pieces of a process walked one step at a time: a dark panel for a step, the dark list of every step beside the page, the header over a step, and the footer under it.
 
 Props — `part`: `panel` | `steps` | `header` | `footer` (default `panel`); `title`: `string`; `subtitle`: `string`; `steps`: `GuidedProcessStep[]` { title, status?, statusText?, tasks }; `current`: `number`; `started`: boolean (default `true`); `placement`: `auto` | `side` | `band` (default `auto`); `shade`: `1` | `2` | `3` | `4` | `5` (default `1`); `startLabel`: `string`; `side`: `start` | `end` (default `end`); `stepTitle`: `string`; `total`: `number`; `actions`: `GuidedProcessAction[]` { id, label, icon?, emphasis?, intent?, type?, form?, disabled? }; `updated`: `string`
+
+- `part` — panel is one step as a dark column; steps is every step beside the page; header goes over the step; footer goes under it. Each part takes only its own props.
+- `title` — Panel: the process name, over the first column only. Header: required, the process name over the step title.
+- `actions` — Footer. The step's buttons in order; the last moves the process on. From 600 to 1023 of box width every one but the last goes in a More menu; under 600 those with an icon are a row of lg icon-only Buttons with xl icons over the last action and the rest share a More menu.
 
 Events — `onStart`, `onCancel`, `onClose`, `onStepsOpen`, `onAction`
 
@@ -920,6 +1005,11 @@ Use LinkList for a short set of places to go from a page, like Quick links in a 
 The top of a page's content: where it sits (breadcrumb), what it is (title, badge, and an optional icon) and the page actions.
 
 Props — `title`: `string`; `breadcrumbs`: `BreadcrumbItem[]` { label: string; href?: string; onClick?: () => void }; `back`: `PageHeaderBack` { label: string; href?: string; onClick?: () => void }; `icon`: `string`; `badge`: `string`; `badgeIntent`: `neutral` | `info` | `success` | `warning` | `danger` | `highlight` (default `neutral`); `actions`: `ReactNode`; `moreActions`: `DropdownMenuEntry[]` { id: string; label: string; icon?: string; danger?: boolean } | { divider: true }; `sticky`: boolean (default `false`); `shadow`: boolean (default `true`)
+
+- `breadcrumbs` — The parents of this page, all links: Home first, then the side-nav section, then any parent record. PageHeader adds the title as the last, current crumb, so the trail always reads Home › section › this page. On the section's own page, like the Accounts list, the title is the section itself, so pass only Home and the trail reads Home › Accounts.
+- `back` — Optional. A minimal icon-only Button (arrow_back, drawn one size up at icon md) at the start of the title line, before the icon, that goes back to where the page was opened from. label is its accessible name and its tooltip, so write where it goes, like Back to accounts. onClick wins; otherwise href is followed; with neither, it goes back one step in history. The breadcrumb is still the page's place in the app, so pass back only as a shortcut beside it, never instead of it. In sticky it moves to the start of the compact bar, before the trail.
+- `icon` — Optional. Leave it out by default: the title stands on its own. Pass a Material Symbols name, like folder_open, only when the page wants an icon before the title; the kit Icon draws it at size lg in the brand color.
+- `shadow` — With sticky, a subtle line and a shadow that falls downward only, so the full-width bar does not read as a floating card.
 
 Events — `onMoreSelect`
 
@@ -977,6 +1067,9 @@ The bar above a list or table: find and filter on the left, view and actions on 
 
 Props — `filters`: `ReactNode`; `filterCount`: `number`; `filtersOpen`: boolean; `defaultFiltersOpen`: boolean (default `false`); `filterHelp`: `string`; `searchValue`: `string`; `searchPlaceholder`: `string`; `searchGroups`: `CommandGroup[]` { heading?: string; items: { id: string; label: string; description?: string; icon?: string }[] }; `field`: `ReactNode`; `selectedCount`: `number`; `views`: `ToolbarView[]` { id: string; label: string }; `view`: `string`; `moreActions`: `DropdownMenuEntry[]` { id: string; label: string; icon?: string; danger?: boolean } | { divider: true }; `actions`: `ReactNode`; `buttons`: `raised` | `subtle` (default `raised`); `label`: `string`
 
+- `field` — One more control after the search: a kit DatePicker or Select, size sm, with labelPosition start, like Effective on. For a value that narrows the rows and changes often enough to stay on the bar instead of in the filter bar. It can hold more than one control: the slot is a row spaced like the rest of the bar, so pass them in a fragment rather than spacing them yourself.
+- `actions` — Kit Buttons size sm: subtle first, one strong brand Button last. At most five visible actions including More. To fold into the Actions menu on a narrow bar, each must be a kit Button whose children are its text label (an icon-only Button already passes its name that way); picked from the menu, its onClick runs with no event. Anything else and the actions stay a row that wraps.
+
 Events — `onFiltersOpenChange`, `onReset`, `onApply`, `onSearchChange`, `onSearchSelect`, `onSearchViewAll`, `onViewChange`, `onRefresh`, `onMoreSelect`
 
 Put one Toolbar right above a list or table, under the PageHeader. It is one component. Left: a Filters button (when filters are passed), carrying a kit Count of how many filters are on and a search field, which with searchGroups opens a kit GlobalSearch dropdown of quick-navigation results; then, after a divider, the view picker and refresh. Right: a More menu and the actions, kit Buttons size sm with at most one strong brand Button, last. Filters toggles the filter bar under it: the filter chips (kit Dropdown trigger filter), then Reset and Apply filters, and an optional help icon at the end. Every part is optional; leave out what the list does not need. buttons subtle gives the buttons on the bar the bar's own grey instead of white paper, for a quieter bar; the search field keeps its white box either way. On a page that scrolls, the Toolbar stays at the top under the compact PageHeader bar, so what filters and acts on the list is in reach the whole way down; the patterns pin it, not the Toolbar itself. Under 1024px the toolbar keeps to one line: the filters, the search (it narrows first when space is short), the view and refresh, with the actions at the end. Under 640px, the kit's mobile break, the search takes a line of its own and everything else shares the next. When the actions do not fit on that line they fold into one Actions menu that lists them, then More's items after a divider. It is either the whole row of buttons or the one menu, never a wrapped row. If even the Actions button does not fit, it shows as an icon-only more button, still named Actions.
@@ -1007,6 +1100,8 @@ A panel that slides in from the right edge for a detail view or an edit form abo
 
 Props — `open`: boolean; `title`: `string`; `description`: `string`; `size`: `narrow` | `medium` | `wide` | `extended` (default `narrow`); `showClose`: boolean (default `true`); `children`: `ReactNode`; `footer`: `ReactNode`
 
+- `size` — Width 360 / 460 / 590 / 1100, never wider than the screen. Full height; the body scrolls.
+
 Events — `onClose`
 
 Use Drawer to show or edit one record next to the list it came from: a detail view, an edit form, related context. It is one component: pass open, title, onClose and the content as children. size picks the width: narrow 360 for quick views, medium 460 for forms, wide 590 for rich details, extended 1100 for side-by-side work. footer holds kit Buttons, size sm, at the end: subtle first, one strong brand Button last. Escape, the close button or a click on the page behind it closes it. The body is the box its content measures, not the window: inside narrow, medium and wide drawers, which are all under the kit's 640 break,.layout-split, the fixed metrics rows and Scoreboard go to one column or their phone shape on their own, and extended keeps columns. Stack blocks in the body with.layout-stack; the drawer has its own 20px padding, so do not put.layout-content inside it. For a decision that must block the page, use Modal or AlertDialog. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page.
@@ -1021,6 +1116,15 @@ A short list of actions or options that opens from a Button or a FilterButton.
 
 Props — `label`: `string`; `items`: `DropdownMenuEntry[]` { id, label, description?, icon?, danger?, disabled?, selected?, checkbox?, count? }; `trigger`: `button` | `filter` | `field` (default `button`); `emphasis`: `strong` | `subtle` | `minimal` (default `subtle`); `intent`: `brand` | `neutral` | `danger` (default `neutral`); `size`: `sm` | `md` | `lg` (default `md`); `icon`: `string`; `iconOnly`: boolean (default `false`); `count`: `number`; `alignment`: `left` | `right` (default `left`); `disabled`: boolean (default `false`); `closeOnSelect`: boolean (default `true`); `open`: boolean; `multiple`: boolean (default `false`); `id`: `string`; `text`: `string`; `muted`: boolean (default `false`); `badge`: `string`; `toggle`: `on` | `off`; `labelledBy`: `string`; `describedBy`: `string`; `searchable`: boolean (default `false`); `searchPlaceholder`: `string`; `empty`: `string`; `menuWidth`: `default` | `field` (default `default`)
 
+- `emphasis` — Button trigger only. Same pairs as Button: strong with brand or danger, subtle with neutral, minimal with neutral, brand or danger.
+- `intent` — Button trigger only. Required with emphasis strong.
+- `icon` — Leading icon on the Button trigger. Icon-only defaults to more_vert.
+- `iconOnly` — Icon-only Button trigger, like a row More menu. label stays as its name.
+- `count` — Filter trigger only. Applied filters shown as a Count.
+- `toggle` — trigger filter only: the filter's on/off state. See FilterButton.
+- `onToggle` — trigger filter only: () => void. Splits the filter button: the name turns it on or off, the chevron opens the menu.
+- `menuWidth` — default: the menu is at least 200 wide. field: the menu is only as wide as the trigger. Select passes it through.
+
 Events — `onOpenChange`, `onSelect`, `onToggle`
 
 Use Dropdown for row actions, a More menu, or filter options. trigger button uses the kit Button with a chevron (or an icon-only button); trigger filter uses the kit FilterButton with its count. Items are data: label, optional description, icon, danger, disabled, selected and checkbox, with { divider: true } between groups. For filters, use checkbox items and closeOnSelect false. The panel is a white card with a blue top line, placed under the trigger (above it when there is no room). Long lists scroll past 280px; searchable adds a search field on top. The menu is fixed and placed under its trigger, and it keeps inside the frame it is in: the app frame when the screen sits in one, else the window. It gives up width rather than hanging outside, so a phone-width frame gets a narrower menu, not one over the edge. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page.
@@ -1034,6 +1138,8 @@ Use Dropdown for row actions, a More menu, or filter options. trigger button use
 A small help panel with an optional title and a short paragraph, opened from a ? icon beside a label or setting.
 
 Props — `title`: `string`; `content`: `string`; `position`: `above` | `below` | `left` | `right` (default `below`); `delay`: `number`; `open`: boolean; `disabled`: boolean (default `false`); `children`: `ReactElement`
+
+- `title` — Bold header on a faint band. Leave it out for body text only.
 
 Wrap one focusable trigger, usually a ? help icon, in HelpPopover and pass title and content. It shows on hover and keyboard focus, and a click or tap pins it open until a click elsewhere, Escape, or another click. Form fields already use it: pass help on Input, Textarea, Select, DatePicker, FormulaEditor or FormDisplay and the label becomes the title. For a one-line name on an icon button, use Tooltip. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page.
 

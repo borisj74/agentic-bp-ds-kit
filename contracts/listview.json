@@ -81,6 +81,7 @@
         "multiple"
       ],
       "default": "none",
+      "noteForFigma": true,
       "note": "single: a click picks one row, shown light blue between brand lines. multiple: a checkbox on each row; checked rows are light blue. none: rows only show, open or move."
     },
     "selected": {

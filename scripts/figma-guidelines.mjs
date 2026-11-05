@@ -232,6 +232,13 @@ const componentEntry = (meta) => {
   const names = (list) => list.map((name) => `\`${name}\``).join(", ");
   const accessors = callbacks.filter((name) => !/^on[A-Z]/.test(name));
   const events = callbacks.filter((name) => /^on[A-Z]/.test(name));
+  // A prop's note is written for someone reading code, and most of it says how the piece behaves rather than what
+  // gets drawn. Every note would also put the files well past Figma's cap. So a contract marks the few whose note
+  // carries something the property line cannot show — a count, a size, which values pair, where the prop may be
+  // used — with noteForFigma, and only those come through, each on its own line under the props.
+  const propNotes = entries
+    .filter(([, p]) => p.noteForFigma && p.note)
+    .map(([name, p]) => `- \`${name}\` — ${noContractRefs(p.note)}`);
   // The whole usage paragraph, not a trim of it: a contract opens with what the piece is and how data goes in,
   // and only says how it behaves further down — a wide Table scrolls inside its box in sentence 10 of 14. Cut to
   // the first few sentences and the agent gets what the line above already told it, and none of the behaviour.
@@ -239,6 +246,7 @@ const componentEntry = (meta) => {
     `### ${c.name}`,
     firstSentence(c.intent),
     props.length ? `Props — ${props.join("; ")}` : null,
+    propNotes.length ? propNotes.join("\n") : null,
     accessors.length ? `Functions — ${names(accessors)}` : null,
     events.length ? `Events — ${names(events)}` : null,
     c.usage ? noContractRefs(c.usage) : null,

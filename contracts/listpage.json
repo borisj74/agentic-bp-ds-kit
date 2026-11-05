@@ -25,6 +25,7 @@
     },
     "meta": {
       "type": "string",
+      "noteForFigma": true,
       "note": "When the rows were read, written as one quiet line under the bar at the page's left edge, like Updated 09:45 UTC. One per page: rows, captions and cards never repeat it. It is hidden while the bulk bar is up, since nothing is being read then."
     },
     "pagination": {

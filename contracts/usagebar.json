@@ -27,6 +27,7 @@
         "at": "\"start\" | \"left\" | \"end\" Where it sits: the start of the bar, the start of the first left part, or the end, right-aligned.",
         "intent": "\"warning\" | \"danger\"? Colours the number amber or red, for an allowance running out or already past."
       },
+      "noteForFigma": true,
       "note": "Up to three, one per place. Leave it out for a bar with no figures above it."
     },
     "showLegend": {
