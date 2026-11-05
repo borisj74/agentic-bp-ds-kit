@@ -4,6 +4,13 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.9.1 — 2026-11-05
+
+One-series charts pick their own colour.
+
+### Changed
+- The catalog and demo charts that draw a single series now name their intent instead of taking the first colour in the series order. Revenue is green, money coming in rather than pink by position, and the ranked bars on BarChart stay gray so the highlight on the top and bottom bar carries the meaning. The series order is for telling several series apart; with one series there is nothing to tell apart, so the colour should say what the number is. Charts with more than one series still take the order. Examples only — no component, contract or token changed.
+
 ## v0.9.0 — 2026-11-05 · Breaking
 
 Series colours follow BP's order, and red is kept for danger.

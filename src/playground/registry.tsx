@@ -535,7 +535,9 @@ const emptyProps = (p: Props) =>
 const M = 1_000_000;
 const CHART_SAMPLES: Record<string, unknown> = {
   "{months}": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-  "{revenue}": [{ name: "Revenue", values: [3.4 * M, 3.6 * M, 4.2 * M, 4.4 * M, 4.6 * M, 4.9 * M] }],
+  // One series, so it picks its own colour: green for money coming in. The series order is for telling
+  // several series apart, and there is nothing here to tell apart.
+  "{revenue}": [{ name: "Revenue", values: [3.4 * M, 3.6 * M, 4.2 * M, 4.4 * M, 4.6 * M, 4.9 * M], intent: "green" }],
   "{revenueByType}": [
     { name: "Recurring", values: [2.1 * M, 2.3 * M, 2.6 * M, 2.8 * M, 3.0 * M, 3.2 * M] },
     { name: "Non recurring", values: [1.3 * M, 1.3 * M, 1.6 * M, 1.6 * M, 1.6 * M, 1.7 * M] },
@@ -582,7 +584,8 @@ const CHART_SAMPLES: Record<string, unknown> = {
     { name: "Paid", values: [15000, 20000, 20000, 20000, 65000, 75000, 175000], intent: "green" },
   ],
   "{customers}": ["Northwind Traders", "Acme Corporation", "Globex Industries", "Initech", "Umbrella Health Services", "Stark Logistics"],
-  "{balances}": [{ name: "Open balance", values: [482000, 391500, 268200, 174900, 121300, 64800] }],
+  // Ranked bars: the highlight intent carries the meaning, so the bars under it stay the quiet gray.
+  "{balances}": [{ name: "Open balance", values: [482000, 391500, 268200, 174900, 121300, 64800], intent: "gray" }],
   "{payments}": [
     { label: "Card", value: 182400 }, { label: "ACH", value: 96300 }, { label: "Wire", value: 41800 }, { label: "Check", value: 12600 },
   ],
@@ -1041,7 +1044,7 @@ export const registry: Record<string, Entry> = {
     },
     hint: "Hover or use the arrow keys for the tooltip. Turn the title, area, stacked, points, values, grid, legend and animate on and off. Variants has a limit line, a dashed forecast and a today marker.",
     block: true,
-    card: <div style={{ width: "100%" }}><LineChart label="Revenue" categories={["Jan", "Feb", "Mar", "Apr", "May"]} series={[{ name: "Revenue", values: [3, 3.4, 4.1, 4.3, 4.8] }]} area showLegend={false} height={96} animate={false} /></div>,
+    card: <div style={{ width: "100%" }}><LineChart label="Revenue" categories={["Jan", "Feb", "Mar", "Apr", "May"]} series={[{ name: "Revenue", values: [3, 3.4, 4.1, 4.3, 4.8], intent: "green" }]} area showLegend={false} height={96} animate={false} /></div>,
   },
   ListPage: {
     // The pattern, driven the way a screen would drive it: the filters, the ticks and the page live in the screen.

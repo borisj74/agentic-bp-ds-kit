@@ -1688,7 +1688,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
         <Tiles>
           <LineChart
             label="Revenue by time" title="Revenue by Time" showHeader categories={MONTHS}
-            series={[{ name: "Revenue", values: [4300, 4400, 4600, 4500, 4800, 4900] }]}
+            series={[{ name: "Revenue", values: [4300, 4400, 4600, 4500, 4800, 4900], intent: "green" }]}
             area showPoints height={220}
           />
           <BarChart
