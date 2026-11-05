@@ -117,7 +117,6 @@ interface TreeUi {
   onSelect: (id: string) => void;
   onRemove: (id: string) => void;
   onInsert: (spot: Spot, it: BuildItem) => void;
-  onAsk: () => void;
 }
 
 // The list and the rule being looked at. Runs tick along here, so leaving a rule's page doesn't stop its run.
@@ -563,7 +562,6 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
     onSelect: setSelected,
     onRemove: remove,
     onInsert: place,
-    onAsk: () => setAiOpen(true),
   };
 
   return (
@@ -573,7 +571,7 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
           <AppHeader
             navOpen={navOpen} onNavToggle={() => setNavOpen((o) => !o)}
             environment="DEV" searchShortcut="Ctrl+K" onSearch={notHere}
-            actions={[{ id: "ai", label: "BP AI", icon: "auto_awesome" }]} onAction={() => setAiOpen((o) => !o)}
+            assistant={{ open: aiOpen, onToggle: () => setAiOpen((o) => !o) }}
             user={{ name: "Sayra Bunch" }} company={{ name: "CCC" }}
           />
         }
@@ -635,11 +633,6 @@ function RuleEditor({ record, onPatch, onBack }: { record: RuleRecord; onPatch: 
                 <span className={styles.detailsButton}>
                   <Button size="sm" iconStart="info" onClick={() => setDetailsFor(stage)}>Details</Button>
                 </span>
-                {!aiOpen && (
-                  <span className={styles.detailsButton}>
-                    <Button size="sm" iconStart="auto_awesome" onClick={() => setAiOpen(true)}>{stage === "results" ? "Explain results" : "Ask BP AI"}</Button>
-                  </span>
-                )}
                 {counts && <span className={styles.scope}>{counts === sampleCounts ? "Counts from the 5% sample" : `Counts from all past ${type.many}`}</span>}
               </div>
             )}
@@ -845,9 +838,7 @@ function StartChoice({ ui }: { ui: TreeUi }) {
         ))}
       </div>
       <span className={styles.choiceNote}>One kind per rule, because the model learns what&apos;s normal for that kind. This can&apos;t change later.</span>
-      <div className={styles.choiceAsk}>
-        <Button size="sm" iconStart="auto_awesome" onClick={ui.onAsk}>Describe it to BP AI instead</Button>
-      </div>
+      <span className={styles.choiceNote}>Rather say it in a sentence? Open BP AI at the top and it drafts the rule for you.</span>
     </div>
   );
 }
