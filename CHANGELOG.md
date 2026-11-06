@@ -4,6 +4,13 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.9.3 — 2026-11-06
+
+The ranked bar example says what its colour means.
+
+### Changed
+- BarChart's ranked example in the catalog names the first and last bar in `highlight`, which it never said out loud, so changing the Highlight intent looked like it coloured two bars at random. The subtitle now reads "Highest and lowest picked out, this period", and the hint says the other four bars keep the series gray. Catalog copy only — no component, contract or token changed.
+
 ## v0.9.2 — 2026-11-05
 
 The catalog hides a control that cannot do anything.
