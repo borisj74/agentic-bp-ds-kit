@@ -914,9 +914,9 @@ export const registry: Record<string, Entry> = {
     // Ranked: one series sorted longest first, with the top and bottom bars picked out, as in the Figma.
     normalize: ({ bars, ...p }) =>
       bars === "ranked"
-        ? { ...p, title: "Open balance by customer", subtitle: "Top six, this period", categories: "{customers}", series: "{balances}", orientation: "horizontal", stacked: false, highlight: [0, 5] }
+        ? { ...p, title: "Open balance by customer", subtitle: "Highest and lowest picked out, this period", categories: "{customers}", series: "{balances}", orientation: "horizontal", stacked: false, highlight: [0, 5] }
         : p,
-    hint: "Click a bar to pick that category, or focus the chart and press Enter; click it again or press Clear to let go. Switch the bars and the orientation. Ranked picks out the top and bottom bar in the highlight intent. Turn the title, stacked, values, grid, legend and animate on and off.",
+    hint: "Click a bar to pick that category, or focus the chart and press Enter; click it again or press Clear to let go. Switch the bars and the orientation. Ranked names the first and last bar in highlight, so the highlight intent paints those two and the other four keep the series gray. Turn the title, stacked, values, grid, legend and animate on and off.",
     block: true,
     card: <div style={{ width: "100%" }}><BarChart label="Invoices by status" categories={["W1", "W2", "W3", "W4"]} series={[{ name: "Paid", values: [3, 5, 4, 6] }, { name: "Sent", values: [2, 2, 3, 2] }]} stacked showLegend={false} height={96} animate={false} /></div>,
   },
