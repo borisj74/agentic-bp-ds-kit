@@ -11,8 +11,11 @@
 /* The lift under the pinned bar, from the same plumbing a list and a record use (src/patterns/band.ts). The
    bar keeps the page's side padding, so it cannot cast anything that reaches the page edges; this box bleeds
    out through the inset to do it. */
+/* It is a child of the column, so it pulls back one gap at its head and its own height at its foot: the groups
+   keep one section gap under the bar, not two. */
 .scrollShadow {
-  height: var(--border-width-medium); margin-block-end: calc(-1 * var(--border-width-medium));
+  height: var(--border-width-medium);
+  margin-block: calc(-1 * var(--layout-gutter-lg)) calc(-1 * var(--border-width-medium));
   position: sticky; z-index: var(--stick-lift);
   top: calc(var(--table-stick-top, 0px) + var(--table-head-height, 0px));
   width: auto; margin-inline: calc(-1 * var(--layout-margin-md));
