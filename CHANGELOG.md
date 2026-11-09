@@ -4,6 +4,23 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.10.0 — 2026-11-09
+
+Six charts the kit was missing, and lines that step.
+
+### Added
+- `RadarChart`: several measures on one web, one filled outline per series, so two things can be compared on every measure at once. From BP | Components 9131:7152. Three or more axes, `levels` rings, `max` for a known top, `fill` off past two series, `showScale` for the ring values.
+- `FunnelChart`: steps that narrow, as one solid stack of equal-height bands, a colour a step. From BP | Components 9122:8394 (Accumulation Chart), whose shape it draws exactly. `direction` funnel or pyramid; `labels` names the steps in the keys or beside their bands with the counts.
+- `WaterfallChart`: how a balance got from one total to another, with the rises and falls between and a dotted line joining them. Handles a run that goes under zero.
+- `ScatterChart`: two measures against each other, a dot a record, with `size` on a point for a third measure as a bubble.
+- `Heatmap`: a grid weighted by value, one intent in five steps, with 2D arrow-key reading and empty cells for gaps.
+- `Sparkline`: a trend small enough for a table cell or a tile, as a line, an area or bars, in three sizes.
+
+### Changed
+- `LineChart` series take `curve: "step"`, which holds each value to the next category and jumps there, for a measure that only changes at a moment, like the seats on a plan. With `area` the fill follows the same steps, and a dashed forecast steps too.
+
+Nothing is renamed or removed, so screens on v0.9.4 move over as they are. There is no Gauge: `Meter` already is one, with `shape` circle or semicircle.
+
 ## v0.9.4 — 2026-11-09
 
 A dashboard's first group sits one section gap under its toolbar, not two.
