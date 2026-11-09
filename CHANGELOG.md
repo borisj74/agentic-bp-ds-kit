@@ -4,6 +4,13 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.9.4 — 2026-11-09
+
+A dashboard's first group sits one section gap under its toolbar, not two.
+
+### Fixed
+- Dashboard with a `toolbar`: the scroll shadow under the sticky bar is a child of the dashboard column, so the column gap landed above and below it and the first group sat 56px under the bar instead of about 32px (the section gap plus the bar's foot). The shadow now pulls back one gap at its head and its own height at its foot, so it takes no space. Its sticky position and the lift when the bar is held are unchanged. Dashboards without a toolbar were not affected.
+
 ## v0.9.3 — 2026-11-06
 
 The ranked bar example says what its colour means.
