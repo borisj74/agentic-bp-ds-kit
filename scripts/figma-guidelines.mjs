@@ -20,6 +20,19 @@ const index = json("contracts/index.json");
 // One sentence, so a component's line stays a line.
 const firstSentence = (s = "") => (s.match(/^[^.]*\./)?.[0] ?? s).trim();
 
+// A usage paragraph runs to 14 sentences for the bigger pieces, and all of them together were 72KB of the 150KB
+// these files cost — enough to put the library over Figma's 200KB cap on the next component added. A contract opens
+// with what the piece is and how data goes in, and the rules the agent cannot guess are spread down the rest, so
+// neither the whole paragraph nor a flat cut of the first few is right. What comes through: the opening three
+// sentences, then every later sentence carrying a rule — what to use instead, what is capped, what belongs where,
+// what gives way. What is left behind is detail the property line above already shows (which values align, what an
+// empty table says) and behaviour a static Figma drawing has no way to express.
+const RULE = /\b(never|do not|only|must|at most|one per|instead of|rather than|no more than|belongs? in|belong to|give way|too wide|scrolls? (in|inside) its own)\b/i;
+const usageForFigma = (s = "") => {
+  const sentences = s.trim().split(/(?<=[.!?])\s+/);
+  return [...sentences.slice(0, 3), ...sentences.slice(3).filter((line) => RULE.test(line))].join(" ");
+};
+
 // Pointers back at the contract files mean nothing inside Figma.
 const noContractRefs = (s = "") => s
   .replace(/\s*(?:See|see|Read|read) contracts\/[a-z0-9]+\.json for the full contract\.?/g, "")
@@ -239,9 +252,6 @@ const componentEntry = (meta) => {
   const propNotes = entries
     .filter(([, p]) => p.noteForFigma && p.note)
     .map(([name, p]) => `- \`${name}\` — ${noContractRefs(p.note)}`);
-  // The whole usage paragraph, not a trim of it: a contract opens with what the piece is and how data goes in,
-  // and only says how it behaves further down — a wide Table scrolls inside its box in sentence 10 of 14. Cut to
-  // the first few sentences and the agent gets what the line above already told it, and none of the behaviour.
   return [
     `### ${c.name}`,
     firstSentence(c.intent),
@@ -249,7 +259,7 @@ const componentEntry = (meta) => {
     propNotes.length ? propNotes.join("\n") : null,
     accessors.length ? `Functions — ${names(accessors)}` : null,
     events.length ? `Events — ${names(events)}` : null,
-    c.usage ? noContractRefs(c.usage) : null,
+    c.usage ? usageForFigma(noContractRefs(c.usage)) : null,
     c.doNot?.length ? c.doNot.slice(0, 3).map((d) => `- ${noContractRefs(d)}`).join("\n") : null,
   ].filter(Boolean).join("\n\n");
 };
@@ -271,7 +281,7 @@ const patternEntry = (meta) => {
   return [
     `## ${p.name}`,
     noContractRefs(p.intent),
-    noContractRefs(p.usage),
+    usageForFigma(noContractRefs(p.usage)),
     p.useWhen?.length ? `**Use when**\n\n${p.useWhen.map((u) => `- ${u}`).join("\n")}` : null,
     p.composes?.length ? `**Composes** ${p.composes.map((c) => `\`${c}\``).join(", ")}` : null,
     p.doNot?.length ? `**Do not**\n\n${p.doNot.map((d) => `- ${noContractRefs(d)}`).join("\n")}` : null,
