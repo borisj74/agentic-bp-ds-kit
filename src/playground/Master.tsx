@@ -2,6 +2,8 @@
 import { useState, type CSSProperties } from "react";
 import { Button } from "@/ui/Button/Button";
 import { Icon } from "@/ui/Icon/Icon";
+import { RadioGroup } from "@/ui/RadioGroup/RadioGroup";
+import { Segmented } from "@/ui/Segmented/Segmented";
 import { Switch } from "@/ui/Switch/Switch";
 import { Tabs } from "@/ui/Tabs/Tabs";
 import styles from "./master.module.css";
@@ -143,27 +145,28 @@ export function Master({ contract }: { contract: Contract }) {
             <div className={[styles.canvas, hasControls ? "" : styles.canvasFull].join(" ")}>{entry.block ? <div className={[styles.block, entry.wide ? styles.wide : ""].join(" ")}>{entry.render(shown)}</div> : entry.render(shown)}</div>
             {hasControls && (<aside className={styles.panel} aria-label={`${contract.name} controls`}>
               {enums.map(([k, v]) => {
-                const id = `ctl-${k}`;
-                // Size and columns read as one row of chips (sm → lg, 1 → 3); number values keep their type.
-                return k === "size" || k === "columns" ? (
+                // The control panel is a screen like any other: the kit's own pickers, not a local pair of them.
+                // An enum value can be a number (columns), and the code snippet has to print columns={2}, so the
+                // picker works in strings and the original value comes back by matching on its text.
+                const options = (k === "size" ? order(v.enum!) : v.enum!);
+                const back = (value: string) => set(k, v.enum!.find((o) => String(o) === value));
+                // Size and columns read as one row of chips (sm → lg, 1 → 3). Segmented holds two to five, so a
+                // longer run falls through to the list below.
+                return (k === "size" || k === "columns") && options.length <= 5 ? (
                   <div key={k} className={styles.group}>
-                    <span id={id} className={styles.label}>{cap(words(k))}</span>
-                    <div className={styles.segment} role="group" aria-labelledby={id}>
-                      {(k === "size" ? order(v.enum!) : v.enum!).map((opt) => (
-                        <button key={String(opt)} type="button" className={[styles.segBtn, state[k] === opt ? styles.segOn : ""].join(" ")} aria-pressed={state[k] === opt} onClick={() => set(k, opt)}>{opt}</button>
-                      ))}
-                    </div>
+                    <Segmented
+                      label={cap(words(k))} size="sm"
+                      options={options.map((opt) => ({ value: String(opt), label: String(opt) }))}
+                      value={String(state[k])} onChange={back}
+                    />
                   </div>
                 ) : (
-                  <div key={k} className={styles.group} role="radiogroup" aria-labelledby={id}>
-                    <span id={id} className={styles.label}>{cap(words(k))}</span>
-                    {/* Number enums (like columns) keep their type so code prints columns={2}. */}
-                    {v.enum!.map((opt) => (
-                      <label key={String(opt)} className={styles.radio}>
-                        <input type="radio" name={id} value={String(opt)} checked={state[k] === opt} onChange={() => set(k, opt)} />
-                        {cap(String(opt))}
-                      </label>
-                    ))}
+                  <div key={k} className={styles.group}>
+                    <RadioGroup
+                      legend={cap(words(k))} size="sm"
+                      options={options.map((opt) => ({ value: String(opt), label: cap(String(opt)) }))}
+                      value={String(state[k])} onChange={back}
+                    />
                   </div>
                 );
               })}

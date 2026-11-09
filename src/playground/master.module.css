@@ -42,24 +42,6 @@
 .group { display: grid; gap: var(--space-xsmall); }
 .label { font-size: var(--font-size-xsmall); font-weight: var(--font-weight-medium); color: var(--text-neutral); }
 
-.segment { display: inline-flex; justify-self: start; gap: 2px; padding: 2px; background: var(--bg-neutral-subtle); border-radius: var(--radius-medium); }
-.segBtn {
-  font: inherit; font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); background: transparent; border: 0;
-  padding: var(--space-xxxsmall) var(--space-xsmall); border-radius: var(--radius-small); cursor: pointer;
-}
-.segBtn:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); }
-.segOn { background: var(--surface-raised); color: var(--text-neutral-strong); }
-
-.radio { display: flex; align-items: center; gap: var(--space-xsmall); font-size: var(--font-size-small); color: var(--text-neutral-strong); cursor: pointer; }
-.radio input {
-  appearance: none; margin: 0; width: var(--icon-size-medium); height: var(--icon-size-medium); flex: none;
-  display: grid; place-content: center; cursor: pointer;
-  border: var(--border-width-thin) solid var(--border-neutral-strong); border-radius: var(--radius-full); background: var(--surface-raised);
-}
-.radio input::before { content: ""; width: 10px; height: 10px; border-radius: var(--radius-full); background: var(--bg-brand); transform: scale(0); transition: transform var(--motion-interaction-duration) var(--motion-interaction-easing); }
-.radio input:checked { border-color: var(--border-brand); }
-.radio input:checked::before { transform: scale(1); }
-.radio input:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: 2px; }
 
 /* Usage + code under a stage. */
 .docs { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-medium); }
