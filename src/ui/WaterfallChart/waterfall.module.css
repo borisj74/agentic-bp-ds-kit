@@ -1,0 +1,4 @@
+/* Only the parts the shared chart styles do not already carry: the thin line that joins one bar's end to the next
+   bar's start, and the dotted zero line a chart with falls below zero needs. */
+.connector { stroke: var(--border-neutral); stroke-width: var(--border-width-thin); stroke-dasharray: 3 3; shape-rendering: crispEdges; }
+.zero { stroke: var(--border-neutral-intense); stroke-width: var(--border-width-thin); shape-rendering: crispEdges; }

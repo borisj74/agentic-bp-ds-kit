@@ -504,6 +504,21 @@
       ]
     },
     {
+      "name": "FunnelChart",
+      "contract": "contracts/funnelchart.json",
+      "category": "data",
+      "tags": [
+        "funnel",
+        "conversion",
+        "drop off",
+        "steps",
+        "pipeline",
+        "quote to cash",
+        "graph",
+        "dashboard"
+      ]
+    },
+    {
       "name": "GlobalSearch",
       "contract": "contracts/globalsearch.json",
       "category": "navigation",
@@ -542,6 +557,22 @@
         "column",
         "sort",
         "select all"
+      ]
+    },
+    {
+      "name": "Heatmap",
+      "contract": "contracts/heatmap.json",
+      "category": "data",
+      "tags": [
+        "heatmap",
+        "heat map",
+        "grid chart",
+        "density",
+        "by day and hour",
+        "usage grid",
+        "matrix",
+        "graph",
+        "dashboard"
       ]
     },
     {
@@ -811,6 +842,23 @@
       ]
     },
     {
+      "name": "RadarChart",
+      "contract": "contracts/radarchart.json",
+      "category": "data",
+      "tags": [
+        "radar",
+        "radar chart",
+        "spider chart",
+        "web chart",
+        "polar",
+        "profile",
+        "scores",
+        "compare measures",
+        "graph",
+        "dashboard"
+      ]
+    },
+    {
       "name": "RadioGroup",
       "contract": "contracts/radiogroup.json",
       "category": "form",
@@ -820,6 +868,21 @@
         "single select",
         "choice",
         "options"
+      ]
+    },
+    {
+      "name": "ScatterChart",
+      "contract": "contracts/scatterchart.json",
+      "category": "data",
+      "tags": [
+        "scatter",
+        "scatter plot",
+        "bubble chart",
+        "correlation",
+        "outliers",
+        "two measures",
+        "graph",
+        "dashboard"
       ]
     },
     {
@@ -893,6 +956,21 @@
         "content loader",
         "gray bars",
         "pulse"
+      ]
+    },
+    {
+      "name": "Sparkline",
+      "contract": "contracts/sparkline.json",
+      "category": "data",
+      "tags": [
+        "sparkline",
+        "spark chart",
+        "mini chart",
+        "inline chart",
+        "trend",
+        "cell chart",
+        "micro chart",
+        "table trend"
       ]
     },
     {
@@ -1101,6 +1179,22 @@
         "seats",
         "storage",
         "api calls"
+      ]
+    },
+    {
+      "name": "WaterfallChart",
+      "contract": "contracts/waterfallchart.json",
+      "category": "data",
+      "tags": [
+        "chart",
+        "waterfall",
+        "bridge",
+        "balance movement",
+        "opening closing",
+        "revenue bridge",
+        "variance",
+        "graph",
+        "dashboard"
       ]
     }
   ],

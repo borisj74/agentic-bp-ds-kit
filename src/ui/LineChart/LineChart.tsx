@@ -1,9 +1,9 @@
 "use client";
 import type { ChartFormat, ChartIntent } from "../Chart/chart";
-import { XYChart, type ChartLegendPosition, type ChartLineSeries, type ChartMarker, type ChartReferenceLine } from "../Chart/XYChart";
+import { XYChart, type ChartCurve, type ChartLegendPosition, type ChartLineSeries, type ChartMarker, type ChartReferenceLine } from "../Chart/XYChart";
 
-export type { ChartFormat, ChartIntent, ChartLegendPosition, ChartMarker, ChartReferenceLine };
-// A LineChart series can turn into a forecast part way: projectedFrom.
+export type { ChartCurve, ChartFormat, ChartIntent, ChartLegendPosition, ChartMarker, ChartReferenceLine };
+// A LineChart series can turn into a forecast part way (projectedFrom) and can step instead of slope (curve).
 export type ChartSeries = ChartLineSeries;
 
 export interface LineChartProps {

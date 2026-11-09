@@ -1,0 +1,62 @@
+{
+  "name": "Heatmap",
+  "path": "src/ui/Heatmap/Heatmap.tsx",
+  "intent": "A grid where the weight of each cell is its value, like API calls by day and hour, so the busy patches show at a glance.",
+  "usage": "Use Heatmap when two things name a grid and the number in each cell is a measure, like the days of a week against the hours of a day. It is one component: pass rows, columns and values, one row of values per row label. One intent carries five steps of weight up to the highest value in the grid, so the colour never changes, only how much of it there is; a cell with no value draws empty. size sets the cell height, sm in a dense tile up to lg where the numbers fit in the cells (showValues). The key under the grid runs from Less to More. Hover or use the arrow keys for a tooltip with the row, the column and the value. See contracts/heatmap.json for the full contract.",
+  "props": {
+    "label": { "type": "string", "required": true, "note": "Names the chart for screen readers and captions its data table, like API calls by day and hour." },
+    "title": { "type": "string", "note": "Visible title over the grid. The screen-reader name still comes from label." },
+    "subtitle": { "type": "string", "note": "A quieter line under the title, like Last 7 days, UTC." },
+    "showHeader": { "type": "boolean", "default": true, "note": "Turns the title and subtitle off when the Card or Section around the chart already says the same." },
+    "rows": { "type": "string[]", "required": true, "note": "The rows down the start, like Mon to Sun." },
+    "columns": { "type": "string[]", "required": true, "note": "The columns along the top, like 00:00 to 23:00. Labels thin out so they never overlap." },
+    "values": { "type": "(number | null)[][]", "required": true, "note": "One row of values per row label, one value per column. null draws an empty cell and reads as No data." },
+    "intent": { "enum": ["green", "olive", "cyan", "orange", "pink", "gray", "purple", "yellow", "red", "mint"], "note": "The one colour the whole grid is weighted in. Without it the grid takes the first of the kit's series order, pink." },
+    "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "Cell height: 14, 20 or 28px. The width of a cell comes from the number of columns." },
+    "showValues": { "type": "boolean", "default": false, "note": "Writes the value in each cell. Only lg cells have the room, so it is ignored at sm and md." },
+    "showLegend": { "type": "boolean", "default": true, "note": "The key under the grid: five steps from light to full with a word at each end." },
+    "lowLabel": { "type": "string", "default": "Less", "note": "The word at the light end of the key." },
+    "highLabel": { "type": "string", "default": "More", "note": "The word at the full end of the key." },
+    "format": { "enum": ["number", "currency", "percent"], "default": "number", "note": "How values read in the tooltip, the cells and the table." },
+    "currency": { "type": "string", "default": "USD", "note": "The currency code for format currency." },
+    "emptyLabel": { "type": "string", "default": "No data for this range.", "note": "What the chart says in place of the grid when there are no rows or columns." }
+  },
+  "useWhen": [
+    "Two things name a grid and the cell is a count: calls by day and hour, errors by endpoint and day.",
+    "Finding the busy or quiet patches matters more than reading any one number.",
+    "A calendar-shaped view of one measure a day over weeks."
+  ],
+  "doNot": [
+    "Do not use it when people need the exact numbers. A Table or DataGrid says them; a heatmap shows where they cluster.",
+    "Do not use it for one row of values. Use BarChart, or Sparkline in a cell.",
+    "Do not use several colours for the steps. One intent, five weights: that is what makes a heatmap readable.",
+    "Do not use it for a week of appointments. Use Calendar.",
+    "Do not draw charts with loose SVG or a chart library. Use the kit charts.",
+    "Do not use raw hex; pick an intent."
+  ],
+  "a11y": [
+    "A figure named by label. The grid is hidden from screen readers; a visually hidden table holds every value, with the rows as rows and the columns as columns. An empty cell reads as No data.",
+    "The grid takes focus: the arrow keys move a cell at a time in both directions (Home and End jump to the corners) and show the same tooltip as pointing at a cell. Escape hides it.",
+    "The picked cell takes the kit's selection outline, so the pick does not rest on colour.",
+    "The key says which end is more, and the tooltip names the row, the column and the value, so weight is never the only carrier.",
+    "No motion: a grid that fades in cell by cell is noise."
+  ],
+  "snippet": "<Heatmap\n  label=\"API calls by day and hour\"\n  rows={[\"Mon\", \"Tue\", \"Wed\"]}\n  columns={[\"00\", \"06\", \"12\", \"18\"]}\n  values={[[12, 48, 220, 96], [18, 52, 260, 104], [9, 40, 180, 88]]}\n  intent=\"cyan\"\n/>",
+  "examples": [
+    {
+      "title": "Use by day and hour",
+      "usage": "A week of API calls, six hours a column: the working day shows as a band.",
+      "items": [{ "props": { "label": "API calls by day and hour", "rows": "{heatDays}", "columns": "{heatHours}", "values": "{heatCalls}", "intent": "cyan" } }]
+    },
+    {
+      "title": "With the numbers",
+      "usage": "lg cells with showValues, for a grid small enough to read.",
+      "items": [{ "props": { "label": "Invoices run by day", "rows": "{heatWeeks}", "columns": "{heatWeekdays}", "values": "{heatRuns}", "intent": "purple", "size": "lg", "showValues": true } }]
+    },
+    {
+      "title": "Gaps",
+      "usage": "A cell with no value draws empty, so a gap reads as a gap and not as a zero.",
+      "items": [{ "props": { "label": "Errors by endpoint and day", "rows": "{heatEndpoints}", "columns": "{heatWeekdays}", "values": "{heatErrors}", "intent": "orange" } }]
+    }
+  ]
+}

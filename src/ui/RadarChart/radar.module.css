@@ -1,0 +1,7 @@
+/* Only what the shared chart styles do not carry: the web (its rings and spokes) and the names at the points.
+   Figma BP | Components 9131:7152: four rings, a spoke to every point, two filled series, 12px names. */
+.ring { fill: none; stroke: var(--border-neutral-faint); stroke-width: var(--border-width-thin); }
+.spoke { stroke: var(--border-neutral-faint); stroke-width: var(--border-width-thin); }
+.axisLabel { font-size: var(--font-size-xsmall); fill: var(--text-neutral-faint); }
+.scaleLabel { font-size: var(--font-size-xsmall); fill: var(--text-neutral-faint); }
+.active { stroke: var(--border-neutral-intense); stroke-width: var(--border-width-thin); }

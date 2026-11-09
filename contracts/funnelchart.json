@@ -1,0 +1,184 @@
+{
+  "name": "FunnelChart",
+  "path": "src/ui/FunnelChart/FunnelChart.tsx",
+  "intent": "Steps that narrow, as one solid stack: how many of the ones who started a flow reached each step, like quotes to orders to invoices to payments.",
+  "usage": "Use FunnelChart for one flow people drop out of, step by step. It is one component: pass steps in the order they happen, widest first. The stack is solid: every step is a band of the same height in its own colour. The stack tapers evenly from the first step to the last, so its sides are one straight line and each band is a slice of it; the counts are read from the keys, the words beside the bands, the tooltip and the table. direction funnel narrows down from the first step; pyramid is the same stack the other way up, building to its base, for tiers of a base rather than a flow. labels legend (the default, as in the Figma) names the steps in the keys; beside writes each step's name, count and share next to its own band. rate is the share in the tooltip, the table and those words: of the first step, or of the step before it, which is the drop people act on. Hover or use the arrow keys for a tooltip with the count and the share. See contracts/funnelchart.json for the full contract.",
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "note": "Names the chart for screen readers and captions its data table, like Quote to payment this quarter."
+    },
+    "title": {
+      "type": "string",
+      "note": "Visible title over the chart. The screen-reader name still comes from label."
+    },
+    "subtitle": {
+      "type": "string",
+      "note": "A quieter line under the title, like Q3, all accounts."
+    },
+    "showHeader": {
+      "type": "boolean",
+      "default": true,
+      "note": "Turns the title and subtitle off when the Card or Section around the chart already says the same."
+    },
+    "steps": {
+      "type": "FunnelStep[]",
+      "required": true,
+      "itemShape": "{ label: string; value: number; intent?: ChartIntent }",
+      "note": "The steps in the order people go through them, widest first. Each band takes the next colour in the kit's series order, pink, orange, gray, cyan, mint, green, olive, yellow and purple, so the keys and the stack always agree; intent overrides that for the step that is the point of the chart. Red is the danger colour and is never handed out."
+    },
+    "direction": {
+      "enum": [
+        "funnel",
+        "pyramid"
+      ],
+      "default": "funnel",
+      "note": "Which way the stack tapers. funnel narrows from the first step down, for a flow people drop out of. pyramid is the same taper the other way up, narrow at the top and full width at its base, for tiers that build to a base, like accounts by plan. Pass the steps in the order they belong: the shape is the same either way, and the order is what it says."
+    },
+    "labels": {
+      "enum": [
+        "legend",
+        "beside"
+      ],
+      "default": "legend",
+      "note": "Where the steps are named. legend puts them in the keys and leaves the stack clean, as in the Figma. beside writes each step's name and count next to its own band, which reads without hovering but needs the width."
+    },
+    "showValues": {
+      "type": "boolean",
+      "default": true,
+      "note": "labels beside only: writes each step's count after its name."
+    },
+    "rate": {
+      "enum": [
+        "none",
+        "ofFirst",
+        "ofPrevious"
+      ],
+      "default": "ofFirst",
+      "note": "The share under each step: none writes nothing, ofFirst is the share of the first step, ofPrevious the share of the step before it, which is the drop people usually act on."
+    },
+    "showLegend": {
+      "type": "boolean",
+      "default": true,
+      "note": "The keys for the steps. With labels legend this is the only place the steps are named, so turn it off only when labels is beside."
+    },
+    "legendPosition": {
+      "enum": [
+        "top",
+        "bottom",
+        "end"
+      ],
+      "default": "bottom",
+      "note": "Where the keys sit: under the chart, over it, or in a column beside it."
+    },
+    "animate": {
+      "type": "boolean",
+      "default": true,
+      "note": "Grows the steps in on first paint. Never plays when the person prefers reduced motion."
+    },
+    "format": {
+      "enum": [
+        "number",
+        "currency",
+        "percent"
+      ],
+      "default": "number",
+      "note": "How the counts read. The share is always a percent."
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD",
+      "note": "The currency code for format currency."
+    },
+    "height": {
+      "type": "number",
+      "default": 240,
+      "note": "Height of the drawing in px. The bands share it evenly, so a step is never taller than another. The width fills the container."
+    },
+    "emptyLabel": {
+      "type": "string",
+      "default": "No data for this range.",
+      "note": "What the chart says in place of the drawing when there are no steps."
+    }
+  },
+  "useWhen": [
+    "One flow with a fixed order that people drop out of: quote, order, invoice, payment.",
+    "A sign-up or onboarding flow, to find the step that loses people.",
+    "An approval chain where each step is a subset of the one before it.",
+    "A base split into tiers that build up to it, like accounts by plan: direction pyramid."
+  ],
+  "doNot": [
+    "Do not use it for steps that are not subsets of each other. If someone can skip a step or come back, it is not a funnel: use BarChart.",
+    "Do not use it for a trend over time. Use LineChart.",
+    "Do not use it for parts of a total that have no order. Use PieChart.",
+    "Do not read a band's width as its count. The stack tapers evenly whatever the numbers are: the counts are in the keys, the words, the tooltip and the table.",
+    "Do not reorder the steps to make the shape taper. Pass them in the order they happen.",
+    "Do not turn the keys off while labels is legend. Nothing would name the steps.",
+    "Do not use it for the steps of a task someone is doing now. Use Steps or GuidedProcess.",
+    "Do not draw charts with loose SVG or a chart library. Use the kit charts.",
+    "Do not use raw hex; pick an intent."
+  ],
+  "a11y": [
+    "A figure named by label. The drawing is hidden from screen readers; a visually hidden table holds each step with its count and its share.",
+    "The chart takes focus: the arrow keys (and Home and End) move through the steps and show the same tooltip as pointing at them. Escape hides it.",
+    "The band under the pointer or the keys takes the hover band across the chart, so the step in question is not carried by colour.",
+    "Every step is named in the keys or beside its own band, and the tooltip gives the count and the share, so the shape is never the only carrier.",
+    "Motion is subtle and optional (animate), and never plays when the person prefers reduced motion."
+  ],
+  "snippet": "<FunnelChart\n  label=\"Quote to payment this quarter\"\n  steps={[\n    { label: \"Awareness\", value: 12400 },\n    { label: \"Interest\", value: 8600 },\n    { label: \"Consideration\", value: 5400 },\n    { label: \"Intent\", value: 3200 },\n    { label: \"Purchase\", value: 1180 },\n  ]}\n/>",
+  "examples": [
+    {
+      "title": "Funnel",
+      "usage": "The default: a solid stack, a colour a step, the steps named in the keys under it.",
+      "items": [
+        {
+          "props": {
+            "label": "Quote to payment this quarter",
+            "steps": "{funnelStages}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Named beside the bands",
+      "usage": "labels beside writes each step's name, count and share next to its own band, so the chart reads without hovering.",
+      "items": [
+        {
+          "props": {
+            "label": "Sign-up flow",
+            "steps": "{funnelSignup}",
+            "labels": "beside",
+            "rate": "ofPrevious"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Pyramid",
+      "usage": "direction pyramid is the same stack the other way up, for a base built in tiers rather than a flow people drop out of.",
+      "items": [
+        {
+          "props": {
+            "label": "Accounts by plan",
+            "steps": "{funnelTiers}",
+            "direction": "pyramid"
+          }
+        }
+      ]
+    },
+    {
+      "title": "One step picked out",
+      "usage": "A step names its own intent when it is the point of the chart, like the one that loses the most.",
+      "items": [
+        {
+          "props": {
+            "label": "Approval chain",
+            "steps": "{funnelApprovals}",
+            "labels": "beside"
+          }
+        }
+      ]
+    }
+  ]
+}

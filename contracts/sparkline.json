@@ -1,0 +1,178 @@
+{
+  "name": "Sparkline",
+  "path": "src/ui/Sparkline/Sparkline.tsx",
+  "intent": "A trend small enough to sit in a table cell or on a tile: the shape of the last few periods, with no axes and no numbers.",
+  "usage": "Use Sparkline where a row or a tile needs the shape of a trend beside its number, like credits used a day next to the month's total. It is one component: pass label and values. kind draws it as a line, a filled area or small bars. size goes sm (16px), md (24px), lg (32px); the width fills the container, so in a Table it fills its column. showLast picks the end out: a dot on a line, or the last bar at full strength while the rest step back. The scale fits the values it has, so a flat run sits on the middle line. It has no axes, grid, legend or tooltip on purpose: for a chart people read values off, use LineChart or BarChart. See contracts/sparkline.json for the full contract.",
+  "props": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "note": "Names the trend for screen readers, like Credits used. A sparkline has no visible title."
+    },
+    "values": {
+      "type": "number[]",
+      "required": true,
+      "note": "The points, oldest first. One value draws as a single dot."
+    },
+    "kind": {
+      "enum": [
+        "line",
+        "area",
+        "bar"
+      ],
+      "default": "line",
+      "note": "A line for a rate or a level, an area when the size under the line matters, bars for counts a period."
+    },
+    "intent": {
+      "enum": [
+        "green",
+        "olive",
+        "cyan",
+        "orange",
+        "pink",
+        "gray",
+        "purple",
+        "yellow",
+        "red",
+        "mint"
+      ],
+      "note": "The colour. Without it the trend takes the first of the kit's series order, pink; red is the danger colour and is never handed out."
+    },
+    "size": {
+      "enum": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md",
+      "note": "How tall the drawing is: 16px in a dense cell, 24px in a row, 32px on a tile."
+    },
+    "showLast": {
+      "type": "boolean",
+      "default": false,
+      "note": "Picks the end of the trend out: a dot on a line or an area, the last bar at full strength with the rest stepped back."
+    },
+    "showBaseline": {
+      "type": "boolean",
+      "default": false,
+      "note": "Lines and areas only: a faint line along the floor, so a flat run still reads as a trend."
+    },
+    "format": {
+      "enum": [
+        "number",
+        "currency",
+        "percent"
+      ],
+      "default": "number",
+      "note": "How the first and last value read in the screen-reader summary. Nothing is written on the drawing."
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD",
+      "note": "The currency code for format currency."
+    },
+    "emptyLabel": {
+      "type": "string",
+      "default": "No data",
+      "note": "What the cell says in place of the drawing when there are no values."
+    }
+  },
+  "useWhen": [
+    "A trend beside a number in a table row or a DataGrid cell, like usage a day next to the month's total.",
+    "The shape of the last few periods on a Scoreboard tile or a Card.",
+    "A list of accounts where each row's own trend matters more than its exact values."
+  ],
+  "doNot": [
+    "Do not use it as the chart on a page. Use LineChart or BarChart.",
+    "Do not use it on a Scoreboard tile. A Scoreboard card draws its own trend: pass chart.points on the item.",
+    "Do not use it as a gauge or a share of a limit. Use Meter (shape circle or semicircle).",
+    "Do not use it where people need to read values off it. It has no axes and no tooltip on purpose.",
+    "Do not pass more than one series. One row, one trend; for several series use LineChart.",
+    "Do not pair it with its own legend or title. The row or tile around it already names it.",
+    "Do not draw it with loose SVG. Use this component.",
+    "Do not use raw hex; pick an intent."
+  ],
+  "a11y": [
+    "An image named by label, with the first and last value in its name, like Credits used: 40 to 92, so the trend is not lost on a screen reader.",
+    "The drawing is hidden from screen readers; the same summary sits in the row as visually hidden text.",
+    "Colour is never the only carrier: the row or tile around the sparkline holds the number it belongs to.",
+    "No motion, so nothing to turn off."
+  ],
+  "snippet": "<Sparkline label=\"Credits used\" values={[40, 36, 52, 48, 61, 58, 72]} intent=\"cyan\" showLast />",
+  "examples": [
+    {
+      "title": "Line",
+      "usage": "The default: a trend with the end picked out.",
+      "items": [
+        {
+          "props": {
+            "label": "Credits used",
+            "values": "{sparkCredits}",
+            "intent": "cyan",
+            "showLast": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Area",
+      "usage": "Filled, when the size under the line matters.",
+      "items": [
+        {
+          "props": {
+            "label": "Revenue",
+            "values": "{sparkRevenue}",
+            "kind": "area",
+            "intent": "green",
+            "format": "currency"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Bars",
+      "usage": "Counts a period, with the last one at full strength.",
+      "items": [
+        {
+          "props": {
+            "label": "Invoices sent",
+            "values": "{sparkInvoices}",
+            "kind": "bar",
+            "intent": "purple",
+            "showLast": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Sizes",
+      "usage": "sm in a dense cell, md in a row, lg on a tile.",
+      "items": [
+        {
+          "props": {
+            "label": "Credits used",
+            "values": "{sparkCredits}",
+            "size": "sm",
+            "intent": "cyan"
+          }
+        },
+        {
+          "props": {
+            "label": "Credits used",
+            "values": "{sparkCredits}",
+            "size": "md",
+            "intent": "cyan"
+          }
+        },
+        {
+          "props": {
+            "label": "Credits used",
+            "values": "{sparkCredits}",
+            "size": "lg",
+            "intent": "cyan"
+          }
+        }
+      ]
+    }
+  ]
+}

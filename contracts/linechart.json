@@ -30,8 +30,8 @@
     "series": {
       "type": "ChartSeries[]",
       "required": true,
-      "itemShape": "{ name: string; values: number[]; intent?: ChartIntent; projectedFrom?: number }",
-      "note": "One entry per line or bar color, with one value per category. intent picks the color; by default series take the kit's series order, pink, orange, gray, cyan, mint, green, olive, yellow and purple; red is the danger colour and is never handed out, so a line only draws red by asking for it. projectedFrom is the first category that is a forecast, counted from 0: the line is dashed from the last actual point on, and the tooltip and table say projected."
+      "itemShape": "{ name: string; values: number[]; intent?: ChartIntent; projectedFrom?: number; curve?: \"linear\" | \"step\" }",
+      "note": "One entry per line or bar color, with one value per category. intent picks the color; by default series take the kit's series order, pink, orange, gray, cyan, mint, green, olive, yellow and purple; red is the danger colour and is never handed out, so a line only draws red by asking for it. projectedFrom is the first category that is a forecast, counted from 0: the line is dashed from the last actual point on, and the tooltip and table say projected. curve \"step\" holds each value to the next category and jumps there, for a measure that only changes at a moment, like a price tier or the seats on a plan; with area the fill follows the same steps."
     },
     "area": {
       "type": "boolean",
@@ -116,7 +116,8 @@
     "Trends over time: revenue by month, approvals by day, a burndown.",
     "Part-to-whole over time with stacked areas.",
     "A limit, target or budget across a trend, like API calls against the plan limit: referenceLines.",
-    "Actual values and a forecast in one line: projectedFrom on the series, with a marker at today."
+    "Actual values and a forecast in one line: projectedFrom on the series, with a marker at today.",
+    "A measure that holds flat and changes at a moment, not between the points: seats on a plan, a price tier, a credit grant. Give the series curve \"step\"."
   ],
   "doNot": [
     "Do not use it for categories without an order, like regions. Use BarChart.",
@@ -126,7 +127,8 @@
     "Do not use marker for ranges or several moments. It marks one category, like today.",
     "Do not draw charts with loose SVG or a chart library. Use the kit charts.",
     "Do not use raw hex; pick an intent.",
-    "Do not fake a changing limit with several flat reference lines. Give the one line its values per category."
+    "Do not fake a changing limit with several flat reference lines. Give the one line its values per category.",
+    "Do not use curve \"step\" for a measure that really does move between the points, like revenue or API calls. A step says the value did not change until the next category."
   ],
   "a11y": [
     "A figure named by label. The drawing is hidden from screen readers; a visually hidden table holds every value, with the categories as rows and the series as columns.",
@@ -194,6 +196,34 @@
             "series": "{usageForecast}",
             "referenceLines": "{usageLimit}",
             "marker": "{today}"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Stepped line",
+      "usage": "Seats on the plan hold flat and jump on the day they changed, so no slope says they drifted.",
+      "items": [
+        {
+          "props": {
+            "label": "Seats on the plan",
+            "categories": "{stepMonths}",
+            "series": "{stepSeats}",
+            "showPoints": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Stepped area",
+      "usage": "The same steps with area on: the fill follows the steps instead of sloping.",
+      "items": [
+        {
+          "props": {
+            "label": "Credits granted",
+            "categories": "{stepMonths}",
+            "series": "{stepGrant}",
+            "area": true
           }
         }
       ]

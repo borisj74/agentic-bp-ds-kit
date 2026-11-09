@@ -44,6 +44,12 @@ import { Icon } from "@/ui/Icon/Icon";
 import { Illustration, type IllustrationName, type IllustrationProps } from "@/ui/Illustration/Illustration";
 import { Input, type InputProps } from "@/ui/Input/Input";
 import { LineChart, type LineChartProps } from "@/ui/LineChart/LineChart";
+import { Sparkline, type SparklineProps } from "@/ui/Sparkline/Sparkline";
+import { RadarChart, type RadarChartProps } from "@/ui/RadarChart/RadarChart";
+import { WaterfallChart, type WaterfallChartProps } from "@/ui/WaterfallChart/WaterfallChart";
+import { Heatmap, type HeatmapProps } from "@/ui/Heatmap/Heatmap";
+import { FunnelChart, type FunnelChartProps } from "@/ui/FunnelChart/FunnelChart";
+import { ScatterChart, type ScatterChartProps } from "@/ui/ScatterChart/ScatterChart";
 import { Logo } from "@/ui/Logo/Logo";
 import { Legend, type LegendProps } from "@/ui/Legend/Legend";
 import { Link } from "@/ui/Link/Link";
@@ -617,6 +623,149 @@ const CHART_SAMPLES: Record<string, unknown> = {
   "{statusShare}": [
     { label: "Paid", value: 58, intent: "green" }, { label: "Sent", value: 21, intent: "mint" }, { label: "Overdue", value: 13, intent: "red" }, { label: "Draft", value: 8, intent: "gray" },
   ],
+  // Radar: an account against the average on six measures, scored out of 100.
+  "{radarMeasures}": ["Billing", "Usage", "Support", "Adoption", "Payments", "Contract"],
+  "{radarHealth}": [
+    { name: "Northwind Traders", values: [82, 64, 91, 70, 88, 76], intent: "cyan" },
+    { name: "Account average", values: [70, 72, 68, 65, 74, 69], intent: "orange" },
+  ],
+  "{radarAreas}": ["Billing", "Rating", "Invoicing", "Payments", "Reporting"],
+  "{radarPlans}": [
+    { name: "Standard", values: [60, 55, 70, 65, 50], intent: "cyan" },
+    { name: "Enterprise", values: [92, 88, 84, 90, 95], intent: "orange" },
+  ],
+  "{radarThree}": [
+    { name: "Standard", values: [60, 55, 70, 65, 50], intent: "cyan" },
+    { name: "Growth", values: [78, 70, 76, 74, 68], intent: "green" },
+    { name: "Enterprise", values: [92, 88, 84, 90, 95], intent: "orange" },
+  ],
+  // Sparklines: a few periods each, enough to read a shape and no more.
+  "{sparkCredits}": [40, 36, 52, 48, 61, 58, 72],
+  "{sparkRevenue}": [3.4 * M, 3.6 * M, 3.5 * M, 4.2 * M, 4.4 * M, 4.9 * M],
+  "{sparkInvoices}": [18, 24, 21, 30, 27, 34, 31, 42],
+  // Stepped lines: measures that hold flat and change on a day, so a slope between the points would be a lie.
+  "{stepMonths}": ["Apr", "May", "Jun", "Jul", "Aug", "Sep"],
+  "{stepSeats}": [{ name: "Seats", values: [40, 40, 60, 60, 60, 85], intent: "cyan", curve: "step" }],
+  "{stepGrant}": [{ name: "Credits granted", values: [1150, 1150, 1350, 1350, 1750, 1750], intent: "purple", curve: "step" }],
+  // Waterfall: a balance from its opening to its closing total, charges up and payments down.
+  "{waterfallBalance}": [
+    { label: "Opening", value: 482000, kind: "total" },
+    { label: "New charges", value: 196000 },
+    { label: "Usage overage", value: 48000 },
+    { label: "Credits", value: -42000 },
+    { label: "Payments", value: -366000 },
+    { label: "Closing", value: 318000, kind: "total" },
+  ],
+  "{waterfallRevenue}": [
+    { label: "Q2", value: 4.2 * M, kind: "total" },
+    { label: "New", value: 0.9 * M },
+    { label: "Expansion", value: 0.4 * M },
+    { label: "Contraction", value: -0.3 * M },
+    { label: "Churn", value: -0.5 * M },
+    { label: "Q3", value: 4.7 * M, kind: "total" },
+  ],
+  // The payments run past what was owed, so the running total goes under zero into credit.
+  "{waterfallNegative}": [
+    { label: "Opening", value: 86000, kind: "total" },
+    { label: "New charges", value: 24000 },
+    { label: "Payments", value: -142000 },
+    { label: "Closing", value: -32000, kind: "total" },
+  ],
+  // Heatmap: a week of API calls, six hours a column, so the working day shows as a band.
+  "{heatDays}": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+  "{heatHours}": ["00:00", "04:00", "08:00", "12:00", "16:00", "20:00"],
+  "{heatCalls}": [
+    [820, 640, 4200, 5100, 3900, 1400],
+    [760, 600, 4400, 5300, 4100, 1500],
+    [880, 710, 4600, 5600, 4300, 1600],
+    [900, 680, 4500, 5400, 4200, 1550],
+    [840, 650, 4100, 4800, 3400, 1200],
+    [320, 260, 900, 1100, 860, 540],
+    [280, 230, 740, 960, 790, 480],
+  ],
+  "{heatWeeks}": ["Week 1", "Week 2", "Week 3", "Week 4"],
+  "{heatWeekdays}": ["Mon", "Tue", "Wed", "Thu", "Fri"],
+  "{heatRuns}": [
+    [12, 8, 14, 9, 22],
+    [10, 11, 13, 10, 26],
+    [14, 9, 12, 12, 28],
+    [11, 10, 15, 11, 31],
+  ],
+  "{heatEndpoints}": ["/invoices", "/accounts", "/usage", "/payments"],
+  "{heatErrors}": [
+    [4, 2, null, 6, 9],
+    [1, 0, 2, 1, 3],
+    [12, 8, 14, null, 18],
+    [2, 3, 1, 2, 5],
+  ],
+  // Funnel: one flow people drop out of, widest first. The Figma's own stages, in the kit's series order.
+  "{funnelStages}": [
+    { label: "Awareness", value: 12400 },
+    { label: "Interest", value: 8600 },
+    { label: "Consideration", value: 5400 },
+    { label: "Intent", value: 3200 },
+    { label: "Purchase", value: 1180 },
+  ],
+  // A pyramid builds up to its base: the narrow end is the first step at the top.
+  "{funnelTiers}": [
+    { label: "Enterprise", value: 180 },
+    { label: "Business", value: 540 },
+    { label: "Growth", value: 1300 },
+    { label: "Standard", value: 2800 },
+    { label: "Free", value: 6400 },
+  ],
+  "{funnelQuotes}": [
+    { label: "Quotes sent", value: 1840 },
+    { label: "Orders placed", value: 1120 },
+    { label: "Invoices issued", value: 980 },
+    { label: "Invoices paid", value: 742 },
+  ],
+  "{funnelSignup}": [
+    { label: "Visited pricing", value: 12400 },
+    { label: "Started sign-up", value: 4800 },
+    { label: "Verified email", value: 3900 },
+    { label: "Added a payment method", value: 1650 },
+    { label: "First invoice run", value: 1180 },
+  ],
+  // One step picked out: the review step is where the chain loses the most.
+  "{funnelApprovals}": [
+    { label: "Submitted", value: 960 },
+    { label: "In review", value: 740, intent: "orange" },
+    { label: "Approved", value: 520 },
+    { label: "Posted", value: 495 },
+  ],
+  // Scatter: spend against usage, one series a plan tier; and days late against balance with the dot as the open count.
+  "{scatterAccounts}": [
+    {
+      name: "Enterprise", intent: "cyan",
+      points: [
+        { x: 1240, y: 4800, label: "Northwind Traders" }, { x: 1680, y: 6200, label: "Acme Corporation" },
+        { x: 2100, y: 7400, label: "Globex Industries" }, { x: 980, y: 4100, label: "Stark Logistics" },
+        { x: 2460, y: 9100, label: "Umbrella Health" }, { x: 1520, y: 5600, label: "Initech" },
+        { x: 2890, y: 9800, label: "Soylent Corp" }, { x: 1120, y: 5200, label: "Hooli" },
+      ],
+    },
+    {
+      name: "Growth", intent: "green",
+      points: [
+        { x: 320, y: 1400, label: "Wayne Freight" }, { x: 480, y: 1800, label: "Cyberdyne" },
+        { x: 240, y: 900, label: "Tyrell Labs" }, { x: 610, y: 2300, label: "Oceanic Air" },
+        { x: 410, y: 1250, label: "Massive Dynamic" }, { x: 760, y: 2900, label: "Vehement Capital" },
+        { x: 180, y: 820, label: "Bluth Company" },
+      ],
+    },
+  ],
+  "{scatterLate}": [
+    {
+      name: "Open balance", intent: "orange",
+      points: [
+        { x: 4, y: 12000, size: 2, label: "Initech" }, { x: 12, y: 48000, size: 5, label: "Acme Corporation" },
+        { x: 21, y: 96000, size: 9, label: "Globex Industries" }, { x: 34, y: 142000, size: 14, label: "Umbrella Health" },
+        { x: 8, y: 26000, size: 3, label: "Stark Logistics" }, { x: 46, y: 188000, size: 21, label: "Soylent Corp" },
+        { x: 17, y: 61000, size: 7, label: "Hooli" }, { x: 2, y: 7400, size: 1, label: "Bluth Company" },
+      ],
+    },
+  ],
 };
 const CHAT_FILES = [{ id: "raw", label: "Raw-Data.xls" }, { id: "photo", label: "Photo1.jpg" }];
 const CHAT_TURN_MENU = [
@@ -1038,6 +1187,63 @@ export const registry: Record<string, Entry> = {
     hint: "Switch the direction, shape, size and place. With the switch on, each key is a button: press one to drop that series, press it again to bring it back.",
     card: <Legend size="sm" items={LEGEND_SERIES} />,
   },
+  WaterfallChart: {
+    render: (p) => <div style={chartPanel}><WaterfallChart key={JSON.stringify(p)} {...chartProps<WaterfallChartProps>(p)} /></div>,
+    preview: {
+      label: "Balance movement this month", title: "Balance movement this month", subtitle: "Northwind Traders, September",
+      items: "{waterfallBalance}", format: "currency",
+    },
+    hint: "Each bar starts where the one before it ended; the dotted line is what makes them one running total. Opening and closing are totals from zero. Hover or use the arrow keys for the change and the running total. Switch the up, down and total colours, and turn the values, connectors, grid, legend and animate on and off. Variants has a revenue bridge and a run that goes under zero into credit.",
+    block: true,
+    card: <div style={{ width: "100%" }}><WaterfallChart label="Balance movement" items={[{ label: "Open", value: 482, kind: "total" }, { label: "Charges", value: 196 }, { label: "Paid", value: -366 }, { label: "Close", value: 312, kind: "total" }]} height={96} showValues={false} animate={false} /></div>,
+  },
+  Heatmap: {
+    render: (p) => <div style={chartPanel}><Heatmap key={JSON.stringify(p)} {...chartProps<HeatmapProps>(p)} /></div>,
+    preview: {
+      label: "API calls by day and hour", title: "API calls by day and hour", subtitle: "Last 7 days, UTC",
+      rows: "{heatDays}", columns: "{heatHours}", values: "{heatCalls}", intent: "cyan",
+    },
+    hint: "One colour, five weights up to the busiest cell. Hover or use the arrow keys in both directions for the row, the column and the value. Switch the intent and the size; showValues writes the numbers in the cells, and only lg has the room. Variants has a grid with the numbers in it and one with gaps, where a cell with no value draws empty.",
+    block: true,
+    card: <div style={{ width: "100%" }}><Heatmap label="API calls" rows={["Mon", "Tue", "Wed"]} columns={["00", "06", "12", "18"]} values={[[12, 48, 220, 96], [18, 52, 260, 104], [9, 40, 180, 88]]} intent="cyan" size="sm" showLegend={false} showHeader={false} /></div>,
+  },
+  FunnelChart: {
+    render: (p) => <div style={chartPanel}><FunnelChart key={JSON.stringify(p)} {...chartProps<FunnelChartProps>(p)} /></div>,
+    preview: {
+      label: "Quote to payment this quarter", title: "Quote to payment this quarter", subtitle: "Q3, all accounts",
+      steps: "{funnelStages}",
+    },
+    hint: "One solid stack: every step is a band of the same height in its own colour. The stack tapers evenly from the first step to the last, so the counts are read from the keys, the tooltip and the words beside the bands. Hover or use the arrow keys for the count and the share. Switch the direction between funnel and pyramid, and where the keys sit. Variants names the steps beside their bands, builds a pyramid up to its base, and switches the share to the step before.",
+    block: true,
+    card: <div style={{ width: "100%" }}><FunnelChart label="Quote to payment" steps={[{ label: "Quotes", value: 1840 }, { label: "Orders", value: 1120 }, { label: "Paid", value: 742 }]} height={150} showLegend={false} animate={false} /></div>,
+  },
+  ScatterChart: {
+    render: (p) => <div style={chartPanel}><ScatterChart key={JSON.stringify(p)} {...chartProps<ScatterChartProps>(p)} /></div>,
+    preview: {
+      label: "Spend against usage by account", title: "Spend against usage by account", subtitle: "15 accounts, last 30 days",
+      series: "{scatterAccounts}", xName: "Credits used", yName: "Monthly spend", yFormat: "currency",
+    },
+    hint: "One dot a record, two measures. Hover near a dot and the nearest one answers; the arrow keys walk them in order. Switch the formats of the two axes apart, and turn the grid, legend and animate on and off. Variants plots days late against balance with the dot as big as the number of open invoices.",
+    block: true,
+    card: <div style={{ width: "100%" }}><ScatterChart label="Spend against usage" series={[{ name: "Accounts", intent: "cyan", points: [{ x: 320, y: 1400 }, { x: 980, y: 4100 }, { x: 1680, y: 6200 }, { x: 2460, y: 9100 }, { x: 610, y: 2300 }] }]} xName="Credits" yName="Spend" height={110} showLegend={false} animate={false} /></div>,
+  },
+  RadarChart: {
+    render: (p) => <div style={chartPanel}><RadarChart key={JSON.stringify(p)} {...chartProps<RadarChartProps>(p)} /></div>,
+    preview: {
+      label: "Account health by measure", title: "Account health by measure", subtitle: "Northwind Traders against the average",
+      axes: "{radarMeasures}", series: "{radarHealth}", max: 100,
+    },
+    hint: "Every point is a measure on the same scale; a series is one outline across all of them. Hover anywhere in the web or use the arrow keys and the nearest point answers with both values; the keys wrap round the web. Switch the rings, the fill, the scale labels and where the keys sit. Variants has the ring values written up the first axis, three series with the fill off, and the keys beside the web.",
+    block: true,
+    card: <div style={{ width: "100%" }}><RadarChart label="Account health" axes={["Billing", "Usage", "Support", "Adoption", "Payments", "Contract"]} series={[{ name: "Account", values: [82, 64, 91, 70, 88, 76], intent: "cyan" }, { name: "Average", values: [70, 72, 68, 65, 74, 69], intent: "orange" }]} max={100} height={150} showLegend={false} animate={false} /></div>,
+  },
+  Sparkline: {
+    // A sparkline lives in a row, so the example sits on a white panel at the width of a table column.
+    render: (p) => <div style={{ ...chartPanel, width: 220 }}><Sparkline key={JSON.stringify(p)} {...chartProps<SparklineProps>(p)} /></div>,
+    preview: { label: "Credits used", values: "{sparkCredits}", intent: "cyan", showLast: true },
+    hint: "No axes, no legend, no tooltip: the shape only. Switch the kind between line, area and bars, and the size sm, md and lg. showLast picks the end out. It fills whatever box it is in — here the width of a table column.",
+    card: <div style={{ width: 120 }}><Sparkline label="Credits used" values={[40, 36, 52, 48, 61, 58, 72]} intent="cyan" showLast /></div>,
+  },
   LineChart: {
     // Sample data swaps in for its {names}; a white panel like a page. Keyed so switching a control plays the motion again.
     render: (p) => <div style={chartPanel}><LineChart key={JSON.stringify(p)} {...chartProps<LineChartProps>(p)} /></div>,
@@ -1045,7 +1251,7 @@ export const registry: Record<string, Entry> = {
       label: "Revenue by period", title: "Revenue by period", subtitle: "Last 6 months, all accounts",
       categories: "{months}", series: "{revenue}", format: "currency", area: true, showPoints: true, showValues: true,
     },
-    hint: "Hover or use the arrow keys for the tooltip. Turn the title, area, stacked, points, values, grid, legend and animate on and off. Variants has a limit line, a dashed forecast and a today marker.",
+    hint: "Hover or use the arrow keys for the tooltip. Turn the title, area, stacked, points, values, grid, legend and animate on and off. Variants has a limit line, a dashed forecast, a today marker, and a line and an area that step instead of sloping.",
     block: true,
     card: <div style={{ width: "100%" }}><LineChart label="Revenue" categories={["Jan", "Feb", "Mar", "Apr", "May"]} series={[{ name: "Revenue", values: [3, 3.4, 4.1, 4.3, 4.8], intent: "green" }]} area showLegend={false} height={96} animate={false} /></div>,
   },

@@ -1,0 +1,69 @@
+{
+  "name": "WaterfallChart",
+  "path": "src/ui/WaterfallChart/WaterfallChart.tsx",
+  "intent": "How a balance got from one total to another: an opening total, the rises and falls that moved it, and the closing total.",
+  "usage": "Use WaterfallChart to explain a change, like an account balance from last month's close to this month's: opening balance, new charges, credits, payments, closing balance. It is one component: pass items, one per bar, in the order they happened. A change moves the running total by its value, up or down; an item with kind \"total\" draws from zero at its value, for the opening and closing bars. Each bar starts where the one before it ended, and a thin dotted line joins them. Colours come from direction: riseIntent for up, fallIntent for down, totalIntent for the totals; a single item can name its own intent. Values are written over each bar with their sign, so a fall reads as a fall without its colour. Hover or use the arrow keys for a tooltip with the change and the running total. See contracts/waterfallchart.json for the full contract.",
+  "props": {
+    "label": { "type": "string", "required": true, "note": "Names the chart for screen readers and captions its data table, like Balance movement this month." },
+    "title": { "type": "string", "note": "Visible title over the chart. The screen-reader name still comes from label." },
+    "subtitle": { "type": "string", "note": "A quieter line under the title, like Northwind Traders, September." },
+    "showHeader": { "type": "boolean", "default": true, "note": "Turns the title and subtitle off when the Card or Section around the chart already says the same." },
+    "items": {
+      "type": "WaterfallItem[]",
+      "required": true,
+      "itemShape": "{ label: string; value: number; kind?: \"change\" | \"total\"; intent?: ChartIntent }",
+      "note": "One entry per bar, in the order they happened. A change (the default) moves the running total by value, which may be negative. kind \"total\" draws a bar from zero at value, for an opening or closing balance. intent overrides the colour the bar takes from its direction."
+    },
+    "riseIntent": { "enum": ["green", "olive", "cyan", "orange", "pink", "gray", "purple", "yellow", "red", "mint"], "default": "cyan", "note": "The colour of a change that goes up." },
+    "fallIntent": { "enum": ["green", "olive", "cyan", "orange", "pink", "gray", "purple", "yellow", "red", "mint"], "default": "orange", "note": "The colour of a change that goes down. Pick the pair that fits the measure: on a balance a fall is good news, so it is not red by default." },
+    "totalIntent": { "enum": ["green", "olive", "cyan", "orange", "pink", "gray", "purple", "yellow", "red", "mint"], "default": "gray", "note": "The colour of the opening and closing bars, which are not a change." },
+    "showValues": { "type": "boolean", "default": true, "note": "Writes each bar's value over it, short and signed (−$340K). Turn it off only when the tooltip is enough." },
+    "showConnectors": { "type": "boolean", "default": true, "note": "The thin dotted line from one bar's end to the next bar's start, which is what makes it read as one running total." },
+    "showGrid": { "type": "boolean", "default": true, "note": "Faint lines across the chart at the ticks." },
+    "showLegend": { "type": "boolean", "default": false, "note": "A key for up, down and total. Off by default: the signed values already say which is which." },
+    "animate": { "type": "boolean", "default": true, "note": "Grows the bars in on first paint. Never plays when the person prefers reduced motion." },
+    "format": { "enum": ["number", "currency", "percent"], "default": "number", "note": "How values read. Axis ticks and bar labels are short; the tooltip and table show the full number." },
+    "currency": { "type": "string", "default": "USD", "note": "The currency code for format currency." },
+    "height": { "type": "number", "default": 240, "note": "Height of the drawing in px, axis labels included. The width fills the container." },
+    "emptyLabel": { "type": "string", "default": "No data for this range.", "note": "What the chart says in place of the drawing when there is nothing to draw." }
+  },
+  "useWhen": [
+    "A balance from its opening to its closing total, with the charges, credits and payments between.",
+    "Revenue from last period to this one, broken into new, expansion, contraction and churn.",
+    "An invoice total built up from its line items, with the total bar at the end."
+  ],
+  "doNot": [
+    "Do not use it for a trend over time. Every bar here is a step in one sum, not a period: use LineChart or BarChart.",
+    "Do not use it for parts of a total that do not run in an order. Use PieChart or a stacked BarChart.",
+    "Do not leave the opening and closing bars out. Without them the rises and falls float, and the chart says nothing.",
+    "Do not make a fall red by default. On a balance a fall is good news; pick the pair that fits the measure.",
+    "Do not turn showConnectors off to tidy the chart. The line is what makes the bars one running total.",
+    "Do not draw charts with loose SVG or a chart library. Use the kit charts.",
+    "Do not use raw hex; pick an intent."
+  ],
+  "a11y": [
+    "A figure named by label. The drawing is hidden from screen readers; a visually hidden table holds every bar, with its change and the running total after it.",
+    "Totals are named as totals in the table, so a reader can tell the opening and closing bars from the changes.",
+    "The chart takes focus: the arrow keys (and Home and End) move through the bars and show the same tooltip as pointing at them. Escape hides it.",
+    "Values are written over the bars with their sign, so direction never rests on colour alone.",
+    "Motion is subtle and optional (animate), and never plays when the person prefers reduced motion."
+  ],
+  "snippet": "<WaterfallChart\n  label=\"Balance movement this month\"\n  items={[\n    { label: \"Opening\", value: 482000, kind: \"total\" },\n    { label: \"New charges\", value: 196000 },\n    { label: \"Credits\", value: -42000 },\n    { label: \"Payments\", value: -318000 },\n    { label: \"Closing\", value: 318000, kind: \"total\" },\n  ]}\n  format=\"currency\"\n/>",
+  "examples": [
+    {
+      "title": "Balance movement",
+      "usage": "Opening balance, the charges and payments that moved it, closing balance.",
+      "items": [{ "props": { "label": "Balance movement this month", "items": "{waterfallBalance}", "format": "currency" } }]
+    },
+    {
+      "title": "Revenue bridge",
+      "usage": "Last quarter to this one, split into new, expansion, contraction and churn.",
+      "items": [{ "props": { "label": "Revenue from Q2 to Q3", "items": "{waterfallRevenue}", "format": "currency" } }]
+    },
+    {
+      "title": "Below zero",
+      "usage": "When the falls take the running total under zero, the scale holds it and a solid line marks zero.",
+      "items": [{ "props": { "label": "Credit balance this month", "items": "{waterfallNegative}", "format": "currency" } }]
+    }
+  ]
+}

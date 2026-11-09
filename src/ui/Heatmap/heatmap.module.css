@@ -1,0 +1,10 @@
+/* A heatmap reads by weight, so one intent carries five steps of it. The steps are the kit's opacity ramp, not a
+   second colour ramp: the colour itself is always the semantic intent. */
+.heatmap { --heat-1: var(--opacity-100); --heat-2: var(--opacity-300); --heat-3: var(--opacity-400); --heat-4: var(--opacity-600); --heat-5: var(--opacity-700); }
+.cell { stroke: var(--surface-flat); stroke-width: var(--border-width-thin); }
+.cellValue { font-size: var(--font-size-xsmall); fill: var(--text-neutral-strong); }
+.rowLabel, .colLabel { font-size: var(--font-size-xsmall); fill: var(--text-neutral-strong); }
+/* The key for a ramp: five swatches from light to full with a word at each end. */
+.scale { display: flex; align-items: center; justify-content: center; gap: var(--space-xsmall); font-size: var(--font-size-xsmall); color: var(--text-neutral-strong); }
+.scaleSteps { display: flex; gap: var(--space-xxsmall); }
+.scaleStep { width: var(--chart-swatch); height: var(--chart-swatch); border-radius: var(--radius-small); }

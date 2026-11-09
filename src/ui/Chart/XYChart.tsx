@@ -11,6 +11,11 @@ import {
 // end of the chart, for a unit of another size, like requests beside credits.
 export type ChartAxis = "start" | "end";
 
+// How a line gets from one point to the next. linear slopes between them, as a measure that moved does. step holds
+// the value until the next category and jumps there, for a measure that holds flat and changes at a moment, like a
+// price tier or the seats on a plan.
+export type ChartCurve = "linear" | "step";
+
 export interface ChartSeries {
   name: string;
   values: number[];
@@ -22,6 +27,9 @@ export interface ChartSeries {
 // bars from there on draw see-through.
 export interface ChartLineSeries extends ChartSeries {
   projectedFrom?: number;
+  // Line series only: step holds each value to the next category and jumps there, so a measure that only changes at
+  // a moment never draws as a slope. With area the fill follows the same steps. Bars ignore it.
+  curve?: ChartCurve;
 }
 
 // Upright charts only: a dashed line across the chart at a value, like a limit or a target.
@@ -277,10 +285,25 @@ export function XYChart({
   ));
 
   const lines = () => {
-    const pts = (k: number, which: number[][]) => which[k].map((val, i) => `${c(i).toFixed(1)},${v(val, list[k].ax).toFixed(1)}`);
+    // A series is a run of points. A stepped one holds each value to the next category and jumps there, which is one
+    // corner point inserted before every point after the first; the run is drawn after it is cut, so the solid part,
+    // the forecast and the area floor all step the same way.
+    const pts = (k: number, which: number[][]) => which[k].map((val, i) => [c(i), v(val, list[k].ax)] as [number, number]);
+    const draw = (run: [number, number][], isStep: boolean) => {
+      const all = isStep ? run.flatMap((pt, i) => (i === 0 ? [pt] : [[pt[0], run[i - 1][1]] as [number, number], pt])) : run;
+      return all.map(([px1, py]) => `${px1.toFixed(1)},${py.toFixed(1)}`).join("L");
+    };
     return list.map((sr, k) => {
+      const isStep = sr.curve === "step";
       const topPts = pts(k, upper);
-      const floor = stacked ? pts(k, lower).reverse() : [`${c(n - 1).toFixed(1)},${y1}`, `${c(0).toFixed(1)},${y1}`];
+      // The floor of the fill: the series under it in a stack, drawn backwards, or the baseline.
+      const floorRun: [number, number][] = stacked
+        ? [...pts(k, lower)].reverse()
+        : [[c(n - 1), y1], [c(0), y1]];
+      // A stacked fill's floor steps the series under it; drawn backwards, the corner belongs to the other side.
+      const floor = stacked && isStep
+        ? floorRun.flatMap((pt, i) => (i === 0 ? [pt] : [[floorRun[i - 1][0], pt[1]] as [number, number], pt])).map(([px1, py]) => `${px1.toFixed(1)},${py.toFixed(1)}`).join("L")
+        : draw(floorRun, false);
       // Actual values draw solid; from the last actual point on, the forecast draws dashed.
       const p = firstProjected(sr);
       const solid = topPts.slice(0, p);
@@ -289,12 +312,12 @@ export function XYChart({
         <g key={sr.name}>
           {area && (
             <path
-              className={s.grow} d={`M${topPts.join("L")}L${floor.join("L")}Z`}
+              className={s.grow} d={`M${draw(topPts, isStep)}L${floor}Z`}
               style={{ fill: intentVar(sr.intent), fillOpacity: stacked ? 1 : "var(--opacity-muted)" }}
             />
           )}
-          {solid.length > 1 && <path className={s.draw} d={`M${solid.join("L")}`} pathLength={1} fill="none" style={{ stroke: intentVar(sr.intent) }} strokeWidth={stacked ? 1 : 2} strokeLinejoin="round" strokeLinecap="round" />}
-          {dashed.length > 1 && <path className={s.fade} data-projected="" d={`M${dashed.join("L")}`} fill="none" style={{ stroke: intentVar(sr.intent) }} strokeWidth={stacked ? 1 : 2} strokeDasharray={DASH} strokeLinejoin="round" />}
+          {solid.length > 1 && <path className={s.draw} d={`M${draw(solid, isStep)}`} pathLength={1} fill="none" style={{ stroke: intentVar(sr.intent) }} strokeWidth={stacked ? 1 : 2} strokeLinejoin="round" strokeLinecap="round" />}
+          {dashed.length > 1 && <path className={s.fade} data-projected="" d={`M${draw(dashed, isStep)}`} fill="none" style={{ stroke: intentVar(sr.intent) }} strokeWidth={stacked ? 1 : 2} strokeDasharray={DASH} strokeLinejoin="round" />}
         </g>
       );
     });
@@ -436,7 +459,7 @@ export function XYChart({
 
   const keys = showLegend
     // Reference lines key as lines after the series, so one row explains everything drawn.
-    ? <Legend items={[...list.map((sr) => ({ label: sr.name, intent: sr.intent })), ...refs.map((r) => ({ label: r.label, intent: r.intent ?? "gray" as ChartIntent, shape: "line" as const }))]} orientation={legendPosition === "end" ? "vertical" : "horizontal"} alignment={legendPosition === "end" ? "start" : "center"} />
+    ? <Legend items={[...list.map((sr) => ({ label: sr.name, intent: sr.intent })),...refs.map((r) => ({ label: r.label, intent: r.intent ?? "gray" as ChartIntent, shape: "line" as const }))]} orientation={legendPosition === "end" ? "vertical" : "horizontal"} alignment={legendPosition === "end" ? "start" : "center"} />
     : null;
 
   const plot = (

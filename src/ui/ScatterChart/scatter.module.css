@@ -1,0 +1,4 @@
+/* Only what the shared chart styles do not carry: the dots and the two axis names. */
+.dot { stroke: var(--surface-flat); stroke-width: var(--border-width-thin); }
+.dotPicked { stroke: var(--outline-brand); stroke-width: var(--border-width-medium); }
+.axisName { font-size: var(--font-size-xsmall); font-weight: var(--font-weight-medium); fill: var(--text-neutral); }

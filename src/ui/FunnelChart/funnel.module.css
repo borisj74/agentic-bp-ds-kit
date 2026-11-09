@@ -1,0 +1,5 @@
+/* Only what the shared chart styles do not carry: the two lines of words beside a band, when the steps are named
+   there instead of in the keys. The bands themselves are plain fills from the semantic intents. */
+.stepLabel { font-size: var(--font-size-small); font-weight: var(--font-weight-medium); fill: var(--text-neutral-strong); }
+.stepValue { font-size: var(--text-caption-strong-size); font-weight: var(--text-caption-strong-weight); fill: var(--text-neutral-strong); }
+.stepRate { font-size: var(--font-size-xsmall); fill: var(--text-neutral); }
