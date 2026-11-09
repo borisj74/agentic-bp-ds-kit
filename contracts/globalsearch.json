@@ -2,7 +2,7 @@
   "name": "GlobalSearch",
   "path": "src/ui/GlobalSearch/GlobalSearch.tsx",
   "intent": "A search field over a grouped list of pages, records and actions. Typing filters the list; arrow keys and Enter pick.",
-  "usage": "Use GlobalSearch for quick jumps and actions across the app, like a global search. It is one component: pass groups of items as data. Typing filters by label and description, and the typed text shows bold in each label. Arrow keys move the highlight and Enter picks; Escape clears the search. It shows inline; a \u2318K palette comes later. variant tabs turns the group headings into tabs (All, Records, Reports...), like the global search. scopes adds a menu in the search row to narrow what it looks through. onViewAll adds a View all results row at the end. AppHeader and Toolbar open it over their search field, so the field grows into the results. See contracts/globalsearch.json for the full contract.",
+  "usage": "Use GlobalSearch for quick jumps and actions across the app, like a global search. It is one component: pass groups of items as data. Typing filters by label and description, and the typed text shows bold in each label. Arrow keys move the highlight and Enter picks; Escape clears the search. It shows inline, and a ⌘K palette is this component inside a kit Modal, never a local overlay: title Search, size md, autoFocus on the search, and onSelect closing the Modal before it goes. The catalog's own palette is built that way, in src/playground/CatalogSearch.tsx. variant tabs turns the group headings into tabs (All, Records, Reports...), like the global search. scopes adds a menu in the search row to narrow what it looks through. onViewAll adds a View all results row at the end. AppHeader and Toolbar open it over their search field, so the field grows into the results. See contracts/globalsearch.json for the full contract.",
   "props": {
     "groups": {
       "type": "CommandGroup[]",
@@ -81,7 +81,7 @@
     "autoFocus": {
       "type": "boolean",
       "default": false,
-      "note": "Focus the search field on mount, when GlobalSearch opens from a trigger like the AppHeader search."
+      "note": "Focus the search field on mount, when GlobalSearch opens from a trigger like the AppHeader search or a ⌘K Modal."
     },
     "onSelect": {
       "type": "function",
@@ -94,13 +94,15 @@
   },
   "useWhen": [
     "A global search across pages, records and reports.",
-    "A quick list of actions people find by typing."
+    "A quick list of actions people find by typing.",
+    "A ⌘K palette that jumps to a page, a record or an action, inside a kit Modal."
   ],
   "doNot": [
     "Do not invent CommandInput, CommandList, CommandItem, CommandGroup, CommandEmpty, CommandDialog or SearchPanel.",
     "Do not use for a short list of actions from a button. Use Dropdown.",
     "Do not use for choosing a form value. Use RadioGroup, or Select when it exists.",
-    "Do not wrap it in a local overlay or build a \u2318K palette yet.",
+    "Do not build a palette out of a local overlay, a Dialog or a Sheet. Put this component in a kit Modal.",
+    "Do not leave a palette's search unfocused. A palette opens for typing, so pass autoFocus.",
     "Do not use raw hex."
   ],
   "a11y": [
@@ -125,13 +127,13 @@
                   {
                     "id": "invoices",
                     "label": "Invoices",
-                    "description": "Billing \u203a Invoices",
+                    "description": "Billing › Invoices",
                     "icon": "receipt_long"
                   },
                   {
                     "id": "customers",
                     "label": "Customers",
-                    "description": "Accounts \u203a Customers",
+                    "description": "Accounts › Customers",
                     "icon": "group"
                   }
                 ]
@@ -179,7 +181,7 @@
                   {
                     "id": "inv-1042",
                     "label": "INV-1042",
-                    "description": "Invoice \u00b7 Paid",
+                    "description": "Invoice · Paid",
                     "icon": "receipt_long"
                   }
                 ]

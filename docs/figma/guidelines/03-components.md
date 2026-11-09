@@ -1022,7 +1022,7 @@ Props — `groups`: `CommandGroup[]` { heading?, items }; `variant`: `list` | `t
 
 Events — `onScopeChange`, `onSelect`, `onViewAll`
 
-Use GlobalSearch for quick jumps and actions across the app, like a global search. It is one component: pass groups of items as data. Typing filters by label and description, and the typed text shows bold in each label.
+Use GlobalSearch for quick jumps and actions across the app, like a global search. It is one component: pass groups of items as data. Typing filters by label and description, and the typed text shows bold in each label. It shows inline, and a ⌘K palette is this component inside a kit Modal, never a local overlay: title Search, size md, autoFocus on the search, and onSelect closing the Modal before it goes.
 
 - Do not invent CommandInput, CommandList, CommandItem, CommandGroup, CommandEmpty, CommandDialog or SearchPanel.
 - Do not use for a short list of actions from a button. Use Dropdown.
