@@ -1,6 +1,7 @@
 "use client";
 import { useSyncExternalStore } from "react";
 import { Button } from "@/ui/Button/Button";
+import { Select } from "@/ui/Select/Select";
 import styles from "./shell.module.css";
 
 const brands = ["cobalt", "sunset", "olive", "bp-legacy"] as const;
@@ -32,9 +33,13 @@ export function ThemeControls() {
 
   return (
     <>
-      <select className={styles.select} aria-label="Brand" value={brand} onChange={(e) => setBrand(e.target.value)}>
-        {brands.map((b) => <option key={b} value={b}>{b}</option>)}
-      </select>
+      <span className={styles.brandPicker}>
+        <Select
+          label="Brand" hideLabel size="sm"
+          options={brands.map((b) => ({ value: b, label: b }))}
+          value={brand} onChange={(value) => setBrand(value as string)}
+        />
+      </span>
       <Button emphasis="minimal" size="sm" iconOnly iconStart={theme === "dark" ? "light_mode" : "dark_mode"} onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
         Switch to {theme === "dark" ? "light" : "dark"} mode
       </Button>

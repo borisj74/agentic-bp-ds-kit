@@ -52,12 +52,9 @@
 .deep { padding-left: calc(var(--space-large) + var(--space-medium)); }
 .main { padding: var(--space-xxlarge); width: 100%; min-width: 0; }
 .footer { margin-top: auto; display: flex; justify-content: space-between; align-items: center; padding: 0 var(--space-xsmall); }
-.select {
-  font: inherit; font-size: var(--font-size-xsmall); color: var(--text-neutral);
-  background: var(--surface-raised); border: var(--border-width-thin) solid var(--border-neutral); border-radius: var(--radius-medium);
-  padding: 2px var(--space-xsmall);
-}
-.select:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--border-width-thin); }
+/* The brand picker is the kit Select; the topbar only sets how much room it takes. */
+.brandPicker { display: inline-flex; width: 132px; }
+
 /* The menu button is always there; the sheet behind the drawer only exists on narrow screens. */
 .menuButton { display: inline-flex; align-self: center; }
 .brand { align-items: center; }
