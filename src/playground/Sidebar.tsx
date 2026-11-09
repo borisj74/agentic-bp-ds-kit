@@ -38,9 +38,10 @@ function Section({ title, open, onToggle, children }: { title: string; open: boo
 }
 
 // drawerOpen only matters under 768px, where the menu is a drawer the CatalogShell slides in.
-export function Sidebar({ id, ref, drawerOpen = false }: { id?: string; ref?: Ref<HTMLElement>; drawerOpen?: boolean }) {
+export function Sidebar({ id, ref, drawerOpen = false, onSearch, shortcut }: { id?: string; ref?: Ref<HTMLElement>; drawerOpen?: boolean; onSearch?: () => void; shortcut?: string }) {
   const path = usePathname();
   const [open, setOpen] = useState<Record<SectionKey, boolean>>({ start: true, foundations: true, components: true, patterns: true });
+
   // On navigation, open the section that holds the new page (adjusting state during render, no effect).
   const [seen, setSeen] = useState(path);
   if (seen !== path) {
@@ -52,6 +53,14 @@ export function Sidebar({ id, ref, drawerOpen = false }: { id?: string; ref?: Re
 
   return (
     <nav id={id} ref={ref} className={[styles.sidebar, drawerOpen ? styles.sidebarOpen : ""].join(" ")} aria-label="Catalog">
+      {onSearch && (
+        <button type="button" className={styles.searchTrigger} onClick={onSearch}>
+          <Icon name="search" size="sm" />
+          <span className={styles.searchWord}>Search</span>
+          {shortcut && <kbd className={styles.searchKey}>{shortcut}</kbd>}
+        </button>
+      )}
+
       <Section title="Start" open={open.start} onToggle={toggle("start")}>
         <NavLink href="/">Overview</NavLink>
         <NavLink href="/start/installation">Installation</NavLink>
@@ -59,25 +68,25 @@ export function Sidebar({ id, ref, drawerOpen = false }: { id?: string; ref?: Re
         <NavLink href="/start/prompting">Prompting</NavLink>
       </Section>
       <Section title="Foundations" open={open.foundations} onToggle={toggle("foundations")}>
-        {foundationPages.map((f) => <NavLink key={f.href} href={f.href}>{f.label}</NavLink>)}
-      </Section>
-      <Section title="Components" open={open.components} onToggle={toggle("components")}>
-        <NavLink href="/components">Gallery</NavLink>
-        {componentNav.map((e) => "group" in e ? (
-          // A family heading (Chart) with its members indented under it.
-          <div key={e.group} className={styles.family} role="group" aria-label={e.group}>
-            <span className={[styles.link, styles.sub, styles.familyTitle].join(" ")} aria-hidden="true">{e.group}</span>
-            {e.items.map((c) => <NavLink key={c.name} href={`/components/${slug(c.name)}`} deep>{c.label}</NavLink>)}
-          </div>
-        ) : (
-          <NavLink key={e.name} href={`/components/${slug(e.name)}`} sub>{e.label}</NavLink>
-        ))}
-      </Section>
-      <Section title="Patterns" open={open.patterns} onToggle={toggle("patterns")}>
-        <NavLink href="/patterns">All patterns</NavLink>
-        {patterns.map((p) => (
-          <NavLink key={p.name} href={`/patterns/${slug(p.name)}`} sub>{p.name}</NavLink>
-        ))}
+            {foundationPages.map((f) => <NavLink key={f.href} href={f.href}>{f.label}</NavLink>)}
+          </Section>
+          <Section title="Components" open={open.components} onToggle={toggle("components")}>
+            <NavLink href="/components">Gallery</NavLink>
+            {componentNav.map((e) => "group" in e ? (
+              // A family heading (Chart) with its members indented under it.
+              <div key={e.group} className={styles.family} role="group" aria-label={e.group}>
+                <span className={[styles.link, styles.sub, styles.familyTitle].join(" ")} aria-hidden="true">{e.group}</span>
+                {e.items.map((c) => <NavLink key={c.name} href={`/components/${slug(c.name)}`} deep>{c.label}</NavLink>)}
+              </div>
+            ) : (
+              <NavLink key={e.name} href={`/components/${slug(e.name)}`} sub>{e.label}</NavLink>
+            ))}
+          </Section>
+          <Section title="Patterns" open={open.patterns} onToggle={toggle("patterns")}>
+            <NavLink href="/patterns">All patterns</NavLink>
+            {patterns.map((p) => (
+              <NavLink key={p.name} href={`/patterns/${slug(p.name)}`} sub>{p.name}</NavLink>
+            ))}
       </Section>
     </nav>
   );

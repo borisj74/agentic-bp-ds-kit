@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { Button } from "@/ui/Button/Button";
+import { CatalogSearch } from "./CatalogSearch";
 import { Sidebar } from "./Sidebar";
 import { ThemeControls } from "./ThemeControls";
 import styles from "./shell.module.css";
@@ -44,6 +45,10 @@ export function CatalogShell({ children }: { children: ReactNode }) {
   const wide = useSyncExternalStore(subscribeWide, getWide, () => true);
   const collapsed = useSyncExternalStore(subscribeCollapsed, getCollapsed, () => false);
   const [open, setOpen] = useState(false);
+  // The ⌘K palette, and the word for the shortcut: a Mac says ⌘K, everything else Ctrl K, and the server cannot
+  // know which, so the key only shows once the browser has told us.
+  const [searching, setSearching] = useState(false);
+  const [shortcut, setShortcut] = useState<string | undefined>(undefined);
   // The kit Button takes no ref, so the span around it is how focus finds its way back.
   const buttonRef = useRef<HTMLSpanElement>(null);
   const menuRef = useRef<HTMLElement>(null);
@@ -57,6 +62,19 @@ export function CatalogShell({ children }: { children: ReactNode }) {
   }
   // Widening the window puts the menu back beside the page, so the drawer state has nothing left to do.
   if (open && wide) setOpen(false);
+
+  useEffect(() => {
+    const mac = /Mac|iPhone|iPad/.test(navigator.platform) || /Mac/.test(navigator.userAgent);
+    setShortcut(mac ? "⌘K" : "Ctrl K");
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearching(true);
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
 
   useEffect(() => {
     if (!drawer) return;
@@ -93,10 +111,11 @@ export function CatalogShell({ children }: { children: ReactNode }) {
         </div>
         <div className={styles.topbarRight}><ThemeControls /></div>
       </header>
-      <Sidebar id={menuId} ref={menuRef} drawerOpen={drawer} />
+      <Sidebar id={menuId} ref={menuRef} drawerOpen={drawer} shortcut={shortcut} onSearch={() => setSearching(true)} />
       {drawer && <button type="button" className={styles.scrim} aria-label="Close menu" tabIndex={-1} onClick={() => setOpen(false)} />}
       {/* While the drawer is open the page behind it is out of reach, so Tab stays in the menu. */}
       <main className={styles.main} inert={drawer || undefined}>{children}</main>
+      <CatalogSearch open={searching} onClose={() => setSearching(false)} />
     </div>
   );
 }

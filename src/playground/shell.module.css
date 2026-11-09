@@ -90,3 +90,30 @@
 .pageMeta { margin: 0 0 var(--space-small); font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); }
 .pageMeta a { color: var(--link-brand); }
 .pageLead { margin: 0 0 var(--space-xlarge); color: var(--text-neutral-subtle); font-size: var(--font-size-regular); max-width: 60ch; }
+
+/* Search at the top of the sidebar: it filters the links below as you type, and ⌘K puts the cursor in it. */
+.search { position: sticky; top: 0; z-index: 1; background: var(--surface-sunken); padding-bottom: var(--space-xsmall); }
+/* A section heading while the search is filtering: the same words as the toggle, but nothing to open. */
+.groupLabel {
+  display: block; padding: var(--space-xxsmall) var(--space-xsmall);
+  font-size: var(--font-size-xsmall); font-weight: var(--font-weight-medium); text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--text-neutral-subtle);
+}
+.noMatch { margin: 0; padding: var(--space-xxsmall) var(--space-xsmall); color: var(--text-neutral); font-size: var(--font-size-small); }
+.srOnly {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+/* The search row at the top of the sidebar: it looks like a field but it is the button that opens the ⌘K palette. */
+.searchTrigger {
+  display: flex; align-items: center; gap: var(--space-xsmall); width: 100%;
+  padding: var(--space-xsmall); border-radius: var(--radius-medium); cursor: pointer;
+  border: var(--border-width-thin) solid var(--border-neutral-subtle); background: var(--surface-flat);
+  color: var(--text-neutral-subtle); font: inherit; font-size: var(--font-size-small); text-align: start;
+}
+.searchTrigger:hover { border-color: var(--border-neutral); color: var(--text-neutral-strong); }
+.searchTrigger:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--space-xxsmall); }
+.searchWord { flex: 1 1 auto; }
+.searchKey {
+  flex: none; font-family: var(--font-sans); font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle);
+}
