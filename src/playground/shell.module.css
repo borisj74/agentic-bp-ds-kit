@@ -1,8 +1,10 @@
 /* The page behind is sunken, so the content reads as a panel laid on it rather than as the page itself. The top
    bar and the menu take no surface of their own: they sit on that same ground. */
 .shell { display: grid; grid-template-columns: 240px 1fr; grid-template-rows: 48px 1fr; min-height: 100vh; background: var(--surface-sunken); }
+/* The bar scrolls away with the page. It carries no surface of its own, so pinning it would let the content
+   show through it. */
 .topbar {
-  grid-column: 1 / -1; position: sticky; top: 0; z-index: 2; height: 48px;
+  grid-column: 1 / -1; height: 48px;
   display: flex; align-items: center; justify-content: space-between;
   /* More room at the end than at the start: the brand sits behind a logo at the start, so the bar reads as
      evenly inset only when the controls at the end are given the difference. The end matches the inset the
@@ -13,7 +15,7 @@
 /* No line down its end: the menu and the page behind it are the same sunken ground, and the content panel's
    own border is what the eye reads as the edge. */
 .sidebar {
-  position: sticky; top: 48px; height: calc(100vh - 48px); overflow-y: auto;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
   background: var(--surface-sunken);
   padding: var(--space-medium) var(--space-small);
   display: flex; flex-direction: column; gap: var(--space-medium);
@@ -82,12 +84,12 @@
   .topbar { padding: 0 var(--space-small); }
   /* Closed, it sits off the start edge and hidden, so Tab and screen readers skip it. */
   .sidebar {
-    position: fixed; top: 48px; bottom: 0; left: 0; z-index: 3; width: min(280px, 85vw); height: auto;
+    position: fixed; top: 0; bottom: 0; left: 0; z-index: 3; width: min(280px, 85vw); height: auto;
     box-shadow: var(--elevation-popover); transform: translateX(-100%); visibility: hidden;
     transition: transform var(--motion-expand-duration) var(--motion-expand-easing), visibility 0s linear var(--motion-expand-duration);
   }
   .sidebarOpen { transform: none; visibility: visible; transition: transform var(--motion-expand-duration) var(--motion-expand-easing); }
-  .scrim { display: block; position: fixed; inset: 48px 0 0; z-index: 2; background: var(--surface-backdrop); cursor: pointer; }
+  .scrim { display: block; position: fixed; inset: 0; z-index: 2; background: var(--surface-backdrop); cursor: pointer; }
   .main { padding: var(--space-large) var(--space-medium); margin: var(--space-small); }
 }
 @media (prefers-reduced-motion: reduce) { .sidebar, .sidebarOpen { transition: none; } }
