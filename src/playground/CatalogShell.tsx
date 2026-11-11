@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { Button } from "@/ui/Button/Button";
+import { Logo } from "@/ui/Logo/Logo";
 import { CatalogSearch } from "./CatalogSearch";
 import { Sidebar } from "./Sidebar";
 import { ThemeControls } from "./ThemeControls";
@@ -116,6 +117,9 @@ export function CatalogShell({ children }: { children: ReactNode }) {
               {label}
             </Button>
           </span>
+          {/* The kit Logo's symbol: the mark alone, since its default carries the BillingPlatform wordmark and the
+              catalog's own name follows it here. */}
+          <Logo type="symbol" label="BillingPlatform" />
           <span className={styles.brandName}>Agentic BP DS</span>
           <span className={styles.brandTag}>code-first design system</span>
         </div>

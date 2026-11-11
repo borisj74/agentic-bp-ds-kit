@@ -16,7 +16,9 @@
   padding: var(--space-medium) var(--space-small);
   display: flex; flex-direction: column; gap: var(--space-medium);
 }
-.brand { display: flex; align-items: baseline; gap: var(--space-xsmall); }
+/* The mark, the catalog's name and its tag on one line. The mark's own frame is 32px in a 48px bar, so the row
+   centres rather than sitting on a baseline, and the name keeps a baseline gap from the tag beside it. */
+.brand { display: flex; align-items: center; gap: var(--space-xsmall); }
 .brandName { font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); font-size: var(--font-size-regular); }
 .brandTag { color: var(--text-neutral-subtle); font-size: var(--font-size-xsmall); }
 .group { display: flex; flex-direction: column; gap: 2px; }
