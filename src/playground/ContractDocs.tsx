@@ -3,6 +3,19 @@ import styles from "./contractDocs.module.css";
 import type { Contract } from "./Master";
 import { contractFile, defaults, importLine, notUseText, propNote, splitDoNot } from "./contractRules";
 
+/**
+ * Code text in a props cell. A maxWidth column cuts its value off with an ellipsis, and the Table does that to
+ * the span inside the cell's own wrapper, so code text keeps that shape: a wrapper with the text inside it.
+ * The title carries the whole value on hover, the way a Cell's does.
+ */
+function Mono({ text }: { text: string }) {
+  return (
+    <span className={styles.monoWrap}>
+      <span className={styles.mono} title={text}>{text}</span>
+    </span>
+  );
+}
+
 /** One labelled row of the agent panel: a code label at the start, its bullets filling the rest. */
 function AgentRow({ label, tint, items }: { label: string; tint: string; items: string[] }) {
   if (items.length === 0) return null;
@@ -18,15 +31,18 @@ function AgentRow({ label, tint, items }: { label: string; tint: string; items: 
   );
 }
 
+// Widths in px, not percentages: a prop's type can be a long enum union, and with percentages the table gives
+// that column the room by taking it off the name beside it, so the names run into the types. Every column has a
+// maxWidth as well, so a long union or note ends with an ellipsis and the table keeps to its box.
 const PROP_COLUMNS: TableColumn[] = [
-  { key: "name", header: "Name", emphasis: true, width: "180px" },
-  { key: "type", header: "Type", width: "200px" },
+  { key: "name", header: "Name", emphasis: true, width: "160px", maxWidth: "160px" },
+  { key: "type", header: "Type", width: "170px", maxWidth: "170px" },
   { key: "required", header: "Required", width: "96px" },
-  { key: "default", header: "Default", width: "160px" },
-  // Notes are prose. A Table cell keeps its value on one line, so the column stops at 520px and a long note ends
+  { key: "default", header: "Default", width: "190px", maxWidth: "190px" },
+  // Notes are prose. A Table cell keeps its value on one line, so the column takes about half the table and a long note ends
   // with an ellipsis; the whole note stays in the cell for screen readers and shows on hover. Only a plain string
   // value truncates that way, so notes stay strings while name, type and default are code text in their own width.
-  { key: "notes", header: "Notes", maxWidth: "520px" },
+  { key: "notes", header: "Notes", maxWidth: "640px" },
 ];
 
 /**
@@ -39,10 +55,10 @@ export function ContractDocs({ contract }: { contract: Contract }) {
   const defaultRows = defaults(contract);
   const propRows: TableRow[] = Object.entries(contract.props ?? {}).map(([name, p]) => ({
     id: name,
-    name: <code className={styles.mono}>{name}</code>,
-    type: <code className={styles.mono}>{p.enum ? p.enum.map(String).join(" | ") : p.type ?? "—"}</code>,
+    name: <Mono text={name} />,
+    type: <Mono text={p.enum ? p.enum.map(String).join(" | ") : p.type ?? "—"} />,
     required: p.required ? "Yes" : "No",
-    default: p.default === undefined ? "—" : <code className={styles.mono}>{defaultRows.find((d) => d.name === name)?.value ?? "—"}</code>,
+    default: p.default === undefined ? "—" : <Mono text={defaultRows.find((d) => d.name === name)?.value ?? "—"} />,
     notes: propNote(p) || "—",
   }));
 

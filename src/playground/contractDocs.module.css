@@ -1,9 +1,11 @@
 /* The documentation half of a component or pattern page: when to use it, what an agent reads, and the props. */
-.docs { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-xxlarge); }
+.docs { display: grid; grid-template-columns: minmax(0, 1fr); gap: calc(var(--space-xxlarge) + var(--space-small)); }
 
-/* When to use beside When not to use, same width. Under 720px there is no room for two readable lists, so the
-   second drops under the first. A contract with no When-not-to-use rules leaves one column at full width. */
-.whenPair { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-large) var(--space-xxlarge); align-items: start; }
+/* When to use beside When not to use, each half the width whether or not the second one has anything in it, so
+   the pair reads as two columns rather than one wide list. Under 720px there is no room for two readable lists,
+   so the second drops under the first. */
+.whenPair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-large) calc(var(--space-xxlarge) * 2); align-items: start; }
+@media (max-width: 720px) { .whenPair { grid-template-columns: minmax(0, 1fr); } }
 .when { display: grid; gap: var(--space-small); align-content: start; min-width: 0; }
 /* text-heading-sm: the page's own heading size, the same one Usage uses. */
 .whenTitle {
@@ -38,7 +40,7 @@
 .agentImport { font-family: var(--font-mono); font-size: var(--font-size-xsmall); color: var(--text-brand); }
 /* A label at the start of the row, its bullets filling the rest; thin rules between the rows. */
 .agentRow {
-  display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: var(--space-xsmall) var(--space-medium);
+  display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: var(--space-xsmall) var(--space-medium);
   padding: var(--space-small) var(--space-medium);
   border-top: var(--border-width-thin) solid var(--border-neutral-subtle);
 }
@@ -66,7 +68,9 @@
 
 /* The catalog's own top bar is 48px and pinned, so the props table's column names stop under it rather than
    sliding over it. That is what --table-stick-top is for. */
-.props { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-small); --table-stick-top: 48px; }
+.props { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-small); margin-top: calc(var(--space-xxlarge) * 2); --table-stick-top: 48px; }
+/* monoWrap stands where a Cell's own wrapper would: the Table's maxWidth rule cuts off the span inside it. */
+.monoWrap { display: flex; align-items: center; min-width: 0; }
 .mono { font-family: var(--font-mono); font-size: var(--font-size-xsmall); color: var(--text-neutral-strong); }
 
 /* Previous / Next at the foot of the page, the catalog's own A to Z order. */
