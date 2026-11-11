@@ -44,9 +44,10 @@ export function ThemeControls() {
   const setTheme = (t: "dark" | "light") => { document.documentElement.setAttribute("data-theme", t); persist("theme", t); };
 
   return (
-    /* Light or dark is a choice between two, so it is the kit Segmented, like the catalog's other switchers. */
+    /* Light or dark is a choice between two, so it is the kit Segmented, like the catalog's other
+       switchers. The two marks say it on their own, so it runs iconOnly; each label is still the option's name. */
     <Segmented
-      label="Colour mode" hideLabel size="sm"
+      label="Colour mode" hideLabel size="sm" iconOnly
       options={[
         { value: "light", label: "Light", icon: "light_mode" },
         { value: "dark", label: "Dark", icon: "dark_mode" },

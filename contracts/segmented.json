@@ -40,6 +40,12 @@
       "default": "md",
       "note": "Heights 28 / 36 / 44, like Button. Without a size it is md. A surrounding Density changes these sizes through the density tokens (Default values shown)."
     },
+    "iconOnly": {
+      "type": "boolean",
+      "default": false,
+      "noteForFigma": true,
+      "note": "Takes the words off the options and leaves their marks, for a switcher that needs no reading, like light and dark. Give every option an icon: one without keeps its label. The label is still the option's name for screen readers, the way an iconOnly Button keeps its children."
+    },
     "fullWidth": {
       "type": "boolean",
       "default": false,
@@ -61,6 +67,7 @@
   "doNot": [
     "Do not invent ToggleGroup, ToggleButtons, Segmented or a ButtonGroup with a pressed button. Options are already kit Buttons.",
     "Do not use for more than five options or long labels. Use Select.",
+    "Do not use iconOnly without an icon on every option, or for options whose marks do not say what they are on their own.",
     "Do not use for on/off. Use Switch.",
     "Do not use for actions. Buttons that do things belong in a ButtonGroup.",
     "Do not use raw hex."
@@ -68,7 +75,8 @@
   "a11y": [
     "A radiogroup named by its label; each option is a radio with aria-checked.",
     "One tab stop. Arrow keys move and choose, Home and End jump to the ends. Disabled options are skipped.",
-    "The chosen option adds a fill and a border, not only color. Options are kit Buttons, so focus shows the kit ring."
+    "The chosen option adds a fill and a border, not only color. Options are kit Buttons, so focus shows the kit ring.",
+    "With iconOnly, each option's label stays as its accessible name in visually hidden text, so the radios are still named."
   ],
   "snippet": "<Segmented\n  label=\"Density & text size\"\n  options={[\n    { value: \"compact\", label: \"Compact\" },\n    { value: \"default\", label: \"Default\" },\n    { value: \"comfortable\", label: \"Comfortable\" },\n  ]}\n  defaultValue=\"default\"\n/>",
   "examples": [
@@ -237,6 +245,32 @@
               }
             ],
             "defaultValue": "a"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Icon only",
+      "usage": "iconOnly leaves the marks and keeps each label as the option's name for screen readers. Use it where the two marks are plain, like light and dark.",
+      "items": [
+        {
+          "props": {
+            "label": "Colour mode",
+            "hideLabel": true,
+            "iconOnly": true,
+            "defaultValue": "light",
+            "options": [
+              {
+                "value": "light",
+                "label": "Light",
+                "icon": "light_mode"
+              },
+              {
+                "value": "dark",
+                "label": "Dark",
+                "icon": "dark_mode"
+              }
+            ]
           }
         }
       ]

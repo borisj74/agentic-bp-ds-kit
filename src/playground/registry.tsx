@@ -2100,6 +2100,8 @@ export const registry: Record<string, Entry> = {
       ],
       defaultValue: "default",
     },
+    // This preview's options carry no icons, so iconOnly would do nothing here. The Icon only variant shows it.
+    hide: ["iconOnly"],
     hint: "Switch size and toggle hidden label, full width and disabled. Click an option or use the arrow keys.",
     column: true,
     card: (
