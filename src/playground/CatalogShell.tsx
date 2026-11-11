@@ -39,16 +39,28 @@ function setCollapsed(hidden: boolean) {
   window.dispatchEvent(new Event(CHANGE));
 }
 
+// The word for the ⌘K shortcut: a Mac says ⌘K, everything else Ctrl K. The server cannot know which, so it renders
+// nothing and the browser's answer arrives on hydration. The platform never changes, so there is nothing to subscribe
+// to, and the answer is worked out once so every read gives back the same string.
+let shortcutWord: string | undefined;
+function subscribeShortcut() {
+  return () => {};
+}
+function getShortcut() {
+  shortcutWord ??= /Mac|iPhone|iPad/.test(navigator.platform) || /Mac/.test(navigator.userAgent) ? "⌘K" : "Ctrl K";
+  return shortcutWord;
+}
+const noShortcut = () => undefined;
+
 export function CatalogShell({ children }: { children: ReactNode }) {
   const menuId = useId();
   const path = usePathname();
   const wide = useSyncExternalStore(subscribeWide, getWide, () => true);
   const collapsed = useSyncExternalStore(subscribeCollapsed, getCollapsed, () => false);
   const [open, setOpen] = useState(false);
-  // The ⌘K palette, and the word for the shortcut: a Mac says ⌘K, everything else Ctrl K, and the server cannot
-  // know which, so the key only shows once the browser has told us.
+  // The ⌘K palette, and the word for the shortcut: the key only shows once the browser has told us which it is.
   const [searching, setSearching] = useState(false);
-  const [shortcut, setShortcut] = useState<string | undefined>(undefined);
+  const shortcut = useSyncExternalStore(subscribeShortcut, getShortcut, noShortcut);
   // The kit Button takes no ref, so the span around it is how focus finds its way back.
   const buttonRef = useRef<HTMLSpanElement>(null);
   const menuRef = useRef<HTMLElement>(null);
@@ -64,8 +76,6 @@ export function CatalogShell({ children }: { children: ReactNode }) {
   if (open && wide) setOpen(false);
 
   useEffect(() => {
-    const mac = /Mac|iPhone|iPad/.test(navigator.platform) || /Mac/.test(navigator.userAgent);
-    setShortcut(mac ? "⌘K" : "Ctrl K");
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();

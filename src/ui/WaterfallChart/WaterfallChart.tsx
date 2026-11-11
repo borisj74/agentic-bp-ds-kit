@@ -77,18 +77,18 @@ export function WaterfallChart({
   }
 
   // Each bar's run: a total starts at zero, a change starts where the one before it ended.
-  let run = 0;
-  const bars = items.map((it) => {
+  const bars: (WaterfallItem & { total: boolean; from: number; to: number; intent: ChartIntent })[] = [];
+  for (const it of items) {
     const total = it.kind === "total";
+    const run = bars.length ? bars[bars.length - 1].to : 0;
     const from = total ? 0 : run;
     const to = total ? it.value : run + it.value;
-    run = to;
-    return {
+    bars.push({
       ...it, total, from, to,
       // A total takes the total colour; a change takes its direction's, unless it names one.
       intent: it.intent ?? (total ? totalIntent : it.value < 0 ? fallIntent : riseIntent),
-    };
-  });
+    });
+  }
 
   const lo = Math.min(0, ...bars.map((b) => Math.min(b.from, b.to)));
   const hi = Math.max(0, ...bars.map((b) => Math.max(b.from, b.to)));
