@@ -12,13 +12,15 @@
   margin: 0; font: var(--text-heading-sm-weight) var(--text-heading-sm-size) / var(--text-heading-sm-lh) var(--font-sans);
   letter-spacing: var(--text-heading-sm-ls); color: var(--text-neutral-strong);
 }
-/* Plain bullets, no icons and no colour: the two lists read as one pair of lists, not as a verdict. */
+/* A tick on the start of every When-to-use rule and a cross on every When-not-to-use one, so the two columns
+   read as the verdict they are. The kit Icon carries the intent; the lists hold no colour of their own. */
 .whenList {
   display: grid; gap: var(--space-xsmall); margin: 0; padding: 0; list-style: none;
   font-size: var(--font-size-small); line-height: 1.5; color: var(--text-neutral-subtle);
 }
-.whenList > li { display: grid; grid-template-columns: var(--space-small) minmax(0, 1fr); }
-.whenList > li::before { content: "·"; color: var(--text-neutral-faint); }
+.whenItem { display: flex; align-items: flex-start; gap: var(--space-xsmall); }
+/* The 16px mark sits on the first line's centre: (21px line - 16px icon) / 2. */
+.whenIcon { flex: none; margin-top: calc((1.5em - var(--icon-size-small)) / 2); }
 
 /* What an agent reads: a quiet reference panel, not an alert. */
 .agent {

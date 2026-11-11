@@ -1,3 +1,4 @@
+import { Icon } from "@/ui/Icon/Icon";
 import { Table, type TableColumn, type TableRow } from "@/ui/Table/Table";
 import styles from "./contractDocs.module.css";
 import type { Contract } from "./Master";
@@ -66,22 +67,22 @@ export function ContractDocs({ contract }: { contract: Contract }) {
     <div className={styles.docs}>
       {(useWhen.length > 0 || notUse.length > 0) && (
         <div className={styles.whenPair}>
-          {useWhen.length > 0 && (
-            <section className={styles.when}>
-              <h2 className={styles.whenTitle}>When to use</h2>
+          {[
+            { title: "When to use", icon: "check_circle", intent: "success" as const, items: useWhen.map((rule) => rule.replace(/\.$/, "")) },
+            { title: "When not to use", icon: "cancel", intent: "danger" as const, items: notUse.map(notUseText) },
+          ].filter((column) => column.items.length > 0).map((column) => (
+            <section key={column.title} className={styles.when}>
+              <h2 className={styles.whenTitle}>{column.title}</h2>
               <ul className={styles.whenList}>
-                {useWhen.map((rule) => <li key={rule}>{rule.replace(/\.$/, "")}</li>)}
+                {column.items.map((item) => (
+                  <li key={item} className={styles.whenItem}>
+                    <Icon name={column.icon} size="sm" intent={column.intent} className={styles.whenIcon} />
+                    <span>{item}</span>
+                  </li>
+                ))}
               </ul>
             </section>
-          )}
-          {notUse.length > 0 && (
-            <section className={styles.when}>
-              <h2 className={styles.whenTitle}>When not to use</h2>
-              <ul className={styles.whenList}>
-                {notUse.map((rule) => <li key={rule}>{notUseText(rule)}</li>)}
-              </ul>
-            </section>
-          )}
+          ))}
         </div>
       )}
 
