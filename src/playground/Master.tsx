@@ -30,7 +30,6 @@ const sizeOrder = ["xs", "sm", "md", "lg", "xl", "full", "fullscreen"];
 const order = (vals: (string | number)[]) => [...vals].map(String).sort((a, b) => (sizeOrder.includes(a) && sizeOrder.includes(b) ? sizeOrder.indexOf(a) - sizeOrder.indexOf(b) : 0));
 const words = (k: string) => k.replace(/([A-Z])/g, " $1").toLowerCase();
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-const list = (xs: string[]) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`);
 
 // Object literal for code samples: { id: "a", title: "A" }. Nested objects and arrays print the same way.
 const lit = (v: unknown): string =>
@@ -122,15 +121,13 @@ export function Master({ contract }: { contract: Contract }) {
   const snippetProps = codeProps(shown);
   const snippet = toJsx(contract.name, snippetProps, keys, true, childName);
   const hasControls = enums.length + bools.length + toggles.length > 0;
-  const hint = entry.hint ?? (!hasControls ? contract.intent : `Toggle ${list([...enums, ...bools].map(([k]) => words(k)))} to preview every ${contract.name} combination.`);
   const file = `contracts/${contract.name.toLowerCase()}.json`;
 
   return (
     <section className={styles.section}>
       <div className={styles.header}>
-        <h2 className={styles.h2}>Master</h2>
-        <p className={styles.lead}>{hint}</p>
-        {/* The kit Segmented picks the view; the Master shows the chosen one below. Copy prompt shares the line. */}
+        {/* The page title and lead already name the piece, so the view bar opens the section on its own. The kit
+            Segmented picks the view; the chosen one shows below. Copy prompt shares the line. */}
         <div className={styles.viewBar}>
           <div className={styles.viewTabs}>
             <Segmented
@@ -193,13 +190,14 @@ export function Master({ contract }: { contract: Contract }) {
             </aside>)}
           </div>
           <div className={styles.docs}>
-            {/* Usage prose and the snippet, then the contract itself: when to use it, what an agent reads, props. */}
+            {/* Usage prose, then the contract itself: when to use it, what an agent reads, props. The snippet
+                ends the page, so the reading runs from why you would reach for the piece to the code you copy. */}
             <div className={styles.detail}>
-              <h3 className={styles.detailLabel}>Usage</h3>
+              <h2 className={styles.detailLabel}>Usage</h2>
               <p className={styles.detailText}>{contract.usage ?? contract.intent}</p>
             </div>
-            <Code code={snippet} id="preview" c={c} />
             <ContractDocs contract={contract} />
+            <Code code={snippet} id="preview" c={c} />
           </div>
         </div>
       ) : (
@@ -214,7 +212,7 @@ export function Master({ contract }: { contract: Contract }) {
               + (ex.a11y ? `\n\n// ${file} a11y\n${contract.a11y.map((r) => `// - ${r}`).join("\n")}` : "");
             return (
               <section key={ex.title} className={styles.example}>
-                <h3 className={styles.h2}>{ex.title}</h3>
+                <h2 className={styles.h2}>{ex.title}</h2>
                 <div className={styles.exampleCanvas}>
                   {captioned ? (
                     <div className={[styles.cells, entry.column ? styles.stackedCells : ""].join(" ")}>
@@ -230,7 +228,7 @@ export function Master({ contract }: { contract: Contract }) {
                   )}
                 </div>
                 <div className={styles.detail}>
-                  <h4 className={styles.detailLabel}>{ex.a11y ? "Built in" : "Usage"}</h4>
+                  <h3 className={styles.detailLabel}>{ex.a11y ? "Built in" : "Usage"}</h3>
                   <p className={styles.detailText}>{ex.a11y ? [...contract.a11y, ex.usage].filter(Boolean).join(" ") : ex.usage}</p>
                 </div>
                 <Code code={code} id={`ex-${i}`} c={c} />

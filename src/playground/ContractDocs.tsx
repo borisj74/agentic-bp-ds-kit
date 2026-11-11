@@ -68,7 +68,7 @@ export function ContractDocs({ contract }: { contract: Contract }) {
         <div className={styles.whenPair}>
           {useWhen.length > 0 && (
             <section className={styles.when}>
-              <h3 className={styles.whenTitle}>When to use</h3>
+              <h2 className={styles.whenTitle}>When to use</h2>
               <ul className={styles.whenList}>
                 {useWhen.map((rule) => <li key={rule}>{rule.replace(/\.$/, "")}</li>)}
               </ul>
@@ -76,7 +76,7 @@ export function ContractDocs({ contract }: { contract: Contract }) {
           )}
           {notUse.length > 0 && (
             <section className={styles.when}>
-              <h3 className={styles.whenTitle}>When not to use</h3>
+              <h2 className={styles.whenTitle}>When not to use</h2>
               <ul className={styles.whenList}>
                 {notUse.map((rule) => <li key={rule}>{notUseText(rule)}</li>)}
               </ul>
@@ -88,7 +88,7 @@ export function ContractDocs({ contract }: { contract: Contract }) {
       {/* The contract as an agent reads it: the a11y it must keep, the defaults it inherits, and where it stops. */}
       <section className={styles.agent} aria-labelledby={`${contract.name}-agent`}>
         <div className={styles.agentHead}>
-          <h3 id={`${contract.name}-agent`} className={styles.agentTitle}>What an agent reads</h3>
+          <h2 id={`${contract.name}-agent`} className={styles.agentTitle}>What an agent reads</h2>
           <code className={styles.agentImport}>{importLine(contract)}</code>
         </div>
         <AgentRow label="must" tint={styles.tintMust} items={contract.a11y ?? []} />
@@ -102,7 +102,7 @@ export function ContractDocs({ contract }: { contract: Contract }) {
 
       {propRows.length > 0 && (
         <section className={styles.props}>
-          <h3 className={styles.whenTitle}>Props</h3>
+          <h2 className={styles.whenTitle}>Props</h2>
           <Table size="sm" columns={PROP_COLUMNS} rows={propRows} caption={`${contract.name} props`} />
         </section>
       )}
