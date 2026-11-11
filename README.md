@@ -324,6 +324,75 @@ The kit tells the assistant to stop and ask when a screen needs something it doe
 
 ---
 
+## MCP server (local)
+
+Agents can query this repo's **contracts** (components and screen patterns) and **semantic tokens** without opening every file. The server is read-only stdio MCP: it reads `contracts/` and `src/tokens/source/semantic.txt` at runtime (no duplicated catalog).
+
+### Run it
+
+From a clone of this repo, after `npm install`:
+
+```bash
+npm run mcp
+```
+
+Or:
+
+```bash
+npx agentic-bp-ds-kit mcp
+```
+
+(`npx` uses the `bin` entry in this repo's `package.json`; it is not published to npm.)
+
+### Tools
+
+| Tool | Purpose |
+| --- | --- |
+| `list` | Every component and screen pattern in `contracts/index.json`, split by kind |
+| `get` | One component or pattern: full contract, kind, usage and import (`name`: `Button`, `button`, `ListPage`) |
+| `search` | Match name, tags, intent, `useWhen` and related fields, across components and patterns |
+| `get_tokens` | Semantic tokens; optional `category` (e.g. `text`, `background`) and `theme` (`light`, `dark`, `both`) |
+| `get_rules` | Kit agent rules plus `CLAUDE.md` / `AGENTS.md` text |
+
+### Cursor
+
+Add to `.cursor/mcp.json` (paths relative to your machine):
+
+```json
+{
+  "mcpServers": {
+    "agentic-bp-ds-kit": {
+      "command": "node",
+      "args": ["/absolute/path/to/agentic-bp-ds-kit/bin/mcp.mjs"],
+      "cwd": "/absolute/path/to/agentic-bp-ds-kit"
+    }
+  }
+}
+```
+
+Or use `npm run mcp` via your package manager wrapper if you prefer running through `npm`.
+
+### Claude Code
+
+In `.mcp.json` at the project root (or Claude Code MCP settings):
+
+```json
+{
+  "mcpServers": {
+    "agentic-bp-ds-kit": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/absolute/path/to/agentic-bp-ds-kit/bin/mcp.mjs"],
+      "cwd": "/absolute/path/to/agentic-bp-ds-kit"
+    }
+  }
+}
+```
+
+Run `npm test -- tests/mcp.test.ts` to verify each tool responds.
+
+---
+
 ## What's in the repo
 
 | Folder | What it holds |
@@ -333,6 +402,7 @@ The kit tells the assistant to stop and ask when a screen needs something it doe
 | `src/patterns/` | Page blueprints composed from components |
 | `src/tokens/` | Primitive and semantic tokens, and layout classes |
 | `src/app/(playground)/` | The catalog you see at localhost:3000, including the Start pages |
+| `mcp/`, `bin/mcp.mjs` | Local read-only MCP server over contracts and tokens |
 | `packages/create-agentic-bp-ds/` | The `npm create` installer |
 | `.claude/skills/prototype-from-kit/` | The Prototype from kit skill |
 | `CHANGELOG.md` | What changed in each release |

@@ -13,8 +13,14 @@ import { createInterface } from "node:readline/promises";
 const REPO = "borisj74/agentic-bp-ds-kit";
 const { version: VERSION } = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8"));
 const TARBALL = `https://codeload.github.com/${REPO}/tar.gz/refs/tags/v${VERSION}`;
-// Files that belong to the kit's own repo, not to a prototype made from it.
-const DROP = ["packages", "LICENSE"];
+// Files that belong to the kit's own repo, not to a prototype made from it. The MCP server reads this repo's
+// contracts for an agent working on the kit itself; a prototype has no use for it and should not carry its
+// dependencies.
+const DROP = ["packages", "LICENSE", "bin", "mcp", "tests/mcp.test.ts"];
+// The same, inside package.json: the bin entry and the script that start the server, and the two packages only it
+// needs.
+const DROP_SCRIPTS = ["mcp"];
+const DROP_DEPS = ["@modelcontextprotocol/sdk", "zod"];
 
 const bold = (s) => `\x1b[1m${s}\x1b[0m`;
 const dim = (s) => `\x1b[2m${s}\x1b[0m`;
@@ -53,6 +59,12 @@ const pkgPath = join(target, "package.json");
 const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
 pkg.name = basename(target).toLowerCase().replace(/[^a-z0-9-_.]/g, "-");
 pkg.version = "0.1.0";
+delete pkg.bin;
+for (const script of DROP_SCRIPTS) delete pkg.scripts?.[script];
+for (const dep of DROP_DEPS) {
+  delete pkg.dependencies?.[dep];
+  delete pkg.devDependencies?.[dep];
+}
 writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
 
 // Install with whichever tool ran this (npm, pnpm, yarn or bun).
