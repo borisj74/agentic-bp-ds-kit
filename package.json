@@ -2,6 +2,9 @@
   "name": "agentic-bp-ds-kit",
   "version": "0.10.0",
   "private": true,
+  "bin": {
+    "agentic-bp-ds-kit": "./bin/agentic-bp-ds-kit.mjs"
+  },
   "scripts": {
     "tokens": "node scripts/build-tokens.mjs",
     "figma:guidelines": "node scripts/figma-guidelines.mjs",
@@ -11,9 +14,11 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "mcp": "node bin/mcp.mjs"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "next": "16.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8"
@@ -33,6 +38,7 @@
     "jsdom": "^30.0.1",
     "typescript": "^5",
     "vite-tsconfig-paths": "^6.1.1",
-    "vitest": "^5.0.0"
+    "vitest": "^5.0.0",
+    "zod": "^3.24.0"
   }
 }
