@@ -5,6 +5,7 @@ import { Icon } from "@/ui/Icon/Icon";
 import { RadioGroup } from "@/ui/RadioGroup/RadioGroup";
 import { Segmented } from "@/ui/Segmented/Segmented";
 import { Switch } from "@/ui/Switch/Switch";
+import { Tabs } from "@/ui/Tabs/Tabs";
 import styles from "./master.module.css";
 import { registry, type Props } from "./registry";
 import { CopyPrompt } from "./CopyPrompt";
@@ -130,12 +131,12 @@ export function Master({ contract }: { contract: Contract }) {
       <div className={styles.header}>
         <h2 className={styles.h2}>Master</h2>
         <p className={styles.lead}>{hint}</p>
-        {/* The kit Segmented picks the view; the Master shows the chosen one below. Copy prompt shares the line. */}
+        {/* The real kit Tabs, as a strip: the Master shows the chosen view below. Copy prompt shares the line. */}
         <div className={styles.viewBar}>
           <div className={styles.viewTabs}>
-            <Segmented
-              label={`${contract.name} views`} hideLabel size="sm" value={tab} onChange={(id) => setTab(id as "preview" | "variants")}
-              options={[{ value: "preview", label: "Preview" }, { value: "variants", label: "Variants" }]}
+            <Tabs
+              label={`${contract.name} views`} value={tab} onChange={(id) => setTab(id as "preview" | "variants")}
+              items={[{ id: "preview", label: "Preview" }, { id: "variants", label: "Variants" }]}
             />
           </div>
           <CopyPrompt contract={contract} />

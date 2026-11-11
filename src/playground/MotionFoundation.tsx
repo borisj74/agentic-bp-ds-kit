@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Segmented } from "@/ui/Segmented/Segmented";
+import { Tabs } from "@/ui/Tabs/Tabs";
 import master from "./master.module.css";
 import styles from "./motion.module.css";
 import { useCopy, type Copy } from "./useCopy";
@@ -39,7 +39,7 @@ export function MotionFoundation({ tabs }: { tabs: MotionTab[] }) {
   return (
     <>
       <div className={master.pageTabs}>
-        <Segmented label="Motion tokens" hideLabel size="sm" value={tab} onChange={(id) => setTab(id as typeof tab)} options={tabs.map((t) => ({ value: t.key, label: t.label }))} />
+        <Tabs label="Motion tokens" value={tab} onChange={(id) => setTab(id as typeof tab)} items={tabs.map((t) => ({ id: t.key, label: t.label }))} />
       </div>
       <p className={master.hint}>Hover or focus a tile to play it. Click to copy its tokens.</p>
       {active.groups.map((g) => (

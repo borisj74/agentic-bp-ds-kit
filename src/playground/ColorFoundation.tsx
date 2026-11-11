@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Segmented } from "@/ui/Segmented/Segmented";
+import { Tabs } from "@/ui/Tabs/Tabs";
 import { useCopy, type Copy } from "./useCopy";
 import master from "./master.module.css";
 import styles from "./color.module.css";
@@ -66,7 +66,7 @@ export function ColorFoundation({ ramps, scheme, semantics }: { ramps: Ramp[]; s
   return (
     <>
       <div className={master.pageTabs}>
-        <Segmented label="Color tokens" hideLabel size="sm" value={tab} onChange={(id) => setTab(id as typeof tab)} options={tabs.map(([k, label]) => ({ value: k, label }))} />
+        <Tabs label="Color tokens" value={tab} onChange={(id) => setTab(id as typeof tab)} items={tabs.map(([k, label]) => ({ id: k, label }))} />
       </div>
       <p className={master.hint}>Click a primitive to copy its hex. Click a semantic or scheme swatch to copy its token.</p>
       {tab === "primitives" && ramps.map((r) => (
