@@ -4,6 +4,16 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.10.1 — 2026-11-11
+
+Two ways for an agent to read the kit without opening every file.
+
+### Added
+- A "Copy prompt for" control on every component and pattern page in the catalog. It writes the prompt for you from that piece's contract — the import line, what it is for, the snippet, the key props, `useWhen`, `doNot`, the a11y notes — with the kit rules on top, and copies it ready to paste. Three targets: Claude Code, Cursor, and MCP (which points the agent at the server below instead of spelling the contract out). Built from the kit's own `Segmented` and `Button`.
+- An MCP server for the kit's contracts and tokens, read-only, over stdio: `npm run mcp`. Tools are `list`, `get`, `search`, `get_tokens` and `get_rules`; it serves components and screen patterns alike, each labelled by kind. This one is for working on the kit itself, in an editor pointed at this repo. It does not ship into a prototype: a scaffolded app has no `bin/`, no `mcp/`, no `mcp` script and none of its dependencies.
+
+Nothing is renamed or removed, so screens on v0.10.0 move over as they are.
+
 ## v0.10.0 — 2026-11-09
 
 Six charts the kit was missing, and lines that step.
