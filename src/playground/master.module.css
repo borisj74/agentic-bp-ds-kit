@@ -71,7 +71,9 @@
 
 /* Usage + code under a stage. */
 .docs { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-medium); }
-.detail { display: grid; gap: var(--space-xxsmall); max-width: 640px; }
+/* Usage prose. 880px is a wide measure but still a measure: a long contract's Usage, like Cell's, ran to ten
+   short lines at 640 and reads in fewer here, while the text never runs the full width of the page. */
+.detail { display: grid; gap: var(--space-xxsmall); max-width: 880px; }
 /* text-heading-sm, a step above the 14px text under it, so Usage reads as a title rather than a caption. */
 .detailLabel {
   margin: 0; font: var(--text-heading-sm-weight) var(--text-heading-sm-size) / var(--text-heading-sm-lh) var(--font-sans);
