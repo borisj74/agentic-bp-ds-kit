@@ -137,7 +137,6 @@ export function Master({ contract }: { contract: Contract }) {
             <Tabs
               label={`${contract.name} views`} value={tab} onChange={(id) => setTab(id as "preview" | "variants")}
               items={[{ id: "preview", label: "Preview" }, { id: "variants", label: "Variants" }]}
-              border={false}
             />
           </div>
           <CopyPrompt contract={contract} />
