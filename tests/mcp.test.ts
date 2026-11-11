@@ -13,8 +13,11 @@ const TOOL_NAMES = ["get", "get_rules", "get_tokens", "list", "search"];
 let client: Client;
 let transport: StdioClientTransport;
 
-function textOf(result: { content?: { type: string; text?: string }[] }) {
-  const block = result.content?.find((item) => item.type === "text");
+type ToolTextResult = { content?: { type: string; text?: string }[] };
+
+function textOf(result: unknown) {
+  const { content } = result as ToolTextResult;
+  const block = content?.find((item) => item.type === "text");
   expect(block?.text).toBeTypeOf("string");
   return block!.text!;
 }
@@ -33,7 +36,8 @@ describe("MCP server", () => {
       cwd: repoRoot,
       stderr: "pipe",
     });
-    transport.stderr?.resume();
+    const stderr = transport.stderr as unknown as NodeJS.ReadableStream | undefined;
+    stderr?.resume?.();
     client = new Client({ name: "agentic-bp-ds-kit-mcp-test", version: "0.0.0" });
     await client.connect(transport);
   }, 30_000);
