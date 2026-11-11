@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Tabs } from "@/ui/Tabs/Tabs";
+import { Segmented } from "@/ui/Segmented/Segmented";
 import master from "./master.module.css";
 import styles from "./scale.module.css";
 import { useCopy } from "./useCopy";
@@ -16,7 +16,7 @@ export function ScaleFoundation({ tabs, visual }: { tabs: ScaleTab[]; visual: "b
   return (
     <>
       <div className={master.pageTabs}>
-        <Tabs label="Token groups" value={tab} onChange={(id) => setTab(id as typeof tab)} items={tabs.map((t) => ({ id: t.key, label: t.label }))} />
+        <Segmented label="Token groups" hideLabel size="sm" value={tab} onChange={(id) => setTab(id as typeof tab)} options={tabs.map((t) => ({ value: t.key, label: t.label }))} />
       </div>
       <p className={master.hint}>Click any row to copy its token.</p>
       {active.sections.map((s) => (

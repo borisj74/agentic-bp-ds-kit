@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Tabs } from "@/ui/Tabs/Tabs";
+import { Segmented } from "@/ui/Segmented/Segmented";
 import master from "./master.module.css";
 import styles from "./typography.module.css";
 import { useCopy } from "./useCopy";
@@ -88,7 +88,7 @@ export function TypographyFoundation() {
   return (
     <>
       <div className={master.pageTabs}>
-        <Tabs label="Typography tokens" value={tab} onChange={(id) => setTab(id as typeof tab)} items={[{ id: "primitives", label: "Primitives" }, { id: "semantics", label: "Semantics" }]} />
+        <Segmented label="Typography tokens" hideLabel size="sm" value={tab} onChange={(id) => setTab(id as typeof tab)} options={[{ value: "primitives", label: "Primitives" }, { value: "semantics", label: "Semantics" }]} />
       </div>
       <p className={master.hint}>Click any row to copy its token.</p>
       {tab === "primitives" && (
