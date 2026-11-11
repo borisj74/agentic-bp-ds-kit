@@ -23,15 +23,27 @@ const firstSentence = (s = "") => (s.match(/^[^.]*\./)?.[0] ?? s).trim();
 // A usage paragraph runs to 14 sentences for the bigger pieces, and all of them together were 72KB of the 150KB
 // these files cost — enough to put the library over Figma's 200KB cap on the next component added. A contract opens
 // with what the piece is and how data goes in, and the rules the agent cannot guess are spread down the rest, so
-// neither the whole paragraph nor a flat cut of the first few is right. What comes through: the opening three
-// sentences, then every later sentence carrying a rule — what to use instead, what is capped, what belongs where,
-// what gives way. What is left behind is detail the property line above already shows (which values align, what an
-// empty table says) and behaviour a static Figma drawing has no way to express.
+// neither the whole paragraph nor a flat cut of the first few is right. What comes through: the opening sentences
+// (three for a pattern, none for a component — see below), then every later sentence carrying a rule — what to use
+// instead, what is capped, what belongs where, what gives way. What is left behind is detail the property line above
+// already shows (which values align, what an empty table says) and behaviour a static Figma drawing cannot express.
 const RULE = /\b(never|do not|only|must|at most|one per|instead of|rather than|no more than|belongs? in|belong to|give way|too wide|scrolls? (in|inside) its own)\b/i;
+const usageSentences = (s = "", openers) => {
+  const sentences = s.trim().split(/(?<=[.!?])\s+/);
+  return [...sentences.slice(0, openers), ...sentences.slice(openers).filter((line) => RULE.test(line))].join(" ");
+};
+// A pattern keeps its opening sentences: there are a dozen patterns and the opening is where a blueprint says which
+// screen it is for. A component drops them. With 84 components those openers were 14KB, and they almost always
+// restate the intent line printed directly above them ("Use Badge for status on rows and cards" under "Short status
+// or category label"), while the steer to a different piece rides in the rules and the do-nots either way.
+// A pattern's own opening sentence is always "Use <Pattern> for <the screen>", and the **Use when** bullets printed
+// just below it say that outright, so the openers kept here are the two after it — the ones that say what the
+// blueprint is made of.
 const usageForFigma = (s = "") => {
   const sentences = s.trim().split(/(?<=[.!?])\s+/);
-  return [...sentences.slice(0, 3), ...sentences.slice(3).filter((line) => RULE.test(line))].join(" ");
+  return usageSentences(sentences.slice(1).join(" "), 2);
 };
+const usageForComponent = (s = "") => usageSentences(s, 0);
 
 // Pointers back at the contract files mean nothing inside Figma.
 const noContractRefs = (s = "") => s
@@ -181,9 +193,13 @@ design to one, and never read a hex out of one.
 Four roles, and the list is closed — if a colour you want is not here, it does not
 exist in this system.
 
+Each role carries the same set of category hues, listed once under the role below.
+Category hues are for charts, swatches and category marks, never for state or
+meaning: status is \`info\`, \`success\`, \`warning\`, \`danger\`.
+
 ${roles.map((r) => {
   const { all, named, steps } = byRole.get(r);
-  return `### \`--${r}-*\` (${all.length})\n\n${named.map((t) => `\`${t}\``).join(", ")}\n\nCategory hues — \`--${r}-{${hues.join("|")}}\` on its own and with ${steps.filter((x) => x !== "(none)").map((x) => `\`-${x}\``).join(", ")}. Category hues are for charts, swatches and category marks, never for state or meaning: status is \`info\`, \`success\`, \`warning\`, \`danger\`.`;
+  return `### \`--${r}-*\` (${all.length})\n\n${named.map((t) => `\`${t}\``).join(", ")}\n\nCategory hues — \`--${r}-{${hues.join("|")}}\` on its own and with ${steps.filter((x) => x !== "(none)").map((x) => `\`-${x}\``).join(", ")}.`;
 }).join("\n\n")}
 
 ### Surfaces, links, outlines, fonts
@@ -217,50 +233,88 @@ ${layout.doNot.map((d) => `- ${noContractRefs(d)}`).join("\n")}
 // A callback cannot be drawn, so its own line would only cost the agent tokens.
 const isCallback = (type = "") => type === "function" || type.includes("=>");
 
+// "Do not invent/build a local <something>". Deliberately narrow: it has to be about making a second copy of the
+// piece, so "Do not add a second strong Button" and "Do not draw forecast bars as a second series" are not caught.
+const LOOKALIKE = /^do not (invent|hand-?roll|build a local|draw a local)\b/i;
+
 // Row and item shapes carry their field notes in the contract. Inside Figma only
 // the field names matter, so each one becomes `name` or `name?`.
+// A contract writes a shape either as an object or as a line of TypeScript, and the same rule holds for both: the
+// field types are for whoever wires the component up, not for whoever draws it. A written-out shape is reduced to
+// its field names here, which is also what lets the longest ones through — they used to be dropped whole for
+// running past 120 characters, so a designer learned nothing about those rows at all.
+const fieldNames = (fields) => (fields.length ? ` { ${fields.join(", ")} }` : "");
 const shape = (itemShape) => {
-  if (typeof itemShape === "string") return itemShape.length < 120 ? ` ${itemShape}` : "";
+  if (typeof itemShape === "string") {
+    // Walked rather than matched, because a shape can nest a group (`note: { at; label }`) and can be a union of
+    // two of them (`{ id; label } | { divider: true }`). Only the names one brace deep are wanted, from every
+    // group in the line, in order and without repeats.
+    const names = [];
+    let depth = 0;
+    let token = "";
+    const flush = () => {
+      const name = token.split(":")[0].trim();
+      if (name && !names.includes(name)) names.push(name);
+      token = "";
+    };
+    for (const ch of itemShape) {
+      if (ch === "{") { if (depth === 1) { token += "{"; } depth += 1; if (depth === 1) token = ""; continue; }
+      if (ch === "}") { depth -= 1; if (depth === 0) flush(); continue; }
+      if (ch === ";" && depth === 1) { flush(); continue; }
+      if (depth === 1) token += ch;
+    }
+    // An index signature is the row's own "any other column" field; it reads as `[key]`.
+    return fieldNames(names.map((name) => (name.startsWith("[") ? "[key]" : name)));
+  }
   if (!itemShape || typeof itemShape !== "object") return "";
   // A field reads "<type>? <what it is>", so what marks it optional is the question mark that closes the type,
   // not one inside the description. Taking the first word instead loses it on every union type.
   const optional = (value) => /^[^?]*\?(\s|$)/.test(String(value));
-  const fields = Object.entries(itemShape)
-    .map(([field, value]) => field + (optional(value) ? "?" : ""));
-  return fields.length ? ` { ${fields.join(", ")} }` : "";
+  return fieldNames(Object.entries(itemShape)
+    .map(([field, value]) => field + (optional(value) ? "?" : "")));
 };
 
 const componentEntry = (meta) => {
   const c = json(meta.contract);
   const entries = Object.entries(c.props ?? {});
   const props = entries.map(([name, p]) => {
-    if (p.enum) return `\`${name}\`: ${p.enum.map((v) => `\`${v}\``).join(" | ")}${p.default !== undefined ? ` (default \`${p.default}\`)` : ""}`;
-    if (p.type === "boolean") return `\`${name}\`: boolean${p.default !== undefined ? ` (default \`${p.default}\`)` : ""}`;
+    // Written tight, because the same few shapes repeat 84 times: `size sm|md*|lg` rather than
+    // "`size`: `sm` | `md` (default `md`) | `lg`". The notation is spelled out at the head of the file.
+    if (p.enum) return `${name} ${p.enum.map((v) => (String(p.default) === v ? `${v}*` : v)).join("|")}`;
+    if (p.type === "boolean") return `${name} bool${p.default === true ? "*" : ""}`;
     if (isCallback(p.type)) return null;
-    return `\`${name}\`: \`${p.type}\`${shape(p.itemShape)}`;
+    return `${name} ${p.type}${shape(p.itemShape)}`;
   }).filter(Boolean);
-  // on* is a handler the agent can ignore. The rest are accessors a screen passes
-  // to decide what a row or cell looks like, so they belong next to the props.
+  // on* is a handler nothing in a Figma frame can show, so it is left out entirely; it cost 2.4KB across the
+  // library to print names the agent was told to ignore. The rest are accessors a screen passes to decide what a
+  // row or cell looks like — those do change what gets drawn, so they stay next to the props.
   const callbacks = entries.filter(([, p]) => !p.enum && isCallback(p.type)).map(([name]) => name);
-  const names = (list) => list.map((name) => `\`${name}\``).join(", ");
   const accessors = callbacks.filter((name) => !/^on[A-Z]/.test(name));
-  const events = callbacks.filter((name) => /^on[A-Z]/.test(name));
   // A prop's note is written for someone reading code, and most of it says how the piece behaves rather than what
   // gets drawn. Every note would also put the files well past Figma's cap. So a contract marks the few whose note
   // carries something the property line cannot show — a count, a size, which values pair, where the prop may be
   // used — with noteForFigma, and only those come through, each on its own line under the props.
+  // The first sentence of a marked note is the rule; what follows it is the worked example. The example is what a
+  // designer gets from looking at the component on the canvas, so only the rule is written out here.
   const propNotes = entries
     .filter(([, p]) => p.noteForFigma && p.note)
-    .map(([name, p]) => `- \`${name}\` — ${noContractRefs(p.note)}`);
+    .map(([name, p]) => [name, firstSentence(noContractRefs(p.note))])
+    // A few marked notes open with the callback's own signature, which says nothing a frame can show.
+    .filter(([, note]) => !/=>/.test(note))
+    .map(([name, note]) => `- ${name} — ${note}`);
+  // "Do not invent a local Badge, Tag, Chip or Pill" is rule one in 01-rules.md and the first anti-pattern in
+  // 05-antipatterns.md, restated for 49 of the 84 components. It is dropped here when the component has a rule of
+  // its own left to give, and kept when it is all that component has to say.
+  const specific = (c.doNot ?? []).filter((d) => !LOOKALIKE.test(d));
+  const doNot = (specific.length ? specific : (c.doNot ?? [])).slice(0, 2);
   return [
     `### ${c.name}`,
     firstSentence(c.intent),
     props.length ? `Props — ${props.join("; ")}` : null,
     propNotes.length ? propNotes.join("\n") : null,
-    accessors.length ? `Functions — ${names(accessors)}` : null,
-    events.length ? `Events — ${names(events)}` : null,
-    c.usage ? usageForFigma(noContractRefs(c.usage)) : null,
-    c.doNot?.length ? c.doNot.slice(0, 3).map((d) => `- ${noContractRefs(d)}`).join("\n") : null,
+    accessors.length ? `Functions — ${accessors.join(", ")}` : null,
+    c.usage ? usageForComponent(noContractRefs(c.usage)) : null,
+    doNot.length ? doNot.map((d) => `- ${noContractRefs(d)}`).join("\n") : null,
   ].filter(Boolean).join("\n\n");
 };
 
@@ -270,6 +324,13 @@ add("03-components.md", `# Agentic BP DS — components
 Every component in the library, with its closed property lists. A property value
 that is not on its line does not exist: do not add a variant, a size or a colour
 the list leaves out.
+
+How to read a property line. Choices are separated by \`|\` and the default is marked
+with \`*\` — \`size sm|md*|lg\` means those three sizes and nothing else, \`md\` unless
+you set it. \`name bool\` is a flag, \`bool*\` one that is already on. Anything else is
+the type the property takes, with the fields of a row or item in braces after it.
+\`Functions\` are the accessors a screen passes to decide how a row or cell is drawn.
+Event handlers are left out: they change nothing you can see in a frame.
 
 ${categories.map((cat) => `## ${cat}\n\n${index.components.filter((c) => c.category === cat).map(componentEntry).join("\n\n")}`).join("\n\n")}
 `);

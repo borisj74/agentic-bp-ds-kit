@@ -9,7 +9,7 @@ structure to suit one screen.
 
 The account provisioning flow: the accounts list, one account with its tabs, a new account, a new product on an account, and configuring that product alone or many products at once, one page at a time.
 
-Use AccountFlow for the screens people move between when they set up and look after accounts. It is a blueprint: each page is a kit pattern the screen builds, and the screen owns which one is showing, the records and what was just saved. list is a kit ListPage: a Toolbar with filters, search, the view picker and refresh, and a Table whose Account ID is a link Cell that opens the account, with Pagination under it; Table View is the default, and List View swaps the Table for a kit ListView of the same accounts whose rows open the account; the page's New and Export go in the AppShell's kit PageHeader, not in the Toolbar.
+It is a blueprint: each page is a kit pattern the screen builds, and the screen owns which one is showing, the records and what was just saved. list is a kit ListPage: a Toolbar with filters, search, the view picker and refresh, and a Table whose Account ID is a link Cell that opens the account, with Pagination under it; Table View is the default, and List View swaps the Table for a kit ListView of the same accounts whose rows open the account; the page's New and Export go in the AppShell's kit PageHeader, not in the Toolbar.
 
 **Use when**
 
@@ -33,7 +33,7 @@ Use AccountFlow for the screens people move between when they set up and look af
 
 The frame every product screen sits in: the bar across the top, the rail under it down the side, the page in the middle, and the assistant beside it.
 
-Use AppShell as the outer frame of a screen. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is open. Pass the kit AppHeader as header: it runs the full width across the top, and the rail starts under it. Never pass a shorter list or make up links. pageHeader takes a kit PageHeader and stays at the top of the page while the page scrolls under it, flush to the top edge; The frame shrinks it to the kit's compact 52px bar on its own once the top of the page has scrolled away, so a screen passes a plain PageHeader and wires nothing; set sticky on the PageHeader yourself only to override that. children are the page itself, already inside the scrolling content area with its edge padding and the gap between Sections, so screens do not add their own. The frame answers to its own width rather than the window's, so under about 640 the rail goes and an open assistant takes the page's place, whether it is docked in a panel or filling a screen. The frame marks itself, so panels that float out of the bar or the rail — menus, tooltips, the search dropdown — keep inside it rather than over whatever is beside it.
+It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is open. Pass the kit AppHeader as header: it runs the full width across the top, and the rail starts under it. Never pass a shorter list or make up links. pageHeader takes a kit PageHeader and stays at the top of the page while the page scrolls under it, flush to the top edge; The frame shrinks it to the kit's compact 52px bar on its own once the top of the page has scrolled away, so a screen passes a plain PageHeader and wires nothing; set sticky on the PageHeader yourself only to override that. children are the page itself, already inside the scrolling content area with its edge padding and the gap between Sections, so screens do not add their own. The frame answers to its own width rather than the window's, so under about 640 the rail goes and an open assistant takes the page's place, whether it is docked in a panel or filling a screen. The frame marks itself, so panels that float out of the bar or the rail — menus, tooltips, the search dropdown — keep inside it rather than over whatever is beside it.
 
 **Use when**
 
@@ -57,7 +57,7 @@ Use AppShell as the outer frame of a screen. It is a blueprint: it composes kit 
 
 The assistant window: its header over the turns, the composer at the foot, and the saved chats coming in beside or over them.
 
-Use ChatWindow for the assistant beside a screen, or for its full-screen view. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is shown. The box runs edge to edge at the foot of the window, with one line over it, rather than sitting in the body as a card of its own. size panel is the 395 column beside the page; size full fills the space it is given and sets the chats beside the conversation instead of over it; inside AppShell, pair it with assistantSize full. On a phone-width frame the panel gives up its 395 column and takes the whole width, since the assistant stands in for the page there rather than sitting beside it.
+It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is shown. The box runs edge to edge at the foot of the window, with one line over it, rather than sitting in the body as a card of its own. size panel is the 395 column beside the page; size full fills the space it is given and sets the chats beside the conversation instead of over it; inside AppShell, pair it with assistantSize full. On a phone-width frame the panel gives up its 395 column and takes the whole width, since the assistant stands in for the page there rather than sitting beside it.
 
 **Use when**
 
@@ -79,7 +79,7 @@ Use ChatWindow for the assistant beside a screen, or for its full-screen view. I
 
 The home screen of a job: the numbers that matter, grouped, with the charts and lists that explain them.
 
-Use Dashboard for a home screen that reports rather than lists: accounting, billing, revenue. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns which dashboard is showing, which groups are open and what the filters are. Pass the kit Toolbar as toolbar, with the filters, the search, the view and refresh; it stays at the top under the page header while the groups scroll, with a lift under it once it is holding. A Table too wide for its group scrolls sideways inside its own box instead of moving the page, and then its names rest at the top of that box rather than under the bar. Inside a group, lead with a kit Scoreboard of that group's few numbers, then the tiles that explain them: kit BarChart, LineChart or PieChart, a kit Table with its own Toolbar over it, for the filters and the export that belong to that table alone, a kit Timeline of what happened.
+It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns which dashboard is showing, which groups are open and what the filters are. Pass the kit Toolbar as toolbar, with the filters, the search, the view and refresh; it stays at the top under the page header while the groups scroll, with a lift under it once it is holding. A Table too wide for its group scrolls sideways inside its own box instead of moving the page, and then its names rest at the top of that box rather than under the bar. Inside a group, lead with a kit Scoreboard of that group's few numbers, then the tiles that explain them: kit BarChart, LineChart or PieChart, a kit Table with its own Toolbar over it, for the filters and the export that belong to that table alone, a kit Timeline of what happened.
 
 **Use when**
 
@@ -104,7 +104,7 @@ Use Dashboard for a home screen that reports rather than lists: accounting, bill
 
 One record being filled in: its name and the save at the top, anything that has to be read first under that, and the fields in folding groups underneath.
 
-Use FormPage to create or edit one record: a new account, a new invoice, a rate card. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the values and what is folded away. Pass the kit PageHeader as header, with the trail, what is being made, and the actions: Cancel, then one strong brand Button that saves. columns (1, 2 or 3, default 2) is set on the FormPage and the Form follows it unless it sets its own; each column stops at 554px (--layout-column-max) and the fields stay at the start, so on a wide screen the space past the last column stays empty instead of stretching the fields. Never more than 3 columns, even at 2560px and wider. Do not put a second save at the foot of the page: the one in the header is always in reach.
+It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the values and what is folded away. Pass the kit PageHeader as header, with the trail, what is being made, and the actions: Cancel, then one strong brand Button that saves. columns (1, 2 or 3, default 2) is set on the FormPage and the Form follows it unless it sets its own; each column stops at 554px (--layout-column-max) and the fields stay at the start, so on a wide screen the space past the last column stays empty instead of stretching the fields. Never more than 3 columns, even at 2560px and wider. Do not put a second save at the foot of the page: the one in the header is always in reach.
 
 **Use when**
 
@@ -129,7 +129,7 @@ Use FormPage to create or edit one record: a new account, a new invoice, a rate 
 
 A process walked one page per step: a dark column per step before it starts, then each step's fields with every step on a dark panel at the start or end edge of the page.
 
-Use GuidedProcessPage for a process of a few steps that each need a page, like importing usage, registering a supplier or setting up a billing run. It is a blueprint: it only places kit GuidedProcess parts and keeps no state of its own, so the screen owns whether it has started, which step is on, what has been saved and whether the steps drawer is open. view intro is before the process starts: pass intro, one GuidedProcess panel per step, with shade 1 to 5 along the way and the first carrying the process name, Start and Cancel; from 1024 of box width they stand as columns across the page and scroll sideways when there are more than fit, and under 1024 they stack. Only the step scrolls; the footer stays under it.
+It is a blueprint: it only places kit GuidedProcess parts and keeps no state of its own, so the screen owns whether it has started, which step is on, what has been saved and whether the steps drawer is open. view intro is before the process starts: pass intro, one GuidedProcess panel per step, with shade 1 to 5 along the way and the first carrying the process name, Start and Cancel; from 1024 of box width they stand as columns across the page and scroll sideways when there are more than fit, and under 1024 they stack. Only the step scrolls; the footer stays under it.
 
 **Use when**
 
@@ -151,7 +151,7 @@ Use GuidedProcessPage for a process of a few steps that each need a page, like i
 
 A list with the picked record beside it: a ListView on one side and the record in a pane on the other, or one at a time on a phone.
 
-Use ListDetail when people go through records one after another without leaving the list: an invoice queue, an inbox, approvals. It is a blueprint: it composes kit pieces and keeps no state of its own. list is a kit ListView, usually with selection single and interaction drill; its onOpen tells the screen which record is open.
+It is a blueprint: it composes kit pieces and keeps no state of its own. list is a kit ListView, usually with selection single and interaction drill; its onOpen tells the screen which record is open.
 
 **Use when**
 
@@ -176,7 +176,7 @@ Use ListDetail when people go through records one after another without leaving 
 
 A list of records: the bar to find and filter them, the rows themselves, and the pages under them.
 
-Use ListPage for any screen that lists records: invoices, accounts, quotes. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the filters, the rows and which page is showing. Pass the kit Toolbar as toolbar and the list itself as children. A Table too wide for the page is the one thing that scrolls sideways on its own, inside its own box, and then its column names hold at the top of that box rather than under the Toolbar — a cell can only hold still against whatever scrolls. The page itself never slides sideways. Under that band is the scroll shadow: a lift that reaches both page edges while the bar and the table keep the page's side padding, drawn only once the band has pinned, and the column names give up their own line while it is. bulk is the bar of actions for the rows that are ticked; it takes the toolbar's place while something is selected, so the two are never both there.
+It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the filters, the rows and which page is showing. Pass the kit Toolbar as toolbar and the list itself as children. A Table too wide for the page is the one thing that scrolls sideways on its own, inside its own box, and then its column names hold at the top of that box rather than under the Toolbar — a cell can only hold still against whatever scrolls. The page itself never slides sideways. Under that band is the scroll shadow: a lift that reaches both page edges while the bar and the table keep the page's side padding, drawn only once the band has pinned, and the column names give up their own line while it is. bulk is the bar of actions for the rows that are ticked; it takes the toolbar's place while something is selected, so the two are never both there.
 
 **Use when**
 
@@ -201,7 +201,7 @@ Use ListPage for any screen that lists records: invoices, accounts, quotes. It i
 
 One record: its name and actions at the top, the tabs of what belongs to it, the numbers that matter, and its details in sections underneath.
 
-Use RecordPage for a single record: an account, an invoice, a quote. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the tab, the sections and what is open. Pass the kit PageHeader as header, with the trail, the record name, its status Badge and the record actions. columns (1, 2 or 3, default 2) and labelPosition (default start) are set once on the RecordPage and every Section of rows, or Form, inside the details follows them unless it sets its own; each column stops at 554px (--layout-column-max) and the rows stay at the start, so on a wide screen the space past the last column stays empty instead of stretching the rows. Never more than 3 columns, even at 2560px and wider. One too wide for the record scrolls sideways inside its own box rather than moving the page, and then its names hold at the top of that box instead of under the bar.
+It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the tab, the sections and what is open. Pass the kit PageHeader as header, with the trail, the record name, its status Badge and the record actions. columns (1, 2 or 3, default 2) and labelPosition (default start) are set once on the RecordPage and every Section of rows, or Form, inside the details follows them unless it sets its own; each column stops at 554px (--layout-column-max) and the rows stay at the start, so on a wide screen the space past the last column stays empty instead of stretching the rows. Never more than 3 columns, even at 2560px and wider. One too wide for the record scrolls sideways inside its own box rather than moving the page, and then its names hold at the top of that box instead of under the bar.
 
 **Use when**
 
@@ -226,7 +226,7 @@ Use RecordPage for a single record: an account, an invoice, a quote. It is a blu
 
 The settings home: a grid of the places people can go from here, each with its own icon and color.
 
-Use SettingsPage for a home that sends people onwards rather than showing them data: the settings home, or another home shaped like it, such as a reports home. It is a blueprint: it composes kit pieces and keeps no state of its own. children are kit NavTiles, one per place, each with its own intent so the colors become part of how people find the same place again.
+It is a blueprint: it composes kit pieces and keeps no state of its own. children are kit NavTiles, one per place, each with its own intent so the colors become part of how people find the same place again.
 
 **Use when**
 

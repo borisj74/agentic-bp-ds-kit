@@ -13,29 +13,33 @@ design to one, and never read a hex out of one.
 Four roles, and the list is closed — if a colour you want is not here, it does not
 exist in this system.
 
+Each role carries the same set of category hues, listed once under the role below.
+Category hues are for charts, swatches and category marks, never for state or
+meaning: status is `info`, `success`, `warning`, `danger`.
+
 ### `--bg-*` (132)
 
 `--bg-neutral-min`, `--bg-neutral-min-hover`, `--bg-neutral-min-press`, `--bg-neutral-min-selected`, `--bg-neutral-min-selected-hover`, `--bg-neutral-min-selected-press`, `--bg-neutral-min-static`, `--bg-neutral-max`, `--bg-neutral-max-static`, `--bg-neutral-faint`, `--bg-neutral-subtle`, `--bg-neutral`, `--bg-neutral-strong`, `--bg-neutral-intense`, `--bg-neutral-hover`, `--bg-neutral-press`, `--bg-brand-faint`, `--bg-brand-faint-press`, `--bg-brand-subtle`, `--bg-brand`, `--bg-brand-strong`, `--bg-brand-intense`, `--bg-brand-hover`, `--bg-brand-press`, `--bg-info-faint`, `--bg-info-subtle`, `--bg-info`, `--bg-info-strong`, `--bg-info-intense`, `--bg-info-hover`, `--bg-info-press`, `--bg-success-faint`, `--bg-success-subtle`, `--bg-success`, `--bg-success-strong`, `--bg-success-intense`, `--bg-success-hover`, `--bg-success-press`, `--bg-warning-faint`, `--bg-warning-subtle`, `--bg-warning`, `--bg-warning-strong`, `--bg-warning-intense`, `--bg-warning-hover`, `--bg-warning-press`, `--bg-danger-faint`, `--bg-danger-faint-press`, `--bg-danger-subtle`, `--bg-danger`, `--bg-danger-strong`, `--bg-danger-intense`, `--bg-danger-hover`, `--bg-danger-press`, `--bg-highlight-faint`, `--bg-highlight-subtle`, `--bg-highlight`, `--bg-highlight-strong`, `--bg-highlight-intense`, `--bg-highlight-hover`, `--bg-highlight-press`, `--bg-neutral-contrast`, `--bg-danger-subtle-contrast`
 
-Category hues — `--bg-{olive|green|mint|cyan|purple|pink|red|orange|yellow|gray}` on its own and with `-faint`, `-subtle`, `-strong`, `-intense`, `-hover`, `-press`. Category hues are for charts, swatches and category marks, never for state or meaning: status is `info`, `success`, `warning`, `danger`.
+Category hues — `--bg-{olive|green|mint|cyan|purple|pink|red|orange|yellow|gray}` on its own and with `-faint`, `-subtle`, `-strong`, `-intense`, `-hover`, `-press`.
 
 ### `--border-*` (119)
 
 `--border-neutral-faint`, `--border-neutral-subtle`, `--border-neutral`, `--border-neutral-strong`, `--border-neutral-intense`, `--border-neutral-field`, `--border-neutral-field-hover`, `--border-brand-faint`, `--border-brand-subtle`, `--border-brand`, `--border-brand-strong`, `--border-brand-intense`, `--border-brand-hover`, `--border-brand-press`, `--border-info-faint`, `--border-info-subtle`, `--border-info`, `--border-info-strong`, `--border-info-intense`, `--border-info-hover`, `--border-info-press`, `--border-success-faint`, `--border-success-subtle`, `--border-success`, `--border-success-strong`, `--border-success-intense`, `--border-success-hover`, `--border-success-press`, `--border-warning-faint`, `--border-warning-subtle`, `--border-warning`, `--border-warning-strong`, `--border-warning-intense`, `--border-warning-hover`, `--border-warning-press`, `--border-danger-faint`, `--border-danger-subtle`, `--border-danger`, `--border-danger-strong`, `--border-danger-intense`, `--border-danger-hover`, `--border-danger-press`, `--border-highlight-faint`, `--border-highlight-subtle`, `--border-highlight`, `--border-highlight-strong`, `--border-highlight-intense`, `--border-highlight-hover`, `--border-highlight-press`
 
-Category hues — `--border-{olive|green|mint|cyan|purple|pink|red|orange|yellow|gray}` on its own and with `-faint`, `-subtle`, `-strong`, `-intense`, `-hover`, `-press`. Category hues are for charts, swatches and category marks, never for state or meaning: status is `info`, `success`, `warning`, `danger`.
+Category hues — `--border-{olive|green|mint|cyan|purple|pink|red|orange|yellow|gray}` on its own and with `-faint`, `-subtle`, `-strong`, `-intense`, `-hover`, `-press`.
 
 ### `--text-*` (97)
 
 `--text-neutral-min`, `--text-neutral-min-static`, `--text-neutral-max`, `--text-neutral-max-static`, `--text-neutral-faint`, `--text-neutral-subtle`, `--text-neutral`, `--text-neutral-strong`, `--text-neutral-intense`, `--text-brand-faint`, `--text-brand-subtle`, `--text-brand`, `--text-brand-strong`, `--text-brand-intense`, `--text-info-faint`, `--text-info-subtle`, `--text-info`, `--text-info-strong`, `--text-info-intense`, `--text-success-faint`, `--text-success-subtle`, `--text-success`, `--text-success-strong`, `--text-success-intense`, `--text-warning-faint`, `--text-warning-subtle`, `--text-warning`, `--text-warning-strong`, `--text-warning-intense`, `--text-danger-faint`, `--text-danger-subtle`, `--text-danger`, `--text-danger-strong`, `--text-danger-intense`, `--text-highlight-faint`, `--text-highlight-subtle`, `--text-highlight`, `--text-highlight-strong`, `--text-highlight-intense`, `--text-neutral-contrast`, `--text-neutral-min-contrast`, `--text-neutral-intense-contrast`, `--text-brand-strong-contrast`, `--text-info-strong-contrast`, `--text-success-contrast`, `--text-danger-contrast`, `--text-danger-strong-contrast`
 
-Category hues — `--text-{olive|green|mint|cyan|purple|pink|red|orange|yellow|gray}` on its own and with `-faint`, `-subtle`, `-strong`, `-intense`. Category hues are for charts, swatches and category marks, never for state or meaning: status is `info`, `success`, `warning`, `danger`.
+Category hues — `--text-{olive|green|mint|cyan|purple|pink|red|orange|yellow|gray}` on its own and with `-faint`, `-subtle`, `-strong`, `-intense`.
 
 ### `--icon-*` (90)
 
 `--icon-neutral-min`, `--icon-neutral-min-static`, `--icon-neutral-max`, `--icon-neutral-max-static`, `--icon-neutral-faint`, `--icon-neutral-subtle`, `--icon-neutral`, `--icon-neutral-strong`, `--icon-neutral-intense`, `--icon-brand-faint`, `--icon-brand-subtle`, `--icon-brand`, `--icon-brand-strong`, `--icon-brand-intense`, `--icon-info-faint`, `--icon-info-subtle`, `--icon-info`, `--icon-info-strong`, `--icon-info-intense`, `--icon-success-faint`, `--icon-success-subtle`, `--icon-success`, `--icon-success-strong`, `--icon-success-intense`, `--icon-warning-faint`, `--icon-warning-subtle`, `--icon-warning`, `--icon-warning-strong`, `--icon-warning-intense`, `--icon-danger-faint`, `--icon-danger-subtle`, `--icon-danger`, `--icon-danger-strong`, `--icon-danger-intense`, `--icon-highlight-faint`, `--icon-highlight-subtle`, `--icon-highlight`, `--icon-highlight-strong`, `--icon-highlight-intense`, `--icon-neutral-min-contrast`
 
-Category hues — `--icon-{olive|green|mint|cyan|purple|pink|red|orange|yellow|gray}` on its own and with `-faint`, `-subtle`, `-strong`, `-intense`. Category hues are for charts, swatches and category marks, never for state or meaning: status is `info`, `success`, `warning`, `danger`.
+Category hues — `--icon-{olive|green|mint|cyan|purple|pink|red|orange|yellow|gray}` on its own and with `-faint`, `-subtle`, `-strong`, `-intense`.
 
 ### Surfaces, links, outlines, fonts
 
