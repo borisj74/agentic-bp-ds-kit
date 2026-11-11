@@ -131,14 +131,16 @@ export function Master({ contract }: { contract: Contract }) {
       <div className={styles.header}>
         <h2 className={styles.h2}>Master</h2>
         <p className={styles.lead}>{hint}</p>
-        {/* The real kit Tabs, as a strip: the Master shows the chosen view below. */}
-        <div className={styles.viewTabs}>
-          <Tabs
-            label={`${contract.name} views`} value={tab} onChange={(id) => setTab(id as "preview" | "variants")}
-            items={[{ id: "preview", label: "Preview" }, { id: "variants", label: "Variants" }]}
-          />
+        {/* The real kit Tabs, as a strip: the Master shows the chosen view below. Copy prompt shares the line. */}
+        <div className={styles.viewBar}>
+          <div className={styles.viewTabs}>
+            <Tabs
+              label={`${contract.name} views`} value={tab} onChange={(id) => setTab(id as "preview" | "variants")}
+              items={[{ id: "preview", label: "Preview" }, { id: "variants", label: "Variants" }]}
+            />
+          </div>
+          <CopyPrompt contract={contract} />
         </div>
-        <CopyPrompt contract={contract} />
       </div>
 
       {tab === "preview" ? (
