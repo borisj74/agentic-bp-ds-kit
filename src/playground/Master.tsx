@@ -1,16 +1,16 @@
 "use client";
 import { useState, type CSSProperties } from "react";
 import { Button } from "@/ui/Button/Button";
-import { Icon } from "@/ui/Icon/Icon";
 import { RadioGroup } from "@/ui/RadioGroup/RadioGroup";
 import { Segmented } from "@/ui/Segmented/Segmented";
 import { Switch } from "@/ui/Switch/Switch";
 import styles from "./master.module.css";
 import { registry, type Props } from "./registry";
+import { ContractDocs } from "./ContractDocs";
 import { CopyPrompt } from "./CopyPrompt";
 import { useCopy, type Copy } from "./useCopy";
 
-type PropDef = { type?: string; enum?: (string | number)[]; default?: unknown; note?: string; required?: boolean };
+type PropDef = { type?: string; enum?: (string | number)[]; default?: unknown; note?: string; itemShape?: string; required?: boolean };
 export interface Example {
   title: string;
   usage?: string;
@@ -193,35 +193,13 @@ export function Master({ contract }: { contract: Contract }) {
             </aside>)}
           </div>
           <div className={styles.docs}>
-            {/* Usage on the start, Do's over Don'ts on the end, the same width. With no rules to show, Usage stands alone. */}
-            <div className={contract.useWhen?.length > 0 || contract.doNot?.length > 0 ? styles.usageBeside : styles.passThrough}>
+            {/* Usage prose and the snippet, then the contract itself: when to use it, what an agent reads, props. */}
             <div className={styles.detail}>
               <h3 className={styles.detailLabel}>Usage</h3>
               <p className={styles.detailText}>{contract.usage ?? contract.intent}</p>
             </div>
-            {/* Do's and Don'ts come straight from the contract's useWhen and doNot, so the page and the agents read the same rules. */}
-            {(contract.useWhen?.length > 0 || contract.doNot?.length > 0) && (
-              <div className={styles.rules}>
-                {[
-                  { title: "Do's", items: contract.useWhen ?? [], icon: "check_circle", intent: "success" as const },
-                  { title: "Don'ts", items: contract.doNot ?? [], icon: "cancel", intent: "danger" as const },
-                ].filter((group) => group.items.length > 0).map((group) => (
-                  <div key={group.title} className={styles.detail}>
-                    <h3 className={styles.detailLabel}>{group.title}</h3>
-                    <ul className={styles.ruleList}>
-                      {group.items.map((rule) => (
-                        <li key={rule} className={styles.rule}>
-                          <Icon name={group.icon} size="sm" intent={group.intent} className={styles.ruleIcon} />
-                          <span>{rule}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            )}
-            </div>
             <Code code={snippet} id="preview" c={c} />
+            <ContractDocs contract={contract} />
           </div>
         </div>
       ) : (
