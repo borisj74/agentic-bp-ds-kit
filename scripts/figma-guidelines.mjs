@@ -294,11 +294,21 @@ const componentEntry = (meta) => {
   // gets drawn. Every note would also put the files well past Figma's cap. So a contract marks the few whose note
   // carries something the property line cannot show — a count, a size, which values pair, where the prop may be
   // used — with noteForFigma, and only those come through, each on its own line under the props.
-  // The first sentence of a marked note is the rule; what follows it is the worked example. The example is what a
-  // designer gets from looking at the component on the canvas, so only the rule is written out here.
+  // A marked note often carries one rule per sentence, a row of them — Table's `columns` states what `key`,
+  // `numeric`, `emphasis`, `width` and `maxWidth` each do, and none of that is visible on the canvas. So the note
+  // keeps every sentence that states a rule, and loses only the two kinds that say nothing new: a worked example,
+  // and a restatement of the default the property line already marks with `*`.
+  const EXAMPLE = /^(use it\b|use them\b|use that\b|for example\b|e\.g\.)/i;
+  const DEFAULT_RESTATED = /^without (a|an|the) [a-z]+,? it is [a-z]+\.$/i;
   const propNotes = entries
     .filter(([, p]) => p.noteForFigma && p.note)
-    .map(([name, p]) => [name, firstSentence(noContractRefs(p.note))])
+    .map(([name, p]) => {
+      const sentences = noContractRefs(p.note).trim().split(/(?<=[.!?])\s+/);
+      // The opening sentence is the rule for the property itself, so it stays whatever it looks like.
+      const kept = [sentences[0], ...sentences.slice(1)
+        .filter((line) => !EXAMPLE.test(line) && !DEFAULT_RESTATED.test(line))];
+      return [name, kept.join(" ")];
+    })
     // A few marked notes open with the callback's own signature, which says nothing a frame can show.
     .filter(([, note]) => !/=>/.test(note))
     .map(([name, note]) => `- ${name} — ${note}`);

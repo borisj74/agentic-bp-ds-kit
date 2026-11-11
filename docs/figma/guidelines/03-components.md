@@ -41,7 +41,7 @@ Triggers an action.
 
 Props — emphasis strong|subtle*|minimal; intent brand|neutral*|danger; size sm|md*|lg; iconStart string; iconEnd string; iconSize sm|md|lg|xl; iconOnly bool; loading bool; toggle bool; disabled bool; fullWidth bool; type button*|submit|reset; children ReactNode
 
-- iconSize — Icon size, 16 / 20 / 24 / 32.
+- iconSize — Icon size, 16 / 20 / 24 / 32. Leave out to follow the Button: 16 on sm, 20 on md and lg. Use a larger icon on an icon-only lg Button where the icon alone carries the action, like a phone footer.
 
 Intent danger is only for work that cannot be undone. Only these pairs exist: strong with brand or danger, subtle with neutral, minimal with neutral, brand or danger. Accessibility is built in: native button, focus ring, loading and disabled states, and a label for icon-only buttons.
 
@@ -54,7 +54,7 @@ Joined row of kit Buttons that share one size and act as one control cluster.
 
 Props — label string; size sm|md*|lg; disabled bool; children Button[]
 
-- size — Applied to every Button in the group.
+- size — Applied to every Button in the group. Buttons inside do not set their own size. A surrounding Density changes these sizes through the density tokens (Default values shown).
 
 Only kit Buttons go in a group.
 
@@ -100,7 +100,7 @@ Brand logo: the full wordmark or the mark alone, in fixed brand colors.
 
 Props — type default*|symbol; label string
 
-- type — default = mark + wordmark (145 x 28).
+- type — default = mark + wordmark (145 x 28). symbol = mark only (22 x 32 frame).
 
 Brand colors are fixed and never follow the theme tokens. In dark theme the wordmark text switches to the white reverse; the mark never changes.
 
@@ -113,7 +113,7 @@ AI logo for AI features: full logo or icon, in fixed brand colors.
 
 Props — type default*|symbol; intent color*|monochrome|white|filled; label string
 
-- type — default = mark + AI text (55 x 28).
+- type — default = mark + AI text (55 x 28). symbol = mark only (33 x 28).
 
 - Do not recolor, retint or tokenize the logo. Brand colors are fixed.
 - Do not redraw it, use an image of it, or paste the SVG into a screen.
@@ -126,8 +126,8 @@ Values side by side as bars, one group or stack per category, like invoices by s
 
 Props — label string; title string; subtitle string; showHeader bool*; categories string[]; series ChartSeries[] { name, values, intent?, projectedFrom?, axis? }; orientation vertical*|horizontal; highlight number | number[]; highlightIntent green|olive|cyan|orange*|pink|gray|purple|yellow|red|mint; stacked bool; barWidth wide*|thin; showValues bool; showGrid bool*; showLegend bool*; legendPosition top|bottom*|end; animate bool*; format number*|currency|percent; currency string; height number; emptyLabel string; referenceLines ChartReferenceLine[] { value, label, intent?, values?, note?, axis? }; marker ChartMarker { category, label }; selected number | null
 
-- barWidth — wide: bars fill most of their category's space, with square corners.
-- marker — Upright charts only.
+- barWidth — wide: bars fill most of their category's space, with square corners. thin: every bar is 8px, like a medium Meter bar, with its rounded ends; a stack rounds only its two outer ends. For long runs of periods, like a month of days. Pointing anywhere in a category still shows its tooltip.
+- marker — Upright charts only. A thin line down the chart at one category, counted from 0, with its label over the top, like Today.
 
 - Do not use it for a long, smooth trend. Use LineChart.
 - Do not use it for one share of a total. Use PieChart.
@@ -149,8 +149,8 @@ One item in a grid or list of options people compare and pick, like a proposal l
 
 Props — title string; overline string; badge string; badgeIntent BadgeIntent; description string; amount string; message string; messageIntent success*|warning|danger|info; image string; imageAlt string; icon string; selectable bool; selected bool; defaultSelected bool; disabled bool; href string; actions CardAction[] { id, label, icon }; menu DropdownMenuEntry[]
 
-- title — The item name, an h3.
-- actions — Icon buttons at the end of the footer, named by the action and the card.
+- title — The item name, an h3. Two lines at most. Without it, the overline (or else the description) names the card and its checkbox.
+- actions — Icon buttons at the end of the footer, named by the action and the card. Two at most.
 
 description is two lines at most. Give a Card the same actions as the record's Table row and ListView row, so switching views never changes what can be done.
 
@@ -163,10 +163,10 @@ Content for one table cell: text, a number, a date, a link, a redirect to anothe
 
 Props — type text*|link|avatar|avatarGroup|file|payment|badge|badges|trendPositive|trendNegative|progress|actions|actionIcons|actionMenu|checkbox|tree|number|date|status|switch|popupTrigger|textBlock|redirect; size sm|md*; alignment start*|center|end; text bool*; checkbox bool; label string; href string; name string; src string; people CellPerson[] { name, src? }; icon string; intent BadgeIntent; badges CellBadge[] { label, intent? }; value string | number; actions CellAction[] { label, icon?, emphasis?, intent?, onClick? }; menu CellAction[]; checked bool; defaultChecked bool; level number; expanded bool; showLines bool*; treeToggle chevron|box*
 
-- size — Row height 36 / 40 px.
-- alignment — Same as HeaderCell: end for numbers and amounts, center for a checkbox-only column.
-- checkbox — Leading row Checkbox before the value, labeled Select {label or name}.
-- actions — For actions (labeled, up to 3), actionIcons (icon only, up to 3, label becomes the name and a kit Tooltip) and actionMenu (menu items, danger intent becomes a danger item).
+- size — Row height 36 / 40 px. sm holds one line only (a textBlock at sm stops at the cell edge with an ellipsis); content with a second line (a name over an email) uses md. Side padding 12 px at both sizes, same as HeaderCell. Avatars stay xs (24 px), Badge and Checkbox small (20 / 16 px), so rows keep their height. A surrounding Density changes these sizes through the density tokens (Default values shown).
+- alignment — Same as HeaderCell: end for numbers and amounts, center for a checkbox-only column. type number defaults to end.
+- checkbox — Leading row Checkbox before the value, labeled Select {label or name}. For a column with only the Checkbox, use type checkbox.
+- actions — For actions (labeled, up to 3), actionIcons (icon only, up to 3, label becomes the name and a kit Tooltip) and actionMenu (menu items, danger intent becomes a danger item). onClick runs when picked.
 
 Pick the type from the data: text for plain values, number for amounts and counts (end-aligned, even-width digits), date for a day, textBlock for a note that wraps over several lines (md only), link to open a record, redirect to go to another page in the app (brand link text with an outward arrow), popupTrigger for grey underlined text with an open_in_full mark that opens a popup the screen owns, avatar for a person, badge for status, status for a coloured dot and a label, trend for change, progress for how far along something is, actions for row buttons, actionMenu for a More menu, switch to turn a row setting on or off right away, checkbox for a column with only the row Checkbox, tree for the first cell of parent and child rows (an indent per level, faint guide lines and the outlined plus or minus square to open and close its children; treeToggle chevron swaps the square for a chevron button). Cell composes kit Avatar, AvatarGroup, Badge, Button, ButtonGroup, Checkbox, Dropdown, Icon, Link, Meter and Switch; it never draws its own. In a box narrower than 640px, the kit's mobile break, the icon buttons fold into that More menu and the cell keeps one button, so the row's own values get the width; only one of the two is in the layout, so nothing is reached twice by the keyboard.
 
@@ -179,7 +179,7 @@ One turn in a chat with the assistant: what the person asked, or what the assist
 
 Props — author user|assistant; text string; children ReactNode; bubble bool; status string; sections ChatMessageSection[] { id, label, count?, content, defaultOpen? }; actions ChatMessageActionId[]; pressed ChatMessageActionId[]; suggestions ChatSuggestion[] { id, label }; menu DropdownMenuEntry[]; person { name?: string; src?: string; initials?: string }; label string
 
-- apply — One action that puts the answer to work where it was asked, like Insert into formula on a suggested formula.
+- apply — One action that puts the answer to work where it was asked, like Insert into formula on a suggested formula. It is a kit Button under the answer, before the suggestions, and there is only ever one: the icon row (copy, good, needs work, share, read aloud) stays what it is. Only an assistant answer takes it.
 
 Functions — apply
 
@@ -194,10 +194,10 @@ An editable table: people click a cell to add or change its content, like rule c
 
 Props — columns DataGridColumn[] { key, header, type?, options?, searchable?, searchPlaceholder?, placeholder?, readOnly?, hug?, width?, fields?, onCalculate?, setForAll?, opensDetail? }; rows DataGridRow[] { id, [key] }; defaultRows DataGridRow[]; size sm|md*; line medium*|thin; rowNumbers bool*; canAddRows bool; canRemoveRows bool; canDeleteRows bool; canInsertRows bool; insertLabel string; selectable bool; selected string[]; defaultSelected string[]; rowLabel string; emptyLabel string; label string; stickyFirstColumn bool*; expanded string[]; defaultExpanded string[]; collapsed string[]; defaultCollapsed string[]; totalRow DataGridRow; legend DataGridLegendItem[] { intent, label, icon? }
 
-- columns — type defaults to text.
-- canRemoveRows — An X button in the action column, named Remove row 2 by a kit Tooltip.
-- canDeleteRows — A trash button in the action column, named Delete row 2 by a kit Tooltip.
-- totalRow — A row at the bottom that adds the others up, like Period total: read only, on bg-neutral-subtle, medium weight.
+- columns — type defaults to text. options for select. date cells are always a kit DatePicker (size sm); their value is an ISO date, YYYY-MM-DD, shown formatted, and placeholder fills the empty field. A readOnly date column has no picker: it writes the same formatted date as plain text in the row's own font, so a column people cannot change does not read as code. fields and onCalculate for formula, passed to the FormulaEditor. hug makes the column only as wide as its content; otherwise it is at least 160 wide. width is a CSS width. searchable adds a search field at the top of a select column's list that filters options by label, for long lists like a product catalog; searchPlaceholder names it (default Search). setForAll adds a Set for all menu under the column title: Use row 1 value copies the first row's value to every row, Clear all rows empties the column. opensDetail (on a readOnly column, with detail and detailCount) puts a kit Button holding a Count of the other values after the cell's value that opens and closes the row's detail, and the grid drops its toggle column. The open detail lines up under that column (at least --data-grid-detail-min wide, 360px) and slides back toward the start when it would run past the grid's visible edge: use it when the cell shows the first of several values, like the first rate band.
+- canRemoveRows — An X button in the action column, named Remove row 2 by a kit Tooltip. It takes the row out of this grid only; nothing else in the app changes. For a row that holds a saved record, pair it with canDeleteRows.
+- canDeleteRows — A trash button in the action column, named Delete row 2 by a kit Tooltip. It is the destructive one: the row goes, and so does the record behind it, everywhere in the app. It asks first in a kit AlertDialog — the grid owns that — and only on Delete does the row go and onDeleteRow run. With insert and remove also on it is the action that moves into the More menu.
+- totalRow — A row at the bottom that adds the others up, like Period total: read only, on bg-neutral-subtle, medium weight. Its value per column key; it is never selectable, grouped or given actions.
 
 Functions — deleteConfirm, actionsFor, detail, detailCount, rowParent, cellStatus, cellReadOnly, cellLink
 
@@ -223,8 +223,8 @@ Column title for a data table: uppercase label, optional select-all checkbox, op
 
 Props — label string; size sm|md*; alignment start*|center|end; line medium*|thin; checkbox bool; checked bool; defaultChecked bool; indeterminate bool; sortable bool; sort none*|asc|desc
 
-- label — Column title, shown uppercase.
-- alignment — end for numbers and amounts.
+- label — Column title, shown uppercase. Omit for a checkbox-only or empty column.
+- alignment — end for numbers and amounts. center for a checkbox-only or actions column.
 
 Use HeaderCell inside th scope=col, one per column, above Cell rows. Use alignment end for number columns and center for a checkbox-only or actions column.
 
@@ -270,7 +270,7 @@ A list of records, one a row: a primary and a secondary line with an avatar, ico
 
 Props — label string; items ListViewItem[] { id, primary, secondary?, group?, avatar?, icon?, image?, badge?, badgeIntent?, badgePosition?, unread?, message?, messageIntent?, actions?, disabled?, children?, menu? }; groups ListViewGroup[] { id, title }; size sm|md*|lg; collapsible bool; stickyGroups bool; collapsed string[]; defaultCollapsed string[]; selection none*|single|multiple; selected string[]; defaultSelected string[]; interaction none*|drill|drag; path string[]; defaultPath string[]; nesting step*|expand; expanded string[]; defaultExpanded string[]; detail ReactNode
 
-- selection — single: a click picks one row, shown light blue between brand lines.
+- selection — single: a click picks one row, shown light blue between brand lines. multiple: a checkbox on each row; checked rows are light blue. none: rows only show, open or move.
 
 Use ListView when each record reads best as a line or two of text rather than as columns: people, invoices, messages, tasks, files. To show a picked record beside the list rather than going to its page, put the ListView in the ListDetail pattern. Rows are spaced like a kit Table: inset 12 at every width, the checkbox takes only its own width, and the text starts 24 after it, so a ListView and a Table of the same records line up when a screen switches between them.
 
@@ -341,7 +341,7 @@ A semantic table of rows and columns, like invoices or accounts, with optional r
 
 Props — columns TableColumn[] { key, header?, alignment?, numeric?, emphasis?, width?, maxWidth?, opensDetail? }; rows TableRow[] { id?, [key] }; size sm|md*; line medium*|thin; caption string; footer TableFooter { label, value }; emptyLabel string; selectable bool; selected string[]; defaultSelected string[]; rowLabel string
 
-- columns — key picks the row value.
+- columns — key picks the row value. numeric aligns to the end with tabular digits. emphasis makes the column's text medium weight, like the record id. width is a CSS width, like 30%. maxWidth is a CSS width, like 240px: a long text or link value stops there and ends with an ellipsis instead of widening the table, and the whole value shows on hover and stays for screen readers. opensDetail (with detail and detailCount) puts a kit Button holding a Count of the row's other values after the cell's value; it opens and closes the row's detail under the row, lined up under that column.
 
 Functions — detail, detailCount
 
@@ -365,7 +365,7 @@ A nested list people open and close level by level, like teams in an organizatio
 
 Props — label string; items TreeItem[] { id, label, icon?, disabled?, children? }; defaultItems TreeItem[]; selection none|single*|multiple; selected string[]; defaultSelected string[]; expanded string[]; defaultExpanded string[]; showIcons bool; showLines bool*; reorderable bool; size sm|md|lg
 
-- selection — single: one highlighted row.
+- selection — single: one highlighted row. multiple: a checkbox on each row; a folder checks its whole branch. none: rows only open and close.
 
 selection single highlights one row (clicking a folder also opens it); multiple adds a checkbox to each row that checks a folder's whole branch and shows a dash when only part of it is checked; none only opens and closes.
 
@@ -378,7 +378,7 @@ One bar for everything available in a period, split into the parts it is made of
 
 Props — segments UsageBarSegment[] { id, value, kind?, intent?, label?, note?, recent?, legend? }; figures UsageBarFigure[] { value, label, at, intent? }; showLegend bool*; label string
 
-- figures — Up to three, one per place.
+- figures — Up to three, one per place. Leave it out for a bar with no figures above it.
 
 The legend under the bar is the kit Legend, one key per used intent plus Left to use, keyed as an outline rather than a colour, and, when there is one, Over the allowance; turn it off with showLegend false.
 
@@ -413,9 +413,9 @@ Short status or category label.
 
 Props — intent neutral*|hollow|info|success|warning|danger|highlight; emphasis subtle*|strong|faint; size sm*|md|lg; icon string; iconOnly bool; removable bool; disabled bool; children string
 
-- intent — hollow = outline only.
-- icon — Material Symbols name.
-- children — One to three words.
+- intent — hollow = outline only. highlight = purple, for new or featured.
+- icon — Material Symbols name. Leading icon (12px, 16px at lg), or the only content when iconOnly.
+- children — One to three words. Also the label for icon-only badges.
 
 Pick the intent from meaning and the emphasis from how loud it should be: subtle is the default, strong for the one thing that must stand out, faint for quiet lists. Only dismissible filters are removable.
 
@@ -528,7 +528,7 @@ Pick one item from options that nest several levels deep by walking columns left
 
 Props — label string; options CascaderOption[] { value, label, path?, type?, relation?, disabled?, children? }; value string[]; defaultValue string[]; variant field*|panel; changeOnSelect bool; searchable bool; hasLegend bool*; placeholder string; size sm|md|lg; labelPosition top|start; labelWidth sm|md*|lg; hideLabel bool; name string; required bool; disabled bool; invalid bool; error string; hint string; help string; emptyLabel string
 
-- hasLegend — The legend bar under the columns, explaining the relation marks.
+- hasLegend — The legend bar under the columns, explaining the relation marks. Shows only when some option has a relation.
 
 Only the last level can be picked unless changeOnSelect lets any level be the answer.
 
@@ -541,8 +541,8 @@ The box people write to the assistant in: what the question is about, what is at
 
 Props — value string; defaultValue string; placeholder string; hints string[]; scopeLabel string; scoped bool; defaultScoped bool; attachments ChatComposerAttachment[] { id, label }; addMenu DropdownMenuEntry[]; selecting bool; dictating bool; mode quick*|deep; disabled bool; label string
 
-- scopeLabel — What the question can be scoped to, like Accounts page.
-- mode — quick answers fast; deep thinks longer.
+- scopeLabel — What the question can be scoped to, like Accounts page. Pass it only on a screen there is something to scope to; without it there is no scope row.
+- mode — quick answers fast; deep thinks longer. The button stays lit on deep. It only shows when onModeChange is set.
 
 - Do not build the box from Textarea and Buttons, or add a MessageBox, PromptInput or SendButton. Use this.
 - Do not use it for an ordinary form field. Use Textarea.
@@ -575,8 +575,8 @@ One form: an optional title, kit fields (or titled sections of them) and the act
 
 Props — title string; description string; variant plain*|card; labelPosition top*|start; labelWidth sm|md*|lg; columns 1|2|3; children ReactNode; sections FormSection[] { title, help?, actions?, content, line?, collapsible?, expanded?, defaultExpanded?, onExpandedChange? }; actions ReactNode; error string; id string
 
-- labelWidth — How wide the start-label column is: sm 140px for a form of short names (Email, Status, Currency), md 234px, the product's own column, which fits a name as long as Account Ledger Number on one line, and lg 320px where the names run longer than that.
-- columns — 2 puts fields side by side, left to right; 3 puts them in threes, for a long form on a wide page.
+- labelWidth — How wide the start-label column is: sm 140px for a form of short names (Email, Status, Currency), md 234px, the product's own column, which fits a name as long as Account Ledger Number on one line, and lg 320px where the names run longer than that. Pick one for the whole form: the fields inside read the Form's column, so setting labelWidth on a field in a form makes the labels down that column stop lining up. A field's own labelWidth is for one standing outside a Form. The field beside the label stays 308px at every step, so the column itself narrows or widens, and the points where the labels go back on top and where columns give way move with it: labels go on top under 460px (sm), 554px (md) or 640px (lg). Read only with labelPosition="start"; with labels on top there is no column to size.
+- columns — 2 puts fields side by side, left to right; 3 puts them in threes, for a long form on a wide page. A Textarea spans the row, and so does a DataGrid (like a product's rate bands), which needs the width for its columns; with start labels the grid starts at the section's edge, since its column headers stand in for a label. Set, each column is at most 554px (--layout-column-max) and the fields stay at the start: on a wide page the space past the last column stays empty. Unset, the Form takes the columns of the FormPage or RecordPage it is in; outside one, the fields stack in one column that fills the form, as in a Modal or Drawer. Never more than 3. Columns give way as the form narrows: three become two under 720px (1301px with start labels), and two become one under 560px (867px with start labels). A narrower or wider labelWidth moves the start numbers with it: three become two under 1019px (sm) or 1559px (lg), two become one under 679px (sm) or 1039px (lg).
 
 Read-only values go in FormDisplay rows; back-to-back rows sit flush as one list. Once columns is set (1, 2 or 3), each column stops at 554px (--layout-column-max) and the fields stay at the start, so a wide page leaves the space on the right empty instead of stretching the fields; with columns unset, the fields fill the form, as in a Modal or Drawer.
 
@@ -600,7 +600,7 @@ A monospace field for writing formulas and rules, with a toolbar that inserts fi
 
 Props — label string; hideLabel bool; labelPosition top*|start; labelWidth sm|md*|lg; size sm*|md|lg; placeholder string; value string; defaultValue string; fields FormulaField[] { id, label }; functions FormulaFunction[] { name, syntax?, description? }; aiActive bool; name string; id string; required bool; disabled bool; readOnly bool; invalid bool; error string; hint string; help string
 
-- aiActive — The assistant is open for this field: the AI assistant button shows toggle on, so it is clear which field the answer will land in.
+- aiActive — The assistant is open for this field: the AI assistant button shows toggle on, so it is clear which field the answer will land in. The screen owns it, since only it knows what the assistant is attached to.
 
 - Do not use for prose or notes. Use Textarea.
 - Do not use for one-line values. Use Input.
@@ -611,7 +611,7 @@ Single-line text entry with its own label, hint, error and character count.
 
 Props — label string; hideLabel bool; labelPosition top*|start; labelWidth sm|md*|lg; size sm|md*|lg; type text*|email|password|search|number|tel|url|file; placeholder string; value string; defaultValue string; accept string; multiple bool; name string; id string; autoComplete string; required bool; disabled bool; readOnly bool; invalid bool; error string; hint string; help string; prefix string; suffix string; iconStart string; iconEnd string; maxLength number
 
-- type — file opens the native file picker.
+- type — file opens the native file picker. value, defaultValue, placeholder, prefix, suffix and maxLength do not apply to it. number shows kit up and down chevrons at the end instead of the browser spinner; arrow keys still step by 1.
 
 - Do not use a placeholder as the label. Pass label, and hideLabel if it must not show.
 - Do not use for long text. Use Textarea.
@@ -635,8 +635,8 @@ Pick exactly one option from a short visible list.
 
 Props — size sm|md*|lg; orientation vertical*|horizontal; layout list*|card; disabled bool; hideLegend bool; labelPosition top*|start; labelWidth sm|md*|lg; legend string; name string; value string; defaultValue string; error string; hint string; options RadioGroupOption[] { value, label, description?, badge?, badgeIntent?, disabled?, hideLabel? }
 
-- orientation — Horizontal only for two or three short labels.
-- options — Two to six.
+- orientation — Horizontal only for two or three short labels. Card layout is always vertical.
+- options — Two to six. description and badge show in card layout. hideLabel keeps an option's label for screen readers only and shows the bare circle (list layout), for a choice whose row already says it.
 
 The legend names the group; hide it only when a heading already names it.
 
@@ -658,7 +658,7 @@ Choose one or several options from a list.
 
 Props — label string; options SelectOption[] { value, label, disabled? }; size sm|md*|lg; labelPosition top*|start; labelWidth sm|md*|lg; itemCheck check*|checkbox; hideLabel bool; multiple bool; placeholder string; value string | string[]; defaultValue string | string[]; maxVisible number; searchable bool; searchPlaceholder string; name string; id string; required bool; disabled bool; invalid bool; error string; hint string; help string; menuWidth default*|field
 
-- menuWidth — default: the menu is at least 200 wide.
+- menuWidth — default: the menu is at least 200 wide. field: the menu is only as wide as the field, for a narrow Select like rows per page.
 
 - Do not use a native select.
 - Do not use for actions from a button. Use Dropdown.
@@ -669,7 +669,7 @@ An on/off setting that takes effect right away.
 
 Props — label string; hideLabel bool; description string; size sm|md*|lg; checked bool; defaultChecked bool; disabled bool; name string; id string
 
-- hideLabel — Track only, like in a table cell.
+- hideLabel — Track only, like in a table cell. The switch keeps its natural width.
 
 - Do not use for choices that wait for a Save button, or for agreeing to terms. Use Checkbox.
 - Do not use for picking one of several options. Use RadioGroup.
@@ -731,9 +731,9 @@ A titled block of a page, like Account information or Recent invoices: a header 
 
 Props — title string; help string; actions ReactNode; children ReactNode; line medium*|thin|none; columns 1|2|3; collapsible bool; expanded bool; defaultExpanded bool*; heading md|sm|xs; spacing default*|tight
 
-- children — The section's content.
-- line — The line under the header.
-- columns — Lays FormDisplay rows or kit fields, passed straight in as children, out in 1, 2 or 3 columns, left to right, each at most 554px (--layout-column-max) and kept at the start.
+- children — The section's content. Leave it out for a header only: the title row and its line, with nothing below.
+- line — The line under the header. medium is 2px, thin is 1px, both in the brand-faint color; none drops it, for a block inside a section that reads as one part of it. It applies to this Section's own header only; a Section inside it sets its own.
+- columns — Lays FormDisplay rows or kit fields, passed straight in as children, out in 1, 2 or 3 columns, left to right, each at most 554px (--layout-column-max) and kept at the start. A Textarea spans the row. Unset, the Section takes the columns of the RecordPage it is in; outside one, the content stacks at full width as before. Only rows and fields go into columns: a Section of a Table or anything else stays full width.
 
 It is one component: pass title and the content as children, or leave children out for a header only, like a heading above content laid out by the page. Columns give way as the Section narrows, like Form columns: three become two under 1301px with start labels (720px with labels on top), and two become one under 867px with start labels (560px on top). A Table, Scoreboard or anything else that is not a field or a FormDisplay is never put in columns: a Section of those keeps the full width.
 
@@ -757,10 +757,10 @@ The product's top bar: logo and environment on the start, global search in the c
 
 Props — navOpen bool; logo ReactNode; homeHref string; environment string; environmentIntent success*|info|warning|danger|highlight|neutral; search bool*; searchPlaceholder string; searchShortcut string; searchGroups CommandGroup[] { heading?, items }; searchVariant list*|tabs; searchIconStyle tile*|plain; searchScopes CommandScope[] { value, label }; searchScope string; assistant AppHeaderAssistant { label?, open?, onToggle }; actions AppHeaderAction[] { id, label, icon }; user AppHeaderUser { name, src? }; company AppHeaderCompany { name, logo? }; darkMode bool; density compact|default|comfortable
 
-- logo — Defaults to the kit Logo, which drops to its symbol on narrow bars.
-- searchShortcut — Hint on the right of the search, like Ctrl+K.
-- assistant — The BP AI button, before the utility icons: the AI mark and its name (label, BP AI by default) in the AI brand blend.
-- actions — Up to three icon buttons, each named by a Tooltip.
+- logo — Defaults to the kit Logo, which drops to its symbol on narrow bars. Pass your own only for a white-label product.
+- searchShortcut — Hint on the right of the search, like Ctrl+K. Shown only; it is not a key binding yet. Hidden under 1000px.
+- assistant — The BP AI button, before the utility icons: the AI mark and its name (label, BP AI by default) in the AI brand blend. onToggle opens and closes the AppShell assistant; pass open (the screen's assistantOpen) so it shows pressed while the assistant is open. The bar never moves when the assistant opens, so this is the one place to open it from on every screen. On a phone-width bar only the mark shows; the name stays its accessible name.
+- actions — Up to three icon buttons, each named by a Tooltip. On a phone-width bar they move behind one more button; only one of the two is shown, so neither is reached twice by the keyboard.
 
 With searchGroups, the search opens a kit GlobalSearch in its place: one search box that grows down into the results (Recent items, scopes, arrow keys and Enter); otherwise it runs onSearch; searchShortcut only shows a hint. The avatar opens an account menu with the name, User settings, Dark mode, Density & text size and Log out; each row shows only when its handler is passed. Page titles, breadcrumbs and page actions belong in the page, not here.
 
@@ -773,7 +773,7 @@ The app's main navigation: a brand rail of sections on the left, each with an op
 
 Props — items SideNavEntry[] { id, label, icon, href?, children?, divider }; endItems SideNavItem[]; current string; defaultCurrent string; expanded bool; pinned bool; defaultPinned bool; label string
 
-- items — Rail sections, top to bottom.
+- items — Rail sections, top to bottom. In the app shell this is always the full app nav, APP_NAV from @/patterns/AppShell/appNav (with APP_NAV_END as endItems); never a shorter or made-up list. icon is a Material Symbols name. children is the second-level menu: { id, label, href? } links and { divider: true } lines.
 
 Every menu is the same width, the longest link in the whole nav (within --side-nav-panel-min and --side-nav-panel-max), so the menu never resizes as people move from one section to another, whether the rail is expanded or not.
 
@@ -797,7 +797,7 @@ The bar at the top of the assistant: its mark and name, then start a new chat, g
 
 Props — title string; expanded bool; chatsCount number; playbooksCount number; planMode bool; menu DropdownMenuEntry[]; label string
 
-- planMode — Plan Mode is on: its row in the menu is ticked and a Plan Mode badge sits beside the name.
+- planMode — Plan Mode is on: its row in the menu is ticked and a Plan Mode badge sits beside the name. On a bar narrower than 480px the badge shows its icon only, still named Plan Mode, so the title stays whole.
 
 It is one component: pass the handlers for the buttons you want, and the ones you leave out do not show. On a narrow bar, like the side panel, the badge gives way first and shows its icon only, so the title is never cut short.
 
@@ -821,7 +821,7 @@ A search field over a grouped list of pages, records and actions.
 
 Props — groups CommandGroup[] { heading?, items }; variant list*|tabs; iconStyle tile*|plain; size sm|md*; label string; placeholder string; empty string; defaultQuery string; hints bool*; scopes CommandScope[] { value, label }; scope string; defaultScope string; autoFocus bool
 
-- variant — list shows every group with its heading.
+- variant — list shows every group with its heading. tabs adds a kit Tabs strip under the search: All, then one tab per group heading, like Records / Reports / Sections. A heading tab shows only that group; with a query each tab shows its result count.
 
 It shows inline, and a ⌘K palette is this component inside a kit Modal, never a local overlay: title Search, size md, autoFocus on the search, and onSelect closing the Modal before it goes.
 
@@ -834,9 +834,9 @@ The pieces of a process walked one step at a time: a dark panel for a step, the 
 
 Props — part panel*|steps|header|footer; title string; subtitle string; steps GuidedProcessStep[] { title, status?, statusText?, tasks }; current number; started bool*; placement auto*|side|band; shade 1|2|3|4|5; startLabel string; side start|end*; stepTitle string; total number; actions GuidedProcessAction[] { id, label, icon?, emphasis?, intent?, type?, form?, disabled? }; updated string
 
-- part — panel is one step as a dark column; steps is every step beside the page; header goes over the step; footer goes under it.
-- title — Panel: the process name, over the first column only.
-- actions — Footer.
+- part — panel is one step as a dark column; steps is every step beside the page; header goes over the step; footer goes under it. Each part takes only its own props.
+- title — Panel: the process name, over the first column only. Header: required, the process name over the step title.
+- actions — Footer. The step's buttons in order; the last moves the process on. From 600 to 1023 of box width every one but the last goes in a More menu; under 600 those with an icon are a row of lg icon-only Buttons with xl icons over the last action and the rest share a More menu.
 
 It is one component with four parts, picked by part, and each part takes only its own props.
 
@@ -867,9 +867,9 @@ The top of a page's content: where it sits (breadcrumb), what it is (title, badg
 
 Props — title string; breadcrumbs BreadcrumbItem[] { label, href?, onClick? }; back PageHeaderBack { label, href?, onClick? }; icon string; badge string; badgeIntent neutral*|info|success|warning|danger|highlight; actions ReactNode; moreActions DropdownMenuEntry[] { id, label, icon?, danger?, divider }; sticky bool; shadow bool*
 
-- breadcrumbs — The parents of this page, all links: Home first, then the side-nav section, then any parent record.
-- back — Optional.
-- icon — Optional.
+- breadcrumbs — The parents of this page, all links: Home first, then the side-nav section, then any parent record. PageHeader adds the title as the last, current crumb, so the trail always reads Home › section › this page. On the section's own page, like the Accounts list, the title is the section itself, so pass only Home and the trail reads Home › Accounts.
+- back — Optional. A minimal icon-only Button (arrow_back, drawn one size up at icon md) at the start of the title line, before the icon, that goes back to where the page was opened from. label is its accessible name and its tooltip, so write where it goes, like Back to accounts. onClick wins; otherwise href is followed; with neither, it goes back one step in history. The breadcrumb is still the page's place in the app, so pass back only as a shortcut beside it, never instead of it. In sticky it moves to the start of the compact bar, before the trail.
+- icon — Optional. Leave it out by default: the title stands on its own. Pass a Material Symbols name, like folder_open, only when the page wants an icon before the title; the kit Icon draws it at size lg in the brand color.
 - shadow — With sticky, a subtle line and a shadow that falls downward only, so the full-width bar does not read as a floating card.
 
 Then the title row with an optional badge, an icon before the title only when you pass one (none by default), and the page actions on the end. On a phone-width header, under 640px of its own width, the title row takes the full width and the actions move onto their own row under it, starting at the start edge; the compact sticky bar stays one 52px line, keeping only the page name in its trail, shortened with an ellipsis when it runs long.
@@ -914,8 +914,8 @@ The bar above a list or table: find and filter on the left, view and actions on 
 
 Props — filters ReactNode; filterCount number; filtersOpen bool; defaultFiltersOpen bool; filterHelp string; searchValue string; searchPlaceholder string; searchGroups CommandGroup[] { heading?, items }; field ReactNode; selectedCount number; views ToolbarView[] { id, label }; view string; moreActions DropdownMenuEntry[] { id, label, icon?, danger?, divider }; actions ReactNode; buttons raised*|subtle; label string
 
-- field — One more control after the search: a kit DatePicker or Select, size sm, with labelPosition start, like Effective on.
-- actions — Kit Buttons size sm: subtle first, one strong brand Button last.
+- field — One more control after the search: a kit DatePicker or Select, size sm, with labelPosition start, like Effective on. For a value that narrows the rows and changes often enough to stay on the bar instead of in the filter bar. It can hold more than one control: the slot is a row spaced like the rest of the bar, so pass them in a fragment rather than spacing them yourself.
+- actions — Kit Buttons size sm: subtle first, one strong brand Button last. At most five visible actions including More. To fold into the Actions menu on a narrow bar, each must be a kit Button whose children are its text label (an icon-only Button already passes its name that way); picked from the menu, its onClick runs with no event. Anything else and the actions stay a row that wraps.
 
 Right: a More menu and the actions, kit Buttons size sm with at most one strong brand Button, last. buttons subtle gives the buttons on the bar the bar's own grey instead of white paper, for a quieter bar; the search field keeps its white box either way. When the actions do not fit on that line they fold into one Actions menu that lists them, then More's items after a divider. It is either the whole row of buttons or the one menu, never a wrapped row. If even the Actions button does not fit, it shows as an icon-only more button, still named Actions.
 
@@ -941,7 +941,7 @@ A panel that slides in from the right edge for a detail view or an edit form abo
 
 Props — open bool; title string; description string; size narrow*|medium|wide|extended; showClose bool*; children ReactNode; footer ReactNode
 
-- size — Width 360 / 460 / 590 / 1100, never wider than the screen.
+- size — Width 360 / 460 / 590 / 1100, never wider than the screen. Full height; the body scrolls.
 
 Stack blocks in the body with.layout-stack; the drawer has its own 20px padding, so do not put.layout-content inside it. For a decision that must block the page, use Modal or AlertDialog.
 
@@ -954,13 +954,13 @@ A short list of actions or options that opens from a Button or a FilterButton.
 
 Props — label string; items DropdownMenuEntry[] { id, label, description?, icon?, danger?, disabled?, selected?, checkbox?, count? }; trigger button*|filter|field; emphasis strong|subtle*|minimal; intent brand|neutral*|danger; size sm|md*|lg; icon string; iconOnly bool; count number; alignment left*|right; disabled bool; closeOnSelect bool*; open bool; multiple bool; id string; text string; muted bool; badge string; toggle on|off; labelledBy string; describedBy string; searchable bool; searchPlaceholder string; empty string; menuWidth default*|field
 
-- emphasis — Button trigger only.
-- intent — Button trigger only.
-- icon — Leading icon on the Button trigger.
-- iconOnly — Icon-only Button trigger, like a row More menu.
-- count — Filter trigger only.
-- toggle — trigger filter only: the filter's on/off state.
-- menuWidth — default: the menu is at least 200 wide.
+- emphasis — Button trigger only. Same pairs as Button: strong with brand or danger, subtle with neutral, minimal with neutral, brand or danger.
+- intent — Button trigger only. Required with emphasis strong.
+- icon — Leading icon on the Button trigger. Icon-only defaults to more_vert.
+- iconOnly — Icon-only Button trigger, like a row More menu. label stays as its name.
+- count — Filter trigger only. Applied filters shown as a Count.
+- toggle — trigger filter only: the filter's on/off state. See FilterButton.
+- menuWidth — default: the menu is at least 200 wide. field: the menu is only as wide as the trigger. Select passes it through.
 
 trigger button uses the kit Button with a chevron (or an icon-only button); trigger filter uses the kit FilterButton with its count. It gives up width rather than hanging outside, so a phone-width frame gets a narrower menu, not one over the edge.
 
@@ -973,7 +973,7 @@ A small help panel with an optional title and a short paragraph, opened from a ?
 
 Props — title string; content string; position above|below*|left|right; delay number; open bool; disabled bool; children ReactElement
 
-- title — Bold header on a faint band.
+- title — Bold header on a faint band. Leave it out for body text only.
 
 - Do not use for an icon button's name. Use Tooltip.
 - Do not put links, buttons or forms in it. Use Modal.
