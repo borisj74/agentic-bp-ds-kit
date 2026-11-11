@@ -10,6 +10,16 @@
 .header { display: grid; gap: var(--space-xxsmall); justify-items: start; }
 /* Preview | Variants is the kit Tabs; it spans the header like a section strip. */
 .viewTabs { justify-self: stretch; margin-top: var(--space-xsmall); }
+/* Copy prompt: target picker + copy action under Preview | Variants. */
+.copyPrompt {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-small) var(--space-medium);
+  width: 100%; margin-top: var(--space-xsmall);
+  padding: var(--space-small); border-radius: var(--radius-medium);
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-subtle);
+}
+.copyPromptLabel { font-size: var(--font-size-small); font-weight: var(--font-weight-medium); color: var(--text-neutral-strong); }
+.copyPromptTargets { flex: 1 1 auto; min-width: min(100%, 280px); }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .h2 { margin: 0; font-size: var(--font-size-large); font-weight: var(--font-weight-medium); color: var(--text-neutral-strong); }
 .lead { margin: 0; color: var(--text-neutral-subtle); font-size: var(--font-size-small); }
 

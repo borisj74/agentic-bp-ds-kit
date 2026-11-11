@@ -8,6 +8,7 @@ import { Switch } from "@/ui/Switch/Switch";
 import { Tabs } from "@/ui/Tabs/Tabs";
 import styles from "./master.module.css";
 import { registry, type Props } from "./registry";
+import { CopyPrompt } from "./CopyPrompt";
 import { useCopy, type Copy } from "./useCopy";
 
 type PropDef = { type?: string; enum?: (string | number)[]; default?: unknown; note?: string; required?: boolean };
@@ -137,6 +138,7 @@ export function Master({ contract }: { contract: Contract }) {
             items={[{ id: "preview", label: "Preview" }, { id: "variants", label: "Variants" }]}
           />
         </div>
+        <CopyPrompt contract={contract} />
       </div>
 
       {tab === "preview" ? (
