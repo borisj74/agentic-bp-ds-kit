@@ -13,8 +13,10 @@
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
   gap: var(--space-xsmall) var(--space-medium);
   justify-self: stretch; width: 100%; margin-top: var(--space-xsmall);
+  /* The strip line belongs to the whole bar, so Tabs hugs its two labels and the rule still runs the page width. */
+  border-bottom: var(--border-width-thin) solid var(--border-neutral);
 }
-.viewTabs { flex: 1 1 auto; min-width: min(100%, 220px); }
+.viewTabs { flex: 0 1 auto; min-width: 0; }
 /* Copy prompt: one button per AI tool, then the plain copy. Rides on the view bar, beside Preview | Variants. */
 .copyPrompt {
   display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xsmall) var(--space-small);
