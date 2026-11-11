@@ -20,6 +20,7 @@ export function CatalogSearch({ open, onClose }: { open: boolean; onClose: () =>
     group("Start", "rocket_launch", [
       { href: "/", label: "Overview" },
       { href: "/start/installation", label: "Installation" },
+      { href: "/start/mcp", label: "MCP server" },
       { href: "/start/patterns", label: "Using patterns" },
       { href: "/start/prompting", label: "Prompting" },
     ]),

@@ -64,6 +64,7 @@ export function Sidebar({ id, ref, drawerOpen = false, onSearch, shortcut }: { i
       <Section title="Start" open={open.start} onToggle={toggle("start")}>
         <NavLink href="/">Overview</NavLink>
         <NavLink href="/start/installation">Installation</NavLink>
+        <NavLink href="/start/mcp">MCP server</NavLink>
         <NavLink href="/start/patterns">Using patterns</NavLink>
         <NavLink href="/start/prompting">Prompting</NavLink>
       </Section>
