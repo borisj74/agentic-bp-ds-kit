@@ -17,13 +17,14 @@ export interface SegmentedProps {
   defaultValue?: string;
   onChange?: (value: string) => void;
   size?: SegmentedSize;
+  iconOnly?: boolean;
   fullWidth?: boolean;
   disabled?: boolean;
   name?: string;
 }
 
 export function Segmented({
-  label, hideLabel = false, options, value, defaultValue, onChange, size: ownSize, fullWidth = false, disabled = false, name,
+  label, hideLabel = false, options, value, defaultValue, onChange, size: ownSize, iconOnly = false, fullWidth = false, disabled = false, name,
 }: SegmentedProps) {
   const size = useDensitySize(ownSize);
   const labelId = useId();
@@ -58,9 +59,12 @@ export function Segmented({
       <div ref={groupRef} role="radiogroup" aria-labelledby={labelId} aria-disabled={disabled || undefined} className={styles.group}>
         {options.map((o, i) => {
           const on = o.value === current;
+          // iconOnly takes the words off the buttons and leaves the marks. An option with no icon keeps its
+          // label, so a group that only half fits the mode still reads.
+          const mark = iconOnly && Boolean(o.icon);
           return (
             <Button
-              key={o.value} emphasis="minimal" size={size} iconStart={o.icon}
+              key={o.value} emphasis="minimal" size={size} iconStart={o.icon} iconOnly={mark}
               role="radio" aria-checked={on} tabIndex={i === tabStop ? 0 : -1} disabled={disabled || o.disabled}
               className={on ? styles.on : undefined}
               onClick={() => pick(o.value)} onKeyDown={(e) => onKeyDown(e, i)}

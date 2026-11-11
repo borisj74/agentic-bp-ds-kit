@@ -1,0 +1,89 @@
+/* The documentation half of a component or pattern page: when to use it, what an agent reads, and the props. */
+.docs { display: grid; grid-template-columns: minmax(0, 1fr); gap: calc(var(--space-xxlarge) + var(--space-small)); }
+
+/* When to use beside When not to use, each half the width whether or not the second one has anything in it, so
+   the pair reads as two columns rather than one wide list. Under 720px there is no room for two readable lists,
+   so the second drops under the first. */
+.whenPair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-large) calc(var(--space-xxlarge) * 2); align-items: start; }
+@media (max-width: 720px) { .whenPair { grid-template-columns: minmax(0, 1fr); } }
+.when { display: grid; gap: var(--space-small); align-content: start; min-width: 0; }
+/* text-heading-sm: the page's own heading size, the same one Usage uses. */
+.whenTitle {
+  margin: 0; font: var(--text-heading-sm-weight) var(--text-heading-sm-size) / var(--text-heading-sm-lh) var(--font-sans);
+  letter-spacing: var(--text-heading-sm-ls); color: var(--text-neutral-strong);
+}
+/* A tick on the start of every When-to-use rule and a cross on every When-not-to-use one, so the two columns
+   read as the verdict they are. The kit Icon carries the intent; the lists hold no colour of their own. */
+.whenList {
+  display: grid; gap: var(--space-xsmall); margin: 0; padding: 0; list-style: none;
+  font-size: var(--font-size-small); line-height: 1.5; color: var(--text-neutral-subtle);
+}
+.whenItem { display: flex; align-items: flex-start; gap: var(--space-xsmall); }
+/* The 16px mark sits on the first line's centre: (21px line - 16px icon) / 2. */
+.whenIcon { flex: none; margin-top: calc((1.5em - var(--icon-size-small)) / 2); }
+
+/* What an agent reads: a quiet reference panel, not an alert. */
+.agent {
+  display: grid; grid-template-columns: minmax(0, 1fr);
+  border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-large);
+  background: var(--surface-flat); overflow: hidden;
+}
+.agentHead {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: var(--space-xsmall) var(--space-medium);
+  padding: var(--space-small) var(--space-medium);
+  background: var(--surface-sunken); border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
+}
+.agentTitle {
+  margin: 0; text-transform: uppercase;
+  font: var(--text-overline-weight) var(--text-overline-size) / var(--text-overline-lh) var(--font-sans);
+  letter-spacing: var(--letter-spacing-wide); color: var(--text-neutral);
+}
+.agentImport { font-family: var(--font-mono); font-size: var(--font-size-xsmall); color: var(--text-brand); }
+/* A label at the start of the row, its bullets filling the rest; thin rules between the rows. */
+.agentRow {
+  display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: var(--space-xsmall) var(--space-medium);
+  padding: var(--space-small) var(--space-medium);
+  border-top: var(--border-width-thin) solid var(--border-neutral-subtle);
+}
+.agentRow:first-of-type { border-top: 0; }
+.agentLabel { font-family: var(--font-mono); font-size: var(--font-size-xsmall); line-height: 1.5; }
+/* The three labels are told apart by a quiet tint, never by a hex. */
+.tintMust { color: var(--text-warning); }
+.tintDefaults { color: var(--text-brand); }
+.tintStops { color: var(--text-neutral-subtle); }
+.agentList {
+  display: grid; gap: var(--space-xxsmall); margin: 0; padding: 0; list-style: none;
+  font-size: var(--font-size-small); line-height: 1.5; color: var(--text-neutral-subtle);
+}
+.agentItem { display: grid; grid-template-columns: var(--space-small) minmax(0, 1fr); }
+.agentItem::before { content: "·"; color: var(--text-neutral-faint); }
+.agentFoot {
+  margin: 0; padding: var(--space-small) var(--space-medium);
+  border-top: var(--border-width-thin) solid var(--border-neutral-subtle);
+  font-size: var(--font-size-xsmall); line-height: 1.5; color: var(--text-neutral-faint);
+}
+/* Under 560px the label would leave the bullets a sliver, so it sits on its own line above them. */
+@media (max-width: 560px) {
+  .agentRow { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Nothing is pinned above the page any more, so the props table's column names hold at the very top. */
+.props { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-small); margin-top: calc(var(--space-xxlarge) * 2); }
+/* monoWrap stands where a Cell's own wrapper would: the Table's maxWidth rule cuts off the span inside it. */
+.monoWrap { display: flex; align-items: center; min-width: 0; }
+.mono { font-family: var(--font-mono); font-size: var(--font-size-xsmall); color: var(--text-neutral-strong); }
+
+/* Previous / Next at the foot of the page, the catalog's own A to Z order. */
+.prevNext {
+  display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between;
+  gap: var(--space-medium) var(--space-xlarge);
+  margin-top: var(--space-xxlarge); padding-top: var(--space-large);
+  border-top: var(--border-width-thin) solid var(--border-neutral-subtle);
+}
+.prevNextEnd { text-align: end; margin-inline-start: auto; }
+.prevNextLabel {
+  display: block; margin-bottom: var(--space-xxsmall); text-transform: uppercase;
+  font: var(--text-overline-weight) var(--text-overline-size) / var(--text-overline-lh) var(--font-sans);
+  letter-spacing: var(--letter-spacing-wide); color: var(--text-neutral-subtle);
+}

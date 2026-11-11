@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useId, useState, type Ref } from "react";
 import { Icon } from "@/ui/Icon/Icon";
+import { Logo } from "@/ui/Logo/Logo";
 import styles from "./shell.module.css";
 import { componentNav, foundationPages, patterns, slug } from "./nav";
 
@@ -38,7 +39,7 @@ function Section({ title, open, onToggle, children }: { title: string; open: boo
 }
 
 // drawerOpen only matters under 768px, where the menu is a drawer the CatalogShell slides in.
-export function Sidebar({ id, ref, drawerOpen = false, onSearch, shortcut }: { id?: string; ref?: Ref<HTMLElement>; drawerOpen?: boolean; onSearch?: () => void; shortcut?: string }) {
+export function Sidebar({ id, ref, drawerOpen = false, onSearch, shortcut, action }: { id?: string; ref?: Ref<HTMLElement>; drawerOpen?: boolean; onSearch?: () => void; shortcut?: string; action?: React.ReactNode }) {
   const path = usePathname();
   const [open, setOpen] = useState<Record<SectionKey, boolean>>({ start: true, foundations: true, components: true, patterns: true });
 
@@ -53,6 +54,14 @@ export function Sidebar({ id, ref, drawerOpen = false, onSearch, shortcut }: { i
 
   return (
     <nav id={id} ref={ref} className={[styles.sidebar, drawerOpen ? styles.sidebarOpen : ""].join(" ")} aria-label="Catalog">
+      {/* The catalog's own name heads the menu, where a product's name sits in the kit's AppNav. The kit Logo's
+          symbol is the mark alone: its default carries the BillingPlatform wordmark, and our name follows it. */}
+      <div className={styles.sidebarBrand}>
+        <Logo type="symbol" label="BillingPlatform" />
+        <span className={styles.brandName}>Agentic BP DS</span>
+        {action}
+      </div>
+
       {onSearch && (
         <button type="button" className={styles.searchTrigger} onClick={onSearch}>
           <Icon name="search" size="sm" />

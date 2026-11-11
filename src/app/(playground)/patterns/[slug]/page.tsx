@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import shell from "@/playground/shell.module.css";
 import { Master } from "@/playground/Master";
+import { PrevNext } from "@/playground/PrevNext";
 import { loadContract } from "@/playground/contracts";
 import { patterns, slug } from "@/playground/nav";
 
@@ -17,6 +18,7 @@ export default async function PatternPage({ params }: { params: Promise<{ slug: 
       <h1 className={shell.pageTitle}>{contract.name}</h1>
       <p className={shell.pageLead}>{contract.intent}</p>
       <Master contract={contract} />
+      <PrevNext name={contract.name} group="patterns" />
     </>
   );
 }

@@ -35,3 +35,37 @@ export const componentNav: NavEntry[] = (() => {
   const key = (e: NavEntry) => ("group" in e ? e.group : e.label);
   return entries.sort((a, b) => key(a).localeCompare(key(b)));
 })();
+
+// The trail above every catalog page: Home, the side-nav section, then the page. A section's own page is the
+// last crumb itself, so /components reads Home > Components rather than Home > Components > Components, and the
+// Overview at / has no trail at all.
+export type Crumb = { label: string; href?: string };
+const START_PAGES: Record<string, string> = {
+  installation: "Installation",
+  mcp: "MCP server",
+  patterns: "Using patterns",
+  prompting: "Prompting",
+};
+const named = (list: { name: string }[], s: string) => list.find((c) => slug(c.name) === s)?.name;
+
+export function catalogTrail(pathname: string): Crumb[] | null {
+  const [section, rest] = pathname.replace(/^\/+|\/+$/g, "").split("/");
+  const home: Crumb = { label: "Home", href: "/" };
+  if (!section) return null;
+  if (section === "start") {
+    const label = rest ? START_PAGES[rest] : undefined;
+    return label ? [home, { label }] : null;
+  }
+  if (section === "foundations") {
+    const page = rest ? foundationPages.find((f) => f.href === pathname) : undefined;
+    if (!rest) return [home, { label: "Foundations" }];
+    return page ? [home, { label: "Foundations", href: "/foundations" }, { label: page.label }] : null;
+  }
+  if (section === "components" || section === "patterns") {
+    const label = section === "components" ? "Components" : "Patterns";
+    if (!rest) return [home, { label }];
+    const name = named(section === "components" ? components : patterns, rest);
+    return name ? [home, { label, href: `/${section}` }, { label: name }] : null;
+  }
+  return null;
+}

@@ -1,6 +1,6 @@
 "use client";
 import { useSyncExternalStore } from "react";
-import { Button } from "@/ui/Button/Button";
+import { Segmented } from "@/ui/Segmented/Segmented";
 import { Select } from "@/ui/Select/Select";
 import styles from "./shell.module.css";
 
@@ -20,29 +20,39 @@ function persist(key: string, value: string) {
   try { localStorage.setItem(key, value); } catch {}
 }
 
-export function ThemeControls() {
-  const theme = useSyncExternalStore(subscribe, getTheme, () => "light");
+/** The brand ramps are what a component is painted with, so the picker rides with the component, not the page. */
+export function BrandPicker() {
   const brand = useSyncExternalStore(subscribe, getBrand, () => "cobalt");
-
-  const setTheme = (t: "dark" | "light") => { document.documentElement.setAttribute("data-theme", t); persist("theme", t); };
   const setBrand = (b: string) => {
     if (b === "cobalt") document.documentElement.removeAttribute("data-brand");
     else document.documentElement.setAttribute("data-brand", b);
     persist("brand", b);
   };
+  return (
+    <span className={styles.brandPicker}>
+      <Select
+        label="Brand" hideLabel size="sm" menuWidth="field"
+        options={brands.map((b) => ({ value: b, label: b }))}
+        value={brand} onChange={(value) => setBrand(value as string)}
+      />
+    </span>
+  );
+}
+
+export function ThemeControls() {
+  const theme = useSyncExternalStore(subscribe, getTheme, () => "light");
+  const setTheme = (t: "dark" | "light") => { document.documentElement.setAttribute("data-theme", t); persist("theme", t); };
 
   return (
-    <>
-      <span className={styles.brandPicker}>
-        <Select
-          label="Brand" hideLabel size="sm"
-          options={brands.map((b) => ({ value: b, label: b }))}
-          value={brand} onChange={(value) => setBrand(value as string)}
-        />
-      </span>
-      <Button emphasis="minimal" size="sm" iconOnly iconStart={theme === "dark" ? "light_mode" : "dark_mode"} onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-        Switch to {theme === "dark" ? "light" : "dark"} mode
-      </Button>
-    </>
+    /* Light or dark is a choice between two, so it is the kit Segmented, like the catalog's other
+       switchers. The two marks say it on their own, so it runs iconOnly; each label is still the option's name. */
+    <Segmented
+      label="Colour mode" hideLabel size="sm" iconOnly
+      options={[
+        { value: "light", label: "Light", icon: "light_mode" },
+        { value: "dark", label: "Dark", icon: "dark_mode" },
+      ]}
+      value={theme} onChange={(value) => setTheme(value as "light" | "dark")}
+    />
   );
 }
