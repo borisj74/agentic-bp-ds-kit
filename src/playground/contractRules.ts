@@ -3,30 +3,36 @@ import type { Contract } from "./Master";
 /**
  * A contract's doNot array mixes two kinds of rule.
  *
- * 1. "Do not use it for a flat list. Use Select." — about reaching for this piece at all. That belongs under
- *    When not to use, beside When to use.
- * 2. "Do not invent a local cousin", "Do not use raw hex", "Do not put search in the table" — rules that hold
- *    while you are using the piece, where the agent stops and asks rather than inventing. That is stops if.
+ * 1. Rules about this piece being the wrong choice, and rules that hold while you use it: "Do not use it for a
+ *    flat list. Use Select.", "Do not put sentences in a Badge.", "Do not put search or filters in the table."
+ *    All of those are things a person decides while laying out a screen, so they read on the page, under
+ *    When not to use beside When to use.
+ * 2. The two mechanical stops: "Do not invent a local cousin" and "Do not use raw hex". Those are not a design
+ *    choice at all — they are where an agent stops and asks instead of writing its own version — so they sit in
+ *    the agent panel under stops if.
  *
- * The split is read off the sentence, not guessed: a rule is a When-not-to-use rule when it opens
- * "Do not use [it] for / as / to / when / on / in / where ...", which is the contract's own way of naming a job
- * this piece is the wrong tool for. "Do not invent ..." is never one, even when it names other pieces
- * ("Do not invent a local Accordion, Collapse or Disclosure"): it is a stop, not a choice of tool.
+ * Splitting it the other way round was tried first, with only the "Do not use it for …" rules on the page: it
+ * left 22 of 95 contracts with no right column and put most of every contract's rules inside the panel.
  */
-const NOT_USE = /^Do not use (it |this |them |these )?(for|as|to|when|on|in|where)\b/i;
+const STOPS = /\binvent\b|raw hex/i;
+
+/** The sentence shape that names a job this piece is the wrong tool for, which reads better rewritten. */
+const WRONG_TOOL = /^Do not use (it |this |them |these )?(for|as|to|when|on|in|where)\b/i;
 
 export function splitDoNot(doNot: readonly string[] = []): { notUse: string[]; stops: string[] } {
   const notUse: string[] = [];
   const stops: string[] = [];
-  for (const rule of doNot) (NOT_USE.test(rule) && !/\binvent\b/i.test(rule) ? notUse : stops).push(rule);
+  for (const rule of doNot) (STOPS.test(rule) ? stops : notUse).push(rule);
   return { notUse, stops };
 }
 
 /**
- * A When-not-to-use bullet reads as the job, not as an order: "Do not use it for a flat list. Use Select."
- * becomes "a flat list — Select". Only the contract's own words move around; nothing is written here.
+ * A When-not-to-use bullet. A wrong-tool rule reads as the job rather than as an order: "Do not use it for a
+ * flat list. Use Select." becomes "a flat list — Select". Every other rule keeps the contract's own sentence,
+ * because there is nothing to turn around in "Do not put sentences in a Badge". Only the full stop goes.
  */
 export function notUseText(rule: string): string {
+  if (!WRONG_TOOL.test(rule)) return rule.replace(/\.$/, "");
   const s = rule
     .replace(/^Do not use (it |this |them |these )?/i, "")
     .replace(/^for /i, "")

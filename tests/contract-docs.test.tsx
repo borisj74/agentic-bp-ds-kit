@@ -11,20 +11,33 @@ const read = (file: string) => JSON.parse(readFileSync(`contracts/${file}`, "utf
 const all = readdirSync("contracts").filter((f) => f.endsWith(".json") && f !== "index.json");
 
 describe("splitDoNot", () => {
-  it("sends a wrong-tool rule to When not to use", () => {
+  it("puts a wrong-tool rule on the page", () => {
     const { notUse, stops } = splitDoNot(["Do not use it for a flat list. Use Select."]);
     expect(notUse).toHaveLength(1);
     expect(stops).toHaveLength(0);
   });
-  it("keeps an invent rule under stops if, even when it names other pieces", () => {
-    const { notUse, stops } = splitDoNot(["Do not invent a local Accordion, Collapse or Disclosure."]);
-    expect(notUse).toHaveLength(0);
-    expect(stops).toEqual(["Do not invent a local Accordion, Collapse or Disclosure."]);
+  it("puts an in-use rule on the page too", () => {
+    const { notUse, stops } = splitDoNot(["Do not put search or filters in the table. Use a Toolbar above it."]);
+    expect(notUse).toHaveLength(1);
+    expect(stops).toHaveLength(0);
   });
-  it("keeps a rule that holds while you use the piece under stops if", () => {
-    const { notUse, stops } = splitDoNot(["Do not use raw hex.", "Do not put search or filters in the table. Use a Toolbar above it."]);
-    expect(notUse).toHaveLength(0);
-    expect(stops).toHaveLength(2);
+  it("keeps only the two mechanical stops in the panel", () => {
+    const { notUse, stops } = splitDoNot([
+      "Do not invent a local Accordion, Collapse or Disclosure.",
+      "Do not use raw hex; pick an intent.",
+      "Do not mix badge sizes in one row.",
+    ]);
+    expect(stops).toEqual([
+      "Do not invent a local Accordion, Collapse or Disclosure.",
+      "Do not use raw hex; pick an intent.",
+    ]);
+    expect(notUse).toEqual(["Do not mix badge sizes in one row."]);
+  });
+  it("leaves no contract without a When-not-to-use list", () => {
+    for (const file of all) {
+      const c = read(file);
+      if ((c.doNot ?? []).length > 0) expect(splitDoNot(c.doNot).notUse.length, file).toBeGreaterThan(0);
+    }
   });
   it("loses no rule from any contract", () => {
     for (const file of all) {
@@ -43,6 +56,9 @@ describe("notUseText", () => {
   });
   it("leaves a rule with no alternative alone but for the full stop", () => {
     expect(notUseText("Do not use for status or category labels.")).toBe("status or category labels");
+  });
+  it("keeps an in-use rule as the contract wrote it", () => {
+    expect(notUseText("Do not put sentences in a Badge.")).toBe("Do not put sentences in a Badge");
   });
 });
 
