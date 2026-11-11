@@ -10,9 +10,10 @@
   background: var(--surface-flat); border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
 }
 .topbarRight { display: flex; align-items: center; gap: var(--space-xsmall); }
+/* No line down its end: the menu and the page behind it are the same sunken ground, and the content panel's
+   own border is what the eye reads as the edge. */
 .sidebar {
   position: sticky; top: 48px; height: calc(100vh - 48px); overflow-y: auto;
-  border-right: var(--border-width-thin) solid var(--border-neutral-subtle);
   background: var(--surface-sunken);
   padding: var(--space-medium) var(--space-small);
   display: flex; flex-direction: column; gap: var(--space-medium);
