@@ -1,4 +1,5 @@
-.shell { display: grid; grid-template-columns: 240px 1fr; grid-template-rows: 48px 1fr; min-height: 100vh; }
+/* The page behind is sunken, so the content reads as a panel laid on it rather than as the page itself. */
+.shell { display: grid; grid-template-columns: 240px 1fr; grid-template-rows: 48px 1fr; min-height: 100vh; background: var(--surface-sunken); }
 .topbar {
   grid-column: 1 / -1; position: sticky; top: 0; z-index: 2; height: 48px;
   display: flex; align-items: center; justify-content: space-between;
@@ -16,11 +17,9 @@
   padding: var(--space-medium) var(--space-small);
   display: flex; flex-direction: column; gap: var(--space-medium);
 }
-/* The mark, the catalog's name and its tag on one line. The mark's own frame is 32px in a 48px bar, so the row
-   centres rather than sitting on a baseline, and the name keeps a baseline gap from the tag beside it. */
+/* The mark and the catalog's name on one line. The mark's own frame is 32px in a 48px bar, so the row centres. */
 .brand { display: flex; align-items: center; gap: var(--space-xsmall); }
 .brandName { font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); font-size: var(--font-size-regular); }
-.brandTag { color: var(--text-neutral-subtle); font-size: var(--font-size-xsmall); }
 .group { display: flex; flex-direction: column; gap: 2px; }
 .groupTitle { margin: 0; }
 /* Section header is a disclosure button: title left, chevron right. */
@@ -52,7 +51,15 @@
 .familyTitle { cursor: default; }
 .familyTitle:hover { background: none; color: var(--text-neutral); }
 .deep { padding-left: calc(var(--space-large) + var(--space-medium)); }
-.main { padding: var(--space-xxlarge); width: 100%; min-width: 0; }
+/* The content panel: inset from the bar and the menu so the sunken page shows around it, and rounded at
+   --radius-large, the kit's largest step. */
+.main {
+  padding: var(--space-xxlarge); min-width: 0; margin: var(--space-medium);
+  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-subtle);
+  border-radius: var(--radius-large);
+}
+/* The trail sits above the page title, inside the panel. */
+.trail { margin-bottom: var(--space-medium); }
 .footer { margin-top: auto; display: flex; justify-content: space-between; align-items: center; padding: 0 var(--space-xsmall); }
 /* The brand picker is the kit Select; the topbar only sets how much room it takes. */
 .brandPicker { display: inline-flex; width: 132px; }
@@ -72,7 +79,6 @@
 @media (max-width: 767px) {
   .shell { grid-template-columns: minmax(0, 1fr); }
   .topbar { padding: 0 var(--space-small); }
-  .brandTag { display: none; }
   /* Closed, it sits off the start edge and hidden, so Tab and screen readers skip it. */
   .sidebar {
     position: fixed; top: 48px; bottom: 0; left: 0; z-index: 3; width: min(280px, 85vw); height: auto;
@@ -81,7 +87,7 @@
   }
   .sidebarOpen { transform: none; visibility: visible; transition: transform var(--motion-expand-duration) var(--motion-expand-easing); }
   .scrim { display: block; position: fixed; inset: 48px 0 0; z-index: 2; background: var(--surface-backdrop); cursor: pointer; }
-  .main { padding: var(--space-large) var(--space-medium); }
+  .main { padding: var(--space-large) var(--space-medium); margin: var(--space-small); }
 }
 @media (prefers-reduced-motion: reduce) { .sidebar, .sidebarOpen { transition: none; } }
 

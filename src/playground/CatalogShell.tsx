@@ -2,8 +2,10 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { Button } from "@/ui/Button/Button";
+import { Breadcrumb } from "@/ui/Breadcrumb/Breadcrumb";
 import { Logo } from "@/ui/Logo/Logo";
 import { CatalogSearch } from "./CatalogSearch";
+import { catalogTrail } from "./nav";
 import { Sidebar } from "./Sidebar";
 import { ThemeControls } from "./ThemeControls";
 import styles from "./shell.module.css";
@@ -104,6 +106,8 @@ export function CatalogShell({ children }: { children: ReactNode }) {
   const label = wide ? (collapsed ? "Show menu" : "Hide menu") : (open ? "Close menu" : "Open menu");
   const icon = wide ? (collapsed ? "menu" : "menu_open") : (open ? "close" : "menu");
 
+  const trail = catalogTrail(path);
+
   return (
     <div className={[styles.shell, collapsed ? styles.shellCollapsed : ""].join(" ")}>
       <header className={styles.topbar}>
@@ -121,14 +125,18 @@ export function CatalogShell({ children }: { children: ReactNode }) {
               catalog's own name follows it here. */}
           <Logo type="symbol" label="BillingPlatform" />
           <span className={styles.brandName}>Agentic BP DS</span>
-          <span className={styles.brandTag}>code-first design system</span>
         </div>
         <div className={styles.topbarRight}><ThemeControls /></div>
       </header>
       <Sidebar id={menuId} ref={menuRef} drawerOpen={drawer} shortcut={shortcut} onSearch={() => setSearching(true)} />
       {drawer && <button type="button" className={styles.scrim} aria-label="Close menu" tabIndex={-1} onClick={() => setOpen(false)} />}
       {/* While the drawer is open the page behind it is out of reach, so Tab stays in the menu. */}
-      <main className={styles.main} inert={drawer || undefined}>{children}</main>
+      <main className={styles.main} inert={drawer || undefined}>
+        {/* The trail above the page title: Home, the side-nav section, then this page. The Overview at / is
+            Home itself, so it has none. */}
+        {trail && <div className={styles.trail}><Breadcrumb separator="chevron" items={trail} /></div>}
+        {children}
+      </main>
       <CatalogSearch open={searching} onClose={() => setSearching(false)} />
     </div>
   );
