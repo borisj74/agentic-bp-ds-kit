@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Tabs } from "@/ui/Tabs/Tabs";
+import { Segmented } from "@/ui/Segmented/Segmented";
 import { Button } from "@/ui/Button/Button";
 import master from "./master.module.css";
 import rowStyles from "./scale.module.css";
@@ -138,7 +138,7 @@ export function GridFoundation() {
   return (
     <>
       <div className={master.pageTabs}>
-        <Tabs label="Grid tokens" value={tab} onChange={(id) => setTab(id as typeof tab)} items={[{ id: "semantics", label: "Semantics" }, { id: "primitives", label: "Primitives" }]} />
+        <Segmented label="Grid tokens" hideLabel size="sm" value={tab} onChange={(id) => setTab(id as typeof tab)} options={[{ value: "semantics", label: "Semantics" }, { value: "primitives", label: "Primitives" }]} />
       </div>
       <p className={master.hint}>Click any row or card to copy its token or class.</p>
 
