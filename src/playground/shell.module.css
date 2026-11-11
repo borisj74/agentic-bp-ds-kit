@@ -1,4 +1,5 @@
-/* The page behind is sunken, so the content reads as a panel laid on it rather than as the page itself. */
+/* The page behind is sunken, so the content reads as a panel laid on it rather than as the page itself. The top
+   bar and the menu take no surface of their own: they sit on that same ground. */
 .shell { display: grid; grid-template-columns: 240px 1fr; grid-template-rows: 48px 1fr; min-height: 100vh; background: var(--surface-sunken); }
 .topbar {
   grid-column: 1 / -1; position: sticky; top: 0; z-index: 2; height: 48px;
@@ -7,7 +8,6 @@
      evenly inset only when the controls at the end are given the difference. The end matches the inset the
      page content keeps (--space-xxlarge), so the controls line up with the content's own edge. */
   padding: 0 var(--space-xxlarge) 0 var(--space-medium);
-  background: var(--surface-flat); border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
 }
 .topbarRight { display: flex; align-items: center; gap: var(--space-xsmall); }
 /* No line down its end: the menu and the page behind it are the same sunken ground, and the content panel's

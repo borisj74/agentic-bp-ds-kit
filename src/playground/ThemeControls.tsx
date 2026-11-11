@@ -1,6 +1,6 @@
 "use client";
 import { useSyncExternalStore } from "react";
-import { Button } from "@/ui/Button/Button";
+import { Segmented } from "@/ui/Segmented/Segmented";
 import { Select } from "@/ui/Select/Select";
 import styles from "./shell.module.css";
 
@@ -40,9 +40,15 @@ export function ThemeControls() {
           value={brand} onChange={(value) => setBrand(value as string)}
         />
       </span>
-      <Button emphasis="minimal" size="sm" iconOnly iconStart={theme === "dark" ? "light_mode" : "dark_mode"} onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-        Switch to {theme === "dark" ? "light" : "dark"} mode
-      </Button>
+      {/* Light or dark is a choice between two, so it is the kit Segmented, like the catalog's other switchers. */}
+      <Segmented
+        label="Colour mode" hideLabel size="sm"
+        options={[
+          { value: "light", label: "Light", icon: "light_mode" },
+          { value: "dark", label: "Dark", icon: "dark_mode" },
+        ]}
+        value={theme} onChange={(value) => setTheme(value as "light" | "dark")}
+      />
     </>
   );
 }
