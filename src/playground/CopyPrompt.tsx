@@ -5,17 +5,14 @@ import { Segmented } from "@/ui/Segmented/Segmented";
 import type { Contract } from "./Master";
 import { PROMPT_TARGETS, componentPrompt, type PromptTarget } from "./componentPrompt";
 import styles from "./master.module.css";
+import { useCopy } from "./useCopy";
 
 export function CopyPrompt({ contract }: { contract: Contract }) {
   const [target, setTarget] = useState<PromptTarget>("cursor");
-  const [copied, setCopied] = useState(false);
-
-  const copy = () => {
-    const text = componentPrompt(contract, target);
-    navigator.clipboard?.writeText(text).catch(() => {});
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1600);
-  };
+  // The playground's own copy helper, as the foundations pages use: it holds the key it copied and clears it, and
+  // it drops its timer when the page goes. Keyed by target, so switching to another agent asks to be copied again.
+  const { copied, copy } = useCopy();
+  const done = copied === target;
 
   return (
     <div className={styles.copyPrompt} role="group" aria-labelledby={`${contract.name}-copy-label`}>
@@ -35,13 +32,13 @@ export function CopyPrompt({ contract }: { contract: Contract }) {
       <Button
         size="sm"
         emphasis="subtle"
-        iconStart={copied ? "check" : "content_copy"}
-        onClick={copy}
+        iconStart={done ? "check" : "content_copy"}
+        onClick={() => copy(target, componentPrompt(contract, target))}
       >
-        {copied ? "Copied" : "Copy"}
+        {done ? "Copied" : "Copy"}
       </Button>
       <span className={styles.srOnly} role="status" aria-live="polite">
-        {copied ? "Prompt copied to the clipboard" : ""}
+        {done ? "Prompt copied to the clipboard" : ""}
       </span>
     </div>
   );
