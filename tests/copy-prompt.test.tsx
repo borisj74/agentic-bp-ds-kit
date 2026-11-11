@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CopyPrompt } from "@/playground/CopyPrompt";
 import type { Contract } from "@/playground/Master";
 
@@ -13,24 +13,31 @@ async function buttonContract() {
 
 describe("CopyPrompt", () => {
   const writeText = vi.fn((_text: string) => Promise.resolve());
+  const open = vi.fn();
 
   // userEvent.setup() installs a clipboard stub of its own, so the spy goes in after it.
   const setup = () => {
     const user = userEvent.setup();
     Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
+    vi.stubGlobal("open", open);
     return user;
   };
 
-  beforeEach(() => writeText.mockClear());
+  beforeEach(() => {
+    writeText.mockClear();
+    open.mockClear();
+  });
+  afterEach(() => vi.unstubAllGlobals());
 
-  it("copies the prompt for the chosen target and clears the mark after a moment", async () => {
+  it("copies the prompt and clears the mark after a moment", async () => {
     const contract = await buttonContract();
     const user = setup();
     render(<CopyPrompt contract={contract} />);
 
-    await user.click(screen.getByRole("button", { name: /copy/i }));
+    await user.click(screen.getByRole("button", { name: /^copy$/i }));
     expect(writeText).toHaveBeenCalledTimes(1);
     expect(writeText.mock.calls[0][0]).toContain('import { Button } from "@/ui/Button/Button"');
+    expect(open).not.toHaveBeenCalled();
     expect(screen.getByRole("button", { name: /copied/i })).toBeTruthy();
     expect(screen.getByRole("status").textContent).toMatch(/copied/i);
 
@@ -38,15 +45,40 @@ describe("CopyPrompt", () => {
     await vi.waitFor(() => expect(screen.getByRole("button", { name: /^copy$/i })).toBeTruthy(), { timeout: 2500 });
   });
 
-  it("asks to be copied again when the target changes", async () => {
+  it("copies and opens the tool, with the prompt in the query string", async () => {
     const contract = await buttonContract();
     const user = setup();
     render(<CopyPrompt contract={contract} />);
 
-    await user.click(screen.getByRole("button", { name: /copy/i }));
-    expect(screen.getByRole("button", { name: /copied/i })).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: /open in Cursor/i }));
+    expect(writeText).toHaveBeenCalledTimes(1);
+    const prompt = writeText.mock.calls[0][0];
+    expect(prompt).toContain("@contracts/button.json");
+    expect(open).toHaveBeenCalledTimes(1);
+    const [url, target, features] = open.mock.calls[0];
+    expect(url).toBe(`https://cursor.com/link/prompt?text=${encodeURIComponent(prompt)}`);
+    expect(target).toBe("_blank");
+    expect(features).toContain("noopener");
+  });
 
-    await user.click(screen.getByRole("radio", { name: /claude code/i }));
-    expect(screen.getByRole("button", { name: /^copy$/i })).toBeTruthy();
+  it("opens every tool but MCP, which only copies", async () => {
+    const contract = await buttonContract();
+    const user = setup();
+    render(<CopyPrompt contract={contract} />);
+
+    for (const [name, host] of [
+      [/open in Claude$/i, "claude.ai"],
+      [/open in ChatGPT/i, "chatgpt.com"],
+      [/open in v0/i, "v0.app"],
+    ] as const) {
+      open.mockClear();
+      await user.click(screen.getByRole("button", { name }));
+      expect(String(open.mock.calls[0][0])).toContain(host);
+    }
+
+    open.mockClear();
+    await user.click(screen.getByRole("button", { name: /copy MCP prompt/i }));
+    expect(open).not.toHaveBeenCalled();
+    expect(writeText.mock.calls.at(-1)?.[0]).toContain("MCP tool");
   });
 });

@@ -8,17 +8,28 @@
 /* In dark, a lighter stage would sit above the page. Sink it instead so the panel reads as raised. */
 :global([data-theme="dark"]) .section { --stage: var(--surface-sunken); }
 .header { display: grid; gap: var(--space-xxsmall); justify-items: start; }
-/* Preview | Variants is the kit Tabs; it spans the header like a section strip. */
-.viewTabs { justify-self: stretch; margin-top: var(--space-xsmall); }
-/* Copy prompt: target picker + copy action under Preview | Variants. */
+/* Preview | Variants is the kit Tabs, hugging its two labels; the Copy prompt row ends the same line. */
+.viewBar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: var(--space-xsmall) var(--space-medium);
+  justify-self: stretch; width: 100%; margin-top: var(--space-xsmall);
+}
+.viewTabs { flex: 0 1 auto; min-width: 0; }
+/* Copy prompt: one button per AI tool, then the plain copy. Rides on the view bar, beside Preview | Variants. */
 .copyPrompt {
-  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-small) var(--space-medium);
-  width: 100%; margin-top: var(--space-xsmall);
-  padding: var(--space-small); border-radius: var(--radius-medium);
-  background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-subtle);
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xsmall) var(--space-small);
 }
 .copyPromptLabel { font-size: var(--font-size-small); font-weight: var(--font-weight-medium); color: var(--text-neutral-strong); }
-.copyPromptTargets { flex: 1 1 auto; min-width: min(100%, 280px); }
+.copyPromptTargets { display: flex; flex: 1 1 auto; flex-wrap: wrap; align-items: center; gap: var(--space-xsmall); }
+/* Square like the kit's own icon-only Button: the brand marks come in as children, so that prop is out of reach. */
+.toolButton { width: var(--control-small); padding: 0; }
+/* The brand marks carry their own colours, the one place in the catalog where a hex is right: Claude's clay is set
+   on its svg, and the three black marks take it here so dark can flip them to white and keep them visible. */
+.toolMarkMono { color: #000000; }
+:global([data-theme="dark"]) .toolMarkMono { color: #FFFFFF; }
+/* MCP has no brand mark, so its button carries the word instead and takes the width the word needs. */
+.toolButtonWord { width: auto; padding: 0 var(--space-small); }
+.toolWord { font-size: var(--font-size-xsmall); font-weight: var(--font-weight-medium); letter-spacing: var(--letter-spacing-wide); }
 /* Hidden from the eye, not from a screen reader. Same rule as the catalog shell's, with clip-path: the old clip
    property is deprecated. */
 .srOnly {

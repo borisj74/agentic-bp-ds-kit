@@ -1,13 +1,59 @@
 import type { Contract } from "./Master";
 import { slug } from "./nav";
 
-export type PromptTarget = "claude-code" | "cursor" | "mcp";
+export type PromptTarget = "claude-code" | "chatgpt" | "cursor" | "v0" | "mcp";
 
-export const PROMPT_TARGETS: { value: PromptTarget; label: string }[] = [
-  { value: "claude-code", label: "Claude Code" },
-  { value: "cursor", label: "Cursor" },
+/** Where a tool button sends the prompt. `fallback` opens the tool with nothing pre-filled. */
+export type PromptOpen = { href: string; param: string; fallback: string };
+
+export type PromptTool = {
+  value: PromptTarget;
+  /** Shown as the button's accessible name: "Copy prompt and open in <label>". */
+  label: string;
+  /** MCP has none: its prompt points an agent at our own server, so there is nothing to open. */
+  open?: PromptOpen;
+};
+
+export const PROMPT_TARGETS: PromptTool[] = [
+  {
+    value: "claude-code",
+    label: "Claude",
+    open: { href: "https://claude.ai/new", param: "q", fallback: "https://claude.ai/new" },
+  },
+  {
+    value: "chatgpt",
+    label: "ChatGPT",
+    open: { href: "https://chatgpt.com/", param: "q", fallback: "https://chatgpt.com/" },
+  },
+  {
+    value: "cursor",
+    label: "Cursor",
+    open: { href: "https://cursor.com/link/prompt", param: "text", fallback: "https://cursor.com/" },
+  },
+  {
+    value: "v0",
+    label: "v0",
+    open: { href: "https://v0.app/chat", param: "q", fallback: "https://v0.app/chat" },
+  },
   { value: "mcp", label: "MCP" },
 ];
+
+/**
+ * How long a pre-filled prompt may be, counted on the whole encoded URL.
+ *
+ * Browsers take far more (Chrome ~2 MB), but the receiving site has to carry the text through a redirect and a
+ * sign-in hop, and the usual server and CDN ceiling for one request line is 8 KB — past it a proxy answers 414
+ * rather than the tool. 8000 characters sits just inside that. Most of the kit clears it easily; the three
+ * heaviest contracts do not (BarChart encodes to about 10 KB, DataGrid and Cell to about 8.8 KB), and those
+ * buttons open the tool empty. The clipboard still has the whole prompt, which beats handing the tool half of one.
+ */
+export const URL_LIMIT = 8000;
+
+/** The URL a tool button opens: with the prompt when it fits, else the tool's own front door. */
+export function promptUrl(open: PromptOpen, prompt: string): string {
+  const url = `${open.href}?${open.param}=${encodeURIComponent(prompt)}`;
+  return url.length <= URL_LIMIT ? url : open.fallback;
+}
 
 function importLine(contract: Contract): string {
   const base = contract.path.replace(/^src\//, "@/").replace(/\.tsx?$/, "");
@@ -36,17 +82,24 @@ function keyPropLines(contract: Contract): string[] {
   });
 }
 
+const CATALOG_URL = "https://agentic-bp-ds-kit.vercel.app";
+const REPO_URL = "https://github.com/borisj74/agentic-bp-ds-kit";
+
 /** Ready-to-paste agent prompt for one kit contract. */
 export function componentPrompt(contract: Contract, target: PromptTarget): string {
   const id = slug(contract.name);
   const contractPath = `contracts/${id}.json`;
 
+  // ChatGPT and v0 get the prompt in a chat with no checkout behind it, so theirs never sends the reader to a file.
+  const standalone = target === "chatgpt" || target === "v0";
   const source =
     target === "mcp"
       ? `Call the Agentic BP DS MCP tool \`get\` with name "${id}" and follow what it returns. Other read-only tools: list, search, get_tokens, get_rules.`
       : target === "cursor"
         ? `Read @${contractPath} before writing code. Open contracts/index.json when you need the catalog.`
-        : `Read ${contractPath} before writing code. Open contracts/index.json when you need the catalog.`;
+        : standalone
+          ? `There is no repo to open in this chat: everything the contract says is below, so work from it. The kit is public — catalog at ${CATALOG_URL}, source at ${REPO_URL}, scaffold with \`npm create agentic-bp-ds@latest\`.`
+          : `Read ${contractPath} before writing code. Open contracts/index.json when you need the catalog.`;
 
   const lines = [
     `Build with the Agentic BP Design System ${contract.name}. ${source}`,
@@ -66,6 +119,14 @@ export function componentPrompt(contract: Contract, target: PromptTarget): strin
     "- Page spacing: layout classes in src/tokens/layout.css (.layout-content, .layout-stack, .layout-split, …).",
     "- Icons: Material Symbols through the kit Icon component only.",
   ];
+
+  if (standalone) {
+    lines.push(
+      "",
+      "If this chat has no copy of the kit, keep the same component name, prop names and enum values as above, and",
+      "keep the semantic CSS variable names — do not swap them for hex, a utility framework or another library.",
+    );
+  }
 
   if (contract.useWhen?.length) {
     lines.push("", "Use when:", ...contract.useWhen.map((rule) => `- ${rule}`));
