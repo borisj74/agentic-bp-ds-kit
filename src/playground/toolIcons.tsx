@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { PromptTarget } from "./componentPrompt";
+import styles from "./master.module.css";
 
 /**
  * Brand marks for the Copy prompt row. These are not Material Symbols, so the kit Icon component cannot draw
@@ -12,13 +13,17 @@ import type { PromptTarget } from "./componentPrompt";
  */
 function Mark({ path, color }: { path: string; color?: string }) {
   return (
-    <svg viewBox="0 0 24 24" width="18" height="18" fill={color ?? "currentColor"} aria-hidden focusable="false">
+    <svg
+      viewBox="0 0 24 24" width="18" height="18" aria-hidden focusable="false"
+      // No colour of its own means the mono class below colours it: black on light, white on dark.
+      fill={color ?? "currentColor"} className={color ? undefined : styles.toolMarkMono}
+    >
       <path d={path} />
     </svg>
   );
 }
 
-/** Claude's own clay, as the reference row draws it. The other three marks read fine in the Button's text colour. */
+/** Claude's own clay. The other three brands are black, which master.module.css flips to white in dark. */
 const CLAUDE_CLAY = "#D97757";
 
 const CLAUDE =
