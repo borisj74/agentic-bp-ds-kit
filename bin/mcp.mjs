@@ -63,9 +63,9 @@ function createServer() {
     server,
     "list",
     {
-      title: "List components",
+      title: "List components and patterns",
       description:
-        "List every UI component in contracts/index.json with category, contract path, tags, and a one-line intent.",
+        "List every UI component and every screen pattern in contracts/index.json, each with its kind, category, contract path, tags, and a one-line intent. Check the patterns first: when one covers the screen, use it rather than composing the screen by hand.",
     },
     () => listComponents(),
   );
@@ -74,11 +74,11 @@ function createServer() {
     server,
     "get",
     {
-      title: "Get component",
+      title: "Get a component or pattern",
       description:
-        "Get one component by display name or contract file stem (Button or button). Returns the full contract JSON, usage summary, and import path.",
+        "Get one component or screen pattern by display name or contract file stem (Button, button, ListPage, listpage). Returns the full contract JSON, its kind, a usage summary, and the import path to use.",
       inputSchema: {
-        name: z.string().describe("Component name or contract id, e.g. Button or datagrid."),
+        name: z.string().describe("Component or pattern name, or contract id: Button, datagrid, ListPage."),
       },
     },
     ({ name }) => getComponent(name),
@@ -88,9 +88,9 @@ function createServer() {
     server,
     "search",
     {
-      title: "Search components",
+      title: "Search components and patterns",
       description:
-        "Find components whose name, category, tags, intent, usage, useWhen, or doNot lines match every word in the query (case-insensitive).",
+        "Find components and screen patterns whose name, category, tags, intent, usage, useWhen, or doNot lines match every word in the query (case-insensitive). Matches come back split by kind.",
       inputSchema: {
         query: z.string().describe('Words to match, e.g. "icon only" or "destructive confirm".'),
       },

@@ -7,8 +7,8 @@ Start a read-only MCP server on stdio for the Agentic BP Design System repo.
 Cursor and Claude Code spawn this command and query contracts and tokens locally.
 
 Tools:
-  list           Components from contracts/index.json
-  get            One component contract and usage
+  list           Every component and pattern in contracts/index.json
+  get            One component or pattern contract and usage
   search         Match name, intent, useWhen, and related fields
   get_tokens     Semantic tokens from src/tokens/source/semantic.txt
   get_rules      Kit agent rules (CLAUDE.md / AGENTS.md)

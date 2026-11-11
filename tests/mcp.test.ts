@@ -55,10 +55,19 @@ describe("MCP server", () => {
     }
   });
 
-  it("list returns components from the index", async () => {
-    const data = await callTool<{ count: number; components: { name: string }[] }>("list");
+  it("list returns components and patterns from the index", async () => {
+    const data = await callTool<{
+      count: number;
+      components: { name: string; kind: string }[];
+      patterns: { name: string; kind: string }[];
+    }>("list");
     expect(data.count).toBeGreaterThan(70);
     expect(data.components.some((row) => row.name === "Button")).toBe(true);
+    expect(data.components.every((row) => row.kind === "component")).toBe(true);
+    // The kit's first rule for a screen is to use the pattern that covers it, so patterns have to be visible here.
+    expect(data.patterns.some((row) => row.name === "ListPage")).toBe(true);
+    expect(data.patterns.every((row) => row.kind === "pattern")).toBe(true);
+    expect(data.count).toBe(data.components.length + data.patterns.length);
   });
 
   it("get returns the Button contract", async () => {
@@ -73,14 +82,33 @@ describe("MCP server", () => {
     expect(data.import).toContain("@/ui/Button/Button");
   });
 
-  it("search matches useWhen and intent text", async () => {
+  it("get returns a pattern with its own import path", async () => {
+    const data = await callTool<{
+      name: string;
+      kind: string;
+      contract: { name: string };
+      import: string;
+    }>("get", { name: "listpage" });
+    expect(data.name).toBe("ListPage");
+    expect(data.kind).toBe("pattern");
+    expect(data.contract.name).toBe("ListPage");
+    expect(data.import).toContain("@/patterns/ListPage/ListPage");
+  });
+
+  it("search matches useWhen and intent text, across both kinds", async () => {
     const byName = await callTool<{ components: { name: string }[] }>("search", { query: "button" });
     expect(byName.components.some((row) => row.name === "Button")).toBe(true);
 
-    const empty = await callTool<{ count: number; components: unknown[] }>("search", {
+    const patterns = await callTool<{ patterns: { name: string; kind: string }[] }>("search", {
+      query: "record",
+    });
+    expect(patterns.patterns.some((row) => row.name === "RecordPage")).toBe(true);
+
+    const empty = await callTool<{ count: number; components: unknown[]; patterns: unknown[] }>("search", {
       query: "zzzz-not-in-kit",
     });
     expect(empty.count).toBe(0);
+    expect(empty.patterns).toHaveLength(0);
   });
 
   it("get_tokens reads semantic.txt with filters", async () => {

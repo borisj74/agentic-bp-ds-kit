@@ -89,9 +89,9 @@ function readContract(relativePath) {
 
 const oneLine = (text) => String(text ?? "").replace(/\s+/g, " ").trim();
 
-export function listComponents() {
-  const version = kitVersion();
-  const rows = (index().components ?? []).map((row) => {
+function rowsFor(kind) {
+  const key = kind === "pattern" ? "patterns" : "components";
+  const rows = (index()[key] ?? []).map((row) => {
     let intent = "";
     try {
       const contract = readContract(row.contract);
@@ -101,6 +101,7 @@ export function listComponents() {
     }
     return {
       name: row.name,
+      kind,
       category: row.category ?? "",
       contract: row.contract,
       tags: row.tags ?? [],
@@ -108,27 +109,38 @@ export function listComponents() {
     };
   });
   rows.sort((a, b) => a.name.localeCompare(b.name));
-  return { kit: version, count: rows.length, components: rows };
+  return rows;
 }
 
+// Patterns are listed beside the components on purpose: the kit's first rule for a screen is to use the pattern
+// that covers it, and an agent that cannot see them cannot follow it.
+export function listComponents() {
+  const version = kitVersion();
+  const components = rowsFor("component");
+  const patterns = rowsFor("pattern");
+  return { kit: version, count: components.length + patterns.length, components, patterns };
+}
+
+// Serves a component or a pattern: both are contracts, and a screen usually starts from a pattern.
 export function getComponent(name) {
   const version = kitVersion();
   const hit = contractPathForName(name);
   if (!hit) {
-    throw new CatalogError(`No component named "${name}". Use list or search.`);
-  }
-  if (hit.kind === "pattern") {
-    throw new CatalogError(`"${hit.name}" is a pattern, not a component. Open ${hit.contract} from the repo.`);
+    throw new CatalogError(`Nothing in the kit is called "${name}". Use list or search.`);
   }
 
   const contract = readContract(hit.contractPath);
-  const importLine = contract.name
-    ? `import { ${contract.name} } from "@/ui/${contract.name}/${contract.name}";`
-  : undefined;
+  // The contract carries its own path (src/ui/Button/Button.tsx, src/patterns/ListPage/ListPage.tsx), so the import
+  // follows it rather than a guess about where the piece lives.
+  const fromPath = contract.path
+    ? contract.path.replace(/^src\//, "@/").replace(/\.tsx?$/, "")
+    : `@/${hit.kind === "pattern" ? "patterns" : "ui"}/${contract.name}/${contract.name}`;
+  const importLine = contract.name ? `import { ${contract.name} } from "${fromPath}";` : undefined;
 
   return {
     kit: version,
     name: hit.name,
+    kind: hit.kind,
     category: hit.category ?? "",
     contractPath: hit.contract,
     import: importLine,
@@ -161,27 +173,35 @@ export function searchComponents(query) {
   }
   const terms = q.split(/\s+/).filter(Boolean);
 
-  const matches = [];
-  for (const row of index().components ?? []) {
-    let contract = {};
-    try {
-      contract = readContract(row.contract);
-    } catch {
-      continue;
+  const hits = (kind) => {
+    const key = kind === "pattern" ? "patterns" : "components";
+    const matches = [];
+    for (const row of index()[key] ?? []) {
+      let contract = {};
+      try {
+        contract = readContract(row.contract);
+      } catch {
+        continue;
+      }
+      const haystack = searchHaystack(row, contract);
+      if (terms.every((term) => haystack.includes(term))) {
+        matches.push({
+          name: row.name,
+          kind,
+          category: row.category ?? "",
+          contract: row.contract,
+          intent: oneLine(contract.intent ?? ""),
+          matchedQuery: query,
+        });
+      }
     }
-    const haystack = searchHaystack(row, contract);
-    if (terms.every((term) => haystack.includes(term))) {
-      matches.push({
-        name: row.name,
-        category: row.category ?? "",
-        contract: row.contract,
-        intent: oneLine(contract.intent ?? ""),
-        matchedQuery: query,
-      });
-    }
-  }
-  matches.sort((a, b) => a.name.localeCompare(b.name));
-  return { kit: version, query, count: matches.length, components: matches };
+    matches.sort((a, b) => a.name.localeCompare(b.name));
+    return matches;
+  };
+
+  const components = hits("component");
+  const patterns = hits("pattern");
+  return { kit: version, query, count: components.length + patterns.length, components, patterns };
 }
 
 function parseSemanticSource() {

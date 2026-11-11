@@ -326,7 +326,7 @@ The kit tells the assistant to stop and ask when a screen needs something it doe
 
 ## MCP server (local)
 
-Agents can query this repo's **contracts** and **semantic tokens** without opening every file. The server is read-only stdio MCP: it reads `contracts/` and `src/tokens/source/semantic.txt` at runtime (no duplicated catalog).
+Agents can query this repo's **contracts** (components and screen patterns) and **semantic tokens** without opening every file. The server is read-only stdio MCP: it reads `contracts/` and `src/tokens/source/semantic.txt` at runtime (no duplicated catalog).
 
 ### Run it
 
@@ -348,9 +348,9 @@ npx agentic-bp-ds-kit mcp
 
 | Tool | Purpose |
 | --- | --- |
-| `list` | All components from `contracts/index.json` |
-| `get` | One component's full contract and usage (`name`: `Button` or `button`) |
-| `search` | Match name, tags, intent, `useWhen`, and related fields |
+| `list` | Every component and screen pattern in `contracts/index.json`, split by kind |
+| `get` | One component or pattern: full contract, kind, usage and import (`name`: `Button`, `button`, `ListPage`) |
+| `search` | Match name, tags, intent, `useWhen` and related fields, across components and patterns |
 | `get_tokens` | Semantic tokens; optional `category` (e.g. `text`, `background`) and `theme` (`light`, `dark`, `both`) |
 | `get_rules` | Kit agent rules plus `CLAUDE.md` / `AGENTS.md` text |
 
