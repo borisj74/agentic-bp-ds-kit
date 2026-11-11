@@ -10,18 +10,27 @@ import { cssName } from "../scripts/audit-tokens.mjs";
 const mcpDir = dirname(fileURLToPath(import.meta.url));
 export const repoRoot = resolve(mcpDir, "..");
 
-export const TOKEN_CATEGORIES = [
-  "background",
-  "text",
-  "icon",
-  "border",
-  "outline",
-  "surface",
-  "link",
-  "shadow",
-  "fill",
-  "stroke",
-];
+// The categories are whatever src/tokens/source/semantic.txt actually holds, read once at start. Hardcoding them
+// let the list drift: it advertised fill, stroke and shadow, which the file has never had, so get_tokens answered
+// those with an empty set instead of saying the category does not exist.
+export const TOKEN_CATEGORIES = readTokenCategories();
+
+function readTokenCategories() {
+  try {
+    const file = join(repoRoot, "src/tokens/source/semantic.txt");
+    if (!existsSync(file)) return [];
+    const found = new Set();
+    for (const line of readFileSync(file, "utf8").split("\n")) {
+      const row = line.trim();
+      if (!row || row.startsWith("#")) continue;
+      const category = row.split("|")[0]?.split("/")[0]?.trim();
+      if (category) found.add(category);
+    }
+    return [...found].sort();
+  } catch {
+    return [];
+  }
+}
 
 export class CatalogError extends Error {
   constructor(message) {
