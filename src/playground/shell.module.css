@@ -8,7 +8,11 @@
   display: flex; flex-direction: column; gap: var(--space-medium);
 }
 /* The mark and the catalog's name head the menu. */
-.sidebarBrand { display: flex; align-items: center; gap: var(--space-xsmall); padding: 0 var(--space-xsmall); }
+/* The mark, the catalog's name, and the button that puts the menu away on the end of the row. The start keeps the
+   inset the links and the search box have, so the mark lines up with them; the end has none, so the button lines
+   up with the end of the search box. */
+.sidebarBrand { display: flex; align-items: center; gap: var(--space-xsmall); padding-inline-start: var(--space-xsmall); }
+.menuClose { margin-inline-start: auto; display: inline-flex; }
 .brandName { font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); font-size: var(--font-size-regular); }
 .group { display: flex; flex-direction: column; gap: 2px; }
 .groupTitle { margin: 0; }

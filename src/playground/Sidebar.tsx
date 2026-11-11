@@ -39,7 +39,7 @@ function Section({ title, open, onToggle, children }: { title: string; open: boo
 }
 
 // drawerOpen only matters under 768px, where the menu is a drawer the CatalogShell slides in.
-export function Sidebar({ id, ref, drawerOpen = false, onSearch, shortcut }: { id?: string; ref?: Ref<HTMLElement>; drawerOpen?: boolean; onSearch?: () => void; shortcut?: string }) {
+export function Sidebar({ id, ref, drawerOpen = false, onSearch, shortcut, action }: { id?: string; ref?: Ref<HTMLElement>; drawerOpen?: boolean; onSearch?: () => void; shortcut?: string; action?: React.ReactNode }) {
   const path = usePathname();
   const [open, setOpen] = useState<Record<SectionKey, boolean>>({ start: true, foundations: true, components: true, patterns: true });
 
@@ -59,6 +59,7 @@ export function Sidebar({ id, ref, drawerOpen = false, onSearch, shortcut }: { i
       <div className={styles.sidebarBrand}>
         <Logo type="symbol" label="BillingPlatform" />
         <span className={styles.brandName}>Agentic BP DS</span>
+        {action}
       </div>
 
       {onSearch && (

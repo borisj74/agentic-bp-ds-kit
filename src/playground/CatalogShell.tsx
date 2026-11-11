@@ -67,6 +67,8 @@ export function CatalogShell({ children }: { children: ReactNode }) {
   const buttonRef = useRef<HTMLSpanElement>(null);
   const menuRef = useRef<HTMLElement>(null);
   const drawer = open && !wide;
+  // Closing the drawer puts focus back on the button that opened it, which only exists once the menu is gone.
+  const returning = useRef(false);
 
   // A new page closes the drawer (adjusting state during render, no effect).
   const [seen, setSeen] = useState(path);
@@ -95,10 +97,17 @@ export function CatalogShell({ children }: { children: ReactNode }) {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       setOpen(false);
-      buttonRef.current?.querySelector("button")?.focus();
+      returning.current = true;
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
+  }, [drawer]);
+
+  // The drawer is gone by now, so the button that opens it is back on the page and can take focus.
+  useEffect(() => {
+    if (drawer || !returning.current) return;
+    returning.current = false;
+    buttonRef.current?.querySelector("button")?.focus();
   }, [drawer]);
 
   const shown = wide ? !collapsed : open;
@@ -109,7 +118,22 @@ export function CatalogShell({ children }: { children: ReactNode }) {
 
   return (
     <div className={[styles.shell, collapsed ? styles.shellCollapsed : ""].join(" ")}>
-      <Sidebar id={menuId} ref={menuRef} drawerOpen={drawer} shortcut={shortcut} onSearch={() => setSearching(true)} />
+      {/* The button that puts the menu away sits in the menu's own head, beside the mark. The one that brings it
+          back is on the page, since a hidden menu would take its own way back with it. */}
+      <Sidebar
+        id={menuId} ref={menuRef} drawerOpen={drawer} shortcut={shortcut} onSearch={() => setSearching(true)}
+        action={
+          <span className={styles.menuClose}>
+            <Button
+              emphasis="minimal" size="sm" iconOnly iconStart={wide ? "menu_open" : "close"}
+              aria-expanded={shown} aria-controls={menuId}
+              onClick={() => (wide ? setCollapsed(true) : setOpen(false))}
+            >
+              {wide ? "Hide menu" : "Close menu"}
+            </Button>
+          </span>
+        }
+      />
       {drawer && <button type="button" className={styles.scrim} aria-label="Close menu" tabIndex={-1} onClick={() => setOpen(false)} />}
       {/* While the drawer is open the page behind it is out of reach, so Tab stays in the menu. */}
       <main className={styles.main} inert={drawer || undefined}>
@@ -117,15 +141,17 @@ export function CatalogShell({ children }: { children: ReactNode }) {
             lives here rather than in the menu because a hidden menu would take its own way back with it. The
             Overview at / is Home itself, so it has no trail. */}
         <div className={styles.pageBar}>
-          <span ref={buttonRef} className={styles.menuButton}>
-            <Button
-              emphasis="minimal" size="sm" iconOnly iconStart={icon}
-              aria-expanded={shown} aria-controls={menuId}
-              onClick={() => (wide ? setCollapsed(!collapsed) : setOpen((o) => !o))}
-            >
-              {label}
-            </Button>
-          </span>
+          {!shown && (
+            <span ref={buttonRef} className={styles.menuButton}>
+              <Button
+                emphasis="minimal" size="sm" iconOnly iconStart={icon}
+                aria-expanded={shown} aria-controls={menuId}
+                onClick={() => (wide ? setCollapsed(false) : setOpen(true))}
+              >
+                {label}
+              </Button>
+            </span>
+          )}
           {trail && <Breadcrumb separator="chevron" items={trail} />}
           <span className={styles.pageBarEnd}><ThemeControls /></span>
         </div>
