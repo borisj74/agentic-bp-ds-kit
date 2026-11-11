@@ -3,7 +3,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { Button } from "@/ui/Button/Button";
 import { Breadcrumb } from "@/ui/Breadcrumb/Breadcrumb";
-import { Logo } from "@/ui/Logo/Logo";
 import { CatalogSearch } from "./CatalogSearch";
 import { catalogTrail } from "./nav";
 import { Sidebar } from "./Sidebar";
@@ -110,8 +109,14 @@ export function CatalogShell({ children }: { children: ReactNode }) {
 
   return (
     <div className={[styles.shell, collapsed ? styles.shellCollapsed : ""].join(" ")}>
-      <header className={styles.topbar}>
-        <div className={styles.brand}>
+      <Sidebar id={menuId} ref={menuRef} drawerOpen={drawer} shortcut={shortcut} onSearch={() => setSearching(true)} />
+      {drawer && <button type="button" className={styles.scrim} aria-label="Close menu" tabIndex={-1} onClick={() => setOpen(false)} />}
+      {/* While the drawer is open the page behind it is out of reach, so Tab stays in the menu. */}
+      <main className={styles.main} inert={drawer || undefined}>
+        {/* The page opens on its own row: the menu button, the trail, and light or dark at the end. The button
+            lives here rather than in the menu because a hidden menu would take its own way back with it. The
+            Overview at / is Home itself, so it has no trail. */}
+        <div className={styles.pageBar}>
           <span ref={buttonRef} className={styles.menuButton}>
             <Button
               emphasis="minimal" size="sm" iconOnly iconStart={icon}
@@ -121,20 +126,9 @@ export function CatalogShell({ children }: { children: ReactNode }) {
               {label}
             </Button>
           </span>
-          {/* The kit Logo's symbol: the mark alone, since its default carries the BillingPlatform wordmark and the
-              catalog's own name follows it here. */}
-          <Logo type="symbol" label="BillingPlatform" />
-          <span className={styles.brandName}>Agentic BP DS</span>
+          {trail && <Breadcrumb separator="chevron" items={trail} />}
+          <span className={styles.pageBarEnd}><ThemeControls /></span>
         </div>
-        <div className={styles.topbarRight}><ThemeControls /></div>
-      </header>
-      <Sidebar id={menuId} ref={menuRef} drawerOpen={drawer} shortcut={shortcut} onSearch={() => setSearching(true)} />
-      {drawer && <button type="button" className={styles.scrim} aria-label="Close menu" tabIndex={-1} onClick={() => setOpen(false)} />}
-      {/* While the drawer is open the page behind it is out of reach, so Tab stays in the menu. */}
-      <main className={styles.main} inert={drawer || undefined}>
-        {/* The trail above the page title: Home, the side-nav section, then this page. The Overview at / is
-            Home itself, so it has none. */}
-        {trail && <div className={styles.trail}><Breadcrumb separator="chevron" items={trail} /></div>}
         {children}
       </main>
       <CatalogSearch open={searching} onClose={() => setSearching(false)} />

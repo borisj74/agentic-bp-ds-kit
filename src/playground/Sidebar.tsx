@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useId, useState, type Ref } from "react";
 import { Icon } from "@/ui/Icon/Icon";
+import { Logo } from "@/ui/Logo/Logo";
 import styles from "./shell.module.css";
 import { componentNav, foundationPages, patterns, slug } from "./nav";
 
@@ -53,6 +54,13 @@ export function Sidebar({ id, ref, drawerOpen = false, onSearch, shortcut }: { i
 
   return (
     <nav id={id} ref={ref} className={[styles.sidebar, drawerOpen ? styles.sidebarOpen : ""].join(" ")} aria-label="Catalog">
+      {/* The catalog's own name heads the menu, where a product's name sits in the kit's AppNav. The kit Logo's
+          symbol is the mark alone: its default carries the BillingPlatform wordmark, and our name follows it. */}
+      <div className={styles.sidebarBrand}>
+        <Logo type="symbol" label="BillingPlatform" />
+        <span className={styles.brandName}>Agentic BP DS</span>
+      </div>
+
       {onSearch && (
         <button type="button" className={styles.searchTrigger} onClick={onSearch}>
           <Icon name="search" size="sm" />

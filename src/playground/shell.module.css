@@ -1,27 +1,14 @@
-/* The page behind is sunken, so the content reads as a panel laid on it rather than as the page itself. The top
-   bar and the menu take no surface of their own: they sit on that same ground. */
-.shell { display: grid; grid-template-columns: 240px 1fr; grid-template-rows: 48px 1fr; min-height: 100vh; background: var(--surface-sunken); }
-/* The bar scrolls away with the page. It carries no surface of its own, so pinning it would let the content
-   show through it. */
-.topbar {
-  grid-column: 1 / -1; height: 48px;
-  display: flex; align-items: center; justify-content: space-between;
-  /* More room at the end than at the start: the brand sits behind a logo at the start, so the bar reads as
-     evenly inset only when the controls at the end are given the difference. The end matches the inset the
-     page content keeps (--space-xxlarge), so the controls line up with the content's own edge. */
-  padding: 0 var(--space-xxlarge) 0 var(--space-medium);
-}
-.topbarRight { display: flex; align-items: center; gap: var(--space-xsmall); }
-/* No line down its end: the menu and the page behind it are the same sunken ground, and the content panel's
-   own border is what the eye reads as the edge. */
+/* The page behind is sunken, so the content reads as a panel laid on it rather than as the page itself. There is
+   no bar across the top: the menu heads itself, and the page opens on its own row inside the panel. */
+.shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; background: var(--surface-sunken); }
 .sidebar {
   position: sticky; top: 0; height: 100vh; overflow-y: auto;
   background: var(--surface-sunken);
   padding: var(--space-medium) var(--space-small);
   display: flex; flex-direction: column; gap: var(--space-medium);
 }
-/* The mark and the catalog's name on one line. The mark's own frame is 32px in a 48px bar, so the row centres. */
-.brand { display: flex; align-items: center; gap: var(--space-xsmall); }
+/* The mark and the catalog's name head the menu. */
+.sidebarBrand { display: flex; align-items: center; gap: var(--space-xsmall); padding: 0 var(--space-xsmall); }
 .brandName { font-weight: var(--font-weight-semibold); color: var(--text-neutral-strong); font-size: var(--font-size-regular); }
 .group { display: flex; flex-direction: column; gap: 2px; }
 .groupTitle { margin: 0; }
@@ -61,17 +48,17 @@
   background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-subtle);
   border-radius: var(--radius-large);
 }
-/* The trail sits above the page title, inside the panel. */
-.trail { margin-bottom: var(--space-medium); }
+/* The page's own first row: the menu button, the trail, and light or dark at the end. */
+.pageBar { display: flex; align-items: center; gap: var(--space-xsmall); margin-bottom: var(--space-medium); }
+.pageBarEnd { margin-inline-start: auto; display: inline-flex; align-items: center; }
 .footer { margin-top: auto; display: flex; justify-content: space-between; align-items: center; padding: 0 var(--space-xsmall); }
-/* The brand picker is the kit Select; the topbar only sets how much room it takes. */
+/* The brand picker is the kit Select; the view bar only sets how much room it takes. */
 /* Wide enough for bp-legacy, the longest brand name, and no wider. menuWidth field keeps the menu to the same
    width instead of the Dropdown's 200px floor. */
 .brandPicker { display: inline-flex; width: 112px; }
 
 /* The menu button is always there; the sheet behind the drawer only exists on narrow screens. */
 .menuButton { display: inline-flex; align-self: center; }
-.brand { align-items: center; }
 .scrim { display: none; margin: 0; padding: 0; border: 0; }
 
 /* At 768px and wider, a hidden menu gives its column back to the page. On a phone the drawer ignores it. */
@@ -83,7 +70,6 @@
 /* Under 768px the catalog menu leaves the page's side and becomes a drawer over it, under the top bar. */
 @media (max-width: 767px) {
   .shell { grid-template-columns: minmax(0, 1fr); }
-  .topbar { padding: 0 var(--space-small); }
   /* Closed, it sits off the start edge and hidden, so Tab and screen readers skip it. */
   .sidebar {
     position: fixed; top: 0; bottom: 0; left: 0; z-index: 3; width: min(280px, 85vw); height: auto;
