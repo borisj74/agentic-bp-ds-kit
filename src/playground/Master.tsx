@@ -8,6 +8,7 @@ import styles from "./master.module.css";
 import { registry, type Props } from "./registry";
 import { ContractDocs } from "./ContractDocs";
 import { CopyPrompt } from "./CopyPrompt";
+import { BrandPicker } from "./ThemeControls";
 import { useCopy, type Copy } from "./useCopy";
 
 type PropDef = { type?: string; enum?: (string | number)[]; default?: unknown; note?: string; itemShape?: string; required?: boolean };
@@ -135,7 +136,12 @@ export function Master({ contract }: { contract: Contract }) {
               options={[{ value: "preview", label: "Preview" }, { value: "variants", label: "Variants" }]}
             />
           </div>
-          <CopyPrompt contract={contract} />
+          {/* The brand ramps paint the component on the stage, so the picker rides here rather than in the
+              catalog's top bar. */}
+          <div className={styles.viewEnd}>
+            <CopyPrompt contract={contract} />
+            <BrandPicker />
+          </div>
         </div>
       </div>
 

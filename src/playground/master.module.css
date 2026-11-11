@@ -15,6 +15,8 @@
   justify-self: stretch; width: 100%; margin-top: var(--space-xsmall);
 }
 .viewTabs { flex: 0 1 auto; min-width: 0; }
+/* The copy prompt row and the brand picker share the end of the view bar. */
+.viewEnd { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xsmall) var(--space-medium); }
 /* Copy prompt: one button per AI tool, then the plain copy. Rides on the view bar, beside Preview | Variants. */
 .copyPrompt {
   display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xsmall) var(--space-small);

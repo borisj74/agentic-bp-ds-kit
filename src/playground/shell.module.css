@@ -65,7 +65,9 @@
 .trail { margin-bottom: var(--space-medium); }
 .footer { margin-top: auto; display: flex; justify-content: space-between; align-items: center; padding: 0 var(--space-xsmall); }
 /* The brand picker is the kit Select; the topbar only sets how much room it takes. */
-.brandPicker { display: inline-flex; width: 132px; }
+/* Wide enough for bp-legacy, the longest brand name, and no wider. menuWidth field keeps the menu to the same
+   width instead of the Dropdown's 200px floor. */
+.brandPicker { display: inline-flex; width: 112px; }
 
 /* The menu button is always there; the sheet behind the drawer only exists on narrow screens. */
 .menuButton { display: inline-flex; align-self: center; }
