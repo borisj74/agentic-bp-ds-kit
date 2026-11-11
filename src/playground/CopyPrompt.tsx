@@ -34,6 +34,8 @@ export function CopyPrompt({ contract }: { contract: Contract }) {
           <Button
             key={tool.value}
             size="sm"
+            // Minimal neutral: the marks carry the row, so the buttons show their edge only on hover and focus.
+            emphasis="minimal"
             // The brand marks are not Material Symbols, so they go in as children rather than through iconStart,
             // and the name a screen reader reads comes from aria-label. The class gives the kit's icon-only width.
             className={TOOL_MARKS[tool.value] ? styles.toolButton : `${styles.toolButton} ${styles.toolButtonWord}`}
