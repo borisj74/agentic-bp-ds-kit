@@ -48,7 +48,9 @@
 /* The content panel: inset from the bar and the menu so the sunken page shows around it, and rounded at
    --radius-large, the kit's largest step. */
 .main {
-  padding: var(--space-xxlarge); min-width: 0; margin: var(--space-medium);
+  /* The page card's own edge. 64px (--grid-margin-2xl, the widest grid margin) on all four sides, so the content
+     sits well clear of the card's edge; the margin outside it keeps the card off the window. */
+  padding: var(--grid-margin-2xl); min-width: 0; margin: var(--space-medium);
   background: var(--surface-flat); border: var(--border-width-thin) solid var(--border-neutral-subtle);
   border-radius: var(--radius-large);
 }
