@@ -7,11 +7,12 @@ import { Switch } from "@/ui/Switch/Switch";
 import styles from "./master.module.css";
 import { registry, type Props } from "./registry";
 import { ContractDocs } from "./ContractDocs";
+import type { ItemShape } from "./contractRules";
 import { CopyPrompt } from "./CopyPrompt";
 import { BrandPicker } from "./ThemeControls";
 import { useCopy, type Copy } from "./useCopy";
 
-type PropDef = { type?: string; enum?: (string | number)[]; default?: unknown; note?: string; itemShape?: string; required?: boolean };
+type PropDef = { type?: string; enum?: (string | number)[]; default?: unknown; note?: string; itemShape?: ItemShape; required?: boolean };
 export interface Example {
   title: string;
   usage?: string;

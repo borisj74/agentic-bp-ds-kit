@@ -62,9 +62,32 @@ export function importLine(contract: Contract): string {
   return `import { ${contract.name} } from "${base}";`;
 }
 
+/** A contract writes an item shape either as one line of text or as a map of field name to type. */
+export type ItemShape = string | Record<string, string>;
+
+/**
+ * The type half of a shape field. A contract often writes the note into the type — "string? Material Symbols
+ * name. Shown in a tinted tile." — and the props table only has room for the type, so the prose comes off: at
+ * the "? " that ends an optional type, else where a sentence starts after it. A type with neither, like
+ * "boolean?" or a union, comes back whole.
+ */
+function fieldType(value: string): string {
+  const optional = value.indexOf("? ");
+  if (optional !== -1) return value.slice(0, optional + 1);
+  const sentence = value.match(/^(.*?)\s+[A-Z]/);
+  return sentence ? sentence[1] : value;
+}
+
+/** An item shape as one line: a written one as it stands, a map as { name: type; name: type }. */
+export function itemShapeText(shape: ItemShape): string {
+  if (typeof shape === "string") return shape;
+  const fields = Object.entries(shape).map(([name, type]) => `${name}: ${fieldType(String(type))}`);
+  return fields.length > 0 ? `{ ${fields.join("; ")} }` : "";
+}
+
 /** The notes column: the prop's own note, with an object or array prop's item shape in front of it. */
-export function propNote(p: { note?: string; itemShape?: string }): string {
-  return [p.itemShape, p.note].filter(Boolean).join(" — ");
+export function propNote(p: { note?: string; itemShape?: ItemShape }): string {
+  return [p.itemShape ? itemShapeText(p.itemShape) : "", p.note].filter(Boolean).join(" — ");
 }
 
 export const contractFile = (contract: Contract) => `contracts/${contract.name.toLowerCase()}.json`;
