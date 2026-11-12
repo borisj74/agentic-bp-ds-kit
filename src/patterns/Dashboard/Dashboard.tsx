@@ -61,12 +61,12 @@ export function Dashboard({
             <div className={styles.loadingList}>
               {Array.from({ length: Math.max(1, loadingRows) }, (_, r) => (
                 <div key={r} className={styles.loadingListRow}>
-                  <Skeleton shape="rect" width="var(--skeleton-cell)" height="var(--skeleton-cell)" label={r === 0 ? `Loading ${label ?? "dashboard"}` : ""} />
+                  <Skeleton shape="rect" animation="pulse" width="var(--skeleton-cell)" height="var(--skeleton-cell)" label={r === 0 ? `Loading ${label ?? "dashboard"}` : ""} />
                   <div className={styles.loadingLines}>
-                    <Skeleton shape="rect" height="var(--skeleton-cell)" width={BOOT_LINE[r % BOOT_LINE.length]} label="" />
-                    <Skeleton shape="rect" height="var(--skeleton-cell)" width="90%" label="" />
+                    <Skeleton shape="rect" animation="pulse" height="var(--skeleton-cell)" width={BOOT_LINE[r % BOOT_LINE.length]} label="" />
+                    <Skeleton shape="rect" animation="pulse" height="var(--skeleton-cell)" width="90%" label="" />
                   </div>
-                  <Skeleton shape="rect" height="var(--skeleton-cell)" label="" />
+                  <Skeleton shape="rect" animation="pulse" height="var(--skeleton-cell)" label="" />
                 </div>
               ))}
             </div>
@@ -74,7 +74,7 @@ export function Dashboard({
           <Section title="Charts" loading>
             <div className={styles.loadingChart}>
               {BOOT_BARS.map((h, i) => (
-                <Skeleton key={i} shape="rect" height={h} label="" />
+                <Skeleton key={i} shape="rect" animation="pulse" height={h} label="" />
               ))}
             </div>
           </Section>

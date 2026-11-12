@@ -44,27 +44,34 @@ export function AppShell({
   }, [onPageHeaderStick]);
   const mark = useStickMark(onStick);
 
+  // Booting, the whole frame is still arriving, so the bar and the rail show their own boot state too: the frame
+  // hands loading down to the kit AppHeader, AppNav and PageHeader it was given, and a screen wires nothing.
+  type LoadProps = { loading?: boolean };
+  const booting = (slot: ReactNode) =>
+    loading && isValidElement(slot) ? cloneElement(slot as ReactElement<LoadProps>, { loading: true }) : slot;
+
   // A screen that sets sticky itself keeps what it set; everything else follows the frame. Whether the bar
   // draws its own edge is settled in CSS: a page with a pinned band under the bar carries the edge there.
   type HeadProps = { sticky?: boolean };
-  const head = stickyPageHeader && isValidElement(pageHeader)
-    ? cloneElement(pageHeader as ReactElement<HeadProps>, {
-      sticky: (pageHeader as ReactElement<HeadProps>).props.sticky ?? stuck,
+  const booted = booting(pageHeader);
+  const head = stickyPageHeader && isValidElement(booted)
+    ? cloneElement(booted as ReactElement<HeadProps>, {
+      sticky: (booted as ReactElement<HeadProps>).props.sticky ?? stuck,
     })
-    : pageHeader;
+    : booted;
   return (
     // data-frame says this is the frame: panels that float out of the bar or the rail (menus, tooltips, the search
     // dropdown) keep inside it, so nothing hangs over what is beside a frame docked in a preview or a split view.
     <div className={styles.shell} data-frame="">
       {/* The bar runs the full width; the rail starts under it. */}
-      {header}
+      {booting(header)}
       {/* A full assistant covers the page and its header, but the page stays mounted under it, and the assistant
           is the same element at either size, so neither loses its state or focus when the size swaps. */}
       <div className={[styles.stage, assistant && assistantOpen && assistantSize === "full" ? styles.fullAssistant : ""].join(" ")}>
         {/* The rail column takes whatever width the nav is, so collapsed, expanded and pinned all work.
             On a phone there is no room for a column, so the nav opens over the page instead, and the page
             behind it is covered by a sheet that closes it. */}
-        {nav && <aside className={[styles.nav, navOpen ? styles.navOpen : ""].join(" ")}>{nav}</aside>}
+        {nav && <aside className={[styles.nav, navOpen ? styles.navOpen : ""].join(" ")}>{booting(nav)}</aside>}
         {nav && navOpen && onNavClose && (
           <button type="button" className={styles.scrim} aria-label="Close navigation" onClick={onNavClose} />
         )}

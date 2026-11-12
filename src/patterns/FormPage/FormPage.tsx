@@ -49,8 +49,8 @@ export function FormPage({
             <div key={col} className={styles.loadingColumn}>
               {Array.from({ length: Math.max(1, Math.ceil(loadingRows / (columns === 1 ? 1 : 2))) }, (_, r) => (
                 <div key={r} className={styles.loadingRow}>
-                  <Skeleton shape="rect" height="var(--skeleton-cell)" width={BOOT_LABEL[(r + col) % BOOT_LABEL.length]} label={r === 0 && col === 0 ? `Loading ${label ?? "form"}` : ""} />
-                  <Skeleton shape="rect" height="var(--control-medium)" label="" />
+                  <Skeleton shape="rect" animation="pulse" height="var(--skeleton-cell)" width={BOOT_LABEL[(r + col) % BOOT_LABEL.length]} label={r === 0 && col === 0 ? `Loading ${label ?? "form"}` : ""} />
+                  <Skeleton shape="rect" animation="pulse" height="var(--control-medium)" label="" />
                 </div>
               ))}
             </div>

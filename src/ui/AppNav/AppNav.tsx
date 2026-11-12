@@ -3,6 +3,7 @@ import { useId, useLayoutEffect, useRef, useState, type FocusEvent, type Keyboar
 import { Button } from "../Button/Button";
 import { Icon } from "../Icon/Icon";
 import { Tooltip } from "../Tooltip/Tooltip";
+import { Skeleton } from "../Skeleton/Skeleton";
 import styles from "./AppNav.module.css";
 
 export interface AppNavLink { id: string; label: string; href?: string }
@@ -23,11 +24,14 @@ export interface AppNavProps {
   pinned?: boolean;
   defaultPinned?: boolean;
   onPinnedChange?: (pinned: boolean) => void;
+  loading?: boolean;
   label?: string;
 }
 
 // Menus up to this many links top-align with their section; each 2 more pull the menu up one row.
 const ANCHOR = 6;
+// The widths a booting rail's label bars take, so the menu reads as a list of names rather than one block.
+const BOOT_LABELS = ["60px", "76px", "48px"];
 const isEntry = <T extends object>(e: T | AppNavDivider): e is T => !("divider" in e);
 const isGroup = (c: AppNavChild): c is AppNavGroup => isEntry<AppNavLink | AppNavGroup>(c) && "items" in c;
 const isLink = (c: AppNavChild): c is AppNavLink => isEntry<AppNavLink | AppNavGroup>(c) && !("items" in c);
@@ -39,7 +43,7 @@ const focusables = (el: HTMLElement | null) =>
 
 export function AppNav({
   items, endItems = [], current: currentProp, defaultCurrent, onNavigate, expanded = false,
-  pinned: pinnedProp, defaultPinned = false, onPinnedChange, label = "Main",
+  pinned: pinnedProp, defaultPinned = false, onPinnedChange, loading = false, label = "Main",
 }: AppNavProps) {
   const panelId = useId();
   const navRef = useRef<HTMLElement>(null);
@@ -276,6 +280,36 @@ export function AppNav({
   const titleId = `${panelId}-title`;
   // Both lists hold menus, so the widest link in either one sets the menu width.
   const menuSections = sections.filter((item) => (item.children ?? []).length > 0);
+  // Booting: the rail keeps its brand fill and its 48px rows, with an icon block and a label bar where each
+  // section's name will be. The blocks take the brand tone — the page's own white, held back — since grey on
+  // the rail would read as a hole in it. One row per section the nav was given, so nothing moves when it lands.
+  if (loading) {
+    const rows = (list: AppNavEntry[], offset: number) =>
+      list.filter((e) => isEntry<AppNavItem>(e)).map((item, i) => (
+        <li key={item.id} className={styles.bootRow}>
+          <Skeleton
+            shape="rect" tone="brand" animation="pulse"
+            width="var(--skeleton-nav-icon)" height="var(--skeleton-nav-icon)"
+            label={offset + i === 0 ? "Loading navigation" : ""}
+          />
+          {expanded && (
+            <Skeleton
+              shape="rect" tone="brand" animation="pulse"
+              width={BOOT_LABELS[(offset + i) % BOOT_LABELS.length]} height="var(--skeleton-nav-label)" label=""
+            />
+          )}
+        </li>
+      ));
+    return (
+      <nav aria-label={label} aria-busy="true" className={[styles.nav, expanded ? styles.expanded : ""].join(" ")}>
+        <div className={styles.rail}>
+          <ul className={styles.list}>{rows(items, 0)}</ul>
+          {endItems.length > 0 && <ul className={[styles.list, styles.end].join(" ")}>{rows(endItems, items.length)}</ul>}
+        </div>
+      </nav>
+    );
+  }
+
   return (
     <nav
       ref={navRef} aria-label={label}

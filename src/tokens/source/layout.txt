@@ -328,6 +328,13 @@ skeleton/list-row|{ref/size/1200}
 skeleton/list-actions|56px
 skeleton/record-row|37px
 skeleton/form-row|39px
+# The chrome's own boot blocks (BP COBALT item 1): the app header's logo is 150 x 20, its user chip 130 x 28;
+# a side-menu row is the nav's own 48, with an 18 icon block and a 10 label bar. 150, 130 and 10 are past the
+# ref scale.
+skeleton/header-logo|150px
+skeleton/header-user|130px
+skeleton/nav-icon|18px
+skeleton/nav-label|10px
 
 # Loading line (BP COBALT DSL-198): the sliding bar is 40% of the track.
 loading-line/bar|40%

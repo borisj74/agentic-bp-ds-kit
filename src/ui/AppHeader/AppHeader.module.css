@@ -165,3 +165,7 @@ button.user:focus-visible { outline: var(--border-width-medium) solid var(--outl
 @media (prefers-reduced-motion: reduce) {
   .search { transition: none; }
 }
+
+/* Booting: the search block fills the centre column, which the bar's own grid already holds at the real search
+   box's width, so nothing moves when the header arrives. */
+.loading .center > * { width: 100%; }

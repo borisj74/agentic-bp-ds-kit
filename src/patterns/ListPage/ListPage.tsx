@@ -62,16 +62,16 @@ export function ListPage({
           <div className={styles.loading} style={{ "--boot-columns": Math.max(1, loadingColumns) } as React.CSSProperties}>
             <div className={styles.loadingHead}>
               {Array.from({ length: Math.max(1, loadingColumns) }, (_, c) => (
-                <Skeleton key={c} shape="rect" height="var(--skeleton-cell)" width={BOOT_HEAD[c % BOOT_HEAD.length]} label={c === 0 ? `Loading ${label ?? "list"}` : ""} />
+                <Skeleton key={c} shape="rect" animation="pulse" height="var(--skeleton-cell)" width={BOOT_HEAD[c % BOOT_HEAD.length]} label={c === 0 ? `Loading ${label ?? "list"}` : ""} />
               ))}
               <span />
             </div>
             {Array.from({ length: Math.max(1, loadingRows) }, (_, r) => (
               <div key={r} className={styles.loadingRow}>
                 {Array.from({ length: Math.max(1, loadingColumns) }, (_, c) => (
-                  <Skeleton key={c} shape="rect" height="var(--skeleton-cell)" width={BOOT_CELL[(r + c) % BOOT_CELL.length]} label="" />
+                  <Skeleton key={c} shape="rect" animation="pulse" height="var(--skeleton-cell)" width={BOOT_CELL[(r + c) % BOOT_CELL.length]} label="" />
                 ))}
-                <Skeleton shape="rect" height="var(--skeleton-cell)" width="50%" label="" />
+                <Skeleton shape="rect" animation="pulse" height="var(--skeleton-cell)" width="50%" label="" />
               </div>
             ))}
           </div>

@@ -77,7 +77,7 @@ export function Section({
             {loading ? (
               <>
                 <span className={styles.srOnly}>{heading}</span>
-                <Skeleton shape="rect" width="var(--skeleton-title)" height="var(--font-size-regular)" label="" />
+                <Skeleton shape="rect" animation="pulse" width="var(--skeleton-title)" height="var(--font-size-regular)" label="" />
               </>
             ) : heading}
           </h2>

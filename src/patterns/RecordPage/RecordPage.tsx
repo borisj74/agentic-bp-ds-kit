@@ -39,7 +39,7 @@ export function RecordPage({
   const bootTabs = loading && tabs ? (
     <div className={styles.loadingTabs}>
       {BOOT_TABS.map((w, i) => (
-        <Skeleton key={i} shape="rect" width={w} height="var(--skeleton-cell)" label="" />
+        <Skeleton key={i} shape="rect" animation="pulse" width={w} height="var(--skeleton-cell)" label="" />
       ))}
     </div>
   ) : null;
@@ -86,9 +86,9 @@ export function RecordPage({
               {Array.from({ length: Math.max(1, Math.ceil(loadingRows / (columns === 1 ? 1 : 2))) }, (_, r) => (
                 <div key={r} className={styles.loadingRow}>
                   <span className={styles.loadingLabel}>
-                    <Skeleton shape="rect" height="var(--skeleton-cell)" width={BOOT_LABEL[(r + col) % BOOT_LABEL.length]} label={r === 0 && col === 0 ? `Loading ${label ?? "record"}` : ""} />
+                    <Skeleton shape="rect" animation="pulse" height="var(--skeleton-cell)" width={BOOT_LABEL[(r + col) % BOOT_LABEL.length]} label={r === 0 && col === 0 ? `Loading ${label ?? "record"}` : ""} />
                   </span>
-                  <Skeleton shape="rect" height="var(--skeleton-cell)" width={BOOT_VALUE[(r + col) % BOOT_VALUE.length]} label="" />
+                  <Skeleton shape="rect" animation="pulse" height="var(--skeleton-cell)" width={BOOT_VALUE[(r + col) % BOOT_VALUE.length]} label="" />
                 </div>
               ))}
             </div>

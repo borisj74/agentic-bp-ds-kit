@@ -218,7 +218,7 @@ export function Toolbar({
   // block of its width — nothing inside a button, so a skeleton never pretends to have words in it.
   if (loading) {
     const pill = (key: string, width: number | string) => (
-      <Skeleton key={key} shape="rect" width={width} height="var(--control-small)" label="" />
+      <Skeleton key={key} shape="rect" tone="band" animation="pulse" width={width} height="var(--control-small)" label="" />
     );
     return (
       <div className={[styles.toolbar, buttons === "subtle" ? styles.subtle : "", styles.loading].join(" ")} role="group" aria-label={label} aria-busy="true">

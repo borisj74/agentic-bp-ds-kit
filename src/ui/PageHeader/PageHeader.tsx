@@ -70,11 +70,11 @@ export function PageHeader({
           // The name is still read out, so the page has a heading before anything arrives; the bars stand in
           // for what it will say.
           <>
-            <Skeleton shape="rect" width="var(--skeleton-crumbs)" height="var(--skeleton-cell)" label="" />
+            <Skeleton shape="rect" animation="pulse" width="var(--skeleton-crumbs)" height="var(--skeleton-cell)" label="" />
             <div className={styles.titleRow}>
-              {icon && <Skeleton shape="rect" width="var(--icon-size-large)" height="var(--icon-size-large)" label="" />}
+              {icon && <Skeleton shape="rect" animation="pulse" width="var(--icon-size-large)" height="var(--icon-size-large)" label="" />}
               <h1 className={styles.srOnly}>{heading}</h1>
-              <Skeleton shape="rect" width="var(--skeleton-title)" height="var(--font-size-large)" label="" />
+              <Skeleton shape="rect" animation="pulse" width="var(--skeleton-title)" height="var(--font-size-large)" label="" />
             </div>
           </>
         ) : sticky ? (

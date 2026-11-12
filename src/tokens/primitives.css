@@ -1507,6 +1507,10 @@
   --skeleton-list-actions: 56px;
   --skeleton-record-row: 37px;
   --skeleton-form-row: 39px;
+  --skeleton-header-logo: 150px;
+  --skeleton-header-user: 130px;
+  --skeleton-nav-icon: 18px;
+  --skeleton-nav-label: 10px;
   --loading-line-bar: 40%;
   --stepper-step: 100px;
   --stepper-node-sm: var(--ref-size-700);
