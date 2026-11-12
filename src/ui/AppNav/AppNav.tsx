@@ -7,7 +7,9 @@ import styles from "./AppNav.module.css";
 
 export interface AppNavLink { id: string; label: string; href?: string }
 export interface AppNavDivider { divider: true }
-export type AppNavChild = AppNavLink | AppNavDivider;
+/** A named folder of links inside a menu. Pinned, its header collapses the folder; in a flyout it is a label. */
+export interface AppNavGroup { label: string; items: AppNavLink[] }
+export type AppNavChild = AppNavLink | AppNavGroup | AppNavDivider;
 export interface AppNavItem { id: string; label: string; icon: string; href?: string; children?: AppNavChild[] }
 export type AppNavEntry = AppNavItem | AppNavDivider;
 
@@ -27,7 +29,11 @@ export interface AppNavProps {
 // Menus up to this many links top-align with their section; each 2 more pull the menu up one row.
 const ANCHOR = 6;
 const isEntry = <T extends object>(e: T | AppNavDivider): e is T => !("divider" in e);
-const linksOf = (item: AppNavItem) => (item.children ?? []).filter(isEntry<AppNavLink>);
+const isGroup = (c: AppNavChild): c is AppNavGroup => isEntry<AppNavLink | AppNavGroup>(c) && "items" in c;
+const isLink = (c: AppNavChild): c is AppNavLink => isEntry<AppNavLink | AppNavGroup>(c) && !("items" in c);
+/** Every link in a menu, groups flattened: what a section click opens and what the sizer measures. */
+const linksOf = (item: AppNavItem) =>
+  (item.children ?? []).flatMap((c) => (isGroup(c) ? c.items : isLink(c) ? [c] : []));
 const focusables = (el: HTMLElement | null) =>
   [...(el?.querySelectorAll<HTMLElement>("a[href], button:not([tabindex='-1'])") ?? [])];
 
@@ -46,6 +52,8 @@ export function AppNav({
   // openId: the section whose menu is out. shownId keeps its links on screen while the menu rolls back in.
   const [openId, setOpenId] = useState<string | null>(null);
   const [shownId, setShownId] = useState<string | null>(null);
+  // Which groups are folded away. Pinned only, and only for this visit: opening another menu or closing one drops it.
+  const [collapsed, setCollapsed] = useState<string[]>([]);
   const current = currentProp ?? innerCurrent;
   const pinned = pinnedProp ?? innerPinned;
 
@@ -57,8 +65,14 @@ export function AppNav({
   const menuItem = byId(shownId) ?? (pinned ? docked : undefined);
   const menuOpen = Boolean(menuItem) && (pinned || openId !== null);
 
-  const open = (id: string) => { setOpenId(id); setShownId(id); };
-  const close = () => setOpenId(null);
+  const open = (id: string) => {
+    if (id !== shownId) setCollapsed([]);
+    setOpenId(id);
+    setShownId(id);
+  };
+  const close = () => { setOpenId(null); setCollapsed([]); };
+  const toggleGroup = (key: string) =>
+    setCollapsed((c) => (c.includes(key) ? c.filter((k) => k !== key) : [...c, key]));
   const setPinned = (next: boolean) => {
     if (pinnedProp === undefined) setInnerPinned(next);
     onPinnedChange?.(next);
@@ -86,7 +100,8 @@ export function AppNav({
         const maxBottom = Math.min(n.height, window.innerHeight - n.top);
         const natural = panel.offsetHeight - list.clientHeight + list.scrollHeight;
         const rowTop = row ? row.getBoundingClientRect().top - n.top : 0;
-        const shift = Math.max(0, Math.ceil((linksOf(menuItem).length - ANCHOR) / 2)) * (row?.offsetHeight ?? 0);
+        const rows = linksOf(menuItem).length + (menuItem.children ?? []).filter(isGroup).length;
+        const shift = Math.max(0, Math.ceil((rows - ANCHOR) / 2)) * (row?.offsetHeight ?? 0);
         let top = Math.max(minTop, rowTop - shift);
         if (top + natural > maxBottom) top = Math.max(minTop, maxBottom - natural);
         panel.style.top = `${top}px`;
@@ -143,6 +158,14 @@ export function AppNav({
     open(item.id);
     focusFirst.current = e.detail === 0;
   };
+  // Expanded there is no cascade button, so the section row itself opens the menu from the keyboard: Enter opens it
+  // and moves focus into it, instead of following the link. A mouse click still opens the section's first page.
+  const onSectionKey = (item: AppNavItem) => (e: KeyboardEvent) => {
+    if (e.key !== "Enter" || e.defaultPrevented) return;
+    e.preventDefault();
+    if (openId === item.id) listRef.current?.querySelector<HTMLElement>("a, button")?.focus();
+    else { focusFirst.current = true; open(item.id); }
+  };
   const onLinkClick = (link: AppNavLink) => () => {
     navigate(link.id);
     if (!pinned) close();
@@ -182,21 +205,63 @@ export function AppNav({
     if (!pinned && !navRef.current?.contains(e.relatedTarget as Node | null)) close();
   };
 
+  const renderLink = (link: AppNavLink) => (
+    link.href ? (
+      <a href={link.href} className={styles.link} aria-current={current === link.id ? "page" : undefined} onClick={onLinkClick(link)}>{link.label}</a>
+    ) : (
+      <button type="button" className={styles.link} aria-current={current === link.id ? "page" : undefined} onClick={onLinkClick(link)}>{link.label}</button>
+    )
+  );
+
+  // A named folder: the rule it sits on, a 12px label on the links' own inset, and, pinned only, a chevron at the
+  // far right that folds the links away. A flyout shows the rule and the label and nothing collapses.
+  const renderGroup = (sectionId: string, group: AppNavGroup, i: number) => {
+    const key = `${sectionId}::${group.label}`;
+    const groupOpen = !pinned || !collapsed.includes(key);
+    const listId = `${panelId}-group-${i}`;
+    const labelId = `${listId}-label`;
+    return (
+      <li key={`group-${i}`} className={styles.group}>
+        <div className={styles.groupHeader}>
+          <span id={labelId} className={styles.groupLabel}>{group.label}</span>
+          {pinned && (
+            <Button
+              emphasis="minimal" size="sm" iconOnly className={styles.groupToggle}
+              iconStart={groupOpen ? "expand_more" : "chevron_right"}
+              aria-expanded={groupOpen} aria-controls={listId} onClick={() => toggleGroup(key)}
+            >
+              {group.label}
+            </Button>
+          )}
+        </div>
+        <ul id={listId} className={styles.groupLinks} aria-labelledby={labelId} hidden={!groupOpen}>
+          {group.items.map((link) => <li key={link.id}>{renderLink(link)}</li>)}
+        </ul>
+      </li>
+    );
+  };
+
   const renderSection = (item: AppNavItem) => {
     const hasMenu = Boolean(item.children?.length);
+    // The cascade chevron belongs to the icon rail. Expanded, the row itself is the way into the menu.
+    const hasCascade = hasMenu && !expanded;
     const href = linksOf(item)[0]?.href ?? item.href;
     const cls = [styles.section, currentSection?.id === item.id ? styles.current : "", menuOpen && menuItem?.id === item.id ? styles.open : ""].join(" ");
     const content = (<><Icon name={item.icon} size="lg" /><span className={styles.label}>{item.label}</span></>);
+    // Expanded, the row carries what the cascade button carried: the menu's state, and the keyboard way in.
+    const menuAttrs = hasMenu && !hasCascade
+      ? { "data-cascade": item.id, "aria-expanded": menuOpen && menuItem?.id === item.id, "aria-controls": panelId, onKeyDown: onSectionKey(item) }
+      : {};
     const link = href ? (
-      <a href={href} className={cls} aria-current={current === item.id ? "page" : undefined} onClick={onSectionClick(item)}>{content}</a>
+      <a href={href} className={cls} aria-current={current === item.id ? "page" : undefined} onClick={onSectionClick(item)} {...menuAttrs}>{content}</a>
     ) : (
-      <button type="button" className={cls} aria-current={current === item.id ? "page" : undefined} onClick={onSectionClick(item)}>{content}</button>
+      <button type="button" className={cls} aria-current={current === item.id ? "page" : undefined} onClick={onSectionClick(item)} {...menuAttrs}>{content}</button>
     );
     return (
       <li key={item.id} className={styles.row} data-section={item.id} onPointerEnter={onSectionEnter(item)}>
         {/* Collapsed icons without a menu name themselves in a Tooltip; sections with a menu show it instead. */}
         {hasMenu ? link : <Tooltip content={item.label} position="right" disabled={expanded}>{link}</Tooltip>}
-        {hasMenu && (
+        {hasCascade && (
           <button
             type="button" className={styles.cascade} data-cascade={item.id} aria-label={`${item.label} menu`}
             aria-expanded={menuOpen && menuItem?.id === item.id} aria-controls={panelId} onClick={onCascade(item)}
@@ -232,7 +297,8 @@ export function AppNav({
           {menuSections.map((item) => (
             <div key={item.id}>
               <span className={styles.sizerTitle}>{item.label}</span>
-              {(item.children ?? []).filter(isEntry<AppNavLink>).map((c) => <span key={c.id} className={styles.link}>{c.label}</span>)}
+              {(item.children ?? []).filter(isGroup).map((g) => <span key={g.label} className={styles.sizerGroup}>{g.label}</span>)}
+              {linksOf(item).map((c) => <span key={c.id} className={styles.link}>{c.label}</span>)}
             </div>
           ))}
         </div>
@@ -254,15 +320,11 @@ export function AppNav({
               <Icon name="expand_less" size="md" />
             </button>
             <ul ref={listRef} className={styles.links} aria-labelledby={titleId}>
-              {(menuItem.children ?? []).map((c, i) => isEntry<AppNavLink>(c) ? (
-                <li key={c.id}>
-                  {c.href ? (
-                    <a href={c.href} className={styles.link} aria-current={current === c.id ? "page" : undefined} onClick={onLinkClick(c)}>{c.label}</a>
-                  ) : (
-                    <button type="button" className={styles.link} aria-current={current === c.id ? "page" : undefined} onClick={onLinkClick(c)}>{c.label}</button>
-                  )}
-                </li>
-              ) : <li key={`divider-${i}`} aria-hidden="true" className={styles.linkDivider} />)}
+              {(menuItem.children ?? []).map((c, i) => {
+                if (isLink(c)) return <li key={c.id}>{renderLink(c)}</li>;
+                if (isGroup(c)) return renderGroup(menuItem.id, c, i);
+                return <li key={`divider-${i}`} aria-hidden="true" className={styles.linkDivider} />;
+              })}
             </ul>
             <button type="button" tabIndex={-1} aria-hidden="true" className={[styles.overflow, styles.down].join(" ")} onClick={() => scrollList(1)}>
               <Icon name="expand_more" size="md" />

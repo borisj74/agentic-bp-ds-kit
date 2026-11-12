@@ -2125,7 +2125,7 @@ export const registry: Record<string, Entry> = {
     preview: { items: "{sections}", endItems: "{endSections}" },
     hide: ["pinned"],
     snippet: { onNavigate: "{openPage}" },
-    hint: "Hover a section for its menu; click one to open its first page. Toggle expanded for labels and default pinned to dock the menu. Tab and Enter work too.",
+    hint: "Hover a section for its menu; click one to open its first page. Toggle expanded for labels and default pinned to dock the menu. Tab and Enter work too: expanded, Enter on a section opens its menu. AR's menu is grouped — pinned, each group header collapses its links; hovered, it is the rule and the name alone.",
     block: true,
     wide: true,
     card: (

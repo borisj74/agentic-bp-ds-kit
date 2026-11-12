@@ -76,6 +76,12 @@
 /* The sizer is measured, never seen: no height of its own, and the menu above it covers the cell. */
 .sizer { grid-area: stack; height: 0; overflow: hidden; visibility: hidden; }
 /* The title row carries the pin button too, so the sizer keeps room for it. */
+/* A group header is measured too: its label plus the collapse button's column. */
+.sizerGroup {
+  display: block; box-sizing: border-box;
+  padding: 0 calc(var(--space-xsmall) * 2 + var(--control-small)) 0 var(--space-medium);
+  font-size: var(--font-size-xsmall); font-weight: var(--font-weight-semibold);
+}
 .sizerTitle {
   display: block; box-sizing: border-box;
   padding: 0 calc(var(--space-xsmall) * 2 + var(--control-small)) 0 var(--space-medium);
@@ -105,6 +111,26 @@
 .link[aria-current="page"]:hover { background: var(--bg-neutral-min-selected-hover); }
 .link:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(var(--border-width-medium) * -1); }
 .linkDivider { height: var(--border-width-thin); background: var(--border-neutral); }
+
+/* Named folder inside a menu (Figma 1953:85844). The header sits on the rule that parts it from the group above:
+   the 1px rule, 4px of top padding, then a 28px row — 32px over the rule. The first group in a menu has no rule;
+   the menu header's own border already parts it. */
+.group { border-top: var(--border-width-thin) solid var(--border-neutral); padding-top: var(--space-xxsmall); }
+.links > .group:first-child { border-top: 0; }
+.groupHeader {
+  box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: var(--space-xsmall);
+  /* The label keeps the links' 16px inset — a group does not indent its links. The control sits at the far right,
+     in the same column as the menu header's pin. */
+  height: var(--control-small); padding: 0 var(--space-xsmall) 0 var(--space-medium);
+}
+/* Quiet on purpose: initial caps as authored, never uppercased, so a header does not pull attention off the links. */
+.groupLabel {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: var(--font-size-xsmall); font-weight: var(--font-weight-semibold); line-height: var(--line-height-tight);
+  color: var(--text-neutral-subtle);
+}
+.groupToggle { flex: none; }
+.groupLinks { margin: 0; padding: 0; list-style: none; }
 
 /* Overflow rows (Figma 1409:71803): 28px, a chevron, shown only when there is more to scroll to. */
 .overflow {
