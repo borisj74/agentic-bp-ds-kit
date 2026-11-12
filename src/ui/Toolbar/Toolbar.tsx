@@ -11,6 +11,7 @@ import { Dropdown, type DropdownEntry, type DropdownItem } from "../Dropdown/Dro
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 import { Icon } from "../Icon/Icon";
 import { Input } from "../Input/Input";
+import { Skeleton } from "../Skeleton/Skeleton";
 // The search trigger reuses Input's small field box, so it looks like the plain search field.
 import field from "../Input/Input.module.css";
 import { Tooltip } from "../Tooltip/Tooltip";
@@ -47,6 +48,7 @@ export interface ToolbarProps {
   onMoreSelect?: (id: string) => void;
   actions?: ReactNode;
   buttons?: ToolbarButtons;
+  loading?: boolean;
   label?: string;
 }
 
@@ -72,7 +74,7 @@ function foldActions(actions: ReactNode): FoldedAction[] | null {
 export function Toolbar({
   filters, filterCount = 0, filtersOpen: openProp, defaultFiltersOpen = false, onFiltersOpenChange, onReset, onApply, filterHelp,
   searchValue, onSearchChange, searchPlaceholder = "Search in list", searchGroups, onSearchSelect, onSearchViewAll, field: control, selectedCount = 0,
-  views = [], view: viewProp, onViewChange, onRefresh, moreActions, onMoreSelect, actions, buttons = "raised", label = "List tools",
+  views = [], view: viewProp, onViewChange, onRefresh, moreActions, onMoreSelect, actions, buttons = "raised", loading = false, label = "List tools",
 }: ToolbarProps) {
   const barId = useId();
   const density = usePortalDensity(); // the portalled popup keeps the surrounding Density
@@ -211,6 +213,32 @@ export function Toolbar({
       {actions}
     </>
   );
+
+  // Booting: the bar keeps its own band, height and rhythm, and every control it was given stands as a plain
+  // block of its width — nothing inside a button, so a skeleton never pretends to have words in it.
+  if (loading) {
+    const pill = (key: string, width: number | string) => (
+      <Skeleton key={key} shape="rect" width={width} height="var(--control-small)" label="" />
+    );
+    return (
+      <div className={[styles.toolbar, buttons === "subtle" ? styles.subtle : "", styles.loading].join(" ")} role="group" aria-label={label} aria-busy="true">
+        <div className={styles.bar}>
+          <div className={styles.start}>
+            {filters && pill("filters", "var(--toolbar-filters-skeleton)")}
+            {hasSearch && pill("search", "var(--toolbar-search)")}
+            {views.length > 0 && pill("views", "var(--toolbar-views-skeleton)")}
+            {onRefresh && pill("refresh", "var(--control-small)")}
+          </div>
+          {hasEnd && (
+            <div className={styles.end}>
+              {moreActions && moreActions.length > 0 && pill("more", "var(--toolbar-more-skeleton)")}
+              {Children.toArray(actions).map((_, i) => pill(`action-${i}`, "var(--toolbar-action-skeleton)"))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={[styles.toolbar, buttons === "subtle" ? styles.subtle : ""].join(" ")} role="group" aria-label={label}>

@@ -1,8 +1,13 @@
 "use client";
 import type { ReactNode } from "react";
 import { useStickyBand } from "../band";
+import { Section } from "@/ui/Section/Section";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
 import styles from "./Dashboard.module.css";
+
+// The widths and heights a booting Home takes: a few rows of a message list, and one chart's bars.
+const BOOT_LINE = ["45%", "60%", "35%", "55%", "40%"];
+const BOOT_BARS = [48, 84, 60, 108, 72, 128];
 
 export type DashboardState = "ready" | "loading" | "empty";
 
@@ -15,7 +20,7 @@ export interface DashboardProps {
   stickyToolbar?: boolean;
   state?: DashboardState;
   empty?: ReactNode;
-  loadingTiles?: number;
+  loadingRows?: number;
   label?: string;
 }
 
@@ -24,7 +29,7 @@ export interface DashboardProps {
 // blueprint only: it composes kit pieces and keeps no state of its own. It sits in the AppShell page, under
 // the PageHeader, which owns the page padding.
 export function Dashboard({
-  children, toolbar, meta, name, stickyToolbar = true, state = "ready", empty, loadingTiles = 3, label,
+  children, toolbar, meta, name, stickyToolbar = true, state = "ready", empty, loadingRows = 5, label,
 }: DashboardProps) {
   const groups = state === "ready";
   // The bar is the band that holds at the top: the shared plumbing measures it and says where a Table in the
@@ -46,14 +51,33 @@ export function Dashboard({
           tables never repeat it. */}
       {meta && <p className={styles.meta}>{meta}</p>}
       {/* Which dashboard this is: a heading, not a control. Switching between saved ones is the bar's job. */}
-      {name && <h2 className={["text-heading-xl", styles.name].join(" ")}>{name}</h2>}
+      {name && state !== "loading" && <h2 className={["text-heading-xl", styles.name].join(" ")}>{name}</h2>}
       {groups && children}
       {state === "loading" && (
-        // Blocks in the shape of the groups, so the page keeps its height until the numbers arrive.
-        <div className={styles.loading}>
-          {Array.from({ length: Math.max(1, loadingTiles) }, (_, i) => (
-            <Skeleton key={i} shape="rect" height={200} label={i === 0 ? `Loading ${label ?? "dashboard"}` : "Loading"} />
-          ))}
+        // Booting (BP COBALT item 1, screen 55): the two blocks Home lands on — the rows of a message list and
+        // one chart — side by side in the kit's split, which stacks them when there is no room for two.
+        <div className="layout-split">
+          <Section title={label ?? "Dashboard"} loading>
+            <div className={styles.loadingList}>
+              {Array.from({ length: Math.max(1, loadingRows) }, (_, r) => (
+                <div key={r} className={styles.loadingListRow}>
+                  <Skeleton shape="rect" width="var(--skeleton-cell)" height="var(--skeleton-cell)" label={r === 0 ? `Loading ${label ?? "dashboard"}` : ""} />
+                  <div className={styles.loadingLines}>
+                    <Skeleton shape="rect" height="var(--skeleton-cell)" width={BOOT_LINE[r % BOOT_LINE.length]} label="" />
+                    <Skeleton shape="rect" height="var(--skeleton-cell)" width="90%" label="" />
+                  </div>
+                  <Skeleton shape="rect" height="var(--skeleton-cell)" label="" />
+                </div>
+              ))}
+            </div>
+          </Section>
+          <Section title="Charts" loading>
+            <div className={styles.loadingChart}>
+              {BOOT_BARS.map((h, i) => (
+                <Skeleton key={i} shape="rect" height={h} label="" />
+              ))}
+            </div>
+          </Section>
         </div>
       )}
       {state === "empty" && empty && <div className={styles.blank}>{empty}</div>}

@@ -70,3 +70,19 @@
 .summary { min-width: 0; }
 /* The sections of details, one under the other. */
 .details { display: flex; flex-direction: column; gap: var(--layout-gutter-lg); min-width: 0; }
+
+/* Booting (BP COBALT item 1, screen 56): the tab strip as bars, then the record's label and value rows 37px
+   apart, in the columns the record already sets. Nothing here is a block of its own: it is the shape the
+   details will take once they arrive. */
+.loadingTabs { display: flex; align-items: center; gap: var(--space-large); padding-block: var(--space-small); }
+.loadingOne, .loadingColumn { display: flex; flex-direction: column; min-width: 0; }
+.loadingRow {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: center; gap: var(--space-medium);
+  height: var(--skeleton-record-row); min-width: 0;
+  border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
+}
+/* The label cell is shaded, the way a read-only record's labels are. */
+.loadingLabel {
+  display: flex; align-items: center; justify-content: flex-end; min-width: 0; align-self: stretch;
+  padding-inline: var(--space-small); background: var(--bg-neutral-faint);
+}

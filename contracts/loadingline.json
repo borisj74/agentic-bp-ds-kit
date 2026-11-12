@@ -1,0 +1,77 @@
+{
+  "name": "LoadingLine",
+  "path": "src/ui/LoadingLine/LoadingLine.tsx",
+  "intent": "A 2px line with a short brand bar sliding across it, saying a whole page or panel is still arriving when there is no amount done to report.",
+  "usage": "Use LoadingLine for a page that is booting: AppShell draws it over the content column, level with the top of the side nav, where it rides the app header's edge, and the page under it is the boot skeleton. It is one component: loading turns it on, track line draws the faint brand track behind the bar and track none drops it where the line sits on an existing border, and label is what screen readers hear. It never shows how far along the load is. For an amount done, use Meter; for the legacy 20px bar, use ProgressBar; for a short wait in one spot, use Spinner; for the shape of the content itself, use Skeleton. See contracts/loadingline.json for the full contract.",
+  "props": {
+    "loading": {
+      "type": "boolean",
+      "default": true,
+      "note": "Off draws nothing at all. The line is 2px, so turning it off moves nothing that was not already level with a border."
+    },
+    "track": {
+      "enum": [
+        "line",
+        "none"
+      ],
+      "default": "line",
+      "note": "line: the faint brand track behind the bar. none: no track, for a line laid over an existing border, which would otherwise read as two."
+    },
+    "label": {
+      "type": "string",
+      "default": "Loading",
+      "note": "What is loading, for screen readers, like Loading account. One per page: the boot skeleton under it is labelled too, so give the quieter one an empty label."
+    }
+  },
+  "useWhen": [
+    "A page is booting and the skeleton of it is showing underneath.",
+    "A panel or a view is being replaced wholesale and the wait has no known end."
+  ],
+  "doNot": [
+    "Do not use it when the amount done is known. Use Meter.",
+    "Do not use it as the legacy 20px determinate bar. Use ProgressBar.",
+    "Do not use it for a short wait in one spot, like a refreshing panel. Use Spinner.",
+    "Do not use it in place of the content's own shapes. Use Skeleton.",
+    "Do not put more than one on a page.",
+    "Do not invent a local 2px loading bar, top progress line or page loader.",
+    "Do not use raw hex."
+  ],
+  "a11y": [
+    "role progressbar with no value, which is how an indeterminate wait is reported; the label names what is loading.",
+    "The bar itself is hidden from screen readers.",
+    "No motion when the person prefers reduced motion: the bar goes and the line breathes in place instead."
+  ],
+  "snippet": "<LoadingLine loading={booting} track=\"none\" label=\"Loading account\" />",
+  "examples": [
+    {
+      "title": "Track",
+      "usage": "line keeps the faint brand track behind the bar; none drops it, for a line that rides an existing border.",
+      "items": [
+        {
+          "props": {
+            "track": "line"
+          },
+          "caption": "line"
+        },
+        {
+          "props": {
+            "track": "none"
+          },
+          "caption": "none"
+        }
+      ]
+    },
+    {
+      "title": "Off",
+      "usage": "loading off draws nothing: the page has arrived.",
+      "items": [
+        {
+          "props": {
+            "loading": false
+          },
+          "caption": "loading off"
+        }
+      ]
+    }
+  ]
+}

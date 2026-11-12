@@ -5,6 +5,11 @@ import { Skeleton } from "@/ui/Skeleton/Skeleton";
 import { useStickyBand } from "../band";
 import styles from "./ListPage.module.css";
 
+// The widths the bars take across a booting list, so the rows read as data rather than a block of grey. They
+// cycle by row and column, the way the Cobalt screen's do.
+const BOOT_HEAD = ["60%", "70%", "55%", "65%", "60%"];
+const BOOT_CELL = ["55%", "85%", "70%", "45%", "75%", "60%"];
+
 export type ListPageState = "ready" | "loading" | "empty" | "error";
 
 export interface ListPageProps {
@@ -19,6 +24,7 @@ export interface ListPageProps {
   error?: string;
   onRetry?: () => void;
   loadingRows?: number;
+  loadingColumns?: number;
   label?: string;
 }
 
@@ -26,7 +32,7 @@ export interface ListPageProps {
 // Skeleton or Callout standing in for the rows while there are none. A blueprint only: it composes kit
 // pieces and keeps no state of its own. It sits in the AppShell page, which owns the page padding.
 export function ListPage({
-  children, toolbar, meta, pagination, bulk, state = "ready", empty, error, onRetry, loadingRows = 6, label,
+  children, toolbar, meta, pagination, bulk, state = "ready", empty, error, onRetry, loadingRows = 12, loadingColumns = 5, label,
 }: ListPageProps) {
   const rows = state === "ready";
   // The bar over the rows is the band that holds at the top of the page: the shared plumbing measures it,
@@ -51,9 +57,23 @@ export function ListPage({
       <div className={styles.body}>
         {rows && children}
         {state === "loading" && (
-          // Lines in the shape of the rows, so the page keeps its height until they arrive.
-          <div className={styles.loading}>
-            <Skeleton shape="text" lines={Math.max(1, loadingRows)} label={`Loading ${label ?? "list"}`} />
+          // The shape of the real list, so the page keeps its height until the rows arrive: a 40px row of column
+          // names over 44px rows, each ending in the Actions column (BP COBALT item 1, screen 03).
+          <div className={styles.loading} style={{ "--boot-columns": Math.max(1, loadingColumns) } as React.CSSProperties}>
+            <div className={styles.loadingHead}>
+              {Array.from({ length: Math.max(1, loadingColumns) }, (_, c) => (
+                <Skeleton key={c} shape="rect" height="var(--skeleton-cell)" width={BOOT_HEAD[c % BOOT_HEAD.length]} label={c === 0 ? `Loading ${label ?? "list"}` : ""} />
+              ))}
+              <span />
+            </div>
+            {Array.from({ length: Math.max(1, loadingRows) }, (_, r) => (
+              <div key={r} className={styles.loadingRow}>
+                {Array.from({ length: Math.max(1, loadingColumns) }, (_, c) => (
+                  <Skeleton key={c} shape="rect" height="var(--skeleton-cell)" width={BOOT_CELL[(r + c) % BOOT_CELL.length]} label="" />
+                ))}
+                <Skeleton shape="rect" height="var(--skeleton-cell)" width="50%" label="" />
+              </div>
+            ))}
           </div>
         )}
         {state === "empty" && empty && <div className={styles.blank}>{empty}</div>}

@@ -53,7 +53,7 @@ const tabs: MotionTab[] = [
     })) },
     { title: "Easing", note: "Played at 400ms so the curve is easy to see.", tiles: ([
       ["linear", "constant speed"], ["in", "accelerate · avoid for enter"], ["out", "responsive enter"], ["in-out", "on-screen morph"],
-      ["standard", "default UI · ease-out"], ["emphasized", "drawer and modal"], ["spring", "subtle overshoot"], ["spring-soft", "softer overshoot · modal"],
+      ["standard", "default UI · ease-out"], ["emphasized", "drawer and modal"], ["spring", "subtle overshoot"], ["spring-soft", "softer overshoot · modal"], ["slide", "the loading line's pass"],
     ] as const).map(([k, d]) => ({ label: `ease-${k}`, meta: d, duration: "--motion-duration-500", ease: `--motion-ease-${k}`, copy: `var(--motion-ease-${k})`, mono: true })) },
   ] },
 ];

@@ -1,5 +1,6 @@
 "use client";
 import { cloneElement, isValidElement, useCallback, useState, type ReactElement, type ReactNode } from "react";
+import { LoadingLine } from "@/ui/LoadingLine/LoadingLine";
 import { useStickMark } from "../stick";
 import styles from "./AppShell.module.css";
 
@@ -19,6 +20,8 @@ export interface AppShellProps {
   assistantOpen?: boolean;
   assistantSize?: AppShellAssistantSize;
   width?: AppShellWidth;
+  loading?: boolean;
+  loadingLabel?: string;
 }
 
 // The frame a product screen sits in: the kit AppHeader across the top, the kit AppNav under it down the side,
@@ -27,7 +30,7 @@ export interface AppShellProps {
 // and the gap between Sections come from the layout tokens, not from the screen.
 export function AppShell({
   children, header, nav, navOpen = false, onNavClose, pageHeader, stickyPageHeader = true, onPageHeaderStick,
-  assistant, assistantOpen = false, assistantSize = "panel", width = "full",
+  assistant, assistantOpen = false, assistantSize = "panel", width = "full", loading = false, loadingLabel = "Loading page",
 }: AppShellProps) {
   // A reading column is the same container the layout classes use elsewhere.
   const page = width === "full" ? children : <div className={`layout-container-${width}`}>{children}</div>;
@@ -65,8 +68,21 @@ export function AppShell({
         {nav && navOpen && onNavClose && (
           <button type="button" className={styles.scrim} aria-label="Close navigation" onClick={onNavClose} />
         )}
+        {/* The content column: the page, with the boot line laid over its top edge. A column of its own, so the
+            line spans the content and nothing else — it starts where the rail ends and stops at the assistant. */}
+        <div className={styles.column}>
+          {/* The page is still arriving: the 2px line sits level with the top of the rail, riding the bar's own
+              edge, so it has no track of its own and adds no height. */}
+          {loading && (
+            <div className={styles.loadingLine}>
+              <LoadingLine track="none" label={loadingLabel} />
+            </div>
+          )}
         {/* Only the page scrolls, so a sticky page header sticks and the bar and the rail stay put. */}
-        <main className={["layout-content", styles.page, pageHeader && stickyPageHeader ? styles.pinnedHead : ""].join(" ")}>
+        <main
+          className={["layout-content", styles.page, pageHeader && stickyPageHeader ? styles.pinnedHead : ""].join(" ")}
+          aria-busy={loading || undefined}
+        >
           {/* The page header stays at the top while the page scrolls under it. It pins flush to the top edge
               of the page rather than one inset below it, so no strip of page shows above the bar. */}
           {pageHeader && (
@@ -77,6 +93,7 @@ export function AppShell({
           )}
           {page}
         </main>
+        </div>
         {assistant && assistantOpen && <aside className={styles.assistant} aria-label="Assistant">{assistant}</aside>}
       </div>
     </div>

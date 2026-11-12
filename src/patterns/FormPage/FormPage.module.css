@@ -35,3 +35,11 @@
 
 /* The Form, then any related list after it, one section gap apart. */
 .fields { display: flex; flex-direction: column; gap: var(--layout-gutter-lg); min-width: 0; }
+
+/* Booting (BP COBALT item 1, screen 56): the fields in the rhythm the real form has — one row every 39px, the
+   label ending 16px before its input — in the columns the page already sets. */
+.loadingOne, .loadingColumn { display: flex; flex-direction: column; min-width: 0; }
+.loadingRow {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: center;
+  column-gap: var(--space-medium); height: var(--skeleton-form-row); min-width: 0;
+}

@@ -705,6 +705,20 @@
       ]
     },
     {
+      "name": "LoadingLine",
+      "contract": "contracts/loadingline.json",
+      "category": "feedback",
+      "tags": [
+        "loading line",
+        "indeterminate",
+        "page load",
+        "boot",
+        "top progress",
+        "2px line",
+        "busy"
+      ]
+    },
+    {
       "name": "Logo",
       "contract": "contracts/logo.json",
       "category": "brand",

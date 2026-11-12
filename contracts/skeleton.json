@@ -29,7 +29,7 @@
     },
     "width": {
       "type": "string | number",
-      "note": "Any CSS width, or px. Text and blocks fill the width by default; circles are square."
+      "note": "Any CSS width, or px. It sits on the skeleton itself, so one given a width keeps it in a row beside other things. Text and blocks fill the width they are given by default; circles are square."
     },
     "height": {
       "type": "string | number",

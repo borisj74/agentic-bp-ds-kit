@@ -26,10 +26,12 @@ export function Skeleton({
 }: SkeletonProps) {
   if (!loading) return <>{children}</>;
   const count = shape === "text" ? Math.max(Math.floor(lines), 1) : 1;
-  // A circle stays round: its width sets both sides.
-  const box: CSSProperties = shape === "circle" ? { width: px(width), height: px(width) } : { width: px(width), height: px(height) };
+  // A circle stays round: its width sets both sides. Every other shape takes its width on the wrapper, not on
+  // the shape inside it, so a skeleton given a width keeps it in a row beside other things instead of stretching
+  // to fill the row; the shape then fills the wrapper.
+  const box: CSSProperties = shape === "circle" ? { width: px(width), height: px(width) } : { height: px(height) };
   return (
-    <span className={[styles.root, styles[shape], styles[size], styles[animation]].join(" ")} style={shape === "text" ? { width: px(width) } : undefined} aria-busy="true">
+    <span className={[styles.root, styles[shape], styles[size], styles[animation]].join(" ")} style={width === undefined ? undefined : { width: px(width) }} aria-busy="true">
       {label && <span className={styles.srOnly}>{label}</span>}
       {Array.from({ length: count }, (_, i) => (
         <span key={i} className={[styles.bone, count > 1 && i === count - 1 ? styles.last : ""].join(" ")} style={shape === "text" ? undefined : box} aria-hidden="true" />
