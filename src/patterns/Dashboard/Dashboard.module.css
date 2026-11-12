@@ -45,6 +45,17 @@
 
 .name { margin: 0; min-width: 0; color: var(--text-neutral-intense); }
 
-/* The blocks that stand in for the groups while the numbers load. */
-.loading { display: flex; flex-direction: column; gap: var(--layout-gutter-lg); min-width: 0; }
 .blank { min-width: 0; }
+
+/* Booting (BP COBALT item 1, screen 55): the rows of the message list and the bars of the chart, inside the two
+   kit Sections Home lands on. */
+.loadingList { display: flex; flex-direction: column; min-width: 0; }
+.loadingListRow {
+  display: grid; align-items: center; gap: var(--space-medium);
+  grid-template-columns: var(--skeleton-cell) minmax(0, 1fr) var(--skeleton-list-actions);
+  height: var(--skeleton-list-row); min-width: 0;
+  border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
+}
+.loadingLines { display: flex; flex-direction: column; gap: var(--space-xxsmall); min-width: 0; }
+/* The chart's bars stand on one line, each as tall as its share of the box. */
+.loadingChart { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); align-items: end; gap: var(--space-medium); min-width: 0; }

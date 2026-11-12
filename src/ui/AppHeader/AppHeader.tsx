@@ -11,6 +11,7 @@ import { Icon } from "../Icon/Icon";
 import { Logo } from "../Logo/Logo";
 import { LogoAI } from "../LogoAI/LogoAI";
 import { RadioGroup } from "../RadioGroup/RadioGroup";
+import { Skeleton } from "../Skeleton/Skeleton";
 import { Switch } from "../Switch/Switch";
 import { Tooltip } from "../Tooltip/Tooltip";
 import { useFloating, useInBrowser } from "../Tooltip/useFloating";
@@ -53,6 +54,7 @@ export interface AppHeaderProps {
   density?: AppHeaderDensity;
   onDensityChange?: (density: AppHeaderDensity) => void;
   onLogout?: () => void;
+  loading?: boolean;
 }
 
 const DENSITIES: { value: AppHeaderDensity; label: string }[] = [
@@ -70,7 +72,7 @@ export function AppHeader({
   search = true, searchPlaceholder = "Search", searchShortcut, onSearch,
   searchGroups, searchVariant = "list", searchIconStyle = "tile", onSearchSelect, searchScopes, searchScope, onSearchScopeChange,
   assistant, actions = [], onAction, user, company,
-  onUserSettings, darkMode = false, onDarkModeChange, density: densityProp, onDensityChange, onLogout,
+  onUserSettings, darkMode = false, onDarkModeChange, density: densityProp, onDensityChange, onLogout, loading = false,
 }: AppHeaderProps) {
   // Its own density prop (the value in the account menu) wins, else a surrounding Density.
   const surrounding = useDensity();
@@ -177,6 +179,26 @@ export function AppHeader({
     </>
   );
   const avatar = user && <Avatar name={user.name} src={user.src} size={density === "comfortable" ? "md" : "sm"} />;
+
+  // Booting: the bar keeps its own fill, height and three columns, with a block where the brand, the search and
+  // the person's chip will be. The blocks take the band tone, since the bar is a neutral band rather than paper.
+  if (loading) {
+    return (
+      <header data-density="default" className={[styles.header, density !== "default" ? styles[density] : "", styles.loading].join(" ")} aria-busy="true">
+        <div className={styles.bar}>
+          <div className={styles.start}>
+            <Skeleton shape="rect" tone="band" animation="pulse" width="var(--skeleton-header-logo)" height="var(--icon-size-medium)" label="Loading" />
+          </div>
+          <div className={styles.center}>
+            <Skeleton shape="rect" tone="band" animation="pulse" height="var(--search-h)" label="" />
+          </div>
+          <div className={styles.end}>
+            <Skeleton shape="rect" tone="band" animation="pulse" width="var(--skeleton-header-user)" height="var(--control-small)" label="" />
+          </div>
+        </div>
+      </header>
+    );
+  }
 
   return (
     // The header sizes itself for its density (Figma 48 / 56 / 64 bars, sm / md / lg buttons), so it pins the

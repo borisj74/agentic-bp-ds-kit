@@ -2,7 +2,7 @@
   "name": "Skeleton",
   "path": "src/ui/Skeleton/Skeleton.tsx",
   "intent": "Gray placeholder shapes in the layout of content that is still loading, like lines of text, an avatar or an image, so the page keeps its shape until the data arrives.",
-  "usage": "Use Skeleton while data loads, in the place and rough shape the content will take: text lines for copy, a circle for an avatar, a block for an image, chart or card. It is one component: pick a shape, and for text how many lines (the last is shorter). animation shimmer runs a soft band of light across every skeleton on the page together; pulse fades them in and out; none keeps them still gray. Wrap the real content as children and set loading to false when it is ready: the Skeleton steps aside. Compose several for a card, a list row or a table. For a short line saying work is happening, use TextLoader; for a known amount done, use Meter. See contracts/skeleton.json for the full contract.",
+  "usage": "Use Skeleton while data loads, in the place and rough shape the content will take: text lines for copy, a circle for an avatar, a block for an image, chart or card. It is one component: pick a shape, and for text how many lines (the last is shorter). animation shimmer runs a soft band of light across every skeleton on the page together; pulse fades them in and out; none keeps them still gray. Wrap the real content as children and set loading to false when it is ready: the Skeleton steps aside. Compose several for a card, a list row or a table. For a short line saying work is happening, use TextLoader; for a known amount done, use Meter. tone answers to what the skeleton sits on: default on the page, band on a grey band like the app header or a toolbar, brand on the side menu. Inside a booting AppShell a skeleton follows the frame's sequence rather than its own clock: it waits out the line's first 200ms and is then held at least 400ms. See contracts/skeleton.json for the full contract.",
   "props": {
     "shape": {
       "enum": [
@@ -29,7 +29,7 @@
     },
     "width": {
       "type": "string | number",
-      "note": "Any CSS width, or px. Text and blocks fill the width by default; circles are square."
+      "note": "Any CSS width, or px. It sits on the skeleton itself, so one given a width keeps it in a row beside other things. Text and blocks fill the width they are given by default; circles are square."
     },
     "height": {
       "type": "string | number",
@@ -43,6 +43,15 @@
       ],
       "default": "shimmer",
       "note": "shimmer: a band of light moves across, in step on every skeleton. pulse: a slow fade. none: still gray."
+    },
+    "tone": {
+      "enum": [
+        "default",
+        "band",
+        "brand"
+      ],
+      "default": "default",
+      "note": "What the block sits on, since one grey cannot read everywhere. default: content on the page. band: on a neutral-subtle band — the app header, a toolbar band, Home's search band. brand: on the brand side menu, where the block is the page's own white held back."
     },
     "loading": {
       "type": "boolean",
@@ -148,6 +157,36 @@
         }
       ],
       "code": "// While loading, each cell holds one text Skeleton; label only the first.\nconst rows = loading\n  ? placeholders.map((id, i) => ({\n      id,\n      invoice: <Skeleton size=\"sm\" width=\"70%\" label={i === 0 ? \"Loading invoices\" : \"\"} />,\n      status: <Skeleton size=\"sm\" width=\"50%\" label=\"\" />,\n      amount: <Skeleton size=\"sm\" width=\"50%\" label=\"\" />,\n    }))\n  : invoices;\n\n<Table columns={columns} rows={rows} />"
+    },
+    {
+      "title": "Tone",
+      "usage": "default on the page, band on a grey band, brand on the side menu.",
+      "items": [
+        {
+          "props": {
+            "shape": "rect",
+            "height": 28,
+            "tone": "default"
+          },
+          "caption": "default"
+        },
+        {
+          "props": {
+            "shape": "rect",
+            "height": 28,
+            "tone": "band"
+          },
+          "caption": "band"
+        },
+        {
+          "props": {
+            "shape": "rect",
+            "height": 28,
+            "tone": "brand"
+          },
+          "caption": "brand"
+        }
+      ]
     }
   ]
 }

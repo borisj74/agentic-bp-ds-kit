@@ -1,0 +1,31 @@
+/* Cobalt "Loading line" (DSL-198): 2px tall, a faint brand track with a bar 40% of its width sliding across it,
+   left to right, for as long as the page is still coming. It is as wide as the box it is given and never as
+   tall as a control, so it can sit on an existing edge without moving anything. */
+.line {
+  position: relative; overflow: hidden;
+  width: 100%; height: var(--border-width-medium);
+  background: var(--bg-brand-subtle);
+}
+/* On an existing border — the app header's line, a card's edge — the track would double it, so it goes and only
+   the bar is drawn. */
+.bare { background: transparent; }
+
+.bar {
+  position: absolute; inset-block: 0; width: var(--loading-line-bar);
+  background: var(--bg-brand);
+  animation: slide var(--motion-slide-duration) var(--motion-slide-easing) infinite;
+}
+/* The bar enters off the start edge and leaves past the end one, so the pass reads as one sweep rather than a
+   bar growing in place. inset-inline-start, so a right to left page runs the other way without a second rule. */
+@keyframes slide {
+  from { inset-inline-start: calc(-1 * var(--loading-line-bar)); }
+  to { inset-inline-start: 100%; }
+}
+
+/* No motion: the bar goes and the whole line breathes in place instead, between 1 and 0.35 over 2s, as the
+   Cobalt component (DSL-198) sets it, so the page still says it is busy without anything travelling across it. */
+@media (prefers-reduced-motion: reduce) {
+  .bar { display: none; }
+  .line, .bare { background: var(--bg-brand); animation: breathe var(--motion-breathe-duration) var(--motion-loading-easing) infinite; }
+}
+@keyframes breathe { 0%, 100% { opacity: var(--opacity-full); } 50% { opacity: var(--opacity-line-breathe); } }

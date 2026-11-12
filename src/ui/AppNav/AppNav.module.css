@@ -161,3 +161,10 @@
 @media (prefers-reduced-motion: reduce) {
   .rail, .panel, .panel[data-open="true"] { transition: none; }
 }
+
+/* Booting: a row the same height as a real section, with the icon block where the icon goes and the label bar
+   where the name goes, so the rail keeps its rhythm until the nav arrives. */
+.bootRow {
+  box-sizing: border-box; display: flex; align-items: center; gap: var(--space-medium);
+  height: var(--side-nav-row); padding: 0 var(--space-medium);
+}

@@ -5,6 +5,8 @@ import { FormLayoutContext, type FieldColumns } from "../Form/FormContext";
 import grid from "../Form/columns.module.css";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 import { Icon } from "../Icon/Icon";
+import { Skeleton } from "../Skeleton/Skeleton";
+import { useBootSkeleton } from "../LoadingLine/boot";
 import { titleCase } from "../titleCase";
 import styles from "./Section.module.css";
 
@@ -22,6 +24,7 @@ export interface SectionProps {
   columns?: SectionColumns;
   heading?: SectionHeading;
   spacing?: SectionSpacing;
+  loading?: boolean;
   collapsible?: boolean;
   expanded?: boolean;
   defaultExpanded?: boolean;
@@ -30,9 +33,11 @@ export interface SectionProps {
 
 // Figma COBALT section header 304:31917: chevron button, bold title, ? help, actions at the end, a brand-faint line under it.
 export function Section({
-  title, help, actions, children, line = "medium", columns: ownColumns, heading: headingSize, spacing = "default", collapsible = false,
+  title, help, actions, children, line = "medium", columns: ownColumns, heading: headingSize, spacing = "default", loading = false, collapsible = false,
   expanded: openProp, defaultExpanded = true, onExpandedChange,
 }: SectionProps) {
+  // Inside a booting frame the block waits its turn in the sequence; on its own it draws at once.
+  const { skeleton: booting } = useBootSkeleton(loading);
   const uid = useId();
   const headingId = `${uid}-title`;
   const bodyId = `${uid}-body`;
@@ -61,7 +66,7 @@ export function Section({
     >
       <header className={styles.header}>
         <div className={styles.row}>
-          {collapsible && (
+          {collapsible && !booting && (
             <Button
               emphasis="minimal" size="sm" iconOnly iconStart={open ? "expand_more" : "chevron_right"}
               aria-expanded={open} aria-controls={children != null ? bodyId : undefined} onClick={toggle}
@@ -69,15 +74,24 @@ export function Section({
               {heading}
             </Button>
           )}
-          <h2 id={headingId} className={styles.title} aria-describedby={help ? helpId : undefined}>{heading}</h2>
-          {help && (
+          {/* Booting: the block keeps its header and its name for screen readers, with a bar where the words
+              will be. Nothing to help with or act on until it has arrived. */}
+          <h2 id={headingId} className={styles.title} aria-describedby={help && !booting ? helpId : undefined}>
+            {booting ? (
+              <>
+                <span className={styles.srOnly}>{heading}</span>
+                <Skeleton shape="rect" animation="pulse" width="var(--skeleton-title)" height="var(--font-size-regular)" label="" />
+              </>
+            ) : heading}
+          </h2>
+          {help && !booting && (
             <HelpPopover title={heading} content={help}>
               <button type="button" className={styles.help} aria-label={`About ${heading}`}><Icon name="help_center" size="sm" /></button>
             </HelpPopover>
           )}
-          {help && <span id={helpId} className={styles.srOnly}>{help}</span>}
+          {help && !booting && <span id={helpId} className={styles.srOnly}>{help}</span>}
         </div>
-        {actions && <div className={styles.actions}>{actions}</div>}
+        {actions && !booting && <div className={styles.actions}>{actions}</div>}
       </header>
       {/* Header only: without children there is no body, so the section is just its heading row and line. */}
       {children != null && (

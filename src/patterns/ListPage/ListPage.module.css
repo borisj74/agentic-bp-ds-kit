@@ -74,3 +74,13 @@
   border: var(--border-width-thin) solid var(--border-brand-subtle); border-radius: var(--radius-medium);
   background: var(--bg-brand-faint);
 }
+
+/* Booting (BP COBALT item 1, screen 03): the rows the list will have, in their real heights, so nothing moves
+   when the data lands. The columns are the grid the Table will set, with the Actions column at the end. */
+.loadingHead, .loadingRow {
+  display: grid; align-items: center; gap: var(--space-medium);
+  grid-template-columns: repeat(var(--boot-columns), minmax(0, 1fr)) var(--skeleton-list-actions);
+  border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
+}
+.loadingHead { height: var(--skeleton-list-head); }
+.loadingRow { height: var(--skeleton-list-row); }

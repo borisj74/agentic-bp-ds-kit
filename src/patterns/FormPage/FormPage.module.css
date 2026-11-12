@@ -35,3 +35,24 @@
 
 /* The Form, then any related list after it, one section gap apart. */
 .fields { display: flex; flex-direction: column; gap: var(--layout-gutter-lg); min-width: 0; }
+
+/* Booting (BP COBALT item 1, screen 56): the fields in the rhythm the real form has — one row every 39px, the
+   label ending 16px before its input — in the columns the page already sets. */
+.loadingOne, .loadingColumn {
+  display: flex; flex-direction: column; min-width: 0;
+  /* The same cap the real fields take (--layout-column-max, a start label plus a 308 field): on a wide page the
+     room past the last column stays empty rather than the rows stretching, so nothing moves when they arrive.
+     Two capped columns and their gutter come to 1132, inside the 1300 the Cobalt note allows a row. */
+  max-width: var(--layout-column-max);
+}
+.loadingRow {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: center;
+  column-gap: var(--space-medium); height: var(--skeleton-form-row); min-width: 0;
+}
+
+/* The same break the real fields take (src/ui/Form/columns.module.css): one column below 1280px of viewport,
+   whatever room the box has, so the skeleton and the fields it stands in for never disagree. The class is
+   doubled so it outranks .layout-split's own half-width span. */
+@media (max-width: 1279px) {
+  .loadingColumn.loadingColumn { grid-column: 1 / -1; }
+}

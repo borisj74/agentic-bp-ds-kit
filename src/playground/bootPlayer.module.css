@@ -1,0 +1,31 @@
+/* Playground chrome: the boot player's own readout, above the stage it drives. Not a kit piece. */
+.player { display: flex; flex-direction: column; gap: var(--space-small); min-width: 0; }
+
+.bar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-medium);
+  padding: var(--space-xsmall) var(--space-small);
+  border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-medium);
+  background: var(--bg-neutral-subtle);
+}
+
+.steps { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-medium); min-width: 0; }
+.step { display: inline-flex; align-items: center; gap: var(--space-xxsmall); font-size: var(--font-size-small); }
+/* Waiting is quiet, the step running now is brand, a step that has been is plain text. */
+.step[data-state="waiting"] { color: var(--text-neutral-subtle); }
+.step[data-state="now"] { color: var(--text-brand); font-weight: var(--font-weight-semibold); }
+.step[data-state="done"] { color: var(--text-neutral-strong); }
+/* A step this run never reaches: a fast load has no skeleton and no fade. */
+.step[data-state="skipped"] { color: var(--text-neutral-subtle); text-decoration: line-through; }
+.step[data-state="skipped"] .dot { background: var(--bg-neutral); }
+
+.dot { width: var(--skeleton-cell); height: var(--skeleton-cell); border-radius: var(--radius-full); background: currentcolor; }
+.step[data-state="waiting"] .dot { background: var(--bg-neutral); }
+
+.label { white-space: nowrap; }
+/* The number is the point of the readout, so it is mono and does not reflow as the digits change. */
+.ms { font-family: var(--font-mono); font-size: var(--font-size-xsmall); font-variant-numeric: tabular-nums; }
+
+.end { display: flex; align-items: center; gap: var(--space-small); }
+.total { font-family: var(--font-mono); font-size: var(--font-size-xsmall); font-variant-numeric: tabular-nums; color: var(--text-neutral); white-space: nowrap; }
+
+.note { margin: 0; font-size: var(--font-size-small); line-height: var(--line-height-snug); color: var(--text-neutral); }

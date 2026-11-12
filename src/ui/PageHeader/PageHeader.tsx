@@ -5,6 +5,8 @@ import { Breadcrumb, type BreadcrumbItem } from "../Breadcrumb/Breadcrumb";
 import { Button } from "../Button/Button";
 import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
+import { Skeleton } from "../Skeleton/Skeleton";
+import { useBootSkeleton } from "../LoadingLine/boot";
 import { Tooltip } from "../Tooltip/Tooltip";
 import { titleCase } from "../titleCase";
 import styles from "./PageHeader.module.css";
@@ -27,14 +29,19 @@ export interface PageHeaderProps {
   onMoreSelect?: (id: string) => void;
   sticky?: boolean;
   shadow?: boolean;
+  loading?: boolean;
 }
 
 export function PageHeader({
-  title, breadcrumbs = [], back, icon, badge, badgeIntent = "neutral", actions, moreActions, onMoreSelect, sticky = false, shadow = true,
+  title, breadcrumbs = [], back, icon, badge, badgeIntent = "neutral", actions, moreActions, onMoreSelect, sticky = false, shadow = true, loading = false,
 }: PageHeaderProps) {
   // Kit headings read in title case, so a screen can pass its copy either way.
   const heading = titleCase(title);
-  const hasControls = Boolean(actions) || Boolean(moreActions?.length);
+  // Booting, the title row holds nothing but its own shapes: a crumb trail, the page icon if there is one, and
+  // the title. No buttons — a page that has not arrived has nothing to act on yet.
+  // Inside a booting frame the title row waits its turn in the sequence; on its own it draws at once.
+  const { skeleton: booting } = useBootSkeleton(loading);
+  const hasControls = !booting && (Boolean(actions) || Boolean(moreActions?.length));
   // back is a shortcut to where the page was opened from, so a screen can pass the route (href), its own
   // handler (onClick), or neither and get the browser's own step back. The label is the button's name and
   // its tooltip, so it says where it goes rather than just "Back".
@@ -62,7 +69,18 @@ export function PageHeader({
       {/* The header measures its own width; the bar inside is what lays out to it, so a narrow header stacks. */}
       <div className={styles.bar}>
       <div className={[styles.title, sticky ? styles.stickyTitle : ""].join(" ")}>
-        {sticky ? (
+        {booting ? (
+          // The name is still read out, so the page has a heading before anything arrives; the bars stand in
+          // for what it will say.
+          <>
+            <Skeleton shape="rect" animation="pulse" width="var(--skeleton-crumbs)" height="var(--skeleton-cell)" label="" />
+            <div className={styles.titleRow}>
+              {icon && <Skeleton shape="rect" animation="pulse" width="var(--icon-size-large)" height="var(--icon-size-large)" label="" />}
+              <h1 className={styles.srOnly}>{heading}</h1>
+              <Skeleton shape="rect" animation="pulse" width="var(--skeleton-title)" height="var(--font-size-large)" label="" />
+            </div>
+          </>
+        ) : sticky ? (
           // Sticky: one compact line. The trail ends in the page title; the heading stays for screen readers.
           // There is no title row to sit in, so back leads the bar.
           <>

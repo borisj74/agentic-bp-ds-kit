@@ -10,6 +10,7 @@ const tabs: ScaleTab[] = [
     { title: "Hover", prefix: "--opacity-hover", note: "Tint layered on a surface under the pointer.", rows: [{ token: "opacity-hover", value: "0.08" }] },
     { title: "Scrim", prefix: "--opacity-scrim*", note: "Backdrop behind modals and drawers.", rows: [{ token: "opacity-scrim-soft", value: "0.32" }, { token: "opacity-scrim", value: "0.64" }] },
     { title: "Full", prefix: "--opacity-full", rows: [{ token: "opacity-full", value: "1" }] },
+    { title: "Loading", prefix: "--opacity-skeleton-pulse, --opacity-line-breathe", note: "The boot state's two resting points: a skeleton block pulsing, and the loading line breathing in place when motion is off.", rows: [{ token: "opacity-skeleton-pulse", value: "0.55" }, { token: "opacity-line-breathe", value: "0.35" }] },
   ] },
   { key: "primitives", label: "Primitives", sections: [
     { title: "Scale", prefix: "--opacity-0 → 700", rows: scale.map(([k, v]) => ({ token: `opacity-${k}`, value: v })) },

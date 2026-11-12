@@ -4,6 +4,28 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## Unreleased
+
+The whole screen boots: a 2px line over the content column, then one skeleton for the chrome and the page together, on one timing rule.
+
+This section folds into the next release's entry — rename the heading to `## v<version> — <date>` at release time, per [RELEASING.md](RELEASING.md).
+
+### Added
+- `LoadingLine` — the 2px indeterminate line a screen shows while it is fetching. A `--bg-brand-subtle` track with a `--bg-brand` bar that passes across it; `track="none"` drops the track and leaves the bar. Reduced motion stops the pass and breathes the line instead. It is not `ProgressBar`, which is the 20px determinate bar with a number behind it.
+- `AppShell` takes `loading`, `loadingLabel` and `bootTiming`, and runs the boot for everything inside it. The line sits over the content column only, level with the top of the side nav, and one rule times the whole frame: 200ms before any skeleton shows, 400ms it stays once shown, 150ms to settle. So a fast answer never flashes a skeleton, and a slow one never blinks it away.
+- `loading` on the pieces that own a band: `AppHeader`, `AppNav`, `PageHeader`, `Toolbar` and `Section`. Each draws its own shape — the header's logo, search and user; the nav's icons and labels; the crumbs and title; the toolbar's controls; a section's heading. A button in a skeleton is a plain block with nothing inside it.
+- `loading` and `loadingRows` on the patterns that own a screen: `ListPage` (plus `loadingColumns`), `RecordPage`, `FormPage`, `Dashboard`, `ListDetail`, and `SettingsPage` with `loadingTiles`. Each boots as the screen it draws, so a list shows a head row and rows, a record shows label and value pairs, a form shows labels and inputs.
+- `Skeleton` takes `tone`: `default`, `band` for a skeleton on a filled bar, `brand` for one on the brand rail. One `Skeleton` still, no cousins.
+- The catalog plays the boot. Every pattern with a loading state has an off / fast / typical / slow control that runs the real timing and lights each step as it happens, with the elapsed total and a Play again button.
+- Two named opacity tokens, `--opacity-skeleton-pulse` (0.55) and `--opacity-line-breathe` (0.35), and the motion tokens the boot runs on (`--motion-slide-*`, `--motion-boot-line`, `--motion-boot-hold`, `--motion-boot-settle`, `--motion-breathe-duration`).
+
+### Changed
+- A two- or three-column form or record is one column below 1280px of viewport. Above it the box still decides, exactly as before — the column counts, the label widths and every turn they took are unchanged. Below it, fields stack, so a wide box on a narrow window no longer reads as two cramped columns. This is the one change here that is not about loading: it reaches every `Form`, `FormPage`, `RecordPage` and `Section` with `columns` set.
+- `Dashboard`'s `loadingTiles` is now `loadingRows`, for one name across the patterns.
+
+### Fixed
+- `Skeleton` with an explicit `width` kept `width: 100%` on its root and put the width on the inner bone, so a sized skeleton stretched to fill a flex row instead of measuring what it was given. The width is on the root now.
+
 ## v0.10.2 — 2026-11-12
 
 A section's menu can group its links, and the catalog explains a piece the way an agent reads it.

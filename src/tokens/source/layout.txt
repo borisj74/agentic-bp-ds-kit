@@ -207,6 +207,12 @@ side-nav/panel-max|280px
 
 # Toolbar (Figma toolbar 6057:15099, filters-bar 3579:30240): search field 200 wide, past the ref scale.
 toolbar/search|200px
+# Booting (BP COBALT item 1, screen 03): the bar's controls stand as plain blocks of their own width. Measured
+# off the Account list at 1440: Filter 72, the view menu 84, More 56, each end action 72. Past the ref scale.
+toolbar/filters-skeleton|72px
+toolbar/views-skeleton|84px
+toolbar/more-skeleton|56px
+toolbar/action-skeleton|72px
 
 # DataGrid (Figma data-grid 4350:109705, table cell notes 4350:109418): columns are at least 160 wide unless they hug.
 data-grid/column-min|160px
@@ -310,6 +316,30 @@ skeleton/block|96px
 skeleton/circle-sm|{ref/size/900}
 skeleton/circle-md|{ref/size/1100}
 skeleton/circle-lg|{ref/size/1300}
+# Boot skeleton (BP COBALT item 1, screens 03 / 55 / 56), measured on the real pages at 1440: a bar inside a row
+# is 8 tall; the title row is a 108 crumb trail over a 112 title; a list head row is 40 and a list row 44, with a
+# 56 Actions column; a record's label and value rows sit 37 apart and a form's inputs 39. 37, 39, 108, 112 and 56
+# are past the ref scale.
+skeleton/cell|{ref/size/300}
+skeleton/crumbs|108px
+skeleton/title|112px
+skeleton/list-head|{ref/size/1100}
+skeleton/list-row|{ref/size/1200}
+skeleton/list-actions|56px
+skeleton/record-row|37px
+skeleton/form-row|39px
+# The chrome's own boot blocks (BP COBALT item 1): the app header's logo is 150 x 20, its user chip 130 x 28;
+# a side-menu row is the nav's own 48, with an 18 icon block and a 10 label bar. 150, 130 and 10 are past the
+# ref scale.
+skeleton/header-logo|150px
+skeleton/header-user|130px
+skeleton/nav-icon|18px
+skeleton/nav-label|10px
+# A booting settings tile: the kit NavTile's 72 square with its 16 padding above and below it.
+skeleton/tile|104px
+
+# Loading line (BP COBALT DSL-198): the sliding bar is 40% of the track.
+loading-line/bar|40%
 
 # Steps (Figma steps 2133:58431): each step is 100 wide; the circle is 32 (md) or 24 (sm).
 stepper/step|100px

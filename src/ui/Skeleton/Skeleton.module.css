@@ -4,7 +4,19 @@
 .circle, .rect { display: inline-flex; }
 .rect { width: 100%; }
 
-.bone { display: block; flex: none; background-color: var(--bg-neutral); }
+.bone { display: block; flex: none; background-color: var(--fill); }
+
+/* Tone, from the Cobalt skeleton block (DSL-199): the fill answers to what the block sits on, since one grey
+   cannot read on white paper, on a grey band and on the brand rail at once.
+   default: content on the page. band: on a neutral-subtle band — the app header, a toolbar band, Home's search
+   band. brand: on the brand side menu, where the block is the page's own white, held back so the rail still
+   reads as the rail. */
+.tone-default { --fill: var(--bg-neutral); --gleam: var(--bg-neutral-subtle); }
+.tone-band { --fill: var(--bg-neutral-strong); --gleam: var(--bg-neutral); }
+.tone-brand {
+  --fill: color-mix(in srgb, var(--bg-neutral-min-static) calc(var(--opacity-300) * 100%), transparent);
+  --gleam: color-mix(in srgb, var(--bg-neutral-min-static) calc(var(--opacity-400) * 100%), transparent);
+}
 
 /* Text: a rounded bar as tall as the text, centred in its line; the last of several is shorter. */
 .text .bone { width: 100%; height: var(--bar); margin-block: var(--pad); border-radius: var(--radius-small); }
@@ -22,7 +34,7 @@
 
 /* Shimmer: a lighter band slides across, fixed to the window so all skeletons move as one. */
 .shimmer .bone {
-  background-image: linear-gradient(90deg, transparent 30%, var(--bg-neutral-subtle) 50%, transparent 70%);
+  background-image: linear-gradient(90deg, transparent 30%, var(--gleam) 50%, transparent 70%);
   background-size: 200vw 100%; background-attachment: fixed; background-repeat: no-repeat;
   animation: shimmer var(--motion-loading-duration) var(--motion-ease-linear) infinite;
 }
@@ -30,7 +42,8 @@
 @keyframes shimmer { from { background-position: -150vw 0; } to { background-position: 50vw 0; } }
 
 .pulse .bone { animation: pulse var(--motion-loading-duration) var(--motion-loading-easing) infinite; }
-@keyframes pulse { 0%, 100% { opacity: var(--opacity-full); } 50% { opacity: var(--opacity-400); } }
+/* The Cobalt skeleton block (DSL-199) pulses between 1 and 0.55 over the loading cycle. */
+@keyframes pulse { 0%, 100% { opacity: var(--opacity-full); } 50% { opacity: var(--opacity-skeleton-pulse); } }
 
 @media (prefers-reduced-motion: reduce) { .shimmer .bone, .pulse .bone { animation: none; background-image: none; } }
 

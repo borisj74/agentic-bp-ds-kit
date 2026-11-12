@@ -2,7 +2,7 @@
   "name": "AppShell",
   "path": "src/patterns/AppShell/AppShell.tsx",
   "intent": "The frame every product screen sits in: the bar across the top, the rail under it down the side, the page in the middle, and the assistant beside it.",
-  "usage": "Use AppShell as the outer frame of a screen. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is open. Pass the kit AppHeader as header: it runs the full width across the top, and the rail starts under it. Pass the kit AppNav as nav, always with the app's full navigation: items={APP_NAV} and endItems={APP_NAV_END} from @/patterns/AppShell/appNav, every section and every link, with current set to the screen's own page (appNavPlace(id) gives its section and page name for the trail). Never pass a shorter list or make up links. Its column hugs whatever width the nav is, so collapsed, expanded and pinned all work. On a phone-width frame there is no room for a column, so the nav slides in over the page from the start edge: pass navOpen, the same boolean the AppHeader's menu button flips, and onNavClose, so tapping the page behind it closes it. It is a drawer there, at the nav's open width with its labels shown, and it is away and out of the keyboard's reach while it is closed. pageHeader takes a kit PageHeader and stays at the top of the page while the page scrolls under it, flush to the top edge; The frame shrinks it to the kit's compact 52px bar on its own once the top of the page has scrolled away, so a screen passes a plain PageHeader and wires nothing; set sticky on the PageHeader yourself only to override that. While a pinned band sits under the bar \u2014 a list's own bar and column names, which mark themselves \u2014 the bar gives up its line and shadow, since two edges a few pixels apart read as a seam; a page with nothing pinned below keeps them. onPageHeaderStick still reports the boolean to a screen that wants it. stickyPageHeader false lets it scroll away instead. children are the page itself, already inside the scrolling content area with its edge padding and the gap between Sections, so screens do not add their own. assistant takes a kit ChatWindow and shows beside the page while assistantOpen is true. assistantSize full lets it take the page's place edge to edge, keeping the bar and the rail: the page and its page header are hidden, not removed, and the assistant stays the same element, so neither loses its state and focus stays where it was. Give the ChatWindow size full at the same time. width caps the page to a reading column; it does not resize the frame. The frame answers to its own width rather than the window's, so under about 640 the rail goes and an open assistant takes the page's place, whether it is docked in a panel or filling a screen. See contracts/appshell.json for the full contract. The frame marks itself, so panels that float out of the bar or the rail — menus, tooltips, the search dropdown — keep inside it rather than over whatever is beside it.",
+  "usage": "Use AppShell as the outer frame of a screen. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is open. Pass the kit AppHeader as header: it runs the full width across the top, and the rail starts under it. Pass the kit AppNav as nav, always with the app's full navigation: items={APP_NAV} and endItems={APP_NAV_END} from @/patterns/AppShell/appNav, every section and every link, with current set to the screen's own page (appNavPlace(id) gives its section and page name for the trail). Never pass a shorter list or make up links. Its column hugs whatever width the nav is, so collapsed, expanded and pinned all work. On a phone-width frame there is no room for a column, so the nav slides in over the page from the start edge: pass navOpen, the same boolean the AppHeader's menu button flips, and onNavClose, so tapping the page behind it closes it. It is a drawer there, at the nav's open width with its labels shown, and it is away and out of the keyboard's reach while it is closed. pageHeader takes a kit PageHeader and stays at the top of the page while the page scrolls under it, flush to the top edge; The frame shrinks it to the kit's compact 52px bar on its own once the top of the page has scrolled away, so a screen passes a plain PageHeader and wires nothing; set sticky on the PageHeader yourself only to override that. While a pinned band sits under the bar — a list's own bar and column names, which mark themselves — the bar gives up its line and shadow, since two edges a few pixels apart read as a seam; a page with nothing pinned below keeps them. onPageHeaderStick still reports the boolean to a screen that wants it. stickyPageHeader false lets it scroll away instead. children are the page itself, already inside the scrolling content area with its edge padding and the gap between Sections, so screens do not add their own. assistant takes a kit ChatWindow and shows beside the page while assistantOpen is true. assistantSize full lets it take the page's place edge to edge, keeping the bar and the rail: the page and its page header are hidden, not removed, and the assistant stays the same element, so neither loses its state and focus stays where it was. Give the ChatWindow size full at the same time. width caps the page to a reading column; it does not resize the frame. The frame answers to its own width rather than the window's, so under about 640 the rail goes and an open assistant takes the page's place, whether it is docked in a panel or filling a screen. loading lays the kit LoadingLine over the content column, level with the top of the side nav, while the page is still arriving; the pattern inside draws its own boot skeleton. The bar and the rail boot with it: the frame hands loading to the AppHeader, the AppNav and the PageHeader it was given. The boot runs to a sequence (src/ui/LoadingLine/boot.ts): the line alone for 200ms, then the skeleton for at least 400ms, then the content fading in over 150ms. A page that lands inside the first 200ms never shows a skeleton at all, and a skeleton that has appeared is never blinked away the moment the data arrives. The frame keeps that clock and publishes it, so the chrome's skeletons and the page pattern's appear and leave together. See contracts/appshell.json for the full contract. The frame marks itself, so panels that float out of the bar or the rail — menus, tooltips, the search dropdown — keep inside it rather than over whatever is beside it.",
   "composes": [
     "AppHeader",
     "AppNav",
@@ -75,6 +75,20 @@
       "default": "full",
       "noteForFigma": true,
       "note": "How wide the page runs inside the frame. full fills the space; the rest hold it to a reading column, centred. It caps the page only: the bar, the rail and the assistant keep their own widths."
+    },
+    "loading": {
+      "type": "boolean",
+      "default": false,
+      "note": "The whole frame is still arriving: the 2px kit LoadingLine is laid over the content column, level with the top of the side nav and riding the bar's own edge, the page is marked busy, and loading is handed down to the kit AppHeader, AppNav and PageHeader the frame was given, so they show their own boot state. The page skeleton under it belongs to the screen's pattern."
+    },
+    "loadingLabel": {
+      "type": "string",
+      "default": "Loading page",
+      "note": "What is loading, for screen readers, like Loading account."
+    },
+    "bootTiming": {
+      "type": "{ line?: number; hold?: number; settle?: number }",
+      "note": "The sequence's three steps in ms, if a screen has to change them. Defaults are the spec's 200, 400 and 150, which is what --motion-boot-line, --motion-boot-hold and --motion-boot-settle hold."
     }
   },
   "useWhen": [
@@ -110,6 +124,18 @@
           "props": {
             "width": "full"
           }
+        }
+      ]
+    },
+    {
+      "title": "Booting",
+      "usage": "The frame while the page is still coming: the line over the content column, level with the top of the rail.",
+      "items": [
+        {
+          "props": {
+            "loading": true
+          },
+          "caption": "loading"
         }
       ]
     }

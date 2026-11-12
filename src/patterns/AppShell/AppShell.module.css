@@ -14,9 +14,17 @@
 /* The rail stacks above the page, so the menu that flies out of it covers the page header rather than
    sliding under it. The frame decides the order of its own columns. */
 .nav { position: relative; z-index: 3; flex: none; min-width: 0; min-height: 0; }
+/* The content column: the page, and the boot line over its top edge. It takes the room left between the rail and
+   the assistant, which is exactly the width the line is meant to cover. */
+.column { position: relative; display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; min-height: 0; }
 /* The page is its own stacking context, so what it pins (the page header, a list's toolbar, a table's head, each
    with its z-index from the stick scale) stays inside it and the nav's flyout menu always covers them. */
-.page { position: relative; isolation: isolate; flex: 1 1 auto; min-width: 0; }
+.page { position: relative; isolation: isolate; flex: 1 1 auto; min-width: 0; min-height: 0; }
+
+/* The boot line: out of the flow and laid on the column's top edge, level with the top of the rail and under the
+   bar, so it adds no height and the page under it keeps the shape it will have once it arrives. Above the page
+   and what the page pins, below the rail and its flyout. */
+.loadingLine { position: absolute; inset-block-start: 0; inset-inline: 0; z-index: var(--stick-page-head); }
 /* Where a sticky table stops by default: under the bar, not at the top of the page, where its column names
    would cross it on the way up. A pattern that pins something of its own under the bar — a list or a record,
    whose toolbar holds there — says so again with the bar's height added. */
@@ -50,7 +58,7 @@
 .assistant { flex: none; min-height: 0; }
 /* Full: the assistant takes the page's place edge to edge, beside the rail and under the bar. The page is hidden,
    not removed, so it is where it was when the assistant goes back to the side. */
-.fullAssistant .page { display: none; }
+.fullAssistant .column { display: none; }
 .fullAssistant .assistant { flex: 1 1 auto; min-width: 0; }
 
 /* The sheet over the page while the phone nav is open. It is a button, so a tap or Enter closes the nav;
@@ -83,10 +91,16 @@
     animation: sheet var(--motion-expand-duration) var(--motion-expand-easing);
   }
   /* No room for both: the assistant takes the page's place while it is open. */
-  .stage:has(.assistant) .page { display: none; }
+  .stage:has(.assistant) .column { display: none; }
   .assistant { flex: 1 1 auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .nav, .navOpen, .scrim { transition: none; animation: none; }
 }
+
+/* The last step of the boot sequence: the real content fades in over --motion-boot-settle, so the page arrives
+   rather than appearing. No fade for anyone who asked for no motion. */
+.settling { animation: settle var(--motion-boot-settle) var(--motion-ease-out); }
+@keyframes settle { from { opacity: var(--opacity-0); } }
+@media (prefers-reduced-motion: reduce) { .settling { animation: none; } }

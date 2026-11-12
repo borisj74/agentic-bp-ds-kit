@@ -2,7 +2,7 @@
   "name": "ListDetail",
   "path": "src/patterns/ListDetail/ListDetail.tsx",
   "intent": "A list with the picked record beside it: a ListView on one side and the record in a pane on the other, or one at a time on a phone.",
-  "usage": "Use ListDetail when people go through records one after another without leaving the list: an invoice queue, an inbox, approvals. It is a blueprint: it composes kit pieces and keeps no state of its own. list is a kit ListView, usually with selection single and interaction drill; its onOpen tells the screen which record is open. detail is that record, built from kit Sections, FormDisplay and Tables; title names it and actions puts its Buttons at the end of the pane's header. open says a record is open. empty shows in the pane when none is, usually a kit EmptyState. The list can be any ListView: grouped by status under headers that fold, the inbox template with avatars, unread dots and status lines, or rows with a More menu; the pane works the same. When records sit under other records, give the ListView items with children: the list steps into them in place, with Back, and a leaf opens beside it, like accounts that hold their invoices. layout sets where the record goes: side puts it in a pane beside the list, stacked puts it under the whole list, and inline opens it right under its row, inside the list. With side, the frame measures its own width: from 640 up the list and the pane sit side by side (two fifths and three fifths); below, the list shows until a record opens, then the pane covers it with a Back button that calls onBack, named by backLabel. The page's name and trail are the kit PageHeader in the AppShell page around it. See contracts/listdetail.json for the full contract.",
+  "usage": "Use ListDetail when people go through records one after another without leaving the list: an invoice queue, an inbox, approvals. It is a blueprint: it composes kit pieces and keeps no state of its own. list is a kit ListView, usually with selection single and interaction drill; its onOpen tells the screen which record is open. detail is that record, built from kit Sections, FormDisplay and Tables; title names it and actions puts its Buttons at the end of the pane's header. open says a record is open. empty shows in the pane when none is, usually a kit EmptyState. The list can be any ListView: grouped by status under headers that fold, the inbox template with avatars, unread dots and status lines, or rows with a More menu; the pane works the same. When records sit under other records, give the ListView items with children: the list steps into them in place, with Back, and a leaf opens beside it, like accounts that hold their invoices. layout sets where the record goes: side puts it in a pane beside the list, stacked puts it under the whole list, and inline opens it right under its row, inside the list. With side, the frame measures its own width: from 640 up the list and the pane sit side by side (two fifths and three fifths); below, the list shows until a record opens, then the pane covers it with a Back button that calls onBack, named by backLabel. The page's name and trail are the kit PageHeader in the AppShell page around it. loading is the boot state: the rows of the list beside the record's fields, in the shapes they will land in. Inside a booting AppShell the boot skeleton follows the frame's sequence. See contracts/listdetail.json for the full contract.",
   "composes": [
     "ListView",
     "Section",
@@ -55,6 +55,16 @@
       ],
       "default": "side",
       "note": "side: the list and the pane side by side, one at a time on a phone. stacked: the list on top and the record under it. inline: the record opens right under its row, inside the list; it needs a ListView with selection single, and empty does not show."
+    },
+    "loading": {
+      "type": "boolean",
+      "default": false,
+      "note": "Booting: the split keeps its two columns, with the rows the list will have on one side and the record's label and value rows on the other. The real list, the record and the empty pane all wait."
+    },
+    "loadingRows": {
+      "type": "number",
+      "default": 8,
+      "note": "How many rows the boot skeleton draws on each side."
     },
     "label": {
       "type": "string",
@@ -186,6 +196,18 @@
         }
       ],
       "code": "<ListDetail\n  label=\"Invoices\" layout=\"inline\" open={Boolean(invoice)} onBack={() => setOpenId(null)} backLabel=\"Back to invoices\"\n  title={invoice?.number}\n  list={\n    <ListView\n      label=\"Invoices\" selection=\"single\" interaction=\"drill\"\n      items={invoices} selected={openId ? [openId] : []}\n      onOpen={(id) => setOpenId(id === openId ? null : id)}\n    />\n  }\n  detail={invoice && <Section title=\"Invoice Details\">…</Section>}\n/>"
+    },
+    {
+      "title": "Booting",
+      "usage": "The split as it arrives: rows on one side, the record's fields on the other, no words in either yet.",
+      "items": [
+        {
+          "props": {
+            "loading": true
+          },
+          "caption": "loading"
+        }
+      ]
     }
   ]
 }

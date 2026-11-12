@@ -13,3 +13,8 @@ opacity/hover|{opacity/100}
 opacity/scrim/soft|{opacity/300}
 opacity/scrim|{opacity/500}
 opacity/full|{opacity/700}
+# The boot state's two resting points, from BP COBALT DSL-198 and DSL-199: a skeleton block pulses down to 0.55,
+# and the loading line, for anyone who asked for no motion, breathes down to 0.35. Neither sits on the ramp
+# above, so each is named for what it is rather than wedged between two steps.
+opacity/skeleton-pulse|0.55
+opacity/line-breathe|0.35

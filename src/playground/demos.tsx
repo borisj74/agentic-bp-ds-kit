@@ -1185,6 +1185,7 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
       label="Invoices"
       toolbar={
         <Toolbar
+          loading={state === "loading"}
           label="Invoices" filters={<>{chips}</>} filterCount={FILTER_SETS.filter((f) => values[f.id] && !off[f.id]).length}
           onReset={() => { setValues({}); setOff({}); }} onApply={() => {}}
           searchValue={query} onSearchChange={setQuery} searchPlaceholder="Search invoices"
@@ -1269,9 +1270,10 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
         }
         nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
+        loading={state === "loading"} loadingLabel="Loading invoices"
         pageHeader={
           // No actions on the bar: a list keeps them in its own Toolbar, which owns the one strong brand Button.
-          <PageHeader title="Invoices" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />
+          <PageHeader title="Invoices" icon="receipt_long" loading={state === "loading"} breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />
         }
       >
         {list}
@@ -1352,7 +1354,7 @@ const RECORD_INVOICES = [
   { id: "r4", invoice: <Cell type="link" label="INV-29133" onClick={() => {}} />, date: "05/31/2026", due: "06/30/2026", amount: "$10,980.25", status: <Cell type="badge" label="Paid" intent="success" /> },
 ];
 
-export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop", columns = 2 }: { sticky?: boolean; shell?: boolean; stage?: string; columns?: FormColumns }) {
+export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop", columns = 2, loading = false }: { sticky?: boolean; shell?: boolean; stage?: string; columns?: FormColumns; loading?: boolean }) {
   const [tab, setTab] = useState("details");
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");
@@ -1364,12 +1366,12 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop",
 
   const record = (
     <RecordPage
-      label="Account" sticky={sticky} onStickyChange={setCompact} columns={columns}
+      label="Account" sticky={sticky} onStickyChange={setCompact} columns={columns} loading={loading}
       header={
         <PageHeader
           breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]}
           title="Apex Digital Services" badge="Active" badgeIntent="success"
-          sticky={sticky && compact}
+          sticky={sticky && compact} loading={loading}
           actions={<><Button size="sm">Clone</Button><Button size="sm" emphasis="strong" intent="brand">Edit</Button></>}
         />
       }
@@ -1383,6 +1385,7 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop",
       }
       toolbar={
         <Toolbar
+          loading={loading}
           label="Account details" onRefresh={() => {}}
           moreActions={[{ id: "print", label: "Print", icon: "print" }, { id: "export", label: "Export", icon: "download" }]} onMoreSelect={() => {}}
           actions={<><Button size="sm">Record payment</Button><Button size="sm" iconStart="add">New invoice</Button></>}
@@ -1425,6 +1428,7 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop",
         }
         nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
+        loading={loading} loadingLabel="Loading account"
       >
         {record}
       </AppShell>
@@ -1579,6 +1583,7 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
         : <EmptyState icon="construction" title={`${place.page} is not built here`} description="This playground only ships the Home Dashboards page. The frame, the bar and the page header are the kit's own." />}
       toolbar={!onDashboards ? undefined : (
         <Toolbar
+          loading={shown === "loading"}
           label={name} searchValue={query} onSearchChange={setQuery} searchPlaceholder="Search"
           filterCount={period ? 1 : 0}
           filters={
@@ -1735,11 +1740,12 @@ export function DashboardDemo({ state = "ready", shell = true, stage = "desktop"
         }
         nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
+        loading={shown === "loading"} loadingLabel="Loading dashboard"
         onPageHeaderStick={setCompact}
         pageHeader={
           <PageHeader
             title={place.page} breadcrumbs={[{ label: "Home", href: "#" }, { label: place.section, href: "#" }]}
-            sticky={compact}
+            sticky={compact} loading={shown === "loading"}
             actions={
               <>
                 <Button size="sm" emphasis="strong" intent="brand" iconStart="add">New dashboard</Button>
@@ -1839,6 +1845,7 @@ export function SettingsPageDemo({ shell = true, notice = false, stage = "deskto
         }
         nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
+        loading={p.loading} loadingLabel="Loading settings"
         pageHeader={
           <PageHeader
             title={chosen ? chosen.title : "Settings"}
@@ -2021,7 +2028,7 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
       header={
         <PageHeader
           breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]}
-          title="Create account" sticky={compact}
+          title="Create account" sticky={compact} loading={p.loading}
           actions={
             <>
               <Button size="sm" onClick={() => setSaved("")}>Cancel</Button>
@@ -2069,6 +2076,7 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
         }
         nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
+        loading={p.loading} loadingLabel="Loading form"
       >
         {page}
       </AppShell>
@@ -2826,7 +2834,7 @@ const LIST_DETAIL_TEMPLATE: ListViewItem[] = LIST_DETAIL_INVOICES.map((inv) => (
 // Row actions: every invoice action behind one More button, the same menu as the list on ListPage.
 const LIST_DETAIL_WITH_MENU: ListViewItem[] = LIST_DETAIL_INVOICES.map((inv) => ({ ...inv, menu: INVOICE_ALL_MENU }));
 
-export function ListDetailDemo({ shell = true, stage = "desktop", picked = true, variant = "plain", layout = "side" }: { shell?: boolean; stage?: string; picked?: boolean; variant?: ListDetailVariant; layout?: ListDetailLayout }) {
+export function ListDetailDemo({ shell = true, stage = "desktop", picked = true, variant = "plain", layout = "side", loading = false }: { shell?: boolean; stage?: string; picked?: boolean; variant?: ListDetailVariant; layout?: ListDetailLayout; loading?: boolean }) {
   const nested = variant === "nested" || variant === "tree";
   // Tree starts with the first account open, so its invoices show under it.
   const [expanded, setExpanded] = useState<string[]>([LIST_DETAIL_ACCOUNTS[0].id]);
@@ -2844,6 +2852,7 @@ export function ListDetailDemo({ shell = true, stage = "desktop", picked = true,
   const view = (
     <ListDetail
       label="Invoices"
+      loading={loading}
       open={Boolean(invoice)}
       onBack={() => setOpenId(null)}
       backLabel="Back to invoices"
@@ -2913,7 +2922,8 @@ export function ListDetailDemo({ shell = true, stage = "desktop", picked = true,
         }
         nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
-        pageHeader={<PageHeader title="Invoices" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />}
+        loading={loading} loadingLabel="Loading invoices"
+        pageHeader={<PageHeader title="Invoices" icon="receipt_long" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />}
       >
         {view}
       </AppShell>
