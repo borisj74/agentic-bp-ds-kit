@@ -15,6 +15,7 @@ import styles from "./Dropdown.module.css";
 
 export type DropdownTrigger = "button" | "filter" | "field";
 export type DropdownAlignment = "left" | "right";
+export type DropdownIconStyle = "tile" | "plain";
 
 export interface DropdownItem {
   id: string;
@@ -39,6 +40,7 @@ export type DropdownProps = ButtonPair & {
   iconOnly?: boolean;
   count?: number;
   alignment?: DropdownAlignment;
+  iconStyle?: DropdownIconStyle;
   disabled?: boolean;
   closeOnSelect?: boolean;
   open?: boolean;
@@ -68,7 +70,7 @@ const enabledItems = (panel: HTMLElement | null) =>
 
 export function Dropdown({
   label, items, trigger = "button", emphasis = "subtle", intent, size: ownSize, icon, iconOnly = false, count = 0,
-  alignment = "left", disabled = false, closeOnSelect = true, open: openProp, onOpenChange, onSelect,
+  alignment = "left", iconStyle = "tile", disabled = false, closeOnSelect = true, open: openProp, onOpenChange, onSelect,
   multiple = false, id, text, muted = false, badge, toggle, onToggle, labelledBy, describedBy,
   searchable = false, searchPlaceholder = "Search", empty = "No results.", menuWidth = "default",
 }: DropdownProps) {
@@ -222,7 +224,7 @@ export function Dropdown({
         </Button>
       )}
       {open && typeof document !== "undefined" && createPortal(
-        <div ref={panelRef} data-density={density} id={menuId} role="menu" aria-label={label} className={styles.panel} onKeyDown={onMenuKey}>
+        <div ref={panelRef} data-density={density} id={menuId} role="menu" aria-label={label} className={[styles.panel, iconStyle === "plain" ? styles.plainIcons : ""].join(" ")} onKeyDown={onMenuKey}>
           {searchable && (
             <div className={styles.search}>
               <Input size="sm" hideLabel label={`Search ${label}`} type="search" iconStart="search" placeholder={searchPlaceholder} value={query} onChange={setQuery} />

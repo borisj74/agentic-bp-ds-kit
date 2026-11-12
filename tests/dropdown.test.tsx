@@ -85,4 +85,38 @@ describe("Dropdown", () => {
     await user.keyboard("{ArrowDown}{Enter}");
     expect(onSelect).toHaveBeenCalledWith("duplicate");
   });
+
+  describe("iconStyle", () => {
+    const ICONS: DropdownEntry[] = [
+      { id: "edit", label: "Edit", icon: "edit" },
+      { divider: true },
+      { id: "delete", label: "Delete", icon: "delete", danger: true },
+    ];
+    const open = async (iconStyle?: "tile" | "plain") => {
+      const user = userEvent.setup();
+      const view = render(<Dropdown label="Actions" items={ICONS} iconStyle={iconStyle} />);
+      await user.click(screen.getByRole("button", { name: /^Actions/ }));
+      return { menu: screen.getByRole("menu"), view };
+    };
+
+    it("tile (default) has no plain modifier and wraps the icon in a tile", async () => {
+      const { menu } = await open();
+      expect(menu.className).not.toMatch(/plainIcons/);
+      expect(item("Edit").querySelector('[class*="tile"]')).not.toBeNull();
+    });
+
+    it("plain puts the modifier on the panel", async () => {
+      const { menu } = await open("plain");
+      expect(menu.className).toMatch(/plainIcons/);
+    });
+
+    it("danger item keeps its bare trailing icon under either value", async () => {
+      for (const style of ["tile", "plain"] as const) {
+        const { view } = await open(style);
+        expect(item("Delete").querySelector('[class*="tile"]')).toBeNull();
+        expect(item("Delete").querySelector('[class*="end"]')).not.toBeNull();
+        view.unmount();
+      }
+    });
+  });
 });
