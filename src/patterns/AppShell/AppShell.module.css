@@ -98,3 +98,9 @@
 @media (prefers-reduced-motion: reduce) {
   .nav, .navOpen, .scrim { transition: none; animation: none; }
 }
+
+/* The last step of the boot sequence: the real content fades in over --motion-boot-settle, so the page arrives
+   rather than appearing. No fade for anyone who asked for no motion. */
+.settling { animation: settle var(--motion-boot-settle) var(--motion-ease-out); }
+@keyframes settle { from { opacity: var(--opacity-0); } }
+@media (prefers-reduced-motion: reduce) { .settling { animation: none; } }

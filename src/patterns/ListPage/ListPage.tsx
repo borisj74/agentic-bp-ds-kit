@@ -2,6 +2,7 @@
 import type { ReactNode } from "react";
 import { Callout } from "@/ui/Callout/Callout";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
+import { useBootSkeleton } from "@/ui/LoadingLine/boot";
 import { useStickyBand } from "../band";
 import styles from "./ListPage.module.css";
 
@@ -34,6 +35,9 @@ export interface ListPageProps {
 export function ListPage({
   children, toolbar, meta, pagination, bulk, state = "ready", empty, error, onRetry, loadingRows = 12, loadingColumns = 5, label,
 }: ListPageProps) {
+  // The skeleton follows the frame's boot sequence: held back for the first 200ms, then kept its full 400ms.
+  // On its own, outside a booting frame, a loading list still draws it at once.
+  const { skeleton: booting } = useBootSkeleton(state === "loading");
   const rows = state === "ready";
   // The bar over the rows is the band that holds at the top of the page: the shared plumbing measures it,
   // says where a Table's column names stop, and marks the band and its lift as the page scrolls.
@@ -56,7 +60,7 @@ export function ListPage({
       {/* The rows and their pages are one block: the page bar is the table's footer, flush under it. */}
       <div className={styles.body}>
         {rows && children}
-        {state === "loading" && (
+        {booting && (
           // The shape of the real list, so the page keeps its height until the rows arrive: a 40px row of column
           // names over 44px rows, each ending in the Actions column (BP COBALT item 1, screen 03).
           <div className={styles.loading} style={{ "--boot-columns": Math.max(1, loadingColumns) } as React.CSSProperties}>

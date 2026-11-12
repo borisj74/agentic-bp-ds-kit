@@ -12,6 +12,7 @@ import { HelpPopover } from "../HelpPopover/HelpPopover";
 import { Icon } from "../Icon/Icon";
 import { Input } from "../Input/Input";
 import { Skeleton } from "../Skeleton/Skeleton";
+import { useBootSkeleton } from "../LoadingLine/boot";
 // The search trigger reuses Input's small field box, so it looks like the plain search field.
 import field from "../Input/Input.module.css";
 import { Tooltip } from "../Tooltip/Tooltip";
@@ -76,6 +77,7 @@ export function Toolbar({
   searchValue, onSearchChange, searchPlaceholder = "Search in list", searchGroups, onSearchSelect, onSearchViewAll, field: control, selectedCount = 0,
   views = [], view: viewProp, onViewChange, onRefresh, moreActions, onMoreSelect, actions, buttons = "raised", loading = false, label = "List tools",
 }: ToolbarProps) {
+  const { skeleton: booting } = useBootSkeleton(loading);
   const barId = useId();
   const density = usePortalDensity(); // the portalled popup keeps the surrounding Density
   const [innerOpen, setInnerOpen] = useState(defaultFiltersOpen);
@@ -214,9 +216,10 @@ export function Toolbar({
     </>
   );
 
+  // Inside a booting frame the bar waits its turn in the sequence; on its own it draws at once.
   // Booting: the bar keeps its own band, height and rhythm, and every control it was given stands as a plain
   // block of its width — nothing inside a button, so a skeleton never pretends to have words in it.
-  if (loading) {
+  if (booting) {
     const pill = (key: string, width: number | string) => (
       <Skeleton key={key} shape="rect" tone="band" animation="pulse" width={width} height="var(--control-small)" label="" />
     );

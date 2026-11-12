@@ -1286,6 +1286,9 @@
   --motion-loading-easing: var(--motion-ease-in-out);
   --motion-slide-duration: 1100ms;
   --motion-slide-easing: var(--motion-ease-slide);
+  --motion-boot-line: 200ms;
+  --motion-boot-hold: 400ms;
+  --motion-boot-settle: 150ms;
   --motion-spin-duration: 1000ms;
   --motion-sweep-duration: 6000ms;
   --motion-sweep-easing: var(--motion-ease-in-out);

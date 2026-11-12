@@ -69,6 +69,7 @@ import { Section, type SectionProps } from "@/ui/Section/Section";
 import { Segmented, type SegmentedProps } from "@/ui/Segmented/Segmented";
 import { TextLoader, type TextLoaderProps } from "@/ui/TextLoader/TextLoader";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
+import { BootPlayer, type BootSpeed } from "./BootPlayer";
 import { Spinner, type SpinnerProps } from "@/ui/Spinner/Spinner";
 import { Steps, type StepsProps } from "@/ui/Steps/Steps";
 import { Select, type SelectProps } from "@/ui/Select/Select";
@@ -1258,19 +1259,24 @@ export const registry: Record<string, Entry> = {
   },
   ListPage: {
     // The pattern, driven the way a screen would drive it: the filters, the ticks and the page live in the screen.
-    render: ({ state, shell, stage, ...p }) => (
-      <ListPageDemo
-        {...(p as Record<string, unknown>)}
-        state={(state as "ready" | "loading" | "empty" | "error") ?? "ready"}
-        shell={shell !== false}
-        stage={String(stage ?? "desktop")}
-      />
+    render: ({ state, shell, stage, boot, ...p }) => (
+      // Boot plays the whole load over time and reads out the skeleton's own timing rule as it runs.
+      <BootPlayer speed={(boot as BootSpeed) ?? "off"}>
+        {(booting) => (
+          <ListPageDemo
+            {...(p as Record<string, unknown>)}
+            state={booting ? "loading" : ((state as "ready" | "loading" | "empty" | "error") ?? "ready")}
+            shell={shell !== false}
+            stage={String(stage ?? "desktop")}
+          />
+        )}
+      </BootPlayer>
     ),
     preview: { state: "ready" },
     hide: ["children", "toolbar", "pagination", "bulk", "empty", "error", "onRetry", "label", "loadingRows", "loadingColumns"],
     toggles: { shell: { label: "In the app frame", default: true } },
-    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
-    hint: "Stage narrows the box the frame lives in, so watch the list on a phone. Switch between Table View, List View and Card View: the same records, laid out three ways. Tick rows and the bar over the list becomes what can be done to them. In Table View the bar, the rows and the pages hold still as one block: scroll and whatever sits above the list goes for good, while the rows scroll inside the table's own box with the column names held at its top. Search, set a filter, change the page size, and switch the state to see the loading, empty and failed lists. Turn the frame off to see the list on its own.",
+    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" }, boot: { values: ["off", "fast", "typical", "slow"], default: "off" } },
+    hint: "Boot plays the page load over time: pick fast, typical or slow and watch the skeleton's timing rule run — the line alone for 200ms, the skeleton held at least 400ms, then the content fading in over 150ms. Fast lands inside the first 200ms, so no skeleton is ever drawn. Stage narrows the box the frame lives in, so watch the list on a phone. Switch between Table View, List View and Card View: the same records, laid out three ways. Tick rows and the bar over the list becomes what can be done to them. In Table View the bar, the rows and the pages hold still as one block: scroll and whatever sits above the list goes for good, while the rows scroll inside the table's own box with the column names held at its top. Search, set a filter, change the page size, and switch the state to see the loading, empty and failed lists. Turn the frame off to see the list on its own.",
     block: true,
     wide: true,
     page: <ListPageDemo state="ready" shell />,
@@ -1569,19 +1575,23 @@ export const registry: Record<string, Entry> = {
   Dashboard: {
     // The pattern in the frame, driven the way a screen would drive it: the dashboard, the open groups and
     // the filters live in the screen.
-    render: ({ state, shell, stage, ...p }) => (
-      <DashboardDemo
-        {...(p as Record<string, unknown>)}
-        state={(state as "ready" | "loading" | "empty") ?? "ready"}
-        shell={shell !== false}
-        stage={String(stage ?? "desktop")}
-      />
+    render: ({ state, shell, stage, boot, ...p }) => (
+      <BootPlayer speed={(boot as BootSpeed) ?? "off"}>
+        {(booting) => (
+          <DashboardDemo
+            {...(p as Record<string, unknown>)}
+            state={booting ? "loading" : ((state as "ready" | "loading" | "empty") ?? "ready")}
+            shell={shell !== false}
+            stage={String(stage ?? "desktop")}
+          />
+        )}
+      </BootPlayer>
     ),
     preview: { state: "ready" },
     hide: ["children", "toolbar", "name", "empty", "loadingRows", "label"],
     toggles: { stickyToolbar: { label: "Bar stays put", default: true }, shell: { label: "In the app frame", default: true } },
-    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
-    hint: "Stage narrows the box the frame lives in, so watch the numbers and the bar on a phone. Fold a group of numbers away, pick another saved dashboard from the bar, and scroll: the page header shrinks to one compact line and the bar stays under it. Switch the state to see the loading and empty dashboards. Turn the frame off to see the dashboard on its own.",
+    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" }, boot: { values: ["off", "fast", "typical", "slow"], default: "off" } },
+    hint: "Boot plays the page load over time and reads out the skeleton's timing rule as it runs. Stage narrows the box the frame lives in, so watch the numbers and the bar on a phone. Fold a group of numbers away, pick another saved dashboard from the bar, and scroll: the page header shrinks to one compact line and the bar stays under it. Switch the state to see the loading and empty dashboards. Turn the frame off to see the dashboard on its own.",
     block: true,
     wide: true,
     page: <DashboardDemo state="ready" shell />,
@@ -1705,13 +1715,18 @@ export const registry: Record<string, Entry> = {
   FormPage: {
     // The pattern in the frame, driven the way a screen would drive it: the values, the folds and what has
     // been saved live in the screen.
-    render: ({ shell, notice, stage, labels, columns, ...p }) => (
-      <FormPageDemo
-        {...(p as Record<string, unknown>)}
-        shell={shell !== false} notice={notice !== false} stage={String(stage ?? "desktop")}
-        labels={labels === "top" ? "top" : "start"}
-        columns={columns === 3 ? 3 : columns === 1 ? 1 : 2}
-      />
+    render: ({ shell, notice, stage, labels, columns, boot, loading, ...p }) => (
+      <BootPlayer speed={(boot as BootSpeed) ?? "off"}>
+        {(booting) => (
+          <FormPageDemo
+            {...(p as Record<string, unknown>)}
+            loading={booting || loading === true}
+            shell={shell !== false} notice={notice !== false} stage={String(stage ?? "desktop")}
+            labels={labels === "top" ? "top" : "start"}
+            columns={columns === 3 ? 3 : columns === 1 ? 1 : 2}
+          />
+        )}
+      </BootPlayer>
     ),
     preview: {},
     hide: ["children", "header", "notice", "onStickyChange", "label", "loadingRows"],
@@ -1724,8 +1739,9 @@ export const registry: Record<string, Entry> = {
     extras: {
       labels: { values: ["start", "top"], default: "start" },
       stage: { values: ["desktop", "laptop", "tablet", "phone", "1920", "2560", "3008"], default: "desktop" },
+      boot: { values: ["off", "fast", "typical", "slow"], default: "off" },
     },
-    hint: "Fill in the new account: the name is the only field that has to be filled in, and Create in the bar saves every group at once. Fold a group away, open one of the three that start closed, and scroll: the name and the notice stay at the top while the fields pass under them. Labels switches the whole form between a label column at the start of each field and a label over it. Columns lays the fields out in one, two or three; each column stops at 554px, so on a big screen the space past the last one stays empty, and the contacts table under the form keeps the full width. Three gives way to two when the page is too narrow for them. Stage 1920, 2560 and 3008 draws the frame at that screen's real width, scaled down to fit. Stage narrows the box the frame lives in, so watch the two columns become one on a phone.",
+    hint: "Boot plays the form's load over time and reads out the skeleton's timing rule as it runs. Fill in the new account: the name is the only field that has to be filled in, and Create in the bar saves every group at once. Fold a group away, open one of the three that start closed, and scroll: the name and the notice stay at the top while the fields pass under them. Labels switches the whole form between a label column at the start of each field and a label over it. Columns lays the fields out in one, two or three; each column stops at 554px, so on a big screen the space past the last one stays empty, and the contacts table under the form keeps the full width. Three gives way to two when the page is too narrow for them. Stage 1920, 2560 and 3008 draws the frame at that screen's real width, scaled down to fit. Stage narrows the box the frame lives in, so watch the two columns become one on a phone.",
     block: true,
     wide: true,
     page: <FormPageDemo shell />,
@@ -1862,15 +1878,25 @@ export const registry: Record<string, Entry> = {
   AppShell: {
     // The pattern, driven the way a screen would drive it: which section, which page and whether the
     // assistant is open all live in the screen.
-    render: ({ assistant, stage, ...p }) => <AppShellDemo {...(p as Record<string, unknown>)} assistant={Boolean(assistant)} stage={String(stage ?? "desktop")} />,
+    render: ({ assistant, stage, boot, loading, ...p }) => (
+      <BootPlayer speed={(boot as BootSpeed) ?? "off"}>
+        {(booting) => (
+          <AppShellDemo
+            {...(p as Record<string, unknown>)}
+            loading={booting || loading === true}
+            assistant={Boolean(assistant)} stage={String(stage ?? "desktop")}
+          />
+        )}
+      </BootPlayer>
+    ),
     preview: { width: "full" },
-    hide: ["children", "header", "nav", "pageHeader", "onPageHeaderStick", "assistant", "assistantOpen"],
+    hide: ["children", "header", "nav", "pageHeader", "onPageHeaderStick", "assistant", "assistantOpen", "bootTiming", "loadingLabel"],
     toggles: {
       assistant: { label: "Assistant open", default: false },
       stickyPageHeader: { label: "Page header stays put", default: true },
     },
-    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
-    hint: "Open the menu button to widen the rail, walk the side nav, and press BP AI in the header to bring the assistant in beside the page. Scroll the page: the page header stays at the top and shrinks to one compact line whose trail ends in the page name. Stage narrows the box the frame lives in, so watch the rail go on a phone. Width caps the page to a reading column; it does not resize the frame.",
+    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" }, boot: { values: ["off", "fast", "typical", "slow"], default: "off" } },
+    hint: "Boot plays the frame's load over time and reads out the skeleton's timing rule as it runs: the line alone for 200ms, the skeleton held at least 400ms, then the content fading in over 150ms; fast lands inside the first 200ms, so no skeleton is drawn. Open the menu button to widen the rail, walk the side nav, and press BP AI in the header to bring the assistant in beside the page. Scroll the page: the page header stays at the top and shrinks to one compact line whose trail ends in the page name. Stage narrows the box the frame lives in, so watch the rail go on a phone. Width caps the page to a reading column; it does not resize the frame.",
     block: true,
     wide: true,
     page: <AppShellDemo assistant stage="desktop" width="full" />,
@@ -2048,17 +2074,21 @@ export const registry: Record<string, Entry> = {
   },
   RecordPage: {
     // The pattern in the frame, driven the way a screen would drive it: the tab and the notice live outside it.
-    render: ({ sticky, shell, stage, columns, loading }) => (
-      <RecordPageDemo
-        sticky={sticky !== false} shell={shell !== false} stage={String(stage ?? "desktop")}
-        columns={columns === 3 ? 3 : columns === 1 ? 1 : 2} loading={loading === true}
-      />
+    render: ({ sticky, shell, stage, columns, loading, boot }) => (
+      <BootPlayer speed={(boot as BootSpeed) ?? "off"}>
+        {(booting) => (
+          <RecordPageDemo
+            sticky={sticky !== false} shell={shell !== false} stage={String(stage ?? "desktop")}
+            columns={columns === 3 ? 3 : columns === 1 ? 1 : 2} loading={booting || loading === true}
+          />
+        )}
+      </BootPlayer>
     ),
     preview: { sticky: true },
     hide: ["children", "header", "tabs", "notice", "toolbar", "summary", "onStickyChange", "labelPosition", "label", "loadingRows"],
     toggles: { sticky: { label: "Top stays put", default: true }, shell: { label: "In the app frame", default: true } },
-    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone", "1920", "2560", "3008"], default: "desktop" } },
-    hint: "Columns lays the details out in one, two or three; each column stops at 554px, so on a big screen the space past the last one stays empty, and the related invoices under the details keep the full width. Stage 1920, 2560 and 3008 draws the frame at that screen's real width, scaled down to fit. Stage narrows the box the frame lives in, so watch the record on a phone. Walk the record's tabs, fold a section of details away, dismiss the notice, and scroll: the name stays at the top and shrinks to one compact line whose trail ends in the record, while the tabs scroll away under it and the bar holds still beneath the name. Turn the frame off to see the record on its own.",
+    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone", "1920", "2560", "3008"], default: "desktop" }, boot: { values: ["off", "fast", "typical", "slow"], default: "off" } },
+    hint: "Boot plays the record's load over time and reads out the skeleton's timing rule as it runs. Columns lays the details out in one, two or three; each column stops at 554px, so on a big screen the space past the last one stays empty, and the related invoices under the details keep the full width. Stage 1920, 2560 and 3008 draws the frame at that screen's real width, scaled down to fit. Stage narrows the box the frame lives in, so watch the record on a phone. Walk the record's tabs, fold a section of details away, dismiss the notice, and scroll: the name stays at the top and shrinks to one compact line whose trail ends in the record, while the tabs scroll away under it and the bar holds still beneath the name. Turn the frame off to see the record on its own.",
     block: true,
     wide: true,
     page: <RecordPageDemo sticky shell />,

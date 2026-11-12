@@ -1,6 +1,7 @@
 "use client";
 import { cloneElement, isValidElement, useCallback, useState, type ReactElement, type ReactNode } from "react";
 import { LoadingLine } from "@/ui/LoadingLine/LoadingLine";
+import { BootContext, useBootPhase, type BootTiming } from "@/ui/LoadingLine/boot";
 import { useStickMark } from "../stick";
 import styles from "./AppShell.module.css";
 
@@ -22,6 +23,7 @@ export interface AppShellProps {
   width?: AppShellWidth;
   loading?: boolean;
   loadingLabel?: string;
+  bootTiming?: BootTiming;
 }
 
 // The frame a product screen sits in: the kit AppHeader across the top, the kit AppNav under it down the side,
@@ -30,7 +32,7 @@ export interface AppShellProps {
 // and the gap between Sections come from the layout tokens, not from the screen.
 export function AppShell({
   children, header, nav, navOpen = false, onNavClose, pageHeader, stickyPageHeader = true, onPageHeaderStick,
-  assistant, assistantOpen = false, assistantSize = "panel", width = "full", loading = false, loadingLabel = "Loading page",
+  assistant, assistantOpen = false, assistantSize = "panel", width = "full", loading = false, loadingLabel = "Loading page", bootTiming,
 }: AppShellProps) {
   // A reading column is the same container the layout classes use elsewhere.
   const page = width === "full" ? children : <div className={`layout-container-${width}`}>{children}</div>;
@@ -44,11 +46,17 @@ export function AppShell({
   }, [onPageHeaderStick]);
   const mark = useStickMark(onStick);
 
+  // The frame keeps the boot sequence (contracts/loadingline.json, DSL-199): the line alone for 200ms, then the
+  // skeleton for at least 400ms, then the content fading in over 150ms. A page that lands inside the first
+  // 200ms never shows a skeleton at all.
+  const boot = useBootPhase(loading, bootTiming);
+
   // Booting, the whole frame is still arriving, so the bar and the rail show their own boot state too: the frame
-  // hands loading down to the kit AppHeader, AppNav and PageHeader it was given, and a screen wires nothing.
+  // hands the sequence's skeleton step down to the kit AppHeader, AppNav and PageHeader it was given, and a
+  // screen wires nothing.
   type LoadProps = { loading?: boolean };
   const booting = (slot: ReactNode) =>
-    loading && isValidElement(slot) ? cloneElement(slot as ReactElement<LoadProps>, { loading: true }) : slot;
+    boot.showSkeleton && isValidElement(slot) ? cloneElement(slot as ReactElement<LoadProps>, { loading: true }) : slot;
 
   // A screen that sets sticky itself keeps what it set; everything else follows the frame. Whether the bar
   // draws its own edge is settled in CSS: a page with a pinned band under the bar carries the edge there.
@@ -60,9 +68,13 @@ export function AppShell({
     })
     : booted;
   return (
-    // data-frame says this is the frame: panels that float out of the bar or the rail (menus, tooltips, the search
-    // dropdown) keep inside it, so nothing hangs over what is beside a frame docked in a preview or a split view.
-    <div className={styles.shell} data-frame="">
+    // The sequence is published to everything inside the frame, so the chrome's skeletons and the page
+    // pattern's appear and leave together instead of each keeping its own clock.
+    <BootContext.Provider value={boot}>
+      {/* data-frame says this is the frame: panels that float out of the bar or the rail (menus, tooltips, the
+          search dropdown) keep inside it, so nothing hangs over what is beside a frame docked in a preview or a
+          split view. */}
+      <div className={styles.shell} data-frame="">
       {/* The bar runs the full width; the rail starts under it. */}
       {booting(header)}
       {/* A full assistant covers the page and its header, but the page stays mounted under it, and the assistant
@@ -80,15 +92,15 @@ export function AppShell({
         <div className={styles.column}>
           {/* The page is still arriving: the 2px line sits level with the top of the rail, riding the bar's own
               edge, so it has no track of its own and adds no height. */}
-          {loading && (
+          {boot.showLine && (
             <div className={styles.loadingLine}>
               <LoadingLine track="none" label={loadingLabel} />
             </div>
           )}
         {/* Only the page scrolls, so a sticky page header sticks and the bar and the rail stay put. */}
         <main
-          className={["layout-content", styles.page, pageHeader && stickyPageHeader ? styles.pinnedHead : ""].join(" ")}
-          aria-busy={loading || undefined}
+          className={["layout-content", styles.page, pageHeader && stickyPageHeader ? styles.pinnedHead : "", boot.settling ? styles.settling : ""].join(" ")}
+          aria-busy={boot.phase !== "idle" || undefined}
         >
           {/* The page header stays at the top while the page scrolls under it. It pins flush to the top edge
               of the page rather than one inset below it, so no strip of page shows above the bar. */}
@@ -103,6 +115,7 @@ export function AppShell({
         </div>
         {assistant && assistantOpen && <aside className={styles.assistant} aria-label="Assistant">{assistant}</aside>}
       </div>
-    </div>
+      </div>
+    </BootContext.Provider>
   );
 }

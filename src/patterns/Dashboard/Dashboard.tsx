@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { useStickyBand } from "../band";
 import { Section } from "@/ui/Section/Section";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
+import { useBootSkeleton } from "@/ui/LoadingLine/boot";
 import styles from "./Dashboard.module.css";
 
 // The widths and heights a booting Home takes: a few rows of a message list, and one chart's bars.
@@ -31,6 +32,8 @@ export interface DashboardProps {
 export function Dashboard({
   children, toolbar, meta, name, stickyToolbar = true, state = "ready", empty, loadingRows = 5, label,
 }: DashboardProps) {
+  // The skeleton follows the frame's boot sequence; on its own it still draws at once.
+  const { skeleton: booting } = useBootSkeleton(state === "loading");
   const groups = state === "ready";
   // The bar is the band that holds at the top: the shared plumbing measures it and says where a Table in the
   // groups stops its column names, so they come to rest under the bar instead of crossing it. The tables are
@@ -53,7 +56,7 @@ export function Dashboard({
       {/* Which dashboard this is: a heading, not a control. Switching between saved ones is the bar's job. */}
       {name && state !== "loading" && <h2 className={["text-heading-xl", styles.name].join(" ")}>{name}</h2>}
       {groups && children}
-      {state === "loading" && (
+      {booting && (
         // Booting (BP COBALT item 1, screen 55): the two blocks Home lands on — the rows of a message list and
         // one chart — side by side in the kit's split, which stacks them when there is no room for two.
         <div className="layout-split">

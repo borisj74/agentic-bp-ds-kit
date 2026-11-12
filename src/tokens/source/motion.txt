@@ -38,6 +38,11 @@ motion/loading/easing|{motion/ease/in-out}
 # Loading line (LoadingLine): one pass of the 2px bar across the track. BP COBALT DSL-198. Not in Figma.
 motion/slide/duration|1100ms
 motion/slide/easing|{motion/ease/slide}
+# The boot sequence (BP COBALT item 1, DSL-199): only the loading line for 200ms, then the skeleton for at
+# least 400ms, then the content fades in over 150ms. Not in Figma variables.
+motion/boot/line|200ms
+motion/boot/hold|400ms
+motion/boot/settle|150ms
 # Spinner: one turn of the ticks. Not in Figma.
 motion/spin/duration|1000ms
 # Illustration sweep: the magnifier walking over the message. One slow, unhurried loop. Not in Figma.

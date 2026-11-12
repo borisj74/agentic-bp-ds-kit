@@ -6,6 +6,7 @@ import { Button } from "../Button/Button";
 import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import { Skeleton } from "../Skeleton/Skeleton";
+import { useBootSkeleton } from "../LoadingLine/boot";
 import { Tooltip } from "../Tooltip/Tooltip";
 import { titleCase } from "../titleCase";
 import styles from "./PageHeader.module.css";
@@ -38,7 +39,9 @@ export function PageHeader({
   const heading = titleCase(title);
   // Booting, the title row holds nothing but its own shapes: a crumb trail, the page icon if there is one, and
   // the title. No buttons — a page that has not arrived has nothing to act on yet.
-  const hasControls = !loading && (Boolean(actions) || Boolean(moreActions?.length));
+  // Inside a booting frame the title row waits its turn in the sequence; on its own it draws at once.
+  const { skeleton: booting } = useBootSkeleton(loading);
+  const hasControls = !booting && (Boolean(actions) || Boolean(moreActions?.length));
   // back is a shortcut to where the page was opened from, so a screen can pass the route (href), its own
   // handler (onClick), or neither and get the browser's own step back. The label is the button's name and
   // its tooltip, so it says where it goes rather than just "Back".
@@ -66,7 +69,7 @@ export function PageHeader({
       {/* The header measures its own width; the bar inside is what lays out to it, so a narrow header stacks. */}
       <div className={styles.bar}>
       <div className={[styles.title, sticky ? styles.stickyTitle : ""].join(" ")}>
-        {loading ? (
+        {booting ? (
           // The name is still read out, so the page has a heading before anything arrives; the bars stand in
           // for what it will say.
           <>

@@ -2,6 +2,7 @@
 import type { ReactNode } from "react";
 import { FormLayoutContext, type FieldColumns, type FieldLabelPosition } from "@/ui/Form/FormContext";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
+import { useBootSkeleton } from "@/ui/LoadingLine/boot";
 import { useStickyBand } from "../band";
 import { useStickMark } from "../stick";
 import styles from "./RecordPage.module.css";
@@ -35,8 +36,10 @@ export function RecordPage({
   children, header, tabs, notice, toolbar, summary, sticky = true, onStickyChange, columns = 2, labelPosition = "start",
   loading = false, loadingRows = 16, label,
 }: RecordPageProps) {
+  // The skeleton follows the frame's boot sequence; on its own, outside a booting frame, it draws at once.
+  const { skeleton: booting } = useBootSkeleton(loading);
   // Booting, the tab strip stands as its own row of bars: the tabs are there, their names are not yet.
-  const bootTabs = loading && tabs ? (
+  const bootTabs = booting && tabs ? (
     <div className={styles.loadingTabs}>
       {BOOT_TABS.map((w, i) => (
         <Skeleton key={i} shape="rect" animation="pulse" width={w} height="var(--skeleton-cell)" label="" />
@@ -65,7 +68,7 @@ export function RecordPage({
       {top && (
         <div className={styles.top}>
           {(bootTabs || tabs) && <div className={styles.tabs}>{bootTabs ?? tabs}</div>}
-          {notice && !loading && <div className={styles.notice}>{notice}</div>}
+          {notice && !booting && <div className={styles.notice}>{notice}</div>}
         </div>
       )}
       {/* The bar is a child of the record, not of the block above it: a sticky box can only hold inside its own
@@ -74,12 +77,12 @@ export function RecordPage({
       {/* The lift under the pinned band, which the bar and the sections cannot cast themselves: they keep the
           page's side padding and this reaches the page edges. */}
       {toolbar && <div ref={shadowRef} aria-hidden="true" data-scroll-shadow="" className={styles.scrollShadow} />}
-      {summary && !loading && <div className={styles.summary}>{summary}</div>}
+      {summary && !booting && <div className={styles.summary}>{summary}</div>}
       {/* The record sets the columns and the labels once: every Section of FormDisplay rows (and any Form) in the
           details follows them unless it sets its own. Sections of Tables keep the full width. */}
       {/* Booting: shaded label cells and their values, 37px apart, in the record's own columns (BP COBALT item 1,
           screen 56). The kit's split is what breaks them back to one column, so a narrow record reads as one. */}
-      {loading ? (
+      {booting ? (
         <div className={columns === 1 ? styles.loadingOne : "layout-split"}>
           {Array.from({ length: columns === 1 ? 1 : 2 }, (_, col) => (
             <div key={col} className={styles.loadingColumn}>
