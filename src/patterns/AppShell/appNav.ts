@@ -1,10 +1,17 @@
-import type { AppNavEntry, AppNavItem } from "@/ui/AppNav/AppNav";
+import type { AppNavChild, AppNavEntry, AppNavItem, AppNavLink } from "@/ui/AppNav/AppNav";
 
 // The app's full navigation: every rail section and every link in its menu, top to bottom. Every screen in an
 // AppShell passes these to the kit AppNav as they are, so each prototype carries the same whole nav. Do not trim,
 // reorder or invent links; mark the screen's own page with current instead. "-" is a divider.
-const menu = (section: string, labels: string[]) =>
-  labels.map((l) => (l === "-" ? { divider: true as const } : { id: `${section}-${l.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, label: l }));
+const menu = (section: string, labels: string[]): AppNavChild[] =>
+  labels.map((l) => (l === "-" ? { divider: true as const } : link(section, l)));
+const link = (section: string, label: string): AppNavLink => ({
+  id: `${section}-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+  label,
+});
+// A named folder in a section's menu: the header names the run of links under it.
+const group = (section: string, label: string, labels: string[]): AppNavChild =>
+  ({ label, items: labels.map((l) => link(section, l)) });
 
 export const APP_NAV: AppNavEntry[] = [
   { id: "home", label: "Home", icon: "home", children: menu("home", ["Home Dashboards", "Approval Management", "Alert Groups", "Grouped Activity"]) },
@@ -14,7 +21,13 @@ export const APP_NAV: AppNavEntry[] = [
   { id: "quotes", label: "Quotes", icon: "request_quote", children: menu("quotes", ["Quotes", "Quote Rules", "Product Relationships"]) },
   { id: "orders", label: "Orders", icon: "shopping_cart" },
   { id: "billing", label: "Billing", icon: "receipt_long", children: menu("billing", ["Invoices", "Invoice Management", "Statements", "Electronic Files", "Invoice Periods", "Tiered Pricing", "Bulk Actions"]) },
-  { id: "ar", label: "AR", icon: "account_balance", children: menu("ar", ["Account Ledgers", "Payments & Refunds", "BP Payouts", "Payouts", "Chargebacks", "Scheduled Payment Retries", "-", "Lockbox Files", "Lockbox Matching Rules", "Unreconciled Payments", "-", "Credit Memos", "Bulk Approve/Reject Credits"]) },
+  // AR names its folders (BP COBALT 1953:85844): the same links as before, under four group headers.
+  { id: "ar", label: "AR", icon: "account_balance", children: [
+    group("ar", "Ledgers", ["Account Ledgers"]),
+    group("ar", "Payments", ["Payments & Refunds", "BP Payouts", "Payouts", "Chargebacks", "Scheduled Payment Retries"]),
+    group("ar", "Lockbox", ["Lockbox Files", "Lockbox Matching Rules", "Unreconciled Payments"]),
+    group("ar", "Credits", ["Credit Memos", "Bulk Approve/Reject Credits"]),
+  ] },
   { id: "revenue", label: "Revenue", icon: "monetization_on", children: menu("revenue", ["Month-End Close Dashboard", "Chart of Accounts", "Chart of Account Categories", "General Ledger", "General Ledger Rules", "Journal Entries", "Ledger Accrual History", "-", "SSP Profiles", "Revenue Allocation Groups", "Revenue Allocation Routines", "-", "Accounting Period Configuration", "Legal Entities"]) },
   { id: "mediation", label: "Mediation", icon: "speed", children: menu("mediation", ["Usage Collectors", "Usage Identifiers", "MDL Events", "Unaggregated Data Browser", "Usage Reload", "Usage Data"]) },
   { divider: true },
@@ -34,7 +47,10 @@ export function appNavPlace(id: string): { section: string; page: string; icon?:
     if (entry.id === id) return { section: entry.label, page: entry.label, icon: entry.icon };
     for (const child of entry.children ?? []) {
       if ("divider" in child) continue;
-      if (child.id === id) return { section: entry.label, page: child.label, icon: entry.icon };
+      // A group holds its own links; a page under one still reads as a page of the section.
+      for (const link of "items" in child ? child.items : [child]) {
+        if (link.id === id) return { section: entry.label, page: link.label, icon: entry.icon };
+      }
     }
   }
   const end = APP_NAV_END.find((e) => e.id === id);
