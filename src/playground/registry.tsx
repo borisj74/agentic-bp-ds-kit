@@ -1123,21 +1123,27 @@ export const registry: Record<string, Entry> = {
   },
   ListDetail: {
     // The pattern in the frame on Billing › Invoices, driven the way a screen would drive it: the open invoice lives in the screen.
-    render: ({ shell, stage, open, variant, layout }) => (
-      <ListDetailDemo
-        key={`${open}-${variant}-${layout}`} shell={shell !== false} stage={String(stage ?? "desktop")} picked={open !== false}
-        variant={(variant as ListDetailVariant | undefined) ?? "plain"} layout={(layout as ListDetailLayout | undefined) ?? "side"}
-      />
+    render: ({ shell, stage, open, variant, layout, boot, loading }) => (
+      <BootPlayer speed={(boot as BootSpeed) ?? "off"}>
+        {(booting) => (
+          <ListDetailDemo
+            key={`${open}-${variant}-${layout}`} shell={shell !== false} stage={String(stage ?? "desktop")} picked={open !== false}
+            variant={(variant as ListDetailVariant | undefined) ?? "plain"} layout={(layout as ListDetailLayout | undefined) ?? "side"}
+            loading={booting || loading === true}
+          />
+        )}
+      </BootPlayer>
     ),
     // Open over the contract default, so the preview starts with an invoice showing.
     preview: { open: true },
-    hide: ["list", "detail", "open", "title", "actions", "empty", "onBack", "backLabel", "label"],
+    hide: ["list", "detail", "open", "title", "actions", "empty", "onBack", "backLabel", "label", "loadingRows"],
     toggles: { shell: { label: "In the app frame", default: true } },
     extras: {
       variant: { values: ["plain", "groups", "template", "actions", "nested", "tree"], default: "plain" },
       stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" },
+      boot: { values: ["off", "fast", "typical", "slow"], default: "off" },
     },
-    hint: "Pick invoices and the pane beside the list follows. Switch the list: groups splits it by status under headers that fold, template adds avatars, unread dots and status lines, actions puts every invoice action in a More menu, nested starts at the accounts, where a click steps into one's invoices with Back to return, and tree opens an account's invoices right under it. Set layout to stacked for the record under the list, or inline for the record under its row. Set the stage to phone: the list shows alone, a row opens the invoice over it, and Back returns. Turn the frame off to see the pattern on its own.",
+    hint: "Boot plays the page load over time and reads out the skeleton's timing rule as it runs. Pick invoices and the pane beside the list follows. Switch the list: groups splits it by status under headers that fold, template adds avatars, unread dots and status lines, actions puts every invoice action in a More menu, nested starts at the accounts, where a click steps into one's invoices with Back to return, and tree opens an account's invoices right under it. Set layout to stacked for the record under the list, or inline for the record under its row. Set the stage to phone: the list shows alone, a row opens the invoice over it, and Back returns. Turn the frame off to see the pattern on its own.",
     block: true,
     wide: true,
     page: <ListDetailDemo shell />,
@@ -1154,17 +1160,25 @@ export const registry: Record<string, Entry> = {
   },
   SettingsPage: {
     // The pattern in the frame, driven the way a screen would drive it: which place is chosen lives in the screen.
-    render: ({ shell, notice, stage, ...p }) => (
-      <SettingsPageDemo {...(p as Record<string, unknown>)} shell={shell !== false} notice={Boolean(notice)} stage={String(stage ?? "desktop")} />
+    render: ({ shell, notice, stage, boot, loading, ...p }) => (
+      <BootPlayer speed={(boot as BootSpeed) ?? "off"}>
+        {(booting) => (
+          <SettingsPageDemo
+            {...(p as Record<string, unknown>)}
+            loading={booting || loading === true}
+            shell={shell !== false} notice={Boolean(notice)} stage={String(stage ?? "desktop")}
+          />
+        )}
+      </BootPlayer>
     ),
     preview: {},
-    hide: ["children", "intro", "label"],
+    hide: ["children", "intro", "label", "loadingTiles"],
     toggles: {
       notice: { label: "Something to say first", default: false },
       shell: { label: "In the app frame", default: true },
     },
-    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" } },
-    hint: "Stage narrows the box the frame lives in, so watch the tiles and the rail on a phone. Every place under Settings, each tile its own color. Pick one and the side nav follows. Turn the notice on for a line that has to be read before the tiles, and the frame off to see the settings home on its own.",
+    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" }, boot: { values: ["off", "fast", "typical", "slow"], default: "off" } },
+    hint: "Boot plays the page load over time and reads out the skeleton's timing rule as it runs. Stage narrows the box the frame lives in, so watch the tiles and the rail on a phone. Every place under Settings, each tile its own color. Pick one and the side nav follows. Turn the notice on for a line that has to be read before the tiles, and the frame off to see the settings home on its own.",
     block: true,
     wide: true,
     page: <SettingsPageDemo shell />,

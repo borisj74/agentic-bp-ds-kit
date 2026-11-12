@@ -335,6 +335,8 @@ skeleton/header-logo|150px
 skeleton/header-user|130px
 skeleton/nav-icon|18px
 skeleton/nav-label|10px
+# A booting settings tile: the kit NavTile's 72 square with its 16 padding above and below it.
+skeleton/tile|104px
 
 # Loading line (BP COBALT DSL-198): the sliding bar is 40% of the track.
 loading-line/bar|40%

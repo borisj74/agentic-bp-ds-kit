@@ -54,3 +54,29 @@
 .single .list { border-inline-end: 0; }
 .inline .head { min-height: 0; padding: 0 0 var(--space-small); }
 .inline .body { padding: 0; }
+
+/* Booting: the rows the list will have, and the record's fields beside them. The row height is the kit
+   ListView's own (a large control with its padding and the row's hairline), so the list does not resize when
+   the real rows land. */
+.bootList { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; min-width: 0; }
+.bootRow {
+  box-sizing: border-box; display: flex; align-items: center; gap: var(--space-small);
+  min-height: calc(var(--control-large) + var(--space-small) * 2 + var(--space-xxsmall));
+  padding: var(--space-small) var(--space-medium);
+  border-bottom: var(--border-width-thin) solid var(--border-neutral-faint);
+}
+.bootLines { display: flex; flex-direction: column; gap: var(--space-xxsmall); flex: 1; min-width: 0; }
+
+/* The pane's side: the record's own header band, then its label and value rows 37px apart, as on a record page. */
+.bootRecord { display: flex; flex-direction: column; min-width: 0; }
+.bootHead {
+  display: flex; align-items: center; min-height: calc(var(--control-large) + var(--space-xxsmall));
+  padding-inline: var(--layout-margin-md);
+  border-bottom: var(--border-width-thin) solid var(--border-neutral-faint);
+}
+.bootBody { display: flex; flex-direction: column; padding: var(--layout-margin-md); min-width: 0; }
+.bootField {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: center;
+  column-gap: var(--space-medium); height: var(--skeleton-record-row); min-width: 0;
+  border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
+}

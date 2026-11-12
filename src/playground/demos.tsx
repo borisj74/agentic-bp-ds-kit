@@ -1845,6 +1845,7 @@ export function SettingsPageDemo({ shell = true, notice = false, stage = "deskto
         }
         nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
+        loading={p.loading} loadingLabel="Loading settings"
         pageHeader={
           <PageHeader
             title={chosen ? chosen.title : "Settings"}
@@ -2833,7 +2834,7 @@ const LIST_DETAIL_TEMPLATE: ListViewItem[] = LIST_DETAIL_INVOICES.map((inv) => (
 // Row actions: every invoice action behind one More button, the same menu as the list on ListPage.
 const LIST_DETAIL_WITH_MENU: ListViewItem[] = LIST_DETAIL_INVOICES.map((inv) => ({ ...inv, menu: INVOICE_ALL_MENU }));
 
-export function ListDetailDemo({ shell = true, stage = "desktop", picked = true, variant = "plain", layout = "side" }: { shell?: boolean; stage?: string; picked?: boolean; variant?: ListDetailVariant; layout?: ListDetailLayout }) {
+export function ListDetailDemo({ shell = true, stage = "desktop", picked = true, variant = "plain", layout = "side", loading = false }: { shell?: boolean; stage?: string; picked?: boolean; variant?: ListDetailVariant; layout?: ListDetailLayout; loading?: boolean }) {
   const nested = variant === "nested" || variant === "tree";
   // Tree starts with the first account open, so its invoices show under it.
   const [expanded, setExpanded] = useState<string[]>([LIST_DETAIL_ACCOUNTS[0].id]);
@@ -2851,6 +2852,7 @@ export function ListDetailDemo({ shell = true, stage = "desktop", picked = true,
   const view = (
     <ListDetail
       label="Invoices"
+      loading={loading}
       open={Boolean(invoice)}
       onBack={() => setOpenId(null)}
       backLabel="Back to invoices"
@@ -2920,7 +2922,8 @@ export function ListDetailDemo({ shell = true, stage = "desktop", picked = true,
         }
         nav={<AppNav items={APP_NAV} endItems={APP_NAV_END} current={section} onNavigate={setSection} expanded={navOpen} />}
         navOpen={navOpen} onNavClose={() => setNavOpen(false)}
-        pageHeader={<PageHeader title="Invoices" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />}
+        loading={loading} loadingLabel="Loading invoices"
+        pageHeader={<PageHeader title="Invoices" icon="receipt_long" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Billing", href: "#" }]} />}
       >
         {view}
       </AppShell>
