@@ -130,6 +130,9 @@
   color: var(--text-neutral-subtle);
 }
 .groupToggle { flex: none; }
+/* The row is tight: 4px under the rule and flush with the first link. The kit's 3px-offset ring would cross both,
+   so this one draws inside the button, like the rail's and the links' rings. */
+.groupHeader .groupToggle:focus-visible { outline-offset: calc(var(--border-width-medium) * -1); }
 .groupLinks { margin: 0; padding: 0; list-style: none; }
 
 /* Overflow rows (Figma 1409:71803): 28px, a chevron, shown only when there is more to scroll to. */
