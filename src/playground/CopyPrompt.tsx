@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/ui/Button/Button";
+import { Icon } from "@/ui/Icon/Icon";
 import type { Contract } from "./Master";
 import { PROMPT_TARGETS, componentPrompt, promptUrl, type PromptTarget } from "./componentPrompt";
 import styles from "./master.module.css";
@@ -44,7 +45,16 @@ export function CopyPrompt({ contract }: { contract: Contract }) {
             aria-label={tool.open ? `Copy prompt and open in ${tool.label}` : `Copy prompt and open the ${tool.label} page`}
             onClick={() => hand(tool.value)}
           >
-            {TOOL_MARKS[tool.value] ?? <span className={styles.toolWord}>{tool.label}</span>}
+            {/* A copied button swaps its mark for a tick, the way the plain Copy button swaps its label: the
+                tools that open a tab show the copy landed somewhere, and a copy-only one has nothing else to show.
+                The mark it replaces stays in place, hidden, so the button keeps its width and the row does not
+                shift while the tick is up. */}
+            <span className={styles.toolSwap}>
+              <span className={copied === tool.value ? styles.toolHidden : undefined} aria-hidden={copied === tool.value}>
+                {TOOL_MARKS[tool.value] ?? <span className={styles.toolWord}>{tool.label}</span>}
+              </span>
+              {copied === tool.value && <Icon name="check" size="sm" />}
+            </span>
           </Button>
         ))}
       </div>

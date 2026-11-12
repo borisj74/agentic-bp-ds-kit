@@ -31,6 +31,10 @@
 :global([data-theme="dark"]) .toolMarkMono { color: #FFFFFF; }
 /* MCP has no brand mark, so its button carries the word instead and takes the width the word needs. */
 .toolButtonWord { width: auto; padding: 0 var(--space-small); }
+/* The mark and the copied tick share one cell, so the button keeps the wider of the two as its width. */
+.toolSwap { display: grid; place-items: center; }
+.toolSwap > * { grid-area: 1 / 1; display: inline-flex; align-items: center; }
+.toolHidden { visibility: hidden; }
 .toolWord { font-size: var(--font-size-xsmall); font-weight: var(--font-weight-medium); letter-spacing: var(--letter-spacing-wide); }
 /* Hidden from the eye, not from a screen reader. Same rule as the catalog shell's, with clip-path: the old clip
    property is deprecated. */

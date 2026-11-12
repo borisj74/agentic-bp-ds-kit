@@ -61,6 +61,21 @@ describe("CopyPrompt", () => {
     expect(features).toContain("noopener");
   });
 
+  it("ticks the tool button it copied from, and clears the tick", async () => {
+    const contract = await buttonContract();
+    const user = setup();
+    render(<CopyPrompt contract={contract} />);
+
+    const mcp = screen.getByRole("button", { name: /open the MCP page/i });
+    expect(mcp.textContent).toContain("MCP");
+    await user.click(mcp);
+    expect(mcp.textContent).toContain("check");
+    // The plain Copy button keeps its own label: a tool copy does not tick it too.
+    expect(screen.getByRole("button", { name: /^copy$/i })).toBeTruthy();
+
+    await vi.waitFor(() => expect(mcp.textContent).not.toContain("check"), { timeout: 2500 });
+  });
+
   it("opens every tool, and MCP opens the catalog's own MCP page", async () => {
     const contract = await buttonContract();
     const user = setup();
