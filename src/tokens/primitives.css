@@ -1289,6 +1289,7 @@
   --motion-boot-line: 200ms;
   --motion-boot-hold: 400ms;
   --motion-boot-settle: 150ms;
+  --motion-breathe-duration: 2000ms;
   --motion-spin-duration: 1000ms;
   --motion-sweep-duration: 6000ms;
   --motion-sweep-easing: var(--motion-ease-in-out);
@@ -1306,6 +1307,8 @@
   --opacity-scrim-soft: var(--opacity-300);
   --opacity-scrim: var(--opacity-500);
   --opacity-full: var(--opacity-700);
+  --opacity-skeleton-pulse: 0.55;
+  --opacity-line-breathe: 0.35;
   --grid-columns: 12;
   --grid-gutter-sm: var(--ref-space-400);
   --grid-gutter-md: var(--ref-space-500);

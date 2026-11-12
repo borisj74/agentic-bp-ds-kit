@@ -37,6 +37,13 @@
 /* Five is the most a dashboard row holds. */
 .layout-metrics--fixed-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 
+/* A pair of blocks that answers to the content it sits in rather than to the window: they sit side by side
+   while there is 860px of content for them and stack below it, which is where BP COBALT item 1 (screen 55)
+   breaks Home's cards. The wrapper is the size container, since a box cannot query itself, and the split
+   inside it is the grid. */
+.layout-cards { container-type: inline-size; min-width: 0; }
+@container (max-width: 860px) { .layout-cards > .layout-split > * { grid-column: 1 / -1; } }
+
 /* Columns of Sections sit the same 24px apart as stacked ones, so a split reads as one grid of blocks. */
 .layout-split { display: grid; gap: var(--layout-gutter-lg); grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr)); }
 .layout-split > * { grid-column: span var(--layout-split-half); min-width: 0; }

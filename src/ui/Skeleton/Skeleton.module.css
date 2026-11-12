@@ -42,7 +42,8 @@
 @keyframes shimmer { from { background-position: -150vw 0; } to { background-position: 50vw 0; } }
 
 .pulse .bone { animation: pulse var(--motion-loading-duration) var(--motion-loading-easing) infinite; }
-@keyframes pulse { 0%, 100% { opacity: var(--opacity-full); } 50% { opacity: var(--opacity-400); } }
+/* The Cobalt skeleton block (DSL-199) pulses between 1 and 0.55 over the loading cycle. */
+@keyframes pulse { 0%, 100% { opacity: var(--opacity-full); } 50% { opacity: var(--opacity-skeleton-pulse); } }
 
 @media (prefers-reduced-motion: reduce) { .shimmer .bone, .pulse .bone { animation: none; background-image: none; } }
 

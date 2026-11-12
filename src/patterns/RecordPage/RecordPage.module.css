@@ -75,7 +75,13 @@
    apart, in the columns the record already sets. Nothing here is a block of its own: it is the shape the
    details will take once they arrive. */
 .loadingTabs { display: flex; align-items: center; gap: var(--space-large); padding-block: var(--space-small); }
-.loadingOne, .loadingColumn { display: flex; flex-direction: column; min-width: 0; }
+.loadingOne, .loadingColumn {
+  display: flex; flex-direction: column; min-width: 0;
+  /* The same cap the real fields take (--layout-column-max, a start label plus a 308 field): on a wide page the
+     room past the last column stays empty rather than the rows stretching, so nothing moves when they arrive.
+     Two capped columns and their gutter come to 1132, inside the 1300 the Cobalt note allows a row. */
+  max-width: var(--layout-column-max);
+}
 .loadingRow {
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: center; gap: var(--space-medium);
   height: var(--skeleton-record-row); min-width: 0;

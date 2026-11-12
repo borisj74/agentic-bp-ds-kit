@@ -22,10 +22,10 @@
   to { inset-inline-start: 100%; }
 }
 
-/* No motion: the bar goes and the whole line breathes instead, on the kit's loading cycle, so the page still
-   says it is busy without anything travelling across it. */
+/* No motion: the bar goes and the whole line breathes in place instead, between 1 and 0.35 over 2s, as the
+   Cobalt component (DSL-198) sets it, so the page still says it is busy without anything travelling across it. */
 @media (prefers-reduced-motion: reduce) {
   .bar { display: none; }
-  .line, .bare { background: var(--bg-brand); animation: breathe var(--motion-loading-duration) var(--motion-loading-easing) infinite; }
+  .line, .bare { background: var(--bg-brand); animation: breathe var(--motion-breathe-duration) var(--motion-loading-easing) infinite; }
 }
-@keyframes breathe { 0%, 100% { opacity: var(--opacity-full); } 50% { opacity: var(--opacity-300); } }
+@keyframes breathe { 0%, 100% { opacity: var(--opacity-full); } 50% { opacity: var(--opacity-line-breathe); } }

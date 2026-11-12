@@ -59,7 +59,8 @@ export function Dashboard({
       {booting && (
         // Booting (BP COBALT item 1, screen 55): the two blocks Home lands on — the rows of a message list and
         // one chart — side by side in the kit's split, which stacks them when there is no room for two.
-        <div className="layout-split">
+        <div className="layout-cards">
+          <div className="layout-split">
           <Section title={label ?? "Dashboard"} loading>
             <div className={styles.loadingList}>
               {Array.from({ length: Math.max(1, loadingRows) }, (_, r) => (
@@ -81,6 +82,7 @@ export function Dashboard({
               ))}
             </div>
           </Section>
+          </div>
         </div>
       )}
       {state === "empty" && empty && <div className={styles.blank}>{empty}</div>}

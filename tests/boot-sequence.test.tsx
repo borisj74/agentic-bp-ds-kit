@@ -28,6 +28,37 @@ describe("the timings", () => {
   });
 });
 
+// The two resting points and the slower breathe come from the Cobalt components, and neither sits on the kit's
+// opacity ramp, so each is a named token the animations point at rather than a number typed into a keyframe.
+describe("the boot state's resting points", () => {
+  const css = (file: string) => readFileSync(file, "utf8");
+
+  it("pulses a skeleton block down to 0.55", () => {
+    expect(token("opacity-skeleton-pulse")).toBe("0.55");
+    expect(css("src/ui/Skeleton/Skeleton.module.css")).toContain("var(--opacity-skeleton-pulse)");
+  });
+
+  it("breathes the loading line down to 0.35 over 2s when motion is off", () => {
+    expect(token("opacity-line-breathe")).toBe("0.35");
+    expect(token("motion-breathe-duration")).toBe("2000ms");
+    const line = css("src/ui/LoadingLine/LoadingLine.module.css");
+    expect(line).toContain("var(--opacity-line-breathe)");
+    expect(line).toContain("var(--motion-breathe-duration)");
+  });
+
+  it("stacks Home's two cards below 860px of the content around them", () => {
+    const layout = css("src/tokens/layout.css").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ");
+    expect(layout).toContain(".layout-cards { container-type: inline-size;");
+    expect(layout).toContain("@container (max-width: 860px) { .layout-cards > .layout-split > * { grid-column: 1 / -1; } }");
+  });
+
+  it("caps a booting record's and form's columns where the real fields stop", () => {
+    for (const file of ["src/patterns/RecordPage/RecordPage.module.css", "src/patterns/FormPage/FormPage.module.css"]) {
+      expect(css(file).replace(/\s+/g, " ")).toContain("max-width: var(--layout-column-max);");
+    }
+  });
+});
+
 function Phase({ loading }: { loading: boolean }) {
   const boot = useBootPhase(loading);
   return <output>{`${boot.phase}|${boot.showLine ? "line" : "-"}|${boot.showSkeleton ? "skeleton" : "-"}`}</output>;

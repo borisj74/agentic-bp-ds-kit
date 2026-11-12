@@ -43,6 +43,8 @@ motion/slide/easing|{motion/ease/slide}
 motion/boot/line|200ms
 motion/boot/hold|400ms
 motion/boot/settle|150ms
+# The loading line with no motion: it breathes in place instead of sliding. BP COBALT DSL-198. Not in Figma.
+motion/breathe/duration|2000ms
 # Spinner: one turn of the ticks. Not in Figma.
 motion/spin/duration|1000ms
 # Illustration sweep: the magnifier walking over the message. One slow, unhurried loop. Not in Figma.
