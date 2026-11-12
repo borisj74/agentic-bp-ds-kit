@@ -10,8 +10,10 @@ export type PromptTool = {
   value: PromptTarget;
   /** Shown as the button's accessible name: "Copy prompt and open in <label>". */
   label: string;
-  /** MCP has none: its prompt points an agent at our own server, so there is nothing to open. */
+  /** The tool's own site, opened with the prompt in the URL. MCP has none: it is our own server. */
   open?: PromptOpen;
+  /** A page in this catalog to open instead, for a target with no site of its own to send the prompt to. */
+  page?: string;
 };
 
 export const PROMPT_TARGETS: PromptTool[] = [
@@ -35,7 +37,7 @@ export const PROMPT_TARGETS: PromptTool[] = [
     label: "v0",
     open: { href: "https://v0.app/chat", param: "q", fallback: "https://v0.app/chat" },
   },
-  { value: "mcp", label: "MCP" },
+  { value: "mcp", label: "MCP", page: "/start/mcp" },
 ];
 
 /**

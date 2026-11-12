@@ -61,7 +61,22 @@ describe("CopyPrompt", () => {
     expect(features).toContain("noopener");
   });
 
-  it("opens every tool but MCP, which only copies", async () => {
+  it("ticks the tool button it copied from, and clears the tick", async () => {
+    const contract = await buttonContract();
+    const user = setup();
+    render(<CopyPrompt contract={contract} />);
+
+    const mcp = screen.getByRole("button", { name: /open the MCP page/i });
+    expect(mcp.textContent).toContain("MCP");
+    await user.click(mcp);
+    expect(mcp.textContent).toContain("check");
+    // The plain Copy button keeps its own label: a tool copy does not tick it too.
+    expect(screen.getByRole("button", { name: /^copy$/i })).toBeTruthy();
+
+    await vi.waitFor(() => expect(mcp.textContent).not.toContain("check"), { timeout: 2500 });
+  });
+
+  it("opens every tool, and MCP opens the catalog's own MCP page", async () => {
     const contract = await buttonContract();
     const user = setup();
     render(<CopyPrompt contract={contract} />);
@@ -77,8 +92,10 @@ describe("CopyPrompt", () => {
     }
 
     open.mockClear();
-    await user.click(screen.getByRole("button", { name: /copy MCP prompt/i }));
-    expect(open).not.toHaveBeenCalled();
+    await user.click(screen.getByRole("button", { name: /open the MCP page/i }));
+    expect(open).toHaveBeenCalledTimes(1);
+    expect(open.mock.calls[0][0]).toBe("/start/mcp");
+    expect(open.mock.calls[0][1]).toBe("_blank");
     expect(writeText.mock.calls.at(-1)?.[0]).toContain("MCP tool");
   });
 });

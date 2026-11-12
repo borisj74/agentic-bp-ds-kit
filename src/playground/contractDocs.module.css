@@ -69,7 +69,8 @@
 }
 
 /* Nothing is pinned above the page any more, so the props table's column names hold at the very top. */
-.props { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-small); margin-top: calc(var(--space-xxlarge) * 2); }
+/* No margin of its own: Props sits the same 40px below the agent panel as every other block in this column. */
+.props { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-small); }
 /* monoWrap stands where a Cell's own wrapper would: the Table's maxWidth rule cuts off the span inside it. */
 .monoWrap { display: flex; align-items: center; min-width: 0; }
 .mono { font-family: var(--font-mono); font-size: var(--font-size-xsmall); color: var(--text-neutral-strong); }

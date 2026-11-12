@@ -70,6 +70,12 @@ describe("defaults and notes", () => {
   });
   it("puts an item shape in front of the note", () => {
     expect(propNote({ itemShape: "{ id: string }", note: "One per row." })).toBe("{ id: string } — One per row.");
+    // A contract may write the shape as a map instead of a line. It used to print as [object Object].
+    expect(propNote({ itemShape: { name: "string", src: "string?" } })).toBe("{ name: string; src: string? }");
+    // The prose a contract writes into a field's type comes off: the column only has room for the type.
+    expect(propNote({ itemShape: { icon: "string? Material Symbols name. Shown in a tile." } })).toBe("{ icon: string? }");
+    expect(propNote({ itemShape: { used: "number How much is used." } })).toBe("{ used: number }");
+    expect(propNote({ itemShape: { status: '"success" | "error"? How it went.' } })).toBe('{ status: "success" | "error"? }');
   });
   it("imports from the kit path the contract gives", () => {
     expect(importLine(read("badge.json"))).toBe('import { Badge } from "@/ui/Badge/Badge";');

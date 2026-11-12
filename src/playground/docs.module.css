@@ -35,3 +35,9 @@
 /* A long prompt wraps instead of scrolling. pre.wrap outranks the code block's own white-space. Its lines stop
    short of the Copy button in the top corner, so wrapped words never run under it. */
 pre.wrap { white-space: pre-wrap; overflow-wrap: anywhere; padding-inline-end: calc(var(--space-xxlarge) * 3 + var(--space-small)); }
+
+/* Code text outside running prose, such as a tool name in a table cell. */
+.mono {
+  font-family: var(--font-mono); font-size: var(--font-size-xsmall); color: var(--text-neutral-strong);
+  background: var(--stage); padding: 0 var(--space-xxsmall); border-radius: var(--radius-small);
+}

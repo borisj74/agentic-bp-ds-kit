@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/ui/Button/Button";
+import { Icon } from "@/ui/Icon/Icon";
 import type { Contract } from "./Master";
 import { PROMPT_TARGETS, componentPrompt, promptUrl, type PromptTarget } from "./componentPrompt";
 import styles from "./master.module.css";
@@ -20,8 +21,10 @@ export function CopyPrompt({ contract }: { contract: Contract }) {
     const prompt = componentPrompt(contract, target);
     copy(target, prompt);
     const tool = PROMPT_TARGETS.find((item) => item.value === target);
-    // MCP has nothing to open: its prompt already points the agent at our own server.
+    // A tool with a site of its own gets the prompt in the URL. MCP has none, so it opens the catalog page that
+    // says how to point an agent at our server.
     if (tool?.open) window.open(promptUrl(tool.open, prompt), "_blank", "noopener,noreferrer");
+    else if (tool?.page) window.open(tool.page, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -39,10 +42,19 @@ export function CopyPrompt({ contract }: { contract: Contract }) {
             // The brand marks are not Material Symbols, so they go in as children rather than through iconStart,
             // and the name a screen reader reads comes from aria-label. The class gives the kit's icon-only width.
             className={TOOL_MARKS[tool.value] ? styles.toolButton : `${styles.toolButton} ${styles.toolButtonWord}`}
-            aria-label={tool.open ? `Copy prompt and open in ${tool.label}` : `Copy ${tool.label} prompt`}
+            aria-label={tool.open ? `Copy prompt and open in ${tool.label}` : `Copy prompt and open the ${tool.label} page`}
             onClick={() => hand(tool.value)}
           >
-            {TOOL_MARKS[tool.value] ?? <span className={styles.toolWord}>{tool.label}</span>}
+            {/* A copied button swaps its mark for a tick, the way the plain Copy button swaps its label: the
+                tools that open a tab show the copy landed somewhere, and a copy-only one has nothing else to show.
+                The mark it replaces stays in place, hidden, so the button keeps its width and the row does not
+                shift while the tick is up. */}
+            <span className={styles.toolSwap}>
+              <span className={copied === tool.value ? styles.toolHidden : undefined} aria-hidden={copied === tool.value}>
+                {TOOL_MARKS[tool.value] ?? <span className={styles.toolWord}>{tool.label}</span>}
+              </span>
+              {copied === tool.value && <Icon name="check" size="sm" />}
+            </span>
           </Button>
         ))}
       </div>
