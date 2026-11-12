@@ -4,6 +4,28 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.10.2 — 2026-11-12
+
+A section's menu can group its links, and the catalog explains a piece the way an agent reads it.
+
+### Added
+- `AppNav` menu children can be groups. A child is now either a link or `{ label, items }`, which draws a named folder header on the rule above its links: a 36px row with a 12px semibold label. Pinned, the header carries a chevron at the far right that folds the group away; in a flyout it is the rule and the label alone and nothing collapses. Groups start open, and a collapse lasts only while the menu is out. The links keep the same 16px inset, so the menu is no wider than before. The kit's own `APP_NAV` uses it on AR — Ledgers, Payments, Lockbox, Credits — over the links that section already had.
+- `Dropdown` takes `iconStyle`, `tile` or `plain`, default `tile`. `plain` drops the tinted square behind a row's icon and leaves the glyph on its own. Same prop and same two values as `GlobalSearch`.
+
+### Changed
+- A component or pattern page in the catalog now reads its contract the way an agent does. When to use sits beside When not to use as plain bullets, with `doNot` split by what each rule says: a rule about the wrong job for the piece goes under When not to use, the rest stay rules you follow while using it. A quiet "What an agent reads" panel lists must, defaults and stops if, with the import line on the heading row and the contract file named at the foot. Under it, a props table — the kit `Table` — with Name, Type, Required, Default and Notes, and Previous / Next at the bottom in the catalog's A to Z order. No component, contract or token changed for this.
+- The catalog's own view switchers are the kit `Segmented`, not `Tabs`: Preview | Variants on every component and pattern page, and the token switchers on Color, Typography, Grid, Motion and the scale pages. The `Tabs` demos still show `Tabs`, since that is the piece they document.
+- "Copy prompt" is one small button per tool — Claude, ChatGPT, Cursor, v0, then MCP — and a plain Copy, on the view bar beside Preview | Variants instead of in a card of its own. A tool button copies that tool's prompt and opens the tool with it already in the query string; MCP and Copy only copy. ChatGPT and v0 get a prompt written for a chat with no checkout behind it, naming the public catalog, the repo and the scaffold command instead of a file path. A pre-filled URL is capped at 8000 characters, so the three heaviest contracts (`BarChart`, `DataGrid`, `Cell`) open the tool empty rather than half-filled; the clipboard still holds the whole prompt.
+- The MCP server from v0.10.1 has a catalog page at `/start/mcp`, listed in the sidebar and the ⌘K palette: what it answers from, that it is for working on the kit and not part of a prototype, how to run it, and the five tools with a real call and answer each.
+- `WaterfallChart` and the catalog shell no longer trip the `react-hooks` lint rules. Same running totals, same ⌘K / Ctrl K hint, no hydration mismatch.
+- The Figma guidelines are 110.0 KB across the five files, down from 154.9 KB, so they fit the size Figma asks for. Property lines are written tight (`size sm|md*|lg`), event handlers are gone, and a property note now keeps every sentence that states a rule — Table's `columns` note had lost all but its first, and with it what `key`, `numeric`, `emphasis`, `width`, `maxWidth` and `opensDetail` do. Re-upload them after this release (step 9 in RELEASING.md).
+
+### Breaking
+- `AppNav`'s expanded rail has no cascade chevron. It is gone from the markup when `expanded` is true, not hidden, because the section row itself now carries `aria-expanded` and `aria-controls`, and Enter on the row opens the menu and moves focus into it; a mouse click still opens the section's first page. The collapsed 56px icon rail keeps its chevron as before. If a screen or a test reaches for that chevron in the expanded state, point it at the section row instead. There is no script to run.
+- The menu header's pin and × sit 16px from the right edge, not 8px, matching the panel's inset on both sides. Nothing to change unless a screenshot test measures it.
+
+Nothing is renamed or removed, so screens on v0.10.1 move over as they are — but read the Breaking list above if a screen or a test reaches into `AppNav`'s expanded rail.
+
 ## v0.10.1 — 2026-11-11
 
 Two ways for an agent to read the kit without opening every file.
