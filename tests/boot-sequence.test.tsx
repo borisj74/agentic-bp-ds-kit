@@ -52,6 +52,18 @@ describe("the boot state's resting points", () => {
     expect(layout).toContain("@container (max-width: 860px) { .layout-cards > .layout-split > * { grid-column: 1 / -1; } }");
   });
 
+  it("puts the fields in one column below 1280px of viewport, boot and real alike", () => {
+    const columns = css("src/ui/Form/columns.module.css").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ");
+    // Above the break the box decides, so every turn that adds a column sits inside the min-width block.
+    expect(columns).toContain("@media (min-width: 1280px) { @container (max-width: 1300px)");
+    expect(columns).toContain("@media (max-width: 1279px) { .two, .three { grid-template-columns: minmax(0, var(--layout-column-max)); } }");
+    // The skeleton follows the same break, so it never disagrees with the fields it stands in for.
+    for (const file of ["src/patterns/RecordPage/RecordPage.module.css", "src/patterns/FormPage/FormPage.module.css"]) {
+      expect(css(file).replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " "))
+        .toContain("@media (max-width: 1279px) { .loadingColumn.loadingColumn { grid-column: 1 / -1; } }");
+    }
+  });
+
   it("caps a booting record's and form's columns where the real fields stop", () => {
     for (const file of ["src/patterns/RecordPage/RecordPage.module.css", "src/patterns/FormPage/FormPage.module.css"]) {
       expect(css(file).replace(/\s+/g, " ")).toContain("max-width: var(--layout-column-max);");

@@ -49,3 +49,10 @@
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: center;
   column-gap: var(--space-medium); height: var(--skeleton-form-row); min-width: 0;
 }
+
+/* The same break the real fields take (src/ui/Form/columns.module.css): one column below 1280px of viewport,
+   whatever room the box has, so the skeleton and the fields it stands in for never disagree. The class is
+   doubled so it outranks .layout-split's own half-width span. */
+@media (max-width: 1279px) {
+  .loadingColumn.loadingColumn { grid-column: 1 / -1; }
+}
