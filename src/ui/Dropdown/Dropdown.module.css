@@ -63,6 +63,13 @@
 }
 .item:hover:not([aria-disabled="true"]) .tile,
 .selected .tile { background: var(--bg-brand-subtle); }
+/* iconStyle plain: just the icon, no tinted tile. Neutral, a step darker on hover and on the selected row.
+   The tile's 4px block margin goes too, so the row is as tall as its text; a description row keeps the icon centred. */
+.plainIcons .tile,
+.plainIcons .item:hover:not([aria-disabled="true"]) .tile,
+.plainIcons .selected .tile { width: auto; height: auto; margin-block: 0; background: none; color: var(--icon-neutral); }
+.plainIcons .item:hover:not([aria-disabled="true"]) .tile,
+.plainIcons .selected .tile { color: var(--icon-neutral-strong); }
 
 .text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-xxsmall); padding-block: var(--space-xxxsmall); }
 .label { overflow-wrap: anywhere; }
