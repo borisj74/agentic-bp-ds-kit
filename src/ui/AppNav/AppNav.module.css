@@ -112,16 +112,17 @@
 .link:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: calc(var(--border-width-medium) * -1); }
 .linkDivider { height: var(--border-width-thin); background: var(--border-neutral); }
 
-/* Named folder inside a menu (Figma 1953:85844). The header sits on the rule that parts it from the group above:
-   the 1px rule, 4px of top padding, then a 28px row — 32px over the rule. The first group in a menu has no rule;
-   the menu header's own border already parts it. */
-.group { border-top: var(--border-width-thin) solid var(--border-neutral); padding-top: var(--space-xxsmall); }
+/* Named folder inside a menu (Figma 1953:85844, header row 2099:91681). The header sits on the rule that parts it
+   from the group above: the 1px rule, then a 36px row — 4px, a 28px control row, 4px — so the collapse button is
+   clear of the rule above and of whatever follows. The first group in a menu has no rule; the menu header's own
+   border already parts it. */
+.group { border-top: var(--border-width-thin) solid var(--border-neutral); }
 .links > .group:first-child { border-top: 0; }
 .groupHeader {
   box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: var(--space-xsmall);
   /* 16px on both sides, like the menu header above it (BP COBALT 1953:85844 insets every row's container 16px):
      the label keeps the links' inset, and the control lands in the menu header's pin column. */
-  height: var(--control-small); padding: 0 var(--space-medium);
+  height: calc(var(--control-small) + var(--space-xxsmall) * 2); padding: var(--space-xxsmall) var(--space-medium);
 }
 /* Quiet on purpose: initial caps as authored, never uppercased, so a header does not pull attention off the links. */
 .groupLabel {
