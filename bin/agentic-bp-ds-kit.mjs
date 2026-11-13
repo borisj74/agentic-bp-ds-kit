@@ -13,6 +13,8 @@ Tools:
   search         Match name, intent, useWhen, and related fields
   get_tokens     Semantic tokens from src/tokens/source/semantic.txt
   get_rules      Kit agent rules (CLAUDE.md / AGENTS.md)
+  review_ui      Review a screen file, or a draft you have not saved yet,
+                 against the contracts. Run it before you hand a screen back.
 
 Options:
   -h, --help     Show this help`;
@@ -21,6 +23,7 @@ const HELP = `Usage: agentic-bp-ds-kit <command>
 
 Commands:
   mcp            Start the read-only stdio MCP server (see: agentic-bp-ds-kit mcp --help)
+  review         Review screens against the kit's contracts (see: agentic-bp-ds-kit review --help)
 
 Run from the kit repo root (this repository).`;
 
@@ -38,11 +41,17 @@ async function main() {
     process.exit(0);
   }
 
-  if (command !== "mcp") {
+  if (command !== "mcp" && command !== "review") {
     die(`unknown command "${command}". Try --help.`);
   }
 
   const rest = argv.slice(1);
+
+  if (command === "review") {
+    const { main: review } = await import("../scripts/review/cli.mjs");
+    process.exit(review(rest));
+  }
+
   if (rest.includes("-h") || rest.includes("--help")) {
     console.log(MCP_HELP);
     process.exit(0);

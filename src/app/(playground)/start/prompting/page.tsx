@@ -155,7 +155,15 @@ export default function Prompting() {
           <div id="check">
             <Section title="Check the result">
               <div className={docs.prose}>
+                <p>
+                  The kit reviews a screen against its own contracts. Run it on the file before you look at the screen:
+                  it names raw colours and spacing, props and values no contract allows, local cousins, a second strong
+                  brand Button, and the bigger piece the screen should have reused. An assistant can run the same check
+                  itself with the <code>review_ui</code> MCP tool, on a draft it has not saved yet.
+                </p>
+                <CodeBlock code="npm run review -- src/app/invoices/page.tsx" />
                 <ul>
+                  <li><strong>Fix every error it reports.</strong> Warnings are advice: read them and decide.</li>
                   <li><strong>Ask the assistant to check it in the browser</strong> and show you a screenshot before you review.</li>
                   <li><strong>Try it at phone and tablet widths,</strong> and in dark mode from the top bar.</li>
                   <li><strong>Click through it:</strong> menus open, dialogs close with Escape, forms show errors, buttons do what they say.</li>
@@ -188,6 +196,7 @@ export default function Prompting() {
                   <li>Said which button is the strong brand one, and which states to show.</li>
                   <li>Said which widths matter.</li>
                   <li>Asked for a plan first on anything bigger than one screen.</li>
+                  <li>Ran <code>npm run review</code> on the screen and fixed the errors.</li>
                   <li>Checked it in the browser at every width before calling it done.</li>
                 </ul>
               </div>

@@ -144,7 +144,8 @@ export const element = (selector) => {
 };
 
 // Only names in a token namespace (--space-*, --bg-* ...) count. Others like --fs are set by the component.
-const isTokenLike = (v, knownVars) => {
+/** True when a custom property sits in a token namespace (--space-*, --bg-* ...), so the kit should know it. */
+export const isTokenLike = (v, knownVars) => {
   const ns = v.split("-")[2];
   for (const k of knownVars) if (k.split("-")[2] === ns) return true;
   return false;
@@ -153,10 +154,11 @@ const isTokenLike = (v, knownVars) => {
 // A custom property the component defines itself (in its CSS or set from its TSX) is not a missing token.
 const localVar = (src, v) => new RegExp(v + "[\"'`]?\\s*[:,]").test(src);
 
-function knownVarNames() {
+/** Every custom property the token files define, so a token outside the set is unknown. */
+export function knownVarNames(from = root) {
   const names = new Set();
-  for (const f of readdirSync(resolve(root, "src/tokens")).filter((f) => f.endsWith(".css"))) {
-    for (const m of readFileSync(resolve(root, "src/tokens", f), "utf8").matchAll(/(--[a-z0-9-]+)\s*:/g)) names.add(m[1]);
+  for (const f of readdirSync(resolve(from, "src/tokens")).filter((f) => f.endsWith(".css"))) {
+    for (const m of readFileSync(resolve(from, "src/tokens", f), "utf8").matchAll(/(--[a-z0-9-]+)\s*:/g)) names.add(m[1]);
   }
   // Set by next/font in src/app/layout.tsx.
   names.add("--font-inter").add("--font-roboto-mono");

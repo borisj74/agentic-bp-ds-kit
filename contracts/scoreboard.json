@@ -4,6 +4,10 @@
   "level": "organism",
   "intent": "A strip of key numbers at the top of a screen, like open invoices, revenue or overdue amount, each with an optional trend and spark chart.",
   "usage": "Use Scoreboard for the 3 to 6 numbers that sum up a screen. It is one component: pass items as data. Each item is a card with a title, the metric, and optional badge, metadata line, trend (arrow, value and unit, colored by status) and spark chart (a small line drawn from points). Cards share the width and run side by side with no gap; every card but the last has a thin line down its right side, the full height of the card. selectable turns each card into a button: picking one marks it selected, like a filter for the list below, and picking it again clears it. Past four cards the Scoreboard puts itself in a Conveyor, so arrows at both ends move the row; the arrows show only when the cards do not fit. See contracts/scoreboard.json for the full contract. On a box narrower than 640px, the kit's mobile break, the cards take a smaller minimum so two are in view, the strip snaps card by card, and the Conveyor's arrows give way to swiping. Inside a loading page it draws its own skeleton in place: the page says loading once (FormLayoutContext, which RecordPage, ListPage, FormPage and Dashboard set), and it takes no loading prop of its own. Every card keeps its box, with a bar where its name, its number, its note and its spark chart will be, and no card is pressable while it is bars.",
+  "composes": [
+    "Badge",
+    "Conveyor"
+  ],
   "props": {
     "items": {
       "type": "ScoreboardItem[]",

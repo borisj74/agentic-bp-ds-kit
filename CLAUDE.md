@@ -62,6 +62,7 @@ Page spacing: 4px grid. Content edge padding and between-section gap come from l
 5. Frame full screens with AppShell and the whole side nav: `items={APP_NAV}` and `endItems={APP_NAV_END}` from `@/patterns/AppShell/appNav`. Never trim or invent nav links; set `current` to the screen's page.
 6. Compose kit pieces. Match closed enums. Do not add variants that are not in the contract. The color-role prop is `intent` (`intent="success"`), never `tone`. Button looks are `emphasis` × `intent`, allowed pairs only (strong: brand, danger · subtle: neutral · minimal: neutral, brand, danger); never `variant`.
 7. If something is missing, stop and ask. Do not scaffold a one-off on the screen.
+8. Before you hand a screen back, run `npm run review -- <file>` (or the `review_ui` MCP tool) and fix the errors.
 
 ## Build order
 

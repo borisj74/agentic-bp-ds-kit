@@ -1,0 +1,6 @@
+/* Bad on purpose: the review has to find bp/primitive-token here. */
+.total {
+  color: var(--text-neutral);
+  /* BAD: bp/primitive-token */
+  padding: var(--ref-space-500);
+}
