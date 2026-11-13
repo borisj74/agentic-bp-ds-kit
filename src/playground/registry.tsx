@@ -31,6 +31,7 @@ import { Count } from "@/ui/Count/Count";
 import { FilterButton } from "@/ui/FilterButton/FilterButton";
 import { ButtonGroup } from "@/ui/ButtonGroup/ButtonGroup";
 import { DataGrid, type DataGridColumn, type DataGridProps, type DataGridRow } from "@/ui/DataGrid/DataGrid";
+import { FormLayoutContext } from "@/ui/Form/FormContext";
 import { DatePicker, type DatePickerProps } from "@/ui/DatePicker/DatePicker";
 import { Dropdown, type DropdownEntry, type DropdownProps } from "@/ui/Dropdown/Dropdown";
 import { Form, type FormProps, type FormLabelWidth } from "@/ui/Form/Form";
@@ -1278,12 +1279,13 @@ export const registry: Record<string, Entry> = {
   },
   ListPage: {
     // The pattern, driven the way a screen would drive it: the filters, the ticks and the page live in the screen.
-    render: ({ state, shell, stage, boot, loadingShape, ...p }) => (
+    render: ({ state, shell, stage, boot, loadingShape, rowsAs, ...p }) => (
       // Boot plays the whole load over time and reads out the skeleton's own timing rule as it runs.
       <BootPlayer speed={(boot as BootSpeed) ?? "off"}>
         {(booting) => (
           <ListPageDemo
             {...(p as Record<string, unknown>)}
+            rowsAs={rowsAs === "datagrid" ? "datagrid" : "table"}
             state={booting ? "loading" : ((state as "ready" | "loading" | "empty" | "error") ?? "ready")}
             loadingShape={loadingShape === "rows" ? "rows" : "content"}
             shell={shell !== false}
@@ -1294,10 +1296,10 @@ export const registry: Record<string, Entry> = {
     ),
     preview: { state: "ready" },
     hide: ["children", "toolbar", "pagination", "bulk", "empty", "error", "onRetry", "label", "loadingRows", "loadingColumns"],
-    labels: { loadingShape: "Skeleton shape" },
+    labels: { loadingShape: "Skeleton shape", rowsAs: "Rows as" },
     toggles: { shell: { label: "In the app frame", default: true } },
-    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" }, boot: { values: ["off", "fast", "typical", "slow"], default: "off" } },
-    hint: "Boot plays the page load over time: pick fast, typical or slow and watch the skeleton's timing rule run — the line alone for 200ms, the skeleton held at least 400ms, then the content fading in over 150ms. Fast lands inside the first 200ms, so no skeleton is ever drawn. Stage narrows the box the frame lives in, so watch the list on a phone. Switch between Table View, List View and Card View: the same records, laid out three ways. Tick rows and the bar over the list becomes what can be done to them. In Table View the bar, the rows and the pages hold still as one block: scroll and whatever sits above the list goes for good, while the rows scroll inside the table's own box with the column names held at its top. Search, set a filter, change the page size, and switch the state to see the loading, empty and failed lists. Skeleton shape says what a loading list draws: content follows the rows this page was given — the table's own columns, its tick cell and its Actions column, or the ListView's rows, or the grid of Cards — so every bar stands where its value will; rows is the fallback grid for a list that has nothing to follow yet. Turn the frame off to see the list on its own.",
+    extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" }, boot: { values: ["off", "fast", "typical", "slow"], default: "off" }, rowsAs: { values: ["table", "datagrid"], default: "table" } },
+    hint: "Rows as swaps the Table View's kit Table for a kit DataGrid, a list people edit in place; switch the state to loading and it boots in its own columns and at its own row heights. Boot plays the page load over time: pick fast, typical or slow and watch the skeleton's timing rule run — the line alone for 200ms, the skeleton held at least 400ms, then the content fading in over 150ms. Fast lands inside the first 200ms, so no skeleton is ever drawn. Stage narrows the box the frame lives in, so watch the list on a phone. Switch between Table View, List View and Card View: the same records, laid out three ways. Tick rows and the bar over the list becomes what can be done to them. In Table View the bar, the rows and the pages hold still as one block: scroll and whatever sits above the list goes for good, while the rows scroll inside the table's own box with the column names held at its top. Search, set a filter, change the page size, and switch the state to see the loading, empty and failed lists. Skeleton shape says what a loading list draws: content follows the rows this page was given — the table's own columns, its tick cell and its Actions column, or the ListView's rows, or the grid of Cards — so every bar stands where its value will; rows is the fallback grid for a list that has nothing to follow yet. Turn the frame off to see the list on its own.",
     block: true,
     wide: true,
     page: <ListPageDemo state="ready" shell />,
@@ -1626,11 +1628,16 @@ export const registry: Record<string, Entry> = {
     ),
   },
   DataGrid: {
-    // Sample columns and rows swap in for their {names}. Keyed so switching controls starts fresh.
-    render: (p) => <DataGrid key={JSON.stringify(p)} {...gridProps(p)} />,
+    // Sample columns and rows swap in for their {names}. Keyed so switching controls starts fresh. state is
+    // playground-only: loading stands in for the page a grid boots inside, which says so on FormLayoutContext.
+    render: ({ state, ...p }) => {
+      const grid = <DataGrid key={JSON.stringify(p)} {...gridProps(p)} />;
+      return state === "loading" ? <FormLayoutContext.Provider value={{ loading: true }}>{grid}</FormLayoutContext.Provider> : grid;
+    },
     preview: { label: "Conditions", columns: "{conditionColumns}", defaultRows: "{conditions}", canAddRows: true, canRemoveRows: true },
     snippet: { onRowsChange: "{setRules}" },
-    hint: "Click a cell to edit it: Field opens the formula editor, Condition is a select, Value is text. Enter saves, Escape cancels. Add and remove rows.",
+    extras: { state: { values: ["ready", "loading"], default: "ready" } },
+    hint: "Click a cell to edit it: Field opens the formula editor, Condition is a select, Value is text. Enter saves, Escape cancels. Add and remove rows. State loading draws the grid as it boots inside a loading page: its own columns and header line, a row of bars per row at its own row heights, and Add row as a block.",
     block: true,
     wide: true,
     card: <div style={{ width: 400 }}><DataGrid label="Conditions" columns={CONDITION_COLUMNS} defaultRows={CONDITIONS.slice(0, 2)} canInsertRows canRemoveRows /></div>,

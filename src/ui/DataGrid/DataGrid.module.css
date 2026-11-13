@@ -152,3 +152,38 @@
 .legendItem { display: inline-flex; align-items: center; gap: var(--space-xxsmall); }
 
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Booting (the grid inside a loading page): the real table, with bars where the names and values will be. A header
+   cell is the HeaderCell's own box — its height, padding and line — and a body cell keeps the body cell rule above,
+   so the rows stay 38 / 40 and the header 40 while they are bars, and nothing moves when the rows land. */
+.bootHead {
+  box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; width: 100%;
+  min-height: var(--header-cell-height-md); padding: var(--space-xsmall) var(--space-small);
+  background: var(--surface-flat); border-bottom: var(--border-width-medium) solid var(--border-brand-faint);
+}
+.sm .bootHead { min-height: var(--header-cell-height-sm); }
+.bootHeadThin { border-bottom-width: var(--border-width-thin); }
+/* With Set for all on any column, every header keeps the menu's row under the title, as the real headers do. */
+.bootHeadTall { justify-content: flex-start; gap: var(--space-xxsmall); }
+.bootName { display: flex; align-items: center; min-height: var(--skeleton-cell); }
+.bootMenu { display: flex; align-items: center; min-height: var(--control-small); }
+.bootEnd .bootName, .bootEnd .bootMenu { justify-content: flex-end; }
+.bootCell { box-sizing: border-box; display: flex; align-items: center; width: 100%; padding: 0 var(--space-small); }
+/* A body cell is as tall as the row rule, or as a value with the cell's 8px padding round its line, whichever is
+   more — that is what holds a ready sm row at 38 rather than 36 — so a booting row is the height a ready one is. */
+.bootCell { --data-grid-boot-line: calc(var(--text-ref-cell-size) * var(--text-ref-cell-lh) + 2 * var(--space-xsmall)); }
+.sm .bootCell { min-height: max(calc(var(--cell-height-sm) - var(--border-width-thin)), var(--data-grid-boot-line)); }
+.md .bootCell { min-height: max(calc(var(--cell-height-md) - var(--border-width-thin)), var(--data-grid-boot-line)); }
+.numeric .bootCell { justify-content: flex-end; }
+/* The # column is as wide as its digit, in the cell's own font, so it does not narrow while it is a bar. */
+.bootIndex { display: flex; justify-content: center; min-width: 1ch; }
+/* The columns with no name keep the width of what will stand in them, with nothing drawn over them: the tick's
+   box, the detail toggle's square, and one square per button in the action column. */
+.bootTick { display: block; width: var(--checkbox-size-sm); height: var(--checkbox-size-sm); margin-inline: auto; }
+.bootSquare { display: block; width: var(--control-small); height: var(--control-small); margin-inline: auto; }
+.bootActions {
+  display: block; height: var(--control-small); margin-inline-start: auto;
+  width: calc(var(--data-grid-boot-actions) * var(--control-small) + (var(--data-grid-boot-actions) - 1) * var(--space-xxxsmall));
+}
+/* A key item is as tall as its icon or its label's line (1lh), whichever is more, with a bar at its label's length. */
+.bootLegend .legendItem { min-height: max(var(--icon-size-small), 1lh); }
