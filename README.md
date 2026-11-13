@@ -179,6 +179,28 @@ pre-commit hook or CI. `--json` prints one object for a machine to read. The kit
 An assistant runs the same check itself with the `review_ui` MCP tool, including on a draft it has not saved yet.
 Run the review before you hand a screen back, and fix the errors.
 
+#### The Kit fit score
+
+`--score` turns the same read into one number:
+
+```bash
+npm run review -- --score src/app/invoices
+```
+
+```
+Kit fit = round(100 × kit elements ÷ all UI elements) − 5 × errors, kept inside 0–100
+```
+
+Kit elements are the components and patterns in `contracts/index.json`. All UI elements are every element that draws
+something, kit pieces and plain tags alike; tags that draw nothing, like `<title>` or a fragment, are left out. Only
+errors cost points. A file with no elements, like a CSS module on its own, scores 100. The score is in `--json` too,
+under `score`, with the same numbers and the formula.
+
+`.github/workflows/kit-review.yml` runs the review on the `.tsx` and `.css` files a pull request touches under
+`src/app`, `src/patterns` and `starters`, and posts one comment with the score and the top ten findings, updated on
+every push. It only reports: it never fails a pull request. To turn it off, delete the workflow file. The playground
+explains the score in plain words at `/start/review`.
+
 ### Work with the assistant
 
 Open the prototype folder in your AI coding assistant. The rules come with the kit, so there is nothing to set up:

@@ -1,0 +1,114 @@
+# Reviews the screens a pull request touches against the kit's contracts and posts the Kit fit score.
+# It only reports: it never fails a pull request because of the score or the findings.
+# To turn it off, delete this file.
+name: Kit review
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: List the screen files this pull request touches
+        id: changed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git diff --name-only --diff-filter=d "$BASE_SHA" "$HEAD_SHA" \
+            | grep -E '^(src/app|src/patterns|starters)/.*\.(tsx|css)$' > changed.txt || true
+          echo "count=$(wc -l < changed.txt | tr -d ' ')" >> "$GITHUB_OUTPUT"
+          cat changed.txt
+
+      - name: Run the review
+        if: steps.changed.outputs.count != '0'
+        run: |
+          xargs -a changed.txt node scripts/review/cli.mjs --score --json > review.json || true
+          cat review.json
+
+      - name: Post the Kit fit comment
+        uses: actions/github-script@v7
+        env:
+          CHANGED_COUNT: ${{ steps.changed.outputs.count }}
+        with:
+          script: |
+            const fs = require("node:fs");
+            const marker = "<!-- kit-review -->";
+            const docs = "https://agentic-bp-ds-kit.vercel.app/start/review";
+
+            let body;
+            let data = null;
+            if (process.env.CHANGED_COUNT !== "0" && fs.existsSync("review.json")) {
+              try {
+                data = JSON.parse(fs.readFileSync("review.json", "utf8"));
+              } catch {
+                data = null;
+              }
+            }
+
+            if (!data || data.files.length === 0) {
+              body = `${marker}\n### Kit review\n\nNo screen files to review in this pull request.\n\n[What the score means](${docs})`;
+            } else {
+              const lines = [
+                marker,
+                `### ${data.score.name}: ${data.score.value}/100`,
+                "",
+                data.summary,
+                "",
+                "```",
+                data.score.formula,
+                `${data.score.kit} of ${data.score.ui} UI elements come from the kit, so the share is ${data.score.base}/100.`,
+                `${data.score.errors} errors × 5 = ${data.score.penalty === 0 ? "0" : "−" + data.score.penalty}`,
+                "```",
+                "",
+              ];
+              const top = data.findings.slice(0, 10);
+              if (top.length === 0) {
+                lines.push("Nothing to fix.");
+              } else {
+                lines.push(`**Top ${top.length} of ${data.findings.length} findings**`);
+                lines.push("");
+                for (const f of top) {
+                  lines.push(`- \`${f.file}:${f.line}\` **${f.severity}** ${f.rule} — ${f.message}`);
+                  lines.push(`  - fix: ${f.fix}`);
+                }
+                if (data.findings.length > top.length) {
+                  lines.push("");
+                  lines.push(`${data.findings.length - top.length} more. Run \`npm run review -- --score <paths>\` to see them all.`);
+                }
+              }
+              lines.push("");
+              lines.push(`[What the score means](${docs})`);
+              body = lines.join("\n");
+            }
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100,
+            });
+            const mine = comments.find((c) => c.body && c.body.includes(marker));
+            if (mine) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: mine.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }

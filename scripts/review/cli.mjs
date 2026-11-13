@@ -8,6 +8,7 @@
 import { parseArgs } from "node:util";
 import { pathToFileURL } from "node:url";
 import { RULES, reviewFiles, summarize } from "./index.mjs";
+import { SCORE_NAME, formatScore, scoreOf } from "./score.mjs";
 
 export const REVIEW_HELP = `Usage: agentic-bp-ds-kit review <path...>
 
@@ -17,7 +18,8 @@ local cousins, closed enums, one strong brand Button, and the bigger piece to re
 Paths can be files or folders. Folders are walked for .tsx and .css files.
 
 Options:
-  --json         One JSON object: { summary, files, counts, findings }
+  --json         One JSON object: { summary, score, files, counts, findings }
+  --score        Print the ${SCORE_NAME} score and its formula
   --all          Include the kit's own folders (src/ui, src/patterns, src/tokens, tests)
   -h, --help     Show this help
 
@@ -26,7 +28,7 @@ ${RULES.map((r) => "  " + r).join("\n")}
 
 Exit code: 1 when there is any error, 0 otherwise.`;
 
-export function formatText({ files, findings }) {
+export function formatText({ files, findings, tally }, { score = false } = {}) {
   const lines = [];
   const byFile = new Map();
   for (const f of findings) {
@@ -44,13 +46,21 @@ export function formatText({ files, findings }) {
   }
   lines.push("");
   lines.push(summarize({ files, findings }));
+  if (score) {
+    lines.push("");
+    lines.push(formatScore(scoreOf({ tally, findings })));
+  }
   return lines.join("\n").replace(/^\n/, "");
 }
 
-export function formatJson({ files, findings }) {
+export function formatJson({ files, findings, tally }) {
   const counts = { error: 0, warn: 0 };
   for (const f of findings) counts[f.severity] += 1;
-  return JSON.stringify({ summary: summarize({ files, findings }), files, counts, findings }, null, 2);
+  return JSON.stringify(
+    { summary: summarize({ files, findings }), score: scoreOf({ tally, findings }), files, counts, findings },
+    null,
+    2,
+  );
 }
 
 export function main(argv = process.argv.slice(2)) {
@@ -58,7 +68,12 @@ export function main(argv = process.argv.slice(2)) {
   try {
     parsed = parseArgs({
       args: argv,
-      options: { json: { type: "boolean" }, all: { type: "boolean" }, help: { type: "boolean", short: "h" } },
+      options: {
+        json: { type: "boolean" },
+        score: { type: "boolean" },
+        all: { type: "boolean" },
+        help: { type: "boolean", short: "h" },
+      },
       allowPositionals: true,
     });
   } catch (error) {
@@ -83,7 +98,7 @@ export function main(argv = process.argv.slice(2)) {
     return 1;
   }
 
-  console.log(values.json ? formatJson(result) : formatText(result));
+  console.log(values.json ? formatJson(result) : formatText(result, { score: Boolean(values.score) }));
   return result.findings.some((f) => f.severity === "error") ? 1 : 0;
 }
 

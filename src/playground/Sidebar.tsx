@@ -77,6 +77,7 @@ export function Sidebar({ id, ref, drawerOpen = false, onSearch, shortcut, actio
         <NavLink href="/start/mcp">MCP server</NavLink>
         <NavLink href="/start/patterns">Using patterns</NavLink>
         <NavLink href="/start/prompting">Prompting</NavLink>
+        <NavLink href="/start/review">Review</NavLink>
       </Section>
       <Section title="Foundations" open={open.foundations} onToggle={toggle("foundations")}>
             {foundationPages.map((f) => <NavLink key={f.href} href={f.href}>{f.label}</NavLink>)}
