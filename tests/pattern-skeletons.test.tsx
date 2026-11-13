@@ -12,6 +12,7 @@ import { Section } from "@/ui/Section/Section";
 import { Table, type TableColumn } from "@/ui/Table/Table";
 import { Timeline } from "@/ui/Timeline/Timeline";
 import { FormLayoutContext } from "@/ui/Form/FormContext";
+import { BOOT_ROWS_MAX } from "@/ui/LoadingLine/boot";
 import { Tabs } from "@/ui/Tabs/Tabs";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 import { Dashboard } from "@/patterns/Dashboard/Dashboard";
@@ -522,5 +523,52 @@ describe("a booting row keeps the height it will have", () => {
       <Timeline label="Close tasks" items={[{ id: "a", timestamp: "Apr 12", title: "Review and approve invoices", subtitle: "Jordan Ellis" }]} />,
     );
     expect(document.querySelectorAll('[class~="bootLine"]')).toHaveLength(3);
+  });
+});
+
+// A list that is refreshing boots at the length it has, so the page keeps its height — but only up to a
+// screenful. Past that the bars are below the fold, and a list of hundreds would animate every one of them.
+describe("the cap on how many rows a booting list draws", () => {
+  const booting = (ui: React.ReactNode) => render(
+    <FormLayoutContext.Provider value={{ loading: true }}>{ui}</FormLayoutContext.Provider>,
+  );
+
+  it("is twelve, about a screenful of 44px rows", () => {
+    expect(BOOT_ROWS_MAX).toBe(12);
+  });
+
+  it("stops a Table of hundreds at the cap", () => {
+    const many = Array.from({ length: 200 }, (_, i) => ({ id: `INV-${i}`, account: "Northwind Holdings" }));
+    booting(<Table columns={COLUMNS} rows={many} />);
+    expect(document.querySelectorAll("tbody tr")).toHaveLength(BOOT_ROWS_MAX);
+  });
+
+  it("keeps a short Table at the length it has", () => {
+    booting(<Table columns={COLUMNS} rows={ROWS} />);
+    expect(document.querySelectorAll("tbody tr")).toHaveLength(ROWS.length);
+    expect(ROWS.length).toBeLessThan(BOOT_ROWS_MAX);
+  });
+
+  it("stops a ListView of hundreds at the cap", () => {
+    const many = Array.from({ length: 200 }, (_, i) => ({ id: `r${i}`, primary: `Invoice ${i}` }));
+    booting(<ListView label="Invoices" items={many} />);
+    expect(document.querySelectorAll("li")).toHaveLength(BOOT_ROWS_MAX);
+  });
+
+  it("drops a group that has none of the capped rows, rather than leaving an empty head", () => {
+    const many = [
+      ...Array.from({ length: 30 }, (_, i) => ({ id: `a${i}`, primary: `Open ${i}`, group: "open" })),
+      { id: "b1", primary: "Paid 1", group: "paid" },
+    ];
+    booting(<ListView label="Invoices" items={many} groups={[{ id: "open", title: "Open" }, { id: "paid", title: "Paid" }]} />);
+    expect(document.querySelectorAll("li")).toHaveLength(BOOT_ROWS_MAX);
+    // Open holds all twelve bars, so Paid's head row is not drawn over rows that are not there.
+    expect(byClass("header")).toHaveLength(1);
+  });
+
+  it("stops a Timeline of hundreds at the cap", () => {
+    const many = Array.from({ length: 200 }, (_, i) => ({ id: `e${i}`, title: `Changed field ${i}` }));
+    booting(<Timeline items={many} />);
+    expect(document.querySelectorAll("li")).toHaveLength(BOOT_ROWS_MAX);
   });
 });

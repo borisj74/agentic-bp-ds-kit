@@ -130,6 +130,17 @@ export function useFieldSkeleton(): boolean {
   return useBootSkeleton(loading).skeleton;
 }
 
+/**
+ * The most rows of bars a booting list draws, however many rows it already has. A list that is refreshing boots
+ * at the length it has, so the page keeps its height — but a list of hundreds would otherwise put hundreds of
+ * pulsing bars on screen, all animating, for rows nobody can see. Twelve is about a screenful: md rows are 44px,
+ * and on a 1440 x 900 frame the content column under the bar, the page header, the list's own band and the
+ * table's head row leaves roughly 530px, which is these twelve. It is also the number ListPage's own rows
+ * fallback draws (contracts/listpage.json, loadingRows), so a list that has nothing yet and a list that is
+ * refreshing stand the same height.
+ */
+export const BOOT_ROWS_MAX = 12;
+
 /** The width steps a text bar takes. Longer than this many characters and the bar steps up. */
 const BAR_SHORT = 10;
 const BAR_MEDIUM = 18;

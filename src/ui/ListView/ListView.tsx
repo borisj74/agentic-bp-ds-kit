@@ -7,7 +7,7 @@ import { Checkbox } from "../Checkbox/Checkbox";
 import { Dropdown, type DropdownEntry, type DropdownItem } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import { Skeleton } from "../Skeleton/Skeleton";
-import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
+import { BOOT_ROWS_MAX, skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import styles from "./ListView.module.css";
 
 export type ListViewSelection = "none" | "single" | "multiple";
@@ -433,6 +433,10 @@ export function ListView({
   );
 
   if (booting) {
+    // At most a screenful of bars, however long the list is: a list that is refreshing boots at the length it
+    // has so the page keeps its height, but past BOOT_ROWS_MAX the rows are below the fold and would only
+    // animate out of sight.
+    const bootItems = items.slice(0, BOOT_ROWS_MAX);
     const bootRow = (it: ListViewItem) => (
       <li key={it.id} className={styles.row}>
         {selection !== "none" && (
@@ -461,17 +465,19 @@ export function ListView({
     return (
       <div className={[styles.view, stickyGroups ? styles.sticky : ""].join(" ")} aria-hidden="true">
         {grouped
-          ? grouped.map((g, i) => (
+          // A group with none of the capped rows in it draws nothing: an empty head row would stand for rows
+          // that are not there.
+          ? grouped.filter((g) => bootItems.some((it) => it.group === g.id)).map((g, i) => (
             <div key={g.id} className={styles.group}>
               {/* A group keeps its own head row, with a bar where its name will be, so the rows under it do not
                   slide up when the names arrive. */}
               <div className={[styles.header, styles[`head-${size}`], i === 0 ? styles.first : ""].join(" ")}>
                 <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(g.title)} height="var(--skeleton-cell)" label="" />
               </div>
-              <ul className={styles.list}>{items.filter((it) => it.group === g.id).map(bootRow)}</ul>
+              <ul className={styles.list}>{bootItems.filter((it) => it.group === g.id).map(bootRow)}</ul>
             </div>
           ))
-          : <ul className={styles.list}>{items.map(bootRow)}</ul>}
+          : <ul className={styles.list}>{bootItems.map(bootRow)}</ul>}
       </div>
     );
   }
