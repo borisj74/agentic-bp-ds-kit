@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import styles from "./TextLoader.module.css";
+import { inspect } from "../inspect";
 
 export type TextLoaderSize = "sm" | "md" | "lg";
 export type TextLoaderSpeed = "slow" | "normal" | "fast";
@@ -19,7 +20,7 @@ export function TextLoader({ children, size = "md", speed = "normal" }: TextLoad
   const letters = Array.from(text);
   const span = Math.max(letters.length - 1, 1);
   return (
-    <span className={[styles.root, styles[size]].join(" ")} style={{ "--speed": SPEED[speed] } as CSSProperties}>
+    <span {...inspect("TextLoader")} className={[styles.root, styles[size]].join(" ")} style={{ "--speed": SPEED[speed] } as CSSProperties}>
       {/* Screen readers get the line once, as one phrase; the letters are for the eye. */}
       <span className={styles.srOnly}>{text}</span>
       <span className={styles.content} aria-hidden="true">

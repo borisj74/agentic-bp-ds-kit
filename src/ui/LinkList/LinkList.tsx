@@ -1,5 +1,6 @@
 import { Icon } from "../Icon/Icon";
 import styles from "./LinkList.module.css";
+import { inspect } from "../inspect";
 
 export interface LinkListItem {
   id: string;
@@ -20,7 +21,7 @@ export interface LinkListProps {
 // colours. It sits in a Section, which gives it its title; it draws no card of its own.
 export function LinkList({ items, label = "Links" }: LinkListProps) {
   return (
-    <ul className={styles.list} aria-label={label}>
+    <ul {...inspect("LinkList")} className={styles.list} aria-label={label}>
       {items.map((item) => {
         const body = (
           <>

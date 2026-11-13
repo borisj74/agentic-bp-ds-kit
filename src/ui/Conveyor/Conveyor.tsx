@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Button } from "../Button/Button";
 import styles from "./Conveyor.module.css";
+import { inspect } from "../inspect";
 
 export type ConveyorOrientation = "horizontal" | "vertical";
 
@@ -64,7 +65,7 @@ export function Conveyor({ children, orientation = "horizontal", step, label = "
   };
 
   return (
-    <div className={[styles.conveyor, styles[orientation]].join(" ")}>
+    <div {...inspect("Conveyor")} className={[styles.conveyor, styles[orientation]].join(" ")}>
       {shown && (
         <span className={styles.end}>
           {arrow(-1)}

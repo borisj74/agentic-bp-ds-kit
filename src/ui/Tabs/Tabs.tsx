@@ -3,6 +3,7 @@ import { useId, useState, type KeyboardEvent, type ReactNode } from "react";
 import { Count } from "../Count/Count";
 import { Icon } from "../Icon/Icon";
 import styles from "./Tabs.module.css";
+import { inspect } from "../inspect";
 
 export type TabsSize = "sm" | "md" | "lg";
 export interface TabItem {
@@ -53,7 +54,7 @@ export function Tabs({ items, label = "Tabs", value, defaultValue, onChange, siz
   };
 
   return (
-    <div className={styles.tabs}>
+    <div {...inspect("Tabs")} className={styles.tabs}>
       <div
         role="tablist" aria-label={label} onKeyDown={onKeyDown}
         className={[styles.list, styles[size], expand ? styles.expand : "", border ? styles.border : ""].join(" ")}

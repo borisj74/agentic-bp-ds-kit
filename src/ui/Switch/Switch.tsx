@@ -4,6 +4,7 @@ import { useDensitySize } from "../Density/Density";
 import { Skeleton } from "../Skeleton/Skeleton";
 import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import styles from "./Switch.module.css";
+import { inspect } from "../inspect";
 
 export type SwitchSize = "sm" | "md" | "lg";
 
@@ -52,7 +53,7 @@ export function Switch({
     );
   }
   return (
-    <div className={[styles.switch, styles[size], hideLabel ? "" : styles.labeled, disabled ? styles.disabled : ""].join(" ")}>
+    <div {...inspect("Switch")} className={[styles.switch, styles[size], hideLabel ? "" : styles.labeled, disabled ? styles.disabled : ""].join(" ")}>
       <span className={hideLabel ? styles.srOnly : styles.copy}>
         <label htmlFor={switchId} className={styles.label}>{label}</label>
         {description && <span id={descriptionId} className={styles.description}>{description}</span>}

@@ -6,6 +6,7 @@ import { Checkbox } from "../Checkbox/Checkbox";
 import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./ChatComposer.module.css";
+import { inspect } from "../inspect";
 
 export type ChatComposerMode = "quick" | "deep";
 
@@ -95,7 +96,7 @@ export function ChatComposer({
   const ask = hints && hints.length > 0 && !text ? hints[hint % hints.length] : placeholder;
 
   return (
-    <div className={[styles.composer, disabled ? styles.disabled : ""].join(" ")} data-chat-composer="">
+    <div {...inspect("ChatComposer")} className={[styles.composer, disabled ? styles.disabled : ""].join(" ")} data-chat-composer="">
       {/* Scope: what the question is about, like the page the person is on. */}
       {scopeLabel && (
         <div className={styles.scope}>

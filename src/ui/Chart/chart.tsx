@@ -5,6 +5,7 @@ import { useLayoutEffect, useState, type KeyboardEvent, type ReactNode, type Ref
 import { Legend as KitLegend, INTENTS, type LegendIntent } from "../Legend/Legend";
 import { Skeleton } from "../Skeleton/Skeleton";
 import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
+import { inspect } from "../inspect";
 import styles from "./chart.module.css";
 
 // The chart intents are the kit Legend keys, so a chart and its Legend always agree.
@@ -104,7 +105,7 @@ const BOOT_BARS = [0.31, 0.5, 0.39, 0.62, 0.47, 0.7];
 
 export function ChartFrame({
   label, title, subtitle, showHeader = true, animate, children, onKeyDown, onBlur, active, className,
-  plotHeight, legendKeys = 0, legendPosition = "bottom",
+  plotHeight, legendKeys = 0, legendPosition = "bottom", kit,
 }: {
   label: string; title?: string; subtitle?: string; showHeader?: boolean;
   animate: boolean; children: ReactNode; active: boolean;
@@ -116,9 +117,13 @@ export function ChartFrame({
   // How many keys the legend has, and where it sits, so a booting chart holds that room too. 0 draws none.
   legendKeys?: number;
   legendPosition?: "top" | "bottom" | "end";
+  // The contract name of the chart drawing this frame, for the name tag the review reads on a running screen.
+  kit?: string;
 }) {
   // A focusable figure: arrow keys move through the data and show the tooltip, like pointing at it.
   const heading = showHeader && (title || subtitle);
+  // The frame is the chart's root, so it wears the chart's name tag, booting or drawn.
+  const tag = kit ? inspect(kit) : {};
   // A chart in a booting page draws its own frame: the title as a bar at the length its words will take, and the
   // plot as a framed box of bars standing on its floor (BP COBALT "chart skeleton", node 2046:29938). The figure
   // is not a focus stop while it is bars, and there is no data to step through.
@@ -148,7 +153,7 @@ export function ChartFrame({
       </ul>
     ) : null;
     return (
-      <figure className={[styles.chart, className ?? ""].join(" ")} aria-hidden="true">
+      <figure {...tag} className={[styles.chart, className ?? ""].join(" ")} aria-hidden="true">
         {heading && (
           <figcaption className={styles.heading}>
             {title && (
@@ -171,6 +176,7 @@ export function ChartFrame({
   }
   return (
     <figure
+      {...tag}
       className={[styles.chart, animate ? styles.animated : "", active ? styles.active : "", className ?? ""].join(" ")}
       aria-label={label} tabIndex={0} onKeyDown={onKeyDown} onBlur={onBlur}
     >

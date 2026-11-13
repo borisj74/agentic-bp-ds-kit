@@ -4,6 +4,7 @@ import { Icon } from "../Icon/Icon";
 import { Skeleton } from "../Skeleton/Skeleton";
 import { BOOT_ROWS_MAX, skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import styles from "./Timeline.module.css";
+import { inspect } from "../inspect";
 
 export type TimelineSize = "sm" | "md";
 export type TimelineIntent = "neutral" | "brand" | "success" | "warning" | "danger";
@@ -100,7 +101,7 @@ export function Timeline({ items, size = "md", label = "Activity", onMenuSelect 
     );
   }
   return (
-    <ol className={[styles.timeline, styles[size]].join(" ")} aria-label={label}>
+    <ol {...inspect("Timeline")} className={[styles.timeline, styles[size]].join(" ")} aria-label={label}>
       {items.map((item, i) => {
         const first = i === 0;
         const last = i === items.length - 1;

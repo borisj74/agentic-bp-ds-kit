@@ -57,7 +57,7 @@ export function Heatmap({
   const short = formatter(format, currency, true);
 
   if (!rows.length || !columns.length) {
-    return <ChartFrame label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={false}><ChartEmpty label={emptyLabel} height={gridH || 120} /></ChartFrame>;
+    return <ChartFrame kit="Heatmap" label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={false}><ChartEmpty label={emptyLabel} height={gridH || 120} /></ChartFrame>;
   }
 
   const valueAt = (r: number, c: number) => values[r]?.[c] ?? null;
@@ -107,6 +107,7 @@ export function Heatmap({
 
   return (
     <ChartFrame
+      kit="Heatmap"
       label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={at !== null} plotHeight={height} legendKeys={showLegend ? 1 : 0}
       onKeyDown={onKeyDown} onBlur={() => setAt(null)} className={h.heatmap}
     >

@@ -72,7 +72,7 @@ export function ScatterChart({
   const yFull = formatter(yFormat, currency, false);
 
   if (!all.length) {
-    return <ChartFrame label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={false}><ChartEmpty label={emptyLabel} height={h} /></ChartFrame>;
+    return <ChartFrame kit="ScatterChart" label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={false}><ChartEmpty label={emptyLabel} height={h} /></ChartFrame>;
   }
 
   const xTicks = niceTicks(Math.max(...all.map((p) => p.x), 0));
@@ -137,6 +137,7 @@ export function ScatterChart({
 
   return (
     <ChartFrame
+      kit="ScatterChart"
       label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={animate} active={at !== null} plotHeight={h} legendKeys={showLegend ? list.length : 0}
       onKeyDown={onKeyDown} onBlur={() => setAt(null)}
     >

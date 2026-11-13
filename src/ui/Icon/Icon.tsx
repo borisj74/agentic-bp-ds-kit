@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import styles from "./Icon.module.css";
+import { inspect } from "../inspect";
 
 export type IconSize = "xs" | "sm" | "md" | "lg" | "xl";
 export type IconIntent = "inherit" | "neutral" | "subtle" | "brand" | "info" | "success" | "warning" | "danger";
@@ -17,7 +18,7 @@ export interface IconProps {
 export function Icon({ name, size = "md", intent = "inherit", filled = false, label, className, style }: IconProps) {
   const cls = [styles.icon, styles[size], styles[intent], filled ? styles.filled : "", className ?? ""].join(" ").trim();
   return (
-    <span
+    <span {...inspect("Icon")}
       className={`material-symbols-outlined ${cls}`}
       style={style}
       role={label ? "img" : undefined}

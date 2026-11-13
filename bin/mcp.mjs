@@ -9,6 +9,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { LEVELS } from "../scripts/sync-index.mjs";
 import { RULES, reviewFiles, reviewSource, summarize } from "../scripts/review/index.mjs";
+import { INSPECT_ENV, liveResult, reviewUrl } from "../scripts/review/live.mjs";
 import {
   CatalogError,
   TOKEN_CATEGORIES,
@@ -35,7 +36,7 @@ function kitVersion() {
 function register(server, name, config, fn) {
   server.registerTool(name, { ...config, annotations: READ_ONLY }, async (args) => {
     try {
-      const data = fn(args ?? {});
+      const data = await fn(args ?? {});
       return {
         content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
         structuredContent: data,
@@ -150,7 +151,7 @@ function createServer() {
     {
       title: "Review a screen against the contracts",
       description:
-        `Review a screen built from this kit and get back what drifts from its contracts: raw colours and spacing, primitive tokens, local cousins, props and values outside a closed enum, more than one strong brand Button, and the bigger piece to reuse. Pass path for a file or folder in the repo, or code for a draft you have not saved yet (with filename, so the screen rules apply). Rules: ${RULES.join(", ")}. Run this before you hand a screen back and fix the errors.`,
+        `Review a screen built from this kit and get back what drifts from its contracts: raw colours and spacing, primitive tokens, local cousins, props and values outside a closed enum, more than one strong brand Button, and the bigger piece to reuse. Pass path for a file or folder in the repo, or code for a draft you have not saved yet (with filename, so the screen rules apply). Rules: ${RULES.join(", ")}. Pass url instead to check a running screen: it fetches the served HTML and lists the kit pieces on it, grouped by level, flags a missing landmark (main, nav, one h1) and says when the screen uses no pattern. The dev server has to run with ${INSPECT_ENV}=1 for that. Run this before you hand a screen back and fix the errors.`,
       inputSchema: {
         path: z.string().optional().describe("File or folder in the repo, like src/app/invoices/page.tsx."),
         code: z.string().optional().describe("The source of a draft you have not saved yet."),
@@ -159,15 +160,27 @@ function createServer() {
           .optional()
           .describe('Where the draft will be saved, like "src/app/invoices/page.tsx". Default "draft.tsx".'),
         all: z.boolean().optional().describe("Include the kit's own folders (src/ui, src/patterns, src/tokens, tests)."),
+        url: z
+          .string()
+          .optional()
+          .describe(`A running screen to check, like http://localhost:3000/invoices. Needs the dev server started with ${INSPECT_ENV}=1.`),
       },
     },
-    ({ path, code, filename, all }) => {
+    async ({ path, code, filename, all, url }) => {
+      if (typeof url === "string" && url.trim()) {
+        try {
+          return liveResult(await reviewUrl(url.trim()));
+        } catch (error) {
+          throw new CatalogError(`Cannot check "${url}": ${error instanceof Error ? error.message : String(error)}`);
+        }
+      }
       if (typeof code === "string" && code.length > 0) {
         const file = filename && filename.trim() ? filename.trim() : "draft.tsx";
         const findings = reviewSource(code, file);
         return { summary: summarize({ files: [file], findings }), files: [file], rules: RULES, findings };
       }
-      if (!path || !path.trim()) throw new CatalogError("Pass path (a file or folder in the repo) or code (a draft).");
+      if (!path || !path.trim())
+        throw new CatalogError("Pass path (a file or folder in the repo), code (a draft), or url (a running screen).");
       let result;
       try {
         result = reviewFiles([path.trim()], { all: Boolean(all) });

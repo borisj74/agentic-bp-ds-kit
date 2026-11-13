@@ -6,6 +6,7 @@ import type { ListViewProps } from "@/ui/ListView/ListView";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
 import { countSkeletonBlocks, skeletonBarWidth, useBootSkeleton, useFieldSkeleton } from "@/ui/LoadingLine/boot";
 import styles from "./ListDetail.module.css";
+import { inspect } from "../../ui/inspect";
 
 // The widths a booting split's bars take in the rows fallback, so each side reads as rows rather than one block
 // of grey.
@@ -165,7 +166,7 @@ export function ListDetail({
   }
 
   return (
-    <div className={[styles.frame, shown ? styles.open : "", layout === "stacked" ? styles.stacked : ""].join(" ")}>
+    <div {...inspect("ListDetail")} className={[styles.frame, shown ? styles.open : "", layout === "stacked" ? styles.stacked : ""].join(" ")}>
       <section className={styles.split} aria-labelledby={label ? headId : undefined}>
         {/* The list's own heading, read but not shown: it keeps the headings in order under the page title, so the
             record's h2 and the list's group headers (h3) sit below it. */}

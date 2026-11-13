@@ -12,6 +12,7 @@ import { Input } from "../Input/Input";
 import field from "../Input/Input.module.css";
 import { carryTheme } from "../Tooltip/useFloating";
 import styles from "./Dropdown.module.css";
+import { inspect } from "../inspect";
 
 export type DropdownTrigger = "button" | "filter" | "field";
 export type DropdownAlignment = "left" | "right";
@@ -200,7 +201,7 @@ export function Dropdown({
   const flip = () => !disabled && setOpen(!open);
 
   return (
-    <span ref={rootRef} className={[styles.root, trigger === "field" ? `${styles.rootField} ${field[size]}` : ""].join(" ")} onKeyDown={onTriggerKey}>
+    <span {...inspect("Dropdown")} ref={rootRef} className={[styles.root, trigger === "field" ? `${styles.rootField} ${field[size]}` : ""].join(" ")} onKeyDown={onTriggerKey}>
       {trigger === "field" ? (
         // Named by the outside label plus the current value, so screen readers hear both.
         <button

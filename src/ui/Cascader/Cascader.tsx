@@ -13,6 +13,7 @@ import { Input } from "../Input/Input";
 import field from "../Input/Input.module.css";
 import { carryTheme } from "../Tooltip/useFloating";
 import styles from "./Cascader.module.css";
+import { inspect } from "../inspect";
 
 export type CascaderVariant = "field" | "panel";
 export type CascaderRelation = "parent" | "children";
@@ -419,7 +420,7 @@ export function Cascader({
     );
   }
   return (
-    <div ref={rootRef} className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
+    <div {...inspect("Cascader")} ref={rootRef} className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
       <div className={hideLabel ? field.srOnly : field.labelRow}>
         {/* The field is a button, which has no required state, so the label says it for screen readers. */}
         <label htmlFor={triggerId} className={field.label}>

@@ -8,6 +8,7 @@ import { HelpPopover } from "../HelpPopover/HelpPopover";
 // Label, help, hint and error share Input's styles so both fields read the same in one form.
 import field from "../Input/Input.module.css";
 import styles from "./Textarea.module.css";
+import { inspect } from "../inspect";
 
 export type TextareaSize = "sm" | "md" | "lg";
 export type TextareaType = "text" | "code";
@@ -80,7 +81,7 @@ export function Textarea({
     );
   }
   return (
-    <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition} data-full-row="">
+    <div {...inspect("Textarea")} className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition} data-full-row="">
       <div className={hideLabel ? field.srOnly : field.labelRow}>
         <label htmlFor={areaId} className={field.label}>
           {required && <span className={field.required} aria-hidden="true">*</span>}

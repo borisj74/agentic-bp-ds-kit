@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { SIDE, useFloating, useInBrowser, type FloatingPosition } from "./useFloating";
 import styles from "./Tooltip.module.css";
 import { usePortalDensity } from "../Density/Density";
+import { inspect } from "../inspect";
 
 export type TooltipPosition = FloatingPosition;
 
@@ -78,7 +79,7 @@ export function Tooltip({ content, position = "above", delay = 150, open: openPr
   if (disabled) return children;
 
   return (
-    <span
+    <span {...inspect("Tooltip")}
       ref={wrapRef} className={styles.wrap}
       onPointerEnter={() => show(delay)} onPointerLeave={() => hide()}
       onFocus={onFocus} onBlur={() => hide(0)} onKeyDown={onKeyDown}

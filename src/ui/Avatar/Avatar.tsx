@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Icon } from "../Icon/Icon";
 import styles from "./Avatar.module.css";
+import { inspect } from "../inspect";
 
 export type AvatarSize = "xs" | "sm" | "md" | "lg";
 export type AvatarShape = "circle" | "square";
@@ -46,7 +47,7 @@ export function Avatar({ name, src, initials, size = "md", shape = "circle", dec
 
   const label = initialsOf(name, initials);
   return (
-    <span className={[cls, styles.fallback].join(" ")} {...(decorative ? { "aria-hidden": true } : { role: "img", "aria-label": name })}>
+    <span {...inspect("Avatar")} className={[cls, styles.fallback].join(" ")} {...(decorative ? { "aria-hidden": true } : { role: "img", "aria-label": name })}>
       {label || <Icon name="person" size={iconSize[size]} />}
     </span>
   );

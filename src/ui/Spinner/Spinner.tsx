@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import styles from "./Spinner.module.css";
+import { inspect } from "../inspect";
 
 export type SpinnerSize = "sm" | "md" | "lg";
 
@@ -15,7 +16,7 @@ const TICKS = 12;
 // bright trail runs clockwise.
 export function Spinner({ size = "md", label = "Loading", showLabel = false }: SpinnerProps) {
   return (
-    <span className={[styles.spinner, styles[size]].join(" ")} role={label ? "status" : undefined}>
+    <span {...inspect("Spinner")} className={[styles.spinner, styles[size]].join(" ")} role={label ? "status" : undefined}>
       <svg className={styles.ring} viewBox="0 0 24 24" aria-hidden="true">
         {Array.from({ length: TICKS }, (_, i) => (
           <rect

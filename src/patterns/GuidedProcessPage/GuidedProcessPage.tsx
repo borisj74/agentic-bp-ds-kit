@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, type ReactNode } from "react";
 import styles from "./GuidedProcessPage.module.css";
+import { inspect } from "../../ui/inspect";
 
 export type GuidedProcessPageView = "intro" | "step";
 export type GuidedProcessPageSide = "start" | "end";
@@ -51,7 +52,7 @@ export function GuidedProcessPage({
   }
 
   return (
-    <div className={styles.frame}>
+    <div {...inspect("GuidedProcessPage")} className={styles.frame}>
       <div className={[styles.page, side === "start" ? styles.start : "", stepsOpen ? styles.open : ""].join(" ")}>
         <div className={styles.main}>
           <section className={styles.content} aria-label={label ?? "Step"}>

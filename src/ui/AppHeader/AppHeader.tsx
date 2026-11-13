@@ -16,6 +16,7 @@ import { Switch } from "../Switch/Switch";
 import { Tooltip } from "../Tooltip/Tooltip";
 import { useFloating, useInBrowser } from "../Tooltip/useFloating";
 import styles from "./AppHeader.module.css";
+import { inspect } from "../inspect";
 
 export type AppHeaderEnvironmentIntent = Exclude<BadgeIntent, "hollow">;
 export type AppHeaderDensity = "compact" | "default" | "comfortable";
@@ -203,7 +204,7 @@ export function AppHeader({
   return (
     // The header sizes itself for its density (Figma 48 / 56 / 64 bars, sm / md / lg buttons), so it pins the
     // density tokens to default inside; a surrounding Density would otherwise shrink it twice.
-    <header data-density="default" className={[styles.header, density !== "default" ? styles[density] : ""].join(" ")}>
+    <header {...inspect("AppHeader")} data-density="default" className={[styles.header, density !== "default" ? styles[density] : ""].join(" ")}>
       <div className={styles.bar}>
         {/* Start: the side-nav toggle, brand, then the environment tag (UAT, Sandbox...) so people know where they are. */}
         <div className={styles.start}>

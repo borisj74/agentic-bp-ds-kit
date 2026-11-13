@@ -5,6 +5,7 @@ import { Skeleton } from "@/ui/Skeleton/Skeleton";
 import { useBootSkeleton, useFieldSkeleton } from "@/ui/LoadingLine/boot";
 import { useStickMark } from "../stick";
 import styles from "./FormPage.module.css";
+import { inspect } from "../../ui/inspect";
 
 // The widths a booting form's labels take in the rows fallback, so they read as fields rather than one grey block.
 const BOOT_LABEL = ["60%", "80%", "45%", "70%"];
@@ -44,7 +45,7 @@ export function FormPage({
   const mark = useStickMark(onStickyChange);
 
   return (
-    <section className={styles.page} aria-label={label ?? "Form"}>
+    <section {...inspect("FormPage")} className={styles.page} aria-label={label ?? "Form"}>
       {sticky && onStickyChange && <div ref={mark} className={styles.mark} aria-hidden="true" />}
       {/* The name and the save stay at the top: a child of the page, not of the fields under it. */}
       {header && <div className={[styles.head, sticky ? styles.stuck : ""].join(" ")}>{header}</div>}

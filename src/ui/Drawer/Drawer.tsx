@@ -7,6 +7,7 @@ import { useDialog } from "../Modal/useDialog";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./Drawer.module.css";
 import { usePortalDensity } from "../Density/Density";
+import { inspect } from "../inspect";
 
 export type DrawerSize = "narrow" | "medium" | "wide" | "extended";
 
@@ -40,7 +41,7 @@ export function Drawer({ open, title, description, size = "narrow", showClose = 
     // labels on top unless it says otherwise.
     <FormLayoutContext.Provider value={{}}>
       {/* A click on the page behind closes it, but only when the press also started there (not a drag out of a field). */}
-      <div
+      <div {...inspect("Drawer")}
         data-density={density}
         className={styles.overlay}
         onKeyDown={onKeyDown}

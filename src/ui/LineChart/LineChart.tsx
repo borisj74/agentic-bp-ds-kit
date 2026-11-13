@@ -32,5 +32,5 @@ export interface LineChartProps {
 // Figma Persona Homepages 1205:14553 (lines), 1206:33138 (stacked area with points) and 996:22722 (area with values).
 export function LineChart({ stacked = false, area = false, ...p }: LineChartProps) {
   // Stacked lines only read as stacks when filled, so stacked turns the area on.
-  return <XYChart kind="line" {...p} stacked={stacked} area={area || stacked} />;
+  return <XYChart kit="LineChart" kind="line" {...p} stacked={stacked} area={area || stacked} />;
 }

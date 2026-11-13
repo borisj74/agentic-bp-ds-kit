@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import styles from "./Skeleton.module.css";
+import { inspect } from "../inspect";
 
 export type SkeletonShape = "text" | "circle" | "rect";
 export type SkeletonSize = "sm" | "md" | "lg";
@@ -33,7 +34,7 @@ export function Skeleton({
   // to fill the row; the shape then fills the wrapper.
   const box: CSSProperties = shape === "circle" ? { width: px(width), height: px(width) } : { height: px(height) };
   return (
-    <span className={[styles.root, styles[shape], styles[size], styles[animation], styles[`tone-${tone}`]].join(" ")} style={width === undefined ? undefined : { width: px(width) }} aria-busy="true">
+    <span {...inspect("Skeleton")} className={[styles.root, styles[shape], styles[size], styles[animation], styles[`tone-${tone}`]].join(" ")} style={width === undefined ? undefined : { width: px(width) }} aria-busy="true">
       {label && <span className={styles.srOnly}>{label}</span>}
       {Array.from({ length: count }, (_, i) => (
         <span key={i} className={[styles.bone, count > 1 && i === count - 1 ? styles.last : ""].join(" ")} style={shape === "text" ? undefined : box} aria-hidden="true" />

@@ -7,12 +7,15 @@ import { Callout } from "@/ui/Callout/Callout";
 import { Section } from "@/ui/Section/Section";
 // The score's name and formula come from the one module that defines them, so this page never drifts from the CLI.
 import { SCORE_FORMULA, SCORE_NAME } from "../../../../../scripts/review/score.mjs";
+// The switch's name comes from the live check itself, so this page never drifts from the command.
+import { INSPECT_ENV } from "../../../../../scripts/review/live.mjs";
 
 const SECTIONS = [
   { id: "what", label: `What ${SCORE_NAME} means` },
   { id: "formula", label: "The formula" },
   { id: "rules", label: "The rules" },
   { id: "local", label: "Run it yourself" },
+  { id: "live", label: "Check a running screen" },
   { id: "pr", label: "On a pull request" },
 ];
 
@@ -166,6 +169,36 @@ export default function Review() {
                   The review is for screens, so the kit&apos;s own folders are skipped. <code>--all</code> includes
                   them. It exits 1 when there is any error, 0 otherwise. <code>npm run review -- --help</code> lists
                   the rules.
+                </p>
+              </div>
+            </Section>
+          </div>
+
+          <div id="live">
+            <Section title="Check a running screen">
+              <div className={docs.prose}>
+                <p>
+                  The checks above read code. <code>--url</code> reads a screen that is running: it fetches the
+                  server-rendered HTML and lists the kit pieces it finds, grouped by level, biggest first.
+                </p>
+                <CodeBlock code={`NEXT_PUBLIC_BP_INSPECT=1 npm run dev\nnpm run review -- --url http://localhost:3000/invoices`} />
+                <p>
+                  Each kit component and pattern wears its contract name on its root as{" "}
+                  <code>data-bp-kit=&quot;&lt;name&gt;&quot;</code>, and{" "}
+                  <code>{INSPECT_ENV}=1</code> is what turns those name tags on. It is development only: a
+                  production build settles the switch at build time, so the attribute never reaches the output and
+                  nothing on the page looks or behaves differently either way.
+                </p>
+                <p>Three things it reports:</p>
+                <ul>
+                  <li><code>bp/no-tags</code> — no name tags on the page, so the dev server is running without the switch, or nothing on the screen comes from the kit.</li>
+                  <li><code>bp/landmark</code> — no <code>&lt;main&gt;</code>, no <code>&lt;nav&gt;</code>, or anything but one <code>&lt;h1&gt;</code>.</li>
+                  <li><code>bp/no-pattern</code> — the screen uses no pattern, so it may be laying out by hand what a pattern already draws.</li>
+                </ul>
+                <p>
+                  <code>--json</code> prints the same read as one object, with the groups, the landmarks and the
+                  findings. It exits 1 on any error, like the file check. The <code>review_ui</code> MCP tool takes
+                  the same <code>url</code>.
                 </p>
               </div>
             </Section>

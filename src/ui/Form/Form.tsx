@@ -5,6 +5,7 @@ import { Section, type SectionLine } from "../Section/Section";
 import { FormLayoutContext, type FieldColumns, type FieldLabelPosition } from "./FormContext";
 import styles from "./Form.module.css";
 import grid from "./columns.module.css";
+import { inspect } from "../inspect";
 
 export type FormVariant = "plain" | "card";
 export type FormLabelPosition = FieldLabelPosition;
@@ -67,7 +68,7 @@ export function Form({
     // Form lays its own fields out, so the Sections it titles them with take none. A booting page's loading does
     // carry on down, so the groups and the fields each draw their own skeleton where they will stand.
     <FormLayoutContext.Provider value={{ labelPosition, loading: page.loading }}>
-    <form
+    <form {...inspect("Form")}
       id={id}
       className={cls.join(" ")}
       data-label-width={width}

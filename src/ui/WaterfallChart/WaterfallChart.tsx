@@ -73,7 +73,7 @@ export function WaterfallChart({
   const h = height;
 
   if (!n) {
-    return <ChartFrame label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={false}><ChartEmpty label={emptyLabel} height={h} /></ChartFrame>;
+    return <ChartFrame kit="WaterfallChart" label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={false}><ChartEmpty label={emptyLabel} height={h} /></ChartFrame>;
   }
 
   // Each bar's run: a total starts at zero, a change starts where the one before it ended.
@@ -148,6 +148,7 @@ export function WaterfallChart({
 
   return (
     <ChartFrame
+      kit="WaterfallChart"
       label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={animate} active={active !== null} plotHeight={h} legendKeys={showLegend ? 3 : 0}
       onKeyDown={onKeyDown} onBlur={() => setActive(null)}
     >

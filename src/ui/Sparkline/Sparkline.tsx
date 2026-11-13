@@ -4,6 +4,7 @@
 import { useRef } from "react";
 import { formatter, intentAt, intentVar, useWidth, type ChartFormat, type ChartIntent } from "../Chart/chart";
 import s from "./sparkline.module.css";
+import { inspect } from "../inspect";
 
 export type { ChartFormat, ChartIntent };
 export type SparklineKind = "line" | "area" | "bar";
@@ -64,7 +65,7 @@ export function Sparkline({
   const floor = h - 1;
 
   return (
-    <div ref={ref} className={s.spark} style={{ height: h }} role="img" aria-label={summary}>
+    <div {...inspect("Sparkline")} ref={ref} className={s.spark} style={{ height: h }} role="img" aria-label={summary}>
       {width > 0 && (
         <svg className={s.svg} width={width} height={h} aria-hidden="true">
           {showBaseline && kind !== "bar" && <line className={s.baseline} x1={0} x2={width} y1={floor + 0.5} y2={floor + 0.5} />}

@@ -5,6 +5,7 @@ import { Dropdown } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import { Tabs } from "../Tabs/Tabs";
 import styles from "./GlobalSearch.module.css";
+import { inspect } from "../inspect";
 
 export type GlobalSearchVariant = "list" | "tabs";
 export type GlobalSearchIconStyle = "tile" | "plain";
@@ -142,7 +143,7 @@ export function GlobalSearch({
   }));
 
   return (
-    <div className={[styles.command, styles[size], iconStyle === "plain" ? styles.plainIcons : ""].join(" ")}>
+    <div {...inspect("GlobalSearch")} className={[styles.command, styles[size], iconStyle === "plain" ? styles.plainIcons : ""].join(" ")}>
       <div className={styles.search}>
         <Icon name="search" size={size === "sm" ? "sm" : "md"} className={styles.searchIcon} />
         <input

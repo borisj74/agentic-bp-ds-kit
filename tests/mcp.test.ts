@@ -1,4 +1,6 @@
 import { spawnSync } from "node:child_process";
+import { createServer } from "node:http";
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
@@ -214,6 +216,40 @@ describe("MCP server", () => {
     const result = await client.callTool({ name: "review_ui", arguments: {} });
     expect(result.isError).toBe(true);
     expect(textOf(result)).toContain("path");
+  });
+
+  it("review_ui checks a running screen by url", async () => {
+    const html = readFileSync(resolve(repoRoot, "tests/fixtures/live/invoices.html"), "utf8");
+    const server = createServer((_request, response) => {
+      response.writeHead(200, { "content-type": "text/html" });
+      response.end(html);
+    });
+    await new Promise<void>((done) => server.listen(0, "127.0.0.1", done));
+    const address = server.address();
+    const port = typeof address === "object" && address ? address.port : 0;
+    try {
+      const data = await callTool<{
+        url: string;
+        tags: number;
+        groups: { level: string; pieces: { name: string }[] }[];
+        landmarks: { main: number; nav: number; h1: number };
+        patterns: string[];
+        findings: { rule: string }[];
+      }>("review_ui", { url: `http://127.0.0.1:${port}/invoices` });
+      expect(data.tags).toBe(17);
+      expect(data.groups[0].level).toBe("template");
+      expect(data.patterns).toEqual(["AppShell", "ListPage"]);
+      expect(data.landmarks).toEqual({ main: 1, nav: 2, h1: 1 });
+      expect(data.findings).toEqual([]);
+    } finally {
+      await new Promise<void>((done) => server.close(() => done()));
+    }
+  });
+
+  it("review_ui says plainly when a url does not answer", async () => {
+    const result = await client.callTool({ name: "review_ui", arguments: { url: "http://127.0.0.1:1/invoices" } });
+    expect(result.isError).toBe(true);
+    expect(textOf(result)).toContain("Cannot check");
   });
 
   it("get_rules returns essentials and document text", async () => {

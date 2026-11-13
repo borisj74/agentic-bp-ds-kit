@@ -1,6 +1,7 @@
 "use client";
 import { useId } from "react";
 import styles from "./LogoAI.module.css";
+import { inspect } from "../inspect";
 
 export type LogoAIType = "default" | "symbol";
 export type LogoAIIntent = "color" | "monochrome" | "white" | "filled";
@@ -82,7 +83,7 @@ function Filled({ type }: { type: LogoAIType }) {
 
 export function LogoAI({ type = "default", intent = "color", label = "AI logo" }: LogoAIProps) {
   return (
-    <span className={styles.logo} role="img" aria-label={label}>
+    <span {...inspect("LogoAI")} className={styles.logo} role="img" aria-label={label}>
       {intent === "filled" ? <Filled type={type} /> : <Outline type={type} intent={intent} />}
     </span>
   );

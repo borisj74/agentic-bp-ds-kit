@@ -5,6 +5,7 @@ import { Icon } from "../Icon/Icon";
 import { Skeleton } from "../Skeleton/Skeleton";
 import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import styles from "./Checkbox.module.css";
+import { inspect } from "../inspect";
 
 export type CheckboxSize = "sm" | "md" | "lg";
 
@@ -69,7 +70,7 @@ export function Checkbox({
     );
   }
   return (
-    <label className={[styles.checkbox, styles[size], error ? styles.error : "", disabled ? styles.disabled : ""].join(" ")} htmlFor={inputId}>
+    <label {...inspect("Checkbox")} className={[styles.checkbox, styles[size], error ? styles.error : "", disabled ? styles.disabled : ""].join(" ")} htmlFor={inputId}>
       <span className={styles.control}>
         <input
           ref={ref}

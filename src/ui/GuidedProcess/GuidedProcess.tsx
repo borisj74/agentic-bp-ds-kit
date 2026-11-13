@@ -2,6 +2,7 @@ import { useId } from "react";
 import { Button, type ButtonPair } from "../Button/Button";
 import { Dropdown } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
+import { inspect } from "../inspect";
 import styles from "./GuidedProcess.module.css";
 
 export type GuidedProcessStatus = "success" | "warning" | "error";
@@ -112,6 +113,7 @@ function Panel({
 
   return (
     <section
+      {...inspect("GuidedProcess")}
       className={[styles.panel, styles[placement], styles[`shade${shade}`]].filter(Boolean).join(" ")}
       data-theme="dark" aria-labelledby={title ? titleId : undefined} aria-label={title ? undefined : step?.title}
     >
@@ -165,7 +167,7 @@ function Counter({ current, total }: { current: number; total: number }) {
 function Steps({ steps, current = 1, side = "end", onClose }: GuidedProcessStepsProps) {
   const n = clamp(current, steps.length);
   return (
-    <nav className={[styles.toc, side === "start" ? styles.tocStart : ""].join(" ")} aria-label="Steps">
+    <nav {...inspect("GuidedProcess")} className={[styles.toc, side === "start" ? styles.tocStart : ""].join(" ")} aria-label="Steps">
       <div className={styles.tocInner} data-theme="dark">
         <div className={styles.tocTop}>
           <Counter current={n} total={steps.length} />
@@ -211,7 +213,7 @@ function Steps({ steps, current = 1, side = "end", onClose }: GuidedProcessSteps
 // it opens them.
 function Header({ title, stepTitle, current = 1, total, onStepsOpen }: GuidedProcessHeaderProps) {
   return (
-    <div className={styles.header}>
+    <div {...inspect("GuidedProcess")} className={styles.header}>
       <div className={styles.headText}>
         <p className={styles.process}>{title}</p>
         <h1 className={styles.stepTitle1}>{stepTitle}</h1>
@@ -243,7 +245,7 @@ function Footer({ actions = [], onAction, updated }: GuidedProcessFooterProps) {
   );
 
   return (
-    <footer className={styles.footer}>
+    <footer {...inspect("GuidedProcess")} className={styles.footer}>
       {updated && <p className={styles.updated}>{updated}</p>}
       {last && (
         <div className={styles.buttons}>

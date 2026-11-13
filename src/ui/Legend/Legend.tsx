@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import styles from "./Legend.module.css";
+import { inspect } from "../inspect";
 
 export type LegendIntent = "green" | "olive" | "cyan" | "orange" | "pink" | "gray" | "purple" | "yellow" | "red" | "mint";
 export type LegendOrientation = "horizontal" | "vertical";
@@ -78,7 +79,7 @@ export function Legend({
 
   // Decorative: the chart it belongs to already reads its numbers out, so the keys are skipped.
   return (
-    <ul className={cls} aria-label={decorative ? undefined : label} aria-hidden={decorative ? true : undefined}>
+    <ul {...inspect("Legend")} className={cls} aria-label={decorative ? undefined : label} aria-hidden={decorative ? true : undefined}>
       {items.map((item, i) => {
         const id = keyOf(item);
         const isOff = off.includes(id);

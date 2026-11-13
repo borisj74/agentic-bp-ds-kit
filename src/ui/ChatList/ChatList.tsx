@@ -6,6 +6,7 @@ import { Icon } from "../Icon/Icon";
 import { Input } from "../Input/Input";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./ChatList.module.css";
+import { inspect } from "../inspect";
 
 export interface ChatListItem {
   id: string;
@@ -88,7 +89,7 @@ export function ChatList({
   const count = shown.reduce((n, g) => n + g.items.length, 0);
 
   return (
-    <section className={styles.list} aria-label={title}>
+    <section {...inspect("ChatList")} className={styles.list} aria-label={title}>
       <header className={styles.head}>
         {onClose && (
           <Tooltip content={closeLabel}>

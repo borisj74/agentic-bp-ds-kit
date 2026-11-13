@@ -5,6 +5,7 @@ import { useDensitySize } from "../Density/Density";
 import { Dropdown, type DropdownItem } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import styles from "./TreeView.module.css";
+import { inspect } from "../inspect";
 
 export type TreeViewSelection = "none" | "single" | "multiple";
 export type TreeViewSize = "sm" | "md" | "lg";
@@ -315,7 +316,7 @@ export function TreeView({
   } : {});
 
   return (
-    <div ref={treeRef} className={[styles.tree, styles[size], showLines ? styles.lines : ""].join(" ")}>
+    <div {...inspect("TreeView")} ref={treeRef} className={[styles.tree, styles[size], showLines ? styles.lines : ""].join(" ")}>
       <ul
         role="tree" aria-label={label} aria-multiselectable={selection === "multiple" || undefined}
         aria-describedby={reorderable ? keysId : undefined} className={styles.list} onKeyDown={onKeyDown}

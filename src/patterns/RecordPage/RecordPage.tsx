@@ -7,6 +7,7 @@ import { Tabs } from "@/ui/Tabs/Tabs";
 import { useStickyBand } from "../band";
 import { useStickMark } from "../stick";
 import styles from "./RecordPage.module.css";
+import { inspect } from "../../ui/inspect";
 
 // The widths a booting record's bars take in the rows fallback, so the rows read as labels and values rather than
 // one grey block (BP COBALT node 2046:30135 draws its label bars at 90, 120 and 70).
@@ -86,7 +87,7 @@ export function RecordPage({
   const { rootRef, barRef, shadowRef, style } = useStickyBand([toolbar, children], { names: false });
 
   return (
-    <section
+    <section {...inspect("RecordPage")}
       ref={rootRef as React.Ref<HTMLElement>}
       className={styles.record} aria-label={label ?? "Record"} style={style}
     >

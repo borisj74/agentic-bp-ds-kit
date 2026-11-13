@@ -1,5 +1,6 @@
 "use client";
 import styles from "./Logo.module.css";
+import { inspect } from "../inspect";
 
 export type LogoType = "default" | "symbol";
 
@@ -43,7 +44,7 @@ function Wordmark() {
 
 export function Logo({ type = "default", label = "Logo" }: LogoProps) {
   return (
-    <span className={[styles.logo, styles[type]].join(" ")} role="img" aria-label={label}>
+    <span {...inspect("Logo")} className={[styles.logo, styles[type]].join(" ")} role="img" aria-label={label}>
       <Mark />
       {type === "default" && <span className={styles.text}><Wordmark /></span>}
     </span>

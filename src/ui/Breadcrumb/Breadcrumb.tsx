@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { Icon } from "../Icon/Icon";
 import styles from "./Breadcrumb.module.css";
+import { inspect } from "../inspect";
 
 export type BreadcrumbSeparator = "slash" | "chevron";
 
@@ -31,7 +32,7 @@ export function Breadcrumb({ separator = "slash", maxItems, items, current = tru
   // current false: the trail is only parent sections (like above a page title), so the last crumb stays a link.
   const last = current ? items.length - 1 : -1;
   return (
-    <nav aria-label="Breadcrumb">
+    <nav {...inspect("Breadcrumb")} aria-label="Breadcrumb">
       <ol className={styles.list}>
         {nodes.map((node, i) => (
           <Fragment key={node.kind === "ellipsis" ? "ellipsis" : node.index}>

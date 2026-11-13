@@ -16,6 +16,7 @@ import { Select, type SelectOption } from "../Select/Select";
 import { Skeleton } from "../Skeleton/Skeleton";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./DataGrid.module.css";
+import { inspect } from "../inspect";
 
 export type DataGridColumnType = "text" | "number" | "select" | "formula" | "date";
 export type DataGridSize = "sm" | "md";
@@ -549,7 +550,7 @@ export function DataGrid({
   }
 
   return (
-    <div className={styles.grid} data-data-grid="">
+    <div {...inspect("DataGrid")} className={styles.grid} data-data-grid="">
       <div ref={wrapRef} className={styles.wrap}>
         <table
           ref={tableRef} className={[styles.table, styles[size]].join(" ")} aria-label={label}

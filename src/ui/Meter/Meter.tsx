@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import styles from "./Meter.module.css";
+import { inspect } from "../inspect";
 
 export type MeterShape = "bar" | "circle" | "semicircle";
 export type MeterSize = "sm" | "md" | "lg";
@@ -108,7 +109,7 @@ export function Meter({
   const ringStyle = { transform: semi ? `scale(-1, 1)` : `rotate(-90deg)`, transformOrigin: semi ? `${C}px 0` : `${C}px ${C}px` } as CSSProperties;
 
   return (
-    <div className={[styles.progress, styles.ring, semi ? styles.semi : "", styles[size]].join(" ")} {...a11y}>
+    <div {...inspect("Meter")} className={[styles.progress, styles.ring, semi ? styles.semi : "", styles[size]].join(" ")} {...a11y}>
       <svg className={styles.svg} viewBox={`0 0 ${C * 2} ${height}`} aria-hidden="true">
         <g style={ringStyle} strokeWidth={STROKE} fill="none">
           {arc(0, total, [styles.arc, styles[trackIntent]].join(" "))}

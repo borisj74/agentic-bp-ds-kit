@@ -1,4 +1,5 @@
 import styles from "./LoadingLine.module.css";
+import { inspect } from "../inspect";
 
 export type LoadingLineTrack = "line" | "none";
 
@@ -14,7 +15,7 @@ export interface LoadingLineProps {
 export function LoadingLine({ loading = true, track = "line", label = "Loading" }: LoadingLineProps) {
   if (!loading) return null;
   return (
-    <div
+    <div {...inspect("LoadingLine")}
       className={[styles.line, track === "none" ? styles.bare : ""].join(" ")}
       role="progressbar" aria-label={label}
     >

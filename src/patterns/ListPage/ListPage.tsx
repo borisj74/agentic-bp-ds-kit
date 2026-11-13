@@ -6,6 +6,7 @@ import { Skeleton } from "@/ui/Skeleton/Skeleton";
 import { useBootSkeleton, useFieldSkeleton } from "@/ui/LoadingLine/boot";
 import { useStickyBand } from "../band";
 import styles from "./ListPage.module.css";
+import { inspect } from "../../ui/inspect";
 
 // The widths the bars take across a booting list in the rows fallback, so the rows read as data rather than a
 // block of grey. They cycle by row and column, the way the Cobalt screen's do.
@@ -54,7 +55,7 @@ export function ListPage({
   const { rootRef, barRef, shadowRef, style } = useStickyBand([bulk, toolbar, children, state]);
 
   return (
-    <section
+    <section {...inspect("ListPage")}
       ref={rootRef as React.Ref<HTMLElement>}
       className={styles.list} aria-label={label ?? "List"} aria-busy={state === "loading" || undefined}
       style={style}

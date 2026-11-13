@@ -18,6 +18,7 @@ import { Switch } from "../Switch/Switch";
 import { Textarea } from "../Textarea/Textarea";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./Calendar.module.css";
+import { inspect } from "../inspect";
 
 export type CalendarView = "month" | "week" | "day" | "list";
 export type CalendarWeekStart = "sunday" | "monday";
@@ -523,7 +524,7 @@ export function Calendar({
   );
 
   return (
-    <section className={[styles.calendar, pending ? styles.pending : ""].join(" ")} aria-label={label} aria-busy={pending || undefined}>
+    <section {...inspect("Calendar")} className={[styles.calendar, pending ? styles.pending : ""].join(" ")} aria-label={label} aria-busy={pending || undefined}>
       <div className={styles.header}>
         <div className={styles.titleRow}>
           <h2 id={titleId} className={styles.title} aria-live="polite">{title}</h2>

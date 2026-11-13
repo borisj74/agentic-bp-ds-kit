@@ -86,6 +86,8 @@ export interface XYChartProps {
   marker?: ChartMarker;
   selected?: number | null;
   onSelectedChange?: (index: number | null) => void;
+  // The contract name of the chart using this engine (BarChart, LineChart), for its name tag on a running screen.
+  kit?: string;
 }
 
 // Room around the plot: axis labels below, value labels past the bars, labels at the start (about 7px a character at 12px).
@@ -109,7 +111,7 @@ export function XYChart({
   kind, label, title, subtitle, showHeader = true, categories, series, orientation = "vertical", highlight, highlightIntent = "orange",
   stacked = false, barWidth = "wide", area = false, showPoints = false, showValues = false,
   showGrid = true, showLegend = true, legendPosition = "bottom", animate = true, format = "number", currency = "USD", height, emptyLabel = "No data for this range.",
-  referenceLines = [], marker, selected = null, onSelectedChange,
+  referenceLines = [], marker, selected = null, onSelectedChange, kit,
 }: XYChartProps) {
   const plotRef = useRef<HTMLDivElement>(null);
   const width = useWidth(plotRef);
@@ -138,7 +140,7 @@ export function XYChart({
   };
 
   if (!n || !list.length) {
-    return <ChartFrame label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={false}><ChartEmpty label={emptyLabel} height={h} /></ChartFrame>;
+    return <ChartFrame kit={kit} label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={false}><ChartEmpty label={emptyLabel} height={h} /></ChartFrame>;
   }
 
   // Stacks: each series sits on the sum of the ones before it on the same scale.
@@ -518,6 +520,7 @@ export function XYChart({
   // Where the keys sit: under the chart, over it, or in a column beside it.
   return (
     <ChartFrame
+      kit={kit}
       label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={animate} active={active !== null} plotHeight={h}
       legendKeys={showLegend ? list.length + refs.length : 0} legendPosition={legendPosition}
       onKeyDown={onKeyDown} onBlur={() => setActive(null)}

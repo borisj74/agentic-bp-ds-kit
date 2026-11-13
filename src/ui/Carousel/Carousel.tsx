@@ -3,6 +3,7 @@ import { useCallback, useLayoutEffect, useRef, useState, type KeyboardEvent, typ
 import { Button } from "../Button/Button";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./Carousel.module.css";
+import { inspect } from "../inspect";
 
 export type CarouselOrientation = "horizontal" | "vertical";
 export type CarouselAlignment = "start" | "center";
@@ -130,7 +131,7 @@ export function Carousel({
   };
 
   return (
-    <div
+    <div {...inspect("Carousel")}
       className={[styles.carousel, styles[orientation], PER[slidesPerView], alignment === "center" ? styles.center : ""].join(" ")}
       role="region" aria-roledescription="carousel" aria-label={label} tabIndex={0} onKeyDown={onKeyDown}
     >

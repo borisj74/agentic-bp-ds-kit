@@ -6,6 +6,7 @@ import { Icon } from "../Icon/Icon";
 import { Skeleton } from "../Skeleton/Skeleton";
 import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import styles from "./Scoreboard.module.css";
+import { inspect } from "../inspect";
 
 export type ScoreboardStatus = "success" | "danger" | "neutral";
 export type ScoreboardDirection = "up" | "down" | "none";
@@ -203,7 +204,7 @@ export function Scoreboard({
   if (!scroll) return row;
   if (items.length > CONVEYOR_AT) return <Conveyor label={label}>{row}</Conveyor>;
   return (
-    <div
+    <div {...inspect("Scoreboard")}
       ref={wrapRef} className={[styles.wrap, styles.scrolls].join(" ")}
       tabIndex={scrollStop ? 0 : undefined} role={scrollStop ? "region" : undefined} aria-label={scrollStop ? label : undefined}
     >

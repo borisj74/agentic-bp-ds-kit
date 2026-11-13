@@ -1,6 +1,7 @@
 import type { MouseEventHandler, ReactNode } from "react";
 import { Icon } from "../Icon/Icon";
 import styles from "./Link.module.css";
+import { inspect } from "../inspect";
 
 export type LinkIntent = "brand" | "neutral";
 
@@ -32,7 +33,7 @@ export function Link({ children, href, onClick, intent = "brand", external = fal
   if (disabled) return <span className={cls} aria-disabled="true">{body}</span>;
   if (!href) return <button type="button" className={[cls, styles.button].join(" ")} onClick={onClick}>{body}</button>;
   return (
-    <a className={cls} href={href} onClick={onClick} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}>
+    <a {...inspect("Link")} className={cls} href={href} onClick={onClick} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}>
       {body}
     </a>
   );
