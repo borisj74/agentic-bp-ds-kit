@@ -9,15 +9,16 @@ structure to suit one screen.
 
 The account provisioning flow: the accounts list, one account with its tabs, a new account, a new product on an account, and configuring that product alone or many products at once, one page at a time.
 
-It is a blueprint: each page is a kit pattern the screen builds, and the screen owns which one is showing, the records and what was just saved. list is a kit ListPage: a Toolbar with filters, search, the view picker and refresh, and a Table whose Account ID is a link Cell that opens the account, with Pagination under it; Table View is the default, and List View swaps the Table for a kit ListView of the same accounts whose rows open the account; the page's New and Export go in the AppShell's kit PageHeader, not in the Toolbar.
+It is a blueprint: each page is a kit pattern the screen builds, and the screen owns which one is showing, the records and what was just saved. list is a kit ListPage: a Toolbar with filters, search, the view picker and refresh, and a Table whose Account ID is a link Cell that opens the account, with Pagination under it; Table View is the default, and List View swaps the Table for a kit ListView of the same accounts whose rows open the account; the page's New and Export go in the AppShell's kit PageHeader, not in the Toolbar. It follows the frame's sequence: the line alone for 200ms, the skeleton held at least 400ms, then the content fading in over 150ms; a page that lands inside the first 200ms never shows a skeleton.
 
 **Use when**
 
 - Prototyping account screens that link together: find an account, open it, add an account or a product.
 - Showing how a list, a record and its create forms hand over to each other.
 - Adding products to an account: pick one and configure it, or add many at once in a grid.
+- Showing how a page in the flow arrives: the accounts list, an account or a new account booting cold, each with its own skeleton.
 
-**Composes** `Accordion`, `Callout`, `AppShell`, `Badge`, `Cell`, `Checkbox`, `DataGrid`, `DatePicker`, `Drawer`, `EmptyState`, `Form`, `FormDisplay`, `FormPage`, `Input`, `Link`, `LinkList`, `ListPage`, `Lookup`, `PageHeader`, `Pagination`, `RadioGroup`, `RecordPage`, `Scoreboard`, `Section`, `Select`, `Table`, `Tabs`, `Toolbar`
+**Composes** `Accordion`, `Callout`, `AppShell`, `Badge`, `Cell`, `Checkbox`, `DataGrid`, `DatePicker`, `Drawer`, `EmptyState`, `Form`, `FormDisplay`, `FormPage`, `Input`, `Link`, `LinkList`, `ListPage`, `Lookup`, `PageHeader`, `Pagination`, `RadioGroup`, `RecordPage`, `Scoreboard`, `Section`, `Select`, `Table`, `Tabs`, `Toolbar`, `LoadingLine`
 
 **Do not**
 
@@ -28,6 +29,8 @@ It is a blueprint: each page is a kit pattern the screen builds, and the screen 
 - Do not keep the view or the records in the pattern. The screen owns them.
 - Do not put page padding on it. The AppShell page owns that.
 - Do not put a second strong brand Button on provisionProduct or bulkProducts: Save draft and Validate stay subtle beside the one Provision.
+- Do not build a skeleton for the flow. Set loading and the page that is showing draws its own; the AppShell draws the line.
+- Do not give the AppShell and the flow different loading, loadingLabel or bootTiming. They are one boot.
 
 ## AppShell
 

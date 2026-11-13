@@ -2383,8 +2383,13 @@ type FlowFilterKey = "id" | "name" | "type" | "status" | "cycle";
 const FLOW_NO_FILTERS: Record<FlowFilterKey, string[]> = { id: [], name: [], type: [], status: [], cycle: [] };
 const flowValue = (a: FlowAccount, key: FlowFilterKey) =>
   key === "id" ? a.id : key === "name" ? a.name : key === "type" ? "ACCOUNT" : key === "status" ? "Active" : "MONTHLY";
+// What each page says while it boots, for screen readers.
+const FLOW_LOADING_LABELS: Record<AccountFlowView, string> = {
+  list: "Loading accounts", account: "Loading account", newAccount: "Loading new account",
+  newProduct: "Loading new account product", provisionProduct: "Loading product", bulkProducts: "Loading products",
+};
 const flowUsDate = (iso: string) => (iso ? `${iso.slice(5, 7)}/${iso.slice(8, 10)}/${iso.slice(0, 4)}` : "—");
-export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?: string; start?: AccountFlowView }) {
+export function AccountFlowDemo({ stage = "desktop", start = "list", loading = false }: { stage?: string; start?: AccountFlowView; loading?: boolean }) {
   const [view, setView] = useState<AccountFlowView>(start);
   const [from, setFrom] = useState(start);
   const [dark, setDark] = useState(false);
@@ -2799,8 +2804,14 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
         // Only the list's header sits in the frame; the record and the forms carry their own.
         pageHeader={view === "list" ? listHeader : undefined}
         onPageHeaderStick={view === "list" ? setCompact : undefined}
+        // One boot for the frame and the flow: the frame draws the line and keeps the clock, and the flow hands
+        // loading to the page that is showing, so that page draws its own skeleton.
+        loading={loading} loadingLabel={FLOW_LOADING_LABELS[view]}
       >
-        <AccountFlow view={view} list={list} account={record} newAccount={newAccount} newProduct={newProduct} />
+        <AccountFlow
+          view={view} list={list} account={record} newAccount={newAccount} newProduct={newProduct}
+          loading={loading} loadingLabel={FLOW_LOADING_LABELS[view]}
+        />
       </AppShell>
     </div>
   );

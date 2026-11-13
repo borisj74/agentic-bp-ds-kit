@@ -2,7 +2,7 @@
   "name": "AccountFlow",
   "path": "src/patterns/AccountFlow/AccountFlow.tsx",
   "intent": "The account provisioning flow: the accounts list, one account with its tabs, a new account, a new product on an account, and configuring that product alone or many products at once, one page at a time.",
-  "usage": "Use AccountFlow for the screens people move between when they set up and look after accounts. It is a blueprint: each page is a kit pattern the screen builds, and the screen owns which one is showing, the records and what was just saved. list is a kit ListPage: a Toolbar with filters, search, the view picker and refresh, and a Table whose Account ID is a link Cell that opens the account, with Pagination under it; Table View is the default, and List View swaps the Table for a kit ListView of the same accounts whose rows open the account; the page's New and Export go in the AppShell's kit PageHeader, not in the Toolbar. account is a kit RecordPage: a PageHeader with the account name, its status Badge, Copy and the one strong brand Button; Tabs for Details, Contract, Contacts, Account Products (with a count), Account Packages, Revenue Contract and Account Docs; a Scoreboard of the account's numbers; and on Details, one full-width layout-stack of collapsible Sections: Account information is open; it, Billing profile, System information and Payments & aging put their FormDisplay labels at the start; Billing profile, Invoices, Account products, System information, Payments & aging, Shipping address and Quick links (a kit LinkList) follow, each closed at start; FormDisplay pairs sit in two columns; values that open another record are a kit Link. On Account Products the tab holds a Table of the account's products with Pagination, and the strong brand Button becomes New account product. newAccount is a kit FormPage: Cancel and Submit in the header, a Form with an id and collapsible sections of Inputs, Selects, Lookups, RadioGroups and Checkboxes, its labels at the start. newProduct is a kit FormPage for one product on the account: Product and Contract Lookups, Start and End DatePickers and a Rating method Select, with Cancel and Next. provisionProduct is a kit FormPage that configures the product picked on newProduct: numbered collapsible sections with FormDisplay for values that come from the product, and an Estimate Section with a Scoreboard after the Form; Provision is the one strong brand Button. bulkProducts is a kit FormPage for adding many products at once: a DataGrid of rows, an Add batch Drawer, and a Summary Section with a Scoreboard; Provision N of M is the one strong brand Button. Pass view, and the flow shows that page, starts it at its top and moves focus to its title so the change is heard. After a save, send people back to the account with a success Callout as the RecordPage notice. See contracts/accountflow.json for the full contract.",
+  "usage": "Use AccountFlow for the screens people move between when they set up and look after accounts. It is a blueprint: each page is a kit pattern the screen builds, and the screen owns which one is showing, the records and what was just saved. list is a kit ListPage: a Toolbar with filters, search, the view picker and refresh, and a Table whose Account ID is a link Cell that opens the account, with Pagination under it; Table View is the default, and List View swaps the Table for a kit ListView of the same accounts whose rows open the account; the page's New and Export go in the AppShell's kit PageHeader, not in the Toolbar. account is a kit RecordPage: a PageHeader with the account name, its status Badge, Copy and the one strong brand Button; Tabs for Details, Contract, Contacts, Account Products (with a count), Account Packages, Revenue Contract and Account Docs; a Scoreboard of the account's numbers; and on Details, one full-width layout-stack of collapsible Sections: Account information is open; it, Billing profile, System information and Payments & aging put their FormDisplay labels at the start; Billing profile, Invoices, Account products, System information, Payments & aging, Shipping address and Quick links (a kit LinkList) follow, each closed at start; FormDisplay pairs sit in two columns; values that open another record are a kit Link. On Account Products the tab holds a Table of the account's products with Pagination, and the strong brand Button becomes New account product. newAccount is a kit FormPage: Cancel and Submit in the header, a Form with an id and collapsible sections of Inputs, Selects, Lookups, RadioGroups and Checkboxes, its labels at the start. newProduct is a kit FormPage for one product on the account: Product and Contract Lookups, Start and End DatePickers and a Rating method Select, with Cancel and Next. provisionProduct is a kit FormPage that configures the product picked on newProduct: numbered collapsible sections with FormDisplay for values that come from the product, and an Estimate Section with a Scoreboard after the Form; Provision is the one strong brand Button. bulkProducts is a kit FormPage for adding many products at once: a DataGrid of rows, an Add batch Drawer, and a Summary Section with a Scoreboard; Provision N of M is the one strong brand Button. Pass view, and the flow shows that page, starts it at its top and moves focus to its title so the change is heard. After a save, send people back to the account with a success Callout as the RecordPage notice. loading is the boot: give the AppShell and the flow the same loading, loadingLabel and bootTiming, and the flow hands loading to the page that is showing (a ListPage's state goes to loading; a RecordPage or FormPage, and the PageHeader it carries, get loading), so that page draws its own skeleton where its content will stand. It follows the frame's sequence: the line alone for 200ms, the skeleton held at least 400ms, then the content fading in over 150ms; a page that lands inside the first 200ms never shows a skeleton. The flow draws no skeleton of its own. See contracts/accountflow.json for the full contract.",
   "composes": [
     "Accordion",
     "Callout",
@@ -31,7 +31,8 @@
     "Select",
     "Table",
     "Tabs",
-    "Toolbar"
+    "Toolbar",
+    "LoadingLine"
   ],
   "props": {
     "view": {
@@ -73,12 +74,27 @@
     "bulkProducts": {
       "type": "ReactNode",
       "note": "Optional. Adding many products at once: a kit FormPage holding a Section with a kit DataGrid (a product select, quantity, rate and dates per row, with add and remove rows), an Add batch kit Drawer of Checkboxes grouped by product type, and a Summary Section with a kit Scoreboard of the run's totals. The strong brand Button is Provision N of M."
+    },
+    "loading": {
+      "type": "boolean",
+      "default": false,
+      "note": "The page is still arriving. The flow hands it to the page that is showing: a ListPage gets state loading, a RecordPage or FormPage gets loading, and so does the kit PageHeader that page carries, so that page's own skeleton draws its content where it will stand — the list's columns and rows, the record's tabs, numbers and sections, the form's groups and fields. Pass the same value to the AppShell: inside a booting frame the page follows the frame's sequence, and the frame says once that the page is loading. Outside a frame the flow runs the same sequence itself, with a kit LoadingLine over the page. The flow adds no skeleton of its own."
+    },
+    "loadingLabel": {
+      "type": "string",
+      "default": "Loading page",
+      "note": "What is loading, for screen readers, like Loading accounts. The same as the AppShell's: pass it to both. Outside a frame it names the flow's own LoadingLine, the one status read while the page boots."
+    },
+    "bootTiming": {
+      "type": "{ line?: number; hold?: number; settle?: number }",
+      "note": "The sequence's three steps in ms, the same shape as the AppShell's; pass the same value to both. Defaults are the spec's 200, 400 and 150, which is what --motion-boot-line, --motion-boot-hold and --motion-boot-settle hold."
     }
   },
   "useWhen": [
     "Prototyping account screens that link together: find an account, open it, add an account or a product.",
     "Showing how a list, a record and its create forms hand over to each other.",
-    "Adding products to an account: pick one and configure it, or add many at once in a grid."
+    "Adding products to an account: pick one and configure it, or add many at once in a grid.",
+    "Showing how a page in the flow arrives: the accounts list, an account or a new account booting cold, each with its own skeleton."
   ],
   "doNot": [
     "Do not put the list's New and Export in its Toolbar. Page actions go in the PageHeader; the Toolbar keeps filters, search, the view and refresh.",
@@ -87,15 +103,18 @@
     "Do not build a second list, record or form layout inside it. Use ListPage, RecordPage and FormPage.",
     "Do not keep the view or the records in the pattern. The screen owns them.",
     "Do not put page padding on it. The AppShell page owns that; read contracts/layout.json.",
-    "Do not put a second strong brand Button on provisionProduct or bulkProducts: Save draft and Validate stay subtle beside the one Provision."
+    "Do not put a second strong brand Button on provisionProduct or bulkProducts: Save draft and Validate stay subtle beside the one Provision.",
+    "Do not build a skeleton for the flow. Set loading and the page that is showing draws its own; the AppShell draws the line.",
+    "Do not give the AppShell and the flow different loading, loadingLabel or bootTiming. They are one boot."
   ],
   "a11y": [
     "Changing view moves focus to the new page's title, its h1, so a screen reader hears where it landed.",
     "Each page keeps its own pattern's landmarks and headings.",
     "Account IDs and products are link Cells, reachable with Tab.",
-    "The forms' save Buttons carry form, so they submit from the header."
+    "The forms' save Buttons carry form, so they submit from the header.",
+    "Booting, the page is inert and hidden from screen readers while it is bars, and one status says what is loading: the AppShell's in a frame, the flow's LoadingLine outside one."
   ],
-  "snippet": "<AccountFlow\n  view={view}\n  list={<ListPage toolbar={toolbar} pagination={pagination}><Table columns={columns} rows={rows} /></ListPage>}\n  account={<RecordPage header={header} tabs={tabs} summary={scores}>{details}</RecordPage>}\n  newAccount={<FormPage header={newHeader}><Form id=\"account\" columns={2} sections={sections} onSubmit={create} /></FormPage>}\n  newProduct={<FormPage header={productHeader}><Form id=\"product\" columns={2} sections={productSections} onSubmit={add} /></FormPage>}\n/>",
+  "snippet": "<AccountFlow\n  view={view}\n  loading={loading}\n  list={<ListPage toolbar={toolbar} pagination={pagination}><Table columns={columns} rows={rows} /></ListPage>}\n  account={<RecordPage header={header} tabs={tabs} summary={scores}>{details}</RecordPage>}\n  newAccount={<FormPage header={newHeader}><Form id=\"account\" columns={2} sections={sections} onSubmit={create} /></FormPage>}\n  newProduct={<FormPage header={productHeader}><Form id=\"product\" columns={2} sections={productSections} onSubmit={add} /></FormPage>}\n/>",
   "examples": [
     {
       "title": "Account provisioning",
@@ -109,6 +128,23 @@
             "newAccount": "{newAccount}",
             "newProduct": "{newProduct}"
           }
+        }
+      ]
+    },
+    {
+      "title": "Booting",
+      "usage": "The accounts list as it arrives: the toolbar, the table's own columns and rows and the pagination as bars, under the frame's line. Start on another page and that page draws its own skeleton instead.",
+      "items": [
+        {
+          "props": {
+            "view": "list",
+            "list": "{list}",
+            "account": "{account}",
+            "newAccount": "{newAccount}",
+            "newProduct": "{newProduct}",
+            "loading": true
+          },
+          "caption": "loading"
         }
       ]
     }
