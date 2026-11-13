@@ -1,6 +1,7 @@
 {
   "name": "TreeView",
   "path": "src/ui/TreeView/TreeView.tsx",
+  "level": "organism",
   "intent": "A nested list people open and close level by level, like teams in an organization, project folders or account hierarchies, to pick, check or reorder items.",
   "usage": "Use TreeView for data that nests: folders and files, an org chart, parent and child accounts, product categories. It comes in two looks from one component: simple (chevrons and guide lines, one row selected) and advanced (selection multiple, showIcons and reorderable: checkboxes, folder icons and drag handles). It is one component: pass items, each with an id, a label and, for a folder, children. Chevrons open and close folders; faint guide lines join each level to its parent (showLines). selection single highlights one row (clicking a folder also opens it); multiple adds a checkbox to each row that checks a folder's whole branch and shows a dash when only part of it is checked; none only opens and closes. showIcons adds a folder or file icon (or the item's own). reorderable adds a drag handle: drag a row above or below another, or onto a folder to move it inside. The handle is also a button that opens a Move menu (up, down, into the folder above, out of its folder), so nothing needs dragging. Alt with the arrow keys makes the same moves on the focused row, and Shift+F10 opens the menu. Items, selection and open folders can each be controlled or left to the tree. See contracts/treeview.json for the full contract.",
   "props": {

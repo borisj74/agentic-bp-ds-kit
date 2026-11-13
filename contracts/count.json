@@ -1,6 +1,7 @@
 {
   "name": "Count",
   "path": "src/ui/Count/Count.tsx",
+  "level": "atom",
   "intent": "Small number badge for counts, like unread items on a nav link or tab.",
   "usage": "Use Count for a number next to a nav item, tab, button or icon, like 3 unread. Use Badge for words. Counts above max show as max+ (99+). Pass label so screen readers hear 3 unread messages, not just 3. See contracts/count.json for the full contract.",
   "props": {

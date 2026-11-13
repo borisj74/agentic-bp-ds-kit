@@ -1,6 +1,7 @@
 {
   "name": "Meter",
   "path": "src/ui/Meter/Meter.tsx",
+  "level": "atom",
   "intent": "How far along or how full something is, from 0 to 100, as a bar, a ring or a half ring, with optional red, amber and green zones.",
   "usage": "Use Meter for task completion (uploads, setup) and for measures against a range (storage used, budget spent, health scores). It is one component: pass value from 0 to 100 and a label that names it; value indeterminate slides a segment along the bar while the amount done is not known. shape picks a bar, a circle or a semicircle gauge (a bowl that fills left to right); size sets the bar thickness or the ring width. thresholds splits the range into thirds, low red, middle amber, high green: bar colors the value by its zone, plotArea colors the track, all shows the three bands. referenceLines marks the zone edges. showValue writes the percent after the bar or inside the ring, and datatip puts a short note in a tip at the end of the value. See contracts/meter.json for the full contract.",
   "props": {

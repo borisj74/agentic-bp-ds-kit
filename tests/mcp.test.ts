@@ -9,6 +9,7 @@ const mcpEntry = resolve(repoRoot, "bin/mcp.mjs");
 const cliEntry = resolve(repoRoot, "bin/agentic-bp-ds-kit.mjs");
 
 const TOOL_NAMES = ["get", "get_rules", "get_tokens", "list", "search"];
+const LEVELS = ["atom", "molecule", "organism", "template"];
 
 let client: Client;
 let transport: StdioClientTransport;
@@ -27,6 +28,13 @@ async function callTool<T = unknown>(name: string, args: Record<string, unknown>
   expect(result.isError).not.toBe(true);
   return JSON.parse(textOf(result)) as T;
 }
+
+type ListResult = {
+  count: number;
+  level: string | null;
+  components: { name: string; kind: string; level: string }[];
+  patterns: { name: string; kind: string; level: string }[];
+};
 
 describe("MCP server", () => {
   beforeAll(async () => {
@@ -70,13 +78,52 @@ describe("MCP server", () => {
     expect(data.count).toBe(data.components.length + data.patterns.length);
   });
 
+  it("every listed row carries a level", async () => {
+    const data = await callTool<ListResult>("list");
+    for (const row of [...data.components, ...data.patterns]) {
+      expect(LEVELS, `${row.name} level`).toContain(row.level);
+    }
+    expect(data.patterns.every((row) => row.level === "template")).toBe(true);
+    expect(data.components.every((row) => row.level !== "template")).toBe(true);
+  });
+
+  it("list filters by level", async () => {
+    const organisms = await callTool<ListResult>("list", { level: "organism" });
+    expect(organisms.level).toBe("organism");
+    expect(organisms.components.length).toBeGreaterThan(0);
+    expect(organisms.components.every((row) => row.level === "organism")).toBe(true);
+    // Only patterns are templates, so an organism list holds no patterns.
+    expect(organisms.patterns).toHaveLength(0);
+    expect(organisms.count).toBe(organisms.components.length);
+
+    const templates = await callTool<ListResult>("list", { level: "template" });
+    expect(templates.components).toHaveLength(0);
+    expect(templates.patterns.length).toBeGreaterThan(5);
+    expect(templates.patterns.every((row) => row.level === "template")).toBe(true);
+
+    const atoms = await callTool<ListResult>("list", { level: "atom" });
+    expect(atoms.components.some((row) => row.name === "Button")).toBe(true);
+    expect(atoms.components.every((row) => row.level === "atom")).toBe(true);
+    expect(atoms.patterns).toHaveLength(0);
+  });
+
+  it("an unknown level is a tool error that names the four levels", async () => {
+    const result = await client.callTool({ name: "list", arguments: { level: "block" } });
+    expect(result.isError).toBe(true);
+    const message = textOf(result);
+    for (const level of LEVELS) expect(message).toContain(level);
+  });
+
   it("get returns the Button contract", async () => {
     const data = await callTool<{
       name: string;
-      contract: { name: string; props: Record<string, unknown> };
+      level: string;
+      contract: { name: string; level: string; props: Record<string, unknown> };
       import: string;
     }>("get", { name: "Button" });
     expect(data.name).toBe("Button");
+    expect(data.level).toBe("atom");
+    expect(data.contract.level).toBe("atom");
     expect(data.contract.name).toBe("Button");
     expect(data.contract.props.emphasis).toBeDefined();
     expect(data.import).toContain("@/ui/Button/Button");
@@ -86,18 +133,22 @@ describe("MCP server", () => {
     const data = await callTool<{
       name: string;
       kind: string;
+      level: string;
       contract: { name: string };
       import: string;
     }>("get", { name: "listpage" });
     expect(data.name).toBe("ListPage");
     expect(data.kind).toBe("pattern");
+    expect(data.level).toBe("template");
     expect(data.contract.name).toBe("ListPage");
     expect(data.import).toContain("@/patterns/ListPage/ListPage");
   });
 
   it("search matches useWhen and intent text, across both kinds", async () => {
-    const byName = await callTool<{ components: { name: string }[] }>("search", { query: "button" });
-    expect(byName.components.some((row) => row.name === "Button")).toBe(true);
+    const byName = await callTool<{ components: { name: string; level: string }[] }>("search", {
+      query: "button",
+    });
+    expect(byName.components.some((row) => row.name === "Button" && row.level === "atom")).toBe(true);
 
     const patterns = await callTool<{ patterns: { name: string; kind: string }[] }>("search", {
       query: "record",
@@ -143,5 +194,6 @@ describe("MCP CLI", () => {
     expect(help.status).toBe(0);
     expect(help.stdout).toMatch(/get_tokens/);
     expect(help.stdout).toMatch(/\blist\b/);
+    expect(help.stdout).toMatch(/atom, molecule, organism, template/);
   });
 });

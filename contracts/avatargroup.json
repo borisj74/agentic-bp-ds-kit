@@ -1,6 +1,7 @@
 {
   "name": "AvatarGroup",
   "path": "src/ui/AvatarGroup/AvatarGroup.tsx",
+  "level": "molecule",
   "intent": "Overlapping row of kit Avatars with a +N count for the rest.",
   "usage": "Use for several people on a row, card or table cell. Only kit Avatars go in the group. People past max collapse into a +N count, not another face. One person is a plain Avatar. See contracts/avatargroup.json for the full contract.",
   "props": {

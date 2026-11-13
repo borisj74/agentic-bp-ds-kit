@@ -29,8 +29,8 @@ const TOOL_COLUMNS: TableColumn[] = [
 ];
 
 const TOOLS: { name: string; args: string; returns: string }[] = [
-  { name: "list", args: "none", returns: "Every component and pattern, one line each" },
-  { name: "get", args: "name", returns: "One piece: its whole contract and import line" },
+  { name: "list", args: "level (optional)", returns: "Every component and pattern, one line each, with its level" },
+  { name: "get", args: "name", returns: "One piece: its level, whole contract and import line" },
   { name: "search", args: "query", returns: "Pieces that match every word of the query" },
   { name: "get_tokens", args: "category, theme", returns: "Semantic colour roles and their values" },
   { name: "get_rules", args: "none", returns: "The kit rules, CLAUDE.md and AGENTS.md" },
@@ -134,6 +134,12 @@ export default function McpServer() {
                   <strong>components and screen patterns together</strong>, each row labelled with its{" "}
                   <code>kind</code>: the kit&apos;s first rule for a screen is to use the pattern that covers it, and an
                   assistant that cannot see the patterns cannot follow it.
+                </p>
+                <p>
+                  Every row also carries its <code>level</code>: <code>atom</code>, <code>molecule</code>,{" "}
+                  <code>organism</code> or <code>template</code>. Pass <code>level</code> to <code>list</code> for one
+                  level only — <code>template</code> returns the patterns, the others return components — and reuse the
+                  biggest piece that fits before building from smaller ones.
                 </p>
                 <p>
                   <code>get</code> takes a display name or a contract file stem, so <code>Button</code>,{" "}

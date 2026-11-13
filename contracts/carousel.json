@@ -1,6 +1,7 @@
 {
   "name": "Carousel",
   "path": "src/ui/Carousel/Carousel.tsx",
+  "level": "molecule",
   "intent": "A track of slides people page through with previous and next buttons, swipe or the arrow keys, like a gallery or featured cards.",
   "usage": "Use Carousel for galleries, featured cards and paged media. It is one component: pass items as an array of slides. slidesPerView shows 1 to 4 slides at once, so the next ones peek in. Previous and next are kit Buttons beside the track (above and below it when vertical); they turn off at the ends unless loop wraps around. People can also swipe or scroll the track, and press the arrow keys when it has focus. showIndex adds a Slide 2 of 5 caption under it. See contracts/carousel.json for the full contract.",
   "props": {

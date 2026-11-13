@@ -1,6 +1,7 @@
 {
   "name": "Heatmap",
   "path": "src/ui/Heatmap/Heatmap.tsx",
+  "level": "organism",
   "intent": "A grid where the weight of each cell is its value, like API calls by day and hour, so the busy patches show at a glance.",
   "usage": "Use Heatmap when two things name a grid and the number in each cell is a measure, like the days of a week against the hours of a day. It is one component: pass rows, columns and values, one row of values per row label. One intent carries five steps of weight up to the highest value in the grid, so the colour never changes, only how much of it there is; a cell with no value draws empty. size sets the cell height, sm in a dense tile up to lg where the numbers fit in the cells (showValues). The key under the grid runs from Less to More. Hover or use the arrow keys for a tooltip with the row, the column and the value. See contracts/heatmap.json for the full contract. Inside a loading page it draws its own skeleton in place: the page says loading once (FormLayoutContext, which RecordPage, ListPage, FormPage and Dashboard set), and it takes no loading prop of its own. The title stands as a bar at the length its words will take and the drawing as a faintly framed box of bars at the chart's own height (BP COBALT \"chart skeleton\"), so the chart arrives where its bars stood.",
   "props": {

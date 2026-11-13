@@ -1,6 +1,7 @@
 {
   "name": "ChatHeader",
   "path": "src/ui/ChatHeader/ChatHeader.tsx",
+  "level": "molecule",
   "intent": "The bar at the top of the assistant: its mark and name, then start a new chat, go full screen, the options menu and close.",
   "usage": "Use ChatHeader at the top of an assistant panel or its full-screen view. It is one component: pass the handlers for the buttons you want, and the ones you leave out do not show. The options menu is built for you: Chats and Playbooks with how many there are, Plan Mode with a tick while it is on, and Settings. While Plan Mode is on the bar also carries a Plan Mode badge beside the name, so it can be seen with the menu shut. On a narrow bar, like the side panel, the badge gives way first and shows its icon only, so the title is never cut short. chatsCount and playbooksCount leave the number off when there is none. menu replaces the whole menu when a screen needs different entries. Pair it with ChatList, ChatMessage and ChatComposer to make the window. See contracts/chatheader.json for the full contract.",
   "props": {

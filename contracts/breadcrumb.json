@@ -1,6 +1,7 @@
 {
   "name": "Breadcrumb",
   "path": "src/ui/Breadcrumb/Breadcrumb.tsx",
+  "level": "molecule",
   "intent": "Path to the current page as a trail of links.",
   "usage": "Use Breadcrumb above a page title to show where the page sits in the app. The last crumb is the current page and is never a link. Slash is the default separator; chevron is the alternate. Long trails collapse with maxItems. See contracts/breadcrumb.json for the full contract.",
   "props": {

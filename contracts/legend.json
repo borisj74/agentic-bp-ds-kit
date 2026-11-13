@@ -1,6 +1,7 @@
 {
   "name": "Legend",
   "path": "src/ui/Legend/Legend.tsx",
+  "level": "molecule",
   "intent": "The key to a drawing: a small colour mark per name, so people can read what each colour means.",
   "usage": "Use Legend as the key to anything drawn in the chart colours. The kit charts already draw one inside, so reach for it on its own when the key sits somewhere else: over a group of charts that share their colours, beside a map, or under a colour-coded bar. It is one component: pass items. orientation runs the keys across or down, shape picks a square, a line, a dot or an outline, and value writes a number after each name. An outline key is the empty box, for what is left rather than used \u2014 a usage bar keys what is still to spend that way beside its filled parts \u2014 and it takes no intent. A key with strong takes the strong step of its colour, for a darker part of the same colour as the whole it came out of. With onHiddenChange the keys become buttons that switch a series off, and it tells you which are off so you can drop them from your data. See contracts/legend.json for the full contract.",
   "props": {

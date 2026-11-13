@@ -1,6 +1,7 @@
 {
   "name": "Select",
   "path": "src/ui/Select/Select.tsx",
+  "level": "molecule",
   "intent": "Choose one or several options from a list. A field that opens the kit Dropdown. Looks like Input.",
   "usage": "Use Select to pick a value from a fixed list in a form or filter: country, status, owner, tags. One pick closes the menu; with multiple the menu stays open and each pick toggles. The field shows the picked labels; with maxVisible it shows the first few and a +N badge. Label, hint, error, help, required and sizes work like Input. For 2 to 5 options that should stay visible, use RadioGroup. See contracts/select.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in. labelWidth puts it on a narrower or wider column (140px or 320px) and moves that turn with it, to 460px or 640px. Inside a loading page it draws its own skeleton in place: the field keeps its box, its label column and its control's height, with a bar for the label and a block for the control, so the real field arrives exactly where the bars stood. The page says loading once (FormPage's loading, carried on FormLayoutContext); the field takes no loading prop of its own.",
   "props": {

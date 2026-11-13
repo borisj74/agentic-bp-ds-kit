@@ -1,6 +1,7 @@
 {
   "name": "Steps",
   "path": "src/ui/Steps/Steps.tsx",
+  "level": "molecule",
   "intent": "A row of numbered steps that shows where a person is in a flow of a few steps: done, current and still to come.",
   "usage": "Use Steps above a flow that is split into a few steps, like a setup wizard or an import: Setup, Map Columns, Billing IDs. It is one component: pass steps as labels and current as the step number, starting at 1. Steps before current are done (green with a check), current is brand with its number, later steps are gray. A current past the last step shows every step done. onStepClick makes done steps buttons, to go back and change them. fill spreads the steps across the full width. The Steps only shows progress; the page shows the step's content and its Back and Next buttons. See contracts/steps.json for the full contract.",
   "props": {

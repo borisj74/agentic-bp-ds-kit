@@ -1,6 +1,7 @@
 {
   "name": "GlobalSearch",
   "path": "src/ui/GlobalSearch/GlobalSearch.tsx",
+  "level": "organism",
   "intent": "A search field over a grouped list of pages, records and actions. Typing filters the list; arrow keys and Enter pick.",
   "usage": "Use GlobalSearch for quick jumps and actions across the app, like a global search. It is one component: pass groups of items as data. Typing filters by label and description, and the typed text shows bold in each label. Arrow keys move the highlight and Enter picks; Escape clears the search. It shows inline, and a ⌘K palette is this component inside a kit Modal, never a local overlay: title Search, size md, autoFocus on the search, and onSelect closing the Modal before it goes. The catalog's own palette is built that way, in src/playground/CatalogSearch.tsx. variant tabs turns the group headings into tabs (All, Records, Reports...), like the global search. scopes adds a menu in the search row to narrow what it looks through. onViewAll adds a View all results row at the end. AppHeader and Toolbar open it over their search field, so the field grows into the results. See contracts/globalsearch.json for the full contract.",
   "props": {

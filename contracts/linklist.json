@@ -1,6 +1,7 @@
 {
   "name": "LinkList",
   "path": "src/ui/LinkList/LinkList.tsx",
+  "level": "molecule",
   "intent": "A column of links, one a row with a chevron at the end, like an account's quick links.",
   "usage": "Use LinkList for a short set of places to go from a page, like Quick links in a record's rail or related pages under a heading. It is one component: pass items, each with an id and a label, and href or onClick. icon puts a brand icon before the label; description adds a short line under it; external opens the link in a new tab and swaps the chevron for the new-tab mark. Put it in a Section, which gives it its title and box; the list draws no card of its own and its labels line up with the Section title. label names the list for screen readers, like Quick links. For a single link in text use Link; for actions use Buttons or a Dropdown. See contracts/linklist.json for the full contract.",
   "props": {

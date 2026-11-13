@@ -1,6 +1,7 @@
 {
   "name": "Avatar",
   "path": "src/ui/Avatar/Avatar.tsx",
+  "level": "atom",
   "intent": "Photo or initials for one person. Not a status chip and not a button.",
   "usage": "Always pass name. src is optional: a missing or broken photo falls back to initials from the name. A person icon shows only if there are no initials either. See contracts/avatar.json for the full contract.",
   "props": {

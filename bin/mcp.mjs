@@ -7,6 +7,7 @@ import { pathToFileURL } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import { LEVELS } from "../scripts/sync-index.mjs";
 import {
   CatalogError,
   TOKEN_CATEGORIES,
@@ -54,7 +55,8 @@ function createServer() {
     {
       instructions:
         "Read-only catalog of the Agentic BP Design System repo this process was started from. " +
-        "Use list, get, search, get_tokens, and get_rules before building UI. " +
+        "Use list, get, search, get_tokens, and get_rules before building UI. "
+        + "Reuse the biggest piece that fits: pattern (template), then organism, molecule, atom. " +
         "Do not invent a component, prop, or token that these tools do not return.",
     },
   );
@@ -65,9 +67,15 @@ function createServer() {
     {
       title: "List components and patterns",
       description:
-        "List every UI component and every screen pattern in contracts/index.json, each with its kind, category, contract path, tags, and a one-line intent. Check the patterns first: when one covers the screen, use it rather than composing the screen by hand.",
+        `List every UI component and every screen pattern in contracts/index.json, each with its kind, level, category, contract path, tags, and a one-line intent. Pass level to list one level only (${LEVELS.join(", ")}): template returns the patterns, the others return components. Start from the biggest piece that fits — pattern (template), then organism, molecule, atom.`,
+      inputSchema: {
+        level: z
+          .string()
+          .optional()
+          .describe(`One level only: ${LEVELS.join(", ")}. Leave it out for everything.`),
+      },
     },
-    () => listComponents(),
+    ({ level }) => listComponents({ level }),
   );
 
   register(
@@ -76,7 +84,7 @@ function createServer() {
     {
       title: "Get a component or pattern",
       description:
-        "Get one component or screen pattern by display name or contract file stem (Button, button, ListPage, listpage). Returns the full contract JSON, its kind, a usage summary, and the import path to use.",
+        "Get one component or screen pattern by display name or contract file stem (Button, button, ListPage, listpage). Returns the full contract JSON, its kind, its level, a usage summary, and the import path to use.",
       inputSchema: {
         name: z.string().describe("Component or pattern name, or contract id: Button, datagrid, ListPage."),
       },
@@ -90,7 +98,7 @@ function createServer() {
     {
       title: "Search components and patterns",
       description:
-        "Find components and screen patterns whose name, category, tags, intent, usage, useWhen, or doNot lines match every word in the query (case-insensitive). Matches come back split by kind.",
+        "Find components and screen patterns whose name, category, tags, intent, usage, useWhen, or doNot lines match every word in the query (case-insensitive). Matches come back split by kind, each with its level.",
       inputSchema: {
         query: z.string().describe('Words to match, e.g. "icon only" or "destructive confirm".'),
       },

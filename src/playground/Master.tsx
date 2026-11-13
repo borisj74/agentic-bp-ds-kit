@@ -22,7 +22,7 @@ export interface Example {
   code?: string;
 }
 export interface Contract {
-  name: string; path: string; intent: string; usage?: string;
+  name: string; path: string; level?: string; intent: string; usage?: string;
   props: Record<string, PropDef>;
   useWhen: string[]; doNot: string[]; a11y: string[]; snippet: string;
   examples?: Example[];

@@ -1,6 +1,7 @@
 {
   "name": "ChatList",
   "path": "src/ui/ChatList/ChatList.tsx",
+  "level": "organism",
   "intent": "The saved chats or playbooks beside the assistant: a titled panel with a search box and rows that open what they name.",
   "usage": "Use ChatList for the panel of saved chats, or of playbooks, next to an assistant. It is one component: pass items for one plain list, or groups for named groups like Pinned Chats and Recent Chats, which people can fold away. Searching narrows the rows as it is typed, and empty groups drop out. Each row can carry its own menu, like Pin, Rename and Delete for a chat, or Edit and Delete for a playbook; it stays out of sight until the row is hovered or has focus. more adds the last row that reaches further back, like View chats older than 30 days. onCreate adds the button that starts a new one, and onClose the × that shuts the panel. See contracts/chatlist.json for the full contract.",
   "props": {

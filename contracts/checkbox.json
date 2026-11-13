@@ -1,6 +1,7 @@
 {
   "name": "Checkbox",
   "path": "src/ui/Checkbox/Checkbox.tsx",
+  "level": "atom",
   "intent": "Checkbox for multi-select and confirmations. Always has a label; the label can be visually hidden.",
   "usage": "Use Checkbox for independent yes/no choices and multi-select, like agreeing to terms or picking table rows. For one choice from several, use radio buttons. Every Checkbox has a label; set hideLabel in table rows and other slots with no visible text. Indeterminate is only for a parent that reflects mixed children. See contracts/checkbox.json for the full contract. Inside a loading page it draws its own skeleton in place: a block the size of the real control and a bar for the words beside it, in the column it will stand in, so nothing moves when it arrives. The page says loading once (FormPage's loading, carried on FormLayoutContext); it takes no loading prop of its own.",
   "props": {

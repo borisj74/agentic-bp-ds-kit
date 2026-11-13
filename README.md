@@ -21,7 +21,7 @@ A ready-made kit for building realistic, clickable screens quickly. Everything l
 - **Foundations:** color, type, spacing, icons, radius, shadow and motion, as tokens.
 - **Components:** buttons, fields, tables, menus, dialogs, charts and more, each in one folder.
 - **Patterns:** whole-screen blueprints, like a list page or a record page, built from the components.
-- **Contracts:** one file per piece that says what it is for, its options and what not to do. The assistant reads these before it builds.
+- **Contracts:** one file per piece that says what it is for, its `level` (`atom`, `molecule`, `organism` or `template`), its options and what not to do. The assistant reads these before it builds.
 - **Rules for the assistant:** `CLAUDE.md` and the `/prototype-from-kit` skill keep every screen consistent.
 - **The catalog:** every piece, live, with its options and code to copy.
 
@@ -116,6 +116,7 @@ With `npm run dev` running, open **http://localhost:3000**. The page updates as 
 | `npm test` | Runs the unit, interaction and accessibility tests |
 | `npm run test:watch` | Reruns the tests as files change |
 | `npm run tokens` | Rebuilds the token CSS after editing `src/tokens/source` |
+| `npm run sync:index` | Copies each contract's `level` into `contracts/index.json` (`--check` only reports) |
 
 ### Work with the assistant
 
@@ -348,9 +349,9 @@ npx agentic-bp-ds-kit mcp
 
 | Tool | Purpose |
 | --- | --- |
-| `list` | Every component and screen pattern in `contracts/index.json`, split by kind |
-| `get` | One component or pattern: full contract, kind, usage and import (`name`: `Button`, `button`, `ListPage`) |
-| `search` | Match name, tags, intent, `useWhen` and related fields, across components and patterns |
+| `list` | Every component and screen pattern in `contracts/index.json`, split by kind, each with its `level`; optional `level` (`atom`, `molecule`, `organism`, `template`) lists one level only |
+| `get` | One component or pattern: full contract, kind, level, usage and import (`name`: `Button`, `button`, `ListPage`) |
+| `search` | Match name, tags, intent, `useWhen` and related fields, across components and patterns; each match carries its `level` |
 | `get_tokens` | Semantic tokens; optional `category` (e.g. `text`, `background`) and `theme` (`light`, `dark`, `both`) |
 | `get_rules` | Kit agent rules plus `CLAUDE.md` / `AGENTS.md` text |
 

@@ -1,6 +1,7 @@
 {
   "name": "ScatterChart",
   "path": "src/ui/ScatterChart/ScatterChart.tsx",
+  "level": "organism",
   "intent": "Two measures against each other, one dot per record, so a pattern between them shows: spend against usage, days late against balance.",
   "usage": "Use ScatterChart to look for a relationship between two numbers across many records. It is one component: pass series, each with its points of x and y. A point can carry a third measure as size, which draws it as a bigger dot by area, so twice the value looks about twice as big. Give each point a label and the tooltip names the record. xName and yName are written by their axes, since a scatter says nothing without them. Hover anywhere near a dot and the nearest one answers; the arrow keys walk the dots in the order they were given. See contracts/scatterchart.json for the full contract. Inside a loading page it draws its own skeleton in place: the page says loading once (FormLayoutContext, which RecordPage, ListPage, FormPage and Dashboard set), and it takes no loading prop of its own. The title stands as a bar at the length its words will take and the drawing as a faintly framed box of bars at the chart's own height (BP COBALT \"chart skeleton\"), so the chart arrives where its bars stood.",
   "props": {

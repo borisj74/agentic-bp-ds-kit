@@ -1,6 +1,7 @@
 {
   "name": "Tabs",
   "path": "src/ui/Tabs/Tabs.tsx",
+  "level": "molecule",
   "intent": "A row of tabs that switches between related views in the same place. The selected tab has a brand label and underline.",
   "usage": "Use Tabs to switch between two or more related views on one page, like the sections of a record or settings. One component: pass items with a label and, optionally, an icon, a count and content. With content, Tabs shows the selected panel under the strip; without it, it is a strip only and you show the view yourself from value and onChange. size sets the height (sm is the default); expand stretches the tabs across the row; border draws the line under the strip. For a small always-visible choice like density or a view switch, use Segmented. See contracts/tabs.json for the full contract.",
   "props": {

@@ -1,6 +1,7 @@
 {
   "name": "LogoAI",
   "path": "src/ui/LogoAI/LogoAI.tsx",
+  "level": "atom",
   "intent": "AI logo for AI features: full logo or icon, in fixed brand colors.",
   "usage": "Use LogoAI to mark AI features, like an assistant panel header or an AI suggestion. Use Logo for the product brand itself. color is the default. Use white on dark or photo backgrounds, monochrome where color is not allowed, and filled for a stand-alone tile. In dark theme the AI text of the color logo switches to white. See contracts/logoai.json for the full contract.",
   "props": {

@@ -137,6 +137,10 @@
 .galleryIntro > p { margin-bottom: 0; }
 .gallerySearch { flex: 0 1 320px; min-width: 0; margin-inline-start: auto; display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-xxsmall); }
 .gallerySearch > :first-child { align-self: stretch; }
+/* Room for the search and the level filter side by side. */
+.gallerySearchWide { flex: 0 1 520px; }
+.galleryFilters { display: flex; align-items: center; gap: var(--space-xsmall); }
+.galleryInput { flex: 1 1 200px; min-width: 0; }
 .galleryCount { font-size: var(--font-size-small); color: var(--text-neutral-subtle); }
 .card { position: relative; display: block; border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-large); background: var(--surface-flat); overflow: hidden; }
 .card:hover { border-color: var(--border-neutral-strong); }

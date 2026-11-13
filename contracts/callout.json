@@ -1,6 +1,7 @@
 {
   "name": "Callout",
   "path": "src/ui/Callout/Callout.tsx",
+  "level": "molecule",
   "intent": "Inline message that stays on the page, with an optional action and dismiss.",
   "usage": "Use Callout for a message that stays on the page until the user acts on it or dismisses it. Pick the intent from what the message means. Keep it to one or two sentences and at most one action. Warning and danger are announced right away; info and success are announced politely. See contracts/callout.json for the full contract.",
   "props": {

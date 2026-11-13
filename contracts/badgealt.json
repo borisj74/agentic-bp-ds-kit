@@ -1,6 +1,7 @@
 {
   "name": "BadgeAlt",
   "path": "src/ui/BadgeAlt/BadgeAlt.tsx",
+  "level": "atom",
   "intent": "Alternate status or category label: tinted fill with a matching border, in three sizes.",
   "usage": "BadgeAlt is the alternate badge style: a light tint, a matching border and intent-colored text, with a brand intent. Use Badge by default; use BadgeAlt only where a screen already uses this style. Do not mix Badge and BadgeAlt on one screen. Only dismissible filters are removable. See contracts/badgealt.json for the full contract.",
   "props": {

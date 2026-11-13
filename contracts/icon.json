@@ -1,6 +1,7 @@
 {
   "name": "Icon",
   "path": "src/ui/Icon/Icon.tsx",
+  "level": "atom",
   "intent": "Draws one Material Symbols Outlined glyph at a kit size, colored by the parent text color or a semantic icon role.",
   "usage": "Use Icon for every glyph. Pick a size from the scale and an intent from the semantic roles. Pass a label only when the icon means something on its own. See contracts/icon.json for the full contract.",
   "props": {
