@@ -2,7 +2,7 @@
   "name": "LoadingLine",
   "path": "src/ui/LoadingLine/LoadingLine.tsx",
   "intent": "A 2px line with a short brand bar sliding across it, saying a whole page or panel is still arriving when there is no amount done to report.",
-  "usage": "Use LoadingLine for a page that is booting: AppShell draws it over the content column, level with the top of the side nav, where it rides the app header's edge, and the page under it is the boot skeleton. It is one component: loading turns it on, track line draws the faint brand track behind the bar and track none drops it where the line sits on an existing border, and label is what screen readers hear. It never shows how far along the load is. For an amount done, use Meter; for the legacy 20px bar, use ProgressBar; for a short wait in one spot, use Spinner; for the shape of the content itself, use Skeleton. The boot runs to a sequence (src/ui/LoadingLine/boot.ts): the line alone for 200ms, then the skeleton for at least 400ms, then the content fading in over 150ms. A page that lands inside the first 200ms never shows a skeleton at all, and a skeleton that has appeared is never blinked away the moment the data arrives. See contracts/loadingline.json for the full contract.",
+  "usage": "Use LoadingLine for a page that is booting: AppShell draws it across the top of the content column, level with the top of the side nav and just under the app header's border, with its track showing, and the page under it is the boot skeleton. It is one component: loading turns it on, track line draws the faint brand track behind the bar and track none drops it where the line sits on an existing border, and label is what screen readers hear. It never shows how far along the load is. For an amount done, use Meter; for the legacy 20px bar, use ProgressBar; for a short wait in one spot, use Spinner; for the shape of the content itself, use Skeleton. The boot runs to a sequence (src/ui/LoadingLine/boot.ts): the line alone for 200ms, then the skeleton for at least 400ms, then the content fading in over 150ms. A page that lands inside the first 200ms never shows a skeleton at all, and a skeleton that has appeared is never blinked away the moment the data arrives. See contracts/loadingline.json for the full contract.",
   "props": {
     "loading": {
       "type": "boolean",
@@ -42,7 +42,7 @@
     "The bar itself is hidden from screen readers.",
     "No motion when the person prefers reduced motion: the bar goes and the line breathes in place instead."
   ],
-  "snippet": "<LoadingLine loading={booting} track=\"none\" label=\"Loading account\" />",
+  "snippet": "<LoadingLine loading={booting} label=\"Loading account\" />",
   "examples": [
     {
       "title": "Track",

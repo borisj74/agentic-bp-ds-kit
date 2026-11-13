@@ -79,7 +79,7 @@
     "loading": {
       "type": "boolean",
       "default": false,
-      "note": "The whole frame is still arriving: the 2px kit LoadingLine is laid over the content column, level with the top of the side nav and riding the bar's own edge, the page is marked busy, and loading is handed down to the kit AppHeader, AppNav and PageHeader the frame was given, so they show their own boot state. The page goes with them: the frame publishes the boot on FormLayoutContext, so the page pattern inside it and every Section, Toolbar, field and Table under it draw their own bars where they stand, and the real page is held inert and hidden from screen readers until it arrives. The frame adds no page skeleton of its own."
+      "note": "The whole frame is still arriving: the 2px kit LoadingLine is laid over the top of the content column, level with the top of the side nav and just under the bar's bottom border, with its faint brand track showing across the column as the Cobalt boot frames draw it, the page is marked busy, and loading is handed down to the kit AppHeader, AppNav and PageHeader the frame was given, so they show their own boot state. The page goes with them: the frame publishes the boot on FormLayoutContext, so the page pattern inside it and every Section, Toolbar, field and Table under it draw their own bars where they stand, and the real page is held inert and hidden from screen readers until it arrives. The frame adds no page skeleton of its own."
     },
     "loadingLabel": {
       "type": "string",

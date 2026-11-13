@@ -106,11 +106,12 @@ export function AppShell({
         {/* The content column: the page, with the boot line laid over its top edge. A column of its own, so the
             line spans the content and nothing else — it starts where the rail ends and stops at the assistant. */}
         <div className={styles.column}>
-          {/* The page is still arriving: the 2px line sits level with the top of the rail, riding the bar's own
-              edge, so it has no track of its own and adds no height. */}
+          {/* The page is still arriving: the 2px line sits level with the top of the rail, just under the bar's
+              border, with its faint track across the column as the Cobalt boot frames draw it. It is laid over
+              the page, so it adds no height. */}
           {boot.showLine && (
             <div className={styles.loadingLine}>
-              <LoadingLine track="none" label={loadingLabel} />
+              <LoadingLine track="line" label={loadingLabel} />
             </div>
           )}
         {/* Only the page scrolls, so a sticky page header sticks and the bar and the rail stay put. */}

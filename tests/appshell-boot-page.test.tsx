@@ -106,10 +106,10 @@ describe("a booting AppShell boots the page inside it", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Loading account");
   });
 
-  it("rides the header's edge: the line has no track of its own", async () => {
+  it("sits under the header's border with its track showing, as the Cobalt boot frames draw it", async () => {
     render(shellWithList(true));
     const line = screen.getByRole("progressbar");
-    expect(line.className).toContain("bare");
+    expect(line.className).not.toContain("bare");
     expect(document.querySelector(".loadingLine")).toBeTruthy();
   });
 
