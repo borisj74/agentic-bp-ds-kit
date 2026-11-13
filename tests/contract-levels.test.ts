@@ -52,6 +52,17 @@ describe("contract levels", () => {
     }
   });
 
+  it("foundations carry no level", () => {
+    expect(index.foundations.length).toBeGreaterThan(0);
+    for (const row of index.foundations) {
+      expect(row.level, `${row.name} index row`).toBeUndefined();
+      const contract = readJson(row.contract) as { level?: string };
+      expect(contract.level, `${row.name} contract`).toBeUndefined();
+    }
+    const layout = readJson("contracts/layout.json") as { level?: string };
+    expect(layout.level).toBeUndefined();
+  });
+
   it("the index matches the contracts", () => {
     expect(findDrift()).toEqual([]);
   });

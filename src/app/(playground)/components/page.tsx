@@ -1,6 +1,5 @@
-import { Suspense } from "react";
 import { CardPreview } from "@/playground/CardPreview";
-import { GallerySearch } from "@/playground/GallerySearch";
+import { GalleryWithLevel } from "@/playground/GallerySearch";
 import { components, slug } from "@/playground/nav";
 import { loadContract } from "@/playground/contracts";
 
@@ -16,13 +15,10 @@ export default async function Gallery() {
     preview: <CardPreview name={c.name} />,
   }));
   return (
-    // The gallery reads ?level= from the URL, so it renders inside Suspense.
-    <Suspense>
-      <GallerySearch
-        title="Components"
-        lead="Every building block in the kit. Search by name or by what it does, then open a card for the master, variants and contract."
-        items={items}
-      />
-    </Suspense>
+    <GalleryWithLevel
+      title="Components"
+      lead="Every building block in the kit. Search by name or by what it does, then open a card for the master, variants and contract."
+      items={items}
+    />
   );
 }

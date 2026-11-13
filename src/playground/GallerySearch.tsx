@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, type ReactNode } from "react";
+import { Suspense, useState, type ReactNode } from "react";
 import { EmptyState } from "@/ui/EmptyState/EmptyState";
 import { Input } from "@/ui/Input/Input";
 import { Segmented } from "@/ui/Segmented/Segmented";
@@ -26,23 +26,50 @@ const LEVEL_OPTIONS = [
   { value: "organism", label: "Organism" },
 ];
 
-// The component gallery with a search over it. Every word typed has to appear in the card's name, what it is for,
-// its category or its index tags, so "date" finds DatePicker and Calendar and "chart" finds the charts and Legend.
-// The level filter works with the search, not instead of it, and lives in the URL (?level=atom) so a filtered
-// gallery can be linked and reloaded.
-export function GallerySearch({ title, lead, items, noun = "components" }: { title: string; lead: string; items: GalleryItem[]; noun?: string }) {
-  const [query, setQuery] = useState("");
+interface GalleryProps {
+  title: string;
+  lead: string;
+  items: GalleryItem[];
+  noun?: string;
+}
+
+// The whole gallery as it is linked and reloaded: the unfiltered list is the page's static HTML, and the URL's
+// level takes over once the page is live. Reading the URL bails out of prerendering, so only the small reader
+// below sits inside the Suspense, and the fallback is the same gallery at level all.
+export function GalleryWithLevel(props: GalleryProps) {
+  return (
+    <Suspense fallback={<GallerySearch {...props} level="all" />}>
+      <GalleryAtUrlLevel {...props} />
+    </Suspense>
+  );
+}
+
+// The only part that reads the URL. It keeps the chosen level in ?level= so a filtered gallery can be linked.
+function GalleryAtUrlLevel(props: GalleryProps) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
-
-  const hasLevels = items.some((item) => item.level);
   const asked = (params.get("level") ?? "all").toLowerCase();
   const level = LEVEL_OPTIONS.some((option) => option.value === asked) ? asked : "all";
 
-  const setLevel = (value: string) => {
-    router.replace(value === "all" ? pathname : `${pathname}?level=${value}`, { scroll: false });
-  };
+  return (
+    <GallerySearch
+      {...props}
+      level={level}
+      onLevelChange={(value) => {
+        router.replace(value === "all" ? pathname : `${pathname}?level=${value}`, { scroll: false });
+      }}
+    />
+  );
+}
+
+// The component gallery with a search over it. Every word typed has to appear in the card's name, what it is for,
+// its category or its index tags, so "date" finds DatePicker and Calendar and "chart" finds the charts and Legend.
+// The level filter works with the search, not instead of it. The level comes in as a prop, so this renders the
+// same way on the server and in the browser.
+export function GallerySearch({ title, lead, items, noun = "components", level = "all", onLevelChange }: GalleryProps & { level?: string; onLevelChange?: (value: string) => void }) {
+  const [query, setQuery] = useState("");
+  const hasLevels = items.some((item) => item.level);
 
   const words = query.toLowerCase().split(/\s+/).filter(Boolean);
   const shown = items.filter((item) => {
@@ -71,7 +98,7 @@ export function GallerySearch({ title, lead, items, noun = "components" }: { tit
             </div>
             {hasLevels ? (
               <Segmented
-                label="Level" hideLabel size="sm" options={LEVEL_OPTIONS} value={level} onChange={setLevel}
+                label="Level" hideLabel size="sm" options={LEVEL_OPTIONS} value={level} onChange={(value) => onLevelChange?.(value)}
               />
             ) : null}
           </div>
