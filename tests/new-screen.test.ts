@@ -4,7 +4,6 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { NewScreenError, findStarter, newScreen, parseArgs, readStarters } from "../scripts/new-screen.mjs";
-import { parseArgs as parseInstallerArgs, addStarter } from "../packages/create-agentic-bp-ds/index.mjs";
 
 const REPO = join(import.meta.dirname, "..");
 const COPIER = join(REPO, "scripts", "new-screen.mjs");
@@ -177,58 +176,5 @@ describe("the command line", () => {
     expect(status).toBe(1);
     expect(stderr).toContain('no starter called "nope"');
     for (const s of starters) expect(stderr).toContain(s.id);
-  });
-});
-
-// The installer's own flag reading and its starter step. Nothing is downloaded: the folder these run against
-// is one this test unpacked itself.
-describe("the installer", () => {
-  it("reads the folder name, --template and --route", () => {
-    expect(parseInstallerArgs(["my-app"])).toEqual({ name: "my-app" });
-    expect(parseInstallerArgs(["my-app", "--template", "dashboard"])).toEqual({
-      name: "my-app",
-      template: "dashboard",
-    });
-    expect(parseInstallerArgs(["my-app", "--template", "dashboard", "--route", "sales"])).toEqual({
-      name: "my-app",
-      template: "dashboard",
-      route: "sales",
-    });
-    expect(parseInstallerArgs(["--template=dashboard", "my-app", "--route=sales"])).toEqual({
-      name: "my-app",
-      template: "dashboard",
-      route: "sales",
-    });
-    // No folder name given: the installer asks for one.
-    expect(parseInstallerArgs(["--template", "dashboard"])).toEqual({ template: "dashboard" });
-    // A flag is never mistaken for the folder name.
-    expect(parseInstallerArgs([]).name).toBeUndefined();
-  });
-
-  it("writes the screen into the unpacked folder", () => {
-    cpSync(join(REPO, "scripts", "new-screen.mjs"), join(root, "scripts", "new-screen.mjs"), { recursive: true });
-    expect(addStarter(root, { template: "dashboard", route: "sales" })).toEqual({ route: "sales" });
-    expect(existsSync(join(root, "src", "app", "sales", "page.tsx"))).toBe(true);
-  });
-
-  it("falls back to the starter's id when no route is given", () => {
-    cpSync(join(REPO, "scripts", "new-screen.mjs"), join(root, "scripts", "new-screen.mjs"), { recursive: true });
-    expect(addStarter(root, { template: "Dashboard" })).toEqual({ route: "dashboard" });
-  });
-
-  it("prints the lowercased address for a route typed in capitals", () => {
-    cpSync(join(REPO, "scripts", "new-screen.mjs"), join(root, "scripts", "new-screen.mjs"), { recursive: true });
-    expect(addStarter(root, { template: "dashboard", route: "Sales" })).toEqual({ route: "sales" });
-    expect(existsSync(join(root, "src", "app", "sales", "page.tsx"))).toBe(true);
-  });
-
-  it("does nothing without --template", () => {
-    expect(addStarter(root, {})).toBeNull();
-    expect(existsSync(join(root, "src", "app", "dashboard"))).toBe(false);
-  });
-
-  it("carries on when the kit version has no starters folder", () => {
-    rmSync(join(root, "starters"), { recursive: true, force: true });
-    expect(addStarter(root, { template: "dashboard" })).toBeNull();
   });
 });

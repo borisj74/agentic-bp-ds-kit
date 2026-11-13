@@ -80,6 +80,8 @@ npm run dev
 
 #### Start from a working screen
 
+> **Not live yet.** The `--template` flag below works from the next kit release onwards. The installer on npm today ignores it, and the release it downloads has no `starters/` folder. Until then, make the folder the plain way and run `npm run new-screen` inside it, as under [Add a screen](#add-a-screen).
+
 Add `--template` and the folder comes with a screen already built, instead of only the catalog:
 
 ```bash
@@ -92,7 +94,7 @@ The screen lands at `src/app/dashboard/page.tsx` and opens at http://localhost:3
 npm create agentic-bp-ds@latest my-prototype -- --template dashboard --route sales
 ```
 
-A kit release older than starter pages has no `starters/` folder; then the installer says so and carries on without a screen.
+A kit release older than starter pages has no `starters/` folder; then the installer says so and carries on without a screen, which is what happens with the installer on npm today.
 
 ### Option 2: GitHub template
 

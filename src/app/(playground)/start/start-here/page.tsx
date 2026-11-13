@@ -77,15 +77,23 @@ export default function StartHere() {
               />
               <div className={docs.prose}>
                 <h3>2. Run the command</h3>
-                <p>New to this? One command makes a folder with the kit and the screen in it. Change the name and the starter:</p>
-                <CodeBlock code="npm create agentic-bp-ds@latest my-idea -- --template dashboard" />
-                <p>Then start it and open the screen:</p>
-                <CodeBlock code={"cd my-idea\nnpm run dev"} />
                 <p>
-                  Already have a kit folder? This adds another screen to it. <code>--route</code> is the address it
-                  gets, so this one opens at <code>/sales</code>:
+                  Already have a kit folder? This adds a screen to it. <code>--route</code> is the address it gets,
+                  so this one opens at <code>/sales</code>:
                 </p>
                 <CodeBlock code="npm run new-screen -- --template dashboard --route sales" />
+                <p>Then start it:</p>
+                <CodeBlock code="npm run dev" />
+                <p>
+                  Starting from nothing, one command makes the folder with the kit and the screen together. Change
+                  the name and the starter:
+                </p>
+                <CodeBlock code="npm create agentic-bp-ds@latest my-idea -- --template dashboard" />
+                <Callout intent="warning" title="The one-command way is not live yet">
+                  <code>--template</code> on that last command works from the next kit release onwards. Today it is
+                  ignored, and you get the catalog with no screen in it. Until then, ask whoever set up your kit
+                  folder for one, and use the <code>npm run new-screen</code> command above inside it.
+                </Callout>
 
                 <h3>3. Ask for changes in your own words</h3>
                 <p>

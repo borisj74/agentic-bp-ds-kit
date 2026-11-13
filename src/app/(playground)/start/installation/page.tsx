@@ -53,6 +53,12 @@ export default function Installation() {
                   opens at <strong>http://localhost:3000/dashboard</strong>:
                 </p>
                 <CodeBlock code="npm create agentic-bp-ds@latest my-prototype -- --template dashboard" />
+                <Callout intent="warning" title="Not live yet">
+                  This flag works from the next kit release onwards. The installer on npm today ignores it, and the
+                  release it downloads has no starter pages, so you get the catalog and no screen. Until then, make
+                  the folder with the plain command above and run <code>npm run new-screen</code> inside it. See
+                  <strong>Add a screen</strong> below.
+                </Callout>
               </div>
             </Section>
           </div>
