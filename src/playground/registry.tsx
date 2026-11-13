@@ -1781,19 +1781,27 @@ export const registry: Record<string, Entry> = {
   AccountFlow: {
     // The flow in the frame, walked the way a screen would walk it: which page is showing and what was saved
     // live in the screen.
-    render: ({ stage, start }) => (
-      <AccountFlowDemo
-        stage={String(stage ?? "desktop")}
-        start={start === "account" || start === "newAccount" || start === "newProduct" ? start : "list"}
-      />
+    // Boot plays the page that is showing as it arrives: the flow hands loading to that page, so it draws its own
+    // skeleton under the frame's line.
+    render: ({ stage, start, boot, loading }) => (
+      <BootPlayer speed={(boot as BootSpeed) ?? "off"}>
+        {(booting) => (
+          <AccountFlowDemo
+            stage={String(stage ?? "desktop")}
+            start={start === "account" || start === "newAccount" || start === "newProduct" ? start : "list"}
+            loading={booting || loading === true}
+          />
+        )}
+      </BootPlayer>
     ),
     preview: {},
-    hide: ["view", "list", "account", "newAccount", "newProduct"],
+    hide: ["view", "list", "account", "newAccount", "newProduct", "provisionProduct", "bulkProducts", "loadingLabel", "bootTiming"],
     extras: {
       start: { values: ["list", "account", "newAccount", "newProduct"], default: "list" },
       stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" },
+      boot: { values: ["off", "fast", "typical", "slow"], default: "off" },
     },
-    hint: "Walk the accounts flow: open an account from its blue Account ID, switch to Account Products and add one with New account product, or press New for a new account and Submit it. Cancel and the trail go back. Start jumps straight to a page; Stage narrows the box the frame lives in.",
+    hint: "Boot plays the page load over time and reads out the skeleton's timing rule as it runs — the line alone for 200ms, the skeleton held at least 400ms, then the content fading in over 150ms; fast lands inside the first 200ms, so no skeleton is ever drawn. Pick a Start page and play Boot, or turn Loading on: the flow hands loading to the page that is showing, so the list draws its own toolbar, columns and rows, the account its tabs, numbers and sections, and the forms their own groups and fields. Walk the accounts flow: open an account from its blue Account ID, switch to Account Products and add one with New account product, or press New for a new account and Submit it. Cancel and the trail go back. Start jumps straight to a page; Stage narrows the box the frame lives in.",
     block: true,
     wide: true,
     page: <AccountFlowDemo />,

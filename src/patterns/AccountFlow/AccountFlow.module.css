@@ -1,3 +1,18 @@
 /* The flow adds no box of its own: the page it shows lays itself out in the AppShell page as if it were there
    alone. */
 .flow { display: contents; }
+
+/* Outside a frame the flow runs the boot itself, so it needs a box for the line to ride: the line sits over the
+   top edge of the page and adds no height. */
+.alone { display: block; position: relative; }
+.loadingLine { position: absolute; inset-block-start: 0; inset-inline: 0; z-index: var(--stick-page-head); }
+
+/* The real page while it boots: in the tree so its pieces draw their own bars in place, out of reach of the
+   keyboard and of screen readers. */
+.booting { display: contents; }
+.page { display: contents; }
+
+/* The content fades in once the skeleton has had its hold, on the same token the frame uses. */
+.settling { display: block; animation: settle var(--motion-boot-settle) var(--motion-ease-out); }
+@keyframes settle { from { opacity: var(--opacity-0); } }
+@media (prefers-reduced-motion: reduce) { .settling { animation: none; } }
