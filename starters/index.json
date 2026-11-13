@@ -1,0 +1,52 @@
+{
+  "starters": [
+    {
+      "id": "list",
+      "template": "ListPage",
+      "title": "Record list",
+      "about": "A table of records with a search box, filters and pages under it."
+    },
+    {
+      "id": "record",
+      "template": "RecordPage",
+      "title": "One record",
+      "about": "One record: its name and actions, the tabs of what belongs to it, and its details in sections."
+    },
+    {
+      "id": "form",
+      "template": "FormPage",
+      "title": "Create or edit a record",
+      "about": "A form in folding groups, with one save at the top of the page."
+    },
+    {
+      "id": "dashboard",
+      "template": "Dashboard",
+      "title": "Dashboard",
+      "about": "Groups of numbers with the charts and lists that explain them."
+    },
+    {
+      "id": "list-detail",
+      "template": "ListDetail",
+      "title": "List and detail",
+      "about": "A list of records with the one you picked open beside it."
+    },
+    {
+      "id": "settings",
+      "template": "SettingsPage",
+      "title": "Settings home",
+      "about": "A grid of tiles that each lead somewhere else."
+    },
+    {
+      "id": "guided-process",
+      "template": "GuidedProcessPage",
+      "title": "Guided process",
+      "about": "A few steps, one page each, with the list of steps beside them."
+    },
+    {
+      "id": "blank",
+      "template": null,
+      "title": "Blank screen",
+      "about": "The frame and a page title, with the page itself still empty."
+    }
+  ]
+}

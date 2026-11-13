@@ -78,6 +78,24 @@ cd my-prototype
 npm run dev
 ```
 
+#### Start from a working screen
+
+> **Not live yet.** The `--template` flag below works from the next kit release onwards. The installer on npm today ignores it, and the release it downloads has no `starters/` folder. Until then, make the folder the plain way and run `npm run new-screen` inside it, as under [Add a screen](#add-a-screen).
+
+Add `--template` and the folder comes with a screen already built, instead of only the catalog:
+
+```bash
+npm create agentic-bp-ds@latest my-prototype -- --template dashboard
+```
+
+The screen lands at `src/app/dashboard/page.tsx` and opens at http://localhost:3000/dashboard. `--route` puts it somewhere else:
+
+```bash
+npm create agentic-bp-ds@latest my-prototype -- --template dashboard --route sales
+```
+
+A kit release older than starter pages has no `starters/` folder; then the installer says so and carries on without a screen, which is what happens with the installer on npm today.
+
 ### Option 2: GitHub template
 
 For a prototype that lives in its own GitHub repository, to share or deploy.
@@ -111,12 +129,27 @@ With `npm run dev` running, open **http://localhost:3000**. The page updates as 
 | Command | What it does |
 | --- | --- |
 | `npm run dev` | Starts the catalog and your screens |
+| `npm run new-screen -- --template <id> --route <slug>` | Writes a starter screen into `src/app/<slug>/page.tsx` |
 | `npm run build` | Checks that everything builds, as it would before deploying |
 | `npm run lint` | Checks the code for common mistakes |
 | `npm test` | Runs the unit, interaction and accessibility tests |
 | `npm run test:watch` | Reruns the tests as files change |
 | `npm run tokens` | Rebuilds the token CSS after editing `src/tokens/source` |
 | `npm run sync:index` | Copies each contract's `level` into `contracts/index.json` (`--check` only reports) |
+
+### Add a screen
+
+Inside a kit folder you already have, `npm run new-screen` copies a starter page into your app:
+
+```bash
+npm run new-screen -- --template dashboard --route sales
+```
+
+- `--template` is the starter: `list`, `record`, `form`, `dashboard`, `list-detail`, `settings`, `guided-process` or `blank`. It also takes the name of the pattern the starter is built on, so `--template Dashboard` works too. An unknown name prints the list.
+- `--route` is the address the screen gets. It defaults to the starter's id, and is lowercased, so `--route Sales` lands at `/sales`. It has to be a plain slug otherwise: letters, numbers and single dashes. The catalog's own routes (`components`, `patterns`, `foundations`, `start`) are refused.
+- `--force` overwrites a page that is already there. Without it, an existing page is left alone.
+
+The starters are in `starters/`: one folder per starter, plus `starters/index.json` listing them. They are pages, not contracts — a template filled with real-looking content — so they have no `level` and are not in `contracts/index.json`. Each one only composes kit pieces and patterns.
 
 ### Work with the assistant
 

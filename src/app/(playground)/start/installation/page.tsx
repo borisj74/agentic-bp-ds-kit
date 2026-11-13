@@ -11,6 +11,7 @@ const SECTIONS = [
   { id: "template", label: "Option 2: GitHub template" },
   { id: "clone", label: "Option 3: Clone the kit" },
   { id: "run", label: "Run it" },
+  { id: "screen", label: "Add a screen" },
   { id: "assistant", label: "Work with the assistant" },
   { id: "updates", label: "Getting updates" },
   { id: "trouble", label: "If something goes wrong" },
@@ -47,6 +48,17 @@ export default function Installation() {
                 <CodeBlock code="npm create agentic-bp-ds@latest my-prototype" />
                 <p>Then go into the folder and start it:</p>
                 <CodeBlock code={"cd my-prototype\nnpm run dev"} />
+                <p>
+                  To start from a working screen instead of only the catalog, add <code>--template</code>. The screen
+                  opens at <strong>http://localhost:3000/dashboard</strong>:
+                </p>
+                <CodeBlock code="npm create agentic-bp-ds@latest my-prototype -- --template dashboard" />
+                <Callout intent="warning" title="Not live yet">
+                  This flag works from the next kit release onwards. The installer on npm today ignores it, and the
+                  release it downloads has no starter pages, so you get the catalog and no screen. Until then, make
+                  the folder with the plain command above and run <code>npm run new-screen</code> inside it. See
+                  <strong>Add a screen</strong> below.
+                </Callout>
               </div>
             </Section>
           </div>
@@ -86,6 +98,27 @@ export default function Installation() {
                   <li><code>npm run tokens</code> rebuilds the token CSS after editing <code>src/tokens/source</code>.</li>
                 </ul>
                 <p>Stop the server with <strong>Ctrl + C</strong> in the terminal.</p>
+              </div>
+            </Section>
+          </div>
+
+          <div id="screen">
+            <Section title="Add a screen">
+              <div className={docs.prose}>
+                <p>
+                  Inside a kit folder you already have, <code>npm run new-screen</code> copies a starter page into
+                  your app. This one opens at <strong>http://localhost:3000/sales</strong>:
+                </p>
+                <CodeBlock code="npm run new-screen -- --template dashboard --route sales" />
+                <ul>
+                  <li><code>--template</code> is the starter: <code>list</code>, <code>record</code>, <code>form</code>, <code>dashboard</code>, <code>list-detail</code>, <code>settings</code>, <code>guided-process</code> or <code>blank</code>. An unknown name prints the list.</li>
+                  <li><code>--route</code> is the address the screen gets. It defaults to the starter&apos;s name, and is lowercased: <code>--route Sales</code> lands at <code>/sales</code>.</li>
+                  <li><code>--force</code> overwrites a page that is already there. Without it, an existing page is left alone.</li>
+                </ul>
+                <p>
+                  The starters live in <code>starters/</code>. Read <strong>Start here</strong> in the sidebar for the
+                  same thing without the terminal detail.
+                </p>
               </div>
             </Section>
           </div>

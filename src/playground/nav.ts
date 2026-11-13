@@ -1,9 +1,15 @@
 import index from "../../contracts/index.json";
+import startersIndex from "../../starters/index.json";
 
 export const slug = (name: string) => name.toLowerCase().replace(/\s+/g, "-");
 // Sidebar and gallery list components A to Z, whatever order the index uses.
 export const components = [...index.components].sort((a, b) => a.name.localeCompare(b.name));
 export const patterns = index.patterns as { name: string; contract: string }[];
+// The starter screens, from starters/index.json, so the catalog never falls behind the folder. A starter is a
+// page: a template filled with real-looking content. It is not a contract and has no level.
+export type Starter = { id: string; template: string | null; title: string; about: string };
+export const starters = startersIndex.starters as Starter[];
+
 // Foundation pages in sidebar order. The Foundations landing page is the color page.
 export const foundationPages = [
   { href: "/foundations", label: "Color" },
@@ -41,6 +47,7 @@ export const componentNav: NavEntry[] = (() => {
 // Overview at / has no trail at all.
 export type Crumb = { label: string; href?: string };
 const START_PAGES: Record<string, string> = {
+  "start-here": "Start here",
   installation: "Installation",
   mcp: "MCP server",
   patterns: "Using patterns",
