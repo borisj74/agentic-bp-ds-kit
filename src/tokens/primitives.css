@@ -1513,6 +1513,10 @@
   --skeleton-list-actions: 56px;
   --skeleton-record-row: 37px;
   --skeleton-form-row: 39px;
+  --skeleton-bar-sm: 72px;
+  --skeleton-bar-md: 112px;
+  --skeleton-bar-lg: 160px;
+  --skeleton-row-bar: 10px;
   --skeleton-header-logo: 150px;
   --skeleton-header-user: 130px;
   --skeleton-nav-icon: 18px;

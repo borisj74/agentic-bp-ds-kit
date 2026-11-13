@@ -33,6 +33,12 @@
   padding: var(--space-xsmall) var(--layout-margin-md);
 }
 
+/* Booting, the notice holds its own height: the real block is in the tree but out of sight, and one skeleton
+   covers it, so the fields below stand where they will stand whether the notice runs to one line or three. */
+.noticeBoot { position: relative; min-width: 0; }
+.noticeGhost { visibility: hidden; }
+.noticeBoot > span { position: absolute; inset: 0; }
+
 /* The Form, then any related list after it, one section gap apart. */
 .fields { display: flex; flex-direction: column; gap: var(--layout-gutter-lg); min-width: 0; }
 
@@ -56,3 +62,5 @@
 @media (max-width: 1279px) {
   .loadingColumn.loadingColumn { grid-column: 1 / -1; }
 }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

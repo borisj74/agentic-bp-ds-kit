@@ -2,6 +2,8 @@
 import { Fragment, isValidElement, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { Button } from "../Button/Button";
 import { Count } from "../Count/Count";
+import { Skeleton } from "../Skeleton/Skeleton";
+import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import { Cell, type CellAlignment, type CellSize } from "../Cell/Cell";
 import { HeaderCell, type HeaderCellLine } from "../HeaderCell/HeaderCell";
 import styles from "./Table.module.css";
@@ -39,6 +41,10 @@ export interface TableProps {
 
 const idOf = (row: TableRow, i: number) => row.id ?? String(i);
 
+// How many rows a booting table stands in for: enough to read as a list without claiming a length it does not
+// know yet (BP COBALT item 1).
+const BOOT_ROWS = 3;
+
 // One table: headers are kit HeaderCells, values kit Cells. The rows carry the lines and the hover and selected
 // fills, so cells of different heights in one row still line up.
 export function Table({
@@ -47,6 +53,8 @@ export function Table({
 }: TableProps) {
   // A surrounding Density changes the row through the density tokens, not the size.
   const size = ownSize ?? "md";
+  // A table in a booting page draws its head row and a few body rows, in its own box.
+  const booting = useFieldSkeleton();
   const [innerSelected, setInnerSelected] = useState(defaultSelected);
   const selected = selectedProp ?? innerSelected;
   // A table wider than its box takes the sideways scroll itself, so the page never slides; the box is then a
@@ -127,6 +135,40 @@ export function Table({
     title: c.maxWidth ? fullText(v) : undefined,
   });
 
+  // Booting (BP COBALT "Skeleton / list row", node 2046:30000): the real table, with one bar per column in every
+  // row instead of a value. The head row, the row heights and the lines are the table's own, and the columns are
+  // this table's columns, so the list arrives in the shape its skeleton held. The bars say nothing to a screen
+  // reader; the page that is loading says so once.
+  if (booting) {
+    const bar = (text: string) => (
+      <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(text)} height="var(--skeleton-row-bar)" label="" />
+    );
+    return (
+      <div className={styles.wrap}>
+        <table className={[styles.table, styles[size], line === "thin" ? styles.thin : ""].join(" ")} aria-hidden="true">
+          {caption && <caption className={styles.caption}>{caption}</caption>}
+          <thead>
+            <tr>
+              {selectable && <th className={styles.select}><span className={styles.bootCell} /></th>}
+              {columns.map((c) => (
+                <th key={c.key} scope="col"><span className={styles.bootCell}>{bar(c.header ?? c.key)}</span></th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {Array.from({ length: BOOT_ROWS }, (_, i) => (
+              <tr key={i}>
+                {selectable && <td className={styles.select}><span className={styles.bootCell} /></td>}
+                {columns.map((c) => (
+                  <td key={c.key}><span className={styles.bootCell}>{bar(c.header ?? c.key)}</span></td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
   return (
     <div
       ref={wrapRef} className={[styles.wrap, overflows ? styles.scrolls : ""].join(" ")} style={detail ? ({ "--table-detail-start": `${detailStart}px`, "--table-view-width": viewWidth ? `${viewWidth}px` : "100%" } as CSSProperties) : undefined}

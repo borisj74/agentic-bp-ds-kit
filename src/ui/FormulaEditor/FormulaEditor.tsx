@@ -3,6 +3,8 @@ import { useId, useRef, useState, type ChangeEvent } from "react";
 import { Button } from "../Button/Button";
 import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { labelWidthClass, useLabelPosition } from "../Form/FormContext";
+import { Skeleton } from "../Skeleton/Skeleton";
+import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 // Label, help, hint and error share Input's styles so all form fields match.
@@ -96,6 +98,8 @@ export function FormulaEditor({
   required = false, disabled = false, readOnly = false, invalid = false, error, hint, help,
 }: FormulaEditorProps) {
   const labelPosition = useLabelPosition(ownLabelPosition);
+  // A field in a booting page draws itself as bars, in its own place.
+  const booting = useFieldSkeleton();
   // The label column this field stands on. With no label there is no column, and md is the kit's 234.
   const width = hideLabel ? undefined : labelWidthClass(labelWidth);
   const autoId = useId();
@@ -147,8 +151,29 @@ export function FormulaEditor({
   };
 
   const cls = [field.input, styles.root, hideLabel ? "" : field[labelPosition], width ? field[width] : ""];
+  // Booting: the editor keeps its frame, so its toolbar band and the writing area under it are already the
+  // height they will be. data-full-row keeps the row it spans while there is no textarea in the tree.
+  if (booting) {
+    return (
+      <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition} data-full-row="">
+        {!hideLabel && (
+          <div className={field.labelRow}>
+            <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(label)} height="var(--skeleton-cell)" label="" />
+          </div>
+        )}
+        <div className={field.body}>
+          <div className={styles.editor}>
+            <div className={styles.toolbar}>
+              <Skeleton shape="rect" animation="pulse" width="var(--toolbar-action-skeleton)" height="var(--control-small)" label="" />
+            </div>
+            <Skeleton shape="rect" animation="pulse" height={`var(--textarea-height-${size})`} label="" />
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
-    <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
+    <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition} data-full-row="">
       <div className={hideLabel ? field.srOnly : field.labelRow}>
         <label htmlFor={areaId} className={field.label}>
           {required && <span className={field.required} aria-hidden="true">*</span>}

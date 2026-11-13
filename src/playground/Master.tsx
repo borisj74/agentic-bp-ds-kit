@@ -156,13 +156,14 @@ export function Master({ contract }: { contract: Contract }) {
                 // An enum value can be a number (columns), and the code snippet has to print columns={2}, so the
                 // picker works in strings and the original value comes back by matching on its text.
                 const options = (k === "size" ? order(v.enum!) : v.enum!);
+                const legend = entry.labels?.[k] ?? cap(words(k));
                 const back = (value: string) => set(k, v.enum!.find((o) => String(o) === value));
                 // Size and columns read as one row of chips (sm → lg, 1 → 3). Segmented holds two to five, so a
                 // longer run falls through to the list below.
                 return (k === "size" || k === "columns") && options.length <= 5 ? (
                   <div key={k} className={styles.group}>
                     <Segmented
-                      label={cap(words(k))} size="sm"
+                      label={legend} size="sm"
                       options={options.map((opt) => ({ value: String(opt), label: String(opt) }))}
                       value={String(state[k])} onChange={back}
                     />
@@ -170,7 +171,7 @@ export function Master({ contract }: { contract: Contract }) {
                 ) : (
                   <div key={k} className={styles.group}>
                     <RadioGroup
-                      legend={cap(words(k))} size="sm"
+                      legend={legend} size="sm"
                       options={options.map((opt) => ({ value: String(opt), label: cap(String(opt)) }))}
                       value={String(state[k])} onChange={back}
                     />

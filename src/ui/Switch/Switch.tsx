@@ -1,6 +1,8 @@
 "use client";
 import { useId, useState } from "react";
 import { useDensitySize } from "../Density/Density";
+import { Skeleton } from "../Skeleton/Skeleton";
+import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import styles from "./Switch.module.css";
 
 export type SwitchSize = "sm" | "md" | "lg";
@@ -22,6 +24,8 @@ export function Switch({
   label, hideLabel = false, description, size: ownSize, checked, defaultChecked = false, onChange, disabled = false, name, id,
 }: SwitchProps) {
   const size = useDensitySize(ownSize);
+  // A control in a booting page draws itself as bars, in its own place.
+  const booting = useFieldSkeleton();
   const autoId = useId();
   const switchId = id ?? autoId;
   const descriptionId = `${switchId}-description`;
@@ -35,6 +39,18 @@ export function Switch({
     onChange?.(!on);
   };
 
+  // Booting: the words and the pill keep the row they share, so the real switch lands where its bars stood. The
+  // track's own width and height are used, not a square, or the row would resettle when the switch arrives.
+  if (booting) {
+    return (
+      <div className={[styles.switch, styles[size], hideLabel ? "" : styles.labeled].join(" ")}>
+        <span className={hideLabel ? styles.srOnly : styles.copy}>
+          <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(label)} height="var(--skeleton-cell)" label="" />
+        </span>
+        <Skeleton shape="rect" animation="pulse" width="var(--w)" height="var(--h)" label="" />
+      </div>
+    );
+  }
   return (
     <div className={[styles.switch, styles[size], hideLabel ? "" : styles.labeled, disabled ? styles.disabled : ""].join(" ")}>
       <span className={hideLabel ? styles.srOnly : styles.copy}>

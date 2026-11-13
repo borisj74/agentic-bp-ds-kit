@@ -12,8 +12,9 @@
 .one { grid-template-columns: minmax(0, var(--layout-column-max)); }
 .two { grid-template-columns: repeat(2, minmax(0, var(--layout-column-max))); }
 .three { grid-template-columns: repeat(3, minmax(0, var(--layout-column-max))); }
-/* A Textarea spans the row. */
-.grid > :has(textarea) { grid-column: 1 / -1; }
+/* A Textarea spans the row. data-full-row says the same thing without a textarea to match on, which is how a
+   booting Textarea or FormulaEditor keeps its row while it is drawn as bars. */
+.grid > :is(:has(textarea), [data-full-row]) { grid-column: 1 / -1; }
 /* A DataGrid, like a list of rate bands, needs the whole row for its columns, so it spans the row too. */
 .grid > [data-data-grid] { grid-column: 1 / -1; }
 

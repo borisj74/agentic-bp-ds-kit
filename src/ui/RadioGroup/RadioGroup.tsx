@@ -2,6 +2,8 @@
 import { useId, useState } from "react";
 import { useDensitySize } from "../Density/Density";
 import { labelWidthClass, useLabelPosition, type FieldLabelPosition, type FieldLabelWidth } from "../Form/FormContext";
+import { Skeleton } from "../Skeleton/Skeleton";
+import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import { Badge, type BadgeIntent } from "../Badge/Badge";
 import styles from "./RadioGroup.module.css";
 
@@ -55,6 +57,8 @@ export function RadioGroup({
   const size = useDensitySize(ownSize);
   // Own position first, then the Form around it, then top, the same order the kit fields follow.
   const labelPosition = useLabelPosition(ownLabelPosition);
+  // A group in a booting page draws itself as bars, in its own place.
+  const booting = useFieldSkeleton();
   // The label column the legend stands on. With the legend hidden there is no column, and md is the kit's 234.
   const width = hideLegend ? undefined : labelWidthClass(labelWidth);
   const uid = useId();
@@ -66,6 +70,28 @@ export function RadioGroup({
   const messageId = message ? `${uid}-message` : undefined;
   const card = layout === "card";
 
+  // Booting: the legend keeps its column and every option keeps its own row, circle and words, so the group
+  // arrives at the height it already had.
+  if (booting) {
+    return (
+      <fieldset
+        className={[styles.group, styles[size], card ? styles.card : "", !hideLegend && labelPosition === "start" ? styles.startLabel : "", width ? styles[width] : ""].join(" ")}
+        data-label={hideLegend ? undefined : labelPosition}
+      >
+        <legend className={hideLegend ? styles.srOnly : styles.legend}>
+          <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(legend)} height="var(--skeleton-cell)" label="" />
+        </legend>
+        <div className={[styles.options, orientation === "horizontal" && !card ? styles.horizontal : ""].join(" ")}>
+          {options.map((o) => (
+            <span key={o.value} className={styles.option}>
+              {!card && <Skeleton shape="circle" animation="pulse" width="var(--circle)" label="" />}
+              <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(o.label)} height="var(--skeleton-cell)" label="" />
+            </span>
+          ))}
+        </div>
+      </fieldset>
+    );
+  }
   return (
     <fieldset
       className={[styles.group, styles[size], card ? styles.card : "", error ? styles.error : "", !hideLegend && labelPosition === "start" ? styles.startLabel : "", width ? styles[width] : ""].join(" ")}

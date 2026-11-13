@@ -64,8 +64,9 @@ export function Form({
   const fields = [styles.fields, ...(columns ? [grid.grid, grid[["", "one", "two", "three"][columns]], startLabels ? grid.start : ""] : [])].join(" ");
   return (
     // Fields inside take the Form's labelPosition unless they set their own. The page's columns stop here: the
-    // Form lays its own fields out, so the Sections it titles them with take none.
-    <FormLayoutContext.Provider value={{ labelPosition }}>
+    // Form lays its own fields out, so the Sections it titles them with take none. A booting page's loading does
+    // carry on down, so the groups and the fields each draw their own skeleton where they will stand.
+    <FormLayoutContext.Provider value={{ labelPosition, loading: page.loading }}>
     <form
       id={id}
       className={cls.join(" ")}

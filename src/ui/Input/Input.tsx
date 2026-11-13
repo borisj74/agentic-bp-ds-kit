@@ -2,6 +2,8 @@
 import { useId, useRef, useState, type ChangeEvent } from "react";
 import { useDensitySize } from "../Density/Density";
 import { labelWidthClass, useLabelPosition } from "../Form/FormContext";
+import { Skeleton } from "../Skeleton/Skeleton";
+import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 import styles from "./Input.module.css";
@@ -52,6 +54,8 @@ export function Input({
   const isFile = type === "file";
   const maxLength = isFile ? undefined : maxLengthProp;
   const labelPosition = useLabelPosition(ownLabelPosition);
+  // A field in a booting page draws itself as bars, in its own place.
+  const booting = useFieldSkeleton();
   // The label column this field stands on. With no label there is no column, and md is the kit's 234.
   const width = hideLabel ? undefined : labelWidthClass(labelWidth);
   const autoId = useId();
@@ -85,6 +89,23 @@ export function Input({
   };
 
   const cls = [styles.input, styles[size], hideLabel ? "" : styles[labelPosition], width ? styles[width] : "", bad ? styles.invalid : "", disabled ? styles.disabled : ""];
+  // Booting: the field keeps its own box, its label column and its control's height, so the real field arrives
+  // exactly where the bars stood. The bars say nothing to a screen reader: the page says "Loading" once, at the
+  // top, and the field's own name comes with the field.
+  if (booting) {
+    return (
+      <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
+        {!hideLabel && (
+          <div className={styles.labelRow}>
+            <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(label)} height="var(--skeleton-cell)" label="" />
+          </div>
+        )}
+        <div className={styles.body}>
+          <Skeleton shape="rect" animation="pulse" height="var(--h)" label="" />
+        </div>
+      </div>
+    );
+  }
   return (
     // data-label lets a start-label Form line up controls that have no label column.
     <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>

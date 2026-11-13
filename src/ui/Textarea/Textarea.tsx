@@ -1,6 +1,8 @@
 "use client";
 import { useId, useState, type ChangeEvent } from "react";
 import { labelWidthClass, useLabelPosition } from "../Form/FormContext";
+import { Skeleton } from "../Skeleton/Skeleton";
+import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 // Label, help, hint and error share Input's styles so both fields read the same in one form.
@@ -40,6 +42,8 @@ export function Textarea({
   onChange, name, id, required = false, disabled = false, readOnly = false, invalid = false, error, hint, help, maxLength,
 }: TextareaProps) {
   const labelPosition = useLabelPosition(ownLabelPosition);
+  // A field in a booting page draws itself as bars, in its own place.
+  const booting = useFieldSkeleton();
   // The label column this field stands on. With no label there is no column, and md is the kit's 234.
   const width = hideLabel ? undefined : labelWidthClass(labelWidth);
   const autoId = useId();
@@ -59,8 +63,24 @@ export function Textarea({
   };
 
   const cls = [field.input, styles.textarea, hideLabel ? "" : field[labelPosition], width ? field[width] : ""];
+  // Booting: the box, the label column and the area's own least height are kept, so the real field lands where
+  // the bars stood. data-full-row keeps the row the area spans even with no textarea in the tree to match on.
+  if (booting) {
+    return (
+      <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition} data-full-row="">
+        {!hideLabel && (
+          <div className={field.labelRow}>
+            <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(label)} height="var(--skeleton-cell)" label="" />
+          </div>
+        )}
+        <div className={field.body}>
+          <Skeleton shape="rect" animation="pulse" height={`var(--textarea-height-${size})`} label="" />
+        </div>
+      </div>
+    );
+  }
   return (
-    <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
+    <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition} data-full-row="">
       <div className={hideLabel ? field.srOnly : field.labelRow}>
         <label htmlFor={areaId} className={field.label}>
           {required && <span className={field.required} aria-hidden="true">*</span>}
