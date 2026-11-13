@@ -3,7 +3,7 @@ import { Fragment, isValidElement, useEffect, useId, useRef, useState, type CSSP
 import { Button } from "../Button/Button";
 import { Count } from "../Count/Count";
 import { Skeleton } from "../Skeleton/Skeleton";
-import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
+import { BOOT_ROWS_MAX, skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import { Cell, type CellAlignment, type CellSize } from "../Cell/Cell";
 import { HeaderCell, type HeaderCellLine } from "../HeaderCell/HeaderCell";
 import styles from "./Table.module.css";
@@ -43,7 +43,8 @@ const idOf = (row: TableRow, i: number) => row.id ?? String(i);
 
 // How many rows a booting table stands in for when it has none yet: enough to read as a list without claiming a
 // length it does not know (BP COBALT item 1). A table that already has its rows — one refreshing them — boots at
-// the length it has, so the page keeps its height.
+// the length it has, so the page keeps its height, up to BOOT_ROWS_MAX: past about a screenful the extra bars
+// are below the fold, and a list of hundreds would animate every one of them.
 const BOOT_ROWS = 3;
 
 // One table: headers are kit HeaderCells, values kit Cells. The rows carry the lines and the hover and selected
@@ -165,7 +166,7 @@ export function Table({
             </tr>
           </thead>
           <tbody>
-            {Array.from({ length: rows.length || BOOT_ROWS }, (_, i) => (
+            {Array.from({ length: Math.min(rows.length || BOOT_ROWS, BOOT_ROWS_MAX) }, (_, i) => (
               <tr key={i}>
                 {selectable && <td className={styles.select}><span className={styles.bootCell} /></td>}
                 {columns.map((c) => (

@@ -2,7 +2,7 @@ import { Button } from "../Button/Button";
 import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import { Skeleton } from "../Skeleton/Skeleton";
-import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
+import { BOOT_ROWS_MAX, skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import styles from "./Timeline.module.css";
 
 export type TimelineSize = "sm" | "md";
@@ -48,6 +48,8 @@ export function Timeline({ items, size = "md", label = "Activity", onMenuSelect 
   if (booting) {
     // Each line keeps the line box its own words will take, so an entry is as tall booting as it will be and
     // nothing under the timeline moves when the activity arrives.
+    // At most a screenful of entries, however long the thread is: the rest would animate below the fold.
+    const bootItems = items.slice(0, BOOT_ROWS_MAX);
     const bar = (text: string, height: string, line?: string) => (
       <span className={styles.bootLine} style={line ? { minHeight: line } : undefined}>
         <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(text)} height={height} label="" />
@@ -55,9 +57,9 @@ export function Timeline({ items, size = "md", label = "Activity", onMenuSelect 
     );
     return (
       <ol className={[styles.timeline, styles[size]].join(" ")} aria-hidden="true">
-        {items.map((item, i) => {
+        {bootItems.map((item, i) => {
           const first = i === 0;
-          const last = i === items.length - 1;
+          const last = i === bootItems.length - 1;
           const detail = Boolean(item.notes || item.links?.length || item.action);
           return (
             <li key={item.id} className={styles.item}>
