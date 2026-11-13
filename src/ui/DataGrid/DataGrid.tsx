@@ -11,7 +11,9 @@ import { HeaderCell, type HeaderCellLine } from "../HeaderCell/HeaderCell";
 import { Icon } from "../Icon/Icon";
 import { Input } from "../Input/Input";
 import { Link } from "../Link/Link";
+import { BOOT_ROWS_MAX, skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import { Select, type SelectOption } from "../Select/Select";
+import { Skeleton } from "../Skeleton/Skeleton";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./DataGrid.module.css";
 
@@ -83,6 +85,11 @@ export interface DataGridProps {
   legend?: DataGridLegendItem[];
 }
 
+// How many rows a booting grid stands in for when it has none yet, the same three a booting Table draws: enough to
+// read as a grid without claiming a length it does not know. A grid that already has its rows boots at the length
+// it has, up to BOOT_ROWS_MAX, so the page keeps its height without animating rows below the fold.
+const BOOT_ROWS = 3;
+
 type Spot = { row: string; key: string };
 const spotSelector = (s: Spot) => `[data-cell="${CSS.escape(`${s.row}:${s.key}`)}"]`;
 
@@ -99,6 +106,8 @@ export function DataGrid({
 }: DataGridProps) {
   // A surrounding Density changes the row through the density tokens, not the size.
   const size = ownSize ?? "md";
+  // A grid in a booting page draws its own columns and rows as bars, in its own box (see the booting branch below).
+  const booting = useFieldSkeleton();
   const uid = useId();
   const added = useRef(0);
   // The row waiting on its Delete confirmation, with the number it is named by.
@@ -425,6 +434,119 @@ export function DataGrid({
       </td>
     );
   };
+
+  // Booting: the real grid, with bars where its column names and values will be, after Table's in-place skeleton
+  // (BP COBALT "Skeleton / list row") at the grid's own sizes. The columns, their widths, the header line and the
+  // row heights (38 / 40, from the body cell rule) are the grid's own, so the rows land where their bars stood. The
+  // columns with no name — the ticks, the detail toggle, the actions — keep their width with an empty box the size
+  // of what will stand there, and nothing is drawn over them. No cell is a button, an editor or a control, so
+  // nothing can be reached or changed; the bars say nothing to a screen reader, since the page that is loading
+  // says so once.
+  if (booting) {
+    const visibleRows = rows.filter((r) => !hidden(r.id)).length;
+    const bodyRows = Math.min(visibleRows || BOOT_ROWS, BOOT_ROWS_MAX);
+    // The action column holds two buttons on the row and, past two, a More menu: as many squares as that.
+    const actionCount = [canInsertRows, canRemoveRows, canDeleteRows].filter(Boolean).length;
+    const actionSlots = Math.min(actionCount, visibleActions) + (actionCount > visibleActions ? 1 : 0);
+    const bar = (text: string) => (
+      <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(text)} height="var(--skeleton-row-bar)" label="" />
+    );
+    const nameBar = () => (
+      <Skeleton shape="rect" animation="pulse" width="var(--skeleton-column-name)" height="var(--skeleton-cell)" label="" />
+    );
+    // A header cell: the HeaderCell's own height and line, with the column's name as a bar (or nothing). With Set for
+    // all on any column, every header keeps the room for the menu under its title, and those columns show a block.
+    const bootHead = (name: ReactNode, opts: { end?: boolean; menu?: boolean } = {}) => (
+      <span className={[styles.bootHead, opts.end ? styles.bootEnd : "", line === "thin" ? styles.bootHeadThin : "", hasSetForAll ? styles.bootHeadTall : ""].join(" ")}>
+        <span className={styles.bootName}>{name}</span>
+        {hasSetForAll && (
+          <span className={styles.bootMenu}>
+            {opts.menu && <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth("Set for all")} height="var(--control-small)" label="" />}
+          </span>
+        )}
+      </span>
+    );
+    const firstCls = (c: DataGridColumn) => [c.type === "number" ? styles.numeric : "", c.hug ? styles.hugCell : "", c.key === firstKey ? pin : ""].join(" ");
+    const lead = (cls: string) => (
+      <>
+        {selectable && <td className={[cls, styles.select, stickyFirstColumn ? styles.stickySelect : ""].join(" ")}><span className={styles.bootTick} /></td>}
+        {toggleColumn && <td className={[cls, styles.toggle, stickyFirstColumn ? styles.stickyToggle : ""].join(" ")}><span className={styles.bootSquare} /></td>}
+      </>
+    );
+    const actions = (cls: string) => actionColumn && (
+      <td className={[cls, styles.actions].join(" ")}>
+        <span className={styles.bootActions} style={{ "--data-grid-boot-actions": actionSlots } as CSSProperties} />
+      </td>
+    );
+    return (
+      <div className={styles.grid} data-data-grid="" data-booting="" aria-hidden="true">
+        <div className={styles.wrap}>
+          <table className={[styles.table, styles[size]].join(" ")}>
+            <thead>
+              <tr>
+                {selectable && <th className={[styles.hug, styles.select, stickyFirstColumn ? styles.stickySelect : ""].join(" ")}>{bootHead(null)}</th>}
+                {toggleColumn && <th className={[styles.hug, stickyFirstColumn ? styles.stickyToggle : ""].join(" ")}>{bootHead(null)}</th>}
+                {rowNumbers && (
+                  <th className={[styles.hug, stickyFirstColumn ? styles.stickyIndex : ""].join(" ")}>
+                    {bootHead(<Skeleton shape="rect" animation="pulse" width="var(--skeleton-cell)" height="var(--skeleton-cell)" label="" />)}
+                  </th>
+                )}
+                {columns.map((c) => (
+                  <th key={c.key} className={[c.hug ? styles.hug : styles.fill, c.key === firstKey ? pin : ""].join(" ")} style={c.width ? { width: c.width } : undefined}>
+                    {bootHead(c.header ? nameBar() : null, { end: c.type === "number", menu: c.setForAll })}
+                  </th>
+                ))}
+                {actionColumn && <th className={styles.hug}>{bootHead(null)}</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {Array.from({ length: bodyRows }, (_, i) => (
+                <tr key={i}>
+                  {lead("")}
+                  {rowNumbers && (
+                    <td className={[styles.index, stickyFirstColumn ? styles.stickyIndex : ""].join(" ")}>
+                      <span className={styles.bootIndex}><Skeleton shape="rect" animation="pulse" width="var(--skeleton-cell)" height="var(--skeleton-row-bar)" label="" /></span>
+                    </td>
+                  )}
+                  {columns.map((c) => (
+                    <td key={c.key} className={firstCls(c)}><span className={styles.bootCell}>{bar(c.header || c.key)}</span></td>
+                  ))}
+                  {actions("")}
+                </tr>
+              ))}
+              {totalRow && rows.length > 0 && (
+                <tr className={styles.total}>
+                  {lead(styles.totalCell)}
+                  {rowNumbers && <td className={[styles.totalCell, styles.index, stickyFirstColumn ? styles.stickyIndex : ""].join(" ")} />}
+                  {columns.map((c) => (
+                    <td key={c.key} className={[styles.totalCell, firstCls(c)].join(" ")}>
+                      <span className={styles.bootCell}>{totalRow[c.key] ? bar(totalRow[c.key]) : null}</span>
+                    </td>
+                  ))}
+                  {actions(styles.totalCell)}
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+        {legend && legend.length > 0 && (
+          <ul className={[styles.legend, styles.bootLegend].join(" ")}>
+            {legend.map((l) => (
+              <li key={l.label} className={styles.legendItem}>
+                <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(l.label)} height="var(--skeleton-row-bar)" label="" />
+              </li>
+            ))}
+          </ul>
+        )}
+        {/* A kit Button in a booting page draws itself as a block its own size, so Add row keeps its room. */}
+        {canAddRows && (
+          <div className={styles.add}>
+            <Button emphasis="minimal" size="sm" iconStart="add">Add row</Button>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className={styles.grid} data-data-grid="">

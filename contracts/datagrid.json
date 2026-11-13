@@ -2,7 +2,7 @@
   "name": "DataGrid",
   "path": "src/ui/DataGrid/DataGrid.tsx",
   "intent": "An editable table: people click a cell to add or change its content, like rule conditions, line items or mappings.",
-  "usage": "Use DataGrid when people enter or change data in rows, not just read it. It is one component: pass columns and rows as data. Each column has a type: text and number cells edit in place with a kit Input, select cells are a kit Select, formula cells open a kit FormulaEditor in the cell, date cells are a kit DatePicker, and readOnly columns only show. Click a cell or press Enter to edit; Enter or leaving the cell saves, Escape cancels, Tab moves to the next cell. rowNumbers adds a # column. canAddRows adds an Add row button under the grid; canInsertRows, canRemoveRows and canDeleteRows each add a button to the action column at the end of every row, in that order: + adds an empty row under this one, X takes the row out of this grid, and the trash deletes the record everywhere it is used. Two stand on the row and any after that go in a More menu at the end, so with all three on, Delete is in the menu. Keep remove and delete apart: a row people only meant to take off a quote is removed, not deleted. Delete asks first in a kit AlertDialog and only then calls onDeleteRow. actionsFor picks, row by row, which of those a row shows, so a saved row can carry the trash and a row added since the X. selectable adds a checkbox column at the start, with select-all in the header, for actions on several rows at once. Columns are at least 160 wide unless they hug. The first column (and #) stays pinned when the grid scrolls sideways. setForAll on a column adds a Set for all menu under its title. detail makes rows expandable, with settings or sub-rows under each row. Inside a Form with columns, the grid spans the row, and with start labels it starts at the section's edge, since its column headers stand in for a label. For read-only lists use Table. See contracts/datagrid.json for the full contract.",
+  "usage": "Use DataGrid when people enter or change data in rows, not just read it. It is one component: pass columns and rows as data. Each column has a type: text and number cells edit in place with a kit Input, select cells are a kit Select, formula cells open a kit FormulaEditor in the cell, date cells are a kit DatePicker, and readOnly columns only show. Click a cell or press Enter to edit; Enter or leaving the cell saves, Escape cancels, Tab moves to the next cell. rowNumbers adds a # column. canAddRows adds an Add row button under the grid; canInsertRows, canRemoveRows and canDeleteRows each add a button to the action column at the end of every row, in that order: + adds an empty row under this one, X takes the row out of this grid, and the trash deletes the record everywhere it is used. Two stand on the row and any after that go in a More menu at the end, so with all three on, Delete is in the menu. Keep remove and delete apart: a row people only meant to take off a quote is removed, not deleted. Delete asks first in a kit AlertDialog and only then calls onDeleteRow. actionsFor picks, row by row, which of those a row shows, so a saved row can carry the trash and a row added since the X. selectable adds a checkbox column at the start, with select-all in the header, for actions on several rows at once. Columns are at least 160 wide unless they hug. The first column (and #) stays pinned when the grid scrolls sideways. setForAll on a column adds a Set for all menu under its title. detail makes rows expandable, with settings or sub-rows under each row. Inside a Form with columns, the grid spans the row, and with start labels it starts at the section's edge, since its column headers stand in for a label. For read-only lists use Table. Inside a loading page it draws its own skeleton in place: the real grid, with its own columns and their widths, its header row and its line, a 64x8 bar for every column name and a 10px bar instead of a value or an editor in every data cell — one body row per row it has, to the same ceiling of twelve a booting Table keeps, or three when it has none yet — at its own row heights (38 / 40, not Table's 36 / 40), so nothing moves when the rows land. The # column, the tick column, the detail toggle and the action column keep their places and widths; nothing is drawn over the tick cell, the toggle or the action column, since they have no name. Add row stays as a block its own size under the grid, and totalRow and legend keep their row with bars, only when they were passed. Nothing on the grid can be reached or edited while it boots. The page says loading once (FormPage's, RecordPage's or ListPage's loading, carried on FormLayoutContext); like Table, it takes no loading prop of its own. See contracts/datagrid.json for the full contract.",
   "props": {
     "columns": {
       "type": "DataGridColumn[]",
@@ -194,6 +194,7 @@
     "Do not put a Form around each row. Save the rows from onRowsChange.",
     "Do not use the trash for a row people are only taking off this grid. X removes, the trash deletes the record for everyone.",
     "Do not ask again before a delete from the screen. The grid already shows the AlertDialog; onDeleteRow runs after it.",
+    "Do not give it a loading prop, draw your own grey bars over it, or hide it while a page loads. Inside a loading page it skeletons itself in place, from the page's loading on FormLayoutContext (useFieldSkeleton), and the page owns the one Loading message.",
     "Do not use raw hex."
   ],
   "a11y": [
@@ -328,6 +329,37 @@
             "totalRow": "{scheduleTotal}",
             "legend": "{scheduleLegend}"
           }
+        }
+      ]
+    },
+    {
+      "title": "Booting",
+      "usage": "The grid inside a loading page, as the page's loading on FormLayoutContext draws it: the real columns, the header line and one row of bars per row, at the grid's own row heights. Conditions keeps its Add row as a block; the Revenue schedule keeps its Period total and its key. Nothing in it can be edited or reached until the rows land. The catalog's Loading state stands in for the page here.",
+      "items": [
+        {
+          "props": {
+            "state": "loading",
+            "label": "Conditions",
+            "columns": "{conditionColumns}",
+            "defaultRows": "{conditions}",
+            "canAddRows": true,
+            "canRemoveRows": true
+          },
+          "caption": "Conditions, loading"
+        },
+        {
+          "props": {
+            "state": "loading",
+            "label": "Revenue schedule",
+            "size": "sm",
+            "rowNumbers": false,
+            "columns": "{scheduleColumns}",
+            "defaultRows": "{scheduleRows}",
+            "rowParent": "{scheduleParent}",
+            "totalRow": "{scheduleTotal}",
+            "legend": "{scheduleLegend}"
+          },
+          "caption": "Revenue schedule, loading"
         }
       ]
     }

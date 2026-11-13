@@ -4,6 +4,8 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import { DataGrid, type DataGridColumn, type DataGridRow } from "@/ui/DataGrid/DataGrid";
 import { Table } from "@/ui/Table/Table";
+import { FormLayoutContext } from "@/ui/Form/FormContext";
+import { BOOT_ROWS_MAX } from "@/ui/LoadingLine/boot";
 
 const COLUMNS: DataGridColumn[] = [
   { key: "product", header: "Product" },
@@ -301,5 +303,151 @@ describe("DataGrid schedule pieces", () => {
     const key = within(screen.getByRole("list", { name: "Key" }));
     expect(key.getByText("Posted")).toBeInTheDocument();
     expect(key.getByText("Unposted")).toBeInTheDocument();
+  });
+});
+
+// A DataGrid inside a loading page draws its own skeleton in place, from the page's loading on FormLayoutContext,
+// the way a Table does. jsdom lays nothing out, so these check the structure and the stylesheet rules that give
+// the booting grid the heights the ready grid has.
+describe("a booting DataGrid", () => {
+  const boot = (ui: React.ReactNode) => render(<FormLayoutContext.Provider value={{ loading: true }}>{ui}</FormLayoutContext.Provider>);
+  const bars = (root: ParentNode) => root.querySelectorAll('[aria-busy="true"]');
+  const reachable = () => document.querySelectorAll("button, a[href], input, select, textarea, [tabindex]:not([tabindex='-1'])");
+  const flat = (file: string) => readFileSync(file, "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ");
+  const EDITORS: DataGridColumn[] = [
+    { key: "product", header: "Product" },
+    { key: "plan", header: "Plan", type: "select", width: "200px", options: [{ value: "gold", label: "Gold" }] },
+    { key: "start", header: "Start", type: "date" },
+    { key: "qty", header: "Qty", type: "number" },
+  ];
+  const EDIT_ROWS: DataGridRow[] = [
+    { id: "r1", product: "Gold plan", plan: "gold", start: "2027-01-08", qty: "5" },
+    { id: "r2", product: "Silver plan", plan: "gold", start: "2027-02-01", qty: "1" },
+  ];
+
+  it("shows bars, not its values or editors, in one head row and one body row per row", () => {
+    boot(<DataGrid label="Items" columns={EDITORS} defaultRows={EDIT_ROWS} />);
+    expect(screen.queryByText("Gold plan")).toBeNull();
+    expect(screen.queryByText("5")).toBeNull();
+    expect(document.querySelectorAll("input, select, textarea, button")).toHaveLength(0);
+    expect(document.querySelectorAll("thead tr")).toHaveLength(1);
+    expect(document.querySelectorAll("tbody tr")).toHaveLength(EDIT_ROWS.length);
+    // A value bar in every data column, and one in the # column.
+    expect(bars(document.querySelector("tbody tr")!)).toHaveLength(EDITORS.length + 1);
+  });
+
+  it("draws three rows when it has no rows yet, and no more than a screenful when it has hundreds", () => {
+    const { unmount } = boot(<DataGrid label="Items" columns={COLUMNS} defaultRows={[]} />);
+    expect(document.querySelectorAll("tbody tr")).toHaveLength(3);
+    expect(screen.queryByText("No rows yet.")).toBeNull();
+    unmount();
+    const many = Array.from({ length: 40 }, (_, i) => ({ id: `m${i}`, product: `P${i}`, qty: "1" }));
+    boot(<DataGrid label="Items" columns={COLUMNS} defaultRows={many} />);
+    expect(document.querySelectorAll("tbody tr")).toHaveLength(BOOT_ROWS_MAX);
+  });
+
+  it("keeps its columns and widths, the # column, a tick column and an action column from its props", () => {
+    boot(<DataGrid label="Items" columns={EDITORS} defaultRows={EDIT_ROWS} selectable canInsertRows canRemoveRows canDeleteRows />);
+    const head = document.querySelector("thead tr")!;
+    // Tick, #, four columns, actions.
+    expect(head.children).toHaveLength(EDITORS.length + 3);
+    expect(head.children[3]).toHaveAttribute("style", expect.stringContaining("width: 200px"));
+    // A name bar for # and for each named column; nothing over the tick or the action column.
+    expect(bars(head)).toHaveLength(EDITORS.length + 1);
+    expect(bars(head.firstElementChild!)).toHaveLength(0);
+    expect(bars(head.lastElementChild!)).toHaveLength(0);
+    const row = document.querySelector("tbody tr")!;
+    expect(row.children).toHaveLength(EDITORS.length + 3);
+    expect(bars(row.firstElementChild!)).toHaveLength(0);
+    expect(bars(row.lastElementChild!)).toHaveLength(0);
+    // The action column keeps room for two buttons and the More menu.
+    expect(row.lastElementChild!.querySelector("span")).toHaveAttribute("style", expect.stringContaining("--data-grid-boot-actions: 3"));
+  });
+
+  it("drops the # column when rowNumbers is off, and keeps the detail toggle column when rows open", () => {
+    boot(<DataGrid label="Items" columns={EDITORS} defaultRows={EDIT_ROWS} rowNumbers={false} detail={() => "More"} />);
+    const head = document.querySelector("thead tr")!;
+    // Toggle and four columns; nothing over the toggle.
+    expect(head.children).toHaveLength(EDITORS.length + 1);
+    expect(bars(head)).toHaveLength(EDITORS.length);
+    expect(bars(head.firstElementChild!)).toHaveLength(0);
+  });
+
+  it("draws the column names 64 by 8 and the values as 10px bars", () => {
+    boot(<DataGrid label="Items" columns={COLUMNS} defaultRows={ROWS} rowNumbers={false} />);
+    expect(bars(document.querySelector("thead")!)[0]).toHaveAttribute("style", expect.stringContaining("width: var(--skeleton-column-name)"));
+    const value = bars(document.querySelector("tbody")!)[0].querySelector("[aria-hidden]")!;
+    expect(value).toHaveAttribute("style", expect.stringContaining("height: var(--skeleton-row-bar)"));
+  });
+
+  it("keeps the grid's own row and header heights, so nothing jumps when the rows land", () => {
+    const sheet = flat("src/ui/DataGrid/DataGrid.module.css");
+    // The body cell rule the booting rows share with the ready ones: 38 at sm and 40 at md.
+    expect(sheet).toContain(".sm > tbody > tr > td { height: calc(var(--cell-height-sm) - var(--border-width-thin)); }");
+    expect(sheet).toContain(".md > tbody > tr > td { height: calc(var(--cell-height-md) - var(--border-width-thin)); }");
+    // A ready cell is its value's line with 8px padding round it (what holds sm at 38); a booting cell keeps the same.
+    expect(sheet).toContain("padding: var(--space-xsmall) var(--space-small); border: 0;");
+    expect(sheet).toContain("--data-grid-boot-line: calc(var(--text-ref-cell-size) * var(--text-ref-cell-lh) + 2 * var(--space-xsmall));");
+    expect(sheet).toContain(".sm .bootCell { min-height: max(calc(var(--cell-height-sm) - var(--border-width-thin)), var(--data-grid-boot-line)); }");
+    expect(sheet).toContain(".md .bootCell { min-height: max(calc(var(--cell-height-md) - var(--border-width-thin)), var(--data-grid-boot-line)); }");
+    // The booting header is the HeaderCell's own height and line.
+    expect(sheet).toContain("min-height: var(--header-cell-height-md); padding: var(--space-xsmall) var(--space-small); background: var(--surface-flat); border-bottom: var(--border-width-medium) solid var(--border-brand-faint);");
+    expect(sheet).toContain(".sm .bootHead { min-height: var(--header-cell-height-sm); }");
+    expect(sheet).toContain(".bootHeadThin { border-bottom-width: var(--border-width-thin); }");
+    for (const size of ["sm", "md"] as const) {
+      const { unmount } = boot(<DataGrid label="Items" size={size} line="thin" columns={COLUMNS} defaultRows={ROWS} />);
+      expect(document.querySelector("table")!.className).toContain(size);
+      expect(document.querySelector('[class~="bootHeadThin"]')).not.toBeNull();
+      unmount();
+    }
+  });
+
+  it("keeps a Set for all block under the title of a column that has one", () => {
+    boot(<DataGrid label="Items" columns={COLUMNS} defaultRows={ROWS} rowNumbers={false} />);
+    const head = document.querySelector("thead tr")!;
+    // Product: its name. Qty: its name and the menu's block.
+    expect(bars(head.children[0])).toHaveLength(1);
+    expect(bars(head.children[1])).toHaveLength(2);
+  });
+
+  it("keeps Add row, the total row and the key only when they were passed", () => {
+    const total = () => document.querySelector('[class~="totalCell"]')?.closest("tr") ?? null;
+    const { unmount } = boot(<DataGrid label="Items" columns={COLUMNS} defaultRows={ROWS} />);
+    expect(document.querySelector('[class~="add"]')).toBeNull();
+    expect(total()).toBeNull();
+    expect(document.querySelector("ul")).toBeNull();
+    unmount();
+    boot(
+      <DataGrid
+        label="Items" columns={COLUMNS} defaultRows={ROWS} canAddRows totalRow={{ id: "total", product: "Total", qty: "6" }}
+        legend={[{ intent: "success", label: "Posted" }, { intent: "warning", label: "Unposted" }]}
+      />,
+    );
+    // Add row is a block its own size, not a button.
+    const add = document.querySelector('[class~="add"]')!;
+    expect(bars(add)).toHaveLength(1);
+    expect(add.querySelector("button")).toBeNull();
+    expect(bars(total()!)).toHaveLength(2);
+    expect(screen.queryByText("Total")).toBeNull();
+    expect(bars(document.querySelector("ul")!)).toHaveLength(2);
+    expect(screen.queryByText("Posted")).toBeNull();
+  });
+
+  it("drops the total row while it has no rows yet, as the ready grid does", () => {
+    boot(<DataGrid label="Items" columns={COLUMNS} defaultRows={[]} totalRow={{ id: "total", product: "Total", qty: "0" }} />);
+    expect(document.querySelector('[class~="totalCell"]')).toBeNull();
+  });
+
+  it("leaves nothing on the grid reachable by the keyboard, and says nothing itself", () => {
+    boot(<DataGrid label="Items" columns={EDITORS} defaultRows={EDIT_ROWS} selectable canAddRows canRemoveRows canDeleteRows detail={() => "More"} />);
+    expect(reachable()).toHaveLength(0);
+    expect(document.querySelector("[data-data-grid]")).toHaveAttribute("aria-hidden", "true");
+    expect(screen.queryAllByRole("status", { hidden: true })).toHaveLength(0);
+  });
+
+  it("is its real self outside a loading page", () => {
+    render(<DataGrid label="Items" columns={COLUMNS} defaultRows={ROWS} />);
+    expect(screen.getByRole("button", { name: "Product, row 1: Gold plan" })).toBeInTheDocument();
+    expect(bars(document.body)).toHaveLength(0);
   });
 });

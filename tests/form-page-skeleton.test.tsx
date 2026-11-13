@@ -2,6 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { FormPage } from "@/patterns/FormPage/FormPage";
 import { Checkbox } from "@/ui/Checkbox/Checkbox";
+import { DataGrid } from "@/ui/DataGrid/DataGrid";
 import { Form } from "@/ui/Form/Form";
 import { Input } from "@/ui/Input/Input";
 import { Section } from "@/ui/Section/Section";
@@ -91,6 +92,33 @@ describe("a booting FormPage follows its own content", () => {
     expect(table.querySelectorAll("tbody tr")).toHaveLength(1);
     // Two columns, so four bars: one head row and one body row.
     expect(bars(table)).toHaveLength(4);
+  });
+
+  it("draws a rate-bands DataGrid in a section as bars, not its real cells", () => {
+    render(
+      <FormPage label="Edit product" loading>
+        <Section title="Rate bands">
+          <DataGrid
+            label="Rate bands" rowNumbers={false} canAddRows canRemoveRows
+            columns={[
+              { key: "currency", header: "Currency", type: "select", width: "140px", options: [{ value: "USD", label: "USD" }] },
+              { key: "upper", header: "Upper band" }, { key: "rate", header: "Rate" },
+            ]}
+            defaultRows={[{ id: "r1", currency: "USD", upper: "10,000", rate: "1,800.00" }, { id: "r2", currency: "USD", upper: "50,000", rate: "1,500.00" }]}
+          />
+        </Section>
+      </FormPage>,
+    );
+    expect(screen.queryByText("1,800.00")).toBeNull();
+    expect(document.querySelectorAll("input, select, button")).toHaveLength(0);
+    const grid = document.querySelector("[data-data-grid]")!;
+    // Three columns and the action column; two rows of three value bars.
+    expect(grid.querySelector("thead tr")!.children).toHaveLength(4);
+    expect(grid.querySelectorAll("tbody tr")).toHaveLength(2);
+    expect(bars(grid.querySelector("tbody")!)).toHaveLength(6);
+    // Add row keeps its block under the grid.
+    expect(bars(grid.querySelector('[class~="add"]')!)).toHaveLength(1);
+    expect(screen.getAllByRole("status")).toHaveLength(1);
   });
 
   it("puts the fields in the page's columns, three when the page asks for three", () => {

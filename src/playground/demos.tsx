@@ -59,6 +59,7 @@ import { Skeleton, type SkeletonProps } from "@/ui/Skeleton/Skeleton";
 import { Steps, type StepsProps } from "@/ui/Steps/Steps";
 import { Switch } from "@/ui/Switch/Switch";
 import { Table, type TableColumn, type TableRow } from "@/ui/Table/Table";
+import { DataGrid, type DataGridColumn, type DataGridRow } from "@/ui/DataGrid/DataGrid";
 import { Tabs, type TabItem } from "@/ui/Tabs/Tabs";
 import { Textarea } from "@/ui/Textarea/Textarea";
 import { Toast, type ToastProps } from "@/ui/Toast/Toast";
@@ -1144,6 +1145,14 @@ const listViewItem = (r: (typeof LIST_RECORDS)[number]): ListViewItem => ({
   id: r.id, primary: r.account, secondary: `${r.id} \u00b7 Due ${r.due} \u00b7 ${r.amount}`, avatar: r.account,
   badge: r.paid, badgeIntent: paidIntent(r.paid), menu: INVOICE_ALL_MENU,
 });
+// The same records as a kit DataGrid, for a list whose rows people edit in place: how each invoice is paid is a
+// select, the due date a date cell and the amount a number. Shown when the catalog's Rows as control is DataGrid.
+const LIST_GRID_COLUMNS: DataGridColumn[] = [
+  { key: "id", header: "Invoice", readOnly: true }, { key: "account", header: "Account" },
+  { key: "paid", header: "Status", type: "select", width: "180px", options: ["Paid", "Partially paid", "Unpaid"].map((p) => ({ value: p, label: p })) },
+  { key: "due", header: "Due" }, { key: "amount", header: "Amount", type: "number" },
+];
+const LIST_GRID_ROWS: DataGridRow[] = LIST_RECORDS.map((r) => ({ id: r.id, account: r.account, paid: r.paid, due: r.due, amount: r.amount }));
 const LIST_COLUMNS: TableColumn[] = [
   { key: "id", header: "Invoice", emphasis: true }, { key: "account", header: "Account" }, { key: "status", header: "Status" },
   { key: "due", header: "Due" }, { key: "amount", header: "Amount", numeric: true },
@@ -1151,7 +1160,7 @@ const LIST_COLUMNS: TableColumn[] = [
   { key: "actions", header: "", alignment: "end", width: "56px" },
 ];
 
-export function ListPageDemo({ state = "ready", shell = false, stage = "desktop", ...p }: Omit<ListPageProps, "children"> & { state?: ListPageState; shell?: boolean; stage?: string }) {
+export function ListPageDemo({ state = "ready", shell = false, stage = "desktop", rowsAs = "table", ...p }: Omit<ListPageProps, "children"> & { state?: ListPageState; shell?: boolean; stage?: string; rowsAs?: "table" | "datagrid" }) {
   // The rail starts open, at 170px, the way the Cobalt screens draw it; on a phone-width stage the nav is a
   // drawer over the page, so there it starts away.
   const [navOpen, setNavOpen] = useState(stage !== "phone");
@@ -1165,6 +1174,7 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
   const [picked, setPicked] = useState<string[]>([]);
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
+  const [gridRows, setGridRows] = useState(LIST_GRID_ROWS);
   // The control panel sets the state; clearing the ticks and the page then carries on from there.
   const [from, setFrom] = useState(state);
   if (from !== state) { setFrom(state); setPicked([]); setPage(1); }
@@ -1245,6 +1255,13 @@ export function ListPageDemo({ state = "ready", shell = false, stage = "desktop"
           <ListView
             label="Invoices" selection="multiple" selected={picked} onSelectedChange={setPicked} onAction={() => {}}
             items={LIST_RECORDS.filter((r) => shown.some((row) => row.id === r.id)).slice(start, start + size).map(listViewItem)}
+          />
+        ) : rowsAs === "datagrid" ? (
+          // The rows as a kit DataGrid: the same ticks feed the bulk bar, and each cell edits in place.
+          <DataGrid
+            label="Invoices" columns={LIST_GRID_COLUMNS} rowNumbers={false} selectable selected={picked} onSelectionChange={setPicked} rowLabel="id"
+            rows={gridRows.filter((r) => shown.some((row) => row.id === r.id)).slice(start, start + size)}
+            onRowsChange={(next) => setGridRows((all) => all.map((r) => next.find((n) => n.id === r.id) ?? r))}
           />
         ) : (
           <Table columns={LIST_COLUMNS} rows={shown.slice(start, start + size)} selectable selected={picked} onSelectionChange={setPicked} rowLabel="id" />

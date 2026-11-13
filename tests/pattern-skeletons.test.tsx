@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { BarChart } from "@/ui/BarChart/BarChart";
 import { Button } from "@/ui/Button/Button";
 import { Card } from "@/ui/Card/Card";
+import { DataGrid, type DataGridColumn } from "@/ui/DataGrid/DataGrid";
 import { FormDisplay } from "@/ui/FormDisplay/FormDisplay";
 import { ListView } from "@/ui/ListView/ListView";
 import { PageHeader } from "@/ui/PageHeader/PageHeader";
@@ -201,6 +202,26 @@ describe("a booting ListPage follows the rows it was given", () => {
     list();
     expect(reachable()).toHaveLength(0);
     expect(document.querySelector("[inert]")).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("draws a DataGrid child as bars in its own columns, not its real cells", () => {
+    const columns: DataGridColumn[] = [
+      { key: "id", header: "Invoice", readOnly: true }, { key: "account", header: "Account" },
+      { key: "amount", header: "Amount", type: "number" },
+    ];
+    list({}, <DataGrid label="Invoices" columns={columns} defaultRows={[{ id: "INV-1", account: "Apex", amount: "10" }, { id: "INV-2", account: "Borealis", amount: "20" }]} selectable canRemoveRows />);
+    expect(screen.queryByText("Apex")).toBeNull();
+    expect(document.querySelectorAll("input")).toHaveLength(0);
+    const grid = document.querySelector("[data-data-grid]")!;
+    // Tick, #, three columns, actions; one body row per row.
+    expect(grid.querySelector("thead tr")!.children).toHaveLength(columns.length + 3);
+    expect(grid.querySelectorAll("tbody tr")).toHaveLength(2);
+    expect(bars(grid.querySelector("tbody tr")!)).toHaveLength(columns.length + 1);
+    // The page owns the one status and the inert wrapper; nothing in the grid is reachable.
+    expect(screen.getAllByRole("status")).toHaveLength(1);
+    expect(reachable()).toHaveLength(0);
+    // ListPage's no-gap rule keys off a table in the body, which the booting grid still is.
+    expect(document.querySelector('[class*="body"] table')).not.toBeNull();
   });
 
   it("says what is loading once", () => {
