@@ -2,7 +2,7 @@
   "name": "SettingsPage",
   "path": "src/patterns/SettingsPage/SettingsPage.tsx",
   "intent": "The settings home: a grid of the places people can go from here, each with its own icon and color.",
-  "usage": "Use SettingsPage for a home that sends people onwards rather than showing them data: the settings home, or another home shaped like it, such as a reports home. It is a blueprint: it composes kit pieces and keeps no state of its own. children are kit NavTiles, one per place, each with its own intent so the colors become part of how people find the same place again. intro writes anything that has to be said before the tiles, like a kit Callout about a setting that needs attention. The page's name and trail are the kit PageHeader in the AppShell page around it, which owns the page padding. The grid is the .layout-metrics class from contracts/layout.json, widened so a tile has room for its line of text. loading is the boot state: a block the size of a tile for each way in. Inside a booting AppShell the boot skeleton follows the frame's sequence. See contracts/settingspage.json for the full contract.",
+  "usage": "Use SettingsPage for a home that sends people onwards rather than showing them data: the settings home, or another home shaped like it, such as a reports home. It is a blueprint: it composes kit pieces and keeps no state of its own. children are kit NavTiles, one per place, each with its own intent so the colors become part of how people find the same place again. intro writes anything that has to be said before the tiles, like a kit Callout about a setting that needs attention. The page's name and trail are the kit PageHeader in the AppShell page around it, which owns the page padding. The grid is the .layout-metrics class from contracts/layout.json, widened so a tile has room for its line of text. loading is the boot state: the tiles it was given are rendered and each draws its own shape where it will stand — a bar as long as its name, a line where its description will be, and a block where its square is — so the grid boots with as many tiles as the page has and nothing moves when the places arrive. Inside a booting AppShell the boot skeleton follows the frame's sequence. See contracts/settingspage.json for the full contract.",
   "composes": [
     "NavTile",
     "Section",
@@ -22,12 +22,20 @@
     "loading": {
       "type": "boolean",
       "default": false,
-      "note": "Booting: a plain block the size of a tile for each way in, in the same grid. A tile is a box with a name and a line in it and a skeleton draws neither, so the block is the tile."
+      "note": "Booting: the grid keeps its shape and the tiles draw themselves. Each child NavTile draws a bar at its title's length, a line where its description will be and a block where its colored square is, so a tile keeps its 104px height and the grid holds as many places as the page has. An intro keeps the height it will take, covered by one block, so the tiles below do not move when the words arrive. The real tiles are inert and hidden from screen readers while they are bars, and the page says \"Loading <label>\" once. Inside a booting AppShell the pattern boots with the frame whatever this is set to, and follows the frame's sequence: the frame says once that its content has not arrived, so a screen sets loading in one place, at the top."
+    },
+    "loadingShape": {
+      "enum": [
+        "content",
+        "rows"
+      ],
+      "default": "content",
+      "note": "What a booting settings home draws. content follows the real tiles: every NavTile it was given is rendered and draws its own title bar, description line and icon block in its own place in the grid, so ten places boot as ten tiles rather than a fixed six. It is what a home with tiles should use. rows is the fallback for a home that has no tiles to follow yet: loadingTiles plain blocks the size of a tile, in the same grid."
     },
     "loadingTiles": {
       "type": "number",
       "default": 6,
-      "note": "How many tile blocks the boot skeleton draws."
+      "note": "How many tile blocks the rows fallback draws. It says nothing in the content shape, where the tiles the page was given decide."
     },
     "label": {
       "type": "string",
@@ -50,7 +58,8 @@
   "a11y": [
     "The settings home is a region named after label, so a screen reader can jump to it.",
     "Each tile is one link, so the page is walked with one Tab per place.",
-    "The tiles are in reading order, so the order heard is the order seen."
+    "The tiles are in reading order, so the order heard is the order seen.",
+    "Booting, the tiles and the intro are inert and hidden from screen readers, and the page says \"Loading <label>\" once rather than once per tile."
   ],
   "snippet": "<SettingsPage label=\"Settings\">{places.map((p) => <NavTile key={p.id} {...p} />)}</SettingsPage>",
   "examples": [
@@ -65,13 +74,20 @@
     },
     {
       "title": "Booting",
-      "usage": "The settings home as it arrives: a block where each way in will be.",
+      "usage": "The settings home as it arrives: one tile-shaped skeleton per place, each with a bar where its name will be, a line where its description will be and a block where its square is. The rows fallback is the old fixed grid, for a home with no tiles to follow yet.",
       "items": [
         {
           "props": {
             "loading": true
           },
           "caption": "loading"
+        },
+        {
+          "props": {
+            "loading": true,
+            "loadingShape": "rows"
+          },
+          "caption": "loadingShape rows"
         }
       ]
     }

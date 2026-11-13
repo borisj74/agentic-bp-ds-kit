@@ -7,3 +7,12 @@
 /* The grid is the layout class; only the column floor is remapped, since a NavTile carries a title and a line
    of text and reads badly at the 192 the metrics grid assumes. */
 .grid { --layout-metrics-min: 320px; min-width: 0; }
+
+/* Booting, the real intro holds its own height out of sight and one block covers it, so the tiles below stand
+   where they will stand whether the notice runs to one line or three. */
+.introBoot { position: relative; min-width: 0; }
+.introGhost { visibility: hidden; }
+.introBoot > span { position: absolute; inset: 0; }
+
+/* Read, not shown: the one status that says the home is loading. */
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
