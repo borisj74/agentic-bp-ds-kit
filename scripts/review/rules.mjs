@@ -105,9 +105,13 @@ function tokenUse(use, file, code, root) {
 // ---- 3. bp/local-cousin ------------------------------------------------------------------------
 
 const UI_MODULE = /^(@\/ui\/|@\/patterns\/)/;
+
+/** A file in the screen's own folder: "./RunPanel", not "../other-screen/RunPanel". */
+const OWN_FOLDER = (m) => /^\.\/[^/]+$/.test(m);
+
 const OK_MODULE = (m) =>
   m === "react" || m === "react-dom" || m.startsWith("react/") || m.startsWith("react-dom/") ||
-  m.startsWith("next/") || UI_MODULE.test(m) || /\.css$/.test(m);
+  m.startsWith("next/") || UI_MODULE.test(m) || OWN_FOLDER(m) || /\.css$/.test(m);
 
 function localCousin(facts, file, root) {
   const out = [];
@@ -127,15 +131,34 @@ function localCousin(facts, file, root) {
     ));
   }
   for (const imp of facts.imports) {
-    if (OK_MODULE(imp.module)) continue;
     if (imp.typeOnly) continue;
     // A component name, not a data constant: Card, not CARD_OPTIONS.
     const ui = imp.names.filter((n) => !n.type && /^[A-Z][a-z]/.test(n.local));
     if (ui.length === 0) continue;
+
+    // A piece the kit already has is a cousin wherever it comes from, the screen's own folder included.
+    for (const name of ui) {
+      const kit = piece(name.local, root);
+      const cousin = KNOWN_COUSINS.includes(name.local);
+      if (!kit && !cousin) continue;
+      if (kit && UI_MODULE.test(imp.module) && imp.module.endsWith(`/${kit.name}`)) continue;
+      out.push(finding(
+        "bp/local-cousin", "error", file, imp.line,
+        kit
+          ? `\`${name.local}\` comes from \`${imp.module}\`, but the kit already has ${kit.name} (${kit.level}).`
+          : `\`${name.local}\` from \`${imp.module}\` is a cousin of a kit piece.`,
+        kit
+          ? `Import ${kit.name} from ${kit.importPath} instead.`
+          : "Use the kit piece that covers it, or stop and ask before adding anything new.",
+        kit?.contract ?? null,
+      ));
+    }
+
+    if (OK_MODULE(imp.module)) continue;
     out.push(finding(
       "bp/local-cousin", "error", file, imp.line,
       `UI imported from \`${imp.module}\`: ${ui.map((n) => n.local).join(", ")}.`,
-      "Screens import UI from @/ui and @/patterns only (react and next/* are fine). If the kit is missing a piece, stop and ask.",
+      "Screens import UI from @/ui and @/patterns, from react and next/*, or from the screen's own folder. A piece from another screen's folder belongs in the kit: stop and ask.",
     ));
   }
   return out;

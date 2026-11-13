@@ -97,6 +97,43 @@ describe("review rules", () => {
     expect(findings.some((f) => f.message.includes("grid"))).toBe(true);
   });
 
+  it("bp/local-cousin leaves the screen's own folder alone", () => {
+    const code = [
+      'import { RunPanel } from "./RunPanel";',
+      'import { Button } from "@/ui/Button/Button";',
+      "export default function Page() {",
+      "  return <RunPanel><Button>Run</Button></RunPanel>;",
+      "}",
+    ].join("\n");
+    const findings = reviewSource(code, "src/app/runs/page.tsx") as Finding[];
+    expect(findings.filter((f) => f.rule === "bp/local-cousin")).toEqual([]);
+  });
+
+  it("bp/local-cousin still names a kit piece imported from the screen's own folder", () => {
+    const code = 'import { Dialog } from "./Dialog";\nexport const Go = () => <Dialog />;\n';
+    const findings = reviewSource(code, "src/app/runs/page.tsx") as Finding[];
+    const cousins = findings.filter((f) => f.rule === "bp/local-cousin");
+    expect(cousins).toHaveLength(1);
+    expect(cousins[0].message).toContain("cousin of a kit piece");
+  });
+
+  it("bp/local-cousin names a kit piece imported from anywhere else", () => {
+    const code = 'import { Card } from "../cards/Card";\nexport const Go = () => <Card />;\n';
+    const findings = reviewSource(code, "src/app/runs/page.tsx") as Finding[];
+    const cousins = findings.filter((f) => f.rule === "bp/local-cousin");
+    expect(cousins.some((f) => f.message.includes("the kit already has Card (molecule)"))).toBe(true);
+    expect(cousins.some((f) => f.fix.includes("@/ui/Card/Card"))).toBe(true);
+  });
+
+  it("bp/local-cousin flags UI taken from another screen's folder", () => {
+    const code = 'import { RunPanel } from "../runs/RunPanel";\nexport const Go = () => <RunPanel />;\n';
+    const findings = reviewSource(code, "src/app/other/page.tsx") as Finding[];
+    const cousins = findings.filter((f) => f.rule === "bp/local-cousin");
+    expect(cousins).toHaveLength(1);
+    expect(cousins[0].message).toContain("../runs/RunPanel");
+    expect(cousins[0].fix).toContain("another screen's folder");
+  });
+
   it("the kit's own folders are skipped unless --all is passed", () => {
     const skipped = reviewFiles(["src/ui"]) as { files: string[] };
     expect(skipped.files).toHaveLength(0);
