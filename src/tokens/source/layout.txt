@@ -346,6 +346,35 @@ skeleton/nav-icon|18px
 skeleton/nav-label|10px
 # A booting settings tile: the kit NavTile's 72 square with its 16 padding above and below it.
 skeleton/tile|104px
+# A booting button (BP COBALT "Skeleton / button", node 2046:29482): the control's own 28 height, with a label
+# bar inside it. outline and the search box are white with a 1px subtle border and a bar 12 in from each end; an
+# icon-only button holds a 14 square instead; a ghost button is the 38 bar alone; the strong one is a solid block.
+# 38 and 14 are past the ref scale.
+skeleton/button-ghost|38px
+skeleton/button-icon|14px
+# A booting column name (BP COBALT boot skeleton, list view): a 64 bar at the cell's own 8, the same width in
+# every column, since a column name is a word or two whatever the column holds. 64 is past the ref scale.
+skeleton/column-name|64px
+# A booting record row's label cell (BP COBALT node 2046:30135): a 210 shaded cell with the label bar ending 16
+# before its edge, and the three widths those bars take. All past the ref scale.
+skeleton/record-label|210px
+skeleton/record-label-sm|70px
+skeleton/record-label-md|90px
+skeleton/record-label-lg|120px
+# A booting Home (BP COBALT node 2046:30349): the search band over two bordered cards — a scope select, the
+# search box and its button; a card's 42 head; a message row's 49; the 18 icon in it; and the 140 title bar in
+# the framed chart of the other card. All past the ref scale.
+skeleton/home-band|45px
+skeleton/home-scope|94px
+skeleton/home-search|360px
+skeleton/home-search-button|76px
+skeleton/card-head|42px
+skeleton/message-row|49px
+skeleton/row-icon|18px
+skeleton/chart-title|140px
+# The bars in that framed chart stand in a 232 box: the Cobalt chart skeleton is 268 tall, less its 8 padding,
+# the 10 title bar and the 8 under it. Past the ref scale.
+skeleton/chart-plot|232px
 
 # Loading line (BP COBALT DSL-198): the sliding bar is 40% of the track.
 loading-line/bar|40%

@@ -47,15 +47,65 @@
 
 .blank { min-width: 0; }
 
-/* Booting (BP COBALT item 1, screen 55): the rows of the message list and the bars of the chart, inside the two
-   kit Sections Home lands on. */
-.loadingList { display: flex; flex-direction: column; min-width: 0; }
-.loadingListRow {
-  display: grid; align-items: center; gap: var(--space-medium);
-  grid-template-columns: var(--skeleton-cell) minmax(0, 1fr) var(--skeleton-list-actions);
-  height: var(--skeleton-list-row); min-width: 0;
+/* The box a booting dashboard's groups sit in adds nothing of its own, so the sections and the layout classes
+   in them lay out against the page as they will once the numbers arrive. */
+.booting { display: contents; }
+
+/* rows: the fixed Home shape (BP COBALT node 2046:30349). The band and the two cards keep the page's section
+   rhythm between them. */
+.rowsBoot { display: flex; flex-direction: column; gap: var(--layout-gutter-lg); min-width: 0; }
+/* Home's search band: a neutral-subtle band with the scope, the search box and its button on it, and who is
+   signed in at the end. The blocks on it take the band tone, since grey on grey reads as a hole. */
+.searchBand {
+  display: flex; align-items: center; gap: var(--space-xsmall); box-sizing: border-box; min-width: 0;
+  height: var(--skeleton-home-band); padding-inline: var(--space-small); background: var(--bg-neutral-subtle);
+}
+.bandEnd { display: flex; align-items: center; gap: var(--space-medium); margin-inline-start: auto; }
+
+/* Two bordered cards, a grid gutter apart: 603 each inside the 1222 content width at 1440. */
+.cards > :global(.layout-split) { gap: var(--layout-gutter-md); }
+.card {
+  display: flex; flex-direction: column; min-width: 0; overflow: hidden;
+  border: var(--border-width-thin) solid var(--border-neutral-subtle); border-radius: var(--radius-medium);
+  background: var(--bg-neutral-min);
+}
+/* The card's own head, with the line under it that parts it from what it holds. */
+.cardHead {
+  display: flex; align-items: center; gap: var(--space-medium); box-sizing: border-box; min-width: 0;
+  height: var(--skeleton-card-head); padding-inline: var(--space-medium);
   border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
 }
-.loadingLines { display: flex; flex-direction: column; gap: var(--space-xxsmall); min-width: 0; }
-/* The chart's bars stand on one line, each as tall as its share of the box. */
-.loadingChart { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); align-items: end; gap: var(--space-medium); min-width: 0; }
+.cardHeadEnd { display: flex; margin-inline-start: auto; }
+
+/* The list inside the message card: its head row shaded, then one row per message. */
+.messageHead, .messageRow {
+  display: grid; align-items: center; gap: var(--space-medium); min-width: 0;
+  grid-template-columns: var(--skeleton-row-icon) minmax(0, 1fr) var(--skeleton-column-name) var(--icon-size-large);
+  padding-inline: var(--space-medium);
+}
+.messageHead {
+  height: var(--control-small); background: var(--bg-neutral-faint);
+  border-bottom: var(--border-width-thin) solid var(--border-neutral-faint);
+}
+.messageRow {
+  height: var(--skeleton-message-row);
+  border-bottom: var(--border-width-thin) solid var(--border-neutral-faint);
+}
+.messageRow:last-child { border-bottom: 0; }
+.messageLines { display: flex; flex-direction: column; gap: var(--space-xxsmall); min-width: 0; }
+
+/* The dashboard card holds a framed chart: a faint box with its own title bar and the bars standing on its
+   floor, the same shape a booting chart draws (BP COBALT node 2046:29938). */
+.chartBox {
+  display: flex; flex-direction: column; gap: var(--space-small); box-sizing: border-box; min-width: 0;
+  margin: var(--space-medium); padding: var(--space-small);
+  border: var(--border-width-thin) solid var(--border-neutral-faint); border-radius: var(--radius-medium);
+}
+.chartBars {
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); align-items: end;
+  gap: var(--space-medium); height: var(--skeleton-chart-plot); min-width: 0;
+}
+/* The bars stand on the box's floor, so the tallest is the plot's own height. */
+.chartBars > * { align-self: end; }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

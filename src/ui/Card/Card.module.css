@@ -55,3 +55,8 @@
 .disabled .title, .disabled .description, .disabled .amount, .disabled .message { color: var(--text-neutral-faint); }
 .disabled .iconTile { background: var(--bg-neutral-subtle); color: var(--icon-neutral-faint); }
 .disabled img.tile { opacity: var(--opacity-disabled); }
+
+/* Booting: the card's own box with a bar on each of its lines. No hover, no pointer, nothing to press: the
+   record has not arrived, so the card is not yet a choice or a link. */
+.booting { cursor: default; }
+.booting :is(.title, .description, .amount, .message) { margin: 0; }

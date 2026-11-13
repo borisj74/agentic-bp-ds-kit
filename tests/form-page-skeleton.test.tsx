@@ -83,13 +83,14 @@ describe("a booting FormPage follows its own content", () => {
     expect(open.querySelectorAll("header button")).toHaveLength(0);
   });
 
-  it("draws a table as its own head row and three body rows, a bar in every column", () => {
+  it("draws a table as its own head row and a row per row it has, a bar in every column", () => {
     page();
     const table = document.querySelector("table")!;
     expect(table.querySelectorAll("thead tr")).toHaveLength(1);
-    expect(table.querySelectorAll("tbody tr")).toHaveLength(3);
-    // Two columns, so eight bars: one head row and three body rows.
-    expect(bars(table)).toHaveLength(8);
+    // The contacts table has one row, so it boots at the height it will have rather than claiming three.
+    expect(table.querySelectorAll("tbody tr")).toHaveLength(1);
+    // Two columns, so four bars: one head row and one body row.
+    expect(bars(table)).toHaveLength(4);
   });
 
   it("puts the fields in the page's columns, three when the page asks for three", () => {

@@ -5,6 +5,8 @@ import { Button } from "../Button/Button";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
+import { Skeleton } from "../Skeleton/Skeleton";
+import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import styles from "./Card.module.css";
 
 export type CardMessageIntent = "success" | "warning" | "danger" | "info";
@@ -50,6 +52,9 @@ export function Card({
   actions, menu, onAction,
 }: CardProps) {
   const titleId = useId();
+  // A card in a booting page draws its own shape: a bar for each line it carries, its tile as a block, and its
+  // footer kept, so the grid of cards is the grid the records land in.
+  const booting = useFieldSkeleton();
   const [innerSelected, setInnerSelected] = useState(defaultSelected);
   const selected = selectable && (selectedProp ?? innerSelected);
 
@@ -74,6 +79,47 @@ export function Card({
     ? <a className={styles.open} href={href} onClick={onOpen}>{text}</a>
     : <button type="button" className={styles.open} onClick={onOpen}>{text}</button>);
   const cls = [styles.card, selectable && !disabled ? styles.selectable : "", opens ? styles.opens : "", selected ? styles.selected : "", disabled ? styles.disabled : ""].join(" ");
+  if (booting) {
+    const bar = (text: string, height: string) => (
+      <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(text)} height={height} label="" />
+    );
+    return (
+      <article className={[styles.card, styles.booting].join(" ")} aria-hidden="true">
+        <div className={styles.body}>
+          <div className={styles.top}>
+            <div className={styles.text}>
+              {(badge || overline) && (
+                <div className={styles.header}>
+                  {badge && <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(badge)} height="var(--control-small)" label="" />}
+                  {overline && bar(overline, "var(--skeleton-cell)")}
+                </div>
+              )}
+              {title && <h3 className={styles.title}>{bar(title, "var(--font-size-regular)")}</h3>}
+              {description && <p className={styles.description}>{bar(description, "var(--skeleton-cell)")}</p>}
+              {amount && <p className={styles.amount}>{bar(amount, "var(--skeleton-row-bar)")}</p>}
+            </div>
+            {(image || icon) && <Skeleton shape="rect" animation="pulse" width="var(--card-tile)" height="var(--card-tile)" label="" />}
+          </div>
+          {message && <p className={styles.message}>{bar(message, "var(--skeleton-cell)")}</p>}
+        </div>
+        {(selectable || hasActions) && (
+          <div className={styles.footer}>
+            {selectable && <Skeleton shape="rect" animation="pulse" width="var(--control-small)" height="var(--control-small)" label="" />}
+            {hasActions && (
+              <span className={styles.actions}>
+                {actions?.map((a) => (
+                  <Skeleton key={a.id} shape="rect" animation="pulse" width="var(--control-small)" height="var(--control-small)" label="" />
+                ))}
+                {menu && menu.length > 0 && (
+                  <Skeleton shape="rect" animation="pulse" width="var(--control-small)" height="var(--control-small)" label="" />
+                )}
+              </span>
+            )}
+          </div>
+        )}
+      </article>
+    );
+  }
   return (
     <article className={cls} aria-labelledby={title ? titleId : undefined} aria-label={title ? undefined : name} onClick={onClick}>
       <div className={styles.body}>

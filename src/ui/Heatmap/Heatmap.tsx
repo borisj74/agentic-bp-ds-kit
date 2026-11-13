@@ -107,7 +107,7 @@ export function Heatmap({
 
   return (
     <ChartFrame
-      label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={at !== null}
+      label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={at !== null} plotHeight={height}
       onKeyDown={onKeyDown} onBlur={() => setAt(null)} className={h.heatmap}
     >
       <div ref={plotRef} className={s.plot} style={{ height }} onPointerMove={pickAt} onPointerLeave={() => setAt(null)}>

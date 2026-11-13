@@ -64,10 +64,16 @@ describe("the boot state's resting points", () => {
     }
   });
 
-  it("caps a booting record's and form's columns where the real fields stop", () => {
-    for (const file of ["src/patterns/RecordPage/RecordPage.module.css", "src/patterns/FormPage/FormPage.module.css"]) {
-      expect(css(file).replace(/\s+/g, " ")).toContain("max-width: var(--layout-column-max);");
-    }
+  it("caps a booting form's rows fallback where the real fields stop", () => {
+    expect(css("src/patterns/FormPage/FormPage.module.css").replace(/\s+/g, " ")).toContain("max-width: var(--layout-column-max);");
+  });
+
+  it("fills the content width in a booting record's rows fallback, with no gap between its columns", () => {
+    // BP COBALT node 2046:30135 draws two 611 columns across the 1222 content width. The field grid's column cap
+    // is not taken here: in this shape there are no real fields to agree with, and the Cobalt screen fills.
+    const record = css("src/patterns/RecordPage/RecordPage.module.css").replace(/\s+/g, " ");
+    expect(record).toContain(".loadingGrid.loadingGrid { gap: 0; }");
+    expect(record).not.toContain("max-width: var(--layout-column-max);");
   });
 });
 

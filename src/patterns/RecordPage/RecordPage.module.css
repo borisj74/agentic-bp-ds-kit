@@ -71,27 +71,42 @@
 /* The sections of details, one under the other. */
 .details { display: flex; flex-direction: column; gap: var(--layout-gutter-lg); min-width: 0; }
 
-/* Booting (BP COBALT item 1, screen 56): the tab strip as bars, then the record's label and value rows 37px
-   apart, in the columns the record already sets. Nothing here is a block of its own: it is the shape the
-   details will take once they arrive. */
-.loadingTabs { display: flex; align-items: center; gap: var(--space-large); padding-block: var(--space-small); }
-.loadingOne, .loadingColumn {
-  display: flex; flex-direction: column; min-width: 0;
-  /* The same cap the real fields take (--layout-column-max, a start label plus a 308 field): on a wide page the
-     room past the last column stays empty rather than the rows stretching, so nothing moves when they arrive.
-     Two capped columns and their gutter come to 1132, inside the 1300 the Cobalt note allows a row. */
-  max-width: var(--layout-column-max);
+/* Booting (BP COBALT node 2046:30135): the tab strip as bars with a 2px underline under the one that is
+   showing, then, in the rows fallback, the record's label and value rows 37 apart in two columns. Nothing here is
+   a block of its own: it is the shape the details will take once they arrive. */
+.loadingTabs { display: flex; align-items: flex-end; gap: var(--space-large); }
+/* A tab stands as tall as a real one, so the strip is the strip the names land in, and the current one carries
+   its own underline flush with the strip's line. */
+.loadingTab {
+  display: flex; align-items: center; box-sizing: border-box; min-width: 0;
+  height: var(--tabs-height-sm); border-bottom: var(--border-width-medium) solid transparent;
 }
+.loadingTabCurrent { border-bottom-color: var(--bg-neutral-strong); }
+
+/* Booting, the notice holds its own height: the real block is in the tree but out of sight, and one skeleton
+   covers it, so the details below stand where they will stand whether the notice runs to one line or three. */
+.noticeBoot { position: relative; }
+.noticeGhost { visibility: hidden; }
+.noticeBoot > span { position: absolute; inset: 0; }
+
+/* rows: the two columns fill the content width with no gap between them (611 each at 1440), the way the Cobalt
+   screen draws them, rather than taking the real field grid's column cap — there are no real fields to agree
+   with in this shape. */
+.loadingGrid.loadingGrid { gap: 0; }
+.loadingOne, .loadingColumn { display: flex; flex-direction: column; min-width: 0; }
 .loadingRow {
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: center; gap: var(--space-medium);
+  display: grid; grid-template-columns: var(--skeleton-record-label) minmax(0, 1fr); align-items: center;
   height: var(--skeleton-record-row); min-width: 0;
   border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
 }
-/* The label cell is shaded, the way a read-only record's labels are. */
+/* The label cell is shaded, the way a read-only record's labels are, and its bar ends at the cell's edge: the
+   label reads toward the value beside it. */
 .loadingLabel {
   display: flex; align-items: center; justify-content: flex-end; min-width: 0; align-self: stretch;
-  padding-inline: var(--space-small); background: var(--bg-neutral-faint);
+  padding-inline-end: var(--space-medium); background: var(--bg-neutral-faint);
 }
+/* The value starts a cell's own padding after the label cell. */
+.loadingRow > :last-child { margin-inline-start: var(--space-small); }
 
 /* The same break the real fields take (src/ui/Form/columns.module.css): one column below 1280px of viewport,
    whatever room the box has, so the skeleton and the fields it stands in for never disagree. The class is
@@ -99,3 +114,5 @@
 @media (max-width: 1279px) {
   .loadingColumn.loadingColumn { grid-column: 1 / -1; }
 }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

@@ -80,3 +80,12 @@
 @keyframes fade { from { opacity: var(--opacity-0); } }
 @keyframes sweep { from { stroke-dasharray: 0 100; } }
 @media (prefers-reduced-motion: reduce) { .animated .grow, .animated .growX, .animated .draw, .animated .fade, .animated .sweep { animation: none; } }
+
+/* Booting (BP COBALT "chart skeleton", node 2046:29938): the plot as a faintly framed box with bars standing on
+   its floor. The box is the drawing's own height, so the chart arrives where its skeleton stood. */
+.bootPlot {
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); align-items: end;
+  gap: var(--space-medium); box-sizing: content-box; min-width: 0;
+  padding-inline: var(--space-small); border: var(--border-width-thin) solid var(--border-neutral-faint);
+  border-radius: var(--radius-medium);
+}

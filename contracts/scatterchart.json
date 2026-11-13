@@ -2,28 +2,88 @@
   "name": "ScatterChart",
   "path": "src/ui/ScatterChart/ScatterChart.tsx",
   "intent": "Two measures against each other, one dot per record, so a pattern between them shows: spend against usage, days late against balance.",
-  "usage": "Use ScatterChart to look for a relationship between two numbers across many records. It is one component: pass series, each with its points of x and y. A point can carry a third measure as size, which draws it as a bigger dot by area, so twice the value looks about twice as big. Give each point a label and the tooltip names the record. xName and yName are written by their axes, since a scatter says nothing without them. Hover anywhere near a dot and the nearest one answers; the arrow keys walk the dots in the order they were given. See contracts/scatterchart.json for the full contract.",
+  "usage": "Use ScatterChart to look for a relationship between two numbers across many records. It is one component: pass series, each with its points of x and y. A point can carry a third measure as size, which draws it as a bigger dot by area, so twice the value looks about twice as big. Give each point a label and the tooltip names the record. xName and yName are written by their axes, since a scatter says nothing without them. Hover anywhere near a dot and the nearest one answers; the arrow keys walk the dots in the order they were given. See contracts/scatterchart.json for the full contract. Inside a loading page it draws its own skeleton in place: the page says loading once (FormLayoutContext, which RecordPage, ListPage, FormPage and Dashboard set), and it takes no loading prop of its own. The title stands as a bar at the length its words will take and the drawing as a faintly framed box of bars at the chart's own height (BP COBALT \"chart skeleton\"), so the chart arrives where its bars stood.",
   "props": {
-    "label": { "type": "string", "required": true, "note": "Names the chart for screen readers and captions its data table, like Spend against usage by account." },
-    "title": { "type": "string", "note": "Visible title over the chart. The screen-reader name still comes from label." },
-    "subtitle": { "type": "string", "note": "A quieter line under the title, like 120 accounts, last 30 days." },
-    "showHeader": { "type": "boolean", "default": true, "note": "Turns the title and subtitle off when the Card or Section around the chart already says the same." },
+    "label": {
+      "type": "string",
+      "required": true,
+      "note": "Names the chart for screen readers and captions its data table, like Spend against usage by account."
+    },
+    "title": {
+      "type": "string",
+      "note": "Visible title over the chart. The screen-reader name still comes from label."
+    },
+    "subtitle": {
+      "type": "string",
+      "note": "A quieter line under the title, like 120 accounts, last 30 days."
+    },
+    "showHeader": {
+      "type": "boolean",
+      "default": true,
+      "note": "Turns the title and subtitle off when the Card or Section around the chart already says the same."
+    },
     "series": {
       "type": "ScatterSeries[]",
       "required": true,
       "itemShape": "{ name: string; intent?: ChartIntent; points: { x: number; y: number; size?: number; label?: string }[] }",
       "note": "One entry per group of dots, like a plan tier or a region. intent picks the colour; by default series take the kit's series order, pink, orange, gray, cyan, mint, green, olive, yellow and purple. size on a point draws it bigger, by area, against the largest size in the chart."
     },
-    "xName": { "type": "string", "note": "The name of the measure along the bottom, written under the axis. A scatter without it says nothing." },
-    "yName": { "type": "string", "note": "The name of the measure up the start, written beside the axis." },
-    "xFormat": { "enum": ["number", "currency", "percent"], "default": "number", "note": "How the x values read. Axis ticks are short; the tooltip and table show the full number." },
-    "yFormat": { "enum": ["number", "currency", "percent"], "default": "number", "note": "How the y values read, which is often not the same as x." },
-    "currency": { "type": "string", "default": "USD", "note": "The currency code for either format set to currency." },
-    "showGrid": { "type": "boolean", "default": true, "note": "Faint lines across the chart at the y ticks." },
-    "showLegend": { "type": "boolean", "default": true, "note": "The keys under the chart. Turn it off for a single series the title already names." },
-    "animate": { "type": "boolean", "default": true, "note": "Fades the dots in on first paint, a series at a time. Never plays when the person prefers reduced motion." },
-    "height": { "type": "number", "default": 280, "note": "Height of the drawing in px, axis labels included. The width fills the container." },
-    "emptyLabel": { "type": "string", "default": "No data for this range.", "note": "What the chart says in place of the drawing when there are no points." }
+    "xName": {
+      "type": "string",
+      "note": "The name of the measure along the bottom, written under the axis. A scatter without it says nothing."
+    },
+    "yName": {
+      "type": "string",
+      "note": "The name of the measure up the start, written beside the axis."
+    },
+    "xFormat": {
+      "enum": [
+        "number",
+        "currency",
+        "percent"
+      ],
+      "default": "number",
+      "note": "How the x values read. Axis ticks are short; the tooltip and table show the full number."
+    },
+    "yFormat": {
+      "enum": [
+        "number",
+        "currency",
+        "percent"
+      ],
+      "default": "number",
+      "note": "How the y values read, which is often not the same as x."
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD",
+      "note": "The currency code for either format set to currency."
+    },
+    "showGrid": {
+      "type": "boolean",
+      "default": true,
+      "note": "Faint lines across the chart at the y ticks."
+    },
+    "showLegend": {
+      "type": "boolean",
+      "default": true,
+      "note": "The keys under the chart. Turn it off for a single series the title already names."
+    },
+    "animate": {
+      "type": "boolean",
+      "default": true,
+      "note": "Fades the dots in on first paint, a series at a time. Never plays when the person prefers reduced motion."
+    },
+    "height": {
+      "type": "number",
+      "default": 280,
+      "note": "Height of the drawing in px, axis labels included. The width fills the container."
+    },
+    "emptyLabel": {
+      "type": "string",
+      "default": "No data for this range.",
+      "note": "What the chart says in place of the drawing when there are no points."
+    }
   },
   "useWhen": [
     "Looking for a relationship between two measures across many records, like spend against usage by account.",
@@ -52,12 +112,33 @@
     {
       "title": "Two groups",
       "usage": "Spend against usage, one series a plan tier.",
-      "items": [{ "props": { "label": "Spend against usage by account", "series": "{scatterAccounts}", "xName": "Credits used", "yName": "Monthly spend", "yFormat": "currency" } }]
+      "items": [
+        {
+          "props": {
+            "label": "Spend against usage by account",
+            "series": "{scatterAccounts}",
+            "xName": "Credits used",
+            "yName": "Monthly spend",
+            "yFormat": "currency"
+          }
+        }
+      ]
     },
     {
       "title": "A third measure as size",
       "usage": "Days late against balance, the dot as big as the number of open invoices.",
-      "items": [{ "props": { "label": "Days late against balance", "series": "{scatterLate}", "xName": "Days late", "yName": "Open balance", "yFormat": "currency", "showLegend": false } }]
+      "items": [
+        {
+          "props": {
+            "label": "Days late against balance",
+            "series": "{scatterLate}",
+            "xName": "Days late",
+            "yName": "Open balance",
+            "yFormat": "currency",
+            "showLegend": false
+          }
+        }
+      ]
     }
   ]
 }

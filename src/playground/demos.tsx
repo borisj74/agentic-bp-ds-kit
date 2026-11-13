@@ -15,7 +15,7 @@ import { Link } from "@/ui/Link/Link";
 import { LinkList } from "@/ui/LinkList/LinkList";
 import { GuidedProcessPage } from "@/patterns/GuidedProcessPage/GuidedProcessPage";
 import { GuidedProcess, type GuidedProcessAction, type GuidedProcessPanelProps, type GuidedProcessShade, type GuidedProcessStatus, type GuidedProcessStep } from "@/ui/GuidedProcess/GuidedProcess";
-import { RecordPage } from "@/patterns/RecordPage/RecordPage";
+import { RecordPage, type RecordPageLoadingShape } from "@/patterns/RecordPage/RecordPage";
 import { Dashboard, type DashboardProps, type DashboardState } from "@/patterns/Dashboard/Dashboard";
 import { SettingsPage, type SettingsPageProps } from "@/patterns/SettingsPage/SettingsPage";
 import { ListDetail, type ListDetailLayout } from "@/patterns/ListDetail/ListDetail";
@@ -1354,7 +1354,7 @@ const RECORD_INVOICES = [
   { id: "r4", invoice: <Cell type="link" label="INV-29133" onClick={() => {}} />, date: "05/31/2026", due: "06/30/2026", amount: "$10,980.25", status: <Cell type="badge" label="Paid" intent="success" /> },
 ];
 
-export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop", columns = 2, loading = false }: { sticky?: boolean; shell?: boolean; stage?: string; columns?: FormColumns; loading?: boolean }) {
+export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop", columns = 2, loading = false, loadingShape }: { sticky?: boolean; shell?: boolean; stage?: string; columns?: FormColumns; loading?: boolean; loadingShape?: RecordPageLoadingShape }) {
   const [tab, setTab] = useState("details");
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");
@@ -1366,7 +1366,7 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop",
 
   const record = (
     <RecordPage
-      label="Account" sticky={sticky} onStickyChange={setCompact} columns={columns} loading={loading}
+      label="Account" sticky={sticky} onStickyChange={setCompact} columns={columns} loading={loading} loadingShape={loadingShape}
       header={
         <PageHeader
           breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]}

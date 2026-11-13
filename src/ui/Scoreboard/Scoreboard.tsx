@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { Badge } from "../Badge/Badge";
 import { Conveyor } from "../Conveyor/Conveyor";
 import { Icon } from "../Icon/Icon";
+import { Skeleton } from "../Skeleton/Skeleton";
+import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import styles from "./Scoreboard.module.css";
 
 export type ScoreboardStatus = "success" | "danger" | "neutral";
@@ -90,6 +92,9 @@ function Trend({ value, unit, status = "neutral", direction = "none" }: Scoreboa
 export function Scoreboard({
   items, selectable = false, selected: selectedProp, defaultSelected = null, onSelectedChange, scroll = true, label = "Key metrics",
 }: ScoreboardProps) {
+  // A scoreboard in a booting page draws its own cards, with a bar where each line of the card will be, so the
+  // numbers land in the places their blocks held.
+  const booting = useFieldSkeleton();
   const [innerSelected, setInnerSelected] = useState(defaultSelected);
   const selected = selectedProp !== undefined ? selectedProp : innerSelected;
   // A strip that scrolls sideways becomes a focus stop, so keyboard users can scroll it with the arrow keys (WCAG 2.1.1).
@@ -116,7 +121,31 @@ export function Scoreboard({
   const row = (
       <div role="group" aria-label={label} className={styles.scoreboard}>
         {items.map((item) => {
-          const body = (
+          // Booting: the card's own rows, as bars. The name keeps the width its words will take; the number is
+          // one block at its own height, so the card is as tall as it will be. Nothing is pressable, whether or
+          // not the cards are buttons when they arrive.
+          const body = booting ? (
+            <>
+              <span className={styles.header}>
+                <span className={styles.title}>
+                  <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(item.title)} height="var(--skeleton-cell)" label="" />
+                </span>
+              </span>
+              <span className={styles.text}>
+                <span className={styles.values}>
+                  <span className={styles.metricRow}>
+                    <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(item.metric)} height="var(--skeleton-row-bar)" label="" />
+                  </span>
+                  {item.metadata && (
+                    <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(item.metadata)} height="var(--skeleton-cell)" label="" />
+                  )}
+                </span>
+                {item.chart && (
+                  <Skeleton shape="rect" animation="pulse" width="var(--scoreboard-chart-width)" height="var(--scoreboard-chart-height)" label="" />
+                )}
+              </span>
+            </>
+          ) : (
             <>
               <span className={styles.header}>
                 <span className={styles.title}>{item.title}</span>
@@ -134,7 +163,7 @@ export function Scoreboard({
               </span>
             </>
           );
-          if (!selectable) return <div key={item.id} className={styles.card}>{body}</div>;
+          if (!selectable || booting) return <div key={item.id} className={styles.card}>{body}</div>;
           const isSelected = selected === item.id;
           return (
             <button

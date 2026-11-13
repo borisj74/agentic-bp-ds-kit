@@ -6,6 +6,8 @@ import { Button } from "../Button/Button";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { Dropdown, type DropdownEntry, type DropdownItem } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
+import { Skeleton } from "../Skeleton/Skeleton";
+import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import styles from "./ListView.module.css";
 
 export type ListViewSelection = "none" | "single" | "multiple";
@@ -124,6 +126,9 @@ export function ListView({
 }: ListViewProps) {
   const uid = useId();
   const keysId = `${uid}-keys`;
+  // A list in a booting page draws its own rows: the groups it has, and in every row a bar for each line it
+  // carries, at the row's own height, so the records land where their bars stood.
+  const booting = useFieldSkeleton();
   // The list keeps its own order after a move unless the screen takes it back through onItemsChange.
   const [ownItems, setOwnItems] = useState(itemsProp);
   const [seen, setSeen] = useState(itemsProp);
@@ -426,6 +431,50 @@ export function ListView({
       {rows.flatMap((it) => renderRow(it, 0, expand && rows.some((r) => r.children)))}
     </ul>
   );
+
+  if (booting) {
+    const bootRow = (it: ListViewItem) => (
+      <li key={it.id} className={styles.row}>
+        {selection !== "none" && (
+          <span className={styles.selector}>
+            <Skeleton shape="rect" animation="pulse" width="var(--control-small)" height="var(--control-small)" label="" />
+          </span>
+        )}
+        {(it.avatar || it.icon || it.image) && (
+          <Skeleton shape="rect" animation="pulse" width="var(--icon-size-xlarge)" height="var(--icon-size-xlarge)" label="" />
+        )}
+        <span className={styles.main}>
+          <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(it.primary)} height="var(--skeleton-row-bar)" label="" />
+          {it.secondary && (
+            <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(it.secondary)} height="var(--skeleton-cell)" label="" />
+          )}
+        </span>
+        {it.badge && <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(it.badge)} height="var(--control-small)" label="" />}
+        {it.actions?.map((a) => (
+          <Skeleton key={a.id} shape="rect" animation="pulse" width="var(--control-small)" height="var(--control-small)" label="" />
+        ))}
+        {it.menu && it.menu.length > 0 && (
+          <Skeleton shape="rect" animation="pulse" width="var(--control-small)" height="var(--control-small)" label="" />
+        )}
+      </li>
+    );
+    return (
+      <div className={[styles.view, stickyGroups ? styles.sticky : ""].join(" ")} aria-hidden="true">
+        {grouped
+          ? grouped.map((g, i) => (
+            <div key={g.id} className={styles.group}>
+              {/* A group keeps its own head row, with a bar where its name will be, so the rows under it do not
+                  slide up when the names arrive. */}
+              <div className={[styles.header, styles[`head-${size}`], i === 0 ? styles.first : ""].join(" ")}>
+                <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(g.title)} height="var(--skeleton-cell)" label="" />
+              </div>
+              <ul className={styles.list}>{items.filter((it) => it.group === g.id).map(bootRow)}</ul>
+            </div>
+          ))
+          : <ul className={styles.list}>{items.map(bootRow)}</ul>}
+      </div>
+    );
+  }
 
   return (
     <div className={[styles.view, stickyGroups ? styles.sticky : ""].join(" ")} role={grouped ? "group" : undefined} aria-label={grouped ? label : undefined}>
