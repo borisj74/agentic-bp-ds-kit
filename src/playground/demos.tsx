@@ -18,7 +18,7 @@ import { GuidedProcess, type GuidedProcessAction, type GuidedProcessPanelProps, 
 import { RecordPage, type RecordPageLoadingShape } from "@/patterns/RecordPage/RecordPage";
 import { Dashboard, type DashboardProps, type DashboardState } from "@/patterns/Dashboard/Dashboard";
 import { SettingsPage, type SettingsPageProps } from "@/patterns/SettingsPage/SettingsPage";
-import { ListDetail, type ListDetailLayout } from "@/patterns/ListDetail/ListDetail";
+import { ListDetail, type ListDetailLayout, type ListDetailLoadingShape } from "@/patterns/ListDetail/ListDetail";
 import { ListView, type ListViewItem } from "@/ui/ListView/ListView";
 import { Badge } from "@/ui/Badge/Badge";
 import { Button } from "@/ui/Button/Button";
@@ -2853,7 +2853,7 @@ const LIST_DETAIL_TEMPLATE: ListViewItem[] = LIST_DETAIL_INVOICES.map((inv) => (
 // Row actions: every invoice action behind one More button, the same menu as the list on ListPage.
 const LIST_DETAIL_WITH_MENU: ListViewItem[] = LIST_DETAIL_INVOICES.map((inv) => ({ ...inv, menu: INVOICE_ALL_MENU }));
 
-export function ListDetailDemo({ shell = true, stage = "desktop", picked = true, variant = "plain", layout = "side", loading = false }: { shell?: boolean; stage?: string; picked?: boolean; variant?: ListDetailVariant; layout?: ListDetailLayout; loading?: boolean }) {
+export function ListDetailDemo({ shell = true, stage = "desktop", picked = true, variant = "plain", layout = "side", loading = false, loadingShape }: { shell?: boolean; stage?: string; picked?: boolean; variant?: ListDetailVariant; layout?: ListDetailLayout; loading?: boolean; loadingShape?: ListDetailLoadingShape }) {
   const nested = variant === "nested" || variant === "tree";
   // Tree starts with the first account open, so its invoices show under it.
   const [expanded, setExpanded] = useState<string[]>([LIST_DETAIL_ACCOUNTS[0].id]);
@@ -2874,6 +2874,7 @@ export function ListDetailDemo({ shell = true, stage = "desktop", picked = true,
     <ListDetail
       label="Invoices"
       loading={loading}
+      loadingShape={loadingShape}
       open={Boolean(invoice)}
       onBack={() => setOpenId(null)}
       backLabel="Back to invoices"

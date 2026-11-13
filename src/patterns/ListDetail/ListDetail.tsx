@@ -1,18 +1,21 @@
 "use client";
-import { cloneElement, isValidElement, useId, type ReactNode } from "react";
+import { cloneElement, isValidElement, useContext, useId, type ReactNode } from "react";
 import { Button } from "@/ui/Button/Button";
+import { FormLayoutContext } from "@/ui/Form/FormContext";
 import type { ListViewProps } from "@/ui/ListView/ListView";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
-import { useBootSkeleton } from "@/ui/LoadingLine/boot";
+import { countSkeletonBlocks, skeletonBarWidth, useBootSkeleton, useFieldSkeleton } from "@/ui/LoadingLine/boot";
 import styles from "./ListDetail.module.css";
 
-// The widths a booting split's bars take, so each side reads as rows rather than one block of grey.
+// The widths a booting split's bars take in the rows fallback, so each side reads as rows rather than one block
+// of grey.
 const BOOT_PRIMARY = ["60%", "45%", "70%", "52%"];
 const BOOT_SECONDARY = ["85%", "70%", "90%", "78%"];
 const BOOT_LABEL = ["70%", "55%", "80%", "60%"];
 const BOOT_VALUE = ["85%", "60%", "70%", "50%"];
 
 export type ListDetailLayout = "side" | "stacked" | "inline";
+export type ListDetailLoadingShape = "content" | "rows";
 
 export interface ListDetailProps {
   list: ReactNode;
@@ -25,6 +28,7 @@ export interface ListDetailProps {
   backLabel?: string;
   layout?: ListDetailLayout;
   loading?: boolean;
+  loadingShape?: ListDetailLoadingShape;
   loadingRows?: number;
   label?: string;
 }
@@ -35,12 +39,31 @@ export interface ListDetailProps {
 // A blueprint only: the screen keeps which record is open and passes it in.
 export function ListDetail({
   list, detail, open = false, title, actions, empty, onBack, backLabel = "Back to list", layout = "side",
-  loading = false, loadingRows = 8, label,
+  loading = false, loadingShape = "content", loadingRows = 8, label,
 }: ListDetailProps) {
   // The skeleton follows the frame's boot sequence; on its own, outside a booting frame, it draws at once.
-  const { skeleton: booting } = useBootSkeleton(loading);
+  const { skeleton: own } = useBootSkeleton(loading);
+  // Inside a booting AppShell the pattern boots with the frame, so a screen says loading once, at the top, and
+  // the split follows the frame's sequence instead of standing live under the line.
+  const inFrame = useFieldSkeleton();
+  const booting = own || inFrame;
+  // content: the list it was given and the record that is open draw themselves as bars, so both sides land in
+  // the shape their bars held.
+  const content = booting && loadingShape === "content";
   const shown = !booting && open && detail != null;
   const headId = useId();
+  // What the page around the split had set — the columns, where the labels sit — so the fields draw their bars
+  // on the same lines they will stand on when they arrive.
+  const outer = useContext(FormLayoutContext);
+
+  // A real piece drawn as bars: it stays in the tree, each part of it drawing itself where it will stand, out of
+  // the keyboard's reach and out of the reading order. The one status below says what is loading.
+  const asBars = (node: ReactNode, className?: string) => (
+    <FormLayoutContext.Provider value={{ ...outer, loading: true }}>
+      <div className={className} inert aria-hidden="true">{node}</div>
+    </FormLayoutContext.Provider>
+  );
+
   // The record's header and body. Beside or under the list it is its own region; under a row the ListView names it.
   const record = (
     <>
@@ -60,15 +83,44 @@ export function ListDetail({
     </>
   );
 
-  // Booting: the split keeps its two columns, with the rows the list will have on one side and the record's
-  // label and value rows on the other. Both sides are the same shapes the real pieces land in, so the frame
-  // does not move when they arrive. No artboard covers this screen; it is the list and the record skeletons
-  // from screens 03 and 56, side by side in this pattern's own split.
+  // The open record's own header while it boots: the title bar as long as the title will be, a block for each
+  // action, and the narrow layout's Back where it will be. The header is the pattern's own chrome, so it draws
+  // its bars itself; everything under it is the record's own content, drawn by the record.
+  const bootHead = (title || actions || (onBack && layout === "side")) && (
+    <header className={styles.head}>
+      {onBack && layout === "side" && (
+        <span className={styles.back}>
+          <Skeleton shape="rect" animation="pulse" width="var(--control-small)" height="var(--control-small)" label="" />
+        </span>
+      )}
+      {title && <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(title)} height="var(--font-size-large)" label="" />}
+      {actions && (
+        <div className={styles.actions}>
+          {Array.from({ length: countSkeletonBlocks(actions) }, (_, i) => (
+            <Skeleton key={i} shape="rect" animation="pulse" width="var(--toolbar-action-skeleton)" height="var(--control-small)" label="" />
+          ))}
+        </div>
+      )}
+    </header>
+  );
+  // The pane in the content shape: the record's header as bars, then the record itself drawing its Sections and
+  // its rows. With nothing open there is no record to follow, so the pane holds its space and waits for the
+  // EmptyState; a screen that wants bars there asks for the rows fallback.
+  const bootRecordContent = (
+    <div className={styles.record}>
+      {bootHead}
+      {detail != null && asBars(detail, styles.body)}
+    </div>
+  );
+
+  // The rows fallback: the split keeps its two columns, with a fixed count of rows on one side and label and
+  // value rows on the other. No artboard covers this screen; it is the list and the record skeletons from
+  // screens 03 and 56, side by side in this pattern's own split.
   const bootRows = (
     <ul className={styles.bootList}>
       {Array.from({ length: Math.max(1, loadingRows) }, (_, i) => (
         <li key={i} className={styles.bootRow}>
-          <Skeleton shape="circle" size="sm" animation="pulse" label={i === 0 ? `Loading ${label ?? "list"}` : ""} />
+          <Skeleton shape="circle" size="sm" animation="pulse" label="" />
           <div className={styles.bootLines}>
             <Skeleton shape="rect" animation="pulse" height="var(--skeleton-cell)" width={BOOT_PRIMARY[i % BOOT_PRIMARY.length]} label="" />
             <Skeleton shape="rect" animation="pulse" height="var(--skeleton-cell)" width={BOOT_SECONDARY[i % BOOT_SECONDARY.length]} label="" />
@@ -93,13 +145,20 @@ export function ListDetail({
     </div>
   );
 
+  // What stands on the list's side while the split boots, and what stands in the pane.
+  const listSide = booting ? (content ? asBars(list) : bootRows) : list;
+  // Said once for the whole split, however many bars the two sides come to.
+  const status = booting && <span className={styles.srOnly} role="status">Loading {label ?? "list"}</span>;
+
   if (layout === "inline") {
     const inRow = isValidElement<ListViewProps>(list) ? cloneElement(list, { detail: shown ? <div className={styles.inline}>{record}</div> : undefined }) : list;
     return (
       <div className={styles.frame}>
         <section className={[styles.split, styles.single].join(" ")} aria-labelledby={label ? headId : undefined}>
           {label && <h2 id={headId} className={styles.srOnly}>{label}</h2>}
-          <div className={styles.list}>{booting ? bootRows : inRow}</div>
+          {status}
+          {/* Inline, the record opens under its row, so a booting inline split is the list's own rows. */}
+          <div className={styles.list}>{booting ? listSide : inRow}</div>
         </section>
       </div>
     );
@@ -111,9 +170,10 @@ export function ListDetail({
         {/* The list's own heading, read but not shown: it keeps the headings in order under the page title, so the
             record's h2 and the list's group headers (h3) sit below it. */}
         {label && <h2 id={headId} className={styles.srOnly}>{label}</h2>}
-        <div className={styles.list}>{booting ? bootRows : list}</div>
+        {status}
+        <div className={styles.list}>{listSide}</div>
         <div className={styles.pane}>
-          {booting ? bootRecord : shown ? (
+          {booting ? (content ? bootRecordContent : bootRecord) : shown ? (
             <section className={styles.record} aria-label={title}>{record}</section>
           ) : (
             empty && <div className={styles.empty}>{empty}</div>

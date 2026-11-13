@@ -1125,13 +1125,14 @@ export const registry: Record<string, Entry> = {
   },
   ListDetail: {
     // The pattern in the frame on Billing › Invoices, driven the way a screen would drive it: the open invoice lives in the screen.
-    render: ({ shell, stage, open, variant, layout, boot, loading }) => (
+    render: ({ shell, stage, open, variant, layout, boot, loading, loadingShape }) => (
       <BootPlayer speed={(boot as BootSpeed) ?? "off"}>
         {(booting) => (
           <ListDetailDemo
             key={`${open}-${variant}-${layout}`} shell={shell !== false} stage={String(stage ?? "desktop")} picked={open !== false}
             variant={(variant as ListDetailVariant | undefined) ?? "plain"} layout={(layout as ListDetailLayout | undefined) ?? "side"}
             loading={booting || loading === true}
+            loadingShape={loadingShape === "rows" ? "rows" : "content"}
           />
         )}
       </BootPlayer>
@@ -1145,6 +1146,7 @@ export const registry: Record<string, Entry> = {
       stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" },
       boot: { values: ["off", "fast", "typical", "slow"], default: "off" },
     },
+    labels: { loadingShape: "Skeleton shape" },
     hint: "Boot plays the page load over time and reads out the skeleton's timing rule as it runs. Pick invoices and the pane beside the list follows. Switch the list: groups splits it by status under headers that fold, template adds avatars, unread dots and status lines, actions puts every invoice action in a More menu, nested starts at the accounts, where a click steps into one's invoices with Back to return, and tree opens an account's invoices right under it. Set layout to stacked for the record under the list, or inline for the record under its row. Set the stage to phone: the list shows alone, a row opens the invoice over it, and Back returns. Turn the frame off to see the pattern on its own.",
     block: true,
     wide: true,

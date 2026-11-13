@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { Children, Fragment, createContext, isValidElement, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { FormLayoutContext } from "../Form/FormContext";
 
 /**
@@ -146,4 +146,15 @@ export function skeletonBarWidth(text: string): string {
   const length = text.trim().length;
   const step = length <= BAR_SHORT ? "sm" : length <= BAR_MEDIUM ? "md" : "lg";
   return `var(--skeleton-bar-${step})`;
+}
+
+/**
+ * How many blocks a row of actions comes to, so a booting header or pane draws one each and the row keeps the
+ * width it will have. A screen passes its buttons as a fragment, so fragments are counted through.
+ */
+export function countSkeletonBlocks(node: ReactNode): number {
+  return Children.toArray(node).reduce<number>(
+    (n, child) => n + (isValidElement(child) && child.type === Fragment ? countSkeletonBlocks((child.props as { children?: ReactNode }).children) : 1),
+    0,
+  );
 }

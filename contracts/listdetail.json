@@ -2,7 +2,7 @@
   "name": "ListDetail",
   "path": "src/patterns/ListDetail/ListDetail.tsx",
   "intent": "A list with the picked record beside it: a ListView on one side and the record in a pane on the other, or one at a time on a phone.",
-  "usage": "Use ListDetail when people go through records one after another without leaving the list: an invoice queue, an inbox, approvals. It is a blueprint: it composes kit pieces and keeps no state of its own. list is a kit ListView, usually with selection single and interaction drill; its onOpen tells the screen which record is open. detail is that record, built from kit Sections, FormDisplay and Tables; title names it and actions puts its Buttons at the end of the pane's header. open says a record is open. empty shows in the pane when none is, usually a kit EmptyState. The list can be any ListView: grouped by status under headers that fold, the inbox template with avatars, unread dots and status lines, or rows with a More menu; the pane works the same. When records sit under other records, give the ListView items with children: the list steps into them in place, with Back, and a leaf opens beside it, like accounts that hold their invoices. layout sets where the record goes: side puts it in a pane beside the list, stacked puts it under the whole list, and inline opens it right under its row, inside the list. With side, the frame measures its own width: from 640 up the list and the pane sit side by side (two fifths and three fifths); below, the list shows until a record opens, then the pane covers it with a Back button that calls onBack, named by backLabel. The page's name and trail are the kit PageHeader in the AppShell page around it. loading is the boot state: the rows of the list beside the record's fields, in the shapes they will land in. Inside a booting AppShell the boot skeleton follows the frame's sequence. See contracts/listdetail.json for the full contract.",
+  "usage": "Use ListDetail when people go through records one after another without leaving the list: an invoice queue, an inbox, approvals. It is a blueprint: it composes kit pieces and keeps no state of its own. list is a kit ListView, usually with selection single and interaction drill; its onOpen tells the screen which record is open. detail is that record, built from kit Sections, FormDisplay and Tables; title names it and actions puts its Buttons at the end of the pane's header. open says a record is open. empty shows in the pane when none is, usually a kit EmptyState. The list can be any ListView: grouped by status under headers that fold, the inbox template with avatars, unread dots and status lines, or rows with a More menu; the pane works the same. When records sit under other records, give the ListView items with children: the list steps into them in place, with Back, and a leaf opens beside it, like accounts that hold their invoices. layout sets where the record goes: side puts it in a pane beside the list, stacked puts it under the whole list, and inline opens it right under its row, inside the list. With side, the frame measures its own width: from 640 up the list and the pane sit side by side (two fifths and three fifths); below, the list shows until a record opens, then the pane covers it with a Back button that calls onBack, named by backLabel. The page's name and trail are the kit PageHeader in the AppShell page around it. loading is the boot state: the list and the open record draw themselves as bars where they will stand, so nothing moves when they arrive. loadingShape rows keeps the old fixed split for a screen with nothing to follow yet. Inside a booting AppShell the boot skeleton follows the frame's sequence. See contracts/listdetail.json for the full contract.",
   "composes": [
     "ListView",
     "Section",
@@ -59,12 +59,20 @@
     "loading": {
       "type": "boolean",
       "default": false,
-      "note": "Booting: the split keeps its two columns, with the rows the list will have on one side and the record's label and value rows on the other. The real list, the record and the empty pane all wait."
+      "note": "Booting: the split keeps its two columns and draws its own content as bars. The list it was given is rendered and draws its own rows — the same number, with avatars, badges and row actions only where the items have them — and the open record is rendered beside it, its title bar at the title's length, a block per action, and each Section and FormDisplay row drawing itself in its own place, so nothing moves when the content lands. The real list, the record and the empty pane are inert and hidden from screen readers while they are bars, and the split says \"Loading <label>\" once. Inside a booting AppShell the pattern boots with the frame whatever this is set to, and follows the frame's sequence: the frame says once that its content has not arrived, so a screen sets loading in one place, at the top."
+    },
+    "loadingShape": {
+      "enum": [
+        "content",
+        "rows"
+      ],
+      "default": "content",
+      "note": "What a booting split draws. content follows the real list and the real record: the ListView draws its own groups and rows, and the pane draws the record's header and its Sections and FormDisplay rows where they will stand. It is what a split with a list should use. With nothing open there is no record to follow, so the pane stays empty until the EmptyState arrives. rows is the fallback for a split that has nothing to follow yet: today's fixed grid, loadingRows avatar-and-two-line rows on the list side and loadingRows label-and-value rows beside them."
     },
     "loadingRows": {
       "type": "number",
       "default": 8,
-      "note": "How many rows the boot skeleton draws on each side."
+      "note": "How many rows the rows fallback draws on each side. It says nothing in the content shape, where the list's own rows and the record's own details decide."
     },
     "label": {
       "type": "string",
@@ -199,13 +207,27 @@
     },
     {
       "title": "Booting",
-      "usage": "The split as it arrives: rows on one side, the record's fields on the other, no words in either yet.",
+      "usage": "The split as it arrives: the list's own rows on one side and the open record's header and fields on the other, in the shapes they will land in, no words in either yet. The template variant's avatars show only because its items have them.",
       "items": [
         {
           "props": {
             "loading": true
           },
           "caption": "loading"
+        },
+        {
+          "props": {
+            "loading": true,
+            "variant": "template"
+          },
+          "caption": "variant template"
+        },
+        {
+          "props": {
+            "loading": true,
+            "loadingShape": "rows"
+          },
+          "caption": "loadingShape rows"
         }
       ]
     }

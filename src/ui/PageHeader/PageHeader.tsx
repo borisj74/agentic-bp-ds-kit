@@ -1,12 +1,12 @@
 "use client";
-import { Children, Fragment, isValidElement, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Badge, type BadgeIntent } from "../Badge/Badge";
 import { Breadcrumb, type BreadcrumbItem } from "../Breadcrumb/Breadcrumb";
 import { Button } from "../Button/Button";
 import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import { Skeleton } from "../Skeleton/Skeleton";
-import { skeletonBarWidth, useBootSkeleton } from "../LoadingLine/boot";
+import { countSkeletonBlocks, skeletonBarWidth, useBootSkeleton } from "../LoadingLine/boot";
 import { Tooltip } from "../Tooltip/Tooltip";
 import { titleCase } from "../titleCase";
 import styles from "./PageHeader.module.css";
@@ -30,15 +30,6 @@ export interface PageHeaderProps {
   sticky?: boolean;
   shadow?: boolean;
   loading?: boolean;
-}
-
-// How many buttons the actions come to, so a booting header draws one block each and the row keeps its width.
-// A screen passes them as a fragment of Buttons, so the fragments are counted through.
-function countActions(node: ReactNode): number {
-  return Children.toArray(node).reduce<number>(
-    (n, child) => n + (isValidElement(child) && child.type === Fragment ? countActions((child.props as { children?: ReactNode }).children) : 1),
-    0,
-  );
 }
 
 export function PageHeader({
@@ -130,7 +121,7 @@ export function PageHeader({
               {moreActions && moreActions.length > 0 && (
                 <Skeleton shape="rect" animation="pulse" width="var(--toolbar-more-skeleton)" height="var(--control-small)" label="" />
               )}
-              {Array.from({ length: countActions(actions) }, (_, i) => (
+              {Array.from({ length: countSkeletonBlocks(actions) }, (_, i) => (
                 <Skeleton key={i} shape="rect" animation="pulse" width="var(--toolbar-action-skeleton)" height="var(--control-small)" label="" />
               ))}
             </>
