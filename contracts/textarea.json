@@ -1,6 +1,7 @@
 {
   "name": "Textarea",
   "path": "src/ui/Textarea/Textarea.tsx",
+  "level": "atom",
   "intent": "Multi-line text entry for notes, descriptions and code, with its own label, hint, error and character count. Looks and behaves like Input.",
   "usage": "Use Textarea for text that runs over one line: notes, descriptions, messages, formulas. Pass label, hint, error and help as props, same as Input. size sets the starting height (100 / 180 / 240+ px); people can drag it taller. type code switches to a monospace font for formulas and snippets. maxLength shows a live count under the field. See contracts/textarea.json for the full contract. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in. labelWidth puts it on a narrower or wider column (140px or 320px) and moves that turn with it, to 460px or 640px. Inside a loading page it draws its own skeleton in place: the field keeps its box, its label column, the row it spans and the area's own least height, with a bar for the label and a block for the control, so the real field arrives exactly where the bars stood. The page says loading once (FormPage's loading, carried on FormLayoutContext); the field takes no loading prop of its own.",
   "props": {

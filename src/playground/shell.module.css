@@ -91,6 +91,9 @@
 .pageTitle { margin: 0 0 var(--space-xxsmall); font-size: var(--font-size-xxlarge); color: var(--text-neutral-strong); }
 .pageMeta { margin: 0 0 var(--space-small); font-size: var(--font-size-xsmall); color: var(--text-neutral-subtle); }
 .pageMeta a { color: var(--link-brand); }
+/* A component or pattern title with its level Badge beside it. */
+.pageTitleRow { display: flex; align-items: center; gap: var(--space-xsmall); margin-bottom: var(--space-xxsmall); }
+.pageTitleRow .pageTitle { margin-bottom: 0; }
 .pageLead { margin: 0 0 var(--space-xlarge); color: var(--text-neutral-subtle); font-size: var(--font-size-regular); max-width: 60ch; }
 
 /* Search at the top of the sidebar: it filters the links below as you type, and ⌘K puts the cursor in it. */

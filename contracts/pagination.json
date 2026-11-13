@@ -1,6 +1,7 @@
 {
   "name": "Pagination",
   "path": "src/ui/Pagination/Pagination.tsx",
+  "level": "molecule",
   "intent": "The bar under a long table that moves between pages, says which rows are showing, and lets people pick how many rows a page holds.",
   "usage": "Use Pagination under a Table or DataGrid whose rows don't fit on one page. It is one component: pass total (the number of rows) and read page and pageSize back to slice your rows. Previous and next arrows sit at the start with the page numbers between them; long runs collapse into an ellipsis around the current page. At the end, Showing 1 to 10 of 59 rows and a kit Select to pick 10, 25, 50 or 100 rows per page. Changing the page size keeps the first visible row on screen. See contracts/pagination.json for the full contract.",
   "props": {

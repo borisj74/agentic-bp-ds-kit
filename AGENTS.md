@@ -8,6 +8,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
+# Build order
+
+Start from the biggest kit piece that fits — pattern (`template`), then `organism`, `molecule`, `atom` — and read each piece's `level` in `contracts/index.json`. See "Build order" in `CLAUDE.md`.
+
 # Paper component artboards
 
 The kit's components are also drawn in Paper (file `01M2MJ3E3YE26YTE671TK6B10X`, page "Components"): one 1440-wide artboard per component, A to Z, with Header, Examples, States and anatomy, Props and Usage sections.

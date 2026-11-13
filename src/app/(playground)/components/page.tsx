@@ -1,5 +1,5 @@
 import { CardPreview } from "@/playground/CardPreview";
-import { GallerySearch } from "@/playground/GallerySearch";
+import { GalleryWithLevel } from "@/playground/GallerySearch";
 import { components, slug } from "@/playground/nav";
 import { loadContract } from "@/playground/contracts";
 
@@ -10,11 +10,12 @@ export default async function Gallery() {
     href: `/components/${slug(c.name)}`,
     intent: contracts[i]?.intent,
     category: c.category,
+    level: c.level,
     tags: c.tags,
     preview: <CardPreview name={c.name} />,
   }));
   return (
-    <GallerySearch
+    <GalleryWithLevel
       title="Components"
       lead="Every building block in the kit. Search by name or by what it does, then open a card for the master, variants and contract."
       items={items}

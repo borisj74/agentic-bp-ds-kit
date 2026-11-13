@@ -6,6 +6,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { cssName } from "../scripts/audit-tokens.mjs";
+import { LEVELS } from "../scripts/sync-index.mjs";
 
 const mcpDir = dirname(fileURLToPath(import.meta.url));
 export const repoRoot = resolve(mcpDir, "..");
@@ -98,36 +99,62 @@ function readContract(relativePath) {
 
 const oneLine = (text) => String(text ?? "").replace(/\s+/g, " ").trim();
 
-function rowsFor(kind) {
+// The contract carries the level, so the rows read it from there and the index row is only a fallback.
+export function levelOf(row, contract) {
+  return contract?.level ?? row?.level ?? "";
+}
+
+// Reads a level argument. Empty means "no filter". Anything outside LEVELS is an error that names the four values.
+export function parseLevel(level) {
+  if (level === undefined || level === null || String(level).trim() === "") return null;
+  const wanted = String(level).trim().toLowerCase();
+  if (!LEVELS.includes(wanted)) {
+    throw new CatalogError(`Unknown level "${level}". Use one of: ${LEVELS.join(", ")}.`);
+  }
+  return wanted;
+}
+
+function rowsFor(kind, level = null) {
   const key = kind === "pattern" ? "patterns" : "components";
-  const rows = (index()[key] ?? []).map((row) => {
-    let intent = "";
+  const rows = [];
+  for (const row of index()[key] ?? []) {
+    let contract = null;
     try {
-      const contract = readContract(row.contract);
-      intent = oneLine(contract.intent ?? contract.usage ?? "");
+      contract = readContract(row.contract);
     } catch {
-      intent = "";
+      contract = null;
     }
-    return {
+    const rowLevel = levelOf(row, contract);
+    if (level && rowLevel !== level) continue;
+    rows.push({
       name: row.name,
       kind,
+      level: rowLevel,
       category: row.category ?? "",
       contract: row.contract,
       tags: row.tags ?? [],
-      intent,
-    };
-  });
+      intent: oneLine(contract?.intent ?? contract?.usage ?? ""),
+    });
+  }
   rows.sort((a, b) => a.name.localeCompare(b.name));
   return rows;
 }
 
 // Patterns are listed beside the components on purpose: the kit's first rule for a screen is to use the pattern
 // that covers it, and an agent that cannot see them cannot follow it.
-export function listComponents() {
+// Only patterns are templates, so a template filter returns patterns alone and any other level returns components alone.
+export function listComponents({ level } = {}) {
   const version = kitVersion();
-  const components = rowsFor("component");
-  const patterns = rowsFor("pattern");
-  return { kit: version, count: components.length + patterns.length, components, patterns };
+  const wanted = parseLevel(level);
+  const components = wanted === "template" ? [] : rowsFor("component", wanted);
+  const patterns = wanted && wanted !== "template" ? [] : rowsFor("pattern", wanted);
+  return {
+    kit: version,
+    level: wanted,
+    count: components.length + patterns.length,
+    components,
+    patterns,
+  };
 }
 
 // Serves a component or a pattern: both are contracts, and a screen usually starts from a pattern.
@@ -150,6 +177,7 @@ export function getComponent(name) {
     kit: version,
     name: hit.name,
     kind: hit.kind,
+    level: levelOf(hit, contract),
     category: hit.category ?? "",
     contractPath: hit.contract,
     import: importLine,
@@ -197,6 +225,7 @@ export function searchComponents(query) {
         matches.push({
           name: row.name,
           kind,
+          level: levelOf(row, contract),
           category: row.category ?? "",
           contract: row.contract,
           intent: oneLine(contract.intent ?? ""),
@@ -296,6 +325,7 @@ export function getRules() {
     "Before writing UI, read contracts/index.json, then only the matching contract file(s).",
     "If a contract exists, import it from @/ui/<Name>/<Name>. Never invent a local cousin.",
     "If a pattern in contracts/index.json matches the screen, import it from @/patterns/.",
+    "Build in level order: reuse the biggest piece that fits — pattern (template), then organism, molecule, atom — and read each piece's level in contracts/index.json.",
     "If something is missing from the index, stop and ask — do not add a one-off.",
     "Never put hex in components; use semantic tokens from src/tokens/semantic.css (not primitive --ref-* / --ui-* ramps).",
     "One emphasis=\"strong\" intent=\"brand\" Button per view.",

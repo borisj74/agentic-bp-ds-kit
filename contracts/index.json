@@ -4,6 +4,7 @@
     {
       "name": "Accordion",
       "contract": "contracts/accordion.json",
+      "level": "molecule",
       "category": "layout",
       "tags": [
         "disclosure",
@@ -16,6 +17,7 @@
     {
       "name": "AlertDialog",
       "contract": "contracts/alertdialog.json",
+      "level": "organism",
       "category": "overlay",
       "tags": [
         "confirm",
@@ -28,6 +30,7 @@
     {
       "name": "AnchorNav",
       "contract": "contracts/anchornav.json",
+      "level": "molecule",
       "category": "navigation",
       "tags": [
         "anchor nav",
@@ -42,6 +45,7 @@
     {
       "name": "AppHeader",
       "contract": "contracts/appheader.json",
+      "level": "organism",
       "category": "navigation",
       "tags": [
         "app header",
@@ -57,6 +61,7 @@
     {
       "name": "AppNav",
       "contract": "contracts/appnav.json",
+      "level": "organism",
       "category": "navigation",
       "tags": [
         "side nav",
@@ -72,6 +77,7 @@
     {
       "name": "Avatar",
       "contract": "contracts/avatar.json",
+      "level": "atom",
       "category": "base",
       "tags": [
         "person",
@@ -84,6 +90,7 @@
     {
       "name": "AvatarGroup",
       "contract": "contracts/avatargroup.json",
+      "level": "molecule",
       "category": "base",
       "tags": [
         "people",
@@ -95,6 +102,7 @@
     {
       "name": "Badge",
       "contract": "contracts/badge.json",
+      "level": "atom",
       "category": "feedback",
       "tags": [
         "status",
@@ -108,6 +116,7 @@
     {
       "name": "BadgeAlt",
       "contract": "contracts/badgealt.json",
+      "level": "atom",
       "category": "feedback",
       "tags": [
         "status",
@@ -120,6 +129,7 @@
     {
       "name": "BarChart",
       "contract": "contracts/barchart.json",
+      "level": "organism",
       "category": "data",
       "tags": [
         "chart",
@@ -136,6 +146,7 @@
     {
       "name": "Breadcrumb",
       "contract": "contracts/breadcrumb.json",
+      "level": "molecule",
       "category": "navigation",
       "tags": [
         "path",
@@ -147,6 +158,7 @@
     {
       "name": "Button",
       "contract": "contracts/button.json",
+      "level": "atom",
       "category": "base",
       "tags": [
         "action",
@@ -157,6 +169,7 @@
     {
       "name": "ButtonGroup",
       "contract": "contracts/buttongroup.json",
+      "level": "molecule",
       "category": "base",
       "tags": [
         "toolbar",
@@ -168,6 +181,7 @@
     {
       "name": "Calendar",
       "contract": "contracts/calendar.json",
+      "level": "organism",
       "category": "data",
       "tags": [
         "calendar",
@@ -185,6 +199,7 @@
     {
       "name": "Callout",
       "contract": "contracts/callout.json",
+      "level": "molecule",
       "category": "feedback",
       "tags": [
         "callout",
@@ -198,6 +213,7 @@
     {
       "name": "Card",
       "contract": "contracts/card.json",
+      "level": "molecule",
       "category": "data",
       "tags": [
         "card",
@@ -214,6 +230,7 @@
     {
       "name": "Carousel",
       "contract": "contracts/carousel.json",
+      "level": "molecule",
       "category": "layout",
       "tags": [
         "carousel",
@@ -228,6 +245,7 @@
     {
       "name": "Cascader",
       "contract": "contracts/cascader.json",
+      "level": "molecule",
       "category": "form",
       "tags": [
         "cascader",
@@ -243,6 +261,7 @@
     {
       "name": "Cell",
       "contract": "contracts/cell.json",
+      "level": "molecule",
       "category": "data",
       "tags": [
         "table",
@@ -266,6 +285,7 @@
     {
       "name": "ChatComposer",
       "contract": "contracts/chatcomposer.json",
+      "level": "molecule",
       "category": "form",
       "tags": [
         "chat",
@@ -283,6 +303,7 @@
     {
       "name": "ChatHeader",
       "contract": "contracts/chatheader.json",
+      "level": "molecule",
       "category": "navigation",
       "tags": [
         "chat header",
@@ -297,6 +318,7 @@
     {
       "name": "ChatList",
       "contract": "contracts/chatlist.json",
+      "level": "organism",
       "category": "navigation",
       "tags": [
         "chat list",
@@ -312,6 +334,7 @@
     {
       "name": "ChatMessage",
       "contract": "contracts/chatmessage.json",
+      "level": "molecule",
       "category": "data",
       "tags": [
         "chat",
@@ -328,6 +351,7 @@
     {
       "name": "Checkbox",
       "contract": "contracts/checkbox.json",
+      "level": "atom",
       "category": "form",
       "tags": [
         "form",
@@ -340,6 +364,7 @@
     {
       "name": "Conveyor",
       "contract": "contracts/conveyor.json",
+      "level": "molecule",
       "category": "layout",
       "tags": [
         "conveyor",
@@ -355,6 +380,7 @@
     {
       "name": "Count",
       "contract": "contracts/count.json",
+      "level": "atom",
       "category": "feedback",
       "tags": [
         "counter",
@@ -367,6 +393,7 @@
     {
       "name": "DataGrid",
       "contract": "contracts/datagrid.json",
+      "level": "organism",
       "category": "data",
       "tags": [
         "data grid",
@@ -382,6 +409,7 @@
     {
       "name": "DatePicker",
       "contract": "contracts/datepicker.json",
+      "level": "molecule",
       "category": "form",
       "tags": [
         "date",
@@ -395,6 +423,7 @@
     {
       "name": "Density",
       "contract": "contracts/density.json",
+      "level": "atom",
       "category": "layout",
       "tags": [
         "density",
@@ -408,6 +437,7 @@
     {
       "name": "Drawer",
       "contract": "contracts/drawer.json",
+      "level": "organism",
       "category": "overlay",
       "tags": [
         "drawer",
@@ -422,6 +452,7 @@
     {
       "name": "Dropdown",
       "contract": "contracts/dropdown.json",
+      "level": "molecule",
       "category": "overlay",
       "tags": [
         "dropdown",
@@ -436,6 +467,7 @@
     {
       "name": "EmptyState",
       "contract": "contracts/emptystate.json",
+      "level": "molecule",
       "category": "feedback",
       "tags": [
         "empty",
@@ -450,6 +482,7 @@
     {
       "name": "FilterButton",
       "contract": "contracts/filterbutton.json",
+      "level": "molecule",
       "category": "base",
       "tags": [
         "filter",
@@ -463,6 +496,7 @@
     {
       "name": "Form",
       "contract": "contracts/form.json",
+      "level": "organism",
       "category": "form",
       "tags": [
         "form",
@@ -477,6 +511,7 @@
     {
       "name": "FormDisplay",
       "contract": "contracts/formdisplay.json",
+      "level": "organism",
       "category": "form",
       "tags": [
         "read only",
@@ -491,6 +526,7 @@
     {
       "name": "FormulaEditor",
       "contract": "contracts/formulaeditor.json",
+      "level": "organism",
       "category": "form",
       "tags": [
         "formula",
@@ -506,6 +542,7 @@
     {
       "name": "FunnelChart",
       "contract": "contracts/funnelchart.json",
+      "level": "organism",
       "category": "data",
       "tags": [
         "funnel",
@@ -521,6 +558,7 @@
     {
       "name": "GlobalSearch",
       "contract": "contracts/globalsearch.json",
+      "level": "organism",
       "category": "navigation",
       "tags": [
         "command",
@@ -534,6 +572,7 @@
     {
       "name": "GuidedProcess",
       "contract": "contracts/guidedprocess.json",
+      "level": "organism",
       "category": "navigation",
       "tags": [
         "guided process",
@@ -549,6 +588,7 @@
     {
       "name": "HeaderCell",
       "contract": "contracts/headercell.json",
+      "level": "molecule",
       "category": "data",
       "tags": [
         "table",
@@ -562,6 +602,7 @@
     {
       "name": "Heatmap",
       "contract": "contracts/heatmap.json",
+      "level": "organism",
       "category": "data",
       "tags": [
         "heatmap",
@@ -578,6 +619,7 @@
     {
       "name": "HelpPopover",
       "contract": "contracts/helppopover.json",
+      "level": "molecule",
       "category": "overlay",
       "tags": [
         "help",
@@ -591,6 +633,7 @@
     {
       "name": "Icon",
       "contract": "contracts/icon.json",
+      "level": "atom",
       "category": "base",
       "tags": [
         "glyph",
@@ -600,6 +643,7 @@
     {
       "name": "Illustration",
       "contract": "contracts/illustration.json",
+      "level": "atom",
       "category": "brand",
       "tags": [
         "illustration",
@@ -613,6 +657,7 @@
     {
       "name": "Input",
       "contract": "contracts/input.json",
+      "level": "atom",
       "category": "form",
       "tags": [
         "form",
@@ -629,6 +674,7 @@
     {
       "name": "Legend",
       "contract": "contracts/legend.json",
+      "level": "molecule",
       "category": "data",
       "tags": [
         "legend",
@@ -643,6 +689,7 @@
     {
       "name": "LineChart",
       "contract": "contracts/linechart.json",
+      "level": "organism",
       "category": "data",
       "tags": [
         "chart",
@@ -664,6 +711,7 @@
     {
       "name": "Link",
       "contract": "contracts/link.json",
+      "level": "atom",
       "category": "navigation",
       "tags": [
         "link",
@@ -677,6 +725,7 @@
     {
       "name": "LinkList",
       "contract": "contracts/linklist.json",
+      "level": "molecule",
       "category": "navigation",
       "tags": [
         "link list",
@@ -690,6 +739,7 @@
     {
       "name": "ListView",
       "contract": "contracts/listview.json",
+      "level": "organism",
       "category": "data",
       "tags": [
         "list view",
@@ -707,6 +757,7 @@
     {
       "name": "LoadingLine",
       "contract": "contracts/loadingline.json",
+      "level": "atom",
       "category": "feedback",
       "tags": [
         "loading line",
@@ -721,6 +772,7 @@
     {
       "name": "Logo",
       "contract": "contracts/logo.json",
+      "level": "atom",
       "category": "brand",
       "tags": [
         "brand",
@@ -732,6 +784,7 @@
     {
       "name": "LogoAI",
       "contract": "contracts/logoai.json",
+      "level": "atom",
       "category": "brand",
       "tags": [
         "ai",
@@ -743,6 +796,7 @@
     {
       "name": "Lookup",
       "contract": "contracts/lookup.json",
+      "level": "molecule",
       "category": "form",
       "tags": [
         "lookup",
@@ -758,6 +812,7 @@
     {
       "name": "Meter",
       "contract": "contracts/meter.json",
+      "level": "atom",
       "category": "feedback",
       "tags": [
         "progress",
@@ -776,6 +831,7 @@
     {
       "name": "Modal",
       "contract": "contracts/modal.json",
+      "level": "organism",
       "category": "overlay",
       "tags": [
         "modal",
@@ -788,6 +844,7 @@
     {
       "name": "NavTile",
       "contract": "contracts/navtile.json",
+      "level": "molecule",
       "category": "data",
       "tags": [
         "tile",
@@ -803,6 +860,7 @@
     {
       "name": "PageHeader",
       "contract": "contracts/pageheader.json",
+      "level": "organism",
       "category": "navigation",
       "tags": [
         "page header",
@@ -816,6 +874,7 @@
     {
       "name": "Pagination",
       "contract": "contracts/pagination.json",
+      "level": "molecule",
       "category": "navigation",
       "tags": [
         "pagination",
@@ -830,6 +889,7 @@
     {
       "name": "PieChart",
       "contract": "contracts/piechart.json",
+      "level": "organism",
       "category": "data",
       "tags": [
         "chart",
@@ -844,6 +904,7 @@
     {
       "name": "ProgressBar",
       "contract": "contracts/progressbar.json",
+      "level": "atom",
       "category": "feedback",
       "tags": [
         "progress",
@@ -858,6 +919,7 @@
     {
       "name": "RadarChart",
       "contract": "contracts/radarchart.json",
+      "level": "organism",
       "category": "data",
       "tags": [
         "radar",
@@ -875,6 +937,7 @@
     {
       "name": "RadioGroup",
       "contract": "contracts/radiogroup.json",
+      "level": "molecule",
       "category": "form",
       "tags": [
         "form",
@@ -887,6 +950,7 @@
     {
       "name": "ScatterChart",
       "contract": "contracts/scatterchart.json",
+      "level": "organism",
       "category": "data",
       "tags": [
         "scatter",
@@ -902,6 +966,7 @@
     {
       "name": "Scoreboard",
       "contract": "contracts/scoreboard.json",
+      "level": "organism",
       "category": "data",
       "tags": [
         "scoreboard",
@@ -918,6 +983,7 @@
     {
       "name": "Section",
       "contract": "contracts/section.json",
+      "level": "organism",
       "category": "layout",
       "tags": [
         "section",
@@ -933,6 +999,7 @@
     {
       "name": "Segmented",
       "contract": "contracts/segmented.json",
+      "level": "molecule",
       "category": "form",
       "tags": [
         "segmented",
@@ -948,6 +1015,7 @@
     {
       "name": "Select",
       "contract": "contracts/select.json",
+      "level": "molecule",
       "category": "form",
       "tags": [
         "select",
@@ -961,6 +1029,7 @@
     {
       "name": "Skeleton",
       "contract": "contracts/skeleton.json",
+      "level": "atom",
       "category": "feedback",
       "tags": [
         "skeleton",
@@ -975,6 +1044,7 @@
     {
       "name": "Sparkline",
       "contract": "contracts/sparkline.json",
+      "level": "atom",
       "category": "data",
       "tags": [
         "sparkline",
@@ -990,6 +1060,7 @@
     {
       "name": "Spinner",
       "contract": "contracts/spinner.json",
+      "level": "atom",
       "category": "feedback",
       "tags": [
         "spinner",
@@ -1004,6 +1075,7 @@
     {
       "name": "Steps",
       "contract": "contracts/steps.json",
+      "level": "molecule",
       "category": "navigation",
       "tags": [
         "stepper",
@@ -1019,6 +1091,7 @@
     {
       "name": "Switch",
       "contract": "contracts/switch.json",
+      "level": "atom",
       "category": "form",
       "tags": [
         "switch",
@@ -1031,6 +1104,7 @@
     {
       "name": "Table",
       "contract": "contracts/table.json",
+      "level": "organism",
       "category": "data",
       "tags": [
         "table",
@@ -1046,6 +1120,7 @@
     {
       "name": "Tabs",
       "contract": "contracts/tabs.json",
+      "level": "molecule",
       "category": "navigation",
       "tags": [
         "tabs",
@@ -1059,6 +1134,7 @@
     {
       "name": "Textarea",
       "contract": "contracts/textarea.json",
+      "level": "atom",
       "category": "form",
       "tags": [
         "form",
@@ -1073,6 +1149,7 @@
     {
       "name": "TextLoader",
       "contract": "contracts/textloader.json",
+      "level": "atom",
       "category": "feedback",
       "tags": [
         "shimmer",
@@ -1088,6 +1165,7 @@
     {
       "name": "Timeline",
       "contract": "contracts/timeline.json",
+      "level": "organism",
       "category": "data",
       "tags": [
         "timeline",
@@ -1103,6 +1181,7 @@
     {
       "name": "Toast",
       "contract": "contracts/toast.json",
+      "level": "molecule",
       "category": "feedback",
       "tags": [
         "toast",
@@ -1120,6 +1199,7 @@
     {
       "name": "Toolbar",
       "contract": "contracts/toolbar.json",
+      "level": "organism",
       "category": "navigation",
       "tags": [
         "toolbar",
@@ -1134,6 +1214,7 @@
     {
       "name": "Tooltip",
       "contract": "contracts/tooltip.json",
+      "level": "atom",
       "category": "overlay",
       "tags": [
         "tooltip",
@@ -1147,6 +1228,7 @@
     {
       "name": "TreeView",
       "contract": "contracts/treeview.json",
+      "level": "organism",
       "category": "data",
       "tags": [
         "tree",
@@ -1164,6 +1246,7 @@
     {
       "name": "UsageBar",
       "contract": "contracts/usagebar.json",
+      "level": "molecule",
       "category": "data",
       "tags": [
         "usage bar",
@@ -1181,6 +1264,7 @@
     {
       "name": "UsageList",
       "contract": "contracts/usagelist.json",
+      "level": "molecule",
       "category": "data",
       "tags": [
         "usage",
@@ -1198,6 +1282,7 @@
     {
       "name": "WaterfallChart",
       "contract": "contracts/waterfallchart.json",
+      "level": "organism",
       "category": "data",
       "tags": [
         "chart",
@@ -1216,6 +1301,7 @@
     {
       "name": "AccountFlow",
       "contract": "contracts/accountflow.json",
+      "level": "template",
       "tags": [
         "account flow",
         "accounts",
@@ -1229,6 +1315,7 @@
     {
       "name": "AppShell",
       "contract": "contracts/appshell.json",
+      "level": "template",
       "tags": [
         "app shell",
         "frame",
@@ -1242,6 +1329,7 @@
     {
       "name": "ChatWindow",
       "contract": "contracts/chatwindow.json",
+      "level": "template",
       "tags": [
         "chat window",
         "assistant",
@@ -1255,6 +1343,7 @@
     {
       "name": "Dashboard",
       "contract": "contracts/dashboard.json",
+      "level": "template",
       "tags": [
         "dashboard",
         "home",
@@ -1269,6 +1358,7 @@
     {
       "name": "FormPage",
       "contract": "contracts/formpage.json",
+      "level": "template",
       "tags": [
         "form page",
         "create record",
@@ -1281,6 +1371,7 @@
     {
       "name": "GuidedProcessPage",
       "contract": "contracts/guidedprocesspage.json",
+      "level": "template",
       "tags": [
         "guided process",
         "wizard page",
@@ -1294,6 +1385,7 @@
     {
       "name": "ListDetail",
       "contract": "contracts/listdetail.json",
+      "level": "template",
       "tags": [
         "list detail",
         "master detail",
@@ -1308,6 +1400,7 @@
     {
       "name": "ListPage",
       "contract": "contracts/listpage.json",
+      "level": "template",
       "tags": [
         "list",
         "list page",
@@ -1322,6 +1415,7 @@
     {
       "name": "RecordPage",
       "contract": "contracts/recordpage.json",
+      "level": "template",
       "tags": [
         "record",
         "detail page",
@@ -1336,6 +1430,7 @@
     {
       "name": "SettingsPage",
       "contract": "contracts/settingspage.json",
+      "level": "template",
       "tags": [
         "settings",
         "settings home",

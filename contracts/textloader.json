@@ -1,6 +1,7 @@
 {
   "name": "TextLoader",
   "path": "src/ui/TextLoader/TextLoader.tsx",
+  "level": "atom",
   "intent": "Short text with a soft wave of light running through it, for a moment of work whose end is unknown, like Generating response… or Syncing invoices….",
   "usage": "Use TextLoader for one short line that says something is being worked on: an AI answer being written, a sync, a search. It is one component: pass the text as children. The letters fade in and out one after another, left to right. Swap it for the real content as soon as it is ready. For the shape of content that is still loading, use Skeleton; for a known amount done, use Meter. See contracts/textloader.json for the full contract.",
   "props": {

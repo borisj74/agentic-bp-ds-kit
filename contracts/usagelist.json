@@ -1,6 +1,7 @@
 {
   "name": "UsageList",
   "path": "src/ui/UsageList/UsageList.tsx",
+  "level": "molecule",
   "intent": "A list of usage limits, one a row: the limit's name, how much is used of it, a bar, and a short note, like API calls, storage and seats on a plan.",
   "usage": "Use UsageList to show how much of each limit is used, like a plan or account usage panel. It is one component: pass items, each with an id, a label, used and limit, and optionally a unit and a note. Each row writes used of limit, like 8,420 of 10,000 or 32 of 50 GB, over a kit Meter bar. The bar is blue, turns amber at 80% of the limit and red at 100%; at those points a warning or error icon sits before the numbers and screen readers hear Almost at limit or Limit reached. Use over the limit is shown as it is, like 12 of 10, with a full red bar. note adds a quieter line under the bar, like Resets on Oct 1. Put it in a Section or Card, which gives it its title; the list draws no box of its own. label names the list for screen readers, like Plan usage. See contracts/usagelist.json for the full contract.",
   "props": {

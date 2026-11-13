@@ -1,6 +1,7 @@
 {
   "name": "Calendar",
   "path": "src/ui/Calendar/Calendar.tsx",
+  "level": "organism",
   "intent": "A full calendar of events by month, week, day or as a list, where people browse dates, filter calendars and add, edit or delete events.",
   "usage": "Use Calendar for schedules: shifts, PTO, billing runs, meetings. It is one component: pass events and, if events belong to calendars, calendars. The toolbar has a month picker, New event, previous and next, Today, Calendars (show or hide each calendar) and a Month / Week / Day / List switch. Month shows up to 3 events a day, then +N more; Week and Day show all-day events in a row on top and timed events on an hourly grid that scrolls, side by side when they overlap, with a line at the current time; List shows the week's events by day. Click an empty day or time, or New event, to open a drawer with the event form; click an event to edit or delete it. With events it is controlled (save changes in onEventsChange); with defaultEvents it keeps changes itself. readOnly turns creating and editing off. Dates are local ISO strings: 2024-10-09 for all-day, 2024-10-09T08:30 for timed. CalendarIntent: green | olive | cyan | orange | pink | gray | purple | yellow | red | mint (the kit category colors). See contracts/calendar.json for the full contract.",
   "props": {

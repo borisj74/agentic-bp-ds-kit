@@ -1,6 +1,7 @@
 {
   "name": "Badge",
   "path": "src/ui/Badge/Badge.tsx",
+  "level": "atom",
   "intent": "Short status or category label. Not a person and not a button.",
   "usage": "Use Badge for status on rows and cards, and for category or filter labels. Pick the intent from meaning and the emphasis from how loud it should be: subtle is the default, strong for the one thing that must stand out, faint for quiet lists. Only dismissible filters are removable. sm (20px) is the default; md and lg are larger kit sizes for roomier layouts. See contracts/badge.json for the full contract.",
   "props": {

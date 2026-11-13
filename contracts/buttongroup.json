@@ -1,6 +1,7 @@
 {
   "name": "ButtonGroup",
   "path": "src/ui/ButtonGroup/ButtonGroup.tsx",
+  "level": "molecule",
   "intent": "Joined row of kit Buttons that share one size and act as one control cluster.",
   "usage": "Use a group for related actions that share one size, like a view switch, a cancel and save pair, or a toolbar. The group sets size and disabled for every Button inside it. Only kit Buttons go in a group. See contracts/buttongroup.json for the full contract.",
   "props": {

@@ -1,6 +1,7 @@
 {
   "name": "FilterButton",
   "path": "src/ui/FilterButton/FilterButton.tsx",
+  "level": "molecule",
   "intent": "Filter chip for lists and tables: shows the filter name or its chosen value, opens its options, and turns an applied filter on or off.",
   "usage": "Use FilterButton for filter controls above tables and lists, like Status or Owner, and in the Toolbar filter bar. To open options, use Dropdown with trigger filter: it renders this button and opens the menu. Nothing set: one quiet outline with the chevron; the whole button opens the options. Once a filter is set (value or count) it turns blue; with onToggle it splits in two: the name turns the filter on or off (off keeps the selection, drawn dashed) and the chevron opens the options. hasDropdown false makes a plain on/off chip. See contracts/filterbutton.json for the full contract.",
   "props": {

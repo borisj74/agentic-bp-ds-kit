@@ -8,7 +8,8 @@ Cursor and Claude Code spawn this command and query contracts and tokens locally
 
 Tools:
   list           Every component and pattern in contracts/index.json
-  get            One component or pattern contract and usage
+                 Optional level: atom, molecule, organism, template
+  get            One component or pattern contract, its level and usage
   search         Match name, intent, useWhen, and related fields
   get_tokens     Semantic tokens from src/tokens/source/semantic.txt
   get_rules      Kit agent rules (CLAUDE.md / AGENTS.md)

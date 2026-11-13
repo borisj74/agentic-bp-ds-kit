@@ -1,6 +1,7 @@
 {
   "name": "Accordion",
   "path": "src/ui/Accordion/Accordion.tsx",
+  "level": "molecule",
   "intent": "List of short sections where one opens at a time.",
   "usage": "Use Accordion for FAQs or short groups of details the user opens one at a time. Opening one item closes the others. Clicking the open item closes it. See contracts/accordion.json for the full contract.",
   "props": {

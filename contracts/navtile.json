@@ -1,6 +1,7 @@
 {
   "name": "NavTile",
   "path": "src/ui/NavTile/NavTile.tsx",
+  "level": "molecule",
   "intent": "A way in to somewhere: the name of a place, a line about what is in it, and a colored icon square. One of a grid of them on a landing page.",
   "usage": "Use NavTile for the doors on a landing page: a settings home, a reports home, the start of a job. It is one component: title names the place, description says in one line what is inside, icon and intent draw the 72px square, and href or onClick is where it goes. Give each tile in a grid its own intent so people learn the colors; intent takes the kit category colors, not a color of your own. Lay a set of them out with the .layout-metrics class from contracts/layout.json, never a grid of your own. It is a link, not a choice: if people are comparing options and picking one, that is a Card. Inside a loading page it draws its own skeleton in place: the page says loading once (FormLayoutContext, which SettingsPage and the other page patterns set), and it takes no loading prop of its own. The tile keeps its box, with a bar as long as its name, a line where its description will be and a block where its square is, so a grid of tiles is the grid the places land in. See contracts/navtile.json for the full contract.",
   "props": {

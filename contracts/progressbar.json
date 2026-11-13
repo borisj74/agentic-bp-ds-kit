@@ -1,6 +1,7 @@
 {
   "name": "ProgressBar",
   "path": "src/ui/ProgressBar/ProgressBar.tsx",
+  "level": "atom",
   "intent": "The older 20-tall progress bar with its percent written on or beside it, for screens that still use the legacy look.",
   "usage": "Use ProgressBar only to match screens built with the older progress bar. It is one component: pass value from 0 to 100 and a label that names what is loading. The percent shows in the middle of the bar, or to its right with labelPosition=\"right\" when the bar is narrow. valueLabel replaces the percent text, like 3 of 12 files. See contracts/progressbar.json for the full contract.",
   "props": {

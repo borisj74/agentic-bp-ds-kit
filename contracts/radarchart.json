@@ -1,6 +1,7 @@
 {
   "name": "RadarChart",
   "path": "src/ui/RadarChart/RadarChart.tsx",
+  "level": "organism",
   "intent": "Several measures on one shape: each point of the web is a measure, each series an outline across all of them, so two things can be compared on every measure at once.",
   "usage": "Use RadarChart to compare a few things across the same handful of measures, like two plans on their feature scores, or this account against the average on six health measures. It is one component: pass axes, the points of the web clockwise from the top, and series, one entry per outline with one value per axis. The web has four rings by default; the outer ring is a round number past the largest value unless max names it. fill (the default) fills each outline as well as drawing it, which reads well for one or two series; turn it off past that. showScale writes the ring values up the first axis. Hover anywhere in the web or use the arrow keys and the nearest point answers with every series' value; the keys wrap round the web. See contracts/radarchart.json for the full contract. Inside a loading page it draws its own skeleton in place: the page says loading once (FormLayoutContext, which RecordPage, ListPage, FormPage and Dashboard set), and it takes no loading prop of its own. The title stands as a bar at the length its words will take and the drawing as a faintly framed box of bars at the chart's own height (BP COBALT \"chart skeleton\"), so the chart arrives where its bars stood.",
   "props": {

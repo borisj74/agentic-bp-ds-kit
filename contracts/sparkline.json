@@ -1,6 +1,7 @@
 {
   "name": "Sparkline",
   "path": "src/ui/Sparkline/Sparkline.tsx",
+  "level": "atom",
   "intent": "A trend small enough to sit in a table cell or on a tile: the shape of the last few periods, with no axes and no numbers.",
   "usage": "Use Sparkline where a row or a tile needs the shape of a trend beside its number, like credits used a day next to the month's total. It is one component: pass label and values. kind draws it as a line, a filled area or small bars. size goes sm (16px), md (24px), lg (32px); the width fills the container, so in a Table it fills its column. showLast picks the end out: a dot on a line, or the last bar at full strength while the rest step back. The scale fits the values it has, so a flat run sits on the middle line. It has no axes, grid, legend or tooltip on purpose: for a chart people read values off, use LineChart or BarChart. See contracts/sparkline.json for the full contract.",
   "props": {
