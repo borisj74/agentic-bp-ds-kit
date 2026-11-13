@@ -8,7 +8,12 @@ export type FieldColumns = 1 | 2 | 3;
 // Form shares its layout with the kit fields inside it. RecordPage and FormPage share theirs with the Sections
 // and the Form in their details, so the page sets the columns (and the record its labels) once. Modal and Drawer
 // clear it, so a dialog opened from a record starts from the kit's own defaults.
-export const FormLayoutContext = createContext<{ labelPosition?: FieldLabelPosition; columns?: FieldColumns }>({});
+//
+// loading travels the same way: a booting page says so once here, and every Section, field and row under it draws
+// its own skeleton in its own place, so the page keeps the shape it will have. Read it with useFieldSkeleton
+// (src/ui/LoadingLine/boot.ts), never straight off the context: the hook puts the piece in step with the frame's
+// boot sequence, so the skeletons all appear and leave together.
+export const FormLayoutContext = createContext<{ labelPosition?: FieldLabelPosition; columns?: FieldColumns; loading?: boolean }>({});
 
 // A field's own labelPosition wins, then the enclosing Form's (or record's), then top.
 export function useLabelPosition(own?: FieldLabelPosition): FieldLabelPosition {

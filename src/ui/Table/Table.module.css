@@ -4,6 +4,9 @@
    the names and the frozen first column hold against. That is the trade: a column can only hold still against
    whatever scrolls, so a table wide enough to need a frozen first column gives up names pinned to the page. */
 .wrap { max-width: 100%; container-type: inline-size; }
+/* Booting: a cell holding a bar instead of a value. It is a Cell's own box without a Cell's fill or line — the
+   table draws those — so the head row, the rows and the lines between them are the heights they will be. */
+.bootCell { box-sizing: border-box; display: flex; align-items: center; width: 100%; padding: var(--space-xxsmall) var(--space-small); }
 .scrolls { overflow-x: auto; }
 /* Inside its own box the names hold at its top edge; --table-stick-top measures from the top of the page, which
    is not what they hold against any more. */

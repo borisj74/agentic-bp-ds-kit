@@ -5,6 +5,8 @@ import { createPortal } from "react-dom";
 import { Button } from "../Button/Button";
 import { Dropdown } from "../Dropdown/Dropdown";
 import { labelWidthClass, useLabelPosition } from "../Form/FormContext";
+import { Skeleton } from "../Skeleton/Skeleton";
+import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 // Label, help, hint, error and the field box share Input's styles so all form fields match.
@@ -103,6 +105,8 @@ export function DatePicker({
 }: DatePickerProps) {
   const size = useDensitySize(ownSize);
   const labelPosition = useLabelPosition(ownLabelPosition);
+  // A field in a booting page draws itself as bars, in its own place.
+  const booting = useFieldSkeleton();
   // The label column this field stands on. With no label there is no column, and md is the kit's 234.
   const width = hideLabel ? undefined : labelWidthClass(labelWidth);
   const uid = useId();
@@ -358,6 +362,23 @@ export function DatePicker({
   };
 
   const cls = [field.input, field[size], hideLabel ? "" : field[labelPosition], width ? field[width] : "", bad ? field.invalid : "", disabled ? field.disabled : ""];
+  // Booting: the field keeps its own box, its label column and its control's height, so the real field arrives
+  // exactly where the bars stood. The bars say nothing to a screen reader: the page says "Loading" once, at the
+  // top, and the field's own name comes with the field.
+  if (booting) {
+    return (
+      <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
+        {!hideLabel && (
+          <div className={field.labelRow}>
+            <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(label)} height="var(--skeleton-cell)" label="" />
+          </div>
+        )}
+        <div className={field.body}>
+          <Skeleton shape="rect" animation="pulse" height="var(--h)" label="" />
+        </div>
+      </div>
+    );
+  }
   const text = range ? "Select dates" : "Select date";
   return (
     <div ref={rootRef} className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>

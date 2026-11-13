@@ -2,7 +2,7 @@
   "name": "DatePicker",
   "path": "src/ui/DatePicker/DatePicker.tsx",
   "intent": "A date field that opens a calendar to pick one date, or a range between two dates. Looks like Input.",
-  "usage": "Use DatePicker for dates in forms and filters. type single picks one day; type dual picks a start and an end across two months, with quick ranges like Last week. monthYear menus turns the month and year over the days into two menus, for dates far from today, like a date of birth; the arrows stay beside them. Picks stay pending until Apply; Cancel, Escape or a click outside leave the value as it was. Dates are ISO strings (YYYY-MM-DD); a range is { start, end }. Label, hint, error, help and sizes work like Input. See contracts/datepicker.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in. labelWidth puts it on a narrower or wider column (140px or 320px) and moves that turn with it, to 460px or 640px.",
+  "usage": "Use DatePicker for dates in forms and filters. type single picks one day; type dual picks a start and an end across two months, with quick ranges like Last week. monthYear menus turns the month and year over the days into two menus, for dates far from today, like a date of birth; the arrows stay beside them. Picks stay pending until Apply; Cancel, Escape or a click outside leave the value as it was. Dates are ISO strings (YYYY-MM-DD); a range is { start, end }. Label, hint, error, help and sizes work like Input. See contracts/datepicker.json for the full contract. A portaled panel takes the theme of whatever opened it, so it is dark with a dark app frame even though it is drawn at the end of the page. A label set at the start goes back on top of the field when the box around it is narrower than 554px, since a 234px label column would leave too little of the field to type in. labelWidth puts it on a narrower or wider column (140px or 320px) and moves that turn with it, to 460px or 640px. Inside a loading page it draws its own skeleton in place: the field keeps its box, its label column and its control's height, with a bar for the label and a block for the control, so the real field arrives exactly where the bars stood. The page says loading once (FormPage's loading, carried on FormLayoutContext); the field takes no loading prop of its own.",
   "props": {
     "label": {
       "type": "string",
@@ -123,7 +123,8 @@
     "Do not invent a local Calendar, DateRangePicker, Popover or native input type=date.",
     "Do not use two DatePickers for a start and end. Use type dual.",
     "Do not use for time. There is no time picker yet.",
-    "Do not use raw hex."
+    "Do not use raw hex.",
+    "Do not draw your own grey bars over it while a page loads, and do not hide it. It skeletons itself in place, from the page's loading."
   ],
   "a11y": [
     "The field is a button with aria-haspopup=dialog and aria-expanded, labelled by the label. Required is read from the label; error and hint are linked with aria-describedby.",

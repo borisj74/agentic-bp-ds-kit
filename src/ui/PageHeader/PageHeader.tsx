@@ -1,5 +1,5 @@
 "use client";
-import type { ReactNode } from "react";
+import { Children, Fragment, isValidElement, type ReactNode } from "react";
 import { Badge, type BadgeIntent } from "../Badge/Badge";
 import { Breadcrumb, type BreadcrumbItem } from "../Breadcrumb/Breadcrumb";
 import { Button } from "../Button/Button";
@@ -32,16 +32,26 @@ export interface PageHeaderProps {
   loading?: boolean;
 }
 
+// How many buttons the actions come to, so a booting header draws one block each and the row keeps its width.
+// A screen passes them as a fragment of Buttons, so the fragments are counted through.
+function countActions(node: ReactNode): number {
+  return Children.toArray(node).reduce<number>(
+    (n, child) => n + (isValidElement(child) && child.type === Fragment ? countActions((child.props as { children?: ReactNode }).children) : 1),
+    0,
+  );
+}
+
 export function PageHeader({
   title, breadcrumbs = [], back, icon, badge, badgeIntent = "neutral", actions, moreActions, onMoreSelect, sticky = false, shadow = true, loading = false,
 }: PageHeaderProps) {
   // Kit headings read in title case, so a screen can pass its copy either way.
   const heading = titleCase(title);
-  // Booting, the title row holds nothing but its own shapes: a crumb trail, the page icon if there is one, and
-  // the title. No buttons — a page that has not arrived has nothing to act on yet.
+  // Booting, the title row holds its own shapes: a crumb trail, the page icon if there is one, and the title.
+  // The actions keep their places as plain blocks rather than going away: BP COBALT screen 56 keeps More, Cancel
+  // and Submit in the title row of a form while it loads, so the row does not resettle when they arrive.
   // Inside a booting frame the title row waits its turn in the sequence; on its own it draws at once.
   const { skeleton: booting } = useBootSkeleton(loading);
-  const hasControls = !booting && (Boolean(actions) || Boolean(moreActions?.length));
+  const hasControls = Boolean(actions) || Boolean(moreActions?.length);
   // back is a shortcut to where the page was opened from, so a screen can pass the route (href), its own
   // handler (onClick), or neither and get the browser's own step back. The label is the button's name and
   // its tooltip, so it says where it goes rather than just "Back".
@@ -104,11 +114,24 @@ export function PageHeader({
       {hasControls && (
         // Figma order: More (overflow) first, then the actions with the one strong brand Button last.
         <div className={styles.controls}>
-          {moreActions && moreActions.length > 0 && (
-            // Figma button-group: the overflow More is unbordered (minimal) and sits first.
-            <Dropdown label="More" emphasis="minimal" size="sm" alignment="right" items={moreActions} onSelect={onMoreSelect} />
+          {booting ? (
+            <>
+              {moreActions && moreActions.length > 0 && (
+                <Skeleton shape="rect" animation="pulse" width="var(--toolbar-more-skeleton)" height="var(--control-small)" label="" />
+              )}
+              {Array.from({ length: countActions(actions) }, (_, i) => (
+                <Skeleton key={i} shape="rect" animation="pulse" width="var(--toolbar-action-skeleton)" height="var(--control-small)" label="" />
+              ))}
+            </>
+          ) : (
+            <>
+              {moreActions && moreActions.length > 0 && (
+                // Figma button-group: the overflow More is unbordered (minimal) and sits first.
+                <Dropdown label="More" emphasis="minimal" size="sm" alignment="right" items={moreActions} onSelect={onMoreSelect} />
+              )}
+              {actions}
+            </>
           )}
-          {actions}
         </div>
       )}
       </div>

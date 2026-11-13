@@ -120,6 +120,8 @@ export interface Entry {
   wide?: boolean;
   /** Playground-only radio controls that are not contract props. normalize turns them into real props. */
   extras?: Record<string, { values: string[]; default: string }>;
+  // What a control is called, when the prop's own name does not read as the question the control asks.
+  labels?: Record<string, string>;
   /** Playground-only on/off switches, shown as a Content group, like Figma boolean properties. A key that is a real
    *  boolean prop sets it (labelled here instead of under States); other keys are read by normalize to drop parts. */
   toggles?: Record<string, { label: string; default: boolean }>;
@@ -1729,12 +1731,13 @@ export const registry: Record<string, Entry> = {
   FormPage: {
     // The pattern in the frame, driven the way a screen would drive it: the values, the folds and what has
     // been saved live in the screen.
-    render: ({ shell, notice, stage, labels, columns, boot, loading, ...p }) => (
+    render: ({ shell, notice, stage, labels, columns, boot, loading, loadingShape, ...p }) => (
       <BootPlayer speed={(boot as BootSpeed) ?? "off"}>
         {(booting) => (
           <FormPageDemo
             {...(p as Record<string, unknown>)}
             loading={booting || loading === true}
+            loadingShape={loadingShape === "rows" ? "rows" : "content"}
             shell={shell !== false} notice={notice !== false} stage={String(stage ?? "desktop")}
             labels={labels === "top" ? "top" : "start"}
             columns={columns === 3 ? 3 : columns === 1 ? 1 : 2}
@@ -1744,6 +1747,7 @@ export const registry: Record<string, Entry> = {
     ),
     preview: {},
     hide: ["children", "header", "notice", "onStickyChange", "label", "loadingRows"],
+    labels: { loadingShape: "Skeleton shape" },
     toggles: {
       sticky: { label: "Top stays put", default: true },
       stickyNotice: { label: "Notice stays put", default: true },
@@ -1755,7 +1759,7 @@ export const registry: Record<string, Entry> = {
       stage: { values: ["desktop", "laptop", "tablet", "phone", "1920", "2560", "3008"], default: "desktop" },
       boot: { values: ["off", "fast", "typical", "slow"], default: "off" },
     },
-    hint: "Boot plays the form's load over time and reads out the skeleton's timing rule as it runs. Fill in the new account: the name is the only field that has to be filled in, and Create in the bar saves every group at once. Fold a group away, open one of the three that start closed, and scroll: the name and the notice stay at the top while the fields pass under them. Labels switches the whole form between a label column at the start of each field and a label over it. Columns lays the fields out in one, two or three; below 1280px of viewport they are always one, and above it each column stops at 554px, so on a big screen the space past the last one stays empty, and the contacts table under the form keeps the full width. Three gives way to two when the page is too narrow for them. Stage 1920, 2560 and 3008 draws the frame at that screen's real width, scaled down to fit. Stage narrows the box the frame lives in, so watch the two columns become one on a phone.",
+    hint: "Boot plays the form's load over time and reads out the skeleton's timing rule as it runs. Fill in the new account: the name is the only field that has to be filled in, and Create in the bar saves every group at once. Fold a group away, open one of the three that start closed, and scroll: the name and the notice stay at the top while the fields pass under them. Labels switches the whole form between a label column at the start of each field and a label over it. Columns lays the fields out in one, two or three; below 1280px of viewport they are always one, and above it each column stops at 554px, so on a big screen the space past the last one stays empty, and the contacts table under the form keeps the full width. Three gives way to two when the page is too narrow for them. Stage 1920, 2560 and 3008 draws the frame at that screen's real width, scaled down to fit. Stage narrows the box the frame lives in, so watch the two columns become one on a phone. Skeleton shape says what a loading form draws: content follows this form's own groups, headers and fields, so each bar stands where its field will stand; rows is the fallback grid for a page that has nothing to follow yet. Turn Loading on, or play Boot, and switch Labels and Columns while it loads: the bars move with them.",
     block: true,
     wide: true,
     page: <FormPageDemo shell />,

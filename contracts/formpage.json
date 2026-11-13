@@ -2,7 +2,7 @@
   "name": "FormPage",
   "path": "src/patterns/FormPage/FormPage.tsx",
   "intent": "One record being filled in: its name and the save at the top, anything that has to be read first under that, and the fields in folding groups underneath.",
-  "usage": "Use FormPage to create or edit one record: a new account, a new invoice, a rate card. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the values and what is folded away. Pass the kit PageHeader as header, with the trail, what is being made, and the actions: Cancel, then one strong brand Button that saves. children are one kit Form with an id and its groups of fields as sections, each collapsible. columns (1, 2 or 3, default 2) is set on the FormPage and the Form follows it unless it sets its own; each column stops at 554px (--layout-column-max) and the fields stay at the start, so on a wide screen the space past the last column stays empty instead of stretching the fields. Never more than 3 columns, even at 2560px and wider. On an edit page a related list can follow the Form as a kit Section holding a Table, one gutter below it; it keeps the full width. Pick where the labels go on the Form: labelPosition start for a column of labels beside the fields, top for a label over each one, and the whole page follows; give the header's save Button type submit and form set to that id, so one press saves the whole page and the form stays one form. notice writes what has to be read before filling anything in, as a kit Callout; it stays under the name while the fields scroll. Field problems belong on the fields; a save that failed goes on the Form's error. Do not put a second save at the foot of the page: the one in the header is always in reach. It goes in the AppShell page, which owns the page padding. loading is the boot skeleton: the title row with no buttons, and the fields 39px apart with each label ending 16px before its input. Inside a booting AppShell the boot skeleton follows the frame's sequence. See contracts/formpage.json for the full contract.",
+  "usage": "Use FormPage to create or edit one record: a new account, a new invoice, a rate card. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the values and what is folded away. Pass the kit PageHeader as header, with the trail, what is being made, and the actions: Cancel, then one strong brand Button that saves. children are one kit Form with an id and its groups of fields as sections, each collapsible. columns (1, 2 or 3, default 2) is set on the FormPage and the Form follows it unless it sets its own; each column stops at --layout-column-max (554px) and the fields stay at the start, so on a wide screen the space past the last column stays empty instead of stretching the fields. Never more than 3 columns, even at 2560px and wider. On an edit page a related list can follow the Form as a kit Section holding a Table, one gutter below it; it keeps the full width. Pick where the labels go on the Form: labelPosition start for a column of labels beside the fields, top for a label over each one, and the whole page follows; give the header's save Button type submit and form set to that id, so one press saves the whole page and the form stays one form. notice writes what has to be read before filling anything in, as a kit Callout; it stays under the name while the fields scroll. Field problems belong on the fields; a save that failed goes on the Form's error. Do not put a second save at the foot of the page: the one in the header is always in reach. It goes in the AppShell page, which owns the page padding. loading is the boot skeleton, and it draws this page's own content: the real children are rendered and every Section, field and row inside draws itself as bars where it will stand, so the groups, their headers, the folded ones and the fields in their columns are all already in place and nothing moves when the form arrives. While it boots the fields are inert and out of the reading order, and the page says \"Loading <label>\" once. loadingShape rows is the fallback for a page with nothing to follow yet: the old fixed grid of label-and-input rows. Inside a booting AppShell the boot skeleton follows the frame's sequence. See contracts/formpage.json for the full contract.",
   "composes": [
     "PageHeader",
     "Callout",
@@ -55,12 +55,20 @@
     "loading": {
       "type": "boolean",
       "default": false,
-      "note": "Booting: the fields in the rhythm the real form has, one row every 39px with the label ending 16px before its input, in the page's own columns. The groups and the notice wait."
+      "note": "Booting: the page draws its own content as bars. The children are rendered and each Section, field and row inside draws itself in its own place — section headers, folded groups, the fields in the page's columns, a related list's Table — so the shape on screen is the shape the form will have. The fields are inert and hidden from screen readers while they are bars, and the page says \"Loading <label>\" once. The notice holds the height it will take. Inside a booting AppShell it follows the frame's sequence."
+    },
+    "loadingShape": {
+      "enum": [
+        "content",
+        "rows"
+      ],
+      "default": "content",
+      "note": "What a booting page draws. content follows the real children, so nothing moves when they arrive; it is what a page with children should use. rows is the fallback for a page that has nothing to follow yet: a fixed grid of label-and-input rows, loadingRows of them, split across the page's columns."
     },
     "loadingRows": {
       "type": "number",
       "default": 12,
-      "note": "How many field rows the boot skeleton draws, split across the columns."
+      "note": "How many field rows the rows fallback draws, split across the page's columns. It does nothing when loadingShape is content, where the real fields say how many there are."
     },
     "label": {
       "type": "string",
@@ -80,15 +88,17 @@
     "Do not put page padding on it. The AppShell page owns that; read contracts/layout.json.",
     "Do not use it for a short form. Two or three fields belong in a Modal or a Drawer.",
     "Do not keep the fold state or the values in the pattern. The screen owns them.",
-    "Do not set a width on the Form or stretch its columns to fill a wide page. Pass columns to the FormPage; each column stops at 480px.",
-    "Do not use more than 3 columns, even on a 2560px or wider screen."
+    "Do not set a width on the Form or stretch its columns to fill a wide page. Pass columns to the FormPage; each column stops at --layout-column-max (554px).",
+    "Do not use more than 3 columns, even on a 2560px or wider screen.",
+    "Do not draw a loading form as a block of identical rows when the page has children. Leave loadingShape at content, so the skeleton keeps the form's own sections and fields."
   ],
   "a11y": [
     "The page is one section named by label, so a screen reader says what is being filled in.",
     "One form element holds every group, so the fields are read and submitted as one thing.",
     "Each group is a kit Section named by its heading, and folding one hides its fields from the reading order as well as from the screen.",
     "The save Button carries form, so it submits from the header without leaving the form.",
-    "The name and the notice stay on an opaque bar, so nothing scrolls through them."
+    "The name and the notice stay on an opaque bar, so nothing scrolls through them.",
+    "Booting, the fields are inert and aria-hidden, so nothing half-drawn is reachable or read out, and one status says \"Loading\" and the page's name."
   ],
   "snippet": "<FormPage\n  columns={2}\n  header={<PageHeader breadcrumbs={[{ label: \"Home\", href: \"/\" }, { label: \"Accounts\", href: \"/accounts\" }]} title=\"Create account\" actions={<><Button onClick={cancel}>Cancel</Button><Button emphasis=\"strong\" intent=\"brand\" type=\"submit\" form=\"account\">Create</Button></>} />}\n  notice={<Callout intent=\"info\" onDismiss={hide}>Use this form for the account's general and default billing information.</Callout>}\n>\n  <Form id=\"account\" labelPosition=\"start\" onSubmit={save} sections={sections} />\n</FormPage>",
   "examples": [
@@ -107,7 +117,7 @@
     },
     {
       "title": "Three columns",
-      "usage": "columns 3 puts the fields in threes on a wide screen. Each column still stops at 480px, and three give way to two when the page is too narrow for them.",
+      "usage": "columns 3 puts the fields in threes on a wide screen. Each column still stops at --layout-column-max (554px), and three give way to two when the page is too narrow for them.",
       "items": [
         {
           "props": {
@@ -121,13 +131,20 @@
     },
     {
       "title": "Booting",
-      "usage": "The form as it arrives: the title row with no buttons, and the fields in their real rhythm.",
+      "usage": "The form as it arrives: the page's own groups, their headers and every field already in place as bars, with the title row keeping More, Cancel and Submit. Nothing moves when the content lands.",
       "items": [
         {
           "props": {
             "loading": true
           },
           "caption": "loading"
+        },
+        {
+          "props": {
+            "loading": true,
+            "loadingShape": "rows"
+          },
+          "caption": "loadingShape rows"
         }
       ]
     }

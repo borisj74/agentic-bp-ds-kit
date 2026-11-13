@@ -328,6 +328,15 @@ skeleton/list-row|{ref/size/1200}
 skeleton/list-actions|56px
 skeleton/record-row|37px
 skeleton/form-row|39px
+# A bar that stands in for a piece of text while it loads: a field label, a section title. The width is picked
+# from how long the real text is (src/ui/LoadingLine/boot.ts), so the bar reads as that text instead of a block
+# every row shares, and it is capped by the column it stands in. 72, 112 and 160 are past the ref scale.
+skeleton/bar/sm|72px
+skeleton/bar/md|112px
+skeleton/bar/lg|160px
+# A bar inside a booting table row (BP COBALT "Skeleton / list row", node 2046:30000): 10 tall, centred in the
+# row, one for every column, with the row's own line under it. 10 is past the ref scale.
+skeleton/row-bar|10px
 # The chrome's own boot blocks (BP COBALT item 1): the app header's logo is 150 x 20, its user chip 130 x 28;
 # a side-menu row is the nav's own 48, with an 18 icon block and a 10 label bar. 150, 130 and 10 are past the
 # ref scale.

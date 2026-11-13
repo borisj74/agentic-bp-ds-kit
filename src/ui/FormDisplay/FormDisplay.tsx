@@ -1,6 +1,8 @@
 "use client";
 import { useId, type ReactNode } from "react";
 import { labelWidthClass, useLabelPosition } from "../Form/FormContext";
+import { Skeleton } from "../Skeleton/Skeleton";
+import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 // The help button matches the one on Input.
@@ -21,10 +23,25 @@ export interface FormDisplayProps {
 
 export function FormDisplay({ label, value, labelPosition: ownLabelPosition, labelWidth, help, empty = "—" }: FormDisplayProps) {
   const labelPosition = useLabelPosition(ownLabelPosition);
+  // A row in a booting record draws itself as bars, in its own place.
+  const booting = useFieldSkeleton();
   // The label column this row stands on. md is the kit's 234.
   const width = labelWidthClass(labelWidth);
   const helpId = useId();
   const blank = value === undefined || value === null || value === "";
+  // Booting: the pair keeps its own row, its label cell and the line under it, so the real row lands in place.
+  if (booting) {
+    return (
+      <dl className={[styles.display, styles[labelPosition], width ? styles[width] : ""].join(" ")} data-label={labelPosition}>
+        <dt className={styles.term}>
+          <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(label)} height="var(--skeleton-cell)" label="" />
+        </dt>
+        <dd className={styles.value}>
+          <Skeleton shape="rect" animation="pulse" width="var(--skeleton-bar-md)" height="var(--skeleton-cell)" label="" />
+        </dd>
+      </dl>
+    );
+  }
   return (
     // A one-pair description list: screen readers read the label, then the value.
     <dl className={[styles.display, styles[labelPosition], width ? styles[width] : ""].join(" ")} data-label={labelPosition}>

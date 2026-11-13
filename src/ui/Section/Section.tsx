@@ -6,7 +6,7 @@ import grid from "../Form/columns.module.css";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 import { Icon } from "../Icon/Icon";
 import { Skeleton } from "../Skeleton/Skeleton";
-import { useBootSkeleton } from "../LoadingLine/boot";
+import { skeletonBarWidth, useBootSkeleton, useFieldSkeleton } from "../LoadingLine/boot";
 import { titleCase } from "../titleCase";
 import styles from "./Section.module.css";
 
@@ -36,8 +36,11 @@ export function Section({
   title, help, actions, children, line = "medium", columns: ownColumns, heading: headingSize, spacing = "default", loading = false, collapsible = false,
   expanded: openProp, defaultExpanded = true, onExpandedChange,
 }: SectionProps) {
-  // Inside a booting frame the block waits its turn in the sequence; on its own it draws at once.
-  const { skeleton: booting } = useBootSkeleton(loading);
+  // Inside a booting frame the block waits its turn in the sequence; on its own it draws at once. A Section in a
+  // booting page boots with the page, so a screen only says loading once, at the top.
+  const { skeleton: own } = useBootSkeleton(loading);
+  const inPage = useFieldSkeleton();
+  const booting = own || inPage;
   const uid = useId();
   const headingId = `${uid}-title`;
   const bodyId = `${uid}-body`;
@@ -74,13 +77,18 @@ export function Section({
               {heading}
             </Button>
           )}
+          {/* The chevron's own square is kept while the block boots, so the title does not slide over when the
+              button arrives. A folded section stays folded: only its header is drawn. */}
+          {collapsible && booting && (
+            <Skeleton shape="rect" animation="pulse" width="var(--control-small)" height="var(--control-small)" label="" />
+          )}
           {/* Booting: the block keeps its header and its name for screen readers, with a bar where the words
               will be. Nothing to help with or act on until it has arrived. */}
           <h2 id={headingId} className={styles.title} aria-describedby={help && !booting ? helpId : undefined}>
             {booting ? (
               <>
                 <span className={styles.srOnly}>{heading}</span>
-                <Skeleton shape="rect" animation="pulse" width="var(--skeleton-title)" height="var(--font-size-regular)" label="" />
+                <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(heading)} height="var(--font-size-regular)" label="" />
               </>
             ) : heading}
           </h2>

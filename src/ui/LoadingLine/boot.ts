@@ -1,5 +1,6 @@
 "use client";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { FormLayoutContext } from "../Form/FormContext";
 
 /**
  * The boot sequence from the Cobalt skeleton block (DSL-199), in its own words:
@@ -116,4 +117,33 @@ export function useBootSkeleton(loading: boolean): { skeleton: boolean; settling
   const boot = useBoot();
   if (!boot || boot.phase === "idle") return { skeleton: loading, settling: false };
   return { skeleton: loading && boot.showSkeleton, settling: loading && boot.settling };
+}
+
+/**
+ * What a piece inside a booting page should draw. A page says once, on FormLayoutContext, that its content has not
+ * arrived; each Section, field and row under it asks here and draws a bar in its own place, so the page keeps the
+ * shape it will have and nothing moves when the content lands. The answer runs through the frame's boot sequence,
+ * so these bars appear and leave with every other skeleton on the page.
+ */
+export function useFieldSkeleton(): boolean {
+  const { loading = false } = useContext(FormLayoutContext);
+  return useBootSkeleton(loading).skeleton;
+}
+
+/** The width steps a text bar takes. Longer than this many characters and the bar steps up. */
+const BAR_SHORT = 10;
+const BAR_MEDIUM = 18;
+
+/**
+ * The width of the bar that stands in for a piece of text. It follows how long the real text is, in three token
+ * steps, so a short label and a long section title do not get the same block. It is a plain width, never a
+ * percentage of the box: a bar is often the only thing in its box — a section title in its heading — and a
+ * percentage there would measure the box the bar itself sizes and come out at nothing. A bar that is wider than
+ * the column it stands in shrinks to the column instead, since every box that holds one lays its children out
+ * in a row.
+ */
+export function skeletonBarWidth(text: string): string {
+  const length = text.trim().length;
+  const step = length <= BAR_SHORT ? "sm" : length <= BAR_MEDIUM ? "md" : "lg";
+  return `var(--skeleton-bar-${step})`;
 }
