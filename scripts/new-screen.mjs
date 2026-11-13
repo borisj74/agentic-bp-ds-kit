@@ -53,7 +53,7 @@ export function findStarter(starters, template) {
  * @param {object} options
  * @param {string} options.root The kit folder (the one holding starters/ and src/).
  * @param {string} [options.template] A starter id, or the name of the pattern it is built on.
- * @param {string} [options.route] The URL the screen gets. Defaults to the starter's id.
+ * @param {string} [options.route] The URL the screen gets, lowercased. Defaults to the starter's id.
  * @param {boolean} [options.force] Overwrite a page that is already there.
  * @returns {{ id: string, title: string, template: string | null, route: string, file: string, url: string }}
  */
@@ -64,10 +64,12 @@ export function newScreen({ root, template, route, force = false }) {
   const starter = findStarter(starters, template);
   if (!starter) throw new NewScreenError(`There is no starter called "${template}".`, { templates: starters });
 
-  const slug = String(route ?? starter.id).trim();
+  // A route is lowercase, so Sales becomes sales rather than being refused. Everything else about it still has
+  // to be a plain slug.
+  const slug = String(route ?? starter.id).trim().toLowerCase();
   if (!SLUG.test(slug)) {
     throw new NewScreenError(
-      `"${slug}" is not a route. Use lowercase letters, numbers and single dashes, like sales or sales-orders.`,
+      `"${slug}" is not a route. Use letters, numbers and single dashes, like sales or sales-orders.`,
     );
   }
   if (RESERVED.includes(slug)) {

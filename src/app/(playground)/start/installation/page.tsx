@@ -106,7 +106,7 @@ export default function Installation() {
                 <CodeBlock code="npm run new-screen -- --template dashboard --route sales" />
                 <ul>
                   <li><code>--template</code> is the starter: <code>list</code>, <code>record</code>, <code>form</code>, <code>dashboard</code>, <code>list-detail</code>, <code>settings</code>, <code>guided-process</code> or <code>blank</code>. An unknown name prints the list.</li>
-                  <li><code>--route</code> is the address the screen gets. It defaults to the starter&apos;s name, and has to be a plain lowercase slug.</li>
+                  <li><code>--route</code> is the address the screen gets. It defaults to the starter&apos;s name, and is lowercased: <code>--route Sales</code> lands at <code>/sales</code>.</li>
                   <li><code>--force</code> overwrites a page that is already there. Without it, an existing page is left alone.</li>
                 </ul>
                 <p>

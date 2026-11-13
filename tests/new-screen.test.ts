@@ -94,8 +94,17 @@ describe("newScreen", () => {
     }
   });
 
-  it("refuses a route that is not a plain lowercase slug", () => {
-    for (const bad of ["Sales", "my screen", "sales/orders", "-sales", "sales-", "sa--les", "../escape"]) {
+  it("lowercases the route it is given", () => {
+    const made = newScreen({ root, template: "dashboard", route: "Sales" });
+    expect(made.route).toBe("sales");
+    expect(made.url).toBe("http://localhost:3000/sales");
+    expect(existsSync(join(root, "src", "app", "sales", "page.tsx"))).toBe(true);
+    // A reserved route is still reserved however it is typed.
+    expect(() => newScreen({ root, template: "dashboard", route: "Components" })).toThrow(/already owns/);
+  });
+
+  it("refuses a route that is not a plain slug", () => {
+    for (const bad of ["my screen", "sales/orders", "-sales", "sales-", "sa--les", "../escape"]) {
       expect(() => newScreen({ root, template: "dashboard", route: bad })).toThrow(/is not a route/);
     }
   });
@@ -205,6 +214,12 @@ describe("the installer", () => {
   it("falls back to the starter's id when no route is given", () => {
     cpSync(join(REPO, "scripts", "new-screen.mjs"), join(root, "scripts", "new-screen.mjs"), { recursive: true });
     expect(addStarter(root, { template: "Dashboard" })).toEqual({ route: "dashboard" });
+  });
+
+  it("prints the lowercased address for a route typed in capitals", () => {
+    cpSync(join(REPO, "scripts", "new-screen.mjs"), join(root, "scripts", "new-screen.mjs"), { recursive: true });
+    expect(addStarter(root, { template: "dashboard", route: "Sales" })).toEqual({ route: "sales" });
+    expect(existsSync(join(root, "src", "app", "sales", "page.tsx"))).toBe(true);
   });
 
   it("does nothing without --template", () => {

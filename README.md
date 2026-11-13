@@ -144,7 +144,7 @@ npm run new-screen -- --template dashboard --route sales
 ```
 
 - `--template` is the starter: `list`, `record`, `form`, `dashboard`, `list-detail`, `settings`, `guided-process` or `blank`. It also takes the name of the pattern the starter is built on, so `--template Dashboard` works too. An unknown name prints the list.
-- `--route` is the address the screen gets. It defaults to the starter's id, and has to be a plain lowercase slug. The catalog's own routes (`components`, `patterns`, `foundations`, `start`) are refused.
+- `--route` is the address the screen gets. It defaults to the starter's id, and is lowercased, so `--route Sales` lands at `/sales`. It has to be a plain slug otherwise: letters, numbers and single dashes. The catalog's own routes (`components`, `patterns`, `foundations`, `start`) are refused.
 - `--force` overwrites a page that is already there. Without it, an existing page is left alone.
 
 The starters are in `starters/`: one folder per starter, plus `starters/index.json` listing them. They are pages, not contracts — a template filled with real-looking content — so they have no `level` and are not in `contracts/index.json`. Each one only composes kit pieces and patterns.

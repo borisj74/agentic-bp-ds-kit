@@ -79,7 +79,8 @@ export function addStarter(target, { template, route }) {
 
   // The copier defaults the route to the starter's id. Read it here too, so the final message can print the
   // screen's address; an id we cannot find is left to the copier, which prints the real list and exits 1.
-  let slug = route;
+  // The copier lowercases the route, so the address printed at the end matches the folder it wrote.
+  let slug = route?.trim().toLowerCase();
   if (!slug) {
     const want = String(template).trim().toLowerCase();
     const list = JSON.parse(readFileSync(starters, "utf8")).starters ?? [];
