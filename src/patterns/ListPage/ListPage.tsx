@@ -1,17 +1,18 @@
 "use client";
 import type { ReactNode } from "react";
 import { Callout } from "@/ui/Callout/Callout";
+import { FormLayoutContext } from "@/ui/Form/FormContext";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
 import { useBootSkeleton } from "@/ui/LoadingLine/boot";
 import { useStickyBand } from "../band";
 import styles from "./ListPage.module.css";
 
-// The widths the bars take across a booting list, so the rows read as data rather than a block of grey. They
-// cycle by row and column, the way the Cobalt screen's do.
-const BOOT_HEAD = ["60%", "70%", "55%", "65%", "60%"];
+// The widths the bars take across a booting list in the rows fallback, so the rows read as data rather than a
+// block of grey. They cycle by row and column, the way the Cobalt screen's do.
 const BOOT_CELL = ["55%", "85%", "70%", "45%", "75%", "60%"];
 
 export type ListPageState = "ready" | "loading" | "empty" | "error";
+export type ListPageLoadingShape = "content" | "rows";
 
 export interface ListPageProps {
   children: ReactNode;
@@ -24,6 +25,7 @@ export interface ListPageProps {
   empty?: ReactNode;
   error?: string;
   onRetry?: () => void;
+  loadingShape?: ListPageLoadingShape;
   loadingRows?: number;
   loadingColumns?: number;
   label?: string;
@@ -33,12 +35,16 @@ export interface ListPageProps {
 // Skeleton or Callout standing in for the rows while there are none. A blueprint only: it composes kit
 // pieces and keeps no state of its own. It sits in the AppShell page, which owns the page padding.
 export function ListPage({
-  children, toolbar, meta, pagination, bulk, state = "ready", empty, error, onRetry, loadingRows = 12, loadingColumns = 5, label,
+  children, toolbar, meta, pagination, bulk, state = "ready", empty, error, onRetry,
+  loadingShape = "content", loadingRows = 12, loadingColumns = 5, label,
 }: ListPageProps) {
   // The skeleton follows the frame's boot sequence: held back for the first 200ms, then kept its full 400ms.
   // On its own, outside a booting frame, a loading list still draws it at once.
   const { skeleton: booting } = useBootSkeleton(state === "loading");
   const rows = state === "ready";
+  // content: the list's own rows draw themselves as bars — the Table's columns, its checkbox cell and its Actions
+  // column, or the ListView's rows, or the grid of Cards — so the records land in the shape their bars held.
+  const content = booting && loadingShape === "content";
   // The bar over the rows is the band that holds at the top of the page: the shared plumbing measures it,
   // says where a Table's column names stop, and marks the band and its lift as the page scrolls.
   const { rootRef, barRef, shadowRef, style } = useStickyBand([bulk, toolbar, children, state]);
@@ -59,23 +65,32 @@ export function ListPage({
       {meta && !bulk && <p className={styles.meta}>{meta}</p>}
       {/* The rows and their pages are one block: the page bar is the table's footer, flush under it. */}
       <div className={styles.body}>
+        {booting && <span className={styles.srOnly} role="status">Loading {label ?? "list"}</span>}
         {rows && children}
-        {booting && (
-          // The shape of the real list, so the page keeps its height until the rows arrive: a 40px row of column
-          // names over 44px rows, each ending in the Actions column (BP COBALT item 1, screen 03).
+        {content && (
+          // Booting, the list's own rows are in the tree as bars, out of reach of the keyboard and out of the
+          // reading order; the one status above says what is loading.
+          <FormLayoutContext.Provider value={{ loading: true }}>
+            <div className={styles.booting} inert aria-hidden="true">{children}</div>
+          </FormLayoutContext.Provider>
+        )}
+        {booting && loadingShape === "rows" && (
+          // rows: the fixed grid, for a list that has no rows to follow yet (BP COBALT item 1, screen 03): a 40px
+          // row of column names, flush under the bar with the table's own 2px line beneath it, over 44px rows,
+          // each ending in the Actions column.
           <div className={styles.loading} style={{ "--boot-columns": Math.max(1, loadingColumns) } as React.CSSProperties}>
             <div className={styles.loadingHead}>
               {Array.from({ length: Math.max(1, loadingColumns) }, (_, c) => (
-                <Skeleton key={c} shape="rect" animation="pulse" height="var(--skeleton-cell)" width={BOOT_HEAD[c % BOOT_HEAD.length]} label={c === 0 ? `Loading ${label ?? "list"}` : ""} />
+                <Skeleton key={c} shape="rect" animation="pulse" height="var(--skeleton-cell)" width="var(--skeleton-column-name)" label="" />
               ))}
               <span />
             </div>
             {Array.from({ length: Math.max(1, loadingRows) }, (_, r) => (
               <div key={r} className={styles.loadingRow}>
                 {Array.from({ length: Math.max(1, loadingColumns) }, (_, c) => (
-                  <Skeleton key={c} shape="rect" animation="pulse" height="var(--skeleton-cell)" width={BOOT_CELL[(r + c) % BOOT_CELL.length]} label="" />
+                  <Skeleton key={c} shape="rect" animation="pulse" height="var(--skeleton-row-bar)" width={BOOT_CELL[(r + c) % BOOT_CELL.length]} label="" />
                 ))}
-                <Skeleton shape="rect" animation="pulse" height="var(--skeleton-cell)" width="50%" label="" />
+                <Skeleton shape="rect" animation="pulse" height="var(--skeleton-row-bar)" width="50%" label="" />
               </div>
             ))}
           </div>

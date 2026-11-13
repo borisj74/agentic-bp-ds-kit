@@ -72,3 +72,8 @@
   .header { flex-wrap: wrap; gap: var(--space-xsmall); }
   .title { flex-basis: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
+
+/* Booting: a bar is 8 tall, but each line of the card has to stand as tall as the words it is waiting for, or
+   the card is short and everything under the scoreboard sits high until the numbers arrive. 1em is the line's
+   own font size, so one rule fits the name, the number and the note alike. */
+.bootLine { display: flex; align-items: center; min-height: calc(1em * var(--line-height-tight)); }

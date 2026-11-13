@@ -47,3 +47,7 @@
 .linkButton { margin: 0; padding: 0; border: 0; background: none; text-align: start; cursor: pointer; }
 
 .action { display: inline-flex; }
+
+/* Booting: a bar is 8 or 10 tall, but each line of an entry has to stand as tall as the words it is waiting
+   for, or the timeline is short and everything under it sits high until the activity arrives. */
+.bootLine { display: flex; align-items: center; min-width: 0; }

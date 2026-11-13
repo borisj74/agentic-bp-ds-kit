@@ -30,13 +30,17 @@ export function FormDisplay({ label, value, labelPosition: ownLabelPosition, lab
   const helpId = useId();
   const blank = value === undefined || value === null || value === "";
   // Booting: the pair keeps its own row, its label cell and the line under it, so the real row lands in place.
+  // Each cell also keeps the line box its own words will take, and a row with help keeps that button's square:
+  // an 8px bar is not allowed to size the row, or every row below it sits high while the record loads and drops
+  // when the values arrive.
   if (booting) {
     return (
       <dl className={[styles.display, styles[labelPosition], width ? styles[width] : ""].join(" ")} data-label={labelPosition}>
-        <dt className={styles.term}>
+        <dt className={[styles.term, styles.bootTerm].join(" ")}>
           <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(label)} height="var(--skeleton-cell)" label="" />
+          {help && <span className={styles.bootHelp} aria-hidden="true" />}
         </dt>
-        <dd className={styles.value}>
+        <dd className={[styles.value, styles.bootValue].join(" ")}>
           <Skeleton shape="rect" animation="pulse" width="var(--skeleton-bar-md)" height="var(--skeleton-cell)" label="" />
         </dd>
       </dl>

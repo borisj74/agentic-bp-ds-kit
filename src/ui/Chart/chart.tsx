@@ -3,6 +3,8 @@
 // the tooltip and the screen-reader table. Internal to the charts; screens use the chart components.
 import { useLayoutEffect, useState, type KeyboardEvent, type ReactNode, type RefObject } from "react";
 import { Legend as KitLegend, INTENTS, type LegendIntent } from "../Legend/Legend";
+import { Skeleton } from "../Skeleton/Skeleton";
+import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import styles from "./chart.module.css";
 
 // The chart intents are the kit Legend keys, so a chart and its Legend always agree.
@@ -96,15 +98,77 @@ export function ChartEmpty({ label, height }: { label: string; height: number })
   return <div className={styles.empty} style={{ height }}>{label}</div>;
 }
 
-export function ChartFrame({ label, title, subtitle, showHeader = true, animate, children, onKeyDown, onBlur, active, className }: {
+// The bars a booting chart stands on, as a share of the plot: six of them, the shape of the Cobalt chart
+// skeleton (node 2046:29938) rather than any one chart's data.
+const BOOT_BARS = [0.31, 0.5, 0.39, 0.62, 0.47, 0.7];
+
+export function ChartFrame({
+  label, title, subtitle, showHeader = true, animate, children, onKeyDown, onBlur, active, className,
+  plotHeight, legendKeys = 0, legendPosition = "bottom",
+}: {
   label: string; title?: string; subtitle?: string; showHeader?: boolean;
   animate: boolean; children: ReactNode; active: boolean;
   onKeyDown?: (e: KeyboardEvent) => void; onBlur?: () => void;
   // A chart that needs a floor width of its own, like a pie that must never be narrower than itself.
   className?: string;
+  // How tall the drawing is, so a booting chart holds the room the real one will take.
+  plotHeight?: number;
+  // How many keys the legend has, and where it sits, so a booting chart holds that room too. 0 draws none.
+  legendKeys?: number;
+  legendPosition?: "top" | "bottom" | "end";
 }) {
   // A focusable figure: arrow keys move through the data and show the tooltip, like pointing at it.
   const heading = showHeader && (title || subtitle);
+  // A chart in a booting page draws its own frame: the title as a bar at the length its words will take, and the
+  // plot as a framed box of bars standing on its floor (BP COBALT "chart skeleton", node 2046:29938). The figure
+  // is not a focus stop while it is bars, and there is no data to step through.
+  const booting = useFieldSkeleton();
+  const plot = plotHeight && plotHeight > 0 ? plotHeight : 0;
+  if (booting) {
+    const bootPlot = (
+      <div className={styles.bootPlot} style={plot ? { height: `${plot}px` } : undefined}>
+        {BOOT_BARS.map((share, i) => (
+          // A share of the plot in pixels, not a percentage: a bar is the only thing in its own box, and a
+          // percentage there measures the box the bar itself sizes.
+          <Skeleton key={i} shape="rect" animation="pulse" height={plot ? Math.round(share * plot) : `calc(${share} * var(--skeleton-block))`} label="" />
+        ))}
+      </div>
+    );
+    // The legend keeps its own room: a chart that has one is as tall (or, beside the plot, as wide) booting as
+    // it will be once the keys arrive, so nothing under it moves. Each key is the Legend's own swatch and a bar
+    // on the Legend's own line box.
+    const bootKeys = legendKeys > 0 ? (
+      <ul className={[styles.bootLegend, legendPosition === "end" ? styles.bootLegendColumn : ""].join(" ")} aria-hidden="true">
+        {Array.from({ length: legendKeys }, (_, i) => (
+          <li key={i} className={styles.bootKey}>
+            <Skeleton shape="rect" animation="pulse" width="var(--chart-swatch)" height="var(--chart-swatch)" label="" />
+            <Skeleton shape="rect" animation="pulse" width="var(--skeleton-bar-sm)" height="var(--skeleton-cell)" label="" />
+          </li>
+        ))}
+      </ul>
+    ) : null;
+    return (
+      <figure className={[styles.chart, className ?? ""].join(" ")} aria-hidden="true">
+        {heading && (
+          <figcaption className={styles.heading}>
+            {title && (
+              <span className={styles.title}>
+                <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(title)} height="var(--font-size-regular)" label="" />
+              </span>
+            )}
+            {subtitle && (
+              <span className={styles.subtitle}>
+                <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(subtitle)} height="var(--skeleton-cell)" label="" />
+              </span>
+            )}
+          </figcaption>
+        )}
+        {legendPosition === "end" ? <div className={styles.beside}>{bootPlot}{bootKeys}</div>
+          : legendPosition === "top" ? <>{bootKeys}{bootPlot}</>
+          : <>{bootPlot}{bootKeys}</>}
+      </figure>
+    );
+  }
   return (
     <figure
       className={[styles.chart, animate ? styles.animated : "", active ? styles.active : "", className ?? ""].join(" ")}

@@ -2,7 +2,7 @@
   "name": "ListPage",
   "path": "src/patterns/ListPage/ListPage.tsx",
   "intent": "A list of records: the bar to find and filter them, the rows themselves, and the pages under them.",
-  "usage": "Use ListPage for any screen that lists records: invoices, accounts, quotes. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the filters, the rows and which page is showing. Pass the kit Toolbar as toolbar and the list itself as children. How the records are laid out is the Toolbar's own view menu: Table View is a kit Table that runs to the bottom of the page, the Pagination at its foot. The page is what scrolls down: the Toolbar holds at the top under the compact PageHeader bar, the Table's column names hold under the Toolbar, and the page name with anything between it and the list — a summary, a notice — scrolls away behind the trail. A Table too wide for the page is the one thing that scrolls sideways on its own, inside its own box, and then its column names hold at the top of that box rather than under the Toolbar — a cell can only hold still against whatever scrolls. The page itself never slides sideways. Under that band is the scroll shadow: a lift that reaches both page edges while the bar and the table keep the page's side padding, drawn only once the band has pinned, and the column names give up their own line while it is. The pattern measures the bar and the names and says how far down they stop in --table-stick-top, so it keeps up when the filter bar opens. The frame does that part: AppShell shrinks the name to the compact bar on its own, and takes the bar's own edge off while the band below is lifted, so a list screen wires nothing, List View a kit ListView with selection multiple (its ticks feed the same bulk bar), Card View a grid of kit Cards. The screen swaps children to match. meta is when the rows were read, one quiet line under the bar; the page carries one and nothing below repeats it. pagination takes a kit Pagination, flush under the rows so it reads as the table's own footer, and it goes whenever something else is standing in for them. bulk is the bar of actions for the rows that are ticked; it takes the toolbar's place while something is selected, so the two are never both there. state swaps what stands in for the rows: loading draws the boot skeleton in their shape, empty shows what you pass as empty (a kit EmptyState), and error shows the error as a kit Callout. It goes inside the AppShell page, under the PageHeader, so it adds no page padding of its own. state loading is the boot skeleton: a 40px row of column names over 44px rows ending in the Actions column, under a Toolbar in its own loading state. Inside a booting AppShell the boot skeleton follows the frame's sequence. See contracts/listpage.json for the full contract.",
+  "usage": "Use ListPage for any screen that lists records: invoices, accounts, quotes. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the filters, the rows and which page is showing. Pass the kit Toolbar as toolbar and the list itself as children. How the records are laid out is the Toolbar's own view menu: Table View is a kit Table that runs to the bottom of the page, the Pagination at its foot. The page is what scrolls down: the Toolbar holds at the top under the compact PageHeader bar, the Table's column names hold under the Toolbar, and the page name with anything between it and the list — a summary, a notice — scrolls away behind the trail. A Table too wide for the page is the one thing that scrolls sideways on its own, inside its own box, and then its column names hold at the top of that box rather than under the Toolbar — a cell can only hold still against whatever scrolls. The page itself never slides sideways. Under that band is the scroll shadow: a lift that reaches both page edges while the bar and the table keep the page's side padding, drawn only once the band has pinned, and the column names give up their own line while it is. The pattern measures the bar and the names and says how far down they stop in --table-stick-top, so it keeps up when the filter bar opens. The frame does that part: AppShell shrinks the name to the compact bar on its own, and takes the bar's own edge off while the band below is lifted, so a list screen wires nothing, List View a kit ListView with selection multiple (its ticks feed the same bulk bar), Card View a grid of kit Cards. The screen swaps children to match. meta is when the rows were read, one quiet line under the bar; the page carries one and nothing below repeats it. pagination takes a kit Pagination, flush under the rows so it reads as the table's own footer, and it goes whenever something else is standing in for them. bulk is the bar of actions for the rows that are ticked; it takes the toolbar's place while something is selected, so the two are never both there. state swaps what stands in for the rows: loading draws the boot skeleton in their shape, empty shows what you pass as empty (a kit EmptyState), and error shows the error as a kit Callout. It goes inside the AppShell page, under the PageHeader, so it adds no page padding of its own. state loading is the boot skeleton: the rows the list was given, drawing themselves — a Table's own column names 64x8 over 10px row bars, in its own columns, with its tick cell and its Actions column, its 2px line under the names and nothing between them and the bar above — under a Toolbar in its own loading state. loadingShape rows keeps the old fixed grid for a list with nothing to follow yet. Inside a booting AppShell the boot skeleton follows the frame's sequence. See contracts/listpage.json for the full contract.",
   "composes": [
     "Toolbar",
     "Table",
@@ -58,15 +58,23 @@
       "type": "() => void",
       "note": "Adds Try again to that Callout."
     },
+    "loadingShape": {
+      "enum": [
+        "content",
+        "rows"
+      ],
+      "default": "content",
+      "note": "What a loading list draws. content follows the rows it was given: a Table draws its own head row and body rows, with its columns, their widths, its tick cell and its Actions column; a ListView draws its groups and rows; a grid of Cards draws its cards. It is what a list with children should use. rows is the fallback for a list that has nothing to follow yet: a fixed grid of loadingRows rows over loadingColumns columns, with a tick column at the start and an Actions column at the end."
+    },
     "loadingRows": {
       "type": "number",
       "default": 12,
-      "note": "How many rows the boot skeleton draws, each 44px, like the real rows."
+      "note": "How many rows the rows fallback draws, each 44px, like the real rows. It says nothing in the content shape, where the list's own rows decide."
     },
     "loadingColumns": {
       "type": "number",
       "default": 5,
-      "note": "How many columns the boot skeleton draws, before the Actions column at the end."
+      "note": "How many columns the rows fallback draws, between the tick column at the start and the Actions column at the end. It says nothing in the content shape, where the Table's own columns decide."
     },
     "label": {
       "type": "string",
@@ -104,6 +112,25 @@
           "props": {
             "state": "ready"
           }
+        }
+      ]
+    },
+    {
+      "title": "Booting",
+      "usage": "The list as it arrives: the bar in its loading state, then the table's own column names and rows as bars — its columns, its tick cell, its Actions column — so the records land where their bars stood.",
+      "items": [
+        {
+          "props": {
+            "state": "loading"
+          },
+          "caption": "loading"
+        },
+        {
+          "props": {
+            "state": "loading",
+            "loadingShape": "rows"
+          },
+          "caption": "loadingShape rows"
         }
       ]
     },

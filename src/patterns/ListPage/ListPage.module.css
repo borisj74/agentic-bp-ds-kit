@@ -18,8 +18,12 @@
 /* Table View: no gap under the bar, so the bar and the column names read as one pinned band with the rows
    passing under it. The table itself is not a box that scrolls — the page is the only scroller — so the names
    hold against the page, stopping under the bar: the pattern measures the bar and says how far down in
-   --table-stick-top, which keeps up when the filter bar opens and makes the bar taller. */
+   --table-stick-top, which keeps up when the filter bar opens and makes the bar taller. The rule reaches the
+   table wherever in the block it sits, so it holds while the rows are bars in their own box too. */
 .list:has(> .body table) { gap: 0; }
+/* The box a booting list's rows sit in adds nothing of its own, so the rows and the layout classes in them lay
+   out against the block as they will once they arrive. */
+.booting { display: contents; }
 
 /* When the rows were read: one quiet line under the bar, at the page's left edge. Over a table the list has no
    gap, so the line brings its own air above and below. */
@@ -63,8 +67,8 @@
 /* Cards are separate blocks, not rows, so the page bar sits one grid gutter under them instead of flush. */
 .body:has(> :global(.layout-split), > :global(.layout-metrics)) { gap: var(--layout-gutter-md); }
 
-/* What stands in for the rows keeps them company in the same place: lines while loading, a block otherwise. */
-.loading { padding-block: var(--space-small); }
+/* What stands in for the rows stands where they would: the column names flush under the bar, with the table's
+   own 2px line under them, so nothing shifts when the rows arrive. */
 .blank { display: flex; flex-direction: column; justify-content: center; min-height: var(--list-blank-min); }
 
 /* The bulk bar sits where the toolbar was, tinted so it is clear the list is in a picking state. */
@@ -82,5 +86,14 @@
   grid-template-columns: repeat(var(--boot-columns), minmax(0, 1fr)) var(--skeleton-list-actions);
   border-bottom: var(--border-width-thin) solid var(--border-neutral-subtle);
 }
-.loadingHead { height: var(--skeleton-list-head); }
+.loadingHead {
+  height: var(--skeleton-list-head);
+  /* The column names carry the table's own line (HeaderCell): 2px brand-faint, not a row's faint hairline. */
+  border-bottom: var(--border-width-medium) solid var(--border-brand-faint);
+}
 .loadingRow { height: var(--skeleton-list-row); }
+/* The first column of a real table is its checkbox cell: a fixed, empty column, never a bar. */
+.loadingHead, .loadingRow { grid-template-columns: var(--control-large) repeat(var(--boot-columns), minmax(0, 1fr)) var(--skeleton-list-actions); }
+.loadingHead::before, .loadingRow::before { content: ""; }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

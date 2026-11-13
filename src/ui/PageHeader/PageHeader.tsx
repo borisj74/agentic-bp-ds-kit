@@ -6,7 +6,7 @@ import { Button } from "../Button/Button";
 import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { Icon } from "../Icon/Icon";
 import { Skeleton } from "../Skeleton/Skeleton";
-import { useBootSkeleton } from "../LoadingLine/boot";
+import { skeletonBarWidth, useBootSkeleton } from "../LoadingLine/boot";
 import { Tooltip } from "../Tooltip/Tooltip";
 import { titleCase } from "../titleCase";
 import styles from "./PageHeader.module.css";
@@ -46,6 +46,8 @@ export function PageHeader({
 }: PageHeaderProps) {
   // Kit headings read in title case, so a screen can pass its copy either way.
   const heading = titleCase(title);
+  // The whole trail as one string, so a booting crumb bar is as long as the trail it stands in for.
+  const trail = [...breadcrumbs.map((b) => b.label), heading].join(" / ");
   // Booting, the title row holds its own shapes: a crumb trail, the page icon if there is one, and the title.
   // The actions keep their places as plain blocks rather than going away: BP COBALT screen 56 keeps More, Cancel
   // and Submit in the title row of a form while it loads, so the row does not resettle when they arrive.
@@ -83,11 +85,20 @@ export function PageHeader({
           // The name is still read out, so the page has a heading before anything arrives; the bars stand in
           // for what it will say.
           <>
-            <Skeleton shape="rect" animation="pulse" width="var(--skeleton-crumbs)" height="var(--skeleton-cell)" label="" />
-            <div className={styles.titleRow}>
+            {/* The bars are as long as the words they stand in for, so the trail and the name arrive at the
+                length their bars held. The step back keeps its own button square, not a smaller stand-in, so
+                the title row does not resettle when the arrow arrives. */}
+            {/* Each row keeps the line box its own words will take, and the badge its own pill, so the header
+                is as tall booting as it will be and nothing under it moves when the name arrives. */}
+            <span className={styles.bootCrumbs}>
+              <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(trail)} height="var(--skeleton-cell)" label="" />
+            </span>
+            <div className={[styles.titleRow, styles.bootTitleRow].join(" ")}>
+              {back && <Skeleton shape="rect" animation="pulse" width="var(--control-small)" height="var(--control-small)" label="" />}
               {icon && <Skeleton shape="rect" animation="pulse" width="var(--icon-size-large)" height="var(--icon-size-large)" label="" />}
               <h1 className={styles.srOnly}>{heading}</h1>
-              <Skeleton shape="rect" animation="pulse" width="var(--skeleton-title)" height="var(--font-size-large)" label="" />
+              <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(heading)} height="var(--font-size-large)" label="" />
+              {badge && <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(badge)} height="var(--badge-height-md)" label="" />}
             </div>
           </>
         ) : sticky ? (

@@ -78,3 +78,16 @@
   .search { order: -1; flex: 1 1 100%; width: 100%; }
   .divider { display: none; }
 }
+
+/* Booting: every control is one plain block at its own width and the control's own 28 height, in the page's
+   skeleton fill, with the control's radius — the Skeleton's rect already carries both. Nothing here draws a box
+   or a border: an empty white box with an edge reads as a real, empty button rather than as something still on
+   its way. Only the one strong Button is a step darker (the Skeleton band tone), so the bar still says where
+   the main action will land. A deliberate change from BP COBALT "Skeleton / button" (node 2046:29482), which
+   draws the outline buttons as white bordered boxes with a bar inside. */
+/* The blocks hold the widths of the controls they stand in for, so nothing moves when the controls arrive. */
+.loading :is(.start, .end) > [aria-busy] { flex: none; max-width: 100%; }
+/* Under 1024px the real search gives way first when the line is short, so its block does too. */
+@container (max-width: 1023px) {
+  .loading :is(.start, .end) > [aria-busy] { flex: 0 1 auto; min-width: 0; }
+}

@@ -41,8 +41,9 @@ export interface TableProps {
 
 const idOf = (row: TableRow, i: number) => row.id ?? String(i);
 
-// How many rows a booting table stands in for: enough to read as a list without claiming a length it does not
-// know yet (BP COBALT item 1).
+// How many rows a booting table stands in for when it has none yet: enough to read as a list without claiming a
+// length it does not know (BP COBALT item 1). A table that already has its rows — one refreshing them — boots at
+// the length it has, so the page keeps its height.
 const BOOT_ROWS = 3;
 
 // One table: headers are kit HeaderCells, values kit Cells. The rows carry the lines and the hover and selected
@@ -140,8 +141,13 @@ export function Table({
   // this table's columns, so the list arrives in the shape its skeleton held. The bars say nothing to a screen
   // reader; the page that is loading says so once.
   if (booting) {
+    // A value bar follows how long the real value's column name is; a column name is one short bar of its own
+    // width in every column, since a name is a word or two whatever the column holds.
     const bar = (text: string) => (
       <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(text)} height="var(--skeleton-row-bar)" label="" />
+    );
+    const nameBar = () => (
+      <Skeleton shape="rect" animation="pulse" width="var(--skeleton-column-name)" height="var(--skeleton-cell)" label="" />
     );
     return (
       <div className={styles.wrap}>
@@ -151,12 +157,15 @@ export function Table({
             <tr>
               {selectable && <th className={styles.select}><span className={styles.bootCell} /></th>}
               {columns.map((c) => (
-                <th key={c.key} scope="col"><span className={styles.bootCell}>{bar(c.header ?? c.key)}</span></th>
+                // A column with nothing to name, like row actions, keeps its cell and stays empty.
+                <th key={c.key} scope="col" style={c.width ? { width: c.width } : undefined}>
+                  <span className={styles.bootCell}>{c.header ? nameBar() : null}</span>
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {Array.from({ length: BOOT_ROWS }, (_, i) => (
+            {Array.from({ length: rows.length || BOOT_ROWS }, (_, i) => (
               <tr key={i}>
                 {selectable && <td className={styles.select}><span className={styles.bootCell} /></td>}
                 {columns.map((c) => (

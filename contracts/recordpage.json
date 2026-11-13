@@ -2,7 +2,7 @@
   "name": "RecordPage",
   "path": "src/patterns/RecordPage/RecordPage.tsx",
   "intent": "One record: its name and actions at the top, the tabs of what belongs to it, the numbers that matter, and its details in sections underneath.",
-  "usage": "Use RecordPage for a single record: an account, an invoice, a quote. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the tab, the sections and what is open. Pass the kit PageHeader as header, with the trail, the record name, its status Badge and the record actions. tabs takes a kit Tabs of what belongs to the record, with counts. notice writes anything that needs saying about the record, as a kit Callout. toolbar takes a kit Toolbar for what acts on the tab that is showing; it stays at the top as the record scrolls, right under the compact header bar. summary takes a kit Scoreboard of the few numbers people came for. children are the details: kit Sections, each holding its FormDisplay rows straight in as children. columns (1, 2 or 3, default 2) and labelPosition (default start) are set once on the RecordPage and every Section of rows, or Form, inside the details follows them unless it sets its own; each column stops at 554px (--layout-column-max) and the rows stay at the start, so on a wide screen the space past the last column stays empty instead of stretching the rows. Never more than 3 columns, even at 2560px and wider. Related lists under the details, a Section holding a kit Table, keep the full width. Sections side by side use .layout-split from contracts/layout.json: two, three with .layout-split--thirds, or four with .layout-split--quarters. The name and the bar stay put; the tabs and the notice scroll away under them. A related list under the details is a Section holding a Table: it flows with the record, and its column names hold under the bar as the rows pass beneath them, the record saying how far down that is in --table-stick-top. One too wide for the record scrolls sideways inside its own box rather than moving the page, and then its names hold at the top of that box instead of under the bar. onStickyChange says when the top has scrolled away: keep that boolean in the screen and pass it to the PageHeader as sticky, so the name shrinks to the kit's compact 52px bar whose trail ends in the record name. It goes in the AppShell page, which owns the page padding. loading is the boot skeleton: the tab strip as bars, the bar in its loading state, then shaded label cells and values 37px apart in the record's columns. Inside a booting AppShell the boot skeleton follows the frame's sequence. See contracts/recordpage.json for the full contract.",
+  "usage": "Use RecordPage for a single record: an account, an invoice, a quote. It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the tab, the sections and what is open. Pass the kit PageHeader as header, with the trail, the record name, its status Badge and the record actions. tabs takes a kit Tabs of what belongs to the record, with counts. notice writes anything that needs saying about the record, as a kit Callout. toolbar takes a kit Toolbar for what acts on the tab that is showing; it stays at the top as the record scrolls, right under the compact header bar. summary takes a kit Scoreboard of the few numbers people came for. children are the details: kit Sections, each holding its FormDisplay rows straight in as children. columns (1, 2 or 3, default 2) and labelPosition (default start) are set once on the RecordPage and every Section of rows, or Form, inside the details follows them unless it sets its own; each column stops at 554px (--layout-column-max) and the rows stay at the start, so on a wide screen the space past the last column stays empty instead of stretching the rows. Never more than 3 columns, even at 2560px and wider. Related lists under the details, a Section holding a kit Table, keep the full width. Sections side by side use .layout-split from contracts/layout.json: two, three with .layout-split--thirds, or four with .layout-split--quarters. The name and the bar stay put; the tabs and the notice scroll away under them. A related list under the details is a Section holding a Table: it flows with the record, and its column names hold under the bar as the rows pass beneath them, the record saying how far down that is in --table-stick-top. One too wide for the record scrolls sideways inside its own box rather than moving the page, and then its names hold at the top of that box instead of under the bar. onStickyChange says when the top has scrolled away: keep that boolean in the screen and pass it to the PageHeader as sticky, so the name shrinks to the kit's compact 52px bar whose trail ends in the record name. It goes in the AppShell page, which owns the page padding. loading is the boot skeleton: the tab strip as one bar per real tab, the bar in its loading state, and the details drawing themselves — every Section its header, every row its label and value, every Scoreboard card, chart and Table its own shape — so the record arrives where its bars stood. loadingShape rows keeps the old fixed grid for a record whose details have not arrived. Inside a booting AppShell the boot skeleton follows the frame's sequence. See contracts/recordpage.json for the full contract.",
   "composes": [
     "PageHeader",
     "Tabs",
@@ -70,12 +70,20 @@
     "loading": {
       "type": "boolean",
       "default": false,
-      "note": "Booting: the tab strip, then shaded label cells and their values 37px apart, in the record's own columns. The details, the notice and the summary wait."
+      "note": "Booting: the record draws its own content as bars. One bar per tab it has, with the 2px underline under the one that is showing; the details are rendered and each Section, FormDisplay row, Scoreboard card, chart and Table inside draws itself in its own place, so the shape on screen is the shape the record will have. The details and the summary are inert and hidden from screen readers while they are bars, and the record says \"Loading <label>\" once. The notice holds the height it will take. Inside a booting AppShell it follows the frame's sequence."
+    },
+    "loadingShape": {
+      "enum": [
+        "content",
+        "rows"
+      ],
+      "default": "content",
+      "note": "What a booting record draws. content follows the real details, so nothing moves when they arrive; it is what a record with details should use. rows is the fallback for a record whose details have not arrived: a fixed grid of loadingRows label-and-value rows in two columns that fill the content width with no gap between them, each row a shaded 210px label cell with its label bar ending at the cell edge. Past two columns the rows no longer read as a record, so rows always draws two (one when columns is 1)."
     },
     "loadingRows": {
       "type": "number",
       "default": 16,
-      "note": "How many label and value rows the boot skeleton draws, split across the columns."
+      "note": "How many label and value rows the rows fallback draws, split across its two columns. It says nothing in the content shape, where the record's own details decide."
     },
     "label": {
       "type": "string",
@@ -131,13 +139,20 @@
     },
     {
       "title": "Booting",
-      "usage": "The record as it arrives: the tabs, the bar and the fields in their real rhythm, with no words in them yet.",
+      "usage": "The record as it arrives: one bar per tab, the bar in its loading state, and the record's own sections and rows already in place as bars. Nothing moves when the details land.",
       "items": [
         {
           "props": {
             "loading": true
           },
           "caption": "loading"
+        },
+        {
+          "props": {
+            "loading": true,
+            "loadingShape": "rows"
+          },
+          "caption": "loadingShape rows"
         }
       ]
     }

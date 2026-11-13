@@ -518,7 +518,8 @@ export function XYChart({
   // Where the keys sit: under the chart, over it, or in a column beside it.
   return (
     <ChartFrame
-      label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={animate} active={active !== null}
+      label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={animate} active={active !== null} plotHeight={h}
+      legendKeys={showLegend ? list.length + refs.length : 0} legendPosition={legendPosition}
       onKeyDown={onKeyDown} onBlur={() => setActive(null)}
     >
       {legendPosition === "end" ? <div className={s.beside}>{plot}{keys}</div> : legendPosition === "top" ? <>{keys}{plot}</> : <>{plot}{keys}</>}
