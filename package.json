@@ -9,6 +9,7 @@
     "tokens": "node scripts/build-tokens.mjs",
     "figma:guidelines": "node scripts/figma-guidelines.mjs",
     "sync:index": "node scripts/sync-index.mjs",
+    "new-screen": "node scripts/new-screen.mjs",
     "audit:tokens": "node --env-file-if-exists=.env.local scripts/audit-tokens.mjs",
     "dev": "next dev",
     "build": "next build",

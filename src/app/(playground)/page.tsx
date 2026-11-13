@@ -103,6 +103,7 @@ export default function Overview() {
               <LinkList
                 label="Start pages"
                 items={[
+                  { id: "start-here", label: "Start here", href: "/start/start-here", icon: "rocket_launch", description: "New here? Start from a working screen and change it in your own words." },
                   { id: "install", label: "Installation", href: "/start/installation", icon: "download", description: "Get the kit running on your computer." },
                   { id: "patterns", label: "Using patterns", href: "/start/patterns", icon: "dashboard", description: "Pick the right blueprint for a screen and fill it in." },
                   { id: "prompting", label: "Prompting", href: "/start/prompting", icon: "chat", description: "How to ask the assistant for screens that come out right." },
