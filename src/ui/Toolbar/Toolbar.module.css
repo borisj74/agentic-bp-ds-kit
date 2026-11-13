@@ -79,22 +79,15 @@
   .divider { display: none; }
 }
 
-/* Booting (BP COBALT "Skeleton / button", node 2046:29482): a control's own 28 box, radius 4.
-   outline (and the search box): white paper with a 1px subtle border, the bar 12 in from each end, so the box
-   reads as the button that is coming rather than as a hole in the band. icon: the same box, square, with a 14
-   square in the middle. ghost: no box at all, only the bar — a minimal button has no edge to stand in for. The
-   one strong button is a solid block and needs no box, so it is drawn straight as a Skeleton. */
-.bootControl {
-  box-sizing: border-box; display: flex; align-items: center; flex: none;
-  height: var(--control-small); max-width: 100%; border-radius: var(--radius-medium);
-}
-.boot-outline, .boot-icon {
-  background: var(--bg-neutral-min); border: var(--border-width-thin) solid var(--border-neutral-subtle);
-}
-.boot-outline { padding-inline: var(--space-small); }
-.boot-icon { justify-content: center; width: var(--control-small); }
-.boot-ghost { justify-content: center; }
-/* Under 1024px the real search gives way first when the line is short, so its boot box does too. */
+/* Booting: every control is one plain block at its own width and the control's own 28 height, in the page's
+   skeleton fill, with the control's radius — the Skeleton's rect already carries both. Nothing here draws a box
+   or a border: an empty white box with an edge reads as a real, empty button rather than as something still on
+   its way. Only the one strong Button is a step darker (the Skeleton band tone), so the bar still says where
+   the main action will land. A deliberate change from BP COBALT "Skeleton / button" (node 2046:29482), which
+   draws the outline buttons as white bordered boxes with a bar inside. */
+/* The blocks hold the widths of the controls they stand in for, so nothing moves when the controls arrive. */
+.loading :is(.start, .end) > [aria-busy] { flex: none; max-width: 100%; }
+/* Under 1024px the real search gives way first when the line is short, so its block does too. */
 @container (max-width: 1023px) {
-  .loading .bootControl { flex: 0 1 auto; min-width: 0; }
+  .loading :is(.start, .end) > [aria-busy] { flex: 0 1 auto; min-width: 0; }
 }

@@ -65,17 +65,17 @@ function flat(node: ReactNode): ReactNode[] {
   );
 }
 
-// Which shape a control takes while it boots (BP COBALT "Skeleton / button", node 2046:29482). A Button says
-// which it is: the one strong one is the solid block, a minimal one is the bare bar, an icon-only one a square,
-// and anything else the bordered box. Anything that is not a kit Button is drawn as that box too.
-export type ToolbarBootKind = "outline" | "icon" | "ghost" | "primary";
+// How wide and how dark a control's block is while it boots. Every control is a plain block of the page's own
+// skeleton fill: an empty white box with a border reads as a real, empty button rather than as something still
+// coming. Only the one strong Button is a step darker, so the bar still says where the main action will be.
+// A Button says which it is; anything that is not a kit Button is drawn as a plain block too.
+export type ToolbarBootKind = "block" | "icon" | "primary";
 function bootKind(node: ReactNode): ToolbarBootKind {
-  if (!isValidElement(node) || node.type !== Button) return "outline";
+  if (!isValidElement(node) || node.type !== Button) return "block";
   const p = node.props as { emphasis?: string; iconOnly?: boolean };
   if (p.iconOnly) return "icon";
   if (p.emphasis === "strong") return "primary";
-  if (p.emphasis === "minimal") return "ghost";
-  return "outline";
+  return "block";
 }
 
 function foldActions(actions: ReactNode): FoldedAction[] | null {
@@ -240,41 +240,35 @@ export function Toolbar({
   );
 
   // Inside a booting frame the bar waits its turn in the sequence; on its own it draws at once.
-  // Booting (BP COBALT "Skeleton / button", node 2046:29482): the bar keeps its own band, height and rhythm, and
-  // every control it was given stands where it will stand — an outline button and the search box as a white
-  // bordered box with a bar in it, an icon-only button as that box with a square, a minimal one as the bar alone,
-  // and the one strong one as a solid block. Nothing has words in it, so a skeleton never pretends to read.
+  // Booting: the bar keeps its own band, height and rhythm, and every control it was given stands as one plain
+  // block at that control's real width and height, in the page's own skeleton fill. The one strong Button is a
+  // step darker. Nothing is drawn as an empty bordered box and nothing has a bar inside it: a skeleton must not
+  // read as a real, empty control. (A deliberate change from BP COBALT "Skeleton / button", node 2046:29482.)
   if (booting) {
-    const block = (key: string, width: string, kind: ToolbarBootKind) => {
-      if (kind === "primary") {
-        return <Skeleton key={key} shape="rect" tone="band" animation="pulse" width={width} height="var(--control-small)" label="" />;
-      }
-      return (
-        <span key={key} className={[styles.bootControl, styles[`boot-${kind}`]].join(" ")} style={{ width: kind === "icon" ? undefined : width }}>
-          <Skeleton
-            shape="rect" animation="pulse" label=""
-            width={kind === "ghost" ? "var(--skeleton-button-ghost)" : kind === "icon" ? "var(--skeleton-button-icon)" : undefined}
-            height={kind === "icon" ? "var(--skeleton-button-icon)" : "var(--skeleton-cell)"}
-          />
-        </span>
-      );
-    };
+    const block = (key: string, width: string, kind: ToolbarBootKind) => (
+      <Skeleton
+        key={key} shape="rect" animation="pulse" label=""
+        tone={kind === "primary" ? "band" : "default"}
+        width={kind === "icon" ? "var(--control-small)" : width}
+        height="var(--control-small)"
+      />
+    );
     const actionBlocks = flat(actions);
     return (
       <div className={[styles.toolbar, buttons === "subtle" ? styles.subtle : "", styles.loading].join(" ")} role="group" aria-label={label} aria-busy="true">
         <div className={styles.bar}>
           <div className={styles.start}>
-            {filters && block("filters", "var(--toolbar-filters-skeleton)", "outline")}
-            {hasSearch && block("search", "var(--toolbar-search)", "outline")}
-            {control && block("field", "var(--toolbar-action-skeleton)", "outline")}
+            {filters && block("filters", "var(--toolbar-filters-skeleton)", "block")}
+            {hasSearch && block("search", "var(--toolbar-search)", "block")}
+            {control && block("field", "var(--toolbar-action-skeleton)", "block")}
             {/* The line between finding and viewing is the bar's own, so it stands while the controls boot. */}
             {find && viewing && <span className={styles.divider} aria-hidden="true" />}
-            {views.length > 0 && block("views", "var(--toolbar-views-skeleton)", "outline")}
+            {views.length > 0 && block("views", "var(--toolbar-views-skeleton)", "block")}
             {onRefresh && block("refresh", "var(--control-small)", "icon")}
           </div>
           {hasEnd && (
             <div className={styles.end}>
-              {moreActions && moreActions.length > 0 && block("more", "var(--toolbar-more-skeleton)", "ghost")}
+              {moreActions && moreActions.length > 0 && block("more", "var(--toolbar-more-skeleton)", "block")}
               {actionBlocks.map((child, i) => block(`action-${i}`, "var(--toolbar-action-skeleton)", bootKind(child)))}
             </div>
           )}

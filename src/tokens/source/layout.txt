@@ -346,12 +346,6 @@ skeleton/nav-icon|18px
 skeleton/nav-label|10px
 # A booting settings tile: the kit NavTile's 72 square with its 16 padding above and below it.
 skeleton/tile|104px
-# A booting button (BP COBALT "Skeleton / button", node 2046:29482): the control's own 28 height, with a label
-# bar inside it. outline and the search box are white with a 1px subtle border and a bar 12 in from each end; an
-# icon-only button holds a 14 square instead; a ghost button is the 38 bar alone; the strong one is a solid block.
-# 38 and 14 are past the ref scale.
-skeleton/button-ghost|38px
-skeleton/button-icon|14px
 # A booting column name (BP COBALT boot skeleton, list view): a 64 bar at the cell's own 8, the same width in
 # every column, since a column name is a word or two whatever the column holds. 64 is past the ref scale.
 skeleton/column-name|64px

@@ -372,6 +372,9 @@ describe("a booting Toolbar draws one block per control it was given", () => {
       />,
     );
 
+  // Every block the booting bar drew, in both halves of it.
+  const bar2 = () => [...document.querySelectorAll('[class~="start"] > [aria-busy="true"], [class~="end"] > [aria-busy="true"]')];
+
   it("keeps every button on the right, fragments counted through", () => {
     bar();
     // Regression: a fragment of four actions drew one block.
@@ -380,18 +383,12 @@ describe("a booting Toolbar draws one block per control it was given", () => {
     expect(bars(end)).toHaveLength(5);
   });
 
-  it("gives each control the shape its own button has", () => {
+  it("draws every control as a plain block, with only the strong one a step darker", () => {
     bar();
     const end = byClass("end")[0];
-    const kinds = [...end.children].map((el) => {
-      const cls = el.className;
-      if (cls.includes("boot-ghost")) return "ghost";
-      if (cls.includes("boot-icon")) return "icon";
-      if (cls.includes("boot-outline")) return "outline";
-      return "primary";
-    });
-    // More is minimal, then Download, Clear, Print and the one strong brand button.
-    expect(kinds).toEqual(["ghost", "outline", "ghost", "icon", "primary"]);
+    const tones = [...end.children].map((el) => (el.className.includes("tone-band") ? "strong" : "plain"));
+    // More, Download, Clear and Print are plain; only the one strong brand button is the darker block.
+    expect(tones).toEqual(["plain", "plain", "plain", "plain", "strong"]);
   });
 
   it("keeps the line between finding and viewing, and reaches nothing by keyboard", () => {
@@ -401,19 +398,32 @@ describe("a booting Toolbar draws one block per control it was given", () => {
     expect(document.querySelector('[role="group"]')).toHaveAttribute("aria-busy", "true");
   });
 
-  it("draws the outline box as white paper with a border and the bar inside it", () => {
+  it("draws no box and no bar inside one: a skeleton must not read as a real, empty control", () => {
+    // A deliberate change from BP COBALT, which draws the outline buttons as white bordered boxes.
     const sheet = flat("src/ui/Toolbar/Toolbar.module.css");
-    expect(sheet).toContain("background: var(--bg-neutral-min); border: var(--border-width-thin) solid var(--border-neutral-subtle)");
-    expect(sheet).toContain(".boot-outline { padding-inline: var(--space-small); }");
-    expect(sheet).toContain("width: var(--control-small)");
+    expect(sheet).not.toContain("--bg-neutral-min");
+    expect(sheet).not.toContain("boot-outline");
+    bar();
+    for (const block of bar2()) {
+      // One bone and nothing else: no box around it and no second block inside it.
+      expect(block.querySelectorAll('[aria-busy="true"]')).toHaveLength(0);
+      expect(block.children).toHaveLength(1);
+    }
   });
 
-  it("gives the bare ghost bar its own 38 width and the icon square its 14", () => {
+  it("keeps every control at its own width and the control's own height", () => {
     bar();
-    const end = byClass("end")[0];
-    const ghost = end.querySelector('[class~="boot-ghost"] [aria-busy="true"]')!;
-    expect(ghost).toHaveAttribute("style", expect.stringContaining("width: var(--skeleton-button-ghost)"));
-    const icon = end.querySelector('[class~="boot-icon"] [aria-busy="true"]')!;
-    expect(icon).toHaveAttribute("style", expect.stringContaining("width: var(--skeleton-button-icon)"));
+    const start = byClass("start")[0];
+    const widths = [...start.children]
+      .filter((el) => el.getAttribute("aria-busy") === "true")
+      .map((el) => el.getAttribute("style"));
+    expect(widths[0]).toContain("var(--toolbar-filters-skeleton)");
+    expect(widths[1]).toContain("var(--toolbar-search)");
+    expect(widths[2]).toContain("var(--toolbar-views-skeleton)");
+    // The refresh button is icon-only, so its block is the control's own square.
+    expect(widths[3]).toContain("var(--control-small)");
+    for (const block of bar2()) {
+      expect(block.querySelector("[aria-hidden]")).toHaveAttribute("style", expect.stringContaining("height: var(--control-small)"));
+    }
   });
 });
