@@ -9,6 +9,7 @@ import { ListView } from "@/ui/ListView/ListView";
 import { Scoreboard } from "@/ui/Scoreboard/Scoreboard";
 import { Section } from "@/ui/Section/Section";
 import { Table, type TableColumn } from "@/ui/Table/Table";
+import { Timeline } from "@/ui/Timeline/Timeline";
 import { Tabs } from "@/ui/Tabs/Tabs";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 import { Dashboard } from "@/patterns/Dashboard/Dashboard";
@@ -267,6 +268,33 @@ describe("a booting Dashboard follows its own groups", () => {
       expect(bars(section.querySelector("h2")!)).toHaveLength(1);
     }
     expect(document.querySelectorAll("section[aria-labelledby]")).toHaveLength(3);
+  });
+
+  it("draws a timeline's own thread and a loose Button's own block", () => {
+    // Regression: a Timeline in a group, and a Button standing in a section body, stayed fully real while
+    // everything around them was bars.
+    render(
+      <Dashboard label="Accounting Dashboard" state="loading">
+        <Section title="Month-End Close">
+          <Timeline
+            label="Close tasks"
+            items={[
+              { id: "a", timestamp: "Apr 12", title: "Review and approve invoices", subtitle: "Jordan Ellis" },
+              { id: "b", timestamp: "Apr 14", title: "Post recurring charges", subtitle: "Priya Raman" },
+            ]}
+          />
+          <Button size="sm">View GL Entries Report</Button>
+        </Section>
+      </Dashboard>,
+    );
+    const entries = document.querySelectorAll("ol li");
+    expect(entries).toHaveLength(2);
+    // A round node block and the three lines of the entry.
+    expect(bars(entries[0])).toHaveLength(4);
+    expect(screen.queryByText("Review and approve invoices")).toBeNull();
+    // The loose Button is a block its own size, not a control.
+    expect(screen.queryByRole("button", { name: "View GL Entries Report", hidden: true })).toBeNull();
+    expect(reachable()).toHaveLength(0);
   });
 
   it("draws the groups' own cards, charts and tables, not a message list beside a bar chart", () => {

@@ -3,6 +3,8 @@ import { useContext, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { useDensitySize } from "../Density/Density";
 import { Icon, type IconSize } from "../Icon/Icon";
 import { ButtonGroupContext } from "../ButtonGroup/context";
+import { Skeleton } from "../Skeleton/Skeleton";
+import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import styles from "./Button.module.css";
 
 export type ButtonEmphasis = "strong" | "subtle" | "minimal";
@@ -39,6 +41,15 @@ export type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "childre
     children: ReactNode;
   };
 
+// A booting Button's own box: its control height, and, when its label is not a plain string to measure, the
+// width a toolbar action's block takes.
+const CONTROL: Record<ButtonSize, string> = {
+  sm: "var(--control-small)", md: "var(--control-medium)", lg: "var(--control-large)",
+};
+const BOOT_WIDTH: Record<ButtonSize, string> = {
+  sm: "var(--toolbar-action-skeleton)", md: "var(--skeleton-bar-md)", lg: "var(--skeleton-bar-md)",
+};
+
 export function Button({
   emphasis = "subtle",
   intent = emphasis === "strong" ? "brand" : "neutral",
@@ -62,6 +73,10 @@ export function Button({
   const own = useDensitySize(sizeProp);
   const size = group?.size ?? own;
   const off = Boolean(disabled || group?.disabled);
+  // A Button standing on a booting page is a block its own size, not a pressable control with words in it:
+  // the page says loading once (FormLayoutContext) and every piece under it draws itself in its own place.
+  // Pieces that draw their own boot shape — Toolbar, Section, Card, Timeline — never reach here.
+  const booting = useFieldSkeleton();
   // The icon follows the Button unless asked for: a bigger one suits an icon-only Button that stands alone.
   const iconSize = iconSizeProp ?? (size === "sm" ? "sm" : "md");
   const cls = [
@@ -77,6 +92,10 @@ export function Button({
   ]
     .join(" ")
     .trim();
+  if (booting) {
+    const width = iconOnly ? CONTROL[size] : typeof children === "string" ? skeletonBarWidth(children) : BOOT_WIDTH[size];
+    return <Skeleton shape="rect" animation="pulse" width={width} height={CONTROL[size]} label="" />;
+  }
   return (
     // Loading keeps full color and focus. It is not disabled; clicks (and form submit) are ignored until it finishes.
     <button
