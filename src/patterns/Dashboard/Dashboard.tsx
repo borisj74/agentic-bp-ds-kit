@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { useStickyBand } from "../band";
 import { FormLayoutContext } from "@/ui/Form/FormContext";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
-import { useBootSkeleton } from "@/ui/LoadingLine/boot";
+import { useBootSkeleton, useFieldSkeleton } from "@/ui/LoadingLine/boot";
 import styles from "./Dashboard.module.css";
 
 // The widths and heights a booting Home takes in the rows fallback: the lines of a message row, and the bars of
@@ -38,7 +38,11 @@ export function Dashboard({
   loadingShape = "content", loadingRows = 5, label,
 }: DashboardProps) {
   // The skeleton follows the frame's boot sequence; on its own it still draws at once.
-  const { skeleton: booting } = useBootSkeleton(state === "loading");
+  const { skeleton: own } = useBootSkeleton(state === "loading");
+  // Inside a booting AppShell the page boots with the frame, so a screen says loading once, at the top, and the
+  // pattern follows the frame's sequence instead of standing live under the line.
+  const inFrame = useFieldSkeleton();
+  const booting = own || inFrame;
   const groups = state === "ready";
   // content: the dashboard's own groups draw themselves — each Section its header, each Scoreboard its cards,
   // each chart its frame, each Table its rows — so the numbers land in the shape their bars held.

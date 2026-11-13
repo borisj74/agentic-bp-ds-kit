@@ -70,7 +70,7 @@
     "loading": {
       "type": "boolean",
       "default": false,
-      "note": "Booting: the record draws its own content as bars. One bar per tab it has, with the 2px underline under the one that is showing; the details are rendered and each Section, FormDisplay row, Scoreboard card, chart and Table inside draws itself in its own place, so the shape on screen is the shape the record will have. The details and the summary are inert and hidden from screen readers while they are bars, and the record says \"Loading <label>\" once. The notice holds the height it will take. Inside a booting AppShell it follows the frame's sequence."
+      "note": "Booting: the record draws its own content as bars. One bar per tab it has, with the 2px underline under the one that is showing; the details are rendered and each Section, FormDisplay row, Scoreboard card, chart and Table inside draws itself in its own place, so the shape on screen is the shape the record will have. The details and the summary are inert and hidden from screen readers while they are bars, and the record says \"Loading <label>\" once. The notice holds the height it will take. Inside a booting AppShell the page boots with the frame whatever this is set to, and follows the frame's sequence: the frame says once that its content has not arrived, so a screen sets loading in one place, at the top."
     },
     "loadingShape": {
       "enum": [

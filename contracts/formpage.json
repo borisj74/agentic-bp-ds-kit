@@ -55,7 +55,7 @@
     "loading": {
       "type": "boolean",
       "default": false,
-      "note": "Booting: the page draws its own content as bars. The children are rendered and each Section, field and row inside draws itself in its own place — section headers, folded groups, the fields in the page's columns, a related list's Table — so the shape on screen is the shape the form will have. The fields are inert and hidden from screen readers while they are bars, and the page says \"Loading <label>\" once. The notice holds the height it will take. Inside a booting AppShell it follows the frame's sequence."
+      "note": "Booting: the page draws its own content as bars. The children are rendered and each Section, field and row inside draws itself in its own place — section headers, folded groups, the fields in the page's columns, a related list's Table — so the shape on screen is the shape the form will have. The fields are inert and hidden from screen readers while they are bars, and the page says \"Loading <label>\" once. The notice holds the height it will take. Inside a booting AppShell the page boots with the frame whatever this is set to, and follows the frame's sequence: the frame says once that its content has not arrived, so a screen sets loading in one place, at the top."
     },
     "loadingShape": {
       "enum": [

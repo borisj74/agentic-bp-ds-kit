@@ -2,7 +2,7 @@
 import { isValidElement, type ReactNode } from "react";
 import { FormLayoutContext, type FieldColumns, type FieldLabelPosition } from "@/ui/Form/FormContext";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
-import { skeletonBarWidth, useBootSkeleton } from "@/ui/LoadingLine/boot";
+import { skeletonBarWidth, useBootSkeleton, useFieldSkeleton } from "@/ui/LoadingLine/boot";
 import { Tabs } from "@/ui/Tabs/Tabs";
 import { useStickyBand } from "../band";
 import { useStickMark } from "../stick";
@@ -58,7 +58,11 @@ export function RecordPage({
   loading = false, loadingShape = "content", loadingRows = 16, label,
 }: RecordPageProps) {
   // The skeleton follows the frame's boot sequence; on its own, outside a booting frame, it draws at once.
-  const { skeleton: booting } = useBootSkeleton(loading);
+  const { skeleton: own } = useBootSkeleton(loading);
+  // Inside a booting AppShell the page boots with the frame, so a screen says loading once, at the top, and the
+  // pattern follows the frame's sequence instead of standing live under the line.
+  const inFrame = useFieldSkeleton();
+  const booting = own || inFrame;
   // The rows fallback splits its rows over two columns however many the record asks for: past two they no longer
   // read as a record, and the Cobalt screen draws two.
   const bootColumns = columns === 1 ? 1 : 2;

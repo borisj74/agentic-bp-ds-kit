@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Callout } from "@/ui/Callout/Callout";
 import { FormLayoutContext } from "@/ui/Form/FormContext";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
-import { useBootSkeleton } from "@/ui/LoadingLine/boot";
+import { useBootSkeleton, useFieldSkeleton } from "@/ui/LoadingLine/boot";
 import { useStickyBand } from "../band";
 import styles from "./ListPage.module.css";
 
@@ -40,7 +40,11 @@ export function ListPage({
 }: ListPageProps) {
   // The skeleton follows the frame's boot sequence: held back for the first 200ms, then kept its full 400ms.
   // On its own, outside a booting frame, a loading list still draws it at once.
-  const { skeleton: booting } = useBootSkeleton(state === "loading");
+  const { skeleton: own } = useBootSkeleton(state === "loading");
+  // Inside a booting AppShell the page boots with the frame, so a screen says loading once, at the top, and the
+  // pattern follows the frame's sequence instead of standing live under the line.
+  const inFrame = useFieldSkeleton();
+  const booting = own || inFrame;
   const rows = state === "ready";
   // content: the list's own rows draw themselves as bars — the Table's columns, its checkbox cell and its Actions
   // column, or the ListView's rows, or the grid of Cards — so the records land in the shape their bars held.
