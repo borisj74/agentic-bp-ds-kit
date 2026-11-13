@@ -34,6 +34,7 @@ const TOOLS: { name: string; args: string; returns: string }[] = [
   { name: "search", args: "query", returns: "Pieces that match every word of the query" },
   { name: "get_tokens", args: "category, theme", returns: "Semantic colour roles and their values" },
   { name: "get_rules", args: "none", returns: "The kit rules, CLAUDE.md and AGENTS.md" },
+  { name: "review_ui", args: "path, or code and filename", returns: "What a screen gets wrong against the contracts" },
 ];
 
 const CLAUDE_CODE_ADD = "claude mcp add agentic-bp-ds-kit -- node /absolute/path/to/agentic-bp-ds-kit/bin/mcp.mjs";

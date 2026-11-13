@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Wrong on purpose: the review's own bad fixtures.
+    "tests/fixtures/review/**",
   ]),
 ]);
 

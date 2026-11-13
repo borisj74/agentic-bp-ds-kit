@@ -8,7 +8,7 @@ const repoRoot = resolve(import.meta.dirname, "..");
 const mcpEntry = resolve(repoRoot, "bin/mcp.mjs");
 const cliEntry = resolve(repoRoot, "bin/agentic-bp-ds-kit.mjs");
 
-const TOOL_NAMES = ["get", "get_rules", "get_tokens", "list", "search"];
+const TOOL_NAMES = ["get", "get_rules", "get_tokens", "list", "review_ui", "search"];
 const LEVELS = ["atom", "molecule", "organism", "template"];
 
 let client: Client;
@@ -54,7 +54,7 @@ describe("MCP server", () => {
     await client?.close();
   });
 
-  it("exposes the five read-only tools", async () => {
+  it("exposes the six read-only tools", async () => {
     const listed = await client.listTools();
     expect(listed.tools.map((tool) => tool.name).sort()).toEqual(TOOL_NAMES);
     for (const tool of listed.tools) {
@@ -177,6 +177,45 @@ describe("MCP server", () => {
     expect(textOnly.count).toBeGreaterThan(10);
   });
 
+  it("review_ui reviews a file in the repo", async () => {
+    const data = await callTool<{
+      summary: string;
+      files: string[];
+      rules: string[];
+      findings: { rule: string; severity: string; file: string; line: number }[];
+    }>("review_ui", { path: "starters/list/page.tsx" });
+    expect(data.files).toEqual(["starters/list/page.tsx"]);
+    expect(data.rules).toContain("bp/raw-value");
+    // The starter screens are the kit's own answer to "start from a working screen", so they review clean.
+    expect(data.findings).toHaveLength(0);
+    expect(data.summary).toContain("nothing to fix");
+  });
+
+  it("review_ui reviews a draft that was never saved", async () => {
+    const code = [
+      'import { Button } from "@/ui/Button/Button";',
+      "export default function Draft() {",
+      '  return <Button tone="brand" style={{ padding: "13px" }}>Save</Button>;',
+      "}",
+    ].join("\n");
+    const data = await callTool<{
+      summary: string;
+      findings: { rule: string; severity: string; file: string; line: number }[];
+    }>("review_ui", { code, filename: "src/app/draft/page.tsx" });
+    const rules = data.findings.map((f) => f.rule);
+    expect(rules).toContain("bp/closed-enum");
+    expect(rules).toContain("bp/raw-value");
+    expect(rules).toContain("bp/screen-frame");
+    expect(data.findings.every((f) => f.file === "src/app/draft/page.tsx")).toBe(true);
+    expect(data.summary).toMatch(/error/);
+  });
+
+  it("review_ui with neither path nor code is a tool error", async () => {
+    const result = await client.callTool({ name: "review_ui", arguments: {} });
+    expect(result.isError).toBe(true);
+    expect(textOf(result)).toContain("path");
+  });
+
   it("get_rules returns essentials and document text", async () => {
     const rules = await callTool<{ rules: string[]; documents: Record<string, string> }>("get_rules");
     expect(rules.rules.length).toBeGreaterThan(5);
@@ -195,5 +234,22 @@ describe("MCP CLI", () => {
     expect(help.stdout).toMatch(/get_tokens/);
     expect(help.stdout).toMatch(/\blist\b/);
     expect(help.stdout).toMatch(/atom, molecule, organism, template/);
+    expect(help.stdout).toMatch(/review_ui/);
+  });
+
+  it("prints review help and runs the review", () => {
+    const help = spawnSync(process.execPath, [cliEntry, "review", "--help"], {
+      encoding: "utf8",
+      cwd: repoRoot,
+    });
+    expect(help.status).toBe(0);
+    expect(help.stdout).toMatch(/bp\/use-pattern/);
+
+    const run = spawnSync(process.execPath, [cliEntry, "review", "starters"], {
+      encoding: "utf8",
+      cwd: repoRoot,
+    });
+    expect(run.status).toBe(0);
+    expect(run.stdout).toMatch(/nothing to fix/);
   });
 });

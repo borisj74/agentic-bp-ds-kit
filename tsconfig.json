@@ -31,5 +31,6 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  // The review fixtures are wrong on purpose, so they are not part of the project build.
+  "exclude": ["node_modules", "tests/fixtures/review"]
 }

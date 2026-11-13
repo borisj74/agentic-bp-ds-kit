@@ -151,6 +151,34 @@ npm run new-screen -- --template dashboard --route sales
 
 The starters are in `starters/`: one folder per starter, plus `starters/index.json` listing them. They are pages, not contracts — a template filled with real-looking content — so they have no `level` and are not in `contracts/index.json`. Each one only composes kit pieces and patterns.
 
+### Review a screen
+
+The kit reviews a screen against its own contracts, offline:
+
+```bash
+npm run review -- src/app/invoices/page.tsx
+```
+
+Paths can be files or folders; a folder is walked for `.tsx` and `.css`. The review names, with the line and a fix:
+
+| Rule | What it finds |
+| --- | --- |
+| `bp/raw-value` | A colour, or a px spacing, radius or shadow, typed in by hand instead of a token or a layout class |
+| `bp/primitive-token` | A `--ref-*` or `--ui-*` ramp outside `src/tokens`, or a token no token file defines |
+| `bp/local-cousin` | A kit piece rebuilt in the file, or UI imported from somewhere other than `@/ui` and `@/patterns` |
+| `bp/closed-enum` | A prop or a value a piece's contract does not allow (`tone=`, Button `variant=`, an `emphasis` x `intent` pair that is not allowed) |
+| `bp/one-primary` | More than one `emphasis="strong" intent="brand"` Button in one file |
+| `bp/use-pattern` | A screen that builds most of a pattern by hand, with the pattern and the starter to use instead |
+| `bp/use-bigger-piece` | A screen that builds an organism out of its own parts, with the organism to use instead |
+| `bp/screen-frame` | A full screen with no `AppShell` and side nav, breadcrumbs that do not start with Home, or a page grid written by hand |
+
+The first five are errors and the last three are warnings; the command exits 1 when there is any error, so it fits a
+pre-commit hook or CI. `--json` prints one object for a machine to read. The kit's own folders (`src/ui`,
+`src/patterns`, `src/tokens`, `tests`) are left out unless you pass `--all`.
+
+An assistant runs the same check itself with the `review_ui` MCP tool, including on a draft it has not saved yet.
+Run the review before you hand a screen back, and fix the errors.
+
 ### Work with the assistant
 
 Open the prototype folder in your AI coding assistant. The rules come with the kit, so there is nothing to set up:
@@ -387,6 +415,7 @@ npx agentic-bp-ds-kit mcp
 | `search` | Match name, tags, intent, `useWhen` and related fields, across components and patterns; each match carries its `level` |
 | `get_tokens` | Semantic tokens; optional `category` (e.g. `text`, `background`) and `theme` (`light`, `dark`, `both`) |
 | `get_rules` | Kit agent rules plus `CLAUDE.md` / `AGENTS.md` text |
+| `review_ui` | Review a screen against the contracts: `path` for a file or folder, or `code` (+ `filename`) for a draft you have not saved yet. Run it before you hand a screen back |
 
 ### Cursor
 

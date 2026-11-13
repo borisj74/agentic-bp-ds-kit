@@ -1,0 +1,10 @@
+/* Clean on purpose: tokens only. */
+.total {
+  display: flex;
+  gap: var(--space-xsmall);
+  padding: var(--space-small);
+  border-radius: var(--radius-medium);
+  background: var(--surface-raised);
+  color: var(--text-neutral);
+  box-shadow: var(--shadow-raised);
+}
