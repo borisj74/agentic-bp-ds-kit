@@ -647,10 +647,12 @@ The legend names the group; hide it only when a heading already names it.
 
 One choice from two to five options, shown as kit minimal Buttons side by side.
 
-Props — label string; hideLabel bool; options SegmentedControlOption[] { value, label, icon?, disabled? }; value string; defaultValue string; size sm|md*|lg; fullWidth bool; disabled bool; name string
+Props — label string; hideLabel bool; options SegmentedControlOption[] { value, label, icon?, disabled? }; value string; defaultValue string; size sm|md*|lg; iconOnly bool; fullWidth bool; disabled bool; name string
+
+- iconOnly — Takes the words off the options and leaves their marks, for a switcher that needs no reading, like light and dark. Give every option an icon: one without keeps its label. The label is still the option's name for screen readers, the way an iconOnly Button keeps its children.
 
 - Do not use for more than five options or long labels. Use Select.
-- Do not use for on/off. Use Switch.
+- Do not use iconOnly without an icon on every option, or for options whose marks do not say what they are on their own.
 
 ### Select
 
@@ -773,9 +775,9 @@ The app's main navigation: a brand rail of sections on the left, each with an op
 
 Props — items SideNavEntry[] { id, label, icon, href?, children?, divider }; endItems SideNavItem[]; current string; defaultCurrent string; expanded bool; pinned bool; defaultPinned bool; label string
 
-- items — Rail sections, top to bottom. In the app shell this is always the full app nav, APP_NAV from @/patterns/AppShell/appNav (with APP_NAV_END as endItems); never a shorter or made-up list. icon is a Material Symbols name. children is the second-level menu: { id, label, href? } links and { divider: true } lines.
+- items — Rail sections, top to bottom. In the app shell this is always the full app nav, APP_NAV from @/patterns/AppShell/appNav (with APP_NAV_END as endItems); never a shorter or made-up list. icon is a Material Symbols name. children is the second-level menu, made of { id, label, href? } links, { label, items } groups (a named folder of links) and { divider: true } lines. A menu can mix all three. A group holds links only: no group inside a group.
 
-Every menu is the same width, the longest link in the whole nav (within --side-nav-panel-min and --side-nav-panel-max), so the menu never resizes as people move from one section to another, whether the rail is expanded or not.
+Every menu is the same width, the longest link in the whole nav (within --side-nav-panel-min and --side-nav-panel-max), so the menu never resizes as people move from one section to another, whether the rail is expanded or not. Groups start open and a collapse lasts only while the menu is out.
 
 - Do not put page actions, filters or tabs in it. Those belong in the page.
 - Do not nest a third level. A section has one menu of links, split by dividers.
@@ -952,7 +954,7 @@ Stack blocks in the body with.layout-stack; the drawer has its own 20px padding,
 
 A short list of actions or options that opens from a Button or a FilterButton.
 
-Props — label string; items DropdownMenuEntry[] { id, label, description?, icon?, danger?, disabled?, selected?, checkbox?, count? }; trigger button*|filter|field; emphasis strong|subtle*|minimal; intent brand|neutral*|danger; size sm|md*|lg; icon string; iconOnly bool; count number; alignment left*|right; disabled bool; closeOnSelect bool*; open bool; multiple bool; id string; text string; muted bool; badge string; toggle on|off; labelledBy string; describedBy string; searchable bool; searchPlaceholder string; empty string; menuWidth default*|field
+Props — label string; items DropdownMenuEntry[] { id, label, description?, icon?, danger?, disabled?, selected?, checkbox?, count? }; trigger button*|filter|field; emphasis strong|subtle*|minimal; intent brand|neutral*|danger; iconStyle tile*|plain; size sm|md*|lg; icon string; iconOnly bool; count number; alignment left*|right; disabled bool; closeOnSelect bool*; open bool; multiple bool; id string; text string; muted bool; badge string; toggle on|off; labelledBy string; describedBy string; searchable bool; searchPlaceholder string; empty string; menuWidth default*|field
 
 - emphasis — Button trigger only. Same pairs as Button: strong with brand or danger, subtle with neutral, minimal with neutral, brand or danger.
 - intent — Button trigger only. Required with emphasis strong.

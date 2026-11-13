@@ -113,11 +113,11 @@
 .linkDivider { height: var(--border-width-thin); background: var(--border-neutral); }
 
 /* Named folder inside a menu (Figma 1953:85844, header row 2099:91681). The header sits on the rule that parts it
-   from the group above: the 1px rule, then a 36px row — 4px, a 28px control row, 4px — so the collapse button is
-   clear of the rule above and of whatever follows. The first group in a menu has no rule; the menu header's own
-   border already parts it. */
-.group { border-top: var(--border-width-thin) solid var(--border-neutral); }
-.links > .group:first-child { border-top: 0; }
+   from the group above: a 36px row — 4px, a 28px control row, 4px — with the 1px rule drawn over its top edge, so
+   the header is 36 in all, rule included, and the collapse button is clear of the rule and of whatever follows.
+   The first group in a menu has no rule; the menu header's own border already parts it. */
+.group { box-shadow: inset 0 var(--border-width-thin) 0 var(--border-neutral); }
+.links > .group:first-child { box-shadow: none; }
 .groupHeader {
   box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: var(--space-xsmall);
   /* 16px on both sides, like the menu header above it (BP COBALT 1953:85844 insets every row's container 16px):

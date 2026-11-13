@@ -59,6 +59,7 @@ export interface DataGridProps {
   onDeleteRow?: (row: DataGridRow) => void;
   deleteConfirm?: (row: DataGridRow) => { title: string; description: string };
   canInsertRows?: boolean;
+  insertLabel?: string;
   actionsFor?: (row: DataGridRow) => DataGridRowAction[];
   selectable?: boolean;
   selected?: string[];
@@ -97,7 +98,7 @@ const spotSelector = (s: Spot) => `[data-cell="${CSS.escape(`${s.row}:${s.key}`)
 // Text and number save on Enter or when focus leaves; formula cells stay open until Done or Escape.
 export function DataGrid({
   columns, rows: rowsProp, defaultRows = [], onRowsChange, size: ownSize, line = "medium", rowNumbers = true,
-  canAddRows = false, canRemoveRows = false, canDeleteRows = false, onDeleteRow, deleteConfirm, canInsertRows = false, actionsFor,
+  canAddRows = false, canRemoveRows = false, canDeleteRows = false, onDeleteRow, deleteConfirm, canInsertRows = false, insertLabel, actionsFor,
   selectable = false, selected: selectedProp, defaultSelected = [], onSelectionChange, rowLabel,
   emptyLabel = "No rows yet.", label = "Data grid", stickyFirstColumn = true,
   detail, detailCount, expanded: expandedProp, defaultExpanded = [], onExpandedChange,
@@ -284,7 +285,7 @@ export function DataGrid({
   const rowActions = (row: DataGridRow, i: number) => {
     const own = actionsFor?.(row);
     const all = [
-      canInsertRows && { id: "insert", label: `Add row below row ${i + 1}`, icon: "add" },
+      canInsertRows && { id: "insert", label: insertLabel ?? `Add row below row ${i + 1}`, icon: "add" },
       canRemoveRows && { id: "remove", label: `Remove row ${i + 1}`, icon: "close" },
       canDeleteRows && { id: "delete", label: `Delete row ${i + 1}`, icon: "delete", danger: true },
     ].filter((a) => a && (!own || own.includes(a.id as DataGridRowAction))) as { id: string; label: string; icon: string; danger?: boolean }[];

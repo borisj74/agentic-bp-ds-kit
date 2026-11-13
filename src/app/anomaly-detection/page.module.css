@@ -1,0 +1,12 @@
+/* Only what the kit's layout classes do not cover: progress rows and the score block from the review canvas. */
+.frame { height: 100dvh; }
+.progress { display: flex; flex-direction: column; gap: var(--space-small); max-width: 720px; }
+.progressHead { display: flex; justify-content: space-between; gap: var(--space-medium); font-size: var(--text-body-size); }
+.progressHead strong { font-weight: var(--font-weight-semibold); }
+.quiet { color: var(--text-neutral-subtle); }
+.score { display: flex; gap: var(--space-xxlarge); align-items: center; flex-wrap: wrap; padding: var(--space-large); border: 1px solid var(--border-neutral-subtle); border-radius: var(--radius-surface); background: var(--surface-flat); }
+.scoreText { display: flex; flex-direction: column; gap: var(--space-small); flex: 1 1 360px; min-width: 0; }
+.scoreHead { display: flex; gap: var(--space-small); align-items: center; font-size: var(--text-heading-md-size); font-weight: var(--font-weight-semibold); }
+.scoreText p { margin: 0; font-size: var(--text-body-size); line-height: var(--line-height-normal); }
+.pills { display: flex; gap: var(--space-small); flex-wrap: wrap; padding-top: var(--space-xsmall); }
+.guideFlows { display: flex; flex-direction: column; gap: var(--space-xsmall); align-items: flex-start; }
