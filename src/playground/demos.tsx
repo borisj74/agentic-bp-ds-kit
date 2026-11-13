@@ -1006,8 +1006,13 @@ function StageFrame({ stage, dark, children }: { stage: string; dark: boolean; c
   );
 }
 
-export function AppShellDemo({ assistant = false, stage = "desktop", ...p }: Omit<AppShellProps, "children" | "assistant"> & { assistant?: boolean; stage?: string }) {
-  const [navOpen, setNavOpen] = useState(false);
+export function AppShellDemo({ assistant = false, stage = "desktop", navOpen: navOpenProp, ...p }: Omit<AppShellProps, "children" | "assistant"> & { assistant?: boolean; stage?: string }) {
+  // The rail starts open, at 170px, the way the Cobalt screens draw it; on a phone-width stage the nav is a
+  // drawer over the page, so there it starts away. The screen owns the boolean, so the menu button still
+  // collapses it, and the catalog's own Nav open switch moves it like any other control.
+  const [navOpen, setNavOpen] = useState(navOpenProp ?? stage !== "phone");
+  const [fromNav, setFromNav] = useState(navOpenProp);
+  if (fromNav !== navOpenProp) { setFromNav(navOpenProp); setNavOpen(navOpenProp ?? stage !== "phone"); }
   const [section, setSection] = useState("billing-invoices");
   const [scope, setScope] = useState("invoices");
   const [notice, setNotice] = useState(true);
@@ -1147,7 +1152,9 @@ const LIST_COLUMNS: TableColumn[] = [
 ];
 
 export function ListPageDemo({ state = "ready", shell = false, stage = "desktop", ...p }: Omit<ListPageProps, "children"> & { state?: ListPageState; shell?: boolean; stage?: string }) {
-  const [navOpen, setNavOpen] = useState(false);
+  // The rail starts open, at 170px, the way the Cobalt screens draw it; on a phone-width stage the nav is a
+  // drawer over the page, so there it starts away.
+  const [navOpen, setNavOpen] = useState(stage !== "phone");
   const [section, setSection] = useState("billing-invoices");
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");
@@ -1359,7 +1366,9 @@ export function RecordPageDemo({ sticky = true, shell = true, stage = "desktop",
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");
   const [notice, setNotice] = useState(true);
-  const [navOpen, setNavOpen] = useState(false);
+  // The rail starts open, at 170px, the way the Cobalt screens draw it; on a phone-width stage the nav is a
+  // drawer over the page, so there it starts away.
+  const [navOpen, setNavOpen] = useState(stage !== "phone");
   const [section, setSection] = useState("accounts");
   // The screen holds whether the top has scrolled away; the pattern only reports the crossing.
   const [compact, setCompact] = useState(false);
@@ -1541,7 +1550,9 @@ function Tiles({ children }: { children: ReactNode }) {
 }
 
 export function DashboardDemo({ state = "ready", shell = true, stage = "desktop", ...p }: Omit<DashboardProps, "children"> & { state?: DashboardState; shell?: boolean; stage?: string }) {
-  const [navOpen, setNavOpen] = useState(false);
+  // The rail starts open, at 170px, the way the Cobalt screens draw it; on a phone-width stage the nav is a
+  // drawer over the page, so there it starts away.
+  const [navOpen, setNavOpen] = useState(stage !== "phone");
   const [section, setSection] = useState("home-home-dashboards");
   const [saved, setSaved] = useState("accounting");
   const [query, setQuery] = useState("");
@@ -1794,7 +1805,9 @@ const SETTINGS_PLACES: { id: string; title: string; description: string; icon: s
 ];
 
 export function SettingsPageDemo({ shell = true, notice = false, stage = "desktop", ...p }: Omit<SettingsPageProps, "children"> & { shell?: boolean; notice?: boolean; stage?: string }) {
-  const [navOpen, setNavOpen] = useState(false);
+  // The rail starts open, at 170px, the way the Cobalt screens draw it; on a phone-width stage the nav is a
+  // drawer over the page, so there it starts away.
+  const [navOpen, setNavOpen] = useState(stage !== "phone");
   const [section, setSection] = useState("settings-settings-home");
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");
@@ -1934,7 +1947,9 @@ export function FormPageDemo({ shell = true, notice = true, stage = "desktop", l
   Omit<FormPageProps, "children"> & { shell?: boolean; notice?: boolean; stage?: string; labels?: FormLabelPosition; columns?: FormColumns }) {
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");
-  const [navOpen, setNavOpen] = useState(false);
+  // The rail starts open, at 170px, the way the Cobalt screens draw it; on a phone-width stage the nav is a
+  // drawer over the page, so there it starts away.
+  const [navOpen, setNavOpen] = useState(stage !== "phone");
   const [section, setSection] = useState("accounts");
   const [said, setSaid] = useState(true);
   const [saved, setSaved] = useState("");
@@ -2125,7 +2140,9 @@ const USAGE_COLUMNS = [{ value: "a", label: "Column A" }, { value: "b", label: "
 export function GuidedProcessPageDemo({ shell = true, stage = "desktop", side = "end" }: { shell?: boolean; stage?: string; side?: "start" | "end" }) {
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");
-  const [navOpen, setNavOpen] = useState(false);
+  // The rail starts open, at 170px, the way the Cobalt screens draw it; on a phone-width stage the nav is a
+  // drawer over the page, so there it starts away.
+  const [navOpen, setNavOpen] = useState(stage !== "phone");
   const [section, setSection] = useState("accounts");
   const [started, setStarted] = useState(false);
   const [at, setAt] = useState(1);
@@ -2372,7 +2389,9 @@ export function AccountFlowDemo({ stage = "desktop", start = "list" }: { stage?:
   const [from, setFrom] = useState(start);
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");
-  const [navOpen, setNavOpen] = useState(false);
+  // The rail starts open, at 170px, the way the Cobalt screens draw it; on a phone-width stage the nav is a
+  // drawer over the page, so there it starts away.
+  const [navOpen, setNavOpen] = useState(stage !== "phone");
   const [accounts, setAccounts] = useState(FLOW_ACCOUNTS);
   const [productsBy, setProductsBy] = useState<Record<string, FlowProduct[]>>({ "72082": FLOW_PRODUCTS });
   const [accountId, setAccountId] = useState("72082");
@@ -2840,7 +2859,9 @@ export function ListDetailDemo({ shell = true, stage = "desktop", picked = true,
   const [expanded, setExpanded] = useState<string[]>([LIST_DETAIL_ACCOUNTS[0].id]);
   // Under its row, a click on the open invoice closes it again.
   const openInvoice = (id: string) => setOpenId((was) => (layout === "inline" && was === id ? null : id));
-  const [navOpen, setNavOpen] = useState(false);
+  // The rail starts open, at 170px, the way the Cobalt screens draw it; on a phone-width stage the nav is a
+  // drawer over the page, so there it starts away.
+  const [navOpen, setNavOpen] = useState(stage !== "phone");
   const [section, setSection] = useState("billing-invoices");
   const [dark, setDark] = useState(false);
   const [density, setDensity] = useState<AppHeaderDensity>("default");

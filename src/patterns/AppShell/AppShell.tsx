@@ -1,5 +1,6 @@
 "use client";
 import { cloneElement, isValidElement, useCallback, useState, type ReactElement, type ReactNode } from "react";
+import { FormLayoutContext } from "@/ui/Form/FormContext";
 import { LoadingLine } from "@/ui/LoadingLine/LoadingLine";
 import { BootContext, useBootPhase, type BootTiming } from "@/ui/LoadingLine/boot";
 import { useStickMark } from "../stick";
@@ -35,7 +36,7 @@ export function AppShell({
   assistant, assistantOpen = false, assistantSize = "panel", width = "full", loading = false, loadingLabel = "Loading page", bootTiming,
 }: AppShellProps) {
   // A reading column is the same container the layout classes use elsewhere.
-  const page = width === "full" ? children : <div className={`layout-container-${width}`}>{children}</div>;
+  const column = width === "full" ? children : <div className={`layout-container-${width}`}>{children}</div>;
   // The marker above the page header says when the top of the page has scrolled away. The frame keeps that
   // boolean itself and hands it to the PageHeader, so every screen shrinks its name to the compact bar the same
   // way without wiring anything; onPageHeaderStick still reports it to screens that want it for their own use.
@@ -50,6 +51,21 @@ export function AppShell({
   // skeleton for at least 400ms, then the content fading in over 150ms. A page that lands inside the first
   // 200ms never shows a skeleton at all.
   const boot = useBootPhase(loading, bootTiming);
+
+  // The page inside the frame is still arriving too, so it goes to its own boot skeleton rather than standing
+  // there live under a line. The frame says so once, on FormLayoutContext: the page pattern inside it
+  // (ListPage, RecordPage, Dashboard, FormPage) boots with the frame, and so does every Section, Toolbar, field
+  // and Table a screen lays out itself. The frame draws no page skeleton of its own — each piece draws its own,
+  // in its own place, so nothing moves when the content lands. The real page is kept in the tree, inert and
+  // hidden from screen readers, so it holds no focus and is read by nobody while it boots; the one status
+  // message above it is what says the page is coming.
+  const page = boot.showSkeleton ? (
+    <FormLayoutContext.Provider value={{ loading: true }}>
+      <span className={styles.srOnly} role="status">{loadingLabel}</span>
+      {/* display: contents, so wrapping the page changes none of the content column's own spacing. */}
+      <div className={styles.booting} inert aria-hidden="true">{column}</div>
+    </FormLayoutContext.Provider>
+  ) : column;
 
   // Booting, the whole frame is still arriving, so the bar and the rail show their own boot state too: the frame
   // hands the sequence's skeleton step down to the kit AppHeader, AppNav and PageHeader it was given, and a

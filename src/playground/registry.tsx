@@ -1915,10 +1915,12 @@ export const registry: Record<string, Entry> = {
     hide: ["children", "header", "nav", "pageHeader", "onPageHeaderStick", "assistant", "assistantOpen", "bootTiming", "loadingLabel"],
     toggles: {
       assistant: { label: "Assistant open", default: false },
+      // The rail starts open, as the Cobalt screens draw it; the switch and the header's menu button fold it.
+      navOpen: { label: "Nav open", default: true },
       stickyPageHeader: { label: "Page header stays put", default: true },
     },
     extras: { stage: { values: ["desktop", "laptop", "tablet", "phone"], default: "desktop" }, boot: { values: ["off", "fast", "typical", "slow"], default: "off" } },
-    hint: "Boot plays the frame's load over time and reads out the skeleton's timing rule as it runs: the line alone for 200ms, the skeleton held at least 400ms, then the content fading in over 150ms; fast lands inside the first 200ms, so no skeleton is drawn. Open the menu button to widen the rail, walk the side nav, and press BP AI in the header to bring the assistant in beside the page. Scroll the page: the page header stays at the top and shrinks to one compact line whose trail ends in the page name. Stage narrows the box the frame lives in, so watch the rail go on a phone. Width caps the page to a reading column; it does not resize the frame.",
+    hint: "Boot plays the frame's load over time and reads out the skeleton's timing rule as it runs: the line alone for 200ms, the skeleton held at least 400ms, then the content fading in over 150ms; fast lands inside the first 200ms, so no skeleton is drawn. The rail starts open at 170px; Nav open and the header's menu button fold it to the 56px rail. Walk the side nav, and press BP AI in the header to bring the assistant in beside the page. Scroll the page: the page header stays at the top and shrinks to one compact line whose trail ends in the page name. Stage narrows the box the frame lives in, so watch the rail go on a phone. Width caps the page to a reading column; it does not resize the frame.",
     block: true,
     wide: true,
     page: <AppShellDemo assistant stage="desktop" width="full" />,

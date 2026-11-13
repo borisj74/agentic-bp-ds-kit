@@ -2,7 +2,7 @@
 import type { ReactNode } from "react";
 import { FormLayoutContext, type FieldColumns } from "@/ui/Form/FormContext";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
-import { useBootSkeleton } from "@/ui/LoadingLine/boot";
+import { useBootSkeleton, useFieldSkeleton } from "@/ui/LoadingLine/boot";
 import { useStickMark } from "../stick";
 import styles from "./FormPage.module.css";
 
@@ -34,7 +34,11 @@ export function FormPage({
   loadingShape = "content", loadingRows = 12, label,
 }: FormPageProps) {
   // The skeleton follows the frame's boot sequence; on its own it draws at once.
-  const { skeleton: booting } = useBootSkeleton(loading);
+  const { skeleton: own } = useBootSkeleton(loading);
+  // Inside a booting AppShell the page boots with the frame, so a screen says loading once, at the top, and the
+  // pattern follows the frame's sequence instead of standing live under the line.
+  const inFrame = useFieldSkeleton();
+  const booting = own || inFrame;
   // The marker above the header says when the top of the page has scrolled away, so the screen can swap the
   // kit PageHeader to its own compact bar.
   const mark = useStickMark(onStickyChange);
@@ -63,7 +67,7 @@ export function FormPage({
           and each Section, field and row inside draws itself as bars where it will stand — the page's own
           sections, their headers, the fields in their columns — so nothing moves when the form arrives. The tree
           is inert and hidden from screen readers while it is bars; the one status below says what is loading. */}
-      <FormLayoutContext.Provider value={{ columns, loading: loading && loadingShape === "content" }}>
+      <FormLayoutContext.Provider value={{ columns, loading: booting && loadingShape === "content" }}>
         {booting && <span className={styles.srOnly} role="status">Loading {label ?? "form"}</span>}
         {booting && loadingShape === "rows" ? (
           // rows: the old fixed grid, for a page that has no children to follow yet.

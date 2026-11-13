@@ -48,7 +48,7 @@
         "empty"
       ],
       "default": "ready",
-      "note": "What the dashboard is doing. ready shows the groups; the others stand in for them."
+      "note": "What the dashboard is doing. ready shows the groups; the others stand in for them. Inside a booting AppShell the page boots with the frame whatever this is set to: the frame says once that its content has not arrived, so the pattern draws its boot skeleton and follows the frame's sequence, and a screen sets loading in one place, at the top."
     },
     "empty": {
       "type": "ReactNode",

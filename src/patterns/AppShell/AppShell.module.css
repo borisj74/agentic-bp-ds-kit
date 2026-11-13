@@ -104,3 +104,14 @@
 .settling { animation: settle var(--motion-boot-settle) var(--motion-ease-out); }
 @keyframes settle { from { opacity: var(--opacity-0); } }
 @media (prefers-reduced-motion: reduce) { .settling { animation: none; } }
+
+/* The real page while it boots: in the tree so it keeps its shape and the pieces inside it can draw their own
+   bars in place, but out of reach of the keyboard and of screen readers. display: contents, so the wrapper
+   adds no box of its own and the content column keeps its gap between Sections. */
+.booting { display: contents; }
+
+/* The one thing a screen reader is told while the page boots. */
+.srOnly {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
