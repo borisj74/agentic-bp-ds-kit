@@ -78,6 +78,10 @@ describe("what the installer leaves behind", () => {
     expect(dropped).toContain("tests/create-installer.test.ts");
   });
 
+  it("drops .github, so a prototype does not run the kit's own workflows", () => {
+    expect(dropped).toContain(".github");
+  });
+
   it("keeps some tests, so the check below is not vacuous", () => {
     expect(stays.length).toBeGreaterThan(0);
     expect(stays).toContain("new-screen.test.ts");

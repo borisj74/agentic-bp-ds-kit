@@ -11,7 +11,8 @@ import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { readCss, cssVarUses } from "./css.mjs";
 import { readTsx } from "./tsx.mjs";
 import { cssFindings, tsxFindings } from "./rules.mjs";
-import { repoRoot } from "./catalog.mjs";
+import { piece, repoRoot } from "./catalog.mjs";
+import { uiTally } from "./score.mjs";
 
 /** The kit's own folders. The review is for screens built from the kit, not for the kit itself. */
 export const SKIPPED = [
@@ -93,27 +94,40 @@ const bySeverity = { error: 0, warn: 1 };
 const order = (a, b) =>
   a.file.localeCompare(b.file) || a.line - b.line || bySeverity[a.severity] - bySeverity[b.severity] || a.rule.localeCompare(b.rule);
 
-/** Review one source string. `filename` decides which rules apply, so pass the path it will be saved to. */
-export function reviewSource(code, filename = "draft.tsx", { root = repoRoot, siblings = "" } = {}) {
+/**
+ * Review one source string and count the UI elements it draws.
+ * `filename` decides which rules apply, so pass the path it will be saved to.
+ */
+export function reviewOne(code, filename = "draft.tsx", { root = repoRoot, siblings = "" } = {}) {
   const file = posix(isAbsolute(filename) ? relative(root, filename) : filename);
   if (/\.css$/.test(file)) {
     // A screen often sets its own custom property from its TSX, so the sibling files count as local source.
-    return cssFindings({ decls: readCss(code), varUses: cssVarUses(code), file, code: code + "\n" + siblings, root }).sort(order);
+    const findings = cssFindings({ decls: readCss(code), varUses: cssVarUses(code), file, code: code + "\n" + siblings, root }).sort(order);
+    return { findings, tally: { kit: 0, ui: 0 } };
   }
   const facts = readTsx(code, file);
-  return tsxFindings({ facts, file, root }).sort(order);
+  return { findings: tsxFindings({ facts, file, root }).sort(order), tally: uiTally(facts, (tag) => Boolean(piece(tag, root))) };
+}
+
+/** Review one source string. `filename` decides which rules apply, so pass the path it will be saved to. */
+export function reviewSource(code, filename = "draft.tsx", options = {}) {
+  return reviewOne(code, filename, options).findings;
 }
 
 /** Review files and folders on disk. Pass all: true to include the kit's own folders. */
 export function reviewFiles(paths, { root = repoRoot, all = false } = {}) {
   const files = collectFiles(paths, { root, all });
   const findings = [];
+  const tally = { kit: 0, ui: 0 };
   for (const file of files) {
     const code = readFileSync(resolve(root, file), "utf8");
     const siblings = /\.css$/.test(file) ? siblingTsx(resolve(root, file)) : "";
-    findings.push(...reviewSource(code, file, { root, siblings }));
+    const one = reviewOne(code, file, { root, siblings });
+    findings.push(...one.findings);
+    tally.kit += one.tally.kit;
+    tally.ui += one.tally.ui;
   }
-  return { files, findings: findings.sort(order) };
+  return { files, findings: findings.sort(order), tally };
 }
 
 /** One line a person or an agent can read at a glance. */

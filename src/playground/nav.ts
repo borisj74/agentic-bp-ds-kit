@@ -52,6 +52,7 @@ const START_PAGES: Record<string, string> = {
   mcp: "MCP server",
   patterns: "Using patterns",
   prompting: "Prompting",
+  review: "Review",
 };
 const named = (list: { name: string }[], s: string) => list.find((c) => slug(c.name) === s)?.name;
 

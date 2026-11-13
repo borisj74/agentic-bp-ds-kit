@@ -27,7 +27,10 @@ const tarballUrl = () => {
 // dependencies.
 // Exported so a test can check that nothing left behind imports something that is dropped: a prototype has to
 // typecheck, build and test on its own.
-export const DROP = ["packages", "LICENSE", "bin", "mcp", "tests/mcp.test.ts", "tests/create-installer.test.ts"];
+// `.github` goes too: the kit's own Kit fit workflow runs on the kit's pull requests, not on a prototype's.
+export const DROP = [
+  "packages", "LICENSE", "bin", "mcp", ".github", "tests/mcp.test.ts", "tests/create-installer.test.ts",
+];
 // The same, inside package.json: the bin entry and the script that start the server, and the two packages only it
 // needs.
 const DROP_SCRIPTS = ["mcp"];
