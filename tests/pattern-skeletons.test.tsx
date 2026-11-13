@@ -6,10 +6,12 @@ import { Button } from "@/ui/Button/Button";
 import { Card } from "@/ui/Card/Card";
 import { FormDisplay } from "@/ui/FormDisplay/FormDisplay";
 import { ListView } from "@/ui/ListView/ListView";
+import { PageHeader } from "@/ui/PageHeader/PageHeader";
 import { Scoreboard } from "@/ui/Scoreboard/Scoreboard";
 import { Section } from "@/ui/Section/Section";
 import { Table, type TableColumn } from "@/ui/Table/Table";
 import { Timeline } from "@/ui/Timeline/Timeline";
+import { FormLayoutContext } from "@/ui/Form/FormContext";
 import { Tabs } from "@/ui/Tabs/Tabs";
 import { Toolbar } from "@/ui/Toolbar/Toolbar";
 import { Dashboard } from "@/patterns/Dashboard/Dashboard";
@@ -425,5 +427,100 @@ describe("a booting Toolbar draws one block per control it was given", () => {
     for (const block of bar2()) {
       expect(block.querySelector("[aria-hidden]")).toHaveAttribute("style", expect.stringContaining("height: var(--control-small)"));
     }
+  });
+});
+
+
+// Height reservation: a booting piece has to stand exactly as tall as the piece it is waiting for, or every
+// block under it sits high while the page loads and jumps down when the content arrives. The bars are 8 or 10
+// tall, so each cell keeps the line box its own words will take. These assert the rules in the stylesheet,
+// since jsdom lays nothing out.
+const booting = (node: React.ReactNode) => render(<FormLayoutContext.Provider value={{ loading: true }}>{node}</FormLayoutContext.Provider>);
+
+describe("a booting row keeps the height it will have", () => {
+  it("gives a FormDisplay row its label's and its value's own line boxes, not the bar's", () => {
+    const sheet = flat("src/ui/FormDisplay/FormDisplay.module.css");
+    expect(sheet).toContain("min-height: calc(var(--font-size-regular) * var(--line-height-normal))");
+    expect(sheet).toContain("min-height: calc(var(--text-ref-label-form-size) * var(--text-ref-label-form-lh))");
+    // The page's border-box default would fold the cell's padding into that line box.
+    expect(sheet).toContain("box-sizing: content-box");
+  });
+
+  it("keeps a start-label row's own cells and reserves the help button's square", () => {
+    booting(<FormDisplay label="Account name" value="Apex Digital Services" labelPosition="start" help="The name on the contract." />);
+    const row = document.querySelector("[data-label]")!;
+    expect(row.getAttribute("data-label")).toBe("start");
+    const dt = row.querySelector("dt")!;
+    // The label's bar and the square the help button will take.
+    expect(bars(dt)).toHaveLength(1);
+    expect(dt.querySelectorAll('[class~="bootHelp"]')).toHaveLength(1);
+    // The help popover itself is not drawn, so nothing is pressable.
+    expect(reachable()).toHaveLength(0);
+  });
+
+  it("drops the help square on a row that has no help", () => {
+    booting(<FormDisplay label="Account number" value="ACC-10428" labelPosition="start" />);
+    expect(document.querySelectorAll('[class~="bootHelp"]')).toHaveLength(0);
+  });
+
+  it("gives a chart with a legend that legend's own room, and one key per real key", () => {
+    booting(
+      <BarChart
+        label="AR aging" title="AR Aging By Time" height={200}
+        categories={["Current", "1-30"]}
+        series={[{ name: "Current", values: [230, 60] }, { name: "Overdue", values: [12, 40] }]}
+      />,
+    );
+    const keys = document.querySelector("figure ul")!;
+    expect(keys).not.toBeNull();
+    expect(keys.children).toHaveLength(2);
+    // Each key is the Legend's own swatch and a bar on the Legend's own line box.
+    expect(bars(keys.children[0])).toHaveLength(2);
+    expect(flat("src/ui/Chart/chart.module.css")).toContain("min-height: calc(var(--text-caption-size) * var(--text-caption-lh))");
+  });
+
+  it("draws no legend room for a chart that has none", () => {
+    booting(
+      <BarChart
+        label="AR aging" title="AR Aging By Time" height={200} showLegend={false}
+        categories={["Current", "1-30"]} series={[{ name: "Current", values: [230, 60] }]}
+      />,
+    );
+    expect(document.querySelector("figure ul")).toBeNull();
+  });
+
+  it("keeps the plot's own height, borders and all", () => {
+    // Regression: a content-box frame put the booting chart two pixels over the real one.
+    expect(flat("src/ui/Chart/chart.module.css")).toContain("box-sizing: border-box");
+  });
+
+  it("gives a scoreboard card its own lines, and keeps the trend's arrow, figure and unit", () => {
+    booting(
+      <Scoreboard
+        label="Record numbers"
+        items={[{ id: "bal", title: "Current balance", metric: "$12,600.50", trend: { value: "4.8 %", unit: "MoM", direction: "up" } }]}
+      />,
+    );
+    const row = document.querySelector('[class~="metricRow"]')!;
+    // The number, the arrow's square, the figure and the unit: four blocks, so the row wraps where the real
+    // one wraps instead of sitting on one short line.
+    expect(bars(row)).toHaveLength(4);
+    expect(flat("src/ui/Scoreboard/Scoreboard.module.css")).toContain("min-height: calc(1em * var(--line-height-tight))");
+  });
+
+  it("gives a page header's trail and title row their own line boxes and the badge its pill", () => {
+    booting(<PageHeader title="Apex Digital Services" badge="Active" breadcrumbs={[{ label: "Home", href: "#" }, { label: "Accounts", href: "#" }]} loading />);
+    const sheet = flat("src/ui/PageHeader/PageHeader.module.css");
+    expect(sheet).toContain("min-height: calc(var(--text-body-size) * var(--text-body-lh))");
+    expect(sheet).toContain("min-height: calc(var(--text-ref-page-size) * var(--text-ref-page-lh))");
+    // The trail, the title and the badge's own pill.
+    expect(bars(document.querySelector('[class~="title"]')!)).toHaveLength(3);
+  });
+
+  it("gives a timeline entry its own lines", () => {
+    booting(
+      <Timeline label="Close tasks" items={[{ id: "a", timestamp: "Apr 12", title: "Review and approve invoices", subtitle: "Jordan Ellis" }]} />,
+    );
+    expect(document.querySelectorAll('[class~="bootLine"]')).toHaveLength(3);
   });
 });

@@ -137,7 +137,7 @@ export function ScatterChart({
 
   return (
     <ChartFrame
-      label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={animate} active={at !== null} plotHeight={h}
+      label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={animate} active={at !== null} plotHeight={h} legendKeys={showLegend ? list.length : 0}
       onKeyDown={onKeyDown} onBlur={() => setAt(null)}
     >
       <div ref={plotRef} className={s.plot} style={{ height: h }} onPointerMove={pickAt} onPointerLeave={() => setAt(null)}>

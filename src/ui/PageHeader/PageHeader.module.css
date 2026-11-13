@@ -58,3 +58,9 @@
    whole line becomes a row and the arrow leads the trail. */
 .back { flex: none; }
 .stickyTitle { flex-direction: row; align-items: center; justify-content: flex-start; gap: var(--space-xsmall); }
+
+/* Booting: a bar is 8 tall, but each row of the title block has to stand as tall as the words it is waiting
+   for, or the whole page sits high while it loads and drops when the name arrives. The trail keeps the
+   Breadcrumb's line box and the title row the page title's. */
+.bootCrumbs { display: flex; align-items: center; min-height: calc(var(--text-body-size) * var(--text-body-lh)); }
+.bootTitleRow { min-height: calc(var(--text-ref-page-size) * var(--text-ref-page-lh)); }

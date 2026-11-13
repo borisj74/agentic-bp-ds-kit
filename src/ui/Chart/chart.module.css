@@ -85,7 +85,22 @@
    its floor. The box is the drawing's own height, so the chart arrives where its skeleton stood. */
 .bootPlot {
   display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); align-items: end;
-  gap: var(--space-medium); box-sizing: content-box; min-width: 0;
+  /* border-box: the frame's own 1px edges are part of the drawing's height, so a booting chart is exactly as
+     tall as the real plot rather than two pixels over. */
+  gap: var(--space-medium); box-sizing: border-box; min-width: 0;
   padding-inline: var(--space-small); border: var(--border-width-thin) solid var(--border-neutral-faint);
   border-radius: var(--radius-medium);
+}
+
+/* Booting: the legend's own room. A key is the Legend's swatch and a bar on the Legend's own line box, laid out
+   the way the real Legend lays its keys out, so a chart that has one is as tall — or, beside the plot, as wide —
+   while it boots as it will be once the keys arrive. */
+.bootLegend {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+  gap: var(--space-xsmall) var(--space-large); margin: 0; padding: 0; list-style: none;
+}
+.bootLegendColumn { flex-direction: column; flex-wrap: nowrap; align-items: flex-start; gap: var(--space-xsmall); }
+.bootKey {
+  display: inline-flex; align-items: center; gap: var(--space-xsmall); min-width: 0;
+  min-height: calc(var(--text-caption-size) * var(--text-caption-lh));
 }

@@ -28,3 +28,16 @@
 /* The row's own label column, when it does not take the one the Form (or the kit) gives it. md sets nothing. */
 .widthSm { --input-label-width: var(--input-label-width-sm); }
 .widthLg { --input-label-width: var(--input-label-width-lg); }
+
+/* Booting: the bar is 8 tall, but the row has to stand as tall as the words it is waiting for, or every row
+   under it sits high while the record loads and drops when the values arrive. Each cell keeps the line box its
+   own text takes — the start label's cell already has the control's own min-height, which wins — and a row with
+   help keeps that button's 16 square, so the label column is the width it will be. */
+.bootTerm { box-sizing: content-box; min-height: calc(var(--text-ref-label-form-size) * var(--text-ref-label-form-lh)); }
+/* content-box, against the page's border-box default: the cell's padding is its own and the line box has to
+   stand on top of it, the way the real value's words do. */
+.bootValue {
+  box-sizing: content-box; display: flex; align-items: center;
+  min-height: calc(var(--font-size-regular) * var(--line-height-normal));
+}
+.bootHelp { flex: none; width: var(--icon-size-small); height: var(--icon-size-small); }

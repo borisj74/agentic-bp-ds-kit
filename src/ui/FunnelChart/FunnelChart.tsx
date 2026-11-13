@@ -169,6 +169,7 @@ export function FunnelChart({
   return (
     <ChartFrame
       label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={animate} active={active !== null} plotHeight={h}
+      legendKeys={showLegend ? steps.length : 0} legendPosition={legendPosition}
       onKeyDown={onKeyDown} onBlur={() => setActive(null)}
     >
       {legendPosition === "end" ? <div className={s.beside}>{plot}{keys}</div> : legendPosition === "top" ? <>{keys}{plot}</> : <>{plot}{keys}</>}

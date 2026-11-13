@@ -85,7 +85,7 @@ export function PieChart({
   const cur = active !== null ? arcs[active] : null;
 
   return (
-    <ChartFrame className={frame} label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={animate} active={active !== null} plotHeight={PIE_HEIGHT} onKeyDown={onKeyDown} onBlur={() => setActive(null)}>
+    <ChartFrame className={frame} label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={animate} active={active !== null} plotHeight={PIE_HEIGHT} legendKeys={showLegend ? slices.length : 0} legendPosition={legendPosition} onKeyDown={onKeyDown} onBlur={() => setActive(null)}>
       <div className={[styles.layout, styles[legendPosition], alignment === "center" ? styles.center : ""].join(" ")}>
         <div className={[styles.pie, styles[size]].join(" ")} onPointerLeave={() => setActive(null)}>
           <svg className={styles.svg} viewBox="0 0 100 100" aria-hidden="true">

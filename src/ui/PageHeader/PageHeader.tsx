@@ -88,12 +88,17 @@ export function PageHeader({
             {/* The bars are as long as the words they stand in for, so the trail and the name arrive at the
                 length their bars held. The step back keeps its own button square, not a smaller stand-in, so
                 the title row does not resettle when the arrow arrives. */}
-            <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(trail)} height="var(--skeleton-cell)" label="" />
-            <div className={styles.titleRow}>
+            {/* Each row keeps the line box its own words will take, and the badge its own pill, so the header
+                is as tall booting as it will be and nothing under it moves when the name arrives. */}
+            <span className={styles.bootCrumbs}>
+              <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(trail)} height="var(--skeleton-cell)" label="" />
+            </span>
+            <div className={[styles.titleRow, styles.bootTitleRow].join(" ")}>
               {back && <Skeleton shape="rect" animation="pulse" width="var(--control-small)" height="var(--control-small)" label="" />}
               {icon && <Skeleton shape="rect" animation="pulse" width="var(--icon-size-large)" height="var(--icon-size-large)" label="" />}
               <h1 className={styles.srOnly}>{heading}</h1>
               <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(heading)} height="var(--font-size-large)" label="" />
+              {badge && <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(badge)} height="var(--badge-height-md)" label="" />}
             </div>
           </>
         ) : sticky ? (

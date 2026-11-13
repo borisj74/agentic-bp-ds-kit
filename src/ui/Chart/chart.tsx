@@ -102,7 +102,10 @@ export function ChartEmpty({ label, height }: { label: string; height: number })
 // skeleton (node 2046:29938) rather than any one chart's data.
 const BOOT_BARS = [0.31, 0.5, 0.39, 0.62, 0.47, 0.7];
 
-export function ChartFrame({ label, title, subtitle, showHeader = true, animate, children, onKeyDown, onBlur, active, className, plotHeight }: {
+export function ChartFrame({
+  label, title, subtitle, showHeader = true, animate, children, onKeyDown, onBlur, active, className,
+  plotHeight, legendKeys = 0, legendPosition = "bottom",
+}: {
   label: string; title?: string; subtitle?: string; showHeader?: boolean;
   animate: boolean; children: ReactNode; active: boolean;
   onKeyDown?: (e: KeyboardEvent) => void; onBlur?: () => void;
@@ -110,6 +113,9 @@ export function ChartFrame({ label, title, subtitle, showHeader = true, animate,
   className?: string;
   // How tall the drawing is, so a booting chart holds the room the real one will take.
   plotHeight?: number;
+  // How many keys the legend has, and where it sits, so a booting chart holds that room too. 0 draws none.
+  legendKeys?: number;
+  legendPosition?: "top" | "bottom" | "end";
 }) {
   // A focusable figure: arrow keys move through the data and show the tooltip, like pointing at it.
   const heading = showHeader && (title || subtitle);
@@ -119,6 +125,28 @@ export function ChartFrame({ label, title, subtitle, showHeader = true, animate,
   const booting = useFieldSkeleton();
   const plot = plotHeight && plotHeight > 0 ? plotHeight : 0;
   if (booting) {
+    const bootPlot = (
+      <div className={styles.bootPlot} style={plot ? { height: `${plot}px` } : undefined}>
+        {BOOT_BARS.map((share, i) => (
+          // A share of the plot in pixels, not a percentage: a bar is the only thing in its own box, and a
+          // percentage there measures the box the bar itself sizes.
+          <Skeleton key={i} shape="rect" animation="pulse" height={plot ? Math.round(share * plot) : `calc(${share} * var(--skeleton-block))`} label="" />
+        ))}
+      </div>
+    );
+    // The legend keeps its own room: a chart that has one is as tall (or, beside the plot, as wide) booting as
+    // it will be once the keys arrive, so nothing under it moves. Each key is the Legend's own swatch and a bar
+    // on the Legend's own line box.
+    const bootKeys = legendKeys > 0 ? (
+      <ul className={[styles.bootLegend, legendPosition === "end" ? styles.bootLegendColumn : ""].join(" ")} aria-hidden="true">
+        {Array.from({ length: legendKeys }, (_, i) => (
+          <li key={i} className={styles.bootKey}>
+            <Skeleton shape="rect" animation="pulse" width="var(--chart-swatch)" height="var(--chart-swatch)" label="" />
+            <Skeleton shape="rect" animation="pulse" width="var(--skeleton-bar-sm)" height="var(--skeleton-cell)" label="" />
+          </li>
+        ))}
+      </ul>
+    ) : null;
     return (
       <figure className={[styles.chart, className ?? ""].join(" ")} aria-hidden="true">
         {heading && (
@@ -135,13 +163,9 @@ export function ChartFrame({ label, title, subtitle, showHeader = true, animate,
             )}
           </figcaption>
         )}
-        <div className={styles.bootPlot} style={plot ? { height: `${plot}px` } : undefined}>
-          {BOOT_BARS.map((share, i) => (
-            // A share of the plot in pixels, not a percentage: a bar is the only thing in its own box, and a
-            // percentage there measures the box the bar itself sizes.
-            <Skeleton key={i} shape="rect" animation="pulse" height={plot ? Math.round(share * plot) : `calc(${share} * var(--skeleton-block))`} label="" />
-          ))}
-        </div>
+        {legendPosition === "end" ? <div className={styles.beside}>{bootPlot}{bootKeys}</div>
+          : legendPosition === "top" ? <>{bootKeys}{bootPlot}</>
+          : <>{bootPlot}{bootKeys}</>}
       </figure>
     );
   }

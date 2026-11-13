@@ -127,17 +127,38 @@ export function Scoreboard({
           const body = booting ? (
             <>
               <span className={styles.header}>
-                <span className={styles.title}>
+                {/* Every line keeps the line box its own words will take, so the card is as tall booting as it
+                    will be and the sections under the scoreboard do not sit high while the page loads. */}
+                <span className={[styles.title, styles.bootLine].join(" ")}>
                   <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(item.title)} height="var(--skeleton-cell)" label="" />
                 </span>
               </span>
               <span className={styles.text}>
                 <span className={styles.values}>
+                  {/* The number and its trend share the row the way they will, and the row wraps the way the
+                      real one does, so a card whose number and trend need two lines keeps both. */}
                   <span className={styles.metricRow}>
                     <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(item.metric)} height="var(--skeleton-row-bar)" label="" />
+                    {item.trend && (
+                      // The trend keeps its own parts — the arrow's square, the figure, the unit — so the row
+                      // takes the room it will take and wraps where the real one wraps.
+                      <span className={styles.trend}>
+                        <span className={styles.change}>
+                          {item.trend.direction && item.trend.direction !== "none" && (
+                            <Skeleton shape="rect" animation="pulse" width="var(--icon-size-medium)" height="var(--icon-size-medium)" label="" />
+                          )}
+                          <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(item.trend.value)} height="var(--skeleton-row-bar)" label="" />
+                        </span>
+                        {item.trend.unit && (
+                          <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(item.trend.unit)} height="var(--skeleton-row-bar)" label="" />
+                        )}
+                      </span>
+                    )}
                   </span>
                   {item.metadata && (
-                    <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(item.metadata)} height="var(--skeleton-cell)" label="" />
+                    <span className={[styles.meta, styles.bootLine].join(" ")}>
+                      <Skeleton shape="rect" animation="pulse" width={skeletonBarWidth(item.metadata)} height="var(--skeleton-cell)" label="" />
+                    </span>
                   )}
                 </span>
                 {item.chart && (

@@ -148,7 +148,7 @@ export function WaterfallChart({
 
   return (
     <ChartFrame
-      label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={animate} active={active !== null} plotHeight={h}
+      label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={animate} active={active !== null} plotHeight={h} legendKeys={showLegend ? 3 : 0}
       onKeyDown={onKeyDown} onBlur={() => setActive(null)}
     >
       <div ref={plotRef} className={s.plot} style={{ height: h }} onPointerMove={pickAt} onPointerLeave={() => setActive(null)}>
