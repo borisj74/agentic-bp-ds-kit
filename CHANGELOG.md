@@ -4,6 +4,18 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.11.1 — 2026-11-14
+
+A new prototype carries only the kit, and nothing in what it installs has a critical advisory.
+
+### Changed
+- **The installer leaves the kit's own machinery behind.** `DROP` in `packages/create-agentic-bp-ds/index.mjs` now also takes all of `tests/`, `vitest.config.mts`, `.claude/launch.json` and the three `anomaly-detection*` demo screens, along with the `test` and `test:watch` scripts and the nine test-only devDependencies (`vitest`, `@vitejs/plugin-react`, `vite-tsconfig-paths`, `jsdom`, `axe-core` and the four `@testing-library/*` packages). The kit's tests check the kit's own components, not a prototype's screens, and the anomaly-detection screens are the kit's own exploration work, not a starting point for anyone else's. A prototype installs 439 packages and nothing it does not use.
+- `next` 16.3.4 to 16.4.6, which closes the critical advisory in what a prototype installs: `npm audit --omit=dev` now reports no vulnerabilities.
+- The five Figma guidelines files are 94.9 KB instead of 114.9 KB, back under the 100 KB Figma asks for, with room for about seven more components. The generator drops rule sentences about things that happen over time — a skeleton arriving, a shimmer, a hover, what a screen reader says, millisecond timings — because the agent draws one state of one screen; it keeps three rule sentences a component, two sentences of a property note, one do-not where the usage already carries a rule and four do-nots a pattern. Every closed property list is untouched. Repo-only: the files are uploaded to the Figma library by hand.
+
+### Fixed
+- The table scroll anti-pattern in the Figma guidelines still said a too-wide table makes the page scroll sideways. Since v0.7.15 the table's own box takes the sideways scroll, the page never slides, and the first column freezes against the start edge with the checkbox column beside it.
+
 ## v0.11.0 — 2026-11-14
 
 The whole screen boots: a 2px line over the content column, then one skeleton for the chrome and the page together, on one timing rule.
