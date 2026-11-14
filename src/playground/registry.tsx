@@ -1640,7 +1640,7 @@ export const registry: Record<string, Entry> = {
     hint: "Click a cell to edit it: Field opens the formula editor, Condition is a select, Value is text. Enter saves, Escape cancels. Add and remove rows. State loading draws the grid as it boots inside a loading page: its own columns and header line, a row of bars per row at its own row heights, and Add row as a block.",
     block: true,
     wide: true,
-    card: <div style={{ width: 400 }}><DataGrid label="Conditions" columns={CONDITION_COLUMNS} defaultRows={CONDITIONS.slice(0, 2)} canInsertRows canRemoveRows /></div>,
+    card: <div style={{ width: 400 }}><DataGrid label="Conditions" columns={CONDITION_COLUMNS} defaultRows={CONDITIONS.slice(0, 2)} canInsertRows insertLabel="Add condition" canRemoveRows /></div>,
   },
   DatePicker: {
     // Keyed so a changed default value applies again. The wrapper gives the full-width field a form-like width.
