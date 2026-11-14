@@ -4,11 +4,9 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
-## Unreleased
+## v0.11.0 — 2026-11-14
 
 The whole screen boots: a 2px line over the content column, then one skeleton for the chrome and the page together, on one timing rule.
-
-This section folds into the next release's entry — rename the heading to `## v<version> — <date>` at release time, per [RELEASING.md](RELEASING.md).
 
 ### Added
 - **The kit reviews a screen against its own contracts.** `npm run review -- src/app/invoices/page.tsx` (or `agentic-bp-ds-kit review <path...>`) reads the contracts and reports what drifts, with the line, the contract and a fix. Eight rules: `bp/raw-value` (a colour, or a px spacing, radius or shadow, typed in by hand), `bp/primitive-token` (a `--ref-*` or `--ui-*` ramp outside `src/tokens`, or a token no token file defines), `bp/local-cousin` (a kit piece rebuilt in the file or imported from anywhere but `@/ui` and `@/patterns`, or UI taken from another screen's folder; a screen's own folder is fine, so a screen can still be split into files), `bp/closed-enum` (a prop or value no contract allows: `tone=`, Button `variant=`, an `emphasis` x `intent` pair that is not allowed), `bp/one-primary` (a second strong brand Button), `bp/use-pattern` (a screen that builds most of a pattern by hand), `bp/use-bigger-piece` (a screen that builds an organism out of its own parts) and `bp/screen-frame` (no `AppShell` and side nav, breadcrumbs that do not start at Home, or a page grid written by hand). The first five are errors, the last three warnings, and the command exits 1 on any error. `--json` prints one object for a machine; `--all` includes the kit's own folders, which are left out by default. It is static and offline: it parses TSX with the TypeScript compiler API, reads CSS itself, and reuses the token knowledge in `scripts/audit-tokens.mjs` rather than carrying a second token checker. The engine lives in `scripts/review/` and exports `reviewFiles(paths)` and `reviewSource(code, filename)`.
