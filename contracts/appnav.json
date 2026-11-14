@@ -129,7 +129,7 @@
     },
     {
       "title": "Groups",
-      "usage": "AR's menu pinned open: Ledgers, Payments, Lockbox and Credits head their links on the rule above them. Pinned, each header carries a chevron at the far right that collapses its links; the links keep the same inset as every other link.",
+      "usage": "AR's menu pinned open: Ledgers, Payments, Lockbox and Credits head their links on the rule above them. Pinned, each header carries a chevron at the far right that collapses its links, pointing up while they show and down once they are folded; the links keep the same inset as every other link.",
       "items": [
         {
           "props": {
