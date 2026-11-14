@@ -206,11 +206,11 @@ direction funnel narrows down from the first step; pyramid is the same stack the
 
 ### HeaderCell
 
-Column title for a data table: uppercase label, optional select-all checkbox, optional sort, with a brand-faint bottom border, 2px or 1px.
+Column title for a data table: a label in sentence case, optional select-all checkbox, optional sort, with a brand-faint bottom border, 2px or 1px.
 
 Props — label string; size sm|md*; alignment start*|center|end; line medium*|thin; checkbox bool; checked bool; defaultChecked bool; indeterminate bool; sortable bool; sort none*|asc|desc
 
-- label — Column title, shown uppercase. Omit for a checkbox-only or empty column.
+- label — Column title, shown as written in sentence case. Omit for a checkbox-only or empty column.
 - alignment — end for numbers and amounts. center for a checkbox-only or actions column.
 
 Use HeaderCell inside th scope=col, one per column, above Cell rows. Use alignment end for number columns and center for a checkbox-only or actions column.
