@@ -43,7 +43,7 @@ Props — emphasis strong|subtle*|minimal; intent brand|neutral*|danger; size sm
 
 - iconSize — Icon size, 16 / 20 / 24 / 32. Leave out to follow the Button: 16 on sm, 20 on md and lg. Use a larger icon on an icon-only lg Button where the icon alone carries the action, like a phone footer.
 
-Intent danger is only for work that cannot be undone. Only these pairs exist: strong with brand or danger, subtle with neutral, minimal with neutral, brand or danger. Accessibility is built in: native button, focus ring, loading and disabled states, and a label for icon-only buttons.
+Intent danger is only for work that cannot be undone. Only these pairs exist: strong with brand or danger, subtle with neutral, minimal with neutral, brand or danger. Accessibility is built in: native button, focus ring, loading and disabled states, and a label for icon-only buttons. This is for a Button standing on the page — a Toolbar, Section, Card or Timeline draws its own controls' blocks and never reaches it.
 
 - Do not use for in-text navigation (use Link).
 - Do not put two strong brand Buttons in one view.
@@ -201,7 +201,7 @@ Props — columns DataGridColumn[] { key, header, type?, options?, searchable?, 
 
 Functions — deleteConfirm, actionsFor, detail, detailCount, rowParent, cellStatus, cellReadOnly, cellLink
 
-Each column has a type: text and number cells edit in place with a kit Input, select cells are a kit Select, formula cells open a kit FormulaEditor in the cell, date cells are a kit DatePicker, and readOnly columns only show. Keep remove and delete apart: a row people only meant to take off a quote is removed, not deleted. Delete asks first in a kit AlertDialog and only then calls onDeleteRow. For read-only lists use Table.
+Each column has a type: text and number cells edit in place with a kit Input, select cells are a kit Select, formula cells open a kit FormulaEditor in the cell, date cells are a kit DatePicker, and readOnly columns only show. Keep remove and delete apart: a row people only meant to take off a quote is removed, not deleted. Delete asks first in a kit AlertDialog and only then calls onDeleteRow. For read-only lists use Table. Inside a loading page it draws its own skeleton in place: the real grid, with its own columns and their widths, its header row and its line, a 64x8 bar for every column name and a 10px bar instead of a value or an editor in every data cell — one body row per row it has, to the same ceiling of twelve a booting Table keeps, or three when it has none yet — at its own row heights (38 / 40, not Table's 36 / 40), so nothing moves when the rows land. Add row stays as a block its own size under the grid, and totalRow and legend keep their row with bars, only when they were passed.
 
 - Do not use it to show data people only read. Use Table.
 - Do not put loose checkboxes beside the grid to pick rows. Pass selectable.
@@ -272,7 +272,7 @@ Props — label string; items ListViewItem[] { id, primary, secondary?, group?, 
 
 - selection — single: a click picks one row, shown light blue between brand lines. multiple: a checkbox on each row; checked rows are light blue. none: rows only show, open or move.
 
-Use ListView when each record reads best as a line or two of text rather than as columns: people, invoices, messages, tasks, files. To show a picked record beside the list rather than going to its page, put the ListView in the ListDetail pattern. Rows are spaced like a kit Table: inset 12 at every width, the checkbox takes only its own width, and the text starts 24 after it, so a ListView and a Table of the same records line up when a screen switches between them.
+Use ListView when each record reads best as a line or two of text rather than as columns: people, invoices, messages, tasks, files. To show a picked record beside the list rather than going to its page, put the ListView in the ListDetail pattern. Rows are spaced like a kit Table: inset 12 at every width, the checkbox takes only its own width, and the text starts 24 after it, so a ListView and a Table of the same records line up when a screen switches between them. It draws at most twelve rows, however long the list is: twelve 44px rows is about a screenful, and the rest would only pulse below the fold.
 
 - Do not use it for values people compare across columns. Use Table or DataGrid.
 - Do not use it for a short set of links. Use LinkList.
@@ -345,7 +345,7 @@ Props — columns TableColumn[] { key, header?, alignment?, numeric?, emphasis?,
 
 Functions — detail, detailCount
 
-selectable adds a checkbox column: each row gets a checkbox Cell and the header a select-all that shows a dash when only some rows are picked. Search, filters and actions belong in a Toolbar above it. Every cell keeps its value on one line at any width, so a name, a contract, a date or an amount never wraps down its cell. When the columns need more room than the box has, the box itself takes the sideways scroll — the page never slides — and the first column, which names the row, freezes against the start edge while the rest of the row slides under it; with selectable, the checkbox column freezes with it, so a row can still be ticked while it is read. That is a trade rather than a setting: a cell can only hold still against whatever scrolls, so once the box scrolls, the names hold at the top of the box rather than at the top of the page. For parent and child rows, put a Cell type tree in the first column and list only the rows whose parents are open.
+selectable adds a checkbox column: each row gets a checkbox Cell and the header a select-all that shows a dash when only some rows are picked. Search, filters and actions belong in a Toolbar above it. Every cell keeps its value on one line at any width, so a name, a contract, a date or an amount never wraps down its cell. When the columns need more room than the box has, the box itself takes the sideways scroll — the page never slides — and the first column, which names the row, freezes against the start edge while the rest of the row slides under it; with selectable, the checkbox column freezes with it, so a row can still be ticked while it is read. That is a trade rather than a setting: a cell can only hold still against whatever scrolls, so once the box scrolls, the names hold at the top of the box rather than at the top of the page. For parent and child rows, put a Cell type tree in the first column and list only the rows whose parents are open. Inside a loading page it draws its own skeleton in place: the real table, with a 64x8 bar for every column name and a 10px bar instead of a value in every body cell — one body row per row it has, to a ceiling of twelve — about a screenful of 44px rows, so a list of hundreds does not animate hundreds of bars below the fold — or three when it has none yet, and nothing over the tick cell or a column with no name, at the heights and between the lines the table always keeps (BP COBALT "Skeleton / list row"), so a related list under a form arrives in the shape its skeleton held.
 
 - Do not draw cell content yourself. Use kit Cell types for badges, people, links and row actions.
 - Do not put search or filters in the table. Use a Toolbar above it.
@@ -355,6 +355,8 @@ selectable adds a checkbox column: each row gets a checkbox Cell and the header 
 What happened on a record, newest first: a circled icon per entry joined by a line, with the note, links and action for each one.
 
 Props — items TimelineItem[] { id, title, timestamp?, subtitle?, icon?, intent?, notes?, links, action?, menu? }; size sm|md*; label string
+
+It draws at most twelve entries, however long the thread is: twelve 44px rows is about a screenful, and the rest would only pulse below the fold.
 
 - Do not build a feed from your own divs, or add a TimelineItem, ActivityCard or FeedRow. Pass items.
 - Do not use it for steps in a flow. Use Steps.
@@ -462,6 +464,17 @@ Props — title string; description string; icon string; iconStyle well*|plain; 
 - Do not use it for page messages like errors or warnings. Use Callout.
 - Do not use it while content is loading.
 
+### LoadingLine
+
+A 2px line with a short brand bar sliding across it, saying a whole page or panel is still arriving when there is no amount done to report.
+
+Props — loading bool*; track line*|none; label string
+
+It never shows how far along the load is. A page that lands inside the first 200ms never shows a skeleton at all, and a skeleton that has appeared is never blinked away the moment the data arrives.
+
+- Do not use it when the amount done is known. Use Meter.
+- Do not use it as the legacy 20px determinate bar. Use ProgressBar.
+
 ### Meter
 
 How far along or how full something is, from 0 to 100, as a bar, a ring or a half ring, with optional red, amber and green zones.
@@ -486,7 +499,9 @@ Use ProgressBar only to match screens built with the older progress bar.
 
 Gray placeholder shapes in the layout of content that is still loading, like lines of text, an avatar or an image, so the page keeps its shape until the data arrives.
 
-Props — shape text*|circle|rect; lines number; size sm|md*|lg; width string | number; height string | number; animation shimmer*|pulse|none; loading bool*; children ReactNode; label string
+Props — shape text*|circle|rect; lines number; size sm|md*|lg; width string | number; height string | number; animation shimmer*|pulse|none; tone default*|band|brand; loading bool*; children ReactNode; label string
+
+Inside a booting AppShell a skeleton follows the frame's sequence rather than its own clock: it waits out the line's first 200ms and is then held at least 400ms.
 
 - Do not use it for a short status line. Use TextLoader.
 - Do not use it when the amount done is known. Use Meter.
@@ -576,7 +591,7 @@ One form: an optional title, kit fields (or titled sections of them) and the act
 Props — title string; description string; variant plain*|card; labelPosition top*|start; labelWidth sm|md*|lg; columns 1|2|3; children ReactNode; sections FormSection[] { title, help?, actions?, content, line?, collapsible?, expanded?, defaultExpanded?, onExpandedChange? }; actions ReactNode; error string; id string
 
 - labelWidth — How wide the start-label column is: sm 140px for a form of short names (Email, Status, Currency), md 234px, the product's own column, which fits a name as long as Account Ledger Number on one line, and lg 320px where the names run longer than that. Pick one for the whole form: the fields inside read the Form's column, so setting labelWidth on a field in a form makes the labels down that column stop lining up. A field's own labelWidth is for one standing outside a Form. The field beside the label stays 308px at every step, so the column itself narrows or widens, and the points where the labels go back on top and where columns give way move with it: labels go on top under 460px (sm), 554px (md) or 640px (lg). Read only with labelPosition="start"; with labels on top there is no column to size.
-- columns — 2 puts fields side by side, left to right; 3 puts them in threes, for a long form on a wide page. A Textarea spans the row, and so does a DataGrid (like a product's rate bands), which needs the width for its columns; with start labels the grid starts at the section's edge, since its column headers stand in for a label. Set, each column is at most 554px (--layout-column-max) and the fields stay at the start: on a wide page the space past the last column stays empty. Unset, the Form takes the columns of the FormPage or RecordPage it is in; outside one, the fields stack in one column that fills the form, as in a Modal or Drawer. Never more than 3. Columns give way as the form narrows: three become two under 720px (1301px with start labels), and two become one under 560px (867px with start labels). A narrower or wider labelWidth moves the start numbers with it: three become two under 1019px (sm) or 1559px (lg), two become one under 679px (sm) or 1039px (lg).
+- columns — 2 puts fields side by side, left to right; 3 puts them in threes, for a long form on a wide page. A Textarea spans the row, and so does a DataGrid (like a product's rate bands), which needs the width for its columns; with start labels the grid starts at the section's edge, since its column headers stand in for a label. Set, each column is at most 554px (--layout-column-max) and the fields stay at the start: on a wide page the space past the last column stays empty. Unset, the Form takes the columns of the FormPage or RecordPage it is in; outside one, the fields stack in one column that fills the form, as in a Modal or Drawer. Never more than 3. Columns give way as the form narrows: three become two under 720px (1301px with start labels), and two become one under 560px (867px with start labels). A narrower or wider labelWidth moves the start numbers with it: three become two under 1019px (sm) or 1559px (lg), two become one under 679px (sm) or 1039px (lg). Below 1280px of viewport the fields are one column whatever room the box has, which is where BP COBALT puts the record's and the form's break; above it the box decides.
 
 Read-only values go in FormDisplay rows; back-to-back rows sit flush as one list. Once columns is set (1, 2 or 3), each column stops at 554px (--layout-column-max) and the fields stay at the start, so a wide page leaves the space on the right empty instead of stretching the fields; with columns unset, the fields fill the form, as in a Modal or Drawer.
 
@@ -647,10 +662,12 @@ The legend names the group; hide it only when a heading already names it.
 
 One choice from two to five options, shown as kit minimal Buttons side by side.
 
-Props — label string; hideLabel bool; options SegmentedControlOption[] { value, label, icon?, disabled? }; value string; defaultValue string; size sm|md*|lg; fullWidth bool; disabled bool; name string
+Props — label string; hideLabel bool; options SegmentedControlOption[] { value, label, icon?, disabled? }; value string; defaultValue string; size sm|md*|lg; iconOnly bool; fullWidth bool; disabled bool; name string
+
+- iconOnly — Takes the words off the options and leaves their marks, for a switcher that needs no reading, like light and dark. Give every option an icon: one without keeps its label. The label is still the option's name for screen readers, the way an iconOnly Button keeps its children.
 
 - Do not use for more than five options or long labels. Use Select.
-- Do not use for on/off. Use Switch.
+- Do not use iconOnly without an icon on every option, or for options whose marks do not say what they are on their own.
 
 ### Select
 
@@ -729,13 +746,13 @@ Radius, border widths and the 24px minimum click target do not change.
 
 A titled block of a page, like Account information or Recent invoices: a header with a line under it, optional help and buttons, and the content below.
 
-Props — title string; help string; actions ReactNode; children ReactNode; line medium*|thin|none; columns 1|2|3; collapsible bool; expanded bool; defaultExpanded bool*; heading md|sm|xs; spacing default*|tight
+Props — title string; help string; actions ReactNode; children ReactNode; line medium*|thin|none; columns 1|2|3; collapsible bool; expanded bool; defaultExpanded bool*; heading md|sm|xs; spacing default*|tight; loading bool
 
 - children — The section's content. Leave it out for a header only: the title row and its line, with nothing below.
 - line — The line under the header. medium is 2px, thin is 1px, both in the brand-faint color; none drops it, for a block inside a section that reads as one part of it. It applies to this Section's own header only; a Section inside it sets its own.
-- columns — Lays FormDisplay rows or kit fields, passed straight in as children, out in 1, 2 or 3 columns, left to right, each at most 554px (--layout-column-max) and kept at the start. A Textarea spans the row. Unset, the Section takes the columns of the RecordPage it is in; outside one, the content stacks at full width as before. Only rows and fields go into columns: a Section of a Table or anything else stays full width.
+- columns — Lays FormDisplay rows or kit fields, passed straight in as children, out in 1, 2 or 3 columns, left to right, each at most 554px (--layout-column-max) and kept at the start. A Textarea spans the row. Unset, the Section takes the columns of the RecordPage it is in; outside one, the content stacks at full width as before. Only rows and fields go into columns: a Section of a Table or anything else stays full width. Below 1280px of viewport the fields are one column whatever room the box has, which is where BP COBALT puts the record's and the form's break; above it the box decides.
 
-It is one component: pass title and the content as children, or leave children out for a header only, like a heading above content laid out by the page. Columns give way as the Section narrows, like Form columns: three become two under 1301px with start labels (720px with labels on top), and two become one under 867px with start labels (560px on top). A Table, Scoreboard or anything else that is not a field or a FormDisplay is never put in columns: a Section of those keeps the full width.
+It is one component: pass title and the content as children, or leave children out for a header only, like a heading above content laid out by the page. Columns give way as the Section narrows, like Form columns: three become two under 1301px with start labels (720px with labels on top), and two become one under 867px with start labels (560px on top). A Table, Scoreboard or anything else that is not a field or a FormDisplay is never put in columns: a Section of those keeps the full width. A folded section is its header only.
 
 - Do not override the header line with CSS or draw a border above the content. Use line.
 - Do not write a line of text under a section title. A section title stands on its own: put the sentence in the section's content, where the reader is already looking, or make it the help icon's text. Only PageHeader carries a line under its title.
@@ -755,7 +772,7 @@ Props — items AnchorNavItem[] { id, label }; active string; defaultActive stri
 
 The product's top bar: logo and environment on the start, global search in the centre, utility icons, the user and their company on the end.
 
-Props — navOpen bool; logo ReactNode; homeHref string; environment string; environmentIntent success*|info|warning|danger|highlight|neutral; search bool*; searchPlaceholder string; searchShortcut string; searchGroups CommandGroup[] { heading?, items }; searchVariant list*|tabs; searchIconStyle tile*|plain; searchScopes CommandScope[] { value, label }; searchScope string; assistant AppHeaderAssistant { label?, open?, onToggle }; actions AppHeaderAction[] { id, label, icon }; user AppHeaderUser { name, src? }; company AppHeaderCompany { name, logo? }; darkMode bool; density compact|default|comfortable
+Props — navOpen bool; logo ReactNode; homeHref string; environment string; environmentIntent success*|info|warning|danger|highlight|neutral; search bool*; searchPlaceholder string; searchShortcut string; searchGroups CommandGroup[] { heading?, items }; searchVariant list*|tabs; searchIconStyle tile*|plain; searchScopes CommandScope[] { value, label }; searchScope string; assistant AppHeaderAssistant { label?, open?, onToggle }; actions AppHeaderAction[] { id, label, icon }; user AppHeaderUser { name, src? }; company AppHeaderCompany { name, logo? }; darkMode bool; density compact|default|comfortable; loading bool
 
 - logo — Defaults to the kit Logo, which drops to its symbol on narrow bars. Pass your own only for a white-label product.
 - searchShortcut — Hint on the right of the search, like Ctrl+K. Shown only; it is not a key binding yet. Hidden under 1000px.
@@ -771,11 +788,11 @@ With searchGroups, the search opens a kit GlobalSearch in its place: one search 
 
 The app's main navigation: a brand rail of sections on the left, each with an optional second-level menu that flies out beside it.
 
-Props — items SideNavEntry[] { id, label, icon, href?, children?, divider }; endItems SideNavItem[]; current string; defaultCurrent string; expanded bool; pinned bool; defaultPinned bool; label string
+Props — items SideNavEntry[] { id, label, icon, href?, children?, divider }; endItems SideNavItem[]; current string; defaultCurrent string; expanded bool; pinned bool; defaultPinned bool; label string; loading bool
 
-- items — Rail sections, top to bottom. In the app shell this is always the full app nav, APP_NAV from @/patterns/AppShell/appNav (with APP_NAV_END as endItems); never a shorter or made-up list. icon is a Material Symbols name. children is the second-level menu: { id, label, href? } links and { divider: true } lines.
+- items — Rail sections, top to bottom. In the app shell this is always the full app nav, APP_NAV from @/patterns/AppShell/appNav (with APP_NAV_END as endItems); never a shorter or made-up list. icon is a Material Symbols name. children is the second-level menu, made of { id, label, href? } links, { label, items } groups (a named folder of links) and { divider: true } lines. A menu can mix all three. A group holds links only: no group inside a group.
 
-Every menu is the same width, the longest link in the whole nav (within --side-nav-panel-min and --side-nav-panel-max), so the menu never resizes as people move from one section to another, whether the rail is expanded or not.
+Every menu is the same width, the longest link in the whole nav (within --side-nav-panel-min and --side-nav-panel-max), so the menu never resizes as people move from one section to another, whether the rail is expanded or not. Groups start open and a collapse lasts only while the menu is out.
 
 - Do not put page actions, filters or tabs in it. Those belong in the page.
 - Do not nest a third level. A section has one menu of links, split by dividers.
@@ -865,7 +882,7 @@ Props — items LinkListItem[] { id, label, href?, onClick?, icon?, description?
 
 The top of a page's content: where it sits (breadcrumb), what it is (title, badge, and an optional icon) and the page actions.
 
-Props — title string; breadcrumbs BreadcrumbItem[] { label, href?, onClick? }; back PageHeaderBack { label, href?, onClick? }; icon string; badge string; badgeIntent neutral*|info|success|warning|danger|highlight; actions ReactNode; moreActions DropdownMenuEntry[] { id, label, icon?, danger?, divider }; sticky bool; shadow bool*
+Props — title string; breadcrumbs BreadcrumbItem[] { label, href?, onClick? }; back PageHeaderBack { label, href?, onClick? }; icon string; badge string; badgeIntent neutral*|info|success|warning|danger|highlight; actions ReactNode; moreActions DropdownMenuEntry[] { id, label, icon?, danger?, divider }; sticky bool; shadow bool*; loading bool
 
 - breadcrumbs — The parents of this page, all links: Home first, then the side-nav section, then any parent record. PageHeader adds the title as the last, current crumb, so the trail always reads Home › section › this page. On the section's own page, like the Accounts list, the title is the section itself, so pass only Home and the trail reads Home › Accounts.
 - back — Optional. A minimal icon-only Button (arrow_back, drawn one size up at icon md) at the start of the title line, before the icon, that goes back to where the page was opened from. label is its accessible name and its tooltip, so write where it goes, like Back to accounts. onClick wins; otherwise href is followed; with neither, it goes back one step in history. The breadcrumb is still the page's place in the app, so pass back only as a shortcut beside it, never instead of it. In sticky it moves to the start of the compact bar, before the trail.
@@ -912,12 +929,12 @@ With content, Tabs shows the selected panel under the strip; without it, it is a
 
 The bar above a list or table: find and filter on the left, view and actions on the right, with a filter bar that opens under it.
 
-Props — filters ReactNode; filterCount number; filtersOpen bool; defaultFiltersOpen bool; filterHelp string; searchValue string; searchPlaceholder string; searchGroups CommandGroup[] { heading?, items }; field ReactNode; selectedCount number; views ToolbarView[] { id, label }; view string; moreActions DropdownMenuEntry[] { id, label, icon?, danger?, divider }; actions ReactNode; buttons raised*|subtle; label string
+Props — filters ReactNode; filterCount number; filtersOpen bool; defaultFiltersOpen bool; filterHelp string; searchValue string; searchPlaceholder string; searchGroups CommandGroup[] { heading?, items }; field ReactNode; selectedCount number; views ToolbarView[] { id, label }; view string; moreActions DropdownMenuEntry[] { id, label, icon?, danger?, divider }; actions ReactNode; buttons raised*|subtle; loading bool; label string
 
 - field — One more control after the search: a kit DatePicker or Select, size sm, with labelPosition start, like Effective on. For a value that narrows the rows and changes often enough to stay on the bar instead of in the filter bar. It can hold more than one control: the slot is a row spaced like the rest of the bar, so pass them in a fragment rather than spacing them yourself.
 - actions — Kit Buttons size sm: subtle first, one strong brand Button last. At most five visible actions including More. To fold into the Actions menu on a narrow bar, each must be a kit Button whose children are its text label (an icon-only Button already passes its name that way); picked from the menu, its onClick runs with no event. Anything else and the actions stay a row that wraps.
 
-Right: a More menu and the actions, kit Buttons size sm with at most one strong brand Button, last. buttons subtle gives the buttons on the bar the bar's own grey instead of white paper, for a quieter bar; the search field keeps its white box either way. When the actions do not fit on that line they fold into one Actions menu that lists them, then More's items after a divider. It is either the whole row of buttons or the one menu, never a wrapped row. If even the Actions button does not fit, it shows as an icon-only more button, still named Actions.
+Right: a More menu and the actions, kit Buttons size sm with at most one strong brand Button, last. buttons subtle gives the buttons on the bar the bar's own grey instead of white paper, for a quieter bar; the search field keeps its white box either way. Only the one strong Button is a step darker, so the bar still says where the main action will land. This is a deliberate change from BP COBALT "Skeleton / button" (node 2046:29482), which draws the outline buttons and the search box as white bordered boxes with a bar inside: on the real bar they read as real, empty controls rather than as controls still on their way. When the actions do not fit on that line they fold into one Actions menu that lists them, then More's items after a divider. It is either the whole row of buttons or the one menu, never a wrapped row. If even the Actions button does not fit, it shows as an icon-only more button, still named Actions.
 
 - Do not put a loose label and field, or a count of ticked rows, beside the toolbar. Pass field and selectedCount.
 - Do not open the filter bar when the screen loads. It starts closed; people open it with Filters, and filterCount still says the list is narrowed.
@@ -952,7 +969,7 @@ Stack blocks in the body with.layout-stack; the drawer has its own 20px padding,
 
 A short list of actions or options that opens from a Button or a FilterButton.
 
-Props — label string; items DropdownMenuEntry[] { id, label, description?, icon?, danger?, disabled?, selected?, checkbox?, count? }; trigger button*|filter|field; emphasis strong|subtle*|minimal; intent brand|neutral*|danger; size sm|md*|lg; icon string; iconOnly bool; count number; alignment left*|right; disabled bool; closeOnSelect bool*; open bool; multiple bool; id string; text string; muted bool; badge string; toggle on|off; labelledBy string; describedBy string; searchable bool; searchPlaceholder string; empty string; menuWidth default*|field
+Props — label string; items DropdownMenuEntry[] { id, label, description?, icon?, danger?, disabled?, selected?, checkbox?, count? }; trigger button*|filter|field; emphasis strong|subtle*|minimal; intent brand|neutral*|danger; iconStyle tile*|plain; size sm|md*|lg; icon string; iconOnly bool; count number; alignment left*|right; disabled bool; closeOnSelect bool*; open bool; multiple bool; id string; text string; muted bool; badge string; toggle on|off; labelledBy string; describedBy string; searchable bool; searchPlaceholder string; empty string; menuWidth default*|field
 
 - emphasis — Button trigger only. Same pairs as Button: strong with brand or danger, subtle with neutral, minimal with neutral, brand or danger.
 - intent — Button trigger only. Required with emphasis strong.

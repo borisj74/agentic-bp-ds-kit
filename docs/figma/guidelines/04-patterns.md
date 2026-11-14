@@ -36,7 +36,7 @@ It is a blueprint: each page is a kit pattern the screen builds, and the screen 
 
 The frame every product screen sits in: the bar across the top, the rail under it down the side, the page in the middle, and the assistant beside it.
 
-It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is open. Pass the kit AppHeader as header: it runs the full width across the top, and the rail starts under it. Never pass a shorter list or make up links. pageHeader takes a kit PageHeader and stays at the top of the page while the page scrolls under it, flush to the top edge; The frame shrinks it to the kit's compact 52px bar on its own once the top of the page has scrolled away, so a screen passes a plain PageHeader and wires nothing; set sticky on the PageHeader yourself only to override that. children are the page itself, already inside the scrolling content area with its edge padding and the gap between Sections, so screens do not add their own. The frame answers to its own width rather than the window's, so under about 640 the rail goes and an open assistant takes the page's place, whether it is docked in a panel or filling a screen. The frame marks itself, so panels that float out of the bar or the rail — menus, tooltips, the search dropdown — keep inside it rather than over whatever is beside it.
+It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is open. Pass the kit AppHeader as header: it runs the full width across the top, and the rail starts under it. Never pass a shorter list or make up links. pageHeader takes a kit PageHeader and stays at the top of the page while the page scrolls under it, flush to the top edge; The frame shrinks it to the kit's compact 52px bar on its own once the top of the page has scrolled away, so a screen passes a plain PageHeader and wires nothing; set sticky on the PageHeader yourself only to override that. children are the page itself, already inside the scrolling content area with its edge padding and the gap between Sections, so screens do not add their own. The frame answers to its own width rather than the window's, so under about 640 the rail goes and an open assistant takes the page's place, whether it is docked in a panel or filling a screen. A page that lands inside the first 200ms never shows a skeleton at all, and a skeleton that has appeared is never blinked away the moment the data arrives. The frame marks itself, so panels that float out of the bar or the rail — menus, tooltips, the search dropdown — keep inside it rather than over whatever is beside it.
 
 **Use when**
 
@@ -55,6 +55,7 @@ It is a blueprint: it composes kit pieces and keeps no state of its own, so the 
 - Do not swap a full-size ChatWindow into the page area or hide the page header by hand. Set assistantSize full.
 - Do not invent a second frame or a per-page grid beside it.
 - Do not use raw hex.
+- Do not leave the page live under the loading line, and do not draw a page skeleton in the frame. The frame publishes the boot; each piece inside draws its own.
 
 ## ChatWindow
 
@@ -107,7 +108,7 @@ It is a blueprint: it composes kit pieces and keeps no state of its own, so the 
 
 One record being filled in: its name and the save at the top, anything that has to be read first under that, and the fields in folding groups underneath.
 
-It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the values and what is folded away. Pass the kit PageHeader as header, with the trail, what is being made, and the actions: Cancel, then one strong brand Button that saves. columns (1, 2 or 3, default 2) is set on the FormPage and the Form follows it unless it sets its own; each column stops at 554px (--layout-column-max) and the fields stay at the start, so on a wide screen the space past the last column stays empty instead of stretching the fields. Never more than 3 columns, even at 2560px and wider. Do not put a second save at the foot of the page: the one in the header is always in reach.
+It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the values and what is folded away. Pass the kit PageHeader as header, with the trail, what is being made, and the actions: Cancel, then one strong brand Button that saves. columns (1, 2 or 3, default 2) is set on the FormPage and the Form follows it unless it sets its own; each column stops at --layout-column-max (554px) and the fields stay at the start, so on a wide screen the space past the last column stays empty instead of stretching the fields. Never more than 3 columns, even at 2560px and wider. Do not put a second save at the foot of the page: the one in the header is always in reach.
 
 **Use when**
 
@@ -125,8 +126,9 @@ It is a blueprint: it composes kit pieces and keeps no state of its own, so the 
 - Do not put page padding on it. The AppShell page owns that.
 - Do not use it for a short form. Two or three fields belong in a Modal or a Drawer.
 - Do not keep the fold state or the values in the pattern. The screen owns them.
-- Do not set a width on the Form or stretch its columns to fill a wide page. Pass columns to the FormPage; each column stops at 480px.
+- Do not set a width on the Form or stretch its columns to fill a wide page. Pass columns to the FormPage; each column stops at --layout-column-max (554px).
 - Do not use more than 3 columns, even on a 2560px or wider screen.
+- Do not draw a loading form as a block of identical rows when the page has children. Leave loadingShape at content, so the skeleton keeps the form's own sections and fields.
 
 ## GuidedProcessPage
 
