@@ -17,7 +17,7 @@ export default async function Gallery() {
   return (
     <GalleryWithLevel
       title="Components"
-      lead="Every building block in the kit. Search by name or by what it does, then open a card for the master, variants and contract."
+      lead="Every building block in the kit. Filter by level, then open a card for the master, variants and contract."
       items={items}
     />
   );

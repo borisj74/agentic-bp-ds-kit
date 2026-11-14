@@ -81,7 +81,7 @@ export default function Overview() {
 
           <div id="whats-inside">
             <Section title="What's inside">
-              <div className="layout-metrics">
+              <div className="layout-stack">
                 <NavTile
                   title={`${foundationPages.length} foundation pages`} icon="palette" intent="purple" href="/foundations"
                   description={foundationPages.map((f) => f.label).join(", ")}

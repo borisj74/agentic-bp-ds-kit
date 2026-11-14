@@ -1,9 +1,8 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState, type ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import { EmptyState } from "@/ui/EmptyState/EmptyState";
-import { Input } from "@/ui/Input/Input";
 import { Segmented } from "@/ui/Segmented/Segmented";
 import styles from "./master.module.css";
 import shell from "./shell.module.css";
@@ -63,56 +62,33 @@ function GalleryAtUrlLevel(props: GalleryProps) {
   );
 }
 
-// The component gallery with a search over it. Every word typed has to appear in the card's name, what it is for,
-// its category or its index tags, so "date" finds DatePicker and Calendar and "chart" finds the charts and Legend.
-// The level filter works with the search, not instead of it. The level comes in as a prop, so this renders the
-// same way on the server and in the browser.
+// The component gallery. The level filter narrows the list; the kit's own search in the side bar finds a single
+// piece by name. The level comes in as a prop, so this renders the same way on the server and in the browser.
 export function GallerySearch({ title, lead, items, noun = "components", level = "all", onLevelChange }: GalleryProps & { level?: string; onLevelChange?: (value: string) => void }) {
-  const [query, setQuery] = useState("");
   const hasLevels = items.some((item) => item.level);
-
-  const words = query.toLowerCase().split(/\s+/).filter(Boolean);
-  const shown = items.filter((item) => {
-    if (level !== "all" && item.level !== level) return false;
-    if (words.length === 0) return true;
-    const text = [item.name, item.intent, item.category, ...(item.tags ?? [])].join(" ").toLowerCase();
-    return words.every((w) => text.includes(w));
-  });
-  const narrowed = words.length > 0 || level !== "all";
+  const shown = level === "all" ? items : items.filter((item) => item.level === level);
 
   return (
     <>
-      {/* The page title on the start, the search on the end, their tops level. */}
+      {/* The page title on the start, the level filter on the end, their tops level. */}
       <div className={styles.galleryHead}>
         <div className={styles.galleryIntro}>
           <h1 className={shell.pageTitle}>{title}</h1>
           <p className={shell.pageLead}>{lead}</p>
         </div>
-        <div className={`${styles.gallerySearch} ${hasLevels ? styles.gallerySearchWide : ""}`}>
+        {hasLevels ? (
           <div className={styles.galleryFilters}>
-            <div className={styles.galleryInput}>
-              <Input
-                type="search" label={`Search ${noun}`} hideLabel iconStart="search"
-                placeholder={`Search ${items.length} ${noun}`} value={query} onChange={setQuery}
-              />
-            </div>
-            {hasLevels ? (
-              <Segmented
-                label="Level" hideLabel size="sm" options={LEVEL_OPTIONS} value={level} onChange={(value) => onLevelChange?.(value)}
-              />
-            ) : null}
+            <Segmented
+              label="Level" hideLabel size="sm" options={LEVEL_OPTIONS} value={level} onChange={(value) => onLevelChange?.(value)}
+            />
           </div>
-          {/* Read out as the list narrows, so a screen reader hears what the search and the filter found. */}
-          <span className={styles.galleryCount} role="status">
-            {narrowed ? `${shown.length} of ${items.length} ${noun}` : `${items.length} ${noun}`}
-          </span>
-        </div>
+        ) : null}
       </div>
       {shown.length === 0 ? (
         <EmptyState
           icon="search_off" iconStyle="plain" headingLevel={2}
-          title={query.trim() ? `No ${noun} match "${query.trim()}"` : `No ${noun} at this level`}
-          description="Try a shorter word, or what the piece does, like table, date or chart."
+          title={`No ${noun} at this level`}
+          description="Pick another level, or All to see every piece."
         />
       ) : (
         <div className={styles.grid}>

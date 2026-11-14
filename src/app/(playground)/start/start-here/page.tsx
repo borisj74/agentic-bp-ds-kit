@@ -113,7 +113,7 @@ export default function StartHere() {
               <div className={docs.prose}>
                 <p>Paste one of these and change the words to suit your screen.</p>
                 {PROMPTS.map((p) => (
-                  <CodeBlock key={p} code={p} />
+                  <CodeBlock key={p} code={p} wrap />
                 ))}
               </div>
             </Section>
