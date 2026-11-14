@@ -219,7 +219,8 @@ export function AppNav({
   );
 
   // A named folder: the rule it sits on, a 12px label on the links' own inset, and, pinned only, a chevron at the
-  // far right that folds the links away. A flyout shows the rule and the label and nothing collapses.
+  // far right that folds the links away: up while the links show, down once they are folded (BP COBALT 2099:91665).
+  // A flyout shows the rule and the label and nothing collapses.
   const renderGroup = (sectionId: string, group: AppNavGroup, i: number) => {
     const key = `${sectionId}::${group.label}`;
     const groupOpen = !pinned || !collapsed.includes(key);
@@ -232,7 +233,7 @@ export function AppNav({
           {pinned && (
             <Button
               emphasis="minimal" size="sm" iconOnly className={styles.groupToggle}
-              iconStart={groupOpen ? "expand_more" : "chevron_right"}
+              iconStart={groupOpen ? "expand_less" : "expand_more"}
               aria-expanded={groupOpen} aria-controls={listId} onClick={() => toggleGroup(key)}
             >
               {group.label}
