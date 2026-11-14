@@ -26,15 +26,25 @@ const tarballUrl = () => {
 // contracts for an agent working on the kit itself; a prototype has no use for it and should not carry its
 // dependencies.
 // Exported so a test can check that nothing left behind imports something that is dropped: a prototype has to
-// typecheck, build and test on its own.
+// typecheck and build on its own.
 // `.github` goes too: the kit's own Kit fit workflow runs on the kit's pull requests, not on a prototype's.
+// `tests/` and its runner go with them: the kit's tests check the kit's own components, not a prototype's screens.
+// `.claude/launch.json` points the desktop app at the kit's dev server; the prototype-from-kit skill stays, because
+// a prototype is exactly where it is useful.
+// The three anomaly-detection pages are catalog prototypes of the kit's own: they only link to each other and are
+// in no nav or test, so they stay in the kit repo and out of a new prototype.
 export const DROP = [
-  "packages", "LICENSE", "bin", "mcp", ".github", "tests/mcp.test.ts", "tests/create-installer.test.ts",
+  "packages", "LICENSE", "bin", "mcp", ".github", "tests", "vitest.config.mts", ".claude/launch.json",
+  "src/app/anomaly-detection", "src/app/anomaly-detection-nodes", "src/app/anomaly-detection-tree",
 ];
-// The same, inside package.json: the bin entry and the script that start the server, and the two packages only it
-// needs.
-const DROP_SCRIPTS = ["mcp"];
-const DROP_DEPS = ["@modelcontextprotocol/sdk", "zod"];
+// The same, inside package.json: the bin entry and the scripts that start the server and run the tests, and the
+// packages only those need.
+export const DROP_SCRIPTS = ["mcp", "test", "test:watch"];
+export const DROP_DEPS = [
+  "@modelcontextprotocol/sdk", "zod",
+  "vitest", "@vitejs/plugin-react", "vite-tsconfig-paths", "jsdom", "axe-core",
+  "@testing-library/dom", "@testing-library/jest-dom", "@testing-library/react", "@testing-library/user-event",
+];
 
 const bold = (s) => `\x1b[1m${s}\x1b[0m`;
 const dim = (s) => `\x1b[2m${s}\x1b[0m`;
