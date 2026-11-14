@@ -36,6 +36,7 @@ This section folds into the next release's entry — rename the heading to `## v
 - `Skeleton` takes `tone`: `default`, `band` for a skeleton on a filled bar, `brand` for one on the brand rail. One `Skeleton` still, no cousins.
 - The catalog plays the boot. Every pattern with a loading state has an off / fast / typical / slow control that runs the real timing and lights each step as it happens, with the elapsed total and a Play again button.
 - Two named opacity tokens, `--opacity-skeleton-pulse` (0.55) and `--opacity-line-breathe` (0.35), and the motion tokens the boot runs on (`--motion-slide-*`, `--motion-boot-line`, `--motion-boot-hold`, `--motion-boot-settle`, `--motion-breathe-duration`).
+- `insertLabel` on `DataGrid`: what the `canInsertRows` + button is named and its Tooltip says, for a grid whose rows have a name of their own, like `insertLabel="Add condition"`. Without it the button stays `Add row below row 2`.
 
 ### Changed
 - A two- or three-column form or record is one column below 1280px of viewport. Above it the box still decides, exactly as before — the column counts, the label widths and every turn they took are unchanged. Below it, fields stack, so a wide box on a narrow window no longer reads as two cramped columns. This is the one change here that is not about loading: it reaches every `Form`, `FormPage`, `RecordPage` and `Section` with `columns` set.
