@@ -7,8 +7,10 @@ import { Callout } from "@/ui/Callout/Callout";
 import { Section } from "@/ui/Section/Section";
 // The score's name and formula come from the one module that defines them, so this page never drifts from the CLI.
 import { SCORE_FORMULA, SCORE_NAME } from "../../../../../scripts/review/score.mjs";
-// The switch's name comes from the live check itself, so this page never drifts from the command.
-import { INSPECT_ENV } from "../../../../../scripts/review/live.mjs";
+// The switch's name comes from the module the kit pieces themselves call, so this page never drifts from it.
+// Not from scripts/review/live.mjs: that reads the contracts and the tokens, and a page importing it would
+// trace the whole project into its build output.
+import { INSPECT_ENV } from "@/ui/inspect";
 
 const SECTIONS = [
   { id: "what", label: `What ${SCORE_NAME} means` },
