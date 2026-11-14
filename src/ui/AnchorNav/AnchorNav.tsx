@@ -2,6 +2,7 @@
 import { useEffect, useState, type MouseEvent } from "react";
 import { Icon } from "../Icon/Icon";
 import styles from "./AnchorNav.module.css";
+import { inspect } from "../inspect";
 
 export type AnchorNavVariant = "rail" | "menu";
 
@@ -73,7 +74,7 @@ export function AnchorNav({
   };
 
   return (
-    <nav className={[styles.nav, styles[variant]].join(" ")} aria-label={label}>
+    <nav {...inspect("AnchorNav")} className={[styles.nav, styles[variant]].join(" ")} aria-label={label}>
       <ol className={styles.list}>
         {items.map((item) => {
           const at = current === item.id;

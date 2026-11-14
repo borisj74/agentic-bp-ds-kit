@@ -4,6 +4,7 @@ import { FormLayoutContext } from "@/ui/Form/FormContext";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
 import { useBootSkeleton, useFieldSkeleton } from "@/ui/LoadingLine/boot";
 import styles from "./SettingsPage.module.css";
+import { inspect } from "../../ui/inspect";
 
 export type SettingsPageLoadingShape = "content" | "rows";
 
@@ -51,7 +52,7 @@ export function SettingsPage({ children, intro, loading = false, loadingShape = 
   );
 
   return (
-    <section className={styles.settings} aria-label={label ?? "Settings"}>
+    <section {...inspect("SettingsPage")} className={styles.settings} aria-label={label ?? "Settings"}>
       {/* Said once for the whole home, however many bars the tiles come to. */}
       {booting && <span className={styles.srOnly} role="status">Loading {label ?? "settings"}</span>}
       {/* Booting, the intro itself holds the space it will take — it is in the tree, out of sight and out of the

@@ -8,6 +8,7 @@ import { HelpPopover } from "../HelpPopover/HelpPopover";
 // The help button matches the one on Input.
 import field from "../Input/Input.module.css";
 import styles from "./FormDisplay.module.css";
+import { inspect } from "../inspect";
 
 export type FormDisplayLabelPosition = "top" | "start";
 export type FormDisplayLabelWidth = "sm" | "md" | "lg";
@@ -48,7 +49,7 @@ export function FormDisplay({ label, value, labelPosition: ownLabelPosition, lab
   }
   return (
     // A one-pair description list: screen readers read the label, then the value.
-    <dl className={[styles.display, styles[labelPosition], width ? styles[width] : ""].join(" ")} data-label={labelPosition}>
+    <dl {...inspect("FormDisplay")} className={[styles.display, styles[labelPosition], width ? styles[width] : ""].join(" ")} data-label={labelPosition}>
       <dt className={styles.term}>
         {label}
         {help && (

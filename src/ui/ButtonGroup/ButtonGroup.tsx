@@ -4,6 +4,7 @@ import { useDensitySize } from "../Density/Density";
 import type { ButtonSize } from "../Button/Button";
 import { ButtonGroupContext } from "./context";
 import styles from "./ButtonGroup.module.css";
+import { inspect } from "../inspect";
 
 export interface ButtonGroupProps {
   size?: ButtonSize;
@@ -16,7 +17,7 @@ export function ButtonGroup({ size: ownSize, disabled = false, label, children }
   const size = useDensitySize(ownSize);
   return (
     <ButtonGroupContext.Provider value={{ size, disabled }}>
-      <div className={styles.group} role="group" aria-label={label}>
+      <div {...inspect("ButtonGroup")} className={styles.group} role="group" aria-label={label}>
         {children}
       </div>
     </ButtonGroupContext.Provider>

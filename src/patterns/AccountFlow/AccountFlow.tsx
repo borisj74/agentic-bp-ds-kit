@@ -5,6 +5,7 @@ import { FormLayoutContext } from "@/ui/Form/FormContext";
 import { LoadingLine } from "@/ui/LoadingLine/LoadingLine";
 import { BootContext, useBoot, useBootPhase, type BootTiming } from "@/ui/LoadingLine/boot";
 import styles from "./AccountFlow.module.css";
+import { inspect } from "../../ui/inspect";
 
 export type AccountFlowView = "list" | "account" | "newAccount" | "newProduct" | "provisionProduct" | "bulkProducts";
 
@@ -79,7 +80,7 @@ export function AccountFlow({
 
   return (
     <BootContext.Provider value={own}>
-      <div ref={box} className={[styles.flow, styles.alone].join(" ")}>
+      <div {...inspect("AccountFlow")} ref={box} className={[styles.flow, styles.alone].join(" ")}>
         {own.showLine && (
           <div className={styles.loadingLine}>
             <LoadingLine track="none" label={loadingLabel} />

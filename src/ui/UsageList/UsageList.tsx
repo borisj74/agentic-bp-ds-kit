@@ -1,6 +1,7 @@
 import { Icon } from "../Icon/Icon";
 import { Meter, type MeterIntent } from "../Meter/Meter";
 import styles from "./UsageList.module.css";
+import { inspect } from "../inspect";
 
 export interface UsageListItem {
   id: string;
@@ -32,7 +33,7 @@ function stateOf(used: number, limit: number) {
 // It sits in a Section or Card, which gives it its title; it draws no box of its own.
 export function UsageList({ items, label = "Usage" }: UsageListProps) {
   return (
-    <ul className={styles.list} aria-label={label}>
+    <ul {...inspect("UsageList")} className={styles.list} aria-label={label}>
       {items.map((item) => {
         const { pct, intent, icon, text } = stateOf(item.used, item.limit);
         const count = `${number.format(item.used)} of ${number.format(item.limit)}${item.unit ? ` ${item.unit}` : ""}`;

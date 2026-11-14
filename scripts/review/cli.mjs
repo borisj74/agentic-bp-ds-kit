@@ -9,15 +9,22 @@ import { parseArgs } from "node:util";
 import { pathToFileURL } from "node:url";
 import { RULES, reviewFiles, summarize } from "./index.mjs";
 import { SCORE_NAME, formatScore, scoreOf } from "./score.mjs";
+import { INSPECT_ENV, LIVE_RULES, formatLive, liveResult, reviewUrl } from "./live.mjs";
 
 export const REVIEW_HELP = `Usage: agentic-bp-ds-kit review <path...>
+       agentic-bp-ds-kit review --url <url>
 
 Reviews screens built from the kit against their contracts: raw values, primitive tokens,
 local cousins, closed enums, one strong brand Button, and the bigger piece to reuse.
 
 Paths can be files or folders. Folders are walked for .tsx and .css files.
 
+--url checks a running screen instead of its code: it fetches the server-rendered HTML and lists the
+kit pieces it finds, grouped by level. Start the dev server with ${INSPECT_ENV}=1, so each kit piece
+wears its name tag. Development only: a production build never carries the tags.
+
 Options:
+  --url <url>    Check a running screen, like http://localhost:3000/invoices
   --json         One JSON object: { summary, score, files, counts, findings }
   --score        Print the ${SCORE_NAME} score and its formula
   --all          Include the kit's own folders (src/ui, src/patterns, src/tokens, tests)
@@ -25,6 +32,9 @@ Options:
 
 Rules:
 ${RULES.map((r) => "  " + r).join("\n")}
+
+Rules for --url:
+${LIVE_RULES.map((r) => "  " + r).join("\n")}
 
 Exit code: 1 when there is any error, 0 otherwise.`;
 
@@ -63,12 +73,13 @@ export function formatJson({ files, findings, tally }) {
   );
 }
 
-export function main(argv = process.argv.slice(2)) {
+export async function main(argv = process.argv.slice(2)) {
   let parsed;
   try {
     parsed = parseArgs({
       args: argv,
       options: {
+        url: { type: "string" },
         json: { type: "boolean" },
         score: { type: "boolean" },
         all: { type: "boolean" },
@@ -85,6 +96,22 @@ export function main(argv = process.argv.slice(2)) {
     console.log(REVIEW_HELP);
     return 0;
   }
+  if (values.url) {
+    if (positionals.length > 0) {
+      console.error("review: --url checks a running screen, so it takes no paths.");
+      return 1;
+    }
+    let run;
+    try {
+      run = await reviewUrl(values.url);
+    } catch (error) {
+      console.error(`review: ${error instanceof Error ? error.message : String(error)}`);
+      return 1;
+    }
+    console.log(values.json ? JSON.stringify(liveResult(run), null, 2) : formatLive(run));
+    return run.findings.some((f) => f.severity === "error") ? 1 : 0;
+  }
+
   if (positionals.length === 0) {
     console.error("review: say which file or folder to review. Try --help.");
     return 1;
@@ -103,5 +130,5 @@ export function main(argv = process.argv.slice(2)) {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  process.exit(main());
+  process.exit(await main());
 }

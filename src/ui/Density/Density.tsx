@@ -1,6 +1,7 @@
 "use client";
 import { createContext, useContext, type ReactNode } from "react";
 import styles from "./Density.module.css";
+import { inspect } from "../inspect";
 
 export type DensityValue = "compact" | "default" | "comfortable";
 export type DensitySize = "sm" | "md" | "lg";
@@ -17,7 +18,7 @@ const DensityContext = createContext<DensityValue | undefined>(undefined);
 export function Density({ value, children }: DensityProps) {
   return (
     <DensityContext.Provider value={value}>
-      <div data-density={value} className={styles.root}>{children}</div>
+      <div {...inspect("Density")} data-density={value} className={styles.root}>{children}</div>
     </DensityContext.Provider>
   );
 }

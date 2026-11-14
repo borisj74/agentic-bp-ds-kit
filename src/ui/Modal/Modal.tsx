@@ -7,6 +7,7 @@ import { FormLayoutContext } from "../Form/FormContext";
 import styles from "./Modal.module.css";
 import { useDialog } from "./useDialog";
 import { usePortalDensity } from "../Density/Density";
+import { inspect } from "../inspect";
 
 export type ModalSize = "sm" | "md" | "lg" | "xl" | "fullscreen";
 
@@ -40,7 +41,7 @@ export function Modal({ open, title, description, icon, size = "sm", showClose =
     // labels on top unless it says otherwise.
     <FormLayoutContext.Provider value={{}}>
       {/* Backdrop click closes, but only when the press also started on the backdrop (not a drag out of a field). */}
-      <div
+      <div {...inspect("Modal")}
         data-density={density}
         className={[styles.overlay, size === "fullscreen" ? styles.overlayFull : ""].join(" ")}
         onKeyDown={onKeyDown}

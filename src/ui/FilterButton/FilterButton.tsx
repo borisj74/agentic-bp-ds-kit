@@ -3,6 +3,7 @@ import { Count } from "../Count/Count";
 import { useDensitySize } from "../Density/Density";
 import { Icon } from "../Icon/Icon";
 import styles from "./FilterButton.module.css";
+import { inspect } from "../inspect";
 
 export type FilterButtonSize = "sm" | "md" | "lg";
 export type FilterButtonToggle = "on" | "off";
@@ -67,7 +68,7 @@ export function FilterButton({
     );
   }
   return (
-    <button type="button" className={cls} disabled={disabled} aria-haspopup="menu" aria-expanded={open} onClick={onClick}>
+    <button {...inspect("FilterButton")} type="button" className={cls} disabled={disabled} aria-haspopup="menu" aria-expanded={open} onClick={onClick}>
       {label}
       <span className={styles.chevron} aria-hidden="true">{chevron}</span>
     </button>

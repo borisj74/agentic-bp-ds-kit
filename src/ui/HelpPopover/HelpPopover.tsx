@@ -8,6 +8,7 @@ import { useDescribedBy } from "../Tooltip/Tooltip";
 import { SIDE, useFloating, useInBrowser, type FloatingPosition } from "../Tooltip/useFloating";
 import styles from "./HelpPopover.module.css";
 import { usePortalDensity } from "../Density/Density";
+import { inspect } from "../inspect";
 
 export type HelpPopoverPosition = FloatingPosition;
 
@@ -95,7 +96,7 @@ export function HelpPopover({ title, content, position = "below", delay = 150, o
   if (disabled) return children;
 
   return (
-    <span
+    <span {...inspect("HelpPopover")}
       ref={wrapRef} className={styles.wrap}
       onPointerEnter={() => show(delay)} onPointerLeave={() => hide()}
       onFocus={onFocus} onBlur={onBlur} onKeyDown={onKeyDown} onClick={onClick}

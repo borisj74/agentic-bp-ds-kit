@@ -6,6 +6,7 @@ import { Skeleton } from "../Skeleton/Skeleton";
 import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import { Badge, type BadgeIntent } from "../Badge/Badge";
 import styles from "./RadioGroup.module.css";
+import { inspect } from "../inspect";
 
 export type RadioGroupSize = "sm" | "md" | "lg";
 
@@ -93,7 +94,7 @@ export function RadioGroup({
     );
   }
   return (
-    <fieldset
+    <fieldset {...inspect("RadioGroup")}
       className={[styles.group, styles[size], card ? styles.card : "", error ? styles.error : "", !hideLegend && labelPosition === "start" ? styles.startLabel : "", width ? styles[width] : ""].join(" ")}
       // Tells a Form with labels at the start that this group already sits in the label column.
       data-label={hideLegend ? undefined : labelPosition}

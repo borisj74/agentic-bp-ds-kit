@@ -1,4 +1,5 @@
 import styles from "./ProgressBar.module.css";
+import { inspect } from "../inspect";
 
 export type ProgressBarLabelPosition = "center" | "right";
 
@@ -15,7 +16,7 @@ export function ProgressBar({ value, label = "Progress", valueLabel, showLabel =
   const pct = Math.min(Math.max(Number.isFinite(value) ? value : 0, 0), 100);
   const text = valueLabel ?? `${Math.round(pct)}%`;
   return (
-    <div
+    <div {...inspect("ProgressBar")}
       className={[styles.progress, styles[labelPosition]].join(" ")}
       role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(pct)} aria-valuetext={text}
     >

@@ -8,6 +8,7 @@ import { Icon } from "../Icon/Icon";
 import { LogoAI } from "../LogoAI/LogoAI";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./ChatMessage.module.css";
+import { inspect } from "../inspect";
 
 export type ChatMessageAuthor = "user" | "assistant";
 export type ChatMessageActionId = "copy" | "up" | "down" | "share" | "speak";
@@ -93,7 +94,7 @@ export function ChatMessage({
     : <span className={styles.aiMark}><LogoAI type="symbol" intent="filled" label="Assistant" /></span>;
 
   return (
-    <article className={[styles.message, mine ? styles.mine : styles.theirs].join(" ")} aria-label={`${who} said`}>
+    <article {...inspect("ChatMessage")} className={[styles.message, mine ? styles.mine : styles.theirs].join(" ")} aria-label={`${who} said`}>
       <div className={styles.row}>
         {/* The person's More menu sits outside the bubble, on hover or focus. */}
         {mine && menu && menu.length > 0 && (

@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { Button } from "../Button/Button";
 import { carryTheme } from "../Tooltip/useFloating";
 import styles from "./AlertDialog.module.css";
+import { inspect } from "../inspect";
 
 export type AlertDialogActionIntent = "brand" | "danger";
 export type AlertDialogSize = "sm" | "md";
@@ -83,7 +84,7 @@ export function AlertDialog({
 
   return createPortal(
     // Backdrop clicks do nothing: the user must pick Cancel or the action.
-    <div className={styles.overlay} role="presentation" onMouseDown={(e) => e.target === e.currentTarget && e.preventDefault()}>
+    <div {...inspect("AlertDialog")} className={styles.overlay} role="presentation" onMouseDown={(e) => e.target === e.currentTarget && e.preventDefault()}>
       <div
         ref={dialogRef}
         role="alertdialog"

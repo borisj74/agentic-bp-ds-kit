@@ -7,6 +7,7 @@ import { BOOT_ROWS_MAX, skeletonBarWidth, useFieldSkeleton } from "../LoadingLin
 import { Cell, type CellAlignment, type CellSize } from "../Cell/Cell";
 import { HeaderCell, type HeaderCellLine } from "../HeaderCell/HeaderCell";
 import styles from "./Table.module.css";
+import { inspect } from "../inspect";
 
 export interface TableColumn {
   key: string;
@@ -180,7 +181,7 @@ export function Table({
     );
   }
   return (
-    <div
+    <div {...inspect("Table")}
       ref={wrapRef} className={[styles.wrap, overflows ? styles.scrolls : ""].join(" ")} style={detail ? ({ "--table-detail-start": `${detailStart}px`, "--table-view-width": viewWidth ? `${viewWidth}px` : "100%" } as CSSProperties) : undefined}
       tabIndex={overflows ? 0 : undefined} role={overflows ? "region" : undefined} aria-label={overflows ? caption ?? "Table" : undefined}
     >

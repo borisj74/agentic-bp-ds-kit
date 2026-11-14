@@ -8,6 +8,7 @@ import { Icon } from "../Icon/Icon";
 import { Skeleton } from "../Skeleton/Skeleton";
 import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import styles from "./Card.module.css";
+import { inspect } from "../inspect";
 
 export type CardMessageIntent = "success" | "warning" | "danger" | "info";
 
@@ -121,7 +122,7 @@ export function Card({
     );
   }
   return (
-    <article className={cls} aria-labelledby={title ? titleId : undefined} aria-label={title ? undefined : name} onClick={onClick}>
+    <article {...inspect("Card")} className={cls} aria-labelledby={title ? titleId : undefined} aria-label={title ? undefined : name} onClick={onClick}>
       <div className={styles.body}>
         <div className={styles.top}>
           <div className={styles.text}>

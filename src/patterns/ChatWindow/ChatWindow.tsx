@@ -6,6 +6,7 @@ import type { DropdownEntry } from "@/ui/Dropdown/Dropdown";
 import { EmptyState } from "@/ui/EmptyState/EmptyState";
 import { Illustration, type IllustrationName } from "@/ui/Illustration/Illustration";
 import styles from "./ChatWindow.module.css";
+import { inspect } from "../../ui/inspect";
 
 export type ChatWindowSize = "panel" | "full";
 export type ChatWindowArt = IllustrationName;
@@ -83,7 +84,7 @@ export function ChatWindow({
   // A screen's own empty block wins; otherwise the built-in get started shows.
   const blank = empty ?? <GetStarted starters={starters} onStarter={onStarter} art={art} animated={artAnimated} />;
   return (
-    <div className={[styles.window, styles[size]].join(" ")}>
+    <div {...inspect("ChatWindow")} className={[styles.window, styles[size]].join(" ")}>
       <ChatHeader
         title={title} onNewChat={onNewChat} expanded={expanded} onExpandedChange={onExpandedChange} onClose={onClose}
         chatsCount={chatsCount} playbooksCount={playbooksCount} planMode={planMode} onPlanModeChange={onPlanModeChange}

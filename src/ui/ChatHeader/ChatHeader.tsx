@@ -5,6 +5,7 @@ import { Dropdown, type DropdownEntry } from "../Dropdown/Dropdown";
 import { LogoAI } from "../LogoAI/LogoAI";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./ChatHeader.module.css";
+import { inspect } from "../inspect";
 
 export interface ChatHeaderProps {
   title?: string;
@@ -46,7 +47,7 @@ export function ChatHeader({
   };
 
   return (
-    <div className={styles.frame}>
+    <div {...inspect("ChatHeader")} className={styles.frame}>
     <header className={styles.header} aria-label={label ?? title}>
       <span className={styles.mark}><LogoAI type="symbol" intent="filled" label={title} /></span>
       <h2 className={styles.title}>{title}</h2>

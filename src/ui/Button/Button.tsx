@@ -6,6 +6,7 @@ import { ButtonGroupContext } from "../ButtonGroup/context";
 import { Skeleton } from "../Skeleton/Skeleton";
 import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import styles from "./Button.module.css";
+import { inspect } from "../inspect";
 
 export type ButtonEmphasis = "strong" | "subtle" | "minimal";
 export type ButtonIntent = "brand" | "neutral" | "danger";
@@ -98,7 +99,7 @@ export function Button({
   }
   return (
     // Loading keeps full color and focus. It is not disabled; clicks (and form submit) are ignored until it finishes.
-    <button
+    <button {...inspect("Button")}
       {...rest}
       type={type}
       className={cls}

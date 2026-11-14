@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "../Button/Button";
 import { Select } from "../Select/Select";
 import styles from "./Pagination.module.css";
+import { inspect } from "../inspect";
 
 export interface PaginationProps {
   total: number;
@@ -59,7 +60,7 @@ export function Pagination({
   const to = Math.min(page * size, total);
 
   return (
-    <div className={styles.pagination}>
+    <div {...inspect("Pagination")} className={styles.pagination}>
       <nav className={styles.pages} aria-label={label}>
         <Button emphasis="minimal" size="sm" iconOnly iconStart="chevron_left" disabled={page <= 1} onClick={() => goTo(page - 1)}>Previous page</Button>
         {pageList(page, count).map((p, i) => p === GAP ? (

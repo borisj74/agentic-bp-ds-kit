@@ -5,6 +5,7 @@ import { Icon } from "../Icon/Icon";
 import { Tooltip } from "../Tooltip/Tooltip";
 import { Skeleton } from "../Skeleton/Skeleton";
 import styles from "./AppNav.module.css";
+import { inspect } from "../inspect";
 
 export interface AppNavLink { id: string; label: string; href?: string }
 export interface AppNavDivider { divider: true }
@@ -311,7 +312,7 @@ export function AppNav({
   }
 
   return (
-    <nav
+    <nav {...inspect("AppNav")}
       ref={navRef} aria-label={label}
       className={[styles.nav, expanded ? styles.expanded : "", pinned ? styles.pinned : ""].join(" ")}
       onPointerDown={(e) => { pointer.current = e.pointerType; }}

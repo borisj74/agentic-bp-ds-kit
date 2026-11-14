@@ -39,5 +39,5 @@ export interface BarChartProps {
 
 // Figma Persona Homepages 1139:11403: stacked bars per period, legend under the chart. Horizontal lists the categories down the start.
 export function BarChart(p: BarChartProps) {
-  return <XYChart kind="bar" {...p} />;
+  return <XYChart kit="BarChart" kind="bar" {...p} />;
 }

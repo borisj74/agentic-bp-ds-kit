@@ -9,6 +9,7 @@ import { Icon } from "../Icon/Icon";
 import { Skeleton } from "../Skeleton/Skeleton";
 import { BOOT_ROWS_MAX, skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import styles from "./ListView.module.css";
+import { inspect } from "../inspect";
 
 export type ListViewSelection = "none" | "single" | "multiple";
 export type ListViewInteraction = "none" | "drill" | "drag";
@@ -483,7 +484,7 @@ export function ListView({
   }
 
   return (
-    <div className={[styles.view, stickyGroups ? styles.sticky : ""].join(" ")} role={grouped ? "group" : undefined} aria-label={grouped ? label : undefined}>
+    <div {...inspect("ListView")} className={[styles.view, stickyGroups ? styles.sticky : ""].join(" ")} role={grouped ? "group" : undefined} aria-label={grouped ? label : undefined}>
       {parent && (
         // A stepped-into list: Back to the level above, then the name of the row it belongs to.
         <div ref={levelRef} className={[styles.header, styles[`head-${size}`], styles.first, styles.level].join(" ")}>

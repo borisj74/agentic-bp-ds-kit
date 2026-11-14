@@ -7,6 +7,7 @@ import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 import styles from "./Input.module.css";
+import { inspect } from "../inspect";
 
 export type InputSize = "sm" | "md" | "lg";
 export type InputType = "text" | "email" | "password" | "search" | "number" | "tel" | "url" | "file";
@@ -108,7 +109,7 @@ export function Input({
   }
   return (
     // data-label lets a start-label Form line up controls that have no label column.
-    <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
+    <div {...inspect("Input")} className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
       {/* The help button sits beside the label, not inside it, so it never becomes the labelled control. */}
       <div className={hideLabel ? styles.srOnly : styles.labelRow}>
         <label htmlFor={inputId} className={styles.label}>

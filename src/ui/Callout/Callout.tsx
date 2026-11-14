@@ -3,6 +3,7 @@ import { useState, type ReactNode } from "react";
 import { Button } from "../Button/Button";
 import { Icon } from "../Icon/Icon";
 import styles from "./Callout.module.css";
+import { inspect } from "../inspect";
 
 export type CalloutIntent = "info" | "success" | "warning" | "danger";
 
@@ -23,7 +24,7 @@ export function Callout({ intent = "info", title, actionLabel, closeButton = fal
   if (!open) return null;
   const urgent = intent === "warning" || intent === "danger";
   return (
-    <div className={[styles.alert, styles[intent], closeButton ? styles.dismissible : ""].join(" ")} role={urgent ? "alert" : "status"}>
+    <div {...inspect("Callout")} className={[styles.alert, styles[intent], closeButton ? styles.dismissible : ""].join(" ")} role={urgent ? "alert" : "status"}>
       <span className={styles.icon}><Icon name={icons[intent]} intent={intent} /></span>
       <div className={styles.content}>
         {title && <p className={styles.title}>{title}</p>}

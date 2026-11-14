@@ -18,6 +18,7 @@ export type LookupRow = TableRow & { id: string };
 // Label, help, hint, error and the field box share Input's styles so all form fields match.
 import field from "../Input/Input.module.css";
 import styles from "./Lookup.module.css";
+import { inspect } from "../inspect";
 
 export type LookupSize = "sm" | "md" | "lg";
 export type LookupLabelPosition = "top" | "start";
@@ -208,7 +209,7 @@ export function Lookup({
     );
   }
   return (
-    <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
+    <div {...inspect("Lookup")} className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
       <div className={hideLabel ? field.srOnly : field.labelRow}>
         {/* The field is a button, which has no required state, so the label says it for screen readers. */}
         <label htmlFor={fieldId} className={field.label}>

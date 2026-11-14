@@ -5,6 +5,7 @@ import { Button } from "../Button/Button";
 // The label matches the other form fields.
 import field from "../Input/Input.module.css";
 import styles from "./Segmented.module.css";
+import { inspect } from "../inspect";
 
 export type SegmentedSize = "sm" | "md" | "lg";
 export interface SegmentedOption { value: string; label: string; icon?: string; disabled?: boolean }
@@ -53,7 +54,7 @@ export function Segmented({
   };
 
   return (
-    <div className={[styles.root, fullWidth ? styles.full : ""].join(" ")}>
+    <div {...inspect("Segmented")} className={[styles.root, fullWidth ? styles.full : ""].join(" ")}>
       <span id={labelId} className={hideLabel ? field.srOnly : field.label}>{label}</span>
       {/* Each option is a kit minimal Button; the chosen one gets a brand tint and border on top. */}
       <div ref={groupRef} role="radiogroup" aria-labelledby={labelId} aria-disabled={disabled || undefined} className={styles.group}>

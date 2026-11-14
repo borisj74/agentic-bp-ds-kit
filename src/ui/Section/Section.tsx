@@ -9,6 +9,7 @@ import { Skeleton } from "../Skeleton/Skeleton";
 import { skeletonBarWidth, useBootSkeleton, useFieldSkeleton } from "../LoadingLine/boot";
 import { titleCase } from "../titleCase";
 import styles from "./Section.module.css";
+import { inspect } from "../inspect";
 
 export type SectionLine = "medium" | "thin" | "none";
 export type SectionColumns = FieldColumns;
@@ -60,7 +61,7 @@ export function Section({
   };
 
   return (
-    <section
+    <section {...inspect("Section")}
       className={[
         styles.section, line === "thin" ? styles.thin : "", line === "none" ? styles.none : "", columns ? styles.columns : "",
         headingSize ? styles[`heading-${headingSize}`] : "", spacing === "tight" ? styles.tight : "",

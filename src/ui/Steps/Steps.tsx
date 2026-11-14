@@ -1,5 +1,6 @@
 import { Icon } from "../Icon/Icon";
 import styles from "./Steps.module.css";
+import { inspect } from "../inspect";
 
 export type StepsSize = "sm" | "md";
 export type StepStatus = "complete" | "current" | "upcoming";
@@ -19,7 +20,7 @@ const SPOKEN: Record<StepStatus, string> = { complete: ", completed", current: "
 // with its number, later steps are gray. The line into each step takes that step's color.
 export function Steps({ steps, current = 1, size = "md", fill = false, label = "Progress", onStepClick }: StepsProps) {
   return (
-    <ol className={[styles.stepper, styles[size], fill ? styles.fill : ""].join(" ")} aria-label={label}>
+    <ol {...inspect("Steps")} className={[styles.stepper, styles[size], fill ? styles.fill : ""].join(" ")} aria-label={label}>
       {steps.map((text, i) => {
         const n = i + 1;
         const status: StepStatus = n < current ? "complete" : n === current ? "current" : "upcoming";

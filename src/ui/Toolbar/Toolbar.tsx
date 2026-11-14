@@ -19,6 +19,7 @@ import { Tooltip } from "../Tooltip/Tooltip";
 import { useFloating, useInBrowser } from "../Tooltip/useFloating";
 import styles from "./Toolbar.module.css";
 import { usePortalDensity } from "../Density/Density";
+import { inspect } from "../inspect";
 
 export type ToolbarButtons = "raised" | "subtle";
 
@@ -278,7 +279,7 @@ export function Toolbar({
   }
 
   return (
-    <div className={[styles.toolbar, buttons === "subtle" ? styles.subtle : ""].join(" ")} role="group" aria-label={label}>
+    <div {...inspect("Toolbar")} className={[styles.toolbar, buttons === "subtle" ? styles.subtle : ""].join(" ")} role="group" aria-label={label}>
       <div ref={barRef} className={styles.bar}>
         <div ref={startRef} className={styles.start}>
           {filters && (

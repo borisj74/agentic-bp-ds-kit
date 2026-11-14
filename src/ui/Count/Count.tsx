@@ -1,4 +1,5 @@
 import styles from "./Count.module.css";
+import { inspect } from "../inspect";
 
 export type CountIntent = "info" | "danger" | "neutral";
 export type CountSize = "sm" | "md" | "lg";
@@ -17,7 +18,7 @@ export function Count({ intent = "info", size = "md", subtle = false, disabled =
   const shown = count > max ? `${max}+` : String(count);
   const cls = [styles.count, styles[intent], styles[size], subtle ? styles.subtle : "", disabled ? styles.disabled : ""].join(" ");
   return (
-    <span className={cls} aria-disabled={disabled || undefined}>
+    <span {...inspect("Count")} className={cls} aria-disabled={disabled || undefined}>
       <span aria-hidden="true">{shown}</span>
       <span className={styles.srOnly}>{label ? `${count} ${label}` : String(count)}</span>
     </span>

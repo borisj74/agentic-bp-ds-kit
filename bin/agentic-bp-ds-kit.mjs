@@ -13,8 +13,9 @@ Tools:
   search         Match name, intent, useWhen, and related fields
   get_tokens     Semantic tokens from src/tokens/source/semantic.txt
   get_rules      Kit agent rules (CLAUDE.md / AGENTS.md)
-  review_ui      Review a screen file, or a draft you have not saved yet,
-                 against the contracts. Run it before you hand a screen back.
+  review_ui      Review a screen file, a draft you have not saved yet, or a
+                 running screen by url, against the contracts. Run it before
+                 you hand a screen back.
 
 Options:
   -h, --help     Show this help`;
@@ -49,7 +50,7 @@ async function main() {
 
   if (command === "review") {
     const { main: review } = await import("../scripts/review/cli.mjs");
-    process.exit(review(rest));
+    process.exit(await review(rest));
   }
 
   if (rest.includes("-h") || rest.includes("--help")) {

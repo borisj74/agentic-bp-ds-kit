@@ -1,6 +1,7 @@
 "use client";
 import { useId } from "react";
 import styles from "./Illustration.module.css";
+import { inspect } from "../inspect";
 
 export type IllustrationName = "ai-chip" | "chat-search";
 export type IllustrationSize = "sm" | "md" | "lg";
@@ -87,7 +88,7 @@ function ChatSearch({ maskId, animated }: { maskId: string; animated: boolean })
 export function Illustration({ name, size = "md", animated = false, label }: IllustrationProps) {
   const maskId = useId();
   return (
-    <svg
+    <svg {...inspect("Illustration")}
       className={[styles.art, styles[size]].join(" ")} viewBox="0 0 120 120" fill="none"
       role={label ? "img" : undefined} aria-label={label} aria-hidden={label ? undefined : true} focusable="false"
     >

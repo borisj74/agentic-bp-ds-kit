@@ -70,7 +70,7 @@ export function FunnelChart({
   const beside = labels === "beside";
 
   if (!n) {
-    return <ChartFrame label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={false}><ChartEmpty label={emptyLabel} height={h} /></ChartFrame>;
+    return <ChartFrame kit="FunnelChart" label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={false} active={false}><ChartEmpty label={emptyLabel} height={h} /></ChartFrame>;
   }
 
   const first = steps[0]?.value ?? 0;
@@ -168,6 +168,7 @@ export function FunnelChart({
 
   return (
     <ChartFrame
+      kit="FunnelChart"
       label={label} title={title} subtitle={subtitle} showHeader={showHeader} animate={animate} active={active !== null} plotHeight={h}
       legendKeys={showLegend ? steps.length : 0} legendPosition={legendPosition}
       onKeyDown={onKeyDown} onBlur={() => setActive(null)}

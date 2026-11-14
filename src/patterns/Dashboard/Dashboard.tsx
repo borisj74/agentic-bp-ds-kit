@@ -5,6 +5,7 @@ import { FormLayoutContext } from "@/ui/Form/FormContext";
 import { Skeleton } from "@/ui/Skeleton/Skeleton";
 import { useBootSkeleton, useFieldSkeleton } from "@/ui/LoadingLine/boot";
 import styles from "./Dashboard.module.css";
+import { inspect } from "../../ui/inspect";
 
 // The widths and heights a booting Home takes in the rows fallback: the lines of a message row, and the bars of
 // one chart as a share of its box (BP COBALT node 2046:30349).
@@ -52,7 +53,7 @@ export function Dashboard({
   // spread through the groups rather than sitting under the bar, so the names are not part of the band.
   const { rootRef, barRef, shadowRef, style } = useStickyBand([toolbar, children, state], { names: false });
   return (
-    <section
+    <section {...inspect("Dashboard")}
       ref={stickyToolbar ? (rootRef as React.Ref<HTMLElement>) : undefined}
       className={styles.dash} aria-label={label ?? "Dashboard"} aria-busy={state === "loading" || undefined}
       style={stickyToolbar ? style : undefined}

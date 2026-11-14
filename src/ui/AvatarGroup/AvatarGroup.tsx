@@ -1,5 +1,6 @@
 import { Avatar, type AvatarShape, type AvatarSize } from "../Avatar/Avatar";
 import styles from "./AvatarGroup.module.css";
+import { inspect } from "../inspect";
 
 export interface AvatarGroupItem {
   name: string;
@@ -19,7 +20,7 @@ export function AvatarGroup({ label, size = "md", shape = "circle", max = 3, ite
   const visible = items.slice(0, max);
   const rest = items.length - visible.length;
   return (
-    <div className={[styles.group, styles[shape]].join(" ")} role="group" aria-label={label}>
+    <div {...inspect("AvatarGroup")} className={[styles.group, styles[shape]].join(" ")} role="group" aria-label={label}>
       {visible.map((item, i) => (
         // Later faces sit on top, so each ring cuts into the face before it.
         <span key={`${item.name}-${i}`} className={styles.item} style={{ zIndex: i + 1 }}>

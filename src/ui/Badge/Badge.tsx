@@ -1,6 +1,7 @@
 "use client";
 import { Icon } from "../Icon/Icon";
 import styles from "./Badge.module.css";
+import { inspect } from "../inspect";
 
 export type BadgeIntent = "neutral" | "hollow" | "info" | "success" | "warning" | "danger" | "highlight";
 export type BadgeEmphasis = "subtle" | "strong" | "faint";
@@ -30,7 +31,7 @@ export function Badge({ intent = "neutral", emphasis = "subtle", size = "sm", ic
     );
   }
   return (
-    <span className={cls} aria-disabled={disabled || undefined}>
+    <span {...inspect("Badge")} className={cls} aria-disabled={disabled || undefined}>
       {icon && <Icon name={icon} size={small} />}
       {children}
       {removable && (

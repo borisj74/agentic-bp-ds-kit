@@ -5,6 +5,7 @@ import { LoadingLine } from "@/ui/LoadingLine/LoadingLine";
 import { BootContext, useBootPhase, type BootTiming } from "@/ui/LoadingLine/boot";
 import { useStickMark } from "../stick";
 import styles from "./AppShell.module.css";
+import { inspect } from "../../ui/inspect";
 
 export type AppShellWidth = "full" | "sm" | "md" | "lg" | "xl" | "2xl";
 export type AppShellAssistantSize = "panel" | "full";
@@ -90,7 +91,7 @@ export function AppShell({
       {/* data-frame says this is the frame: panels that float out of the bar or the rail (menus, tooltips, the
           search dropdown) keep inside it, so nothing hangs over what is beside a frame docked in a preview or a
           split view. */}
-      <div className={styles.shell} data-frame="">
+      <div {...inspect("AppShell")} className={styles.shell} data-frame="">
       {/* The bar runs the full width; the rail starts under it. */}
       {booting(header)}
       {/* A full assistant covers the page and its header, but the page stays mounted under it, and the assistant

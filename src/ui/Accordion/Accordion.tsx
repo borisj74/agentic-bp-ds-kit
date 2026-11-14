@@ -2,6 +2,7 @@
 import { useId, useState, type ReactNode } from "react";
 import { Icon } from "../Icon/Icon";
 import styles from "./Accordion.module.css";
+import { inspect } from "../inspect";
 
 export interface AccordionItem {
   id: string;
@@ -18,7 +19,7 @@ export function Accordion({ items, defaultExpanded }: AccordionProps) {
   const [openId, setOpenId] = useState<string | null>(defaultExpanded ?? null);
   const base = useId();
   return (
-    <div className={styles.root}>
+    <div {...inspect("Accordion")} className={styles.root}>
       {items.map((item) => {
         const open = openId === item.id;
         const buttonId = `${base}-button-${item.id}`;

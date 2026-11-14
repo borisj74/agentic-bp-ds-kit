@@ -9,6 +9,7 @@ import { Icon } from "../Icon/Icon";
 import { HelpPopover } from "../HelpPopover/HelpPopover";
 // Label, help, hint and error share Input's styles so all form fields match.
 import field from "../Input/Input.module.css";
+import { inspect } from "../inspect";
 
 export type SelectSize = "sm" | "md" | "lg";
 export type SelectLabelPosition = "top" | "start";
@@ -97,7 +98,7 @@ export function Select({
     );
   }
   return (
-    <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
+    <div {...inspect("Select")} className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
       <div className={hideLabel ? field.srOnly : field.labelRow}>
         {/* The field is a button, which has no required state, so the label says it for screen readers. */}
         <label id={labelId} htmlFor={fieldId} className={field.label}>

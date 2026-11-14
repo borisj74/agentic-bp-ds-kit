@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import { Legend, INTENTS, type LegendIntent } from "../Legend/Legend";
 import styles from "./UsageBar.module.css";
+import { inspect } from "../inspect";
 
 export type UsageBarKind = "used" | "left" | "outside";
 export type UsageBarFigureIntent = "warning" | "danger";
@@ -107,7 +108,7 @@ export function UsageBar({ segments, figures, showLegend = true, label = "Usage"
     .join(". ");
 
   return (
-    <div className={styles.usageBar} role="group" aria-label={label}>
+    <div {...inspect("UsageBar")} className={styles.usageBar} role="group" aria-label={label}>
       {figures?.length ? (
         <div className={styles.figures}>
           {places.map((place) => {

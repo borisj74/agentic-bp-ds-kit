@@ -10,6 +10,7 @@ import { countSkeletonBlocks, skeletonBarWidth, useBootSkeleton } from "../Loadi
 import { Tooltip } from "../Tooltip/Tooltip";
 import { titleCase } from "../titleCase";
 import styles from "./PageHeader.module.css";
+import { inspect } from "../inspect";
 
 export interface PageHeaderBack {
   label: string;
@@ -68,7 +69,7 @@ export function PageHeader({
     </Tooltip>
   ) : null;
   return (
-    <header className={[styles.header, sticky ? styles.sticky : "", sticky && shadow ? styles.shadow : ""].join(" ")}>
+    <header {...inspect("PageHeader")} className={[styles.header, sticky ? styles.sticky : "", sticky && shadow ? styles.shadow : ""].join(" ")}>
       {/* The header measures its own width; the bar inside is what lays out to it, so a narrow header stacks. */}
       <div className={styles.bar}>
       <div className={[styles.title, sticky ? styles.stickyTitle : ""].join(" ")}>

@@ -6,6 +6,7 @@ import { Meter } from "../Meter/Meter";
 import { Spinner } from "../Spinner/Spinner";
 import { TextLoader } from "../TextLoader/TextLoader";
 import { useInBrowser } from "../Tooltip/useFloating";
+import { inspect } from "../inspect";
 import styles from "./Toast.module.css";
 
 export type ToastIntent = "info" | "success" | "warning" | "danger";
@@ -86,6 +87,7 @@ function ToastCard({ onClose, title, description, intent = "info", actionLabel, 
   const alert = intent === "danger" && !loading;
   return (
     <div
+      {...inspect("Toast")}
       className={[styles.toast, styles[intent], loading ? styles.inProgress : ""].join(" ")} role={alert ? "alert" : undefined} aria-labelledby={alert ? titleId : undefined}
       onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={onBlur} onKeyDown={onKeyDown}
     >

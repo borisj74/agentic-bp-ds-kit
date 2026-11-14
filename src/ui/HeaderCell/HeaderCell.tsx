@@ -2,6 +2,7 @@
 import { Checkbox } from "../Checkbox/Checkbox";
 import { Icon } from "../Icon/Icon";
 import styles from "./HeaderCell.module.css";
+import { inspect } from "../inspect";
 
 export type HeaderCellSize = "sm" | "md";
 export type HeaderCellAlignment = "start" | "center" | "end";
@@ -34,7 +35,7 @@ export function HeaderCell({
   const size = ownSize ?? "md";
   const title = label ?? "column";
   return (
-    <span className={[styles.cell, styles[size], styles[alignment], line === "thin" ? styles.thin : ""].join(" ")}>
+    <span {...inspect("HeaderCell")} className={[styles.cell, styles[size], styles[alignment], line === "thin" ? styles.thin : ""].join(" ")}>
       {checkbox && (
         <Checkbox
           size="sm" hideLabel label={label ? `Select all ${label}` : "Select all rows"}

@@ -13,6 +13,7 @@ import { Link } from "../Link/Link";
 import { Switch } from "../Switch/Switch";
 import { Tooltip } from "../Tooltip/Tooltip";
 import styles from "./Cell.module.css";
+import { inspect } from "../inspect";
 
 export type CellType =
   | "text" | "link" | "avatar" | "avatarGroup" | "file" | "payment" | "badge" | "badges"
@@ -266,7 +267,7 @@ export function Cell({
   );
 
   return (
-    <span className={[styles.cell, styles[size], styles[alignment], type === "tree" ? styles.tree : "", type === "textBlock" ? styles.textBlock : "", type === "number" ? styles.number : ""].join(" ")}>
+    <span {...inspect("Cell")} className={[styles.cell, styles[size], styles[alignment], type === "tree" ? styles.tree : "", type === "textBlock" ? styles.textBlock : "", type === "number" ? styles.number : ""].join(" ")}>
       {lead}
       {/* A plain span can't carry aria-label, so a cell drawn without text says what it shows in hidden text. */}
       {aria && <span className={styles.srOnly}>{aria}</span>}

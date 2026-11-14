@@ -13,6 +13,7 @@ import { HelpPopover } from "../HelpPopover/HelpPopover";
 import field from "../Input/Input.module.css";
 import { carryTheme } from "../Tooltip/useFloating";
 import styles from "./DatePicker.module.css";
+import { inspect } from "../inspect";
 
 export type DatePickerType = "single" | "dual";
 export type DatePickerSize = "sm" | "md" | "lg";
@@ -381,7 +382,7 @@ export function DatePicker({
   }
   const text = range ? "Select dates" : "Select date";
   return (
-    <div ref={rootRef} className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
+    <div {...inspect("DatePicker")} ref={rootRef} className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition}>
       <div className={hideLabel ? field.srOnly : field.labelRow}>
         {/* The field is a button, which has no required state, so the label says it for screen readers. */}
         <label htmlFor={triggerId} className={field.label}>

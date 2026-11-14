@@ -3,6 +3,7 @@ import { Icon } from "../Icon/Icon";
 import { Skeleton } from "../Skeleton/Skeleton";
 import { skeletonBarWidth, useFieldSkeleton } from "../LoadingLine/boot";
 import styles from "./NavTile.module.css";
+import { inspect } from "../inspect";
 
 export type NavTileIntent = "brand" | "green" | "olive" | "cyan" | "orange" | "pink" | "gray" | "purple" | "yellow" | "red" | "mint";
 
@@ -57,5 +58,5 @@ export function NavTile({ title, description, icon, intent = "brand", href, onCl
     );
   }
   // Nowhere to go: the tile is still read, just not clickable.
-  return <div className={cls}>{body}</div>;
+  return <div {...inspect("NavTile")} className={cls}>{body}</div>;
 }

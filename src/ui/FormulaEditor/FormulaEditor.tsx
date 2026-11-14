@@ -10,6 +10,7 @@ import { HelpPopover } from "../HelpPopover/HelpPopover";
 // Label, help, hint and error share Input's styles so all form fields match.
 import field from "../Input/Input.module.css";
 import styles from "./FormulaEditor.module.css";
+import { inspect } from "../inspect";
 
 export type FormulaEditorSize = "sm" | "md" | "lg";
 export type FormulaEditorLabelPosition = "top" | "start";
@@ -173,7 +174,7 @@ export function FormulaEditor({
     );
   }
   return (
-    <div className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition} data-full-row="">
+    <div {...inspect("FormulaEditor")} className={cls.join(" ")} data-label={hideLabel ? undefined : labelPosition} data-full-row="">
       <div className={hideLabel ? field.srOnly : field.labelRow}>
         <label htmlFor={areaId} className={field.label}>
           {required && <span className={field.required} aria-hidden="true">*</span>}
