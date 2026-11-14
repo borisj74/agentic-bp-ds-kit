@@ -28,9 +28,23 @@ const firstSentence = (s = "") => (s.match(/^[^.]*\./)?.[0] ?? s).trim();
 // instead, what is capped, what belongs where, what gives way. What is left behind is detail the property line above
 // already shows (which values align, what an empty table says) and behaviour a static Figma drawing cannot express.
 const RULE = /\b(never|do not|only|must|at most|one per|instead of|rather than|no more than|belongs? in|belong to|give way|too wide|scrolls? (in|inside) its own)\b/i;
+// A rule about something that happens over time cannot be drawn in a frame: a skeleton that comes and goes, a
+// shimmer, a hover, a transition, what a screen reader says, how long something waits. The RULE test lets those
+// sentences through, because they are phrased with "only" and "never" like any other rule, and they were 4KB of
+// the components file. Figma asks for under 100KB in total and the files had grown past it, so they go: the agent
+// draws one state of one screen, and the loading sequence is already settled in code.
+const DRAWS_NOTHING = /(skeleton|loading|animat|shimmer|transition|hover|keyboard|screen reader|reduced motion|focus ring|debounc|\d+\s?ms\b)/i;
+// Past the first few, a rule sentence is nearly always a finer cut of the one before it, so each piece keeps at
+// most LIMIT of them. Three is what the longest entries needed before they started repeating themselves.
+const LIMIT = 3;
+// A prop note explains behaviour rather than drawing, so it keeps less: its opening rule and one sentence after it.
+const NOTE_LIMIT = 2;
 const usageSentences = (s = "", openers) => {
   const sentences = s.trim().split(/(?<=[.!?])\s+/);
-  return [...sentences.slice(0, openers), ...sentences.slice(openers).filter((line) => RULE.test(line))].join(" ");
+  const rules = sentences.slice(openers)
+    .filter((line) => RULE.test(line) && !DRAWS_NOTHING.test(line))
+    .slice(0, LIMIT);
+  return [...sentences.slice(0, openers), ...rules].join(" ");
 };
 // A pattern keeps its opening sentences: there are a dozen patterns and the opening is where a blueprint says which
 // screen it is for. A component drops them. With 84 components those openers were 14KB, and they almost always
@@ -221,7 +235,7 @@ ${dimensionGroups.join("\n")}
 
 ${layoutClasses.map((c) => `- \`${c}\``).join("\n")}
 
-${noContractRefs(layout.usage)}
+${usageSentences(noContractRefs(layout.usage), 2)}
 
 ### Do not
 
@@ -306,7 +320,8 @@ const componentEntry = (meta) => {
       const sentences = noContractRefs(p.note).trim().split(/(?<=[.!?])\s+/);
       // The opening sentence is the rule for the property itself, so it stays whatever it looks like.
       const kept = [sentences[0], ...sentences.slice(1)
-        .filter((line) => !EXAMPLE.test(line) && !DEFAULT_RESTATED.test(line))];
+        .filter((line) => !EXAMPLE.test(line) && !DEFAULT_RESTATED.test(line) && !DRAWS_NOTHING.test(line))
+        .slice(0, NOTE_LIMIT - 1)];
       return [name, kept.join(" ")];
     })
     // A few marked notes open with the callback's own signature, which says nothing a frame can show.
@@ -316,14 +331,18 @@ const componentEntry = (meta) => {
   // 05-antipatterns.md, restated for 49 of the 84 components. It is dropped here when the component has a rule of
   // its own left to give, and kept when it is all that component has to say.
   const specific = (c.doNot ?? []).filter((d) => !LOOKALIKE.test(d));
-  const doNot = (specific.length ? specific : (c.doNot ?? [])).slice(0, 2);
+  const usage = c.usage ? usageForComponent(noContractRefs(c.usage)) : "";
+  // Two do-nots, but only for a piece whose usage had no rule left to give: where both are printed, the second
+  // do-not and the rule sentence above it were usually the same rule said twice ("Do not use it for a single
+  // value" under "Use Meter for one value instead"). An entry that says nothing else keeps both.
+  const doNot = (specific.length ? specific : (c.doNot ?? [])).slice(0, usage ? 1 : 2);
   return [
     `### ${c.name}`,
     firstSentence(c.intent),
     props.length ? `Props — ${props.join("; ")}` : null,
     propNotes.length ? propNotes.join("\n") : null,
     accessors.length ? `Functions — ${accessors.join(", ")}` : null,
-    c.usage ? usageForComponent(noContractRefs(c.usage)) : null,
+    usage || null,
     doNot.length ? doNot.map((d) => `- ${noContractRefs(d)}`).join("\n") : null,
   ].filter(Boolean).join("\n\n");
 };
@@ -355,7 +374,9 @@ const patternEntry = (meta) => {
     usageForFigma(noContractRefs(p.usage)),
     p.useWhen?.length ? `**Use when**\n\n${p.useWhen.map((u) => `- ${u}`).join("\n")}` : null,
     p.composes?.length ? `**Composes** ${p.composes.map((c) => `\`${c}\``).join(", ")}` : null,
-    p.doNot?.length ? `**Do not**\n\n${p.doNot.map((d) => `- ${noContractRefs(d)}`).join("\n")}` : null,
+    // A contract lists its do-nots strongest first, and the patterns carry seven each on average. Four is where
+    // they stop being about the blueprint and start repeating the components' own entries.
+    p.doNot?.length ? `**Do not**\n\n${p.doNot.slice(0, 4).map((d) => `- ${noContractRefs(d)}`).join("\n")}` : null,
   ].filter(Boolean).join("\n\n");
 };
 
@@ -426,10 +447,13 @@ titled groups through its sections, \`labelPosition=start\` for leading labels,
 
 ## A table with its own scroll box
 
-A table that scrolls inside a fixed-height frame fights the page. In this system
-**the table scrolls with the page**, vertically; when it is wider than the viewport
-the page scrolls sideways. Its column names hold at the top of the page, under
-whatever is pinned above them.
+A table that scrolls inside a fixed-height frame fights the page. While the columns
+fit, the table has no scroll of its own: it **scrolls with the page**, and its column
+names hold at the top of the page, under whatever is pinned above them. When the
+columns need more room than the box has, **the box takes the sideways scroll** — the
+page never slides — and the first column, which names the row, freezes against the
+start edge, with the checkbox column if there is one. Once the box scrolls, the column
+names hold at the top of the box rather than the top of the page.
 
 ## Guessing what holds still on scroll
 

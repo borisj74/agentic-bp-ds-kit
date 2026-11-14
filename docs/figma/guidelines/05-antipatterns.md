@@ -53,10 +53,13 @@ titled groups through its sections, `labelPosition=start` for leading labels,
 
 ## A table with its own scroll box
 
-A table that scrolls inside a fixed-height frame fights the page. In this system
-**the table scrolls with the page**, vertically; when it is wider than the viewport
-the page scrolls sideways. Its column names hold at the top of the page, under
-whatever is pinned above them.
+A table that scrolls inside a fixed-height frame fights the page. While the columns
+fit, the table has no scroll of its own: it **scrolls with the page**, and its column
+names hold at the top of the page, under whatever is pinned above them. When the
+columns need more room than the box has, **the box takes the sideways scroll** — the
+page never slides — and the first column, which names the row, freezes against the
+start edge, with the checkbox column if there is one. Once the box scrolls, the column
+names hold at the top of the box rather than the top of the page.
 
 ## Guessing what holds still on scroll
 

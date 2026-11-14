@@ -9,7 +9,7 @@ structure to suit one screen.
 
 The account provisioning flow: the accounts list, one account with its tabs, a new account, a new product on an account, and configuring that product alone or many products at once, one page at a time.
 
-It is a blueprint: each page is a kit pattern the screen builds, and the screen owns which one is showing, the records and what was just saved. list is a kit ListPage: a Toolbar with filters, search, the view picker and refresh, and a Table whose Account ID is a link Cell that opens the account, with Pagination under it; Table View is the default, and List View swaps the Table for a kit ListView of the same accounts whose rows open the account; the page's New and Export go in the AppShell's kit PageHeader, not in the Toolbar. It follows the frame's sequence: the line alone for 200ms, the skeleton held at least 400ms, then the content fading in over 150ms; a page that lands inside the first 200ms never shows a skeleton.
+It is a blueprint: each page is a kit pattern the screen builds, and the screen owns which one is showing, the records and what was just saved. list is a kit ListPage: a Toolbar with filters, search, the view picker and refresh, and a Table whose Account ID is a link Cell that opens the account, with Pagination under it; Table View is the default, and List View swaps the Table for a kit ListView of the same accounts whose rows open the account; the page's New and Export go in the AppShell's kit PageHeader, not in the Toolbar.
 
 **Use when**
 
@@ -26,17 +26,12 @@ It is a blueprint: each page is a kit pattern the screen builds, and the screen 
 - Do not show the Account ID as plain text. It is a link Cell, so people can tell it opens the account.
 - Do not use Inputs to show saved account values. Use FormDisplay.
 - Do not build a second list, record or form layout inside it. Use ListPage, RecordPage and FormPage.
-- Do not keep the view or the records in the pattern. The screen owns them.
-- Do not put page padding on it. The AppShell page owns that.
-- Do not put a second strong brand Button on provisionProduct or bulkProducts: Save draft and Validate stay subtle beside the one Provision.
-- Do not build a skeleton for the flow. Set loading and the page that is showing draws its own; the AppShell draws the line.
-- Do not give the AppShell and the flow different loading, loadingLabel or bootTiming. They are one boot.
 
 ## AppShell
 
 The frame every product screen sits in: the bar across the top, the rail under it down the side, the page in the middle, and the assistant beside it.
 
-It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is open. Pass the kit AppHeader as header: it runs the full width across the top, and the rail starts under it. Never pass a shorter list or make up links. pageHeader takes a kit PageHeader and stays at the top of the page while the page scrolls under it, flush to the top edge; The frame shrinks it to the kit's compact 52px bar on its own once the top of the page has scrolled away, so a screen passes a plain PageHeader and wires nothing; set sticky on the PageHeader yourself only to override that. children are the page itself, already inside the scrolling content area with its edge padding and the gap between Sections, so screens do not add their own. The frame answers to its own width rather than the window's, so under about 640 the rail goes and an open assistant takes the page's place, whether it is docked in a panel or filling a screen. A page that lands inside the first 200ms never shows a skeleton at all, and a skeleton that has appeared is never blinked away the moment the data arrives. The frame marks itself, so panels that float out of the bar or the rail — menus, tooltips, the search dropdown — keep inside it rather than over whatever is beside it.
+It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen decides what is open. Pass the kit AppHeader as header: it runs the full width across the top, and the rail starts under it. Never pass a shorter list or make up links. pageHeader takes a kit PageHeader and stays at the top of the page while the page scrolls under it, flush to the top edge; The frame shrinks it to the kit's compact 52px bar on its own once the top of the page has scrolled away, so a screen passes a plain PageHeader and wires nothing; set sticky on the PageHeader yourself only to override that. children are the page itself, already inside the scrolling content area with its edge padding and the gap between Sections, so screens do not add their own.
 
 **Use when**
 
@@ -52,10 +47,6 @@ It is a blueprint: it composes kit pieces and keeps no state of its own, so the 
 - Do not build the bar, the rail or the page header inside it. Pass the kit pieces.
 - Do not trim, reorder or invent side nav links. Every screen passes the full APP_NAV and APP_NAV_END from @/patterns/AppShell/appNav and marks its own page with current.
 - Do not add page padding or a gap between Sections in the screen; the content area already has both.
-- Do not swap a full-size ChatWindow into the page area or hide the page header by hand. Set assistantSize full.
-- Do not invent a second frame or a per-page grid beside it.
-- Do not use raw hex.
-- Do not leave the page live under the loading line, and do not draw a page skeleton in the frame. The frame publishes the boot; each piece inside draws its own.
 
 ## ChatWindow
 
@@ -76,8 +67,6 @@ It is a blueprint: it composes kit pieces and keeps no state of its own, so the 
 - Do not build the header, the turns or the box inside it. Pass the kit pieces.
 - Do not build the Get Started block from EmptyState, Illustration and Buttons in the screen. Pass starters and art.
 - Do not use it as an overlay dialog. Use Drawer or Modal.
-- Do not invent a second assistant layout beside it.
-- Do not use raw hex.
 
 ## Dashboard
 
@@ -99,10 +88,6 @@ It is a blueprint: it composes kit pieces and keeps no state of its own, so the 
 - Do not build the bar, the groups or the tiles inside it. Pass the kit pieces.
 - Do not invent a tile grid, and do not put more than five tiles in a row. Two side by side is.layout-split, three is.layout-split--thirds, four or five is.layout-metrics with --fixed-4 or --fixed-5.
 - Do not stack more than one strong brand Button across the whole dashboard.
-- Do not use it to list records. Use ListPage.
-- Do not add page padding around it. It sits in the AppShell page, which owns that.
-- Do not use raw hex.
-- Do not repeat the meta stamp in a section description or a table caption. The page carries one.
 
 ## FormPage
 
@@ -124,11 +109,6 @@ It is a blueprint: it composes kit pieces and keeps no state of its own, so the 
 - Do not put a Form inside every Section yourself. One Form holds the groups as sections, so one press saves the page.
 - Do not add a second save bar at the foot. The header keeps the save in reach.
 - Do not put page padding on it. The AppShell page owns that.
-- Do not use it for a short form. Two or three fields belong in a Modal or a Drawer.
-- Do not keep the fold state or the values in the pattern. The screen owns them.
-- Do not set a width on the Form or stretch its columns to fill a wide page. Pass columns to the FormPage; each column stops at --layout-column-max (554px).
-- Do not use more than 3 columns, even on a 2560px or wider screen.
-- Do not draw a loading form as a block of identical rows when the page has children. Leave loadingShape at content, so the skeleton keeps the form's own sections and fields.
 
 ## GuidedProcessPage
 
@@ -149,8 +129,6 @@ It is a blueprint: it only places kit GuidedProcess parts and keeps no state of 
 - Do not put a PageHeader over it. The header part names the step.
 - Do not use it for a short flow; two or three fields belong in a Modal with Steps.
 - Do not put page padding on it. It fills the AppShell page.
-- Do not give the steps part a different side from the page.
-- Do not keep whether it has started, the current step, the saved time or the open drawer in the pattern. The screen owns them.
 
 ## ListDetail
 
@@ -175,13 +153,12 @@ It is a blueprint: it composes kit pieces and keeps no state of its own. list is
 - Do not use it for records with a lot to show or edit. Drill into a RecordPage instead.
 - Do not build the list inside it. Pass a kit ListView.
 - Do not put the page's name inside it. That is the PageHeader in the frame around it.
-- Do not use raw hex.
 
 ## ListPage
 
 A list of records: the bar to find and filter them, the rows themselves, and the pages under them.
 
-It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the filters, the rows and which page is showing. Pass the kit Toolbar as toolbar and the list itself as children. A Table too wide for the page is the one thing that scrolls sideways on its own, inside its own box, and then its column names hold at the top of that box rather than under the Toolbar — a cell can only hold still against whatever scrolls. The page itself never slides sideways. Under that band is the scroll shadow: a lift that reaches both page edges while the bar and the table keep the page's side padding, drawn only once the band has pinned, and the column names give up their own line while it is. bulk is the bar of actions for the rows that are ticked; it takes the toolbar's place while something is selected, so the two are never both there.
+It is a blueprint: it composes kit pieces and keeps no state of its own, so the screen owns the filters, the rows and which page is showing. Pass the kit Toolbar as toolbar and the list itself as children. A Table too wide for the page is the one thing that scrolls sideways on its own, inside its own box, and then its column names hold at the top of that box rather than under the Toolbar — a cell can only hold still against whatever scrolls. The page itself never slides sideways. Under that band is the scroll shadow: a lift that reaches both page edges while the bar and the table keep the page's side padding, drawn only once the band has pinned, and the column names give up their own line while it is.
 
 **Use when**
 
@@ -197,10 +174,6 @@ It is a blueprint: it composes kit pieces and keeps no state of its own, so the 
 - Do not build the bar, the rows or the pages inside it. Pass the kit pieces.
 - Do not show the bulk bar and the toolbar at once; passing bulk swaps them.
 - Do not add page padding around it. It sits in the AppShell page, which owns that.
-- Do not use it for one record's details. That is a record screen.
-- Do not use raw hex.
-- Do not give the table a caption that repeats label; the list is already named.
-- Do not repeat the meta stamp in a table caption or a section description. The page carries one.
 
 ## RecordPage
 
@@ -221,11 +194,6 @@ It is a blueprint: it composes kit pieces and keeps no state of its own, so the 
 - Do not build the header, the tabs or the bar inside it. Pass the kit pieces.
 - Do not put page padding around it. It sits in the AppShell page, which owns that.
 - Do not use it for a list of records. Use ListPage.
-- Do not stack more than one Callout over the record; say the one thing that matters.
-- Do not use raw hex.
-- Do not wrap the details in a Form just to get columns, or set a width on them. Pass columns to the RecordPage; the Sections follow.
-- Do not use more than 3 columns, even on a 2560px or wider screen.
-- Do not put a related Table into columns. A Section holding a Table stays full width on its own.
 
 ## SettingsPage
 
@@ -247,5 +215,3 @@ It is a blueprint: it composes kit pieces and keeps no state of its own. childre
 - Do not build the tiles inside it. Pass kit Tiles.
 - Do not use kit Cards as the tiles; a Card is for comparing and picking, a NavTile is a way in.
 - Do not put the page's name inside it. That is the PageHeader in the frame around it.
-- Do not add a grid of your own or page padding around it.
-- Do not use raw hex.
