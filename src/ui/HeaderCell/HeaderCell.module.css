@@ -1,10 +1,10 @@
-/* Column title with a 2px brand-faint bottom border (1px with line thin). Side padding matches Cell sizes so columns line up. */
+/* Column title in sentence case with a 2px brand-faint bottom border (1px with line thin). Side padding matches Cell sizes so columns line up. */
 .cell {
   box-sizing: border-box; display: flex; align-items: center; gap: var(--space-xsmall);
   width: 100%; min-width: 0;
   background: var(--surface-flat); border-bottom: var(--border-width-medium) solid var(--border-brand-faint);
   font-family: var(--font-sans); font-size: var(--text-ref-column-size); font-weight: var(--text-ref-column-weight);
-  line-height: var(--text-ref-column-lh); text-transform: uppercase; color: var(--text-neutral);
+  line-height: var(--text-ref-column-lh); color: var(--text-neutral);
 }
 .thin { border-bottom-width: var(--border-width-thin); }
 .sm { min-height: var(--header-cell-height-sm); padding: var(--space-xsmall) var(--space-small); }
@@ -19,7 +19,7 @@
 .sort {
   display: inline-flex; align-items: center; gap: var(--space-xxsmall); min-width: 0;
   margin: 0; padding: 0; border: 0; background: none; cursor: pointer;
-  font: inherit; color: inherit; text-transform: inherit; border-radius: var(--radius-small);
+  font: inherit; color: inherit; border-radius: var(--radius-small);
 }
 .sort:hover { color: var(--text-neutral-strong); }
 .sort:focus-visible { outline: var(--border-width-medium) solid var(--outline-brand); outline-offset: var(--focus-offset); }

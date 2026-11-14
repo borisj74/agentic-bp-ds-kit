@@ -2,13 +2,13 @@
   "name": "HeaderCell",
   "path": "src/ui/HeaderCell/HeaderCell.tsx",
   "level": "molecule",
-  "intent": "Column title for a data table: uppercase label, optional select-all checkbox, optional sort, with a brand-faint bottom border, 2px or 1px.",
+  "intent": "Column title for a data table: a label in sentence case, optional select-all checkbox, optional sort, with a brand-faint bottom border, 2px or 1px.",
   "usage": "Use HeaderCell inside th scope=col, one per column, above Cell rows. Match its size to the Cell size so side padding lines up. Use alignment end for number columns and center for a checkbox-only or actions column. HeaderCell composes kit Checkbox and Icon. See contracts/headercell.json for the full contract.",
   "props": {
     "label": {
       "type": "string",
       "noteForFigma": true,
-      "note": "Column title, shown uppercase. Omit for a checkbox-only or empty column."
+      "note": "Column title, shown as written in sentence case. Omit for a checkbox-only or empty column."
     },
     "size": {
       "enum": [
