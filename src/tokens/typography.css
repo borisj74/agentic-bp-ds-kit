@@ -16,17 +16,23 @@
   --text-title-xxs-size: var(--font-size-xsmall); --text-title-xxs-weight: var(--font-weight-bold); --text-title-xxs-lh: var(--line-height-tight); --text-title-xxs-ls: var(--letter-spacing-normal);
   --text-body-lg-size: var(--font-size-regular); --text-body-lg-weight: var(--font-weight-regular); --text-body-lg-lh: var(--line-height-relaxed); --text-body-lg-ls: var(--letter-spacing-normal);
   --text-body-size: var(--font-size-small); --text-body-weight: var(--font-weight-regular); --text-body-lh: var(--line-height-normal); --text-body-ls: var(--letter-spacing-normal);
-  --text-body-sm-size: var(--font-size-xsmall); --text-body-sm-weight: var(--font-weight-regular); --text-body-sm-lh: var(--line-height-normal); --text-body-sm-ls: var(--letter-spacing-normal);
+  --text-body-snug-size: var(--font-size-small); --text-body-snug-weight: var(--font-weight-regular); --text-body-snug-lh: var(--line-height-snug); --text-body-snug-ls: var(--letter-spacing-normal);
+  --text-body-tight-size: var(--font-size-small); --text-body-tight-weight: var(--font-weight-regular); --text-body-tight-lh: var(--line-height-tight); --text-body-tight-ls: var(--letter-spacing-normal);
   --text-label-size: var(--font-size-small); --text-label-weight: var(--font-weight-medium); --text-label-lh: var(--line-height-normal); --text-label-ls: var(--letter-spacing-normal);
   --text-label-sm-size: var(--font-size-xsmall); --text-label-sm-weight: var(--font-weight-medium); --text-label-sm-lh: var(--line-height-snug); --text-label-sm-ls: var(--letter-spacing-normal);
+  --text-label-strong-size: var(--font-size-small); --text-label-strong-weight: var(--font-weight-semibold); --text-label-strong-lh: var(--line-height-normal); --text-label-strong-ls: var(--letter-spacing-normal);
   /* Button labels (Button, FilterButton). Semibold like BP Foundations Label/Button. Line height 1 centers the label in the fixed-height control. */
   --text-button-small-size: var(--font-size-xsmall); --text-button-small-weight: var(--font-weight-semibold); --text-button-small-lh: 1; --text-button-small-ls: var(--letter-spacing-normal);
   --text-button-medium-size: var(--font-size-small); --text-button-medium-weight: var(--font-weight-semibold); --text-button-medium-lh: 1; --text-button-medium-ls: var(--letter-spacing-normal);
   --text-button-large-size: var(--font-size-regular); --text-button-large-weight: var(--font-weight-semibold); --text-button-large-lh: 1; --text-button-large-ls: var(--letter-spacing-normal);
   --text-caption-size: var(--font-size-xsmall); --text-caption-weight: var(--font-weight-regular); --text-caption-lh: var(--line-height-normal); --text-caption-ls: var(--letter-spacing-normal);
   --text-caption-strong-size: var(--font-size-xsmall); --text-caption-strong-weight: var(--font-weight-semibold); --text-caption-strong-lh: var(--line-height-normal); --text-caption-strong-ls: var(--letter-spacing-normal);
+  --text-caption-snug-size: var(--font-size-xsmall); --text-caption-snug-weight: var(--font-weight-regular); --text-caption-snug-lh: var(--line-height-snug); --text-caption-snug-ls: var(--letter-spacing-normal);
+  --text-caption-tight-size: var(--font-size-xsmall); --text-caption-tight-weight: var(--font-weight-regular); --text-caption-tight-lh: var(--line-height-tight); --text-caption-tight-ls: var(--letter-spacing-normal);
   --text-overline-size: var(--ref-font-size-100); --text-overline-weight: var(--font-weight-medium); --text-overline-lh: var(--line-height-normal); --text-overline-ls: var(--letter-spacing-wide);
   --text-code-size: var(--font-size-xsmall); --text-code-weight: var(--font-weight-regular); --text-code-lh: var(--line-height-normal); --text-code-ls: var(--letter-spacing-normal);
+  /* Code shown in an editor: the same mono size, opened up to 200% line height so numbered rows breathe. */
+  --text-code-editor-size: var(--font-size-xsmall); --text-code-editor-weight: var(--font-weight-regular); --text-code-editor-lh: var(--line-height-loose); --text-code-editor-ls: var(--letter-spacing-normal);
   /* BP reference names (Foundations Reference/…): use-named aliases of the roles above. Same values, no new look.
      Title/Column also sets uppercase (class only). Label/Form is label at 120% line height (tight): a field label is
      one line, and 150% is too tall. label itself stays 1.5 for text that can wrap (Tooltip, Chart). Label/Badge is
@@ -34,15 +40,11 @@
   --text-ref-page-size: var(--text-title-xl-size); --text-ref-page-weight: var(--text-title-xl-weight); --text-ref-page-lh: var(--text-title-xl-lh); --text-ref-page-ls: var(--text-title-xl-ls); /* Title/Page */
   --text-ref-modal-size: var(--text-title-lg-size); --text-ref-modal-weight: var(--text-title-lg-weight); --text-ref-modal-lh: var(--text-title-lg-lh); --text-ref-modal-ls: var(--text-title-lg-ls); /* Title/Modal */
   --text-ref-drawer-size: var(--text-title-lg-size); --text-ref-drawer-weight: var(--text-title-lg-weight); --text-ref-drawer-lh: var(--text-title-lg-lh); --text-ref-drawer-ls: var(--text-title-lg-ls); /* Title/Drawer */
-  --text-ref-section-size: var(--text-title-md-size); --text-ref-section-weight: var(--text-title-md-weight); --text-ref-section-lh: var(--text-title-md-lh); --text-ref-section-ls: var(--text-title-md-ls); /* Title/Section */
-  --text-ref-card-size: var(--text-title-md-size); --text-ref-card-weight: var(--text-title-md-weight); --text-ref-card-lh: var(--text-title-md-lh); --text-ref-card-ls: var(--text-title-md-ls); /* Title/Card */
   --text-ref-column-size: var(--text-title-xxs-size); --text-ref-column-weight: var(--text-title-xxs-weight); --text-ref-column-lh: var(--text-title-xxs-lh); --text-ref-column-ls: var(--text-title-xxs-ls); /* Title/Column */
   --text-ref-metric-size: var(--text-heading-sm-size); --text-ref-metric-weight: var(--text-heading-sm-weight); --text-ref-metric-lh: var(--text-heading-sm-lh); --text-ref-metric-ls: var(--text-heading-sm-ls); /* Text/Metric */
   --text-ref-form-value-size: var(--text-body-lg-size); --text-ref-form-value-weight: var(--text-body-lg-weight); --text-ref-form-value-lh: var(--text-body-lg-lh); --text-ref-form-value-ls: var(--text-body-lg-ls); /* Text/Form-value */
   --text-ref-cell-size: var(--text-body-size); --text-ref-cell-weight: var(--text-body-weight); --text-ref-cell-lh: var(--text-body-lh); --text-ref-cell-ls: var(--text-body-ls); /* Text/Cell */
   --text-ref-alert-size: var(--text-body-size); --text-ref-alert-weight: var(--text-body-weight); --text-ref-alert-lh: var(--text-body-lh); --text-ref-alert-ls: var(--text-body-ls); /* Text/Alert */
-  --text-ref-caption-size: var(--text-caption-size); --text-ref-caption-weight: var(--text-caption-weight); --text-ref-caption-lh: var(--text-caption-lh); --text-ref-caption-ls: var(--text-caption-ls); /* Text/Caption */
-  --text-ref-footnote-size: var(--text-caption-size); --text-ref-footnote-weight: var(--text-caption-weight); --text-ref-footnote-lh: var(--text-caption-lh); --text-ref-footnote-ls: var(--text-caption-ls); /* Text/Footnote */
   --text-ref-label-form-size: var(--text-label-size); --text-ref-label-form-weight: var(--text-label-weight); --text-ref-label-form-lh: var(--line-height-tight); --text-ref-label-form-ls: var(--text-label-ls); /* Label/Form */
   --text-ref-label-tab-size: var(--text-heading-xs-size); --text-ref-label-tab-weight: var(--text-heading-xs-weight); --text-ref-label-tab-lh: var(--text-heading-xs-lh); --text-ref-label-tab-ls: var(--text-heading-xs-ls); /* Label/Tab */
   --text-ref-label-button-size: var(--text-button-small-size); --text-ref-label-button-weight: var(--text-button-small-weight); --text-ref-label-button-lh: var(--text-button-small-lh); --text-ref-label-button-ls: var(--text-button-small-ls); /* Label/Button */
@@ -63,29 +65,30 @@
 .text-title-xxs { font: var(--text-title-xxs-weight) var(--text-title-xxs-size) / var(--text-title-xxs-lh) var(--font-sans); letter-spacing: var(--text-title-xxs-ls); }
 .text-body-lg { font: var(--text-body-lg-weight) var(--text-body-lg-size) / var(--text-body-lg-lh) var(--font-sans); letter-spacing: var(--text-body-lg-ls); }
 .text-body { font: var(--text-body-weight) var(--text-body-size) / var(--text-body-lh) var(--font-sans); letter-spacing: var(--text-body-ls); }
-.text-body-sm { font: var(--text-body-sm-weight) var(--text-body-sm-size) / var(--text-body-sm-lh) var(--font-sans); letter-spacing: var(--text-body-sm-ls); }
+.text-body-snug { font: var(--text-body-snug-weight) var(--text-body-snug-size) / var(--text-body-snug-lh) var(--font-sans); letter-spacing: var(--text-body-snug-ls); }
+.text-body-tight { font: var(--text-body-tight-weight) var(--text-body-tight-size) / var(--text-body-tight-lh) var(--font-sans); letter-spacing: var(--text-body-tight-ls); }
 .text-label { font: var(--text-label-weight) var(--text-label-size) / var(--text-label-lh) var(--font-sans); letter-spacing: var(--text-label-ls); }
 .text-label-sm { font: var(--text-label-sm-weight) var(--text-label-sm-size) / var(--text-label-sm-lh) var(--font-sans); letter-spacing: var(--text-label-sm-ls); }
+.text-label-strong { font: var(--text-label-strong-weight) var(--text-label-strong-size) / var(--text-label-strong-lh) var(--font-sans); letter-spacing: var(--text-label-strong-ls); }
 .text-button-small { font: var(--text-button-small-weight) var(--text-button-small-size) / var(--text-button-small-lh) var(--font-sans); letter-spacing: var(--text-button-small-ls); }
 .text-button-medium { font: var(--text-button-medium-weight) var(--text-button-medium-size) / var(--text-button-medium-lh) var(--font-sans); letter-spacing: var(--text-button-medium-ls); }
 .text-button-large { font: var(--text-button-large-weight) var(--text-button-large-size) / var(--text-button-large-lh) var(--font-sans); letter-spacing: var(--text-button-large-ls); }
 .text-caption { font: var(--text-caption-weight) var(--text-caption-size) / var(--text-caption-lh) var(--font-sans); letter-spacing: var(--text-caption-ls); }
 .text-caption-strong { font: var(--text-caption-strong-weight) var(--text-caption-strong-size) / var(--text-caption-strong-lh) var(--font-sans); letter-spacing: var(--text-caption-strong-ls); }
+.text-caption-snug { font: var(--text-caption-snug-weight) var(--text-caption-snug-size) / var(--text-caption-snug-lh) var(--font-sans); letter-spacing: var(--text-caption-snug-ls); }
+.text-caption-tight { font: var(--text-caption-tight-weight) var(--text-caption-tight-size) / var(--text-caption-tight-lh) var(--font-sans); letter-spacing: var(--text-caption-tight-ls); }
 .text-overline { font: var(--text-overline-weight) var(--text-overline-size) / var(--text-overline-lh) var(--font-sans); letter-spacing: var(--text-overline-ls); text-transform: uppercase; }
 .text-code { font: var(--text-code-weight) var(--text-code-size) / var(--text-code-lh) var(--font-mono); letter-spacing: var(--text-code-ls); }
+.text-code-editor { font: var(--text-code-editor-weight) var(--text-code-editor-size) / var(--text-code-editor-lh) var(--font-mono); letter-spacing: var(--text-code-editor-ls); }
 /* BP reference names. Prefer these where the use is exact (a cell, a modal title), else the size-named role. */
 .text-ref-page { font: var(--text-ref-page-weight) var(--text-ref-page-size) / var(--text-ref-page-lh) var(--font-sans); letter-spacing: var(--text-ref-page-ls); }
 .text-ref-modal { font: var(--text-ref-modal-weight) var(--text-ref-modal-size) / var(--text-ref-modal-lh) var(--font-sans); letter-spacing: var(--text-ref-modal-ls); }
 .text-ref-drawer { font: var(--text-ref-drawer-weight) var(--text-ref-drawer-size) / var(--text-ref-drawer-lh) var(--font-sans); letter-spacing: var(--text-ref-drawer-ls); }
-.text-ref-section { font: var(--text-ref-section-weight) var(--text-ref-section-size) / var(--text-ref-section-lh) var(--font-sans); letter-spacing: var(--text-ref-section-ls); }
-.text-ref-card { font: var(--text-ref-card-weight) var(--text-ref-card-size) / var(--text-ref-card-lh) var(--font-sans); letter-spacing: var(--text-ref-card-ls); }
 .text-ref-column { font: var(--text-ref-column-weight) var(--text-ref-column-size) / var(--text-ref-column-lh) var(--font-sans); letter-spacing: var(--text-ref-column-ls); text-transform: uppercase; }
 .text-ref-metric { font: var(--text-ref-metric-weight) var(--text-ref-metric-size) / var(--text-ref-metric-lh) var(--font-sans); letter-spacing: var(--text-ref-metric-ls); }
 .text-ref-form-value { font: var(--text-ref-form-value-weight) var(--text-ref-form-value-size) / var(--text-ref-form-value-lh) var(--font-sans); letter-spacing: var(--text-ref-form-value-ls); }
 .text-ref-cell { font: var(--text-ref-cell-weight) var(--text-ref-cell-size) / var(--text-ref-cell-lh) var(--font-sans); letter-spacing: var(--text-ref-cell-ls); }
 .text-ref-alert { font: var(--text-ref-alert-weight) var(--text-ref-alert-size) / var(--text-ref-alert-lh) var(--font-sans); letter-spacing: var(--text-ref-alert-ls); }
-.text-ref-caption { font: var(--text-ref-caption-weight) var(--text-ref-caption-size) / var(--text-ref-caption-lh) var(--font-sans); letter-spacing: var(--text-ref-caption-ls); }
-.text-ref-footnote { font: var(--text-ref-footnote-weight) var(--text-ref-footnote-size) / var(--text-ref-footnote-lh) var(--font-sans); letter-spacing: var(--text-ref-footnote-ls); }
 .text-ref-label-form { font: var(--text-ref-label-form-weight) var(--text-ref-label-form-size) / var(--text-ref-label-form-lh) var(--font-sans); letter-spacing: var(--text-ref-label-form-ls); }
 .text-ref-label-tab { font: var(--text-ref-label-tab-weight) var(--text-ref-label-tab-size) / var(--text-ref-label-tab-lh) var(--font-sans); letter-spacing: var(--text-ref-label-tab-ls); }
 .text-ref-label-button { font: var(--text-ref-label-button-weight) var(--text-ref-label-button-size) / var(--text-ref-label-button-lh) var(--font-sans); letter-spacing: var(--text-ref-label-button-ls); }
