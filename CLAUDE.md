@@ -38,7 +38,7 @@ Page spacing: 4px grid. Content edge padding and between-section gap come from l
 ## How the kit is built
 
 - Tokens: primitives → semantic roles. Components never use raw hex. They use semantic CSS vars only.
-- contracts/index.json, then one JSON contract per piece (intent, usage, closed enums, useWhen, doNot, a11y, snippet, examples). The playground Variants tab renders `examples` straight from the contract.
+- contracts/index.json, then one JSON contract per piece (intent, usage, closed enums, useWhen, doNot, a11y, snippet, examples, and `figma` with the fileKey and nodeId of the component in the Agentic DS Figma file). The playground Variants tab renders `examples` straight from the contract.
 - ui/ implements that contract exactly. If a contract exists, use that component. Never invent a local cousin (no EmptyHeader, SliderThumb, ToastAction, Dialog, Sheet).
 - Patterns only compose kit pieces. They are blueprints, not new primitives.
 - Playground is the catalog: /foundations, /components, /patterns. Master is Preview | Variants. Size chips go sm → md → lg.
