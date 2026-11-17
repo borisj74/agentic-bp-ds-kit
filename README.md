@@ -482,7 +482,7 @@ Run `npm test -- tests/mcp.test.ts` to verify each tool responds.
 
 | Folder | What it holds |
 | --- | --- |
-| `contracts/` | One JSON contract per component and pattern, plus `index.json` |
+| `contracts/` | One JSON contract per component and pattern, plus `index.json`. Each one carries a `figma` field (`fileKey`, `nodeId`) pointing at the component in the Agentic DS Figma file, which the catalog turns into the Figma link on the component page |
 | `src/ui/` | Components, one folder each |
 | `src/patterns/` | Page blueprints composed from components |
 | `src/tokens/` | Primitive and semantic tokens, and layout classes |

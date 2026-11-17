@@ -1,6 +1,7 @@
 "use client";
 import { useState, type CSSProperties } from "react";
 import { Button } from "@/ui/Button/Button";
+import { Link } from "@/ui/Link/Link";
 import { RadioGroup } from "@/ui/RadioGroup/RadioGroup";
 import { Segmented } from "@/ui/Segmented/Segmented";
 import { Switch } from "@/ui/Switch/Switch";
@@ -10,6 +11,7 @@ import { ContractDocs } from "./ContractDocs";
 import type { ItemShape } from "./contractRules";
 import { CopyPrompt } from "./CopyPrompt";
 import { BrandPicker } from "./ThemeControls";
+import { figmaUrl, type FigmaRef } from "./figma";
 import { useCopy, type Copy } from "./useCopy";
 
 type PropDef = { type?: string; enum?: (string | number)[]; default?: unknown; note?: string; itemShape?: ItemShape; required?: boolean };
@@ -23,6 +25,8 @@ export interface Example {
 }
 export interface Contract {
   name: string; path: string; level?: string; intent: string; usage?: string;
+  /** The component in Figma. Left out while a piece has no artboard, and then the page shows no Figma link. */
+  figma?: FigmaRef;
   props: Record<string, PropDef>;
   useWhen: string[]; doNot: string[]; a11y: string[]; snippet: string;
   examples?: Example[];
@@ -124,6 +128,7 @@ export function Master({ contract }: { contract: Contract }) {
   const snippet = toJsx(contract.name, snippetProps, keys, true, childName);
   const hasControls = enums.length + bools.length + toggles.length > 0;
   const file = `contracts/${contract.name.toLowerCase()}.json`;
+  const figma = figmaUrl(contract);
 
   return (
     <section className={styles.section}>
@@ -140,6 +145,8 @@ export function Master({ contract }: { contract: Contract }) {
           {/* The brand ramps paint the component on the stage, so the picker rides here rather than in the
               catalog's top bar. */}
           <div className={styles.viewEnd}>
+            {/* The same component in Figma. The kit Link, external, so it opens in its own tab. */}
+            {figma ? <span className={styles.figmaLink}><Link href={figma} external>Figma</Link></span> : null}
             <CopyPrompt contract={contract} />
             <BrandPicker />
           </div>
