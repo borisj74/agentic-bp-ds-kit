@@ -22,16 +22,21 @@ const roles: readonly (readonly [string, string, string?])[] = [
   ["text-metric", "$5,144,707.08"],
   ["text-body-lg", "Use semantic text styles in components so hierarchy stays consistent across the product."],
   ["text-body", "Body text carries the bulk of product copy. Keep size and leading on the semantic tokens."],
-  ["text-body-sm", "Supporting copy for denser UI, tables, and helper text."],
+  ["text-body-snug", "Supporting copy at 135% line height, for denser UI and helper text."],
+  ["text-body-tight", "Body copy at 120% line height, for one-line rows that must not grow."],
   ["text-label", "Form Label"],
   ["text-label-sm", "Tooltip or Small Label"],
+  ["text-label-strong", "Emphasised Form Label"],
   ["text-button-small", "Small Button"],
   ["text-button-medium", "Medium Button"],
   ["text-button-large", "Large Button"],
   ["text-caption", "Caption or Metadata Under a Control"],
   ["text-caption-strong", "Weekday or Value Label"],
+  ["text-caption-snug", "Caption at 135% line height"],
+  ["text-caption-tight", "Caption at 120% line height"],
   ["text-overline", "Section Meta"],
   ["text-code", "invoice.lines.reduce((s, l) => s + l.amount, 0)"],
+  ["text-code-editor", "const total = invoice.lines.length;"],
 ];
 
 // BP Foundations reference names (Reference/…), each an alias of a role above (Label/Form: line height 120%, Label/Badge: 100%).
@@ -39,15 +44,11 @@ const refs = [
   ["text-ref-page", "title-xl", "Title/Page", "Page Title"],
   ["text-ref-modal", "title-lg", "Title/Modal", "Modal Title"],
   ["text-ref-drawer", "title-lg", "Title/Drawer", "Drawer Title"],
-  ["text-ref-section", "title-md", "Title/Section", "Section Title"],
-  ["text-ref-card", "title-md", "Title/Card", "Card Title"],
   ["text-ref-column", "title-xxs", "Title/Column", "Column Header"],
   ["text-ref-metric", "heading-sm", "Text/Metric", "$5,144,707.08"],
   ["text-ref-form-value", "body-lg", "Text/Form-value", "Acme Corporation"],
   ["text-ref-cell", "body", "Text/Cell", "Invoice INV-10482"],
   ["text-ref-alert", "body", "Text/Alert", "Your changes were saved."],
-  ["text-ref-caption", "caption", "Text/Caption", "Caption Under a Control"],
-  ["text-ref-footnote", "caption", "Text/Footnote", "Prices exclude tax."],
   ["text-ref-label-form", "label at 120% line height", "Label/Form", "Form Label"],
   ["text-ref-label-tab", "heading-xs", "Label/Tab", "Tab Label"],
   ["text-ref-label-button", "button-small", "Label/Button", "Button Label"],
@@ -57,7 +58,7 @@ const refs = [
 const sizes = [["ref-font-size-100", 10], ["ref-font-size-200", 12], ["ref-font-size-300", 14], ["ref-font-size-400", 16], ["ref-font-size-500", 18], ["ref-font-size-600", 20], ["ref-font-size-700", 22], ["ref-font-size-800", 24], ["ref-font-size-900", 26]] as const;
 const named = [["font-size-xsmall", 12], ["font-size-small", 14], ["font-size-regular", 16], ["font-size-large", 18], ["font-size-xlarge", 20], ["font-size-xxlarge", 24]] as const;
 const weights = [["font-weight-regular", 400], ["font-weight-medium", 500], ["font-weight-semibold", 600], ["font-weight-bold", 700]] as const;
-const leading = [["line-height-tight", 1.2], ["line-height-snug", 1.35], ["line-height-normal", 1.5], ["line-height-relaxed", 1.65]] as const;
+const leading = [["line-height-tight", 1.2], ["line-height-snug", 1.35], ["line-height-normal", 1.5], ["line-height-relaxed", 1.65], ["line-height-loose", 2]] as const;
 const tracking = [["letter-spacing-tight", "-0.02em"], ["letter-spacing-normal", "0"], ["letter-spacing-wide", "0.04em"]] as const;
 const para = "Typography sets voice and hierarchy. Line height controls how dense or open body text feels across layouts and components.";
 
@@ -112,10 +113,10 @@ export function TypographyFoundation() {
       )}
       {tab === "semantics" && (
         <>
-          <Head title="Roles" prefix="text-display → text-code" />
+          <Head title="Roles" prefix="30 roles · text-display → text-code-editor" />
           <p className={styles.note}>Heading rows carry their use name: what each size is for in a product screen.</p>
           {roles.map(([k, sample, use]) => <Row key={k} k={`.${k}`} value={k} use={use} className={k}>{sample}</Row>)}
-          <Head title="BP reference names" prefix="text-ref-* → role" />
+          <Head title="BP reference names" prefix="12 names · text-ref-* → role" />
           {refs.map(([k, role, bp, sample]) => <Row key={k} k={`.${k} · ${bp} → ${role}`} value={k} className={k}>{sample}</Row>)}
         </>
       )}
