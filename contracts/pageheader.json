@@ -44,13 +44,15 @@
     "badgeIntent": {
       "enum": [
         "neutral",
+        "hollow",
         "info",
         "success",
         "warning",
         "danger",
         "highlight"
       ],
-      "default": "neutral"
+      "default": "neutral",
+      "note": "The Badge intent. The full BadgeIntent set, so hollow is allowed here too."
     },
     "actions": {
       "type": "ReactNode",
