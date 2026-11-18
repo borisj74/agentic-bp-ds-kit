@@ -1,10 +1,10 @@
 ---
-name: bp-kit-to-library
+name: bp-ds-builder
 description: Use when rebuilding or extending the Agentic BP DS library from a source of truth — a token file, a reference component (code, Figma node, or screenshot). Produces tokens, then atoms, then molecules, with names that match the contracts.
 argument-hint: <the source, e.g. "contracts/table.json", "this Figma node", "screenshot of a tag chip">
 ---
 
-# Kit to library
+# BP DS builder
 
 Turn a source of truth into kit pieces that look, name and behave like the rest of Agentic BP DS.
 

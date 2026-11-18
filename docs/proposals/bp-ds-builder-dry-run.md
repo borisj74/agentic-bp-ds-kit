@@ -1,6 +1,6 @@
-# Dry run: `bp-kit-to-library` on InsightCard
+# Dry run: `bp-ds-builder` on InsightCard
 
-Plan only. No component code, no contract file, no token rows were written for this. The point is to check whether the skill in `.claude/skills/bp-kit-to-library/` is enough to plan a piece the kit does not cover, and to see where it makes an agent stop.
+Plan only. No component code, no contract file, no token rows were written for this. The point is to check whether the skill in `.claude/skills/bp-ds-builder/` is enough to plan a piece the kit does not cover, and to see where it makes an agent stop.
 
 **Piece chosen:** `InsightCard`. It is the one component `.claude/skills/prototype-from-kit/SKILL.md` still lists as "not built yet", and the planned `assistant-workspace` pattern is described as "AppShell with a `ChatWindow` as `assistant` + two-column InsightCards". So it is a real gap with a named caller, not an invented one.
 
