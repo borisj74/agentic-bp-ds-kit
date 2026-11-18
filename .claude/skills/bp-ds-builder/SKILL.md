@@ -1,6 +1,6 @@
 ---
 name: bp-ds-builder
-description: Use when rebuilding or extending the Agentic BP DS library from a source of truth — a token file, a reference component (code, Figma node, or screenshot). Produces tokens, then atoms, then molecules, with names that match the contracts.
+description: Use when rebuilding or extending the Agentic BP DS library from a source of truth — a token file, a reference component (code, Figma node, or screenshot), or a whole screen. Produces tokens, then atoms, molecules, organisms and page templates, with names that match the contracts.
 argument-hint: <the source, e.g. "contracts/table.json", "this Figma node", "screenshot of a tag chip">
 ---
 
@@ -8,7 +8,9 @@ argument-hint: <the source, e.g. "contracts/table.json", "this Figma node", "scr
 
 Turn a source of truth into kit pieces that look, name and behave like the rest of Agentic BP DS.
 
-Use `prototype-from-kit` to **build a screen** out of existing pieces. Use this skill to **grow or rebuild the library itself**: tokens, atoms, molecules.
+Use `prototype-from-kit` to **build a screen** out of existing pieces. Use this skill to **grow or rebuild the library itself**: tokens, atoms, molecules, organisms and page templates.
+
+A **page template** is a kit piece too, not a screen: it is the blueprint a screen fills in. A screen with real data in it is a page under `src/app/`, and that is `prototype-from-kit`'s job, not this skill's.
 
 `RULES.md` beside this file is the written-out rule set, with every rule tagged **[code]** (confirmed in the repo) or **[guess]** (my reading). Read it before step 2; re-read the section you are touching.
 
@@ -20,6 +22,7 @@ One of:
 2. **A reference component in code** — another system's component, or an older version of this one.
 3. **A Figma node** — a component in the Agentic DS file (`fileKey` + `nodeId`).
 4. **A screenshot** — a picture of one component, with its states if you have them.
+5. **A whole screen** — a reference screen, in code, Figma or a screenshot, whose shape repeats across the product. That is a page template, not a one-off screen.
 
 If you have none of these, stop: there is nothing to reverse-engineer.
 
@@ -31,8 +34,13 @@ Never skip down the list. Each step's output is the next step's input.
 
 1. Read `contracts/index.json`. Search `name`, `tags`, `category`.
 2. If a contract already exists for this job, **change that piece**. Do not add a cousin. Cousin names the review rejects outright: `EmptyHeader`, `Dialog`, `Sheet`, `SliderThumb`, `ToastAction`.
-3. If nothing matches, write down: the `name` (PascalCase), the `level` (`atom` / `molecule` / `organism`), the `category` (`data`, `navigation`, `form`, `feedback`, `overlay`, `base`, `layout`, `brand`) and 4–7 `tags`.
-4. Decide the level honestly. A piece that only composes existing pieces is a `molecule` or `organism` and lists them in `composes`.
+3. If nothing matches, write down: the `name` (PascalCase), the `level` (`atom` / `molecule` / `organism` / `template`), the `category` (`data`, `navigation`, `form`, `feedback`, `overlay`, `base`, `layout`, `brand`) and 4–7 `tags`. A `template` goes in `index.patterns` and takes **no** `category`.
+4. Decide the level honestly, and build from the biggest piece down (`CLAUDE.md`, "Build order"):
+   - `atom` — one control, no kit piece inside it.
+   - `molecule` — a few atoms with one flattened API.
+   - `organism` — one whole block of a screen: a bar, a table, a section, a header, a chart.
+   - `template` — a whole page shape, with no state and no content of its own. Patterns only, and `tests/contract-levels.test.ts` fails if a pattern is not a `template` or a component is.
+   A piece that only composes existing pieces lists them in `composes`. Every template does.
 
 ### Step 1 — Tokens and variables
 
@@ -88,7 +96,51 @@ src/ui/<Name>/<Name>.module.css
 - Owned spacing comes from `--space-*`; page spacing stays with the layout classes.
 - List the parts in the contract's `composes`.
 
-### Step 5 — Playground and gates
+### Step 5 — The organism
+
+One whole block of a screen: a bar, a header, a section, a table, a chart. Read `RULES.md` §10 first.
+
+- Same files and same rules as a molecule (§10.1). An organism is not a new file layout; it is a bigger piece in the same one.
+- **Build it from kit pieces.** If a part has a contract, import it: `@/ui/<Name>/<Name>`. Raw HTML is for the box and the grid the organism itself owns, never for a control the kit already has. Name every kit piece you used in `composes`, and the review will point screens at your organism instead of letting them hand-roll it (≥60% of the parts, minimum 3).
+- A piece that draws its own cells, rows or marks — a chart, a grid, a calendar — carries no `composes`. That is allowed (§10.2); a half-filled list is not.
+- **Slots, not children components.** The parts a screen owns come in as `ReactNode` props named after their role (`actions`, `filters`, `footer`, `children`); the rest as arrays of item objects with an `itemShape`. One `ListView`, never `ListViewRow`.
+- Take a `label` string when the piece is a region a screen reader should be able to jump to.
+- **Boot:** if the block can sit on a booting page, take a `loading` prop and read both sources:
+  ```tsx
+  const { skeleton: own } = useBootSkeleton(loading);
+  const inPage = useFieldSkeleton();
+  const booting = own || inPage;
+  ```
+  Draw your own bars where the content will stand. If you draw your children's blocks, do not reach the leaf.
+- **Reflow on your own box**, not the window: `container-type: inline-size` + `@container`. A kit piece can sit in a phone-width frame inside a wide window (§10.5).
+- Never set a page width or a page inset. Columns come from the page through `FormLayoutContext` (§10.6).
+
+**Gates for an organism**
+
+- [ ] Every part that has a contract is imported, not rebuilt. No raw `<button>`, `<input>`, `<table>` where the kit has the piece.
+- [ ] `composes` names every kit piece used, or the piece genuinely draws its own grid.
+- [ ] Colour, space, radius, shadow and type from semantic roles and the `--text-<role>-*` quartets only.
+- [ ] Reflow is `@container` on its own box, not a viewport media query.
+- [ ] Boot skeleton drawn in place, from `useBootSkeleton` + `useFieldSkeleton`.
+- [ ] `inspect("<Name>")` on the root; `label` where it is a region.
+
+### Step 6 — The page template
+
+A whole page shape with no state and no content of its own. Read `RULES.md` §11 first, and read `contracts/recordpage.json` and `src/patterns/RecordPage/RecordPage.tsx` before you write anything.
+
+1. **Place it as a pattern.** `src/patterns/<Name>/<Name>.tsx` + `<Name>.module.css`, `"use client"` at the top, `contracts/<name>.json` with `level: "template"`, and a hand-written row in `index.patterns` (no `category`). A component contract may never be a `template`, and a pattern may never be anything else — the test checks both.
+2. **Decide the regions.** Each is a `ReactNode` prop named after what the screen puts there, from the kit's own slot vocabulary (§11.3): `header`, `tabs`, `notice`, `toolbar`, `summary`, `bulk`, `pagination`, `empty`, `footer`, `children`. Write in the contract's `usage` which kit piece goes in each one.
+3. **Keep no state.** The screen holds the tab, the open section, the ticked rows, the sticky boolean. The pattern reports a crossing at most (`onStickyChange`). Say so in `intent` and in `doNot`.
+4. **Layout.** Root is a flex column with `gap: var(--layout-gutter-lg)` and **no padding**: the AppShell page (`.layout-content`) owns the inset. Side by side is `.layout-split` (`--thirds`, `--quarters`); numbers are `.layout-metrics`; a column inside another layout is `.layout-stack`. One field column stops at `--layout-column-max` (554px), `columns` is `1 | 2 | 3` default `2`, and never more than 3. Sticky offsets are written from `--page-header-height-sticky` and the `--stick-*` roles, never from numbers.
+5. **Loading.** Take either `loading` + `loadingShape: "content" | "rows"` + a count, or `state: "ready" | "loading" | "empty" | "error"`. `content` renders the real children and lets each piece draw its own bars; `rows` is the fallback grid. Keep the real tree mounted, `inert` and `aria-hidden`, say it once with one `role="status"`, give a `notice` its own height, and OR the frame's boot with your own (`own || inFrame`) so a screen sets `loading` in one place.
+6. **Empty and error are slots.** Take `empty` and let the screen pass a kit `EmptyState`. Decide where it stands, never what it says. Only `ListPage` owns error copy, and it does it with a kit `Callout intent="danger"`.
+7. **Responsive.** Write no breakpoint of your own. The 1024 / 640 steps and the 1279 field break live in `src/tokens/layout.css` and `src/ui/Form/columns.module.css`. Set `container-type: inline-size` on a frame so it reflows on its own width.
+8. **Density.** Take no density prop and read no `Density`. Density is a token switch; the screen puts `data-density` on the frame's wrapper.
+9. **Playground.** A template is stateless, so add a `<NameDemo>` to `src/playground/demos.tsx` that drives it the way a screen would (with `shell` and `stage`), then a registry entry with `render`, `preview`, `card`, **`page`** (the whole screen, scaled into the gallery card), `block: true`, `wide: true`, a `hide[]` listing every slot, and `toggles` / `extras` for `shell`, `sticky`, `stage` and `boot`. No route file.
+10. **Starter.** Add `starters/<id>/page.tsx`, a row in `starters/index.json` (`id`, `template: "<Name>"`, `title`, `about`) and an import plus a row in `tests/starters.test.tsx`. The review prints `npm run new-screen -- --template <id>` in its fix when a template has one.
+11. **A boot test.** Put the page's skeleton shape in `tests/pattern-skeletons.test.tsx` (or its own `*-skeleton.test.tsx`): one row per real row, nothing reachable by keyboard, said once, axe clean.
+
+### Step 7 — Playground and gates
 
 1. Add a `registry` entry in `src/playground/registry.tsx`, keyed by the contract `name`: `render`, `preview`, and `hide[]` / `normalize()` where a prop is not a visual option or a pair is illegal. **No route file** — `/components/[slug]` is generated from the index.
 2. `npm run sync:index` — levels into `contracts/index.json`.
@@ -131,6 +183,48 @@ Fail any line and the piece is not done.
 - [ ] Playground shows the real component (registry entry), not a mock.
 - [ ] One `emphasis="strong" intent="brand"` Button per view in anything you demo.
 
+## Pass / fail checklist — a page template
+
+On top of the list above. Fail any line and the page is not done.
+
+**Catalog and contract**
+- [ ] Contract `level` is `"template"`, and the row is in `index.patterns` with no `category`.
+- [ ] `npm run sync:index` clean, `tests/contract-levels.test.ts` green.
+- [ ] `figma { fileKey, nodeId }` names the page in the Agentic DS file.
+- [ ] `composes` lists every kit piece the page puts on screen.
+- [ ] `usage` names the kit piece for every slot, says the pattern keeps no state, and says the AppShell page owns the padding.
+- [ ] `doNot` has the "when not to use" line naming the other page template, plus "do not add state", "do not build the header inside it" and "do not put page padding around it".
+- [ ] `examples` cover the page's own shapes, including a booting one.
+
+**Built from the kit**
+- [ ] Every region is filled by a kit piece: `PageHeader`, `Tabs`, `Toolbar`, `Callout`, `Scoreboard`, `Section`, `Table`, `Pagination`, `EmptyState`. No raw HTML for anything the kit has.
+- [ ] No local cousin declared or imported (`npm run review` reports `bp/local-cousin`).
+- [ ] No piece restyled from the outside.
+
+**Tokens and layout**
+- [ ] No hex, no `rgb()`, no literal px for space, radius or shadow; no `--ref-*` / `--ui-*`.
+- [ ] Root has `gap: var(--layout-gutter-lg)` and **no padding**.
+- [ ] Side-by-side blocks use `.layout-split` / `--thirds` / `--quarters`; numbers use `.layout-metrics`; no hand-written page grid.
+- [ ] A field column stops at `--layout-column-max`; `columns` is 1, 2 or 3 and never more.
+- [ ] Sticky offsets written from `--page-header-height-sticky`, `--layout-margin-md` and the `--stick-*` roles.
+- [ ] No breakpoint of its own; a frame that reflows sets `container-type: inline-size`.
+- [ ] Takes no density prop and reads no `Density`.
+
+**States**
+- [ ] A loading shape exists, and `content` renders the real children so nothing moves when the data lands.
+- [ ] Booting: the real tree is `inert` and `aria-hidden`, one `role="status"` says it once, a `notice` holds its own height.
+- [ ] Inside a booting `AppShell` the page follows the frame (`own || inFrame`); a screen sets `loading` in one place.
+- [ ] `empty` is a slot the screen fills with a kit `EmptyState`; the pattern writes no copy.
+- [ ] Error, if the page has one, is a kit `Callout intent="danger"` with a retry.
+
+**Gates**
+- [ ] `"use client"` at the top; `inspect("<Name>")` on the root; `<section aria-label>` for a page in the frame.
+- [ ] A `<NameDemo>` in `demos.tsx` and a registry entry with `page`, `block`, `wide`, `hide[]`, `toggles` / `extras`.
+- [ ] A starter folder, a `starters/index.json` row and a row in `tests/starters.test.tsx`.
+- [ ] A boot test in `tests/pattern-skeletons.test.tsx` or its own `*-skeleton.test.tsx`.
+- [ ] `npm test` green, `npm run lint` clean, `npm run build` passes, and `npm run review -- <a screen using it>` reports no error.
+- [ ] axe clean in every contract example, and in the starter.
+
 ## Worked example A — Button (atom, from a reference component)
 
 Source: another system's button with `variant="primary|secondary|ghost"`, `danger` boolean, `size="small|medium|large"`, `#1b6ef3` fill, `6px` radius, `32/40/48` heights.
@@ -167,9 +261,44 @@ What the kit does with it:
 
 Read `contracts/input.json` and `src/ui/Input/Input.module.css` before adding any field-shaped piece (Select, Textarea, DatePicker, Lookup all share the label, hint and error shape).
 
+## Worked example C — RecordPage (page template, from a reference screen)
+
+Source: a product screen for one account — the record name with a status pill and actions at the top, a tab strip, a red "3 invoices overdue" bar, a toolbar for the tab, four numbers, then the details in folding blocks, with a related invoices table underneath.
+
+What the kit did with it (`contracts/recordpage.json`, `src/patterns/RecordPage/RecordPage.tsx`):
+
+| Source | Kit | Why |
+| --- | --- | --- |
+| name, status pill, actions | `header` slot, filled with a kit `PageHeader` | The pattern never builds a header. `PageHeader` already owns the trail, the `Badge` and the `moreActions` menu. |
+| tab strip | `tabs` slot, a kit `Tabs` | The screen swaps `children` to match. The pattern keeps no current tab. |
+| red overdue bar | `notice` slot, a kit `Callout` | One `Callout` per record — a `doNot` line. It scrolls away under the name. |
+| tab actions | `toolbar` slot, a kit `Toolbar` | Holds at the top at `--page-header-height-sticky` less `--layout-margin-md`, so it lands under the compact bar. |
+| four numbers | `summary` slot, a kit `Scoreboard` | Not a new tile piece; `Scoreboard` exists. |
+| folding detail blocks | `children`: kit `Section`s with `FormDisplay` rows straight in | Flat, no `RecordSection` cousin. |
+| two columns of label-and-value | `columns: 1 \| 2 \| 3`, default 2, published on `FormLayoutContext` | Set once on the page; every `Section` of rows follows unless it sets its own. Each column stops at `--layout-column-max` (554px); never more than 3, even at 2560px. |
+| the related invoices table | a `Section` holding a kit `Table`, full width | A `Section` of a `Table` opts out of the columns on its own (`columns.module.css`). |
+| page padding in the mock | nothing | `AppShell`'s `<main className="layout-content">` owns the 24px inset and the 24px gap. The pattern's root is `flex` + `gap: var(--layout-gutter-lg)`, no padding. |
+| the header shrinking on scroll | `onStickyChange` only | The screen holds the boolean and passes it to `PageHeader` as `sticky`. The pattern reports the crossing, nothing more. |
+| the loading screen | `loading` + `loadingShape: "content" \| "rows"` + `loadingRows` | `content` renders the real details so every `Section`, row, `Scoreboard` card and `Table` draws its own bars where it will stand. `rows` is the fixed two-column grid for a record whose details have not arrived. |
+| nothing in the mock | `label` | Names the `<section>` region, so a screen reader can jump to the record. |
+
+The parts that are easy to get wrong, checked against the code:
+
+- The sticky header is a **child of the record**, not of the block under it, so it holds all the way down (`RecordPage.tsx`, the `.head` comment). The toolbar is a child of the record for the same reason: a sticky box can only hold inside its own parent.
+- The pinned band's lift bleeds out through the page inset — `margin-inline: calc(-1 * var(--layout-margin-md))` — because the bar and the sections keep the page's side padding and cannot reach the page edges themselves.
+- Booting, the real tree stays mounted with `inert` and `aria-hidden`, and one `<span role="status">Loading {label}</span>` says it. The notice is rendered `visibility: hidden` with one `Skeleton` absolutely over it, so the details below stand where they will stand.
+- The `rows` fallback draws **two** columns even when the record asks for three (one when it asks for one): past two it no longer reads as a record. `tests/pattern-skeletons.test.tsx` asserts exactly that.
+- The field break at 1279px is repeated in the skeleton's own media query, so the bars and the fields they stand in for never disagree.
+- `columns.note` in the contract still says 480px. The live cap is 554px (`--layout-column-max`); see `RULES.md` §9.4 — stale prose, not a second rule.
+
+Result: a contract with 9 `composes`, 14 props, 3 examples and a `figma` node; a 159-line pattern that holds no state; a `RecordPageDemo` in `demos.tsx`; a registry entry with `page`, `block`, `wide`, `hide[]` and the `stage` / `boot` extras; the `record` starter; and its boot shape under test.
+
 ## Stop and ask
 
 - The source needs more than one or two new tokens.
 - The source needs a prop that is not an enum, or an enum value outside the kit's vocabulary.
 - The piece overlaps an existing contract but does not fit it.
 - The source conflicts with a rule in `RULES.md` §9 (where the sources already disagree).
+- The screen needs a region no page template has a slot for, or a fourth column.
+- The page would need a piece the kit does not have. Stop and ask: do not scaffold a one-off inside the template.
+- The shape does not repeat across the product. Then it is a screen, not a page template: hand it to `prototype-from-kit`.
