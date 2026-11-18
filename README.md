@@ -268,10 +268,23 @@ The entry is generated from `contracts/index.json` by `npm run lib:entry`, so a 
 soon as it is in the catalog. `npm run test:smoke` builds `dist/` and renders `Button` and `PageHeader` from it in
 plain Node with `react-dom/server` — no Next, no bundler — to prove the output works on its own.
 
-Two things make that possible and are worth knowing about:
+Three things are worth knowing about:
 
 - **Fonts.** `--font-sans` and `--font-mono` name the `next/font` variables with their own fallbacks, then a full
   system stack. Without `next/font` the kit renders in the system sans, not in the browser's default serif.
+- **The icon font.** `Icon` draws Google's Material Symbols Outlined, which is a font, not an SVG set. The catalog
+  loads it in `src/app/layout.tsx`, and nothing in `dist/` loads it for you, so a host app has to load it itself or
+  every icon shows as its ligature name in plain text. Add this to the host app's own document head:
+
+  ```html
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
+  />
+  ```
+
+  The axis ranges matter: `Icon` sets size, weight, fill and grade through `font-variation-settings`, so a narrower
+  request drops those options. `display=block` keeps the ligature text from flashing before the font arrives.
 - **The inspect switch.** `NEXT_PUBLIC_BP_INSPECT=1` still works under Next. Outside it, set `BP_INSPECT=1`, set
   `globalThis.BP_INSPECT = "1"` before the first render, or call `setInspect(true)` from code.
 
