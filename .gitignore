@@ -21,6 +21,9 @@
 # production
 /build
 
+# library build (npm run build:lib)
+/dist/
+
 # misc
 .DS_Store
 *.pem

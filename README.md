@@ -237,6 +237,59 @@ Some releases rename pieces or props. When you move screens into a newer kit, ru
 
 ---
 
+## Using the kit outside this app
+
+The components do not need Next.js. `npm run build:lib` turns the catalog into a plain library under `dist/`, so the
+kit drops into any React app.
+
+```bash
+npm run build:lib
+```
+
+It writes three things:
+
+| Output | What it is |
+| --- | --- |
+| `dist/index.js` | One ESM bundle of every component and pattern in `contracts/index.json`, with the `use client` directive on top |
+| `dist/styles.css` | One stylesheet: the tokens first (primitives, roles, type, layout), then every component's CSS |
+| `dist/types/` | The TypeScript types, with `dist/types/lib/index.d.ts` as the entry |
+
+`react` and `react-dom` are peer dependencies, not bundled: the host app owns React, and two copies of it in one page
+break hooks.
+
+In the host app, import the stylesheet once and then the pieces:
+
+```tsx
+import "agentic-bp-ds-kit/styles.css";
+import { AppShell, Button, PageHeader } from "agentic-bp-ds-kit";
+```
+
+The entry is generated from `contracts/index.json` by `npm run lib:entry`, so a new component reaches the library as
+soon as it is in the catalog. `npm run test:smoke` builds `dist/` and renders `Button` and `PageHeader` from it in
+plain Node with `react-dom/server` — no Next, no bundler — to prove the output works on its own.
+
+Three things are worth knowing about:
+
+- **Fonts.** `--font-sans` and `--font-mono` name the `next/font` variables with their own fallbacks, then a full
+  system stack. Without `next/font` the kit renders in the system sans, not in the browser's default serif.
+- **The icon font.** `Icon` draws Google's Material Symbols Outlined, which is a font, not an SVG set. The catalog
+  loads it in `src/app/layout.tsx`, and nothing in `dist/` loads it for you, so a host app has to load it itself or
+  every icon shows as its ligature name in plain text. Add this to the host app's own document head:
+
+  ```html
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
+  />
+  ```
+
+  The axis ranges matter: `Icon` sets size, weight, fill and grade through `font-variation-settings`, so a narrower
+  request drops those options. `display=block` keeps the ligature text from flashing before the font arrives.
+- **The inspect switch.** `NEXT_PUBLIC_BP_INSPECT=1` still works under Next. Outside it, set `BP_INSPECT=1`, set
+  `globalThis.BP_INSPECT = "1"` before the first render, or call `setInspect(true)` from code.
+
+---
+
 ## Using patterns
 
 Patterns are blueprints for whole screens. Start every screen from one, and the layout, spacing and behavior come with it.

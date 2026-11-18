@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": true,
+    "outDir": "dist/types",
+    "rootDir": "src",
+    "incremental": false,
+    "plugins": []
+  },
+  "include": ["src/lib/**/*.ts", "src/ui/**/*.ts", "src/ui/**/*.tsx", "src/patterns/**/*.ts", "src/patterns/**/*.tsx", "types/css-modules.d.ts"],
+  "exclude": ["node_modules", "src/app", "src/playground", "tests"]
+}

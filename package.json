@@ -1,6 +1,31 @@
 {
   "name": "agentic-bp-ds-kit",
   "version": "0.11.1",
+  "description": "Agentic BP DS: a code-first design system of React components and CSS tokens.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/types/lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/lib/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./dist/styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "private": true,
   "bin": {
     "agentic-bp-ds-kit": "./bin/agentic-bp-ds-kit.mjs"
@@ -15,6 +40,10 @@
     "audit:tokens": "node --env-file-if-exists=.env.local scripts/audit-tokens.mjs",
     "dev": "next dev",
     "build": "next build",
+    "lib:entry": "node scripts/build-lib-entry.mjs",
+    "build:lib": "npm run lib:entry && vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json",
+    "smoke": "node scripts/smoke-dist.mjs",
+    "test:smoke": "npm run build:lib && npm run smoke",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
@@ -22,9 +51,7 @@
     "mcp": "node bin/mcp.mjs"
   },
   "dependencies": {
-    "next": "16.4.6",
-    "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "next": "16.4.6"
   },
   "devDependencies": {
     "@modelcontextprotocol/sdk": "^1.32.2",
@@ -40,9 +67,24 @@
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
     "jsdom": "^30.0.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "typescript": "^5",
+    "vite": "^8.3.8",
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^5.0.0",
     "zod": "^3.24.0"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": false
+    },
+    "react-dom": {
+      "optional": false
+    }
   }
 }

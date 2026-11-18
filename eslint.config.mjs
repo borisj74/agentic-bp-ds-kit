@@ -11,6 +11,8 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
+    // The library build output (npm run build:lib): generated, minified, not source.
+    "dist/**",
     "next-env.d.ts",
     // Wrong on purpose: the review's own bad fixtures.
     "tests/fixtures/review/**",
