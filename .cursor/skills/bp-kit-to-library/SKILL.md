@@ -45,7 +45,8 @@ Do this before any component code, and only if a value you need has no token.
    - colour role → `semantic.txt`: `name|Light|Dark`, both columns aliasing `ui/*`
    - scheme colour → `ui.txt`: `name|Light|Dark`, aliasing `ref/*`
    - new hue → `ref.txt`: `name|Cobalt|Sunset|Olive|BP-Legacy`
-   - size / type → `scale.txt`: one value, or `default|compact|comfortable`
+   - size, or a font size / weight / line-height / letter-spacing primitive → `scale.txt`: one value, or `default|compact|comfortable`
+   - a new **text role** (`--text-<role>-size|-weight|-lh|-ls`) → `src/tokens/typography.css`, by hand, as the four-var quartet inside the `:root, [data-density]` block. `scale.txt` only carries the ramp a role points at; a role added there would never exist.
    - comment the row `# not in Figma: …` when the kit is ahead of Figma.
 5. Run `npm run tokens`. Check the diff in `primitives.css` / `semantic.css` is only your rows.
 6. Needing more than one or two new tokens means the source is off-system. Stop and ask.
@@ -55,6 +56,8 @@ Do this before any component code, and only if a value you need has no token.
 The contract comes before the React. Write `contracts/<name>.json` with every field:
 
 `name`, `path`, `level`, `figma { fileKey, nodeId }`, `intent`, `usage`, `props`, `useWhen[]`, `doNot[]`, `a11y[]`, `snippet`, `examples[]`.
+
+Then add the row to `contracts/index.json` by hand, in the right group (`components` or `patterns`) and A to Z: `name`, `contract`, `level`, `category`, `tags[]` (a pattern row has no `category`). `npm run sync:index` only refreshes the `level` of rows that are already there — it never adds one, so a contract with no index row is invisible to the catalog, the playground, the review and the tests.
 
 - `props`: closed `enum` + `default`, or `type` + `required`, each with a plain-language `note`. Use the kit's prop vocabulary: `emphasis`, `intent` (never `tone`), `size` `sm|md|lg`, `iconStart` / `iconEnd` (Material Symbols names), `iconOnly`, `disabled`, `loading`, `invalid`, `error`, `required`, `readOnly`, `fullWidth`, `children` for the label.
 - `doNot` must include at least one "when not to use" line naming the piece to use instead — a test fails without it.
@@ -98,7 +101,7 @@ Fail any line and the piece is not done.
 
 **Catalog**
 - [ ] No existing contract covers this job (searched `name`, `tags`, `category`).
-- [ ] `level` in the contract and in the index agree (`npm run sync:index` is clean).
+- [ ] The piece has a row in `contracts/index.json`, written by hand, and its `level` matches the contract (`npm run sync:index` is clean).
 - [ ] Name is PascalCase; folder, file and named export all match; contract file is the lower-case name.
 
 **Tokens**

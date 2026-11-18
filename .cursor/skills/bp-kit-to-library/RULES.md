@@ -93,7 +93,7 @@ Radius and border width have **no density modes** — one value everywhere (`sca
 
 Font size roles: `--font-size-xsmall` 12, `-small` 14, `-regular` 16, `-large` 18, `-xlarge` 20, `-xxlarge` 24. Weights 400 / 500 / 600 / 700 as `regular` / `medium` / `semibold` / `bold`. Line heights `tight` 1.2, `snug` 1.35, `normal` 1.5, `relaxed` 1.65, `loose` 2. Letter spacing `tight` -0.02em, `normal` 0, `wide` 0.04em.
 
-Text **roles** live in `src/tokens/typography.css` as four vars each: `--text-<role>-size`, `-weight`, `-lh`, `-ls`. A component sets all four together (`Button.module.css:28-30`). Role families: `display`, `metric`, `heading-xs…xl`, `title-xxs…xl`, `body`, `body-lg`, `body-snug`, `body-tight`, plus BP reference aliases `--text-ref-label-button-*`, `--text-ref-label-form-*`, `--text-ref-text-cell-*`. The roles match the 42 Figma text styles (commit `5c9eb13`).
+Text **roles** live in `src/tokens/typography.css` as four vars each: `--text-<role>-size`, `-weight`, `-lh`, `-ls`. A component sets all four together (`Button.module.css:32-34`). Role families: `display`, `metric`, `heading-xs…xl`, `title-xxs…xl`, `body`, `body-lg`, `body-snug`, `body-tight`, plus BP reference aliases `--text-ref-label-button-*`, `--text-ref-label-form-*`, `--text-ref-cell-*`. The roles match the 42 Figma text styles (commit `5c9eb13`).
 
 Never write a raw `font-size: 14px` in a component. **[code]** — `bp/raw-value` does not flag font-size today, so this one is enforced by convention and review of colour/space/radius/shadow only. **[guess]** that a font-size literal would be rejected in review by a human.
 
@@ -110,7 +110,7 @@ Classes, not per-page grids: `.layout-app`, `.layout-header`, `.layout-canvas`, 
 
 ## 3. Naming and file layout
 
-### 3.1 Files **[code]** (same shape in all 85 components)
+### 3.1 Files **[code]**
 
 ```
 src/ui/<Name>/<Name>.tsx          # the component, named export `<Name>`
@@ -120,12 +120,19 @@ contracts/<name>.json             # lower-case, no separators: BadgeAlt → badg
 
 Patterns: `src/patterns/<Name>/<Name>.tsx`. The contract's `path` field points at the `.tsx` (`contracts/button.json:3`). Import path in a screen: `@/ui/<Name>/<Name>`.
 
+The `.tsx` holds for all 85 components. The `<Name>.module.css` beside it does **not** — seven pieces differ, and a new piece should follow the pattern unless it has the same reason: **[code]**
+
+- `src/ui/Chart/` is a shared folder, not a component: `chart.tsx`, `XYChart.tsx` and `chart.module.css`, used by the chart components. It has no contract of its own.
+- `BarChart` and `LineChart` carry **no CSS file at all**; they style through the shared chart module.
+- `FunnelChart`, `RadarChart`, `ScatterChart` and `WaterfallChart` each keep a **lower-case** module (`funnel.module.css`, `radar.module.css`, `scatter.module.css`, `waterfall.module.css`).
+- `Select` has no module of its own: it imports the field styles, `import field from "../Input/Input.module.css"` (`src/ui/Select/Select.tsx:11`). Textarea-shaped fields share the label, hint and error rules this way.
+
 **[guess]** the lower-case-no-separator contract filename is a hard rule — it holds for all 96 contracts, but no test I found asserts it; `index.json` carries the path explicitly.
 
 ### 3.2 Props **[code]**
 
-- `intent` is the colour-role prop, never `tone`: `brand | neutral | danger | success | warning | info` and the extended hues, per contract.
-- `emphasis` is loudness: `strong | subtle | minimal`. There is no `variant` on a kit component.
+- `intent` is the colour-role prop, never `tone`: `brand | neutral | danger | success | warning | info` and the extended hues, per contract. One `tone` exists — `Skeleton` `default | band | brand` — and it names the surface the skeleton sits on, not a colour role. **[code]**
+- `emphasis` is loudness: `strong | subtle | minimal`. It is the right prop for how loud a control is, and a new piece should not add a `variant` for that. `variant` does exist where a piece has two genuinely different shapes: `AnchorNav` `rail | menu`, `Cascader` `field | panel`, `Form` `plain | card`, `GlobalSearch` `list | tabs`. **[code]**
 - `size` is `sm | md | lg` (a few pieces add `xs`, `xl`, `full`, `fullscreen`; the catalog sorts them in that order, `Master.tsx:34`).
 - Booleans are off by default and read as adjectives: `disabled`, `loading`, `iconOnly`, `fullWidth`, `required`, `invalid`, `readOnly`, `hideLabel`, `toggle`.
 - `children` carries the label text.
@@ -152,11 +159,14 @@ Categories in use: `data`, `navigation`, `form`, `feedback`, `overlay`, `base`, 
 
 ## 4. The contract
 
-### 4.1 Required fields **[code]** (all 96 contract files, `src/playground/Master.tsx:25-32`)
+### 4.1 Fields **[code]** (`src/playground/Master.tsx:26-33`)
 
-`name`, `path`, `intent`, `usage`, `props`, `useWhen[]`, `doNot[]`, `a11y[]`, `snippet`, `examples[]`, `level`, `figma { fileKey, nodeId }`.
+Required of every contract, all 96 of them: `name`, `path`, `intent`, `useWhen[]`, `doNot[]`, `a11y[]`, `snippet`.
 
-- `figma` is absent only on `layout.json` and `density.json` (nothing to draw). Every component contract names its Figma component (commit `fea69d8`, `tests/figma-links.test.ts`).
+Required of every **component and pattern** contract, and optional in the `Contract` type (`Master.tsx:26-33` marks `level`, `figma`, `usage` and `examples` optional): `level`, `figma { fileKey, nodeId }`, `usage`, `props`, `examples[]`.
+
+- `layout.json` is the exception on every count: no `props`, no `examples`, no `level`, no `figma`. It is the one foundation contract, and foundations carry no level (`tests/contract-levels.test.ts`).
+- `figma` is absent on `layout.json` and `density.json` (nothing to draw). Every **component** contract names its Figma component (commit `fea69d8`, `tests/figma-links.test.ts`), so a new component needs it.
 - `composes[]` appears on 24 contracts: the kit pieces a bigger piece is made of. The review uses it to say "reuse this bigger piece" when a screen hand-rolls ≥60% of a piece's parts, minimum 3 (`scripts/review/rules.mjs:13-16`).
 - `doNot` must contain at least one "when not to use" line, or `tests/contract-docs.test.tsx` fails. Two mechanical stops are special-cased into a side panel: a "Do not invent a local …" line and a "Do not use raw hex" line.
 
@@ -174,7 +184,10 @@ Categories in use: `data`, `navigation`, `form`, `feedback`, `overlay`, `base`, 
 
 `examples[]` → `{ title, usage?, a11y?, code?, items: [{ caption?, props }] }`. The playground Variants tab renders them straight from the contract, and `tests/contracts.test.tsx` renders **every item of every example** through the registry, failing on any React error or axe violation. So a contract example is a test: it must be renderable with real props.
 
-Convention **[code]**: the first example is often titled "Accessibility" with `a11y: true`; size examples go sm → md → lg.
+Conventions:
+
+- Size examples go sm → md → lg. **[code]**
+- An `a11y: true` example comes first. This skill asks for it on new work, but it is **not** how the kit looks today: only `Button`, `Callout` and `Icon` open with an "Accessibility" example, and eight more contracts carry an `a11y: true` example somewhere further down under its own name (`appheader` "Built in", `form` "Form error", `tabs` "With panels", …). Eighty-five contracts have no `a11y` example at all. Not tagged [code].
 
 ---
 
@@ -229,7 +242,10 @@ Every kit piece spreads `inspect("<Name>")` onto its root element, so `npm run r
 
 - Dark is a token-layer concern: `ui.txt` and `semantic.txt` carry a Light and a Dark column, and `[data-theme="dark"]` redeclares the roles. A component writes one set of colours.
 - Things that must not flip use the paired `/static` and `/contrast` roles — e.g. `--text-neutral-min-static` for the label on a filled brand button (commit `2e4fbfc`, "Turn component dark overrides into paired contrast tokens").
-- Only four component modules mention `data-theme`, all brand marks: `Badge`, `Count`, `Logo`, `LogoAI`. Treat a `data-theme` block in a new component as a smell unless it is a logo.
+- `data-theme` appears in two kinds of place, and nowhere else:
+  - Four CSS modules, all brand marks: `Badge`, `Count`, `Logo`, `LogoAI` — they read the theme to keep the mark legible.
+  - `GuidedProcess.tsx`, which **forces** `data-theme="dark"` on two elements: the process panel (`:118`) and the table-of-contents inner wrapper (`:171`). It is a dark island on a light page, so it sets the theme instead of writing dark colours.
+- So a new component either reads the theme (a mark) or forces it for a deliberate dark island. Any other `data-theme` block is a smell: use the `/static` and `/contrast` roles.
 
 ---
 
@@ -278,6 +294,6 @@ Known cousins the review rejects by name: `EmptyHeader`, `Dialog`, `Sheet`, `Sli
 1. **`CLAUDE.md` vs the catalog.** CLAUDE.md says "the catalog will grow past 30 components"; there are already 85 components and 10 patterns. **[code]**
 2. **Index level vs contract level.** Two copies of the same fact, kept in step by `npm run sync:index` and a test. The contract wins. **[code]**
 3. **Figma vs code.** `scale.txt` marks several roles "not in Figma": `icon/size/xsmall` 12, the line-height and letter-spacing ramps, the kit radius/border roles, `ref/space/1700` 64. `AGENTS.md` adds two tokens that exist **only** in the Paper doc file (`--text-page-title-size`, `--letter-spacing-wider`) and are not kit code tokens. **[code]**
-4. **Column cap.** `layout.json` and `form.json` say a column stops at `--layout-column-max` (554px); `formpage.json` says "each at most 480px". One of the two is stale. **[code]** that they differ; **[guess]** that 554px is the live number.
+4. **Column cap.** 554px (`--layout-column-max`) is the live number: it is a token and `form.json` names it. 480px is still written in three contracts — `formpage.json` (`props.columns.note`), `form.json` (a `doNot` line) and `recordpage.json` (`props.columns.note` and one example's `usage`). Those four lines are stale prose, not a second rule. **[code]** that they differ; **[guess]** that 480 is simply out of date. Fixing them is a contract change, out of scope here.
 5. **The "not built yet" list.** `.claude/skills/prototype-from-kit/SKILL.md` lists pieces to stop and ask about; `Table` and `Scoreboard` were already shipped and had to be corrected inline. The list drifts; `contracts/index.json` is the truth. **[code]**
 6. **Font-size literals.** Rules say "no raw values", but `bp/raw-value` only checks colour, spacing, radius and shadow. Type literals pass review. **[code]**

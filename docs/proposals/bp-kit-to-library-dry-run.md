@@ -78,7 +78,7 @@ Props, all enums closed:
 | `title` | `string`, required | — | The finding in one line, sentence case. |
 | `children` | `ReactNode`, required | — | The explanation. Two or three sentences. |
 | `intent` | `info \| warning \| danger \| success \| neutral` | `info` | How serious the finding is. Sets the icon tint and the left edge. Never raw colour. |
-| `icon` | `string` | per `intent` | Material Symbols name. Defaults: info `lightbulb`, warning `warning`, danger `priority_high`, success `check_circle`, neutral `insights`. |
+| `iconStart` | `string` | per `intent` | Material Symbols name. Defaults: info `lightbulb`, warning `warning`, danger `priority_high`, success `check_circle`, neutral `insights`. |
 | `badge` | `string` | — | One short label beside the title: confidence or category. Renders a kit `Badge`. |
 | `metric` | `string` | — | The number behind the finding, in `--text-metric-*`. One value only. |
 | `metricLabel` | `string` | — | What the number is. Read with `metric`. |
