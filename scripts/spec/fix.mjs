@@ -6,8 +6,10 @@
  * taste, and it can only make the spec more like what the contracts already say. Everything else the
  * loop reports for a person or an agent to decide.
  *
- *   fixSpec(spec, { errors, findings }) — { spec, fixes: [{ rule, what }] }
+ *   fixSpec(spec, { root }) — { spec, fixes: [{ rule, what }] }
  */
+import { rawValueToken } from "../review/rules.mjs";
+import { repoRoot } from "../review/catalog.mjs";
 
 /** Walk every node in every region, deepest last, with the list that holds it. */
 function* walk(spec) {
@@ -64,16 +66,49 @@ function breadcrumbs(spec) {
   return [{ rule: "bp/screen-frame", what: "Home was dropped from breadcrumbs; the frame adds it." }];
 }
 
-const FIXERS = [onePrimary, onePageHeader, breadcrumbs];
+/**
+ * A raw colour, spacing, radius or shadow in a `style` prop. The spec check cannot refuse it: `style`
+ * is a prop every React element takes, so no contract lists it and no enum covers its values. It is
+ * the review of the rendered page that reports `bp/raw-value` on it — and this writes the token the
+ * rule points at back into the spec, so the next build has no raw value to report.
+ */
+function styleTokens(spec, root) {
+  const fixes = [];
+  const repair = (holder, where) => {
+    const style = holder?.props?.style;
+    if (!style || typeof style !== "object" || Array.isArray(style)) return;
+    for (const [property, value] of Object.entries(style)) {
+      if (typeof value !== "string" && typeof value !== "number") continue;
+      // A style object is written the way React writes it: paddingTop, not padding-top. A number is
+      // px to React, so it is read as px here too.
+      const custom = property.startsWith("--");
+      const name = custom ? property : property.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
+      const text = typeof value === "number" ? `${value}px` : value;
+      const hit = rawValueToken({ property: name, value: text, custom }, root);
+      if (!hit) continue;
+      style[property] = `var(${hit.token})`;
+      fixes.push({
+        rule: "bp/raw-value",
+        what: `${where}.style.${property} was ${JSON.stringify(value)} and is now var(${hit.token}); components carry no raw values.`,
+      });
+    }
+  };
+  for (const { node, path } of walk(spec)) repair(node, `${path}.props`);
+  repair(spec, "props");
+  return fixes;
+}
+
+const FIXERS = [onePrimary, onePageHeader, breadcrumbs, styleTokens];
 
 /**
  * Repair what can be repaired mechanically.
  * @param {object} spec The spec as it stands.
+ * @param {{ root?: string }} options Where the kit is, for the fixers that read its tokens.
  * @returns {{ spec: object, fixes: { rule: string, what: string }[] }} A new spec and what changed.
  */
-export function fixSpec(spec) {
+export function fixSpec(spec, { root = repoRoot } = {}) {
   const next = clone(spec);
   const fixes = [];
-  for (const fixer of FIXERS) fixes.push(...fixer(next));
+  for (const fixer of FIXERS) fixes.push(...fixer(next, root));
   return { spec: next, fixes };
 }

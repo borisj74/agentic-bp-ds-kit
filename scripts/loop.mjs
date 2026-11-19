@@ -97,12 +97,12 @@ export async function startServer({ root = repoRoot, port = 3123, timeout = 1800
 }
 
 /** Ask for a page once so Next compiles it before it is reviewed or photographed. */
-async function warm(url, { timeout = 180000 } = {}) {
+async function warm(url, { timeout = 180000, fetchImpl = fetch } = {}) {
   const until = Date.now() + timeout;
   let last = "no answer";
   while (Date.now() < until) {
     try {
-      const response = await fetch(url, { headers: { accept: "text/html" } });
+      const response = await fetchImpl(url, { headers: { accept: "text/html" } });
       if (response.ok) return true;
       last = `${response.status} ${response.statusText}`;
     } catch (error) {
@@ -185,7 +185,7 @@ export async function screenshots(pages, { base, root = repoRoot, name, log = ()
 const errorsOf = (findings) => findings.filter((f) => f.severity === "error");
 
 /** Write the pages, review each one twice, and say what is wrong. */
-async function attemptOnce(spec, { root, base, specPath, log }) {
+async function attemptOnce(spec, { root, base, specPath, log, fetchImpl = fetch }) {
   const pages = screenFiles(spec, { specPath, root });
   for (const page of pages) {
     const target = join(root, page.file);
@@ -202,8 +202,8 @@ async function attemptOnce(spec, { root, base, specPath, log }) {
   const live = [];
   for (const page of pages) {
     const url = base + page.route;
-    await warm(url);
-    const result = await reviewUrl(url, { root });
+    await warm(url, { fetchImpl });
+    const result = await reviewUrl(url, { root, fetchImpl });
     live.push({ state: page.state, url, findings: result.findings, pieces: result.live.pieces.length, patterns: result.live.patterns.map((p) => p.name) });
     const errors = errorsOf(result.findings).length;
     log(`  live ${page.route}: ${result.live.pieces.length} kit pieces, ${errors} ${errors === 1 ? "error" : "errors"}`);
@@ -304,7 +304,18 @@ export function formatReport({ spec, specPath, attempts, shots, skipped, ok, sav
  */
 export async function runLoop(
   specFile,
-  { root = repoRoot, port = 3123, attempts: maxAttempts = 3, shots: wantShots = true, updateReferences = false, log = () => {} } = {},
+  {
+    root = repoRoot,
+    port = 3123,
+    attempts: maxAttempts = 3,
+    shots: wantShots = true,
+    updateReferences = false,
+    log = () => {},
+    // The two seams a test uses in place of a real dev server: the server it talks to, and how it asks
+    // for a page. The command line never passes either.
+    server: openServer = startServer,
+    fetchImpl = fetch,
+  } = {},
 ) {
   const full = resolve(root, specFile);
   const specPath = relative(root, full).replace(/\\/g, "/");
@@ -314,7 +325,7 @@ export async function runLoop(
   const saved = [];
   const first = validateSpec(spec, { root });
   if (!first.ok) {
-    const repaired = fixSpec(spec);
+    const repaired = fixSpec(spec, { root });
     const second = repaired.fixes.length > 0 ? validateSpec(repaired.spec, { root }) : first;
     if (!second.ok) return { ok: false, invalid: first.errors, attempts: [], shots: [], saved: [], spec, specPath };
     spec = repaired.spec;
@@ -324,7 +335,7 @@ export async function runLoop(
     spec = first.spec;
   }
 
-  const server = await startServer({ root, port, log });
+  const server = await openServer({ root, port, log });
   const history = [];
   let shots = [];
   let skipped = null;
@@ -334,7 +345,7 @@ export async function runLoop(
   try {
     for (let n = 1; n <= maxAttempts; n += 1) {
       log(`\n  attempt ${n} of ${maxAttempts}`);
-      const attempt = await attemptOnce(spec, { root, base: server.base, specPath, log });
+      const attempt = await attemptOnce(spec, { root, base: server.base, specPath, log, fetchImpl });
       pages = attempt.pages;
       const errors = errorsOf(attempt.findings);
       const row = {
@@ -353,7 +364,7 @@ export async function runLoop(
       }
       if (n === maxAttempts) break;
 
-      const repaired = fixSpec(spec);
+      const repaired = fixSpec(spec, { root });
       if (repaired.fixes.length === 0) {
         log("  nothing the loop can repair on its own; stopping.");
         break;

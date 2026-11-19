@@ -1,8 +1,8 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { formatReport, parseLoopArgs, saveSpec } from "../scripts/loop.mjs";
+import { formatReport, parseLoopArgs, runLoop, saveSpec } from "../scripts/loop.mjs";
 import { fixSpec } from "../scripts/spec/fix.mjs";
 import { validateSpec } from "../scripts/spec/schema.mjs";
 
@@ -119,5 +119,91 @@ describe("the loop's report", () => {
     expect(text).toContain("| bp/raw-value | pass | 0 | 0 |");
     expect(text).toContain("### Attempt 1 — pass");
     expect(text).toContain("reports/loop/usage-overview/ready-light.png");
+  });
+});
+
+// A problem the spec check cannot refuse and only the review of the written screen reports: a raw value
+// in a `style` prop. `style` is a prop every React element takes, so no contract lists it and no enum
+// covers its values — the loop meets it as bp/raw-value and repairs it between attempts.
+describe("the loop's retry", () => {
+  const REPO = join(import.meta.dirname, "..");
+  const NAME = "loop-fixture-screen";
+  const SPEC_FILE = `reports/loop/${NAME}.spec.json`;
+  const draft = () => ({
+    name: NAME,
+    title: "Loop fixture",
+    pattern: "ListPage",
+    regions: {
+      toolbar: [
+        {
+          component: "Toolbar",
+          props: { label: "Rows" },
+          slots: { actions: [{ component: "Button", props: { emphasis: "strong", intent: "brand" }, text: "New" }] },
+        },
+      ],
+      content: [
+        {
+          component: "Table",
+          props: {
+            columns: [{ key: "id", header: "Id" }],
+            rows: [{ id: "1" }],
+            style: { padding: "13px" },
+          },
+        },
+      ],
+    },
+  });
+
+  // In place of next dev: a page that wears the name tags the live check looks for, so the live rules
+  // pass and the only error is the one the code review finds in the screen the loop just wrote.
+  const served = [
+    '<html><body><main><nav><a href="/">Home</a></nav>',
+    `<h1>Loop fixture</h1><div data-bp-kit="ListPage"><table data-bp-kit="Table"></table></div>`,
+    "</main></body></html>",
+  ].join("");
+  const fakeServer = async () => ({ base: "http://loop.test", port: 0, stop: async () => {}, output: [] });
+  const fakeFetch = async () => new Response(served, { status: 200, headers: { "content-type": "text/html" } });
+
+  const clean = () => {
+    rmSync(join(REPO, SPEC_FILE), { force: true });
+    rmSync(join(REPO, "src/app/(examples)", NAME), { recursive: true, force: true });
+    rmSync(join(REPO, "reports/loop", `${NAME}.md`), { force: true });
+  };
+  beforeEach(() => {
+    clean();
+    mkdirSync(join(REPO, "reports/loop"), { recursive: true });
+    writeFileSync(join(REPO, SPEC_FILE), `${JSON.stringify(draft(), null, 2)}\n`);
+  });
+  afterEach(clean);
+
+  it("repairs on the second attempt, saves the spec and says so in the report", async () => {
+    const result = await runLoop(SPEC_FILE, { shots: false, server: fakeServer, fetchImpl: fakeFetch });
+
+    // Attempt 1 wrote the screen with the raw value in it and the code review said so.
+    const first = result.attempts[0];
+    const raw = first.findings.filter((f: { rule: string }) => f.rule === "bp/raw-value");
+    expect(raw.length).toBeGreaterThan(0);
+    expect(first.fixes.map((f: { rule: string }) => f.rule)).toContain("bp/raw-value");
+
+    // Attempt 2 built the repaired spec, and nothing is left to fix.
+    expect(result.attempts).toHaveLength(2);
+    expect(result.attempts[1].findings.filter((f: { severity: string }) => f.severity === "error")).toEqual([]);
+    expect(result.ok).toBe(true);
+
+    // The repair went back into the spec file, so the next run starts from it.
+    const saved = JSON.parse(readFileSync(join(REPO, SPEC_FILE), "utf8"));
+    expect(saved.regions.content[0].props.style.padding).toBe("var(--space-small)");
+
+    // And the screen that is on disk is the repaired one.
+    const page = readFileSync(join(REPO, "src/app/(examples)", NAME, "page.tsx"), "utf8");
+    expect(page).toContain("var(--space-small)");
+    expect(page).not.toContain("13px");
+
+    // The report names the repair under its own heading.
+    expect(existsSync(join(REPO, result.reportFile))).toBe(true);
+    const report = readFileSync(join(REPO, result.reportFile), "utf8");
+    expect(report).toContain("## Repairs written back to the spec");
+    expect(report).toContain("bp/raw-value");
+    expect(report).toContain("var(--space-small)");
   });
 });

@@ -331,6 +331,36 @@ describe("the repairs the loop can make", () => {
     expect(fixes.some((f: { rule: string }) => f.rule === "bp/screen-frame")).toBe(true);
   });
 
+  // The spec check cannot refuse a raw value in `style`: it is a free prop, so no contract lists it and
+  // no enum covers what it holds. The review of the written screen reports it, and this is the repair.
+  it("writes the token into a style prop the spec check cannot refuse", () => {
+    const draft = spec();
+    draft.regions.content[0].props.style = { padding: "13px", color: "#ff0000", borderRadius: 5 };
+    // The spec is buildable as written, and the screen it builds is not.
+    expect(check(draft).ok).toBe(true);
+    expect(review(render(draft), "src/app/(examples)/test-screen/page.tsx").filter((f) => f.severity === "error").length).toBeGreaterThan(0);
+
+    const { spec: fixed, fixes } = repair(draft);
+    expect(fixed.regions.content[0].props.style).toEqual({
+      padding: "var(--space-small)",
+      color: "var(--text-neutral-min)",
+      borderRadius: "var(--radius-medium)",
+    });
+    expect(fixes.every((f) => f.rule === "bp/raw-value")).toBe(true);
+    expect(fixes[0].what).toContain("regions.content[0].props.style.padding");
+    expect(review(render(fixed), "src/app/(examples)/test-screen/page.tsx").filter((f) => f.severity === "error")).toEqual([]);
+  });
+
+  it("repairs a style on the pattern itself and leaves a value that is already a token alone", () => {
+    const draft = spec();
+    draft.props = { style: { gap: "7px", marginTop: "var(--space-medium)", zIndex: 2 } };
+    const { spec: fixed, fixes } = repair(draft);
+    expect(fixed.props.style).toEqual({ gap: "var(--space-xsmall)", marginTop: "var(--space-medium)", zIndex: 2 });
+    expect(fixes.map((f) => f.what)).toEqual([
+      'props.style.gap was "7px" and is now var(--space-xsmall); components carry no raw values.',
+    ]);
+  });
+
   it("removes a second PageHeader but keeps the one a pattern takes as its header", () => {
     const draft = spec();
     draft.regions.above = [{ component: "PageHeader", props: { title: "Second" } }] as never;

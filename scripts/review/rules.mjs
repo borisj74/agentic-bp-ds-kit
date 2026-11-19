@@ -37,46 +37,63 @@ function finding(rule, severity, file, line, message, fix, contract = null) {
 
 // ---- 1. bp/raw-value ----------------------------------------------------------------------------
 
+/**
+ * What the raw-value rule makes of one declaration: which kind of raw value it is, and the token that
+ * belongs in its place. Returns null when the value is fine.
+ *
+ * The rule below reports it; `scripts/spec/fix.mjs` writes the token into the spec when the loop meets
+ * the same declaration on a rendered page. Both read this one answer, so neither can drift.
+ */
+export function rawValueToken(decl, root) {
+  const { property, value, custom = false } = decl;
+  const text = String(value);
+  if (COLOR_VALUE.test(text)) {
+    return { kind: "colour", token: tokenForRoles(propertyRoles(property) ?? ["background"], root) ?? "--bg-neutral" };
+  }
+  const px = text.match(/(?<![\w.#-])(\d+(?:\.\d+)?)px\b/);
+  if (!px || Number(px[1]) === 0 || /^calc\(/.test(text)) return null;
+  const amount = Number(px[1]);
+  if (SPACING_PROP.test(property) || (custom && /space|gap|pad|margin|inset/.test(property))) {
+    const [size, token] = nearest(amount, SPACE_TOKENS);
+    return { kind: "spacing", token, size };
+  }
+  if (RADIUS_PROP.test(property) || (custom && /radius/.test(property))) {
+    const [size, token] = nearest(amount, RADIUS_TOKENS);
+    return { kind: "radius", token, size };
+  }
+  if (SHADOW_PROP.test(property) || (custom && /shadow/.test(property))) {
+    return { kind: "shadow", token: "--shadow-raised" };
+  }
+  return null;
+}
+
 /** A raw colour, or a px spacing, radius or shadow value, where a token or a layout class belongs. */
 function rawValue(decl, file, root) {
   const { property, value } = decl;
-  const out = [];
-  if (COLOR_VALUE.test(value)) {
-    const token = tokenForRoles(propertyRoles(property) ?? ["background"], root) ?? "--bg-neutral";
-    out.push(finding(
-      "bp/raw-value", "error", file, decl.line,
+  const hit = rawValueToken(decl, root);
+  if (!hit) return [];
+  const say = (message, fix, contract) => [finding("bp/raw-value", "error", file, decl.line, message, fix, contract)];
+  if (hit.kind === "colour") {
+    return say(
       `Raw colour in \`${property}: ${value}\`. Components never carry colour values.`,
-      `Use a semantic token from src/tokens/semantic.css, like var(${token}).`,
+      `Use a semantic token from src/tokens/semantic.css, like var(${hit.token}).`,
       "contracts/layout.json",
-    ));
-    return out;
+    );
   }
-  const px = value.match(/(?<![\w.#-])(\d+(?:\.\d+)?)px\b/);
-  if (!px || Number(px[1]) === 0 || /^calc\(/.test(value)) return out;
-  const amount = Number(px[1]);
-  if (SPACING_PROP.test(property) || (decl.custom && /space|gap|pad|margin|inset/.test(property))) {
-    const [size, token] = nearest(amount, SPACE_TOKENS);
-    out.push(finding(
-      "bp/raw-value", "error", file, decl.line,
+  if (hit.kind === "spacing") {
+    return say(
       `Hard-coded spacing in \`${property}: ${value}\`. Page spacing comes from the 4px grid.`,
-      `Use var(${token}) (${size}px), or a layout class from src/tokens/layout.css (.layout-content for the page inset, .layout-stack for the gap between sections).`,
+      `Use var(${hit.token}) (${hit.size}px), or a layout class from src/tokens/layout.css (.layout-content for the page inset, .layout-stack for the gap between sections).`,
       "contracts/layout.json",
-    ));
-  } else if (RADIUS_PROP.test(property) || (decl.custom && /radius/.test(property))) {
-    const [size, token] = nearest(amount, RADIUS_TOKENS);
-    out.push(finding(
-      "bp/raw-value", "error", file, decl.line,
-      `Hard-coded radius in \`${property}: ${value}\`.`,
-      `Use var(${token}) (${size}px).`,
-    ));
-  } else if (SHADOW_PROP.test(property) || (decl.custom && /shadow/.test(property))) {
-    out.push(finding(
-      "bp/raw-value", "error", file, decl.line,
-      `Hard-coded shadow in \`${property}: ${value}\`.`,
-      `Use var(--shadow-raised) for a card, var(--shadow-floating) for a popover or menu.`,
-    ));
+    );
   }
-  return out;
+  if (hit.kind === "radius") {
+    return say(`Hard-coded radius in \`${property}: ${value}\`.`, `Use var(${hit.token}) (${hit.size}px).`);
+  }
+  return say(
+    `Hard-coded shadow in \`${property}: ${value}\`.`,
+    `Use var(--shadow-raised) for a card, var(--shadow-floating) for a popover or menu.`,
+  );
 }
 
 // ---- 2. bp/primitive-token ---------------------------------------------------------------------

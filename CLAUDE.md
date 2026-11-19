@@ -76,6 +76,15 @@ Write the screen as a JSON spec before you write any TSX. The loop closes itself
 
 Edit the spec, never the generated page: the next build overwrites the page.
 
+What the loop can repair on its own, between attempts, always by changing the spec and never the page:
+
+- a second `emphasis="strong" intent="brand"` Button (`bp/one-primary`) — the rest become subtle neutral
+- a `PageHeader` inside a region when the frame already draws one (`bp/landmark`)
+- `Home` listed in `breadcrumbs` (`bp/screen-frame`) — the frame adds it
+- a raw colour, spacing, radius or shadow in a `style` prop (`bp/raw-value`) — the token the review points at goes in. The spec check cannot refuse this one: `style` is a prop every React element takes, so no contract lists it; it is the review of the written screen that catches it
+
+Everything else the report names for you to decide: pick the bigger piece, write the words, change the layout. Fix the spec and run the loop again.
+
 ## Build order
 
 Every contract carries a `level`: `atom`, `molecule`, `organism` or `template`. Read it in `contracts/index.json`.
