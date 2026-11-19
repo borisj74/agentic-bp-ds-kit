@@ -64,6 +64,18 @@ Page spacing: 4px grid. Content edge padding and between-section gap come from l
 7. If something is missing, stop and ask. Do not scaffold a one-off on the screen.
 8. Before you hand a screen back, run `npm run review -- <file>` (or the `review_ui` MCP tool) and fix the errors.
 
+## Spec first, then the loop
+
+Write the screen as a JSON spec before you write any TSX. The loop closes itself: request → spec → screen → render → review → fix → done.
+
+1. Write the spec. One pattern (level `template`), its regions filled with kit components by their contract name, props inside each contract's enums, the copy, and the states the screen answers (`ready`, `loading`, `empty`, `error`). `docs/references/` holds four worked examples; read the one closest to your screen.
+2. Check it: the `validate_spec` MCP tool, or `npm run build-screen -- <spec.json> --dry`. An unknown pattern, an unknown component, a prop no contract lists, a value outside a closed enum, a side-nav id that does not exist or a second strong brand Button all fail here, before any code exists.
+3. Build it: `npm run build-screen -- <spec.json>` writes `src/app/(examples)/<name>/page.tsx`, one page per state.
+4. Run the loop: `npm run loop -- <spec.json>`. It starts the dev server with the inspect tag on, reviews the code and the served page, takes a 1440×900 screenshot of each state in light and dark, repairs what it can, and writes `reports/loop/<name>.md`.
+5. Never hand back a screen that fails `review_ui`. Read the report, fix the spec, run the loop again.
+
+Edit the spec, never the generated page: the next build overwrites the page.
+
 ## Build order
 
 Every contract carries a `level`: `atom`, `molecule`, `organism` or `template`. Read it in `contracts/index.json`.

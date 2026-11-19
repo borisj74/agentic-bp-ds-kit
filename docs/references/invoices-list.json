@@ -1,0 +1,142 @@
+{
+  "name": "invoices-list",
+  "title": "Invoices",
+  "about": "The reference list screen: a ListPage with a filtered toolbar, an editable DataGrid of invoices and a page bar.",
+  "pattern": "ListPage",
+  "section": "billing-invoices",
+  "states": ["ready", "empty"],
+  "copy": {
+    "searchPlaceholder": "Search invoice or account",
+    "emptyTitle": "No invoices match these filters",
+    "emptyDescription": "Clear the status filter or search for a different invoice number or account.",
+    "emptyAction": "Clear filters and search"
+  },
+  "regions": {
+    "toolbar": [
+      {
+        "component": "Toolbar",
+        "props": {
+          "label": "Invoices",
+          "searchPlaceholder": "$copy.searchPlaceholder",
+          "onSearchChange": true,
+          "filterCount": 2,
+          "onReset": true,
+          "onApply": true,
+          "onRefresh": true,
+          "views": [
+            { "id": "list", "label": "List view" },
+            { "id": "board", "label": "Board view" }
+          ],
+          "view": "list",
+          "onViewChange": true
+        },
+        "slots": {
+          "filters": [
+            {
+              "component": "Dropdown",
+              "props": {
+                "label": "Status",
+                "trigger": "filter",
+                "size": "sm",
+                "text": "Overdue",
+                "toggle": "on",
+                "onToggle": true,
+                "onSelect": true,
+                "items": [
+                  { "id": "open", "label": "Open" },
+                  { "id": "overdue", "label": "Overdue", "selected": true },
+                  { "id": "paid", "label": "Paid" }
+                ]
+              }
+            },
+            {
+              "component": "Dropdown",
+              "props": {
+                "label": "Period",
+                "trigger": "filter",
+                "size": "sm",
+                "text": "This quarter",
+                "toggle": "on",
+                "onToggle": true,
+                "onSelect": true,
+                "items": [
+                  { "id": "month", "label": "This month" },
+                  { "id": "quarter", "label": "This quarter", "selected": true },
+                  { "id": "year", "label": "This year" }
+                ]
+              }
+            }
+          ],
+          "actions": [
+            {
+              "component": "Button",
+              "props": { "size": "sm", "emphasis": "strong", "intent": "brand", "iconStart": "add" },
+              "text": "New invoice"
+            }
+          ]
+        }
+      }
+    ],
+    "content": [
+      {
+        "component": "DataGrid",
+        "props": {
+          "label": "Invoices",
+          "selectable": true,
+          "rowLabel": "invoice",
+          "rowNumbers": true,
+          "onSelectionChange": true,
+          "columns": [
+            { "key": "invoice", "header": "Invoice", "readOnly": true, "hug": true },
+            { "key": "account", "header": "Account", "readOnly": true },
+            { "key": "status", "header": "Status", "type": "select", "options": [{ "value": "open", "label": "Open" }, { "value": "overdue", "label": "Overdue" }, { "value": "paid", "label": "Paid" }] },
+            { "key": "due", "header": "Due date", "type": "date" },
+            { "key": "amount", "header": "Amount", "type": "number", "readOnly": true }
+          ],
+          "rows": [
+            { "id": "inv-10482", "invoice": "INV-10482", "account": "Northwind Holdings", "status": "overdue", "due": "2026-08-28", "amount": "18400.00" },
+            { "id": "inv-10483", "invoice": "INV-10483", "account": "Globex Corporation", "status": "open", "due": "2026-09-24", "amount": "7250.00" },
+            { "id": "inv-10484", "invoice": "INV-10484", "account": "Initech Group", "status": "paid", "due": "2026-09-05", "amount": "2980.00" },
+            { "id": "inv-10485", "invoice": "INV-10485", "account": "Umbrella Health", "status": "open", "due": "2026-09-30", "amount": "44120.00" },
+            { "id": "inv-10486", "invoice": "INV-10486", "account": "Stark Logistics", "status": "overdue", "due": "2026-09-02", "amount": "12675.50" },
+            { "id": "inv-10487", "invoice": "INV-10487", "account": "Apex Digital Services", "status": "open", "due": "2026-10-12", "amount": "9800.00" }
+          ],
+          "totalRow": { "id": "total", "account": "Total", "amount": "95225.50" }
+        }
+      }
+    ],
+    "pagination": [
+      {
+        "component": "Pagination",
+        "props": {
+          "label": "Invoice pages",
+          "total": 342,
+          "page": 1,
+          "pageSize": 25,
+          "onPageChange": true,
+          "onPageSizeChange": true
+        }
+      }
+    ],
+    "empty": [
+      {
+        "component": "EmptyState",
+        "props": {
+          "headingLevel": 2,
+          "icon": "search_off",
+          "title": "$copy.emptyTitle",
+          "description": "$copy.emptyDescription"
+        },
+        "slots": {
+          "actions": [
+            {
+              "component": "Button",
+              "props": { "size": "sm", "iconStart": "filter_alt_off" },
+              "text": "$copy.emptyAction"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

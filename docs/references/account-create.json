@@ -1,0 +1,101 @@
+{
+  "name": "account-create",
+  "title": "Create account",
+  "about": "The reference form screen: a FormPage with its own page header, a dismissible notice and one Form of fields in two columns.",
+  "pattern": "FormPage",
+  "section": "accounts-account",
+  "copy": {
+    "notice": "Use this form for the account's general and default billing information. Products and contracts are added after it is created.",
+    "formTitle": "General information"
+  },
+  "regions": {
+    "header": [
+      {
+        "component": "PageHeader",
+        "props": {
+          "title": "Create account",
+          "breadcrumbs": [
+            { "label": "Home", "href": "#" },
+            { "label": "Accounts", "href": "#" }
+          ]
+        },
+        "slots": {
+          "actions": [
+            { "component": "Button", "props": { "size": "sm" }, "text": "Cancel" },
+            {
+              "component": "Button",
+              "props": { "size": "sm", "emphasis": "strong", "intent": "brand", "type": "submit", "form": "account" },
+              "text": "Create account"
+            }
+          ]
+        }
+      }
+    ],
+    "notice": [
+      {
+        "component": "Callout",
+        "props": { "intent": "info", "closeButton": true, "onDismiss": true },
+        "text": "$copy.notice"
+      }
+    ],
+    "content": [
+      {
+        "component": "Form",
+        "props": {
+          "id": "account",
+          "title": "$copy.formTitle",
+          "labelPosition": "start",
+          "labelWidth": "md",
+          "columns": 2,
+          "onSubmit": true
+        },
+        "slots": {
+          "children": [
+            { "component": "Input", "props": { "label": "Account name", "name": "name", "required": true, "placeholder": "Northwind Holdings" } },
+            { "component": "Input", "props": { "label": "Account number", "name": "number", "hint": "Leave it empty and billing assigns one." } },
+            {
+              "component": "Select",
+              "props": {
+                "label": "Account type",
+                "name": "type",
+                "required": true,
+                "options": [
+                  { "value": "customer", "label": "Customer" },
+                  { "value": "partner", "label": "Partner" },
+                  { "value": "reseller", "label": "Reseller" }
+                ]
+              }
+            },
+            {
+              "component": "Select",
+              "props": {
+                "label": "Currency",
+                "name": "currency",
+                "options": [
+                  { "value": "usd", "label": "USD — US Dollar" },
+                  { "value": "eur", "label": "EUR — Euro" },
+                  { "value": "gbp", "label": "GBP — Pound sterling" }
+                ]
+              }
+            },
+            { "component": "Input", "props": { "label": "Billing email", "name": "email", "type": "email", "required": true, "placeholder": "billing@northwind.com" } },
+            {
+              "component": "Select",
+              "props": {
+                "label": "Payment terms",
+                "name": "terms",
+                "options": [
+                  { "value": "net15", "label": "Net 15" },
+                  { "value": "net30", "label": "Net 30" },
+                  { "value": "net60", "label": "Net 60" }
+                ]
+              }
+            },
+            { "component": "DatePicker", "props": { "label": "Start date", "name": "start" } },
+            { "component": "Checkbox", "props": { "label": "Invoice this account separately", "name": "separate" } }
+          ]
+        }
+      }
+    ]
+  }
+}
