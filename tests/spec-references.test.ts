@@ -79,6 +79,52 @@ describe("the reference specs", () => {
   });
 });
 
+// The loop is only followed if the places that tell an agent what to do actually name it.
+describe("what the docs tell an agent to do", () => {
+  const read = (...path: string[]) => readFileSync(join(REPO, ...path), "utf8");
+
+  it("the skill starts with the spec and ends with the review", () => {
+    const skill = read(".claude", "skills", "prototype-from-kit", "SKILL.md");
+    const steps = skill.slice(skill.indexOf("## Steps"));
+    const first = steps.slice(0, steps.indexOf("2. **"));
+    expect(first).toContain("Write the spec first");
+    expect(first).toContain("docs/references/");
+    expect(first).toContain("validate_spec");
+    expect(first).toContain("npm run build-screen");
+    expect(first).toContain("npm run loop");
+    expect(steps).toContain("npm run review");
+    expect(steps.indexOf("npm run review")).toBeGreaterThan(steps.indexOf("npm run loop"));
+  });
+
+  it("CLAUDE.md counts the worked examples it actually has", () => {
+    const claude = read("CLAUDE.md");
+    expect(claude).toContain("nine worked examples");
+    expect(specFiles).toHaveLength(9);
+  });
+
+  it("the README and the Start pages name the three new ways in", () => {
+    for (const file of [
+      ["README.md"],
+      ["src", "app", "(playground)", "start", "mcp", "page.tsx"],
+      ["src", "app", "(playground)", "start", "prompting", "page.tsx"],
+    ]) {
+      const text = read(...file);
+      expect(text, file.join("/")).toContain("validate_spec");
+      expect(text, file.join("/")).toContain("build-screen");
+      expect(text, file.join("/")).toContain("loop");
+    }
+  });
+
+  it("AGENTS.md writes the spec rule outside the block next dev owns", () => {
+    const agents = read("AGENTS.md");
+    const end = agents.indexOf("<!-- END:nextjs-agent-rules -->");
+    expect(end).toBeGreaterThan(0);
+    const ours = agents.indexOf("# Screens come from a spec");
+    expect(ours, "the spec rule sits inside the block next dev rewrites").toBeGreaterThan(end);
+    expect(agents).toContain("npm run loop");
+  });
+});
+
 describe("the reference screenshots", () => {
   it.each(specFiles)("%s has a 1440x900 reference screenshot", (file) => {
     const spec = read(file);

@@ -40,4 +40,8 @@ Nothing to fix.
 - `ready` dark (1440×900) — `reports/loop/usage-overview/ready-dark.png`
 - `empty` dark (1440×900) — `reports/loop/usage-overview/empty-dark.png`
 
-Server: next dev on port 3123 with `NEXT_PUBLIC_BP_INSPECT=1`.
+## Repairs written back to the spec
+
+The spec was built as it was written: `docs/references/usage-overview.json` is unchanged.
+
+Served by next dev with `NEXT_PUBLIC_BP_INSPECT=1`.

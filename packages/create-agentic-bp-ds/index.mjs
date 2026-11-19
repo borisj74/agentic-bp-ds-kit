@@ -33,15 +33,20 @@ const tarballUrl = () => {
 // a prototype is exactly where it is useful.
 // The three anomaly-detection pages are catalog prototypes of the kit's own: they only link to each other and are
 // in no nav or test, so they stay in the kit repo and out of a new prototype.
+// `src/app/(examples)` and `reports` are what the kit's own loop made from the reference specs: the screens are
+// examples of this kit, not pages of the prototype, and the reports are runs of this repo. The specs themselves
+// stay in `docs/references`, because a prototype writes its own spec by copying one of them.
 export const DROP = [
   "packages", "LICENSE", "bin", "mcp", ".github", "tests", "vitest.config.mts", ".claude/launch.json",
   "src/app/anomaly-detection", "src/app/anomaly-detection-nodes", "src/app/anomaly-detection-tree",
+  "src/app/(examples)", "reports",
 ];
 // The same, inside package.json: the bin entry and the scripts that start the server and run the tests, and the
-// packages only those need.
+// packages only those need. zod is not one of them: `npm run build-screen` and `npm run loop` stay in a
+// prototype, and the spec schema they read is written in zod.
 export const DROP_SCRIPTS = ["mcp", "test", "test:watch"];
 export const DROP_DEPS = [
-  "@modelcontextprotocol/sdk", "zod",
+  "@modelcontextprotocol/sdk",
   "vitest", "@vitejs/plugin-react", "vite-tsconfig-paths", "jsdom", "axe-core",
   "@testing-library/dom", "@testing-library/jest-dom", "@testing-library/react", "@testing-library/user-event",
 ];

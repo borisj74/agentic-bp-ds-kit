@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { regionsOf, navIds, validateSpec } from "../scripts/spec/schema.mjs";
+import { regionsOf, navIds, takenRoutes, validateSpec } from "../scripts/spec/schema.mjs";
+import { checkItem, parseItemShape } from "../scripts/spec/shape.mjs";
 import { renderScreen, screenFiles } from "../scripts/spec/render.mjs";
 import { fixSpec } from "../scripts/spec/fix.mjs";
 import { piece } from "../scripts/review/catalog.mjs";
@@ -157,6 +158,114 @@ describe("the screen spec", () => {
   });
 });
 
+describe("a list of records", () => {
+  it("reads a contract's itemShape, whichever way it is written", () => {
+    const scoreboard = parseItemShape(piece("Scoreboard").props.items.itemShape) as {
+      fields: Record<string, { optional: boolean; values: string[] | null }>;
+      open: boolean;
+    };
+    expect(Object.keys(scoreboard.fields)).toContain("metric");
+    expect(scoreboard.fields.metric.optional).toBe(false);
+    expect(scoreboard.fields.metadata.optional).toBe(true);
+    expect(scoreboard.open).toBe(false);
+
+    // A Table row carries a value per column, so its shape is open and a column key is not an unknown field.
+    const table = parseItemShape(piece("Table").props.rows.itemShape) as { open: boolean };
+    expect(table.open).toBe(true);
+
+    const timeline = parseItemShape(piece("Timeline").props.items.itemShape) as {
+      fields: Record<string, { values: string[] | null }>;
+    };
+    expect(timeline.fields.intent.values).toEqual(["neutral", "brand", "success", "warning", "danger"]);
+  });
+
+  it("walks a row and says what is wrong with it", () => {
+    const shape = parseItemShape(piece("Scoreboard").props.items.itemShape);
+    const said: string[] = [];
+    checkItem({ id: "a", title: "T", bogus: 1, trend: { value: "3", status: "good" } }, shape, "items[0]", (at: string) => said.push(at));
+    expect(said).toContain("items[0].bogus");
+    expect(said).toContain("items[0].trend.status");
+    expect(said).toContain("items[0].metric");
+  });
+
+  it("refuses a nested value outside its closed set", () => {
+    const draft = spec();
+    draft.regions.above = [
+      {
+        component: "Scoreboard",
+        props: {
+          label: "Totals",
+          items: [{ id: "a", title: "Open", metric: "$1", trend: { value: "2", status: "good" } }],
+        },
+      },
+    ];
+    expect(errorPaths(check(draft))).toContain("regions.above[0].props.items[0].trend.status");
+  });
+
+  it("refuses a field a row does not have, and a required one left out", () => {
+    const draft = spec();
+    draft.regions.content = [
+      { component: "Timeline", props: { label: "Activity", items: [{ id: "a", subtitle: "x", whatever: 1 }] } },
+    ];
+    const paths = errorPaths(check(draft));
+    expect(paths).toContain("regions.content[0].props.items[0].whatever");
+    expect(paths).toContain("regions.content[0].props.items[0].title");
+  });
+
+  it("leaves a Table row alone, since its columns are its fields", () => {
+    const draft = spec();
+    draft.regions.content = [
+      {
+        component: "Table",
+        props: { columns: [{ key: "account", header: "Account" }], rows: [{ id: "1", account: "Apex", amount: "$4" }] },
+      },
+    ];
+    expect(check(draft).errors).toEqual([]);
+  });
+});
+
+describe("a Button's look", () => {
+  it("refuses a pair the kit does not have, by the review's own rule", () => {
+    const draft = spec();
+    draft.regions.toolbar[0].slots.actions[0].props = { emphasis: "subtle", intent: "brand" };
+    const result = check(draft);
+    expect(errorPaths(result)).toContain("regions.toolbar[0].slots.actions[0].props.intent");
+    expect(result.errors[0].fix).toContain('"neutral"');
+  });
+
+  it("asks a strong Button for its intent", () => {
+    const draft = spec();
+    draft.regions.toolbar[0].slots.actions[0].props = { emphasis: "strong" };
+    expect(errorPaths(check(draft))).toContain("regions.toolbar[0].slots.actions[0].props.intent");
+  });
+
+  it("takes the pairs the kit does have", () => {
+    for (const props of [
+      { emphasis: "strong", intent: "danger" },
+      { emphasis: "minimal", intent: "danger" },
+      { emphasis: "subtle", intent: "neutral" },
+    ]) {
+      const draft = spec();
+      draft.regions.toolbar[0].slots.actions[0].props = props;
+      expect(check(draft).errors, JSON.stringify(props)).toEqual([]);
+    }
+  });
+});
+
+describe("the screen's name", () => {
+  it("refuses a name the app already serves", () => {
+    expect([...takenRoutes()]).toContain("components");
+    for (const name of ["components", "invoices", "foundations"]) {
+      const result = check({ ...spec(), name });
+      expect(errorPaths(result), name).toContain("name");
+    }
+  });
+
+  it("takes a name of its own", () => {
+    expect(check({ ...spec(), name: "usage-overview" }).errors).toEqual([]);
+  });
+});
+
 describe("the pattern's own props", () => {
   it("takes the values the pattern's contract lists", () => {
     const draft: Draft = { ...spec(), pattern: "RecordPage", props: { columns: 2, labelPosition: "start" } };
@@ -177,6 +286,19 @@ describe("the pattern's own props", () => {
     const result = check(draft);
     expect(errorPaths(result)).toContain("props.toolbar");
     expect(result.errors.find((issue) => issue.path === "props.toolbar")?.fix).toContain("regions.toolbar");
+  });
+
+  it("sends a list of components to the regions too", () => {
+    const draft: Draft = {
+      name: "test-guided",
+      title: "Import usage",
+      pattern: "GuidedProcessPage",
+      props: { intro: true },
+      regions: { content: [{ component: "Form", props: { id: "step" } }] },
+    };
+    const result = check(draft);
+    expect(errorPaths(result)).toContain("props.intro");
+    expect(result.errors.find((issue) => issue.path === "props.intro")?.fix).toContain("regions.intro");
   });
 
   it("takes words for a prop that also takes components", () => {

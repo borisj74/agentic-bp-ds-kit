@@ -166,7 +166,8 @@ function localCousin(facts, file, root) {
 
 // ---- 4. bp/closed-enum -------------------------------------------------------------------------
 
-const BUTTON_PAIRS = { strong: ["brand", "danger"], subtle: ["neutral"], minimal: ["neutral", "brand", "danger"] };
+/** The Button looks the kit has. Exported so the spec check reads the same pairs the review does. */
+export const BUTTON_PAIRS = { strong: ["brand", "danger"], subtle: ["neutral"], minimal: ["neutral", "brand", "danger"] };
 
 function closedEnum(el, file) {
   const out = [];

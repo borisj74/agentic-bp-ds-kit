@@ -221,7 +221,7 @@ async function attemptOnce(spec, { root, base, specPath, log }) {
 const tick = (ok) => (ok ? "pass" : "fail");
 
 /** The report the loop leaves behind: every rule, every attempt, every screenshot. */
-export function formatReport({ spec, specPath, attempts, shots, skipped, ok, port }) {
+export function formatReport({ spec, specPath, attempts, shots, skipped, ok, saved = [] }) {
   const last = attempts[attempts.length - 1];
   const ruleRows = [...RULES, ...LIVE_RULES].map((rule) => {
     const hits = last?.findings.filter((f) => f.rule === rule) ?? [];
@@ -282,7 +282,16 @@ export function formatReport({ spec, specPath, attempts, shots, skipped, ok, por
   else if (shots.length === 0) lines.push("None were asked for.");
   else for (const shot of shots) lines.push(`- \`${shot.state}\` ${shot.theme} (${VIEWPORT.width}×${VIEWPORT.height}) — \`${shot.file}\``);
   lines.push("");
-  lines.push(`Server: next dev on port ${port} with \`${INSPECT_ENV}=1\`.`);
+  lines.push("## Repairs written back to the spec");
+  lines.push("");
+  if (saved.length === 0) lines.push(`The spec was built as it was written: \`${specPath}\` is unchanged.`);
+  else {
+    lines.push(`These were written back into \`${specPath}\`, so the next run starts from the repaired spec:`);
+    lines.push("");
+    for (const fix of saved) lines.push(`- \`${fix.rule}\` ${fix.what}`);
+  }
+  lines.push("");
+  lines.push(`Served by next dev with \`${INSPECT_ENV}=1\`.`);
   lines.push("");
   return lines.join("\n");
 }
@@ -302,12 +311,14 @@ export async function runLoop(
   if (!existsSync(full)) throw new Error(`There is no spec at ${specPath}.`);
   let spec = JSON.parse(readFileSync(full, "utf8"));
 
+  const saved = [];
   const first = validateSpec(spec, { root });
   if (!first.ok) {
     const repaired = fixSpec(spec);
     const second = repaired.fixes.length > 0 ? validateSpec(repaired.spec, { root }) : first;
-    if (!second.ok) return { ok: false, invalid: first.errors, attempts: [], shots: [], spec, specPath };
+    if (!second.ok) return { ok: false, invalid: first.errors, attempts: [], shots: [], saved: [], spec, specPath };
     spec = repaired.spec;
+    saved.push(...repaired.fixes);
     log(`  repaired the spec: ${repaired.fixes.map((f) => f.what).join(" ")}`);
   } else {
     spec = first.spec;
@@ -349,6 +360,7 @@ export async function runLoop(
       }
       row.fixes = repaired.fixes;
       spec = repaired.spec;
+      saved.push(...repaired.fixes);
       for (const fix of repaired.fixes) log(`  fixed ${fix.rule}: ${fix.what}`);
     }
 
@@ -359,6 +371,13 @@ export async function runLoop(
     }
   } finally {
     await server.stop();
+  }
+
+  // The spec is the source of truth, so a repair that only reached the generated page would be undone
+  // by the next build. Whatever the loop fixed is written back into the spec file itself.
+  if (saved.length > 0) {
+    saveSpec(full, spec);
+    log(`  wrote ${saved.length} ${saved.length === 1 ? "repair" : "repairs"} back into ${specPath}`);
   }
 
   if (updateReferences) {
@@ -372,21 +391,45 @@ export async function runLoop(
     }
   }
 
-  const report = formatReport({ spec, specPath, attempts: history, shots, skipped, ok, port });
+  const report = formatReport({ spec, specPath, attempts: history, shots, skipped, ok, saved });
   const reportFile = join(root, REPORT_DIR, `${spec.name}.md`);
   mkdirSync(dirname(reportFile), { recursive: true });
   writeFileSync(reportFile, report);
 
-  return { ok, attempts: history, shots, skipped, report, reportFile: relative(root, reportFile).replace(/\\/g, "/"), spec, specPath };
+  return {
+    ok,
+    attempts: history,
+    shots,
+    skipped,
+    saved,
+    report,
+    reportFile: relative(root, reportFile).replace(/\\/g, "/"),
+    spec,
+    specPath,
+  };
+}
+
+/**
+ * Write a spec back to its file, the way the references are written: two-space JSON and a last newline.
+ * The loop calls this when it repaired something, so the next run starts from the repaired spec.
+ */
+export function saveSpec(file, spec) {
+  writeFileSync(file, `${JSON.stringify(spec, null, 2)}\n`);
+  return file;
 }
 
 // ---- the command line ----------------------------------------------------------------------------
 
 const bold = (s) => `\x1b[1m${s}\x1b[0m`;
 
-async function main(argv) {
-  const { values, positionals } = parseArgs({
+/**
+ * The loop's flags. allowNegative is what makes --no-shots the off switch for shots, rather than an
+ * unknown option the command refuses.
+ */
+export function parseLoopArgs(argv) {
+  return parseArgs({
     args: argv,
+    allowNegative: true,
     options: {
       attempts: { type: "string" },
       port: { type: "string" },
@@ -397,6 +440,10 @@ async function main(argv) {
     },
     allowPositionals: true,
   });
+}
+
+async function main(argv) {
+  const { values, positionals } = parseLoopArgs(argv);
   if (values.help || positionals.length === 0) {
     console.log(LOOP_HELP);
     process.exit(values.help ? 0 : 1);
@@ -434,6 +481,7 @@ async function main(argv) {
   }
 
   console.log(`\n  ${bold(result.ok ? "Pass." : "Still failing.")} ${result.attempts.length} attempt(s).`);
+  if (result.saved?.length) console.log(`  Wrote ${result.saved.length} repair(s) back into ${result.specPath}`);
   console.log(`  Report: ${result.reportFile}`);
   if (result.skipped) console.log(`  No screenshots: ${result.skipped}`);
   else for (const shot of result.shots) console.log(`  ${shot.file}`);

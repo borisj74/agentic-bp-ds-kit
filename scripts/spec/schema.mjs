@@ -12,10 +12,12 @@
  * An error is { path, message, fix? }. `path` is where it sits in the spec, like
  * regions.toolbar[0].props.size.
  */
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import { catalog, isFreeProp, piece, repoRoot } from "../review/catalog.mjs";
+import { BUTTON_PAIRS } from "../review/rules.mjs";
+import { checkItem, parseItemShape } from "./shape.mjs";
 
 /** A route and file name: lowercase words joined by single dashes. */
 export const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -110,24 +112,42 @@ export function navIds(root = repoRoot) {
   return ids;
 }
 
+/**
+ * Every route the app already serves outside `src/app/(examples)`: the catalog's own pages and any
+ * screen somebody built by hand. A spec cannot take one of those names, because the generated page
+ * would sit at the same address.
+ */
+export function takenRoutes(root = repoRoot) {
+  const taken = new Set();
+  const walk = (dir, route) => {
+    let entries = [];
+    try {
+      entries = readdirSync(join(root, dir), { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const group = entry.name.startsWith("(") && entry.name.endsWith(")");
+      // The examples group is where the specs write, so its own routes are not in the way.
+      if (group && entry.name === `(${EXAMPLES_GROUP})`) continue;
+      const next = group ? route : [...route, entry.name];
+      if (!group && next.length === 1) taken.add(entry.name);
+      walk(`${dir}/${entry.name}`, next);
+    }
+  };
+  walk("src/app", []);
+  return taken;
+}
+
+/** The route group the generated screens live in. */
+export const EXAMPLES_GROUP = "examples";
+
 // ---- the contracts -------------------------------------------------------------------------------
 
 // A prop that takes components: one node, or a list of them (GuidedProcessPage intro).
 const isNodeProp = (prop) => prop?.type === "ReactNode" || prop?.type === "ReactNode[]";
 
-/**
- * The closed set a field of an itemShape allows, when the contract writes one.
- * `"neutral | brand | success | warning | danger? Tints the circle."` is a closed set;
- * `"string? One line under the title."` is not.
- */
-export function shapeEnum(description) {
-  const head = String(description ?? "").split("?")[0].trim();
-  if (!head.includes("|")) return null;
-  const parts = head.split("|").map((part) => part.trim());
-  if (parts.length < 2) return null;
-  if (!parts.every((part) => /^[a-z][a-z0-9-]*$/.test(part))) return null;
-  return parts;
-}
 const isHandlerProp = (prop) => prop?.type === "function" || /=>/.test(String(prop?.type ?? ""));
 
 /**
@@ -194,6 +214,10 @@ export function validateSpec(input, { root = repoRoot } = {}) {
   const patternStates = pattern.props?.state?.enum ?? null;
   const states = [...new Set([spec.state ?? "ready", ...(spec.states ?? [])])];
 
+  const taken = takenRoutes(root);
+  if (taken.has(spec.name))
+    fail("name", `The app already serves /${spec.name}.`, "Pick another name: the screen would sit at the same address.");
+
   if (spec.section) {
     const ids = navIds(root);
     if (ids.size > 0 && !ids.has(spec.section))
@@ -228,19 +252,11 @@ export function validateSpec(input, { root = repoRoot } = {}) {
         fail(path, `${name} cannot be ${JSON.stringify(value)}.`, `The contract allows: ${allowed.join(", ")}.`);
       return;
     }
-    // A list of records: the contract's itemShape says what each row may hold, so a value outside a
-    // closed set in that shape fails here rather than at the typecheck.
-    const shape = prop?.itemShape;
-    if (Array.isArray(value) && shape && typeof shape === "object") {
-      value.forEach((item, i) => {
-        if (!item || typeof item !== "object" || Array.isArray(item)) return;
-        for (const [field, given] of Object.entries(item)) {
-          const allowed = shapeEnum(shape[field]);
-          if (!allowed || typeof given !== "string") continue;
-          if (!allowed.includes(given))
-            fail(`${path}[${i}].${field}`, `${field} cannot be "${given}".`, `The contract allows: ${allowed.join(", ")}.`);
-        }
-      });
+    // A list of records: the contract's itemShape says which fields a row has, which it must have, and
+    // which hold a closed set. All of that fails here rather than at the typecheck.
+    const shape = parseItemShape(prop?.itemShape);
+    if (Array.isArray(value) && shape) {
+      value.forEach((item, i) => checkItem(item, shape, `${path}[${i}]`, (at, message, fix) => fail(at, message, fix)));
       return;
     }
 
@@ -314,7 +330,20 @@ export function validateSpec(input, { root = repoRoot } = {}) {
         fail(`${path}.props.${name}`, `${target.name} needs ${name}.`, prop.note ? String(prop.note).split(". ")[0] + "." : undefined);
     }
 
-    if (target.name === "Button" && node.props?.emphasis === "strong" && node.props?.intent === "brand") primaries += 1;
+    if (target.name === "Button") {
+      const emphasis = node.props?.emphasis ?? "subtle";
+      const intent = node.props?.intent;
+      const allowed = BUTTON_PAIRS[emphasis];
+      if (allowed && typeof intent === "string" && !allowed.includes(intent))
+        fail(
+          `${path}.props.intent`,
+          `Button emphasis="${emphasis}" intent="${intent}" is not an allowed pair.`,
+          `With emphasis="${emphasis}" the intent can only be ${allowed.map((v) => `"${v}"`).join(" or ")}.`,
+        );
+      if (emphasis === "strong" && intent === undefined)
+        fail(`${path}.props.intent`, "A strong Button needs an intent.", 'Use intent "brand" for the main action, or "danger" for work that cannot be undone.');
+      if (emphasis === "strong" && intent === "brand") primaries += 1;
+    }
   };
 
   for (const [name, value] of Object.entries(spec.props ?? {})) {
@@ -327,7 +356,7 @@ export function validateSpec(input, { root = repoRoot } = {}) {
       fail(`props.${name}`, `${pattern.name} has no prop called "${name}".`, `Its values: ${values.join(", ")}.`);
       continue;
     }
-    if (prop.type === "ReactNode") {
+    if (isNodeProp(prop)) {
       fail(`props.${name}`, `${name} takes components.`, `Put them under regions.${name}.`);
       continue;
     }
