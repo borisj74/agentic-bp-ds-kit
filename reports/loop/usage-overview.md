@@ -44,4 +44,8 @@ Nothing to fix.
 
 The spec was built as it was written: `docs/references/usage-overview.json` is unchanged.
 
+## Left for a person
+
+Nothing: every raw value the loop met had a token it could write.
+
 Served by next dev with `NEXT_PUBLIC_BP_INSPECT=1`.

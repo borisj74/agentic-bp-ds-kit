@@ -55,28 +55,70 @@ const wait = (ms) => new Promise((done) => setTimeout(done, ms));
 
 // ---- the dev server ------------------------------------------------------------------------------
 
-/** Start next dev with the inspect env var and wait for it to answer. */
-export async function startServer({ root = repoRoot, port = 3123, timeout = 180000, log = () => {} } = {}) {
-  const child = spawn("npx", ["next", "dev", "--port", String(port)], {
+/**
+ * next dev, and the local `next` binary rather than `npx`: npx is a process of its own that spawns
+ * next as a child, so killing npx leaves next running and holding the port.
+ */
+export function devCommand(root) {
+  const local = join(root, "node_modules", ".bin", "next");
+  if (existsSync(local)) return { command: local, args: ["dev"] };
+  return { command: "npx", args: ["next", "dev"] };
+}
+
+/**
+ * Start next dev with the inspect env var and wait for it to answer.
+ *
+ * The server runs in its own process group (`detached`), and stop() signals the whole group rather
+ * than the one process it spawned: next dev forks workers, and under npx there is a wrapper process
+ * in between. Signalling only the first one leaves a server listening on the port after the loop ends.
+ *
+ * `command` and `args` are the seam a test uses in place of a real dev server. The command line never
+ * passes either.
+ *
+ * @param {{ root?: string, port?: number, timeout?: number, log?: (line: string) => void,
+ *   command?: string, args?: string[] }} [options]
+ */
+export async function startServer({ root = repoRoot, port = 3123, timeout = 180000, log = () => {}, command, args } = {}) {
+  const dev = devCommand(root);
+  const run = command ?? dev.command;
+  const runArgs = command ? (args ?? []) : [...dev.args, "--port", String(port)];
+  const child = spawn(run, runArgs, {
     cwd: root,
     env: { ...process.env, [INSPECT_ENV]: "1", NODE_ENV: "development", BROWSER: "none" },
     stdio: ["ignore", "pipe", "pipe"],
+    detached: true,
   });
   const output = [];
   child.stdout.on("data", (chunk) => output.push(String(chunk)));
   child.stderr.on("data", (chunk) => output.push(String(chunk)));
 
+  // The group, when the child is still a group of its own; the child alone once it has been reaped.
+  const signal = (sig) => {
+    if (child.exitCode !== null || child.signalCode !== null) return;
+    try {
+      process.kill(-child.pid, sig);
+    } catch {
+      try {
+        child.kill(sig);
+      } catch {
+        // already gone
+      }
+    }
+  };
+
   // localhost, not 127.0.0.1: next dev treats the numeric host as a cross-origin request, refuses the
   // HMR websocket, and the page then never hydrates — charts stay empty and nothing is clickable.
   const base = `http://localhost:${port}`;
+  const ended = new Promise((done) => child.once("exit", done));
   const stop = async () => {
-    if (child.exitCode === null) child.kill("SIGTERM");
-    await wait(200);
-    if (child.exitCode === null) child.kill("SIGKILL");
+    signal("SIGTERM");
+    await Promise.race([ended, wait(2000)]);
+    signal("SIGKILL");
+    await Promise.race([ended, wait(1000)]);
   };
-  process.on("exit", () => {
-    if (child.exitCode === null) child.kill("SIGKILL");
-  });
+  const onExit = () => signal("SIGKILL");
+  process.on("exit", onExit);
+  ended.then(() => process.removeListener("exit", onExit));
 
   const until = Date.now() + timeout;
   log(`  starting next dev on ${base} with ${INSPECT_ENV}=1`);
@@ -86,7 +128,7 @@ export async function startServer({ root = repoRoot, port = 3123, timeout = 1800
     }
     try {
       const response = await fetch(base, { headers: { accept: "text/html" } });
-      if (response.status < 500) return { base, port, stop, output };
+      if (response.status < 500) return { base, port, stop, output, pid: child.pid };
     } catch {
       // not up yet
     }
@@ -221,7 +263,7 @@ async function attemptOnce(spec, { root, base, specPath, log, fetchImpl = fetch 
 const tick = (ok) => (ok ? "pass" : "fail");
 
 /** The report the loop leaves behind: every rule, every attempt, every screenshot. */
-export function formatReport({ spec, specPath, attempts, shots, skipped, ok, saved = [] }) {
+export function formatReport({ spec, specPath, attempts, shots, skipped, ok, saved = [], forPerson = [] }) {
   const last = attempts[attempts.length - 1];
   const ruleRows = [...RULES, ...LIVE_RULES].map((rule) => {
     const hits = last?.findings.filter((f) => f.rule === rule) ?? [];
@@ -291,6 +333,15 @@ export function formatReport({ spec, specPath, attempts, shots, skipped, ok, sav
     for (const fix of saved) lines.push(`- \`${fix.rule}\` ${fix.what}`);
   }
   lines.push("");
+  lines.push("## Left for a person");
+  lines.push("");
+  if (forPerson.length === 0) lines.push("Nothing: every raw value the loop met had a token it could write.");
+  else {
+    lines.push("The loop looked at these and left them as they are, since no token fits without changing what the value means:");
+    lines.push("");
+    for (const item of forPerson) lines.push(`- \`${item.rule}\` ${item.what}`);
+  }
+  lines.push("");
   lines.push(`Served by next dev with \`${INSPECT_ENV}=1\`.`);
   lines.push("");
   return lines.join("\n");
@@ -323,13 +374,15 @@ export async function runLoop(
   let spec = JSON.parse(readFileSync(full, "utf8"));
 
   const saved = [];
+  const forPerson = [];
   const first = validateSpec(spec, { root });
   if (!first.ok) {
     const repaired = fixSpec(spec, { root });
     const second = repaired.fixes.length > 0 ? validateSpec(repaired.spec, { root }) : first;
-    if (!second.ok) return { ok: false, invalid: first.errors, attempts: [], shots: [], saved: [], spec, specPath };
+    if (!second.ok) return { ok: false, invalid: first.errors, attempts: [], shots: [], saved: [], report: repaired.report, spec, specPath };
     spec = repaired.spec;
     saved.push(...repaired.fixes);
+    forPerson.push(...repaired.report);
     log(`  repaired the spec: ${repaired.fixes.map((f) => f.what).join(" ")}`);
   } else {
     spec = first.spec;
@@ -365,6 +418,11 @@ export async function runLoop(
       if (n === maxAttempts) break;
 
       const repaired = fixSpec(spec, { root });
+      for (const item of repaired.report) {
+        if (forPerson.some((seen) => seen.what === item.what)) continue;
+        forPerson.push(item);
+        log(`  left for you ${item.rule}: ${item.what}`);
+      }
       if (repaired.fixes.length === 0) {
         log("  nothing the loop can repair on its own; stopping.");
         break;
@@ -387,8 +445,9 @@ export async function runLoop(
   // The spec is the source of truth, so a repair that only reached the generated page would be undone
   // by the next build. Whatever the loop fixed is written back into the spec file itself.
   if (saved.length > 0) {
-    saveSpec(full, spec);
+    const written = saveSpec(full, spec);
     log(`  wrote ${saved.length} ${saved.length === 1 ? "repair" : "repairs"} back into ${specPath}`);
+    if (written.reformatted) log(`  note: ${specPath} is not written the way JSON.stringify writes it, so the whole file was reformatted.`);
   }
 
   if (updateReferences) {
@@ -402,7 +461,7 @@ export async function runLoop(
     }
   }
 
-  const report = formatReport({ spec, specPath, attempts: history, shots, skipped, ok, saved });
+  const report = formatReport({ spec, specPath, attempts: history, shots, skipped, ok, saved, forPerson });
   const reportFile = join(root, REPORT_DIR, `${spec.name}.md`);
   mkdirSync(dirname(reportFile), { recursive: true });
   writeFileSync(reportFile, report);
@@ -413,6 +472,7 @@ export async function runLoop(
     shots,
     skipped,
     saved,
+    forPerson,
     report,
     reportFile: relative(root, reportFile).replace(/\\/g, "/"),
     spec,
@@ -421,12 +481,44 @@ export async function runLoop(
 }
 
 /**
- * Write a spec back to its file, the way the references are written: two-space JSON and a last newline.
- * The loop calls this when it repaired something, so the next run starts from the repaired spec.
+ * How a spec file is written: its indent, its line ending, and whether it ends in a newline. A repair
+ * is a change of one value, so the file comes back in the shape it was in and the diff is the fix
+ * alone. A file written some other way (arrays folded onto one line, say) cannot be reproduced from
+ * the parsed spec, and `matches` says so.
+ */
+export function specFormat(text) {
+  const eol = /\r\n/.test(text) ? "\r\n" : "\n";
+  const indentOf = text.match(/^[ \t]+(?=["\]}])/m)?.[0];
+  const indent = indentOf ? (indentOf.includes("\t") ? "\t" : indentOf.length) : 2;
+  return { eol, indent, finalNewline: /\r?\n$/.test(text) || text === "" };
+}
+
+/** A spec as text, in the shape `format` describes. */
+function specText(spec, { eol, indent, finalNewline }) {
+  const body = JSON.stringify(spec, null, indent).split("\n").join(eol);
+  return finalNewline ? `${body}${eol}` : body;
+}
+
+/**
+ * Write a spec back to its file.
+ *
+ * The file keeps the formatting it came with — indent, line ending, last newline — so a repair shows
+ * up as a change to the one value it repaired and nothing else. A new file is written the way the
+ * references are written: two-space JSON and a last newline.
+ *
+ * @returns {{ file: string, reformatted: boolean }} reformatted is true when the file's own layout
+ *   could not be reproduced, so the write changed more than the repair.
  */
 export function saveSpec(file, spec) {
-  writeFileSync(file, `${JSON.stringify(spec, null, 2)}\n`);
-  return file;
+  const before = existsSync(file) ? readFileSync(file, "utf8") : null;
+  const format = before === null ? { eol: "\n", indent: 2, finalNewline: true } : specFormat(before);
+  const text = specText(spec, format);
+  writeFileSync(file, text);
+  if (before === null) return { file, reformatted: false };
+  // Written back as it was read, the original text comes out again: anything else means the file holds
+  // a layout JSON.stringify does not produce, and the write touched lines the repair did not.
+  const reformatted = specText(JSON.parse(before), format) !== before;
+  return { file, reformatted };
 }
 
 // ---- the command line ----------------------------------------------------------------------------
@@ -493,6 +585,7 @@ async function main(argv) {
 
   console.log(`\n  ${bold(result.ok ? "Pass." : "Still failing.")} ${result.attempts.length} attempt(s).`);
   if (result.saved?.length) console.log(`  Wrote ${result.saved.length} repair(s) back into ${result.specPath}`);
+  for (const item of result.forPerson ?? []) console.log(`  Left for you: ${item.what}`);
   console.log(`  Report: ${result.reportFile}`);
   if (result.skipped) console.log(`  No screenshots: ${result.skipped}`);
   else for (const shot of result.shots) console.log(`  ${shot.file}`);

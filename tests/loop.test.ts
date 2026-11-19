@@ -2,7 +2,8 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { formatReport, parseLoopArgs, runLoop, saveSpec } from "../scripts/loop.mjs";
+import { createServer } from "node:net";
+import { devCommand, formatReport, parseLoopArgs, runLoop, saveSpec, specFormat, startServer } from "../scripts/loop.mjs";
 import { fixSpec } from "../scripts/spec/fix.mjs";
 import { validateSpec } from "../scripts/spec/schema.mjs";
 
@@ -161,7 +162,7 @@ describe("the loop's retry", () => {
     `<h1>Loop fixture</h1><div data-bp-kit="ListPage"><table data-bp-kit="Table"></table></div>`,
     "</main></body></html>",
   ].join("");
-  const fakeServer = async () => ({ base: "http://loop.test", port: 0, stop: async () => {}, output: [] });
+  const fakeServer = async () => ({ base: "http://loop.test", port: 0, stop: async () => {}, output: [], pid: undefined });
   const fakeFetch = async () => new Response(served, { status: 200, headers: { "content-type": "text/html" } });
 
   const clean = () => {
@@ -205,5 +206,103 @@ describe("the loop's retry", () => {
     expect(report).toContain("## Repairs written back to the spec");
     expect(report).toContain("bp/raw-value");
     expect(report).toContain("var(--space-small)");
+  });
+});
+
+// ---- the dev server ------------------------------------------------------------------------------
+
+/** True when something is listening on the port. */
+const listening = (port: number) =>
+  new Promise<boolean>((done) => {
+    const probe = createServer();
+    probe.once("error", () => done(true));
+    probe.once("listening", () => probe.close(() => done(false)));
+    probe.listen(port, "127.0.0.1");
+  });
+
+const settle = async (port: number, want: boolean, tries = 40) => {
+  for (let i = 0; i < tries; i += 1) {
+    if ((await listening(port)) === want) return true;
+    await new Promise((done) => setTimeout(done, 100));
+  }
+  return false;
+};
+
+describe("the dev server the loop starts", () => {
+  const REPO = join(import.meta.dirname, "..");
+  const STUB = join(REPO, "tests/fixtures/loop/stub-server.mjs");
+  const port = 3987;
+  let pid: number | undefined;
+
+  afterEach(() => {
+    if (pid === undefined) return;
+    try {
+      process.kill(-pid, "SIGKILL");
+    } catch {
+      // already gone
+    }
+    pid = undefined;
+  });
+
+  it("runs the local next binary, not npx, so there is no wrapper process in the way", () => {
+    const dev = devCommand(REPO);
+    expect(dev.command.endsWith("node_modules/.bin/next")).toBe(true);
+    expect(dev.args).toEqual(["dev"]);
+    // A checkout with no node_modules still works, through npx.
+    expect(devCommand(join(REPO, "no-such-folder"))).toEqual({ command: "npx", args: ["next", "dev"] });
+  });
+
+  // The stub spawns a grandchild that holds the port, the way npx spawns next and next spawns its
+  // workers. Signalling the one process the loop started would leave that grandchild listening.
+  it("leaves nothing listening after it stops, children and all", async () => {
+    expect(await listening(port)).toBe(false);
+
+    const server = await startServer({
+      root: REPO,
+      port,
+      timeout: 30000,
+      command: process.execPath,
+      args: [STUB, String(port)],
+    });
+    pid = server.pid;
+    expect(server.base).toBe(`http://localhost:${port}`);
+    expect(await listening(port)).toBe(true);
+
+    await server.stop();
+    expect(await settle(port, false)).toBe(true);
+    await expect(fetch(server.base)).rejects.toThrow();
+  }, 60000);
+});
+
+// ---- the formatting of the spec it writes back ---------------------------------------------------
+
+describe("the spec file's own formatting", () => {
+  it("keeps the indent, the line ending and the last newline, so the diff is the repair alone", () => {
+    const file = join(folder, "tabs.json");
+    const original = '{\n\t"name": "demo",\n\t"title": "Demo"\n}';
+    writeFileSync(file, original);
+    const result = saveSpec(file, { name: "demo", title: "Repaired" });
+    expect(readFileSync(file, "utf8")).toBe('{\n\t"name": "demo",\n\t"title": "Repaired"\n}');
+    expect(result.reformatted).toBe(false);
+  });
+
+  it("changes only the line the repair touched", () => {
+    const file = join(folder, "spec.json");
+    const spec = { name: "demo", title: "Demo", regions: { content: [{ component: "Table", props: { style: { padding: "13px" } } }] } };
+    writeFileSync(file, `${JSON.stringify(spec, null, 2)}\n`);
+    const before = readFileSync(file, "utf8").split("\n");
+    spec.regions.content[0].props.style.padding = "var(--space-small)";
+    saveSpec(file, spec);
+    const after = readFileSync(file, "utf8").split("\n");
+    expect(after).toHaveLength(before.length);
+    const changed = after.filter((line, i) => line !== before[i]);
+    expect(changed).toEqual(['            "padding": "var(--space-small)"']);
+  });
+
+  it("says so when the file holds a layout it cannot reproduce", () => {
+    const file = join(folder, "folded.json");
+    writeFileSync(file, '{ "name": "demo", "title": "Demo" }\n');
+    expect(saveSpec(file, { name: "demo", title: "Repaired" }).reformatted).toBe(true);
+    expect(specFormat('{\n    "a": 1\n}\n')).toEqual({ eol: "\n", indent: 4, finalNewline: true });
   });
 });

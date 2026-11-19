@@ -81,7 +81,7 @@ What the loop can repair on its own, between attempts, always by changing the sp
 - a second `emphasis="strong" intent="brand"` Button (`bp/one-primary`) — the rest become subtle neutral
 - a `PageHeader` inside a region when the frame already draws one (`bp/landmark`)
 - `Home` listed in `breadcrumbs` (`bp/screen-frame`) — the frame adds it
-- a raw colour, spacing, radius or shadow in a `style` prop (`bp/raw-value`) — the token the review points at goes in. The spec check cannot refuse this one: `style` is a prop every React element takes, so no contract lists it; it is the review of the written screen that catches it
+- a raw colour, spacing or radius in a `style` prop (`bp/raw-value`) — the token the review points at goes in, in place of that one raw part of the value. A shorthand keeps its shape: `padding: "8px 16px"` becomes two tokens, and `border: "1px solid #ccc"` keeps its width. A part no token fits (a 1px border width), and a shadow shorthand, whose parts mean nothing on their own, stay as they are and are named under "Left for a person" in the report. The spec check cannot refuse this one: `style` is a prop every React element takes, so no contract lists it; it is the review of the written screen that catches it
 
 Everything else the report names for you to decide: pick the bigger piece, write the words, change the layout. Fix the spec and run the loop again.
 
