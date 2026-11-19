@@ -7,7 +7,7 @@
  *   1. check the spec against the contracts
  *   2. write the screen under src/app/(examples)/<name>/, one page per state
  *   3. start next dev with NEXT_PUBLIC_BP_INSPECT=1 so the kit pieces wear their name tags
- *   4. review every page twice: its code, and the screen the server actually serves
+ *   4. review every page twice: its code, and the screen the server actually serves, and type-check it
  *   5. take a 1440x900 screenshot of each page, light and dark
  *   6. on any error, repair what can be repaired and go round again — three attempts at most
  *   7. write reports/loop/<name>.md: every rule, every attempt, every screenshot
@@ -25,6 +25,8 @@ import { repoRoot } from "./review/catalog.mjs";
 import { validateSpec } from "./spec/schema.mjs";
 import { screenFiles } from "./spec/render.mjs";
 import { fixSpec } from "./spec/fix.mjs";
+import { TYPE_RULE, typecheckPages } from "./spec/typecheck.mjs";
+import { editSpecText, specFormat, specText } from "./spec/write.mjs";
 
 export const LOOP_HELP = `Usage: npm run loop -- <spec.json> [options]
 
@@ -241,6 +243,12 @@ async function attemptOnce(spec, { root, base, specPath, log, fetchImpl = fetch 
   );
   log(`  code: ${summarize(code)}`);
 
+  // A page can pass both reviews and still not compile: `style` on a component whose props do not take
+  // it is a prop no contract lists and no rule reads. TypeScript is the one that knows.
+  const types = typecheckPages(pages.map((page) => page.file), { root });
+  if (types.skipped) log(`  types: not checked — ${types.skipped}`);
+  else log(`  types: ${types.findings.length === 0 ? "clean" : `${types.findings.length} ${types.findings.length === 1 ? "error" : "errors"}`}`);
+
   const live = [];
   for (const page of pages) {
     const url = base + page.route;
@@ -253,9 +261,10 @@ async function attemptOnce(spec, { root, base, specPath, log, fetchImpl = fetch 
 
   const findings = [
     ...code.findings.map((f) => ({ ...f, where: "code" })),
+    ...types.findings.map((f) => ({ ...f, where: "types" })),
     ...live.flatMap((page) => page.findings.map((f) => ({ ...f, where: `live ${page.state}`, file: page.url, line: 0 }))),
   ];
-  return { pages, code, live, findings };
+  return { pages, code, live, types, findings };
 }
 
 // ---- the report ----------------------------------------------------------------------------------
@@ -265,7 +274,7 @@ const tick = (ok) => (ok ? "pass" : "fail");
 /** The report the loop leaves behind: every rule, every attempt, every screenshot. */
 export function formatReport({ spec, specPath, attempts, shots, skipped, ok, saved = [], forPerson = [] }) {
   const last = attempts[attempts.length - 1];
-  const ruleRows = [...RULES, ...LIVE_RULES].map((rule) => {
+  const ruleRows = [...RULES, ...LIVE_RULES, TYPE_RULE].map((rule) => {
     const hits = last?.findings.filter((f) => f.rule === rule) ?? [];
     const errors = errorsOf(hits).length;
     const warnings = hits.length - errors;
@@ -371,16 +380,31 @@ export async function runLoop(
   const full = resolve(root, specFile);
   const specPath = relative(root, full).replace(/\\/g, "/");
   if (!existsSync(full)) throw new Error(`There is no spec at ${specPath}.`);
-  let spec = JSON.parse(readFileSync(full, "utf8"));
+  // Two objects, on purpose. `raw` is the spec exactly as the file holds it, and it is the one every
+  // repair is made to and the one written back: it carries the file's own key order and nothing the
+  // schema filled in. `spec` is what the check hands back — the same spec with its defaults — and it is
+  // what the screen is built from. Writing `spec` back would reorder every key in the file.
+  let raw = JSON.parse(readFileSync(full, "utf8"));
+  let spec = raw;
 
   const saved = [];
   const forPerson = [];
-  const first = validateSpec(spec, { root });
+  /** Repair `raw`, and take the checked spec that comes of it. */
+  const repairRaw = () => {
+    const repaired = fixSpec(raw, { root });
+    if (repaired.fixes.length > 0) {
+      raw = repaired.spec;
+      const checked = validateSpec(raw, { root });
+      if (checked.spec) spec = checked.spec;
+    }
+    return repaired;
+  };
+
+  const first = validateSpec(raw, { root });
   if (!first.ok) {
-    const repaired = fixSpec(spec, { root });
-    const second = repaired.fixes.length > 0 ? validateSpec(repaired.spec, { root }) : first;
+    const repaired = repairRaw();
+    const second = repaired.fixes.length > 0 ? validateSpec(raw, { root }) : first;
     if (!second.ok) return { ok: false, invalid: first.errors, attempts: [], shots: [], saved: [], report: repaired.report, spec, specPath };
-    spec = repaired.spec;
     saved.push(...repaired.fixes);
     forPerson.push(...repaired.report);
     log(`  repaired the spec: ${repaired.fixes.map((f) => f.what).join(" ")}`);
@@ -417,7 +441,7 @@ export async function runLoop(
       }
       if (n === maxAttempts) break;
 
-      const repaired = fixSpec(spec, { root });
+      const repaired = repairRaw();
       for (const item of repaired.report) {
         if (forPerson.some((seen) => seen.what === item.what)) continue;
         forPerson.push(item);
@@ -428,7 +452,6 @@ export async function runLoop(
         break;
       }
       row.fixes = repaired.fixes;
-      spec = repaired.spec;
       saved.push(...repaired.fixes);
       for (const fix of repaired.fixes) log(`  fixed ${fix.rule}: ${fix.what}`);
     }
@@ -445,7 +468,7 @@ export async function runLoop(
   // The spec is the source of truth, so a repair that only reached the generated page would be undone
   // by the next build. Whatever the loop fixed is written back into the spec file itself.
   if (saved.length > 0) {
-    const written = saveSpec(full, spec);
+    const written = saveSpec(full, raw);
     log(`  wrote ${saved.length} ${saved.length === 1 ? "repair" : "repairs"} back into ${specPath}`);
     if (written.reformatted) log(`  note: ${specPath} is not written the way JSON.stringify writes it, so the whole file was reformatted.`);
   }
@@ -481,45 +504,33 @@ export async function runLoop(
 }
 
 /**
- * How a spec file is written: its indent, its line ending, and whether it ends in a newline. A repair
- * is a change of one value, so the file comes back in the shape it was in and the diff is the fix
- * alone. A file written some other way (arrays folded onto one line, say) cannot be reproduced from
- * the parsed spec, and `matches` says so.
- */
-export function specFormat(text) {
-  const eol = /\r\n/.test(text) ? "\r\n" : "\n";
-  const indentOf = text.match(/^[ \t]+(?=["\]}])/m)?.[0];
-  const indent = indentOf ? (indentOf.includes("\t") ? "\t" : indentOf.length) : 2;
-  return { eol, indent, finalNewline: /\r?\n$/.test(text) || text === "" };
-}
-
-/** A spec as text, in the shape `format` describes. */
-function specText(spec, { eol, indent, finalNewline }) {
-  const body = JSON.stringify(spec, null, indent).split("\n").join(eol);
-  return finalNewline ? `${body}${eol}` : body;
-}
-
-/**
- * Write a spec back to its file.
+ * Write a repaired spec back to its file as an edit of the file's own text.
  *
- * The file keeps the formatting it came with — indent, line ending, last newline — so a repair shows
- * up as a change to the one value it repaired and nothing else. A new file is written the way the
- * references are written: two-space JSON and a last newline.
+ * The spec is written by hand: inline arrays, inline props objects, its own key order. A repair changes
+ * one value, so that one value is replaced where it sits and every other byte stays as it was — the
+ * diff is the repair. A file whose text cannot carry the change (a key added or gone at the top level)
+ * is written again in the formatting it came with, and `reformatted` says so.
  *
- * @returns {{ file: string, reformatted: boolean }} reformatted is true when the file's own layout
- *   could not be reproduced, so the write changed more than the repair.
+ * @returns {{ file: string, reformatted: boolean }}
  */
 export function saveSpec(file, spec) {
   const before = existsSync(file) ? readFileSync(file, "utf8") : null;
-  const format = before === null ? { eol: "\n", indent: 2, finalNewline: true } : specFormat(before);
-  const text = specText(spec, format);
-  writeFileSync(file, text);
-  if (before === null) return { file, reformatted: false };
-  // Written back as it was read, the original text comes out again: anything else means the file holds
-  // a layout JSON.stringify does not produce, and the write touched lines the repair did not.
-  const reformatted = specText(JSON.parse(before), format) !== before;
-  return { file, reformatted };
+  if (before !== null) {
+    try {
+      const edited = editSpecText(before, JSON.parse(before), spec);
+      if (edited !== null) {
+        writeFileSync(file, edited);
+        return { file, reformatted: false };
+      }
+    } catch {
+      // not JSON any more, or not a text this can edit: written again below
+    }
+  }
+  writeFileSync(file, specText(spec, before === null ? { eol: "\n", indent: 2, finalNewline: true } : specFormat(before)));
+  return { file, reformatted: before !== null };
 }
+
+export { specFormat };
 
 // ---- the command line ----------------------------------------------------------------------------
 

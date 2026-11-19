@@ -139,19 +139,14 @@ describe("the loop's retry", () => {
         {
           component: "Toolbar",
           props: { label: "Rows" },
-          slots: { actions: [{ component: "Button", props: { emphasis: "strong", intent: "brand" }, text: "New" }] },
-        },
-      ],
-      content: [
-        {
-          component: "Table",
-          props: {
-            columns: [{ key: "id", header: "Id" }],
-            rows: [{ id: "1" }],
-            style: { padding: "13px" },
+          slots: {
+            actions: [
+              { component: "Button", props: { emphasis: "strong", intent: "brand", style: { padding: "13px" } }, text: "New" },
+            ],
           },
         },
       ],
+      content: [{ component: "Table", props: { columns: [{ key: "id", header: "Id" }], rows: [{ id: "1" }] } }],
     },
   });
 
@@ -193,7 +188,7 @@ describe("the loop's retry", () => {
 
     // The repair went back into the spec file, so the next run starts from it.
     const saved = JSON.parse(readFileSync(join(REPO, SPEC_FILE), "utf8"));
-    expect(saved.regions.content[0].props.style.padding).toBe("var(--space-small)");
+    expect(saved.regions.toolbar[0].slots.actions[0].props.style.padding).toBe("var(--space-small)");
 
     // And the screen that is on disk is the repaired one.
     const page = readFileSync(join(REPO, "src/app/(examples)", NAME, "page.tsx"), "utf8");
@@ -206,7 +201,61 @@ describe("the loop's retry", () => {
     expect(report).toContain("## Repairs written back to the spec");
     expect(report).toContain("bp/raw-value");
     expect(report).toContain("var(--space-small)");
-  });
+    // Both attempts type-checked the pages they wrote, and the repaired screen compiles.
+    expect(result.attempts[1].findings.filter((f: { rule: string }) => f.rule === "bp/typecheck")).toEqual([]);
+  }, 120000);
+});
+
+// ---- the typecheck ------------------------------------------------------------------------------
+
+// A prop a component does not take is a fault no rule reads: `style` is free, so no contract lists it
+// and no enum covers it, and the code review and the live review both pass. The screen does not
+// compile, so the loop type-checks what it wrote and will not call it a pass.
+describe("the typecheck of the pages the loop writes", () => {
+  const REPO = join(import.meta.dirname, "..");
+  const NAME = "loop-typecheck-screen";
+  const SPEC_FILE = `reports/loop/${NAME}.spec.json`;
+  const served = [
+    '<html><body><main><nav><a href="/">Home</a></nav>',
+    '<h1>Typecheck fixture</h1><div data-bp-kit="ListPage"><table data-bp-kit="Table"></table></div>',
+    "</main></body></html>",
+  ].join("");
+  const fakeServer = async () => ({ base: "http://types.test", port: 0, stop: async () => {}, output: [], pid: undefined });
+  const fakeFetch = async () => new Response(served, { status: 200, headers: { "content-type": "text/html" } });
+
+  const clean = () => {
+    rmSync(join(REPO, SPEC_FILE), { force: true });
+    rmSync(join(REPO, "src/app/(examples)", NAME), { recursive: true, force: true });
+    rmSync(join(REPO, "reports/loop", `${NAME}.md`), { force: true });
+  };
+  beforeEach(clean);
+  afterEach(clean);
+
+  it("fails the screen when a Section is given a style it does not take", async () => {
+    // display: flex is no raw value, so no fixer touches it: the only thing wrong is the prop itself.
+    const draft = {
+      name: NAME,
+      title: "Typecheck fixture",
+      pattern: "ListPage",
+      regions: {
+        above: [{ component: "Section", props: { title: "Totals", style: { display: "flex" } } }],
+        content: [{ component: "Table", props: { columns: [{ key: "id", header: "Id" }], rows: [{ id: "1" }] } }],
+      },
+    };
+    mkdirSync(join(REPO, "reports/loop"), { recursive: true });
+    writeFileSync(join(REPO, SPEC_FILE), `${JSON.stringify(draft, null, 2)}\n`);
+    // The spec check cannot refuse it, and neither review reads it.
+    expect(validateSpec(draft).ok).toBe(true);
+
+    const result = await runLoop(SPEC_FILE, { shots: false, attempts: 1, server: fakeServer, fetchImpl: fakeFetch });
+    expect(result.ok).toBe(false);
+    const types = result.attempts[0].findings.filter((f: { rule: string }) => f.rule === "bp/typecheck");
+    expect(types.length).toBeGreaterThan(0);
+    expect(types[0]).toMatchObject({ severity: "error", where: "types" });
+    expect(types[0].file).toContain(NAME);
+    expect(types[0].message).toContain("SectionProps");
+    expect(readFileSync(join(REPO, result.reportFile), "utf8")).toContain("bp/typecheck");
+  }, 120000);
 });
 
 // ---- the dev server ------------------------------------------------------------------------------
@@ -299,10 +348,50 @@ describe("the spec file's own formatting", () => {
     expect(changed).toEqual(['            "padding": "var(--space-small)"']);
   });
 
-  it("says so when the file holds a layout it cannot reproduce", () => {
+  it("keeps a folded file folded, since the edit goes where the value is", () => {
     const file = join(folder, "folded.json");
     writeFileSync(file, '{ "name": "demo", "title": "Demo" }\n');
-    expect(saveSpec(file, { name: "demo", title: "Repaired" }).reformatted).toBe(true);
+    expect(saveSpec(file, { name: "demo", title: "Repaired" }).reformatted).toBe(false);
+    expect(readFileSync(file, "utf8")).toBe('{ "name": "demo", "title": "Repaired" }\n');
+  });
+
+  it("writes the file again, and says so, when its text cannot carry the change", () => {
+    const file = join(folder, "grown.json");
+    writeFileSync(file, '{ "name": "demo" }\n');
+    // A key the text does not hold: there is no value to replace, so the file is written again.
+    expect(saveSpec(file, { name: "demo", title: "Demo" }).reformatted).toBe(true);
+    expect(JSON.parse(readFileSync(file, "utf8"))).toEqual({ name: "demo", title: "Demo" });
     expect(specFormat('{\n    "a": 1\n}\n')).toEqual({ eol: "\n", indent: 4, finalNewline: true });
+  });
+
+  // The references are written by hand: inline arrays, inline props objects, their own key order. A
+  // repair has to read as a change to the value it repaired and nothing else.
+  it("edits a hand-written reference spec in place, down to the line", () => {
+    const reference = readFileSync(join(import.meta.dirname, "../docs/references/usage-overview.json"), "utf8");
+    // Two faults, in two shapes the file writes on one line: Home in an inline array, and a raw value
+    // in an inline props object.
+    const broken = reference
+      .replace('"breadcrumbs": ["Mediation"]', '"breadcrumbs": ["Home", "Mediation"]')
+      .replace(
+        '"props": { "size": "sm", "emphasis": "strong", "intent": "brand", "iconStart": "download" }',
+        '"props": { "size": "sm", "emphasis": "strong", "intent": "brand", "iconStart": "download", "style": { "padding": "13px" } }',
+      );
+    expect(broken).not.toBe(reference);
+
+    const file = join(folder, "usage-overview.json");
+    writeFileSync(file, broken);
+    const { spec: repaired, fixes } = fixSpec(JSON.parse(broken)) as { spec: object; fixes: { rule: string }[] };
+    expect(fixes.map((fix) => fix.rule).sort()).toEqual(["bp/raw-value", "bp/screen-frame"]);
+    expect(saveSpec(file, repaired).reformatted).toBe(false);
+
+    const after = readFileSync(file, "utf8").split("\n");
+    const before = broken.split("\n");
+    expect(after).toHaveLength(before.length);
+    const touched = after.map((line, i) => [i, line, before[i]]).filter(([, line, was]) => line !== was);
+    expect(touched.map(([i]) => i)).toEqual([6, 109]);
+    // The inline array stays inline, and the file is the reference again but for the repaired value.
+    expect(after[6]).toBe('  "breadcrumbs": ["Mediation"],');
+    expect(after[109]).toContain('"style": { "padding": "var(--space-small)" }');
+    expect(after[109].trimStart().startsWith('"props": { "size": "sm"')).toBe(true);
   });
 });

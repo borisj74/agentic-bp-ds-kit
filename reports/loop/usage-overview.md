@@ -21,6 +21,7 @@ Result: **pass**
 | bp/no-tags | pass | 0 | 0 |
 | bp/landmark | pass | 0 | 0 |
 | bp/no-pattern | pass | 0 | 0 |
+| bp/typecheck | pass | 0 | 0 |
 
 ## Attempts
 
