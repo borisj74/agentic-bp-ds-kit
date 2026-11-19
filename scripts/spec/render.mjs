@@ -151,7 +151,11 @@ export function renderScreen(spec, { state = "ready", specPath = null, root = re
   const pad = "        ";
   const draw = (node, nodePad) => renderNode(node, { copy, used, pad: nodePad, root });
 
-  const attrs = [`label=${attrString(spec.title)}`, ...stateAttrs(pattern, state, copy)];
+  const attrs = [`label=${attrString(spec.title)}`];
+  for (const [name, raw] of Object.entries(spec.props ?? {})) {
+    attrs.push(attribute(name, (pattern.props ?? {})[name], resolveCopy(raw, copy), pad + "  "));
+  }
+  attrs.push(...stateAttrs(pattern, state, copy));
   for (const [name, prop] of Object.entries(pattern.props ?? {})) {
     if (name === "children" || !isNodeProp(prop)) continue;
     const nodes = regions[name] ?? [];

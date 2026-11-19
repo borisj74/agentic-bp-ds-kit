@@ -63,6 +63,7 @@ export const specSchema = z
     section: z.string().regex(SLUG, "A side-nav id, like billing-invoices.").optional(),
     breadcrumbs: z.array(z.string().min(1).max(40)).max(4).optional(),
     about: z.string().max(240).optional(),
+    props: z.record(jsonValue).optional(),
     copy: z.record(z.string()).optional(),
     state: z.enum(STATES).optional(),
     states: z.array(z.enum(STATES)).optional(),
@@ -112,6 +113,20 @@ export function navIds(root = repoRoot) {
 // ---- the contracts -------------------------------------------------------------------------------
 
 const isNodeProp = (prop) => prop?.type === "ReactNode";
+
+/**
+ * The closed set a field of an itemShape allows, when the contract writes one.
+ * `"neutral | brand | success | warning | danger? Tints the circle."` is a closed set;
+ * `"string? One line under the title."` is not.
+ */
+export function shapeEnum(description) {
+  const head = String(description ?? "").split("?")[0].trim();
+  if (!head.includes("|")) return null;
+  const parts = head.split("|").map((part) => part.trim());
+  if (parts.length < 2) return null;
+  if (!parts.every((part) => /^[a-z][a-z0-9-]*$/.test(part))) return null;
+  return parts;
+}
 const isHandlerProp = (prop) => prop?.type === "function" || /=>/.test(String(prop?.type ?? ""));
 
 /** The regions a pattern has: its ReactNode props, plus content for its children and above for the frame. */
@@ -182,6 +197,10 @@ export function validateSpec(input, { root = repoRoot } = {}) {
 
   let primaries = 0;
 
+  // The pattern's own values: columns, labelPosition, sticky and the like. Its ReactNode props are
+  // regions, so they are filled there instead.
+  const patternProps = pattern.props ?? {};
+
   const checkValue = (path, name, prop, value) => {
     if (typeof value === "string") {
       const ref = COPY_REF.exec(value);
@@ -202,6 +221,22 @@ export function validateSpec(input, { root = repoRoot } = {}) {
         fail(path, `${name} cannot be ${JSON.stringify(value)}.`, `The contract allows: ${allowed.join(", ")}.`);
       return;
     }
+    // A list of records: the contract's itemShape says what each row may hold, so a value outside a
+    // closed set in that shape fails here rather than at the typecheck.
+    const shape = prop?.itemShape;
+    if (Array.isArray(value) && shape && typeof shape === "object") {
+      value.forEach((item, i) => {
+        if (!item || typeof item !== "object" || Array.isArray(item)) return;
+        for (const [field, given] of Object.entries(item)) {
+          const allowed = shapeEnum(shape[field]);
+          if (!allowed || typeof given !== "string") continue;
+          if (!allowed.includes(given))
+            fail(`${path}[${i}].${field}`, `${field} cannot be "${given}".`, `The contract allows: ${allowed.join(", ")}.`);
+        }
+      });
+      return;
+    }
+
     const type = String(prop?.type ?? "");
     if (type === "boolean" && typeof value !== "boolean") fail(path, `${name} is a boolean.`);
     else if (type === "number" && typeof value !== "number") fail(path, `${name} is a number.`);
@@ -237,8 +272,14 @@ export function validateSpec(input, { root = repoRoot } = {}) {
         );
         continue;
       }
+      // A ReactNode prop takes words as well as components: FormDisplay value is usually a line of
+      // text. Components for it go under slots.
       if (isNodeProp(prop)) {
-        fail(`${path}.props.${name}`, `${name} takes components, not a value.`, `Put them under slots.${name}.`);
+        if (typeof value === "string" || typeof value === "number") {
+          checkValue(`${path}.props.${name}`, name, { type: typeof value === "number" ? "number" : "string" }, value);
+          continue;
+        }
+        fail(`${path}.props.${name}`, `${name} takes components or words.`, `Put components under slots.${name}.`);
         continue;
       }
       checkValue(`${path}.props.${name}`, name, prop, value);
@@ -268,6 +309,27 @@ export function validateSpec(input, { root = repoRoot } = {}) {
 
     if (target.name === "Button" && node.props?.emphasis === "strong" && node.props?.intent === "brand") primaries += 1;
   };
+
+  for (const [name, value] of Object.entries(spec.props ?? {})) {
+    const prop = patternProps[name];
+    if (!prop) {
+      if (isFreeProp(name)) continue;
+      const values = Object.entries(patternProps)
+        .filter(([, p]) => p?.type !== "ReactNode")
+        .map(([n]) => n);
+      fail(`props.${name}`, `${pattern.name} has no prop called "${name}".`, `Its values: ${values.join(", ")}.`);
+      continue;
+    }
+    if (prop.type === "ReactNode") {
+      fail(`props.${name}`, `${name} takes components.`, `Put them under regions.${name}.`);
+      continue;
+    }
+    if (name === "state") {
+      fail("props.state", "The state belongs to the screen, not to its props.", 'Use "state" and "states" at the top of the spec.');
+      continue;
+    }
+    checkValue(`props.${name}`, name, prop, value);
+  }
 
   for (const [region, nodes] of Object.entries(spec.regions ?? {})) {
     if (!regions.includes(region)) {

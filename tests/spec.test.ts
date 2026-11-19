@@ -89,6 +89,19 @@ describe("the screen spec", () => {
     expect(errorPaths(check(draft))).toContain("regions.content[0].props.striped");
   });
 
+  it("refuses a value outside a closed set inside a list of records", () => {
+    const draft = spec();
+    draft.regions.content = [
+      {
+        component: "Timeline",
+        props: { label: "Activity", items: [{ id: "a1", title: "Invoice sent", intent: "info" }] },
+      },
+    ];
+    const result = check(draft);
+    expect(errorPaths(result)).toContain("regions.content[0].props.items[0].intent");
+    expect(result.errors[0].fix).toContain("neutral, brand, success, warning, danger");
+  });
+
   it("refuses a value outside a closed enum", () => {
     const draft = spec();
     (draft.regions.content[0].props as Record<string, unknown>).size = "xl";
@@ -141,6 +154,38 @@ describe("the screen spec", () => {
     const draft: Draft = { ...spec(), pattern: "Dashboard", states: ["ready", "error"] };
     draft.regions = { content: spec().regions.content };
     expect(errorPaths(check(draft))).toContain("states");
+  });
+});
+
+describe("the pattern's own props", () => {
+  it("takes the values the pattern's contract lists", () => {
+    const draft: Draft = { ...spec(), pattern: "RecordPage", props: { columns: 2, labelPosition: "start" } };
+    draft.regions = { header: [{ component: "PageHeader", props: { title: "A record" } }], content: spec().regions.content };
+    delete draft.states;
+    const result = check(draft);
+    expect(result.errors).toEqual([]);
+    expect(render(draft)).toContain("columns={2}");
+  });
+
+  it("refuses a value the pattern has no prop for", () => {
+    const draft: Draft = { ...spec(), props: { density: "tight" } };
+    expect(errorPaths(check(draft))).toContain("props.density");
+  });
+
+  it("sends a region to the regions, not to the props", () => {
+    const draft: Draft = { ...spec(), props: { toolbar: true } };
+    const result = check(draft);
+    expect(errorPaths(result)).toContain("props.toolbar");
+    expect(result.errors.find((issue) => issue.path === "props.toolbar")?.fix).toContain("regions.toolbar");
+  });
+
+  it("takes words for a prop that also takes components", () => {
+    const draft = spec();
+    draft.regions.content = [
+      { component: "Section", props: { title: "Details" }, slots: { children: [{ component: "FormDisplay", props: { label: "Owner", value: "Priya Raman" } }] } },
+    ];
+    expect(check(draft).errors).toEqual([]);
+    expect(render(draft)).toContain('value="Priya Raman"');
   });
 });
 

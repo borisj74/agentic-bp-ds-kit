@@ -1,0 +1,174 @@
+{
+  "name": "account-record",
+  "title": "Apex Digital Services",
+  "about": "The reference record screen: a RecordPage with its own page header and status, the tabs of what belongs to the account, the numbers people came for, and the details in sections.",
+  "pattern": "RecordPage",
+  "section": "accounts-account",
+  "props": { "columns": 2, "labelPosition": "start", "sticky": true },
+  "copy": {
+    "notice": "Two invoices are more than 30 days overdue. Collections was notified on 14 November.",
+    "infoTitle": "Account information",
+    "billingTitle": "Billing defaults",
+    "invoicesTitle": "Recent invoices",
+    "activityTitle": "Activity"
+  },
+  "regions": {
+    "header": [
+      {
+        "component": "PageHeader",
+        "props": {
+          "title": "Apex Digital Services",
+          "icon": "group",
+          "badge": "Active",
+          "badgeIntent": "success",
+          "breadcrumbs": [
+            { "label": "Home", "href": "#" },
+            { "label": "Accounts", "href": "#" }
+          ],
+          "moreActions": [
+            { "id": "suspend", "label": "Suspend account" },
+            { "id": "export", "label": "Export account" }
+          ],
+          "onMoreSelect": true
+        },
+        "slots": {
+          "actions": [
+            { "component": "Button", "props": { "size": "sm", "iconStart": "edit" }, "text": "Edit" },
+            {
+              "component": "Button",
+              "props": { "size": "sm", "emphasis": "strong", "intent": "brand", "iconStart": "receipt_long" },
+              "text": "New invoice"
+            }
+          ]
+        }
+      }
+    ],
+    "tabs": [
+      {
+        "component": "Tabs",
+        "props": {
+          "label": "Account sections",
+          "value": "overview",
+          "onChange": true,
+          "items": [
+            { "id": "overview", "label": "Overview" },
+            { "id": "invoices", "label": "Invoices", "count": 24 },
+            { "id": "payments", "label": "Payments", "count": 18 },
+            { "id": "products", "label": "Account products", "count": 6 },
+            { "id": "contacts", "label": "Contacts", "count": 4 }
+          ]
+        }
+      }
+    ],
+    "notice": [
+      {
+        "component": "Callout",
+        "props": { "intent": "warning", "closeButton": true, "onDismiss": true, "actionLabel": "Open collections", "onAction": true },
+        "text": "$copy.notice"
+      }
+    ],
+    "summary": [
+      {
+        "component": "Scoreboard",
+        "props": {
+          "label": "Account totals",
+          "items": [
+            { "id": "balance", "title": "Open balance", "metric": "$101,950", "metadata": "7 open invoices" },
+            {
+              "id": "overdue",
+              "title": "Overdue",
+              "metric": "$17,750",
+              "trend": { "value": "9.2", "unit": "% MoM", "direction": "up", "status": "danger" },
+              "metadata": "2 invoices"
+            },
+            { "id": "mrr", "title": "Monthly recurring", "metric": "$32,400", "metadata": "Enterprise plan" },
+            { "id": "dso", "title": "DSO", "metric": "38", "metadata": "Days, last 90" }
+          ]
+        }
+      }
+    ],
+    "content": [
+      {
+        "component": "Section",
+        "props": { "title": "$copy.infoTitle", "collapsible": true, "columns": 2 },
+        "slots": {
+          "children": [
+            { "component": "FormDisplay", "props": { "label": "Account name", "value": "Apex Digital Services", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Account number", "value": "ACC-10428", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Account type", "value": "Customer", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Parent account", "value": "Apex Holdings", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Owner", "value": "Priya Raman", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Created", "value": "12 March 2024", "labelPosition": "start" } }
+          ]
+        }
+      },
+      {
+        "component": "Section",
+        "props": { "title": "$copy.billingTitle", "collapsible": true, "columns": 2 },
+        "slots": {
+          "children": [
+            { "component": "FormDisplay", "props": { "label": "Billing email", "value": "billing@apexdigital.com", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Currency", "value": "USD — US Dollar", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Payment terms", "value": "Net 30", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Payment method", "value": "ACH ending 4417", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Invoice delivery", "value": "Email and portal", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Tax exempt", "value": "No", "labelPosition": "start" } }
+          ]
+        }
+      },
+      {
+        "component": "Section",
+        "props": { "title": "$copy.invoicesTitle", "collapsible": true },
+        "slots": {
+          "actions": [
+            { "component": "Button", "props": { "size": "sm", "emphasis": "minimal", "intent": "brand" }, "text": "View all invoices" }
+          ],
+          "children": [
+            {
+              "component": "Table",
+              "props": {
+                "caption": "The account's last invoices.",
+                "rowLabel": "invoice",
+                "size": "sm",
+                "columns": [
+                  { "key": "invoice", "header": "Invoice", "emphasis": true },
+                  { "key": "issued", "header": "Issued" },
+                  { "key": "due", "header": "Due" },
+                  { "key": "status", "header": "Status" },
+                  { "key": "amount", "header": "Amount", "numeric": true }
+                ],
+                "rows": [
+                  { "id": "inv-10482", "invoice": "INV-10482", "issued": "Jul 28, 2026", "due": "Aug 28, 2026", "status": "Overdue", "amount": "$18,400.00" },
+                  { "id": "inv-10466", "invoice": "INV-10466", "issued": "Jun 28, 2026", "due": "Jul 28, 2026", "status": "Overdue", "amount": "$12,400.00" },
+                  { "id": "inv-10451", "invoice": "INV-10451", "issued": "May 28, 2026", "due": "Jun 28, 2026", "status": "Paid", "amount": "$32,006.00" },
+                  { "id": "inv-10433", "invoice": "INV-10433", "issued": "Apr 28, 2026", "due": "May 28, 2026", "status": "Paid", "amount": "$28,520.00" }
+                ],
+                "footer": { "label": "Open balance", "value": "$101,950.00" }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "component": "Section",
+        "props": { "title": "$copy.activityTitle", "collapsible": true },
+        "slots": {
+          "children": [
+            {
+              "component": "Timeline",
+              "props": {
+                "label": "Account activity",
+                "items": [
+                  { "id": "a1", "title": "Invoice INV-10482 sent", "timestamp": "Jul 28", "subtitle": "Billing Operations", "icon": "send", "intent": "brand" },
+                  { "id": "a2", "title": "Payment of $32,006 received", "timestamp": "Jun 24", "subtitle": "ACH ending 4417", "icon": "check_circle", "intent": "success" },
+                  { "id": "a3", "title": "Plan changed to Enterprise", "timestamp": "May 02", "subtitle": "Priya Raman", "icon": "upgrade", "intent": "brand" },
+                  { "id": "a4", "title": "Dunning notice scheduled", "timestamp": "Nov 14", "subtitle": "Collections", "icon": "schedule", "intent": "warning" }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -48,6 +48,9 @@ export const REFERENCE_SHOTS = "docs/references/screenshots";
 /** The viewport every screenshot is taken at. */
 export const VIEWPORT = { width: 1440, height: 900 };
 
+/** How long a page gets after it goes quiet, so charts finish drawing before the shot. */
+export const SETTLE_MS = 800;
+
 const wait = (ms) => new Promise((done) => setTimeout(done, ms));
 
 // ---- the dev server ------------------------------------------------------------------------------
@@ -63,7 +66,9 @@ export async function startServer({ root = repoRoot, port = 3123, timeout = 1800
   child.stdout.on("data", (chunk) => output.push(String(chunk)));
   child.stderr.on("data", (chunk) => output.push(String(chunk)));
 
-  const base = `http://127.0.0.1:${port}`;
+  // localhost, not 127.0.0.1: next dev treats the numeric host as a cross-origin request, refuses the
+  // HMR websocket, and the page then never hydrates — charts stay empty and nothing is clickable.
+  const base = `http://localhost:${port}`;
   const stop = async () => {
     if (child.exitCode === null) child.kill("SIGTERM");
     await wait(200);
@@ -151,9 +156,18 @@ export async function screenshots(pages, { base, root = repoRoot, name, log = ()
         });
       }
       const page = await context.newPage();
+      const SETTLE = SETTLE_MS;
+
       for (const spot of pages) {
         const file = join(folder, `${spot.state}-${theme}.png`);
         await page.goto(base + spot.route, { waitUntil: "networkidle" });
+        // The dev server draws its own badge over the bottom left corner. It is not part of the
+        // screen, so it is hidden rather than photographed.
+        await page.addStyleTag({ content: "nextjs-portal { display: none !important; }" }).catch(() => {});
+        // A chart measures its box and then draws, and the drawing is animated: without this the shot
+        // can catch bars that have not grown yet.
+        await page.evaluate(() => document.fonts.ready);
+        await page.waitForTimeout(SETTLE);
         await page.screenshot({ path: file });
         shots.push({ state: spot.state, theme, route: spot.route, file: relative(root, file).replace(/\\/g, "/") });
         log(`  shot ${spot.route} ${theme}`);

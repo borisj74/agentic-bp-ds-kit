@@ -161,17 +161,17 @@ export default function InvoicesListEmptyScreen() {
                 ],
               },
               { key: "due", header: "Due date", type: "date" },
-              { key: "amount", header: "Amount", type: "number", readOnly: true },
+              { key: "amount", header: "Amount", readOnly: true, hug: true },
             ]}
             rows={[
-              { id: "inv-10482", invoice: "INV-10482", account: "Northwind Holdings", status: "overdue", due: "2026-08-28", amount: "18400.00" },
-              { id: "inv-10483", invoice: "INV-10483", account: "Globex Corporation", status: "open", due: "2026-09-24", amount: "7250.00" },
-              { id: "inv-10484", invoice: "INV-10484", account: "Initech Group", status: "paid", due: "2026-09-05", amount: "2980.00" },
-              { id: "inv-10485", invoice: "INV-10485", account: "Umbrella Health", status: "open", due: "2026-09-30", amount: "44120.00" },
-              { id: "inv-10486", invoice: "INV-10486", account: "Stark Logistics", status: "overdue", due: "2026-09-02", amount: "12675.50" },
-              { id: "inv-10487", invoice: "INV-10487", account: "Apex Digital Services", status: "open", due: "2026-10-12", amount: "9800.00" },
+              { id: "inv-10482", invoice: "INV-10482", account: "Northwind Holdings", status: "overdue", due: "2026-08-28", amount: "$18,400.00" },
+              { id: "inv-10483", invoice: "INV-10483", account: "Globex Corporation", status: "open", due: "2026-09-24", amount: "$7,250.00" },
+              { id: "inv-10484", invoice: "INV-10484", account: "Initech Group", status: "paid", due: "2026-09-05", amount: "$2,980.00" },
+              { id: "inv-10485", invoice: "INV-10485", account: "Umbrella Health", status: "open", due: "2026-09-30", amount: "$44,120.00" },
+              { id: "inv-10486", invoice: "INV-10486", account: "Stark Logistics", status: "overdue", due: "2026-09-02", amount: "$12,675.50" },
+              { id: "inv-10487", invoice: "INV-10487", account: "Apex Digital Services", status: "open", due: "2026-10-12", amount: "$9,800.00" },
             ]}
-            totalRow={{ id: "total", account: "Total", amount: "95225.50" }}
+            totalRow={{ id: "total", account: "Total", amount: "$95,225.50" }}
           />
         </ListPage>
       </AppShell>

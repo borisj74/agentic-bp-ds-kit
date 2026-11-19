@@ -30,7 +30,14 @@ const read = (file: string): Spec => JSON.parse(readFileSync(join(REFERENCES, fi
 
 describe("the reference specs", () => {
   it("are there, one per screen the kit is asked for most", () => {
-    expect(specFiles).toEqual(["account-create.json", "invoices-list.json", "payments-empty.json", "usage-overview.json"]);
+    expect(specFiles).toEqual([
+      "account-create.json",
+      "account-record.json",
+      "billing-dashboard.json",
+      "invoices-list.json",
+      "payments-empty.json",
+      "usage-overview.json",
+    ]);
   });
 
   it.each(specFiles)("%s only names things the contracts have", (file) => {

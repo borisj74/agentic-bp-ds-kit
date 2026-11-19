@@ -1,6 +1,6 @@
 # Reference screens
 
-Four screen specs, the screens they build, and the screenshot each one is measured against. They are
+Six screen specs, the screens they build, and the screenshot each one is measured against. They are
 the examples to copy from when you write a spec of your own.
 
 | Spec | Pattern | What it shows |
@@ -9,6 +9,8 @@ the examples to copy from when you write a spec of your own.
 | `account-create.json` | FormPage | A create form: its own page header with Cancel and one strong brand save, a dismissible notice, eight fields in two columns |
 | `payments-empty.json` | ListPage | A screen that opens empty: the EmptyState and its two actions, with the filled state beside it |
 | `usage-overview.json` | ListPage | Metrics over a table: a Scoreboard in a Section, usage by account, and the empty state |
+| `account-record.json` | RecordPage | One account: its own header with a status Badge, the tabs of what belongs to it, a notice, the numbers, and the details in sections |
+| `billing-dashboard.json` | Dashboard | Groups of numbers with the charts and lists that explain them, a saved-view toolbar, and the empty state |
 
 ## The loop
 
@@ -29,6 +31,7 @@ it can repair mechanically, and writes `reports/loop/<name>.md`. It gives up aft
   "name": "usage-overview",          // the route and the file name
   "title": "Usage overview",         // the page title, and the one h1
   "pattern": "ListPage",             // a pattern from `list level=template`
+  "props": { "columns": 2 },         // the pattern's own values; its ReactNode props are regions
   "section": "mediation-usage-data", // which side-nav link is current
   "breadcrumbs": ["Mediation"],      // Home is added for you
   "state": "ready",                  // the state the screen itself opens in
