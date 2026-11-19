@@ -151,6 +151,34 @@ npm run new-screen -- --template dashboard --route sales
 
 The starters are in `starters/`: one folder per starter, plus `starters/index.json` listing them. They are pages, not contracts — a template filled with real-looking content — so they have no `level` and are not in `contracts/index.json`. Each one only composes kit pieces and patterns.
 
+### Write a screen as a spec
+
+A screen starts as JSON, not TSX. A spec names one pattern (level `template`), fills that pattern's regions with
+kit components by their contract name, carries the copy, and says which states the screen answers (`ready`,
+`loading`, `empty`, `error`):
+
+```bash
+npm run build-screen -- docs/references/usage-overview.json --dry   # check it, write nothing
+npm run build-screen -- docs/references/usage-overview.json         # write the pages
+npm run loop -- docs/references/usage-overview.json                 # render, review, screenshot, repair
+```
+
+The spec is checked against `contracts/index.json` and the contracts themselves before any file is written: an
+unknown pattern or component, a region the pattern does not have, a prop no contract lists, a value outside a
+closed enum, a field a list of records does not have, a Button `emphasis` x `intent` pair that is not allowed, a
+side-nav id that does not exist, a name the app already serves, or a second strong brand Button. An agent runs the
+same check with the `validate_spec` MCP tool.
+
+`build-screen` writes `src/app/(examples)/<name>/page.tsx`, one page per state. `npm run loop` then builds the
+screen, starts the dev server with `NEXT_PUBLIC_BP_INSPECT=1`, reviews the code and the served page, takes a
+1440x900 screenshot of each state in light and dark, repairs what is mechanical — writing those repairs back into
+the spec file — and writes `reports/loop/<name>.md`. It gives up after three attempts (`--attempts`), and takes
+`--port`, `--no-shots` and `--json`.
+
+`docs/references/` holds nine worked specs, one per screen pattern, each with the screen it builds and the
+screenshot it is measured against. Copy the closest one. Change the spec, never the generated page: the next build
+overwrites it.
+
 ### Review a screen
 
 The kit reviews a screen against its own contracts, offline:
@@ -490,7 +518,8 @@ npx agentic-bp-ds-kit mcp
 | `search` | Match name, tags, intent, `useWhen` and related fields, across components and patterns; each match carries its `level` |
 | `get_tokens` | Semantic tokens; optional `category` (e.g. `text`, `background`) and `theme` (`light`, `dark`, `both`) |
 | `get_rules` | Kit agent rules plus `CLAUDE.md` / `AGENTS.md` text |
-| `review_ui` | Review a screen against the contracts: `path` for a file or folder, or `code` (+ `filename`) for a draft you have not saved yet. Run it before you hand a screen back |
+| `validate_spec` | Check a screen spec before any code is written: `spec` for the object, or `path` for a spec file. Returns every error, with the fix |
+| `review_ui` | Review a screen against the contracts: `path` for a file or folder, or `code` (+ `filename`) for a draft you have not saved yet, or `url` for a running screen. Run it before you hand a screen back |
 
 ### Cursor
 
@@ -541,6 +570,8 @@ Run `npm test -- tests/mcp.test.ts` to verify each tool responds.
 | `src/tokens/` | Primitive and semantic tokens, and layout classes |
 | `src/app/(playground)/` | The catalog you see at localhost:3000, including the Start pages |
 | `mcp/`, `bin/mcp.mjs` | Local read-only MCP server over contracts and tokens |
+| `scripts/spec/`, `scripts/build-screen.mjs`, `scripts/loop.mjs` | The screen spec: its schema, the generator, and the render-and-review loop |
+| `docs/references/` | Nine worked specs, one per screen pattern, with their screens and screenshots |
 | `packages/create-agentic-bp-ds/` | The `npm create` installer |
 | `.claude/skills/prototype-from-kit/` | The Prototype from kit skill |
 | `CHANGELOG.md` | What changed in each release |

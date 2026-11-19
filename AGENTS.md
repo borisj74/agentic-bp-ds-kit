@@ -12,6 +12,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 Start from the biggest kit piece that fits — pattern (`template`), then `organism`, `molecule`, `atom` — and read each piece's `level` in `contracts/index.json`. See "Build order" in `CLAUDE.md`.
 
+# Screens come from a spec
+
+Write a screen as a JSON spec first, check it with `validate_spec` (or `npm run build-screen -- <spec.json> --dry`), build it with `npm run build-screen`, then run `npm run loop -- <spec.json>` until the review passes. Never hand back a screen that fails `review_ui`. Worked specs are in `docs/references/`; see "Spec first, then the loop" in `CLAUDE.md`.
+
 # Paper component artboards
 
 The kit's components are also drawn in Paper (file `01M2MJ3E3YE26YTE671TK6B10X`, page "Components"): one 1440-wide artboard per component, A to Z, with Header, Examples, States and anatomy, Props and Usage sections.

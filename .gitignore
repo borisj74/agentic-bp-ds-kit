@@ -51,3 +51,6 @@ token-audit.json
 # which are uploaded at release time and worth seeing in a diff
 docs/figma/*
 !docs/figma/guidelines/
+
+# loop screenshots (npm run loop); the report beside them is committed
+/reports/loop/*/

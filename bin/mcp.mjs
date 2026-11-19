@@ -10,6 +10,7 @@ import { z } from "zod";
 import { LEVELS } from "../scripts/sync-index.mjs";
 import { RULES, reviewFiles, reviewSource, summarize } from "../scripts/review/index.mjs";
 import { INSPECT_ENV, liveResult, reviewUrl } from "../scripts/review/live.mjs";
+import { STATES, validateSpec, validateSpecFile } from "../scripts/spec/schema.mjs";
 import {
   CatalogError,
   TOKEN_CATEGORIES,
@@ -143,6 +144,37 @@ function createServer() {
         "Agent rules for this kit: use existing components and patterns only, never invent cousins, use semantic tokens not primitives. Includes CLAUDE.md and AGENTS.md text.",
     },
     () => getRules(),
+  );
+
+  register(
+    server,
+    "validate_spec",
+    {
+      title: "Check a screen spec against the contracts",
+      description:
+        "Check a JSON screen spec before any code is written. A spec names one pattern (level template), fills that "
+        + "pattern's regions with kit components by their contract name, and says which of its states "
+        + `(${STATES.join(", ")}) the screen answers. This returns every error: an unknown pattern or component, a region `
+        + "the pattern does not have, a prop no contract lists, a value outside a closed enum, a missing required prop, "
+        + "copy over its length limit, a side-nav id that does not exist, and more than one strong brand Button. "
+        + "Pass spec for the object itself, or path for a spec file in the repo. Build it with "
+        + "npm run build-screen -- <spec.json> only once this comes back ok.",
+      inputSchema: {
+        spec: z.record(z.unknown()).optional().describe("The spec object itself."),
+        path: z.string().optional().describe("A spec file in the repo, like docs/references/usage-overview.json."),
+      },
+    },
+    ({ spec, path }) => {
+      if (spec && typeof spec === "object") return validateSpec(spec, { root: repoRoot });
+      if (typeof path === "string" && path.trim()) {
+        try {
+          return validateSpecFile(join(repoRoot, path.trim()), { root: repoRoot });
+        } catch (error) {
+          throw new CatalogError(error instanceof Error ? error.message : String(error));
+        }
+      }
+      throw new CatalogError("Pass spec (the object) or path (a spec file in the repo).");
+    },
   );
 
   register(

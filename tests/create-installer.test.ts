@@ -114,6 +114,54 @@ describe("what the installer leaves behind", () => {
     expect(existsSync(join(REPO, ".claude", "skills", "prototype-from-kit", "SKILL.md"))).toBe(true);
   });
 
+  it("drops what the kit's own loop made, and keeps the specs it made them from", () => {
+    expect(dropped).toContain("src/app/(examples)");
+    expect(dropped).toContain("reports");
+    expect(dropped).not.toContain("docs/references");
+    expect(existsSync(join(REPO, "docs", "references", "usage-overview.json"))).toBe(true);
+  });
+
+  // npm run build-screen and npm run loop stay in a prototype, so everything they import has to stay too.
+  it("keeps what build-screen and the loop import", () => {
+    const pkg = JSON.parse(readFileSync(join(REPO, "package.json"), "utf8"));
+    const installed = new Set([
+      ...Object.keys(pkg.dependencies ?? {}),
+      ...Object.keys(pkg.devDependencies ?? {}),
+    ]);
+
+    expect(DROP_SCRIPTS).not.toContain("build-screen");
+    expect(DROP_SCRIPTS).not.toContain("loop");
+    expect(DROP_DEPS, "the spec schema is written in zod").not.toContain("zod");
+
+    // Every file those two commands reach, followed through the kit's own relative imports.
+    const seen = new Set<string>();
+    const packages = new Set<string>();
+    const follow = (file: string) => {
+      if (seen.has(file) || !existsSync(join(REPO, file))) return;
+      seen.add(file);
+      const source = readFileSync(join(REPO, file), "utf8");
+      for (const match of source.matchAll(/(?:from|import)\s*\(?\s*["']([^"']+)["']/g)) {
+        const target = match[1];
+        // The renderer writes import lines into the screens it generates; those are the screen's imports,
+        // not the script's, so the kit alias and anything interpolated are skipped here.
+        if (target.startsWith("@/") || target.includes("${")) continue;
+        if (target.startsWith(".")) follow(join(file, "..", target).replace(/\\/g, "/"));
+        else if (!target.startsWith("node:")) packages.add(target.split("/").slice(0, target.startsWith("@") ? 2 : 1).join("/"));
+      }
+    };
+    follow("scripts/build-screen.mjs");
+    follow("scripts/loop.mjs");
+
+    expect(seen.has("scripts/spec/schema.mjs")).toBe(true);
+    expect(seen.has("scripts/review/index.mjs")).toBe(true);
+
+    const gone = [...seen].filter((file) => dropped.some((d) => file === d || file.startsWith(`${d}/`)));
+    expect(gone, "build-screen or the loop reads a file the installer drops").toEqual([]);
+
+    const missing = [...packages].filter((name) => !installed.has(name) || (DROP_DEPS as string[]).includes(name));
+    expect(missing, "build-screen or the loop imports a package a prototype will not have").toEqual([]);
+  });
+
   it("names only paths the kit really has, so a rename cannot leave a drop behind", () => {
     const missing = dropped.filter((entry) => !existsSync(join(REPO, entry)));
     expect(missing, "DROP names a path that is not in the kit").toEqual([]);

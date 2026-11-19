@@ -1,0 +1,250 @@
+{
+  "name": "billing-dashboard",
+  "title": "Billing dashboard",
+  "about": "The reference dashboard: groups of numbers with the charts and the lists that explain them, a saved-view toolbar, and the empty state before a dashboard is picked.",
+  "pattern": "Dashboard",
+  "section": "home-home-dashboards",
+  "props": { "meta": "Read 09:45 UTC", "stickyToolbar": true },
+  "states": ["ready", "empty"],
+  "copy": {
+    "arTitle": "Accounts receivable",
+    "billingTitle": "Billing this month",
+    "agingTitle": "Aging by bucket",
+    "revenueTitle": "Revenue by month",
+    "methodTitle": "Payments by method",
+    "accountsTitle": "Top accounts by balance",
+    "closeTitle": "Close checklist",
+    "emptyTitle": "No dashboard picked yet",
+    "emptyDescription": "Pick a saved dashboard from the view menu, or build one from the reports your team already runs.",
+    "emptyAction": "Browse saved dashboards"
+  },
+  "regions": {
+    "toolbar": [
+      {
+        "component": "Toolbar",
+        "props": {
+          "label": "Billing dashboard",
+          "searchPlaceholder": "Search this dashboard",
+          "onSearchChange": true,
+          "views": [
+            { "id": "billing", "label": "Billing Dashboard" },
+            { "id": "collections", "label": "Collections Dashboard" },
+            { "id": "revenue", "label": "Revenue Dashboard" }
+          ],
+          "view": "billing",
+          "onViewChange": true,
+          "filterCount": 1,
+          "onReset": true,
+          "onRefresh": true
+        },
+        "slots": {
+          "filters": [
+            {
+              "component": "Dropdown",
+              "props": {
+                "label": "Period",
+                "trigger": "filter",
+                "size": "sm",
+                "text": "Month to date",
+                "toggle": "on",
+                "onToggle": true,
+                "onSelect": true,
+                "items": [
+                  { "id": "mtd", "label": "Month to date", "selected": true },
+                  { "id": "qtd", "label": "Quarter to date" },
+                  { "id": "ytd", "label": "Year to date" }
+                ]
+              }
+            }
+          ],
+          "actions": [
+            {
+              "component": "Button",
+              "props": { "size": "sm", "emphasis": "strong", "intent": "brand", "iconStart": "add" },
+              "text": "New dashboard"
+            }
+          ]
+        }
+      }
+    ],
+    "content": [
+      {
+        "component": "Section",
+        "props": { "title": "$copy.arTitle", "collapsible": true },
+        "slots": {
+          "children": [
+            {
+              "component": "Scoreboard",
+              "props": {
+                "label": "Accounts receivable",
+                "items": [
+                  { "id": "open-ar", "title": "Open AR", "metric": "$1.2M", "trend": { "value": "3.2", "unit": "% MoM", "direction": "up", "status": "danger" }, "metadata": "412 invoices" },
+                  { "id": "overdue", "title": "Overdue", "metric": "$312k", "trend": { "value": "8.4", "unit": "% MoM", "direction": "up", "status": "danger" }, "metadata": "68 invoices" },
+                  { "id": "dso", "title": "DSO", "metric": "42", "trend": { "value": "5.2", "unit": "% MoM", "direction": "up", "status": "danger" }, "metadata": "Days, last 90" },
+                  { "id": "collection", "title": "Collection rate", "metric": "96%", "chart": { "points": [92, 93, 95, 94, 96, 96], "status": "success" }, "metadata": "Last 6 months" }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "component": "Section",
+        "props": { "title": "$copy.billingTitle", "collapsible": true },
+        "slots": {
+          "children": [
+            {
+              "component": "Scoreboard",
+              "props": {
+                "label": "Billing this month",
+                "items": [
+                  { "id": "billed", "title": "Billed", "metric": "$5.1M", "trend": { "value": "4.4", "unit": "% MoM", "direction": "up", "status": "success" }, "metadata": "1,284 invoices" },
+                  { "id": "payments", "title": "Payments received", "metric": "$4.2M", "trend": { "value": "5.1", "unit": "% MoM", "direction": "up", "status": "success" }, "metadata": "982 payments" },
+                  { "id": "credits", "title": "Credits applied", "metric": "$84k", "metadata": "126 accounts" },
+                  { "id": "unapplied", "title": "Unapplied cash", "metric": "$128k", "metadata": "41 payments" }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "component": "Section",
+        "props": { "title": "$copy.agingTitle", "collapsible": true },
+        "slots": {
+          "children": [
+            {
+              "component": "BarChart",
+              "props": {
+                "label": "Aging by bucket",
+                "title": "Open AR by age",
+                "showHeader": true,
+                "format": "currency",
+                "showGrid": true,
+                "categories": ["Current", "1-30", "31-60", "61-90", "91-120", "120+"],
+                "series": [
+                  { "name": "Open AR", "values": [884000, 182000, 68000, 34000, 18000, 14000], "intent": "cyan" }
+                ]
+              }
+            },
+            {
+              "component": "PieChart",
+              "props": {
+                "label": "$copy.methodTitle",
+                "title": "$copy.methodTitle",
+                "showHeader": true,
+                "donut": true,
+                "showTotal": true,
+                "format": "currency",
+                "data": [
+                  { "label": "ACH", "value": 2180400 },
+                  { "label": "Card", "value": 1284600 },
+                  { "label": "Wire", "value": 612300 },
+                  { "label": "Check", "value": 128900 }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "component": "Section",
+        "props": { "title": "$copy.revenueTitle", "collapsible": true },
+        "slots": {
+          "children": [
+            {
+              "component": "LineChart",
+              "props": {
+                "label": "Revenue by month",
+                "format": "currency",
+                "area": true,
+                "showPoints": true,
+                "showGrid": true,
+                "showLegend": true,
+                "categories": ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov"],
+                "series": [
+                  { "name": "Recurring", "values": [3400000, 3620000, 3810000, 4020000, 4240000, 4480000] },
+                  { "name": "Usage", "values": [820000, 910000, 880000, 1040000, 1120000, 1280000] }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "component": "Section",
+        "props": { "title": "$copy.accountsTitle", "collapsible": true },
+        "slots": {
+          "actions": [
+            { "component": "Button", "props": { "size": "sm", "emphasis": "minimal", "intent": "brand" }, "text": "View all accounts" }
+          ],
+          "children": [
+            {
+              "component": "Table",
+              "props": {
+                "caption": "The accounts carrying the most open balance.",
+                "rowLabel": "account",
+                "size": "sm",
+                "columns": [
+                  { "key": "account", "header": "Account", "emphasis": true },
+                  { "key": "current", "header": "Current", "numeric": true },
+                  { "key": "overdue", "header": "Overdue", "numeric": true },
+                  { "key": "total", "header": "Total", "numeric": true }
+                ],
+                "rows": [
+                  { "id": "apex", "account": "Apex Digital Services", "current": "$84,200", "overdue": "$17,750", "total": "$101,950" },
+                  { "id": "bright", "account": "Bright Future Labs", "current": "$61,080", "overdue": "$12,250", "total": "$73,330" },
+                  { "id": "northwind", "account": "Northwind Retail", "current": "$44,500", "overdue": "$25,570", "total": "$70,070" },
+                  { "id": "helios", "account": "Helios Cloud", "current": "$38,120", "overdue": "$7,520", "total": "$45,640" },
+                  { "id": "globex", "account": "Globex Corporation", "current": "$31,440", "overdue": "$0", "total": "$31,440" }
+                ],
+                "footer": { "label": "Top five", "value": "$322,430" }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "component": "Section",
+        "props": { "title": "$copy.closeTitle", "collapsible": true },
+        "slots": {
+          "children": [
+            {
+              "component": "Timeline",
+              "props": {
+                "label": "Close checklist",
+                "items": [
+                  { "id": "t1", "title": "Review and approve invoices", "timestamp": "Nov 4", "subtitle": "Jordan Ellis", "icon": "check_circle", "intent": "success" },
+                  { "id": "t2", "title": "Post recurring charges", "timestamp": "Nov 6", "subtitle": "Priya Raman", "icon": "check_circle", "intent": "success" },
+                  { "id": "t3", "title": "Reconcile unapplied cash", "timestamp": "Due Nov 28", "subtitle": "Billing Operations", "icon": "schedule", "intent": "warning" },
+                  { "id": "t4", "title": "Run revenue recognition", "timestamp": "Due Nov 30", "subtitle": "Finance", "icon": "schedule", "intent": "warning" }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "empty": [
+      {
+        "component": "EmptyState",
+        "props": {
+          "headingLevel": 2,
+          "icon": "monitoring",
+          "iconStyle": "well",
+          "title": "$copy.emptyTitle",
+          "description": "$copy.emptyDescription"
+        },
+        "slots": {
+          "actions": [
+            {
+              "component": "Button",
+              "props": { "size": "sm", "iconStart": "dashboard" },
+              "text": "$copy.emptyAction"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

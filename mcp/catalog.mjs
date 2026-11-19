@@ -332,6 +332,8 @@ export function getRules() {
     "Use layout classes from src/tokens/layout.css (.layout-content, .layout-stack, .layout-split) — do not invent per-page grids.",
     "Match closed enums in contracts. Color role prop is intent (never tone). Button uses emphasis × intent only.",
     "Icons: Google Material Symbols Outlined via the Icon component only.",
+    "Write the screen as a JSON spec first (docs/references has examples), check it with validate_spec, build it with npm run build-screen -- <spec.json>, then npm run loop -- <spec.json> until review_ui passes.",
+    "Never hand back a screen that fails review_ui.",
   ];
 
   const documents = {};

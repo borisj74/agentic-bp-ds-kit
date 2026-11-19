@@ -10,7 +10,7 @@ const repoRoot = resolve(import.meta.dirname, "..");
 const mcpEntry = resolve(repoRoot, "bin/mcp.mjs");
 const cliEntry = resolve(repoRoot, "bin/agentic-bp-ds-kit.mjs");
 
-const TOOL_NAMES = ["get", "get_rules", "get_tokens", "list", "review_ui", "search"];
+const TOOL_NAMES = ["get", "get_rules", "get_tokens", "list", "review_ui", "search", "validate_spec"];
 const LEVELS = ["atom", "molecule", "organism", "template"];
 
 let client: Client;
@@ -56,13 +56,35 @@ describe("MCP server", () => {
     await client?.close();
   });
 
-  it("exposes the six read-only tools", async () => {
+  it("exposes the seven read-only tools", async () => {
     const listed = await client.listTools();
     expect(listed.tools.map((tool) => tool.name).sort()).toEqual(TOOL_NAMES);
     for (const tool of listed.tools) {
       expect(tool.description?.length ?? 0).toBeGreaterThan(20);
       expect(tool.annotations?.readOnlyHint).toBe(true);
     }
+  });
+
+  it("validate_spec reads a spec file in the repo", async () => {
+    const data = await callTool<{ ok: boolean; errors: unknown[]; pattern: string }>("validate_spec", {
+      path: "docs/references/usage-overview.json",
+    });
+    expect(data.ok).toBe(true);
+    expect(data.errors).toEqual([]);
+    expect(data.pattern).toBe("ListPage");
+  });
+
+  it("validate_spec says what is wrong with a spec before any code is written", async () => {
+    const data = await callTool<{ ok: boolean; errors: { path: string; message: string }[] }>("validate_spec", {
+      spec: {
+        name: "broken",
+        title: "Broken",
+        pattern: "ListPage",
+        regions: { content: [{ component: "DataTable", props: {} }] },
+      },
+    });
+    expect(data.ok).toBe(false);
+    expect(data.errors.map((issue) => issue.path)).toContain("regions.content[0].component");
   });
 
   it("list returns components and patterns from the index", async () => {

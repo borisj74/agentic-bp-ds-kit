@@ -1,0 +1,179 @@
+{
+  "name": "usage-overview",
+  "title": "Usage overview",
+  "about": "Billing usage for the month: the totals, usage by account, and the empty state when no account has metered usage yet.",
+  "pattern": "ListPage",
+  "section": "mediation-usage-data",
+  "breadcrumbs": ["Mediation"],
+  "states": ["ready", "empty"],
+  "copy": {
+    "summaryTitle": "This month",
+    "emptyTitle": "No metered usage yet",
+    "emptyDescription": "Usage appears here once a rated account sends its first metered event. Check the usage feed if you expected events today.",
+    "emptyAction": "Open usage feed",
+    "searchPlaceholder": "Search account or product"
+  },
+  "regions": {
+    "above": [
+      {
+        "component": "Section",
+        "props": { "title": "$copy.summaryTitle", "collapsible": true },
+        "slots": {
+          "children": [
+            {
+              "component": "Scoreboard",
+              "props": {
+                "label": "Usage totals",
+                "items": [
+                  {
+                    "id": "rated",
+                    "title": "Rated usage",
+                    "metric": "$482,900",
+                    "trend": { "value": "6.4", "unit": "% MoM", "direction": "up", "status": "success" },
+                    "metadata": "128 accounts"
+                  },
+                  {
+                    "id": "unrated",
+                    "title": "Unrated events",
+                    "metric": "1.4M",
+                    "trend": { "value": "2.1", "unit": "% MoM", "direction": "down", "status": "success" },
+                    "metadata": "Rated nightly"
+                  },
+                  {
+                    "id": "overage",
+                    "title": "Overage charges",
+                    "metric": "$61,250",
+                    "trend": { "value": "11.8", "unit": "% MoM", "direction": "up", "status": "danger" },
+                    "metadata": "19 accounts over plan"
+                  },
+                  {
+                    "id": "credits",
+                    "title": "Usage credits applied",
+                    "metric": "$24,180",
+                    "metadata": "32 accounts"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "toolbar": [
+      {
+        "component": "Toolbar",
+        "props": {
+          "label": "Usage by account",
+          "searchPlaceholder": "$copy.searchPlaceholder",
+          "onSearchChange": true,
+          "filterCount": 1,
+          "onReset": true,
+          "onRefresh": true
+        },
+        "slots": {
+          "filters": [
+            {
+              "component": "Dropdown",
+              "props": {
+                "label": "Product",
+                "trigger": "filter",
+                "size": "sm",
+                "text": "Platform API",
+                "toggle": "on",
+                "onToggle": true,
+                "onSelect": true,
+                "items": [
+                  { "id": "api", "label": "Platform API", "selected": true },
+                  { "id": "storage", "label": "Storage" },
+                  { "id": "support", "label": "Support hours" }
+                ]
+              }
+            },
+            {
+              "component": "Dropdown",
+              "props": {
+                "label": "Plan",
+                "trigger": "filter",
+                "size": "sm",
+                "onSelect": true,
+                "items": [
+                  { "id": "enterprise", "label": "Enterprise" },
+                  { "id": "growth", "label": "Growth" },
+                  { "id": "starter", "label": "Starter" }
+                ]
+              }
+            }
+          ],
+          "actions": [
+            {
+              "component": "Button",
+              "props": { "size": "sm", "emphasis": "strong", "intent": "brand", "iconStart": "download" },
+              "text": "Export usage"
+            }
+          ]
+        }
+      }
+    ],
+    "content": [
+      {
+        "component": "Table",
+        "props": {
+          "caption": "Metered usage by account for this month.",
+          "rowLabel": "account",
+          "columns": [
+            { "key": "account", "header": "Account", "emphasis": true },
+            { "key": "plan", "header": "Plan" },
+            { "key": "product", "header": "Product" },
+            { "key": "quantity", "header": "Quantity", "numeric": true },
+            { "key": "rated", "header": "Rated", "numeric": true },
+            { "key": "overage", "header": "Overage", "numeric": true }
+          ],
+          "rows": [
+            { "id": "apex", "account": "Apex Digital Services", "plan": "Enterprise", "product": "Platform API", "quantity": "4,820,400", "rated": "$96,408", "overage": "$12,400" },
+            { "id": "northwind", "account": "Northwind Holdings", "plan": "Enterprise", "product": "Platform API", "quantity": "3,114,250", "rated": "$74,742", "overage": "$8,120" },
+            { "id": "helios", "account": "Helios Cloud", "plan": "Growth", "product": "Storage", "quantity": "812,900", "rated": "$41,220", "overage": "$6,480" },
+            { "id": "globex", "account": "Globex Corporation", "plan": "Growth", "product": "Platform API", "quantity": "640,120", "rated": "$32,006", "overage": "$0" },
+            { "id": "umbrella", "account": "Umbrella Health", "plan": "Enterprise", "product": "Support hours", "quantity": "1,240", "rated": "$28,520", "overage": "$3,100" },
+            { "id": "initech", "account": "Initech Group", "plan": "Starter", "product": "Storage", "quantity": "98,400", "rated": "$9,840", "overage": "$1,250" },
+            { "id": "stark", "account": "Stark Logistics", "plan": "Growth", "product": "Platform API", "quantity": "402,660", "rated": "$20,133", "overage": "$0" },
+            { "id": "soylent", "account": "Soylent Foods", "plan": "Starter", "product": "Platform API", "quantity": "61,080", "rated": "$6,108", "overage": "$640" }
+          ],
+          "footer": { "label": "Total rated", "value": "$308,977" }
+        }
+      }
+    ],
+    "pagination": [
+      {
+        "component": "Pagination",
+        "props": {
+          "label": "Usage pages",
+          "total": 128,
+          "page": 1,
+          "pageSize": 25,
+          "onPageChange": true,
+          "onPageSizeChange": true
+        }
+      }
+    ],
+    "empty": [
+      {
+        "component": "EmptyState",
+        "props": {
+          "headingLevel": 2,
+          "icon": "speed",
+          "title": "$copy.emptyTitle",
+          "description": "$copy.emptyDescription"
+        },
+        "slots": {
+          "actions": [
+            {
+              "component": "Button",
+              "props": { "size": "sm", "iconStart": "open_in_new" },
+              "text": "$copy.emptyAction"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

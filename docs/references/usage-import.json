@@ -1,0 +1,169 @@
+{
+  "name": "usage-import",
+  "title": "Import usage",
+  "about": "The reference guided process: one step of a four-step import, with the process header, the step drawer, the form for this step, and the footer that saves and moves on.",
+  "pattern": "GuidedProcessPage",
+  "section": "mediation-usage-reload",
+  "props": { "view": "step", "side": "end", "stepsOpen": false, "onStepsClose": true },
+  "copy": {
+    "stepTitle": "Map the columns",
+    "updated": "Last saved on 18 November, 14:02"
+  },
+  "regions": {
+    "header": [
+      {
+        "component": "GuidedProcess",
+        "props": {
+          "part": "header",
+          "title": "Import usage",
+          "stepTitle": "$copy.stepTitle",
+          "current": 2,
+          "total": 4,
+          "onStepsOpen": true
+        }
+      }
+    ],
+    "steps": [
+      {
+        "component": "GuidedProcess",
+        "props": {
+          "part": "steps",
+          "current": 2,
+          "side": "end",
+          "onClose": true,
+          "steps": [
+            { "title": "Pick the file", "status": "success", "statusText": "1,284 rows read" },
+            {
+              "title": "Map the columns",
+              "tasks": [
+                { "label": "Match the account column", "done": true },
+                { "label": "Match the product column", "done": true },
+                { "label": "Match the quantity column" },
+                { "label": "Set the usage date format" }
+              ]
+            },
+            { "title": "Check the rows" },
+            { "title": "Rate and post" }
+          ]
+        }
+      }
+    ],
+    "content": [
+      {
+        "component": "Form",
+        "props": {
+          "id": "map-columns",
+          "title": "Match each column to a usage field",
+          "description": "The file's first row is read as its column names. A column left unmatched is ignored.",
+          "labelPosition": "start",
+          "labelWidth": "md",
+          "columns": 2,
+          "onSubmit": true
+        },
+        "slots": {
+          "children": [
+            {
+              "component": "Select",
+              "props": {
+                "label": "Account",
+                "name": "account",
+                "required": true,
+                "value": "customer_id",
+                "onChange": true,
+                "options": [
+                  { "value": "customer_id", "label": "customer_id" },
+                  { "value": "account_ref", "label": "account_ref" },
+                  { "value": "billing_code", "label": "billing_code" }
+                ]
+              }
+            },
+            {
+              "component": "Select",
+              "props": {
+                "label": "Product",
+                "name": "product",
+                "required": true,
+                "value": "sku",
+                "onChange": true,
+                "options": [
+                  { "value": "sku", "label": "sku" },
+                  { "value": "product_code", "label": "product_code" },
+                  { "value": "service", "label": "service" }
+                ]
+              }
+            },
+            {
+              "component": "Select",
+              "props": {
+                "label": "Quantity",
+                "name": "quantity",
+                "required": true,
+                "placeholder": "Pick a column",
+                "onChange": true,
+                "options": [
+                  { "value": "qty", "label": "qty" },
+                  { "value": "units", "label": "units" },
+                  { "value": "calls", "label": "calls" }
+                ]
+              }
+            },
+            {
+              "component": "Select",
+              "props": {
+                "label": "Usage date",
+                "name": "date",
+                "value": "event_time",
+                "onChange": true,
+                "options": [
+                  { "value": "event_time", "label": "event_time" },
+                  { "value": "posted_at", "label": "posted_at" }
+                ]
+              }
+            },
+            {
+              "component": "Select",
+              "props": {
+                "label": "Date format",
+                "name": "format",
+                "required": true,
+                "placeholder": "Pick a format",
+                "hint": "The file's first row reads 2026-11-02T04:12:00Z.",
+                "onChange": true,
+                "options": [
+                  { "value": "iso", "label": "ISO 8601 (2026-11-02T04:12:00Z)" },
+                  { "value": "ymd", "label": "YYYY-MM-DD" },
+                  { "value": "mdy", "label": "MM/DD/YYYY" }
+                ]
+              }
+            },
+            {
+              "component": "Input",
+              "props": {
+                "label": "Unmatched columns",
+                "name": "unmatched",
+                "value": "region, source_system",
+                "readOnly": true,
+                "help": "These columns are read but not imported."
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "footer": [
+      {
+        "component": "GuidedProcess",
+        "props": {
+          "part": "footer",
+          "updated": "$copy.updated",
+          "onAction": true,
+          "actions": [
+            { "id": "cancel", "label": "Cancel", "emphasis": "minimal" },
+            { "id": "back", "label": "Back", "icon": "arrow_back", "emphasis": "subtle" },
+            { "id": "next", "label": "Save and continue", "icon": "arrow_forward", "emphasis": "strong", "intent": "brand", "type": "submit" }
+          ]
+        }
+      }
+    ]
+  }
+}

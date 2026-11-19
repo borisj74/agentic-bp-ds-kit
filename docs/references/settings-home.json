@@ -1,0 +1,102 @@
+{
+  "name": "settings-home",
+  "title": "Settings",
+  "about": "The reference home that sends people onwards: a notice that needs acting on, then one NavTile per place, each in its own colour so the same tile is found again by sight.",
+  "pattern": "SettingsPage",
+  "section": "settings",
+  "copy": {
+    "notice": "Two users have not signed in for 90 days. Review them before the next access audit on 1 December.",
+    "noticeAction": "Review users"
+  },
+  "regions": {
+    "intro": [
+      {
+        "component": "Callout",
+        "props": { "intent": "warning", "closeButton": true, "onDismiss": true, "actionLabel": "$copy.noticeAction", "onAction": true },
+        "text": "$copy.notice"
+      }
+    ],
+    "content": [
+      {
+        "component": "NavTile",
+        "props": {
+          "title": "Security and users",
+          "description": "Roles, sharing groups, approvals and user management.",
+          "icon": "shield_person",
+          "intent": "red",
+          "href": "#"
+        }
+      },
+      {
+        "component": "NavTile",
+        "props": {
+          "title": "Billing settings",
+          "description": "Invoice numbering, billing periods, dunning and payment terms.",
+          "icon": "receipt_long",
+          "intent": "brand",
+          "href": "#"
+        }
+      },
+      {
+        "component": "NavTile",
+        "props": {
+          "title": "Products and rating",
+          "description": "Rate classes, price lists, usage identifiers and rating rules.",
+          "icon": "inventory_2",
+          "intent": "cyan",
+          "href": "#"
+        }
+      },
+      {
+        "component": "NavTile",
+        "props": {
+          "title": "Revenue recognition",
+          "description": "Revenue contracts, schedules, templates and the close calendar.",
+          "icon": "savings",
+          "intent": "green",
+          "href": "#"
+        }
+      },
+      {
+        "component": "NavTile",
+        "props": {
+          "title": "Integrations",
+          "description": "Payment gateways, tax engines, ledgers and outbound files.",
+          "icon": "sync_alt",
+          "intent": "purple",
+          "href": "#"
+        }
+      },
+      {
+        "component": "NavTile",
+        "props": {
+          "title": "Data and imports",
+          "description": "Imports, exports, scheduled jobs and the data dictionary.",
+          "icon": "database",
+          "intent": "orange",
+          "href": "#"
+        }
+      },
+      {
+        "component": "NavTile",
+        "props": {
+          "title": "Notifications",
+          "description": "Email templates, alert groups and who hears about what.",
+          "icon": "notifications",
+          "intent": "yellow",
+          "href": "#"
+        }
+      },
+      {
+        "component": "NavTile",
+        "props": {
+          "title": "Audit and logs",
+          "description": "Change history, login records and the API call log.",
+          "icon": "history",
+          "intent": "gray",
+          "href": "#"
+        }
+      }
+    ]
+  }
+}

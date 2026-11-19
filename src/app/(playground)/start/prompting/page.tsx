@@ -73,6 +73,7 @@ export default function Prompting() {
                   Typing it at the start of a message tells the assistant to build the screen the kit&apos;s way:
                 </p>
                 <ol>
+                  <li>Write the screen as a JSON spec first, copied from <code>docs/references/</code>.</li>
                   <li>Look the screen up in the kit&apos;s index, <code>contracts/index.json</code>.</li>
                   <li>Read only the contracts for the pieces it needs.</li>
                   <li>Use a pattern when one fits the screen, instead of laying it out by hand.</li>
@@ -81,6 +82,18 @@ export default function Prompting() {
                 </ol>
                 <p>Begin with the skill, the pattern and one sentence about the screen:</p>
                 <CodeBlock wrap code="/prototype-from-kit A Contracts list using ListPage inside AppShell, for finance managers who review renewals." />
+                <p>
+                  The screen is written as a spec before it is written as code: one pattern, its regions filled with
+                  kit components, the copy and the states. The assistant checks that spec with the{" "}
+                  <code>validate_spec</code> MCP tool, so an unknown component or a value no contract allows fails
+                  before a line of the screen exists. Then it builds and runs the loop:
+                </p>
+                <CodeBlock wrap code={"npm run build-screen -- docs/references/usage-overview.json\nnpm run loop -- docs/references/usage-overview.json"} />
+                <p>
+                  The loop renders the screen, reviews its code and the page the server serves, photographs every state
+                  in light and dark, and repairs what is mechanical — writing those repairs back into the spec. Ask for
+                  a change to the spec, not to the generated page: the next build overwrites it.
+                </p>
               </div>
             </Section>
           </div>
@@ -164,6 +177,7 @@ export default function Prompting() {
                 <CodeBlock code="npm run review -- src/app/invoices/page.tsx" />
                 <ul>
                   <li><strong>Fix every error it reports.</strong> Warnings are advice: read them and decide.</li>
+                  <li><strong>For a screen built from a spec,</strong> <code>npm run loop -- &lt;spec.json&gt;</code> runs this check for you, on the code and on the running page, and leaves a report in <code>reports/loop/</code>.</li>
                   <li><strong>Ask the assistant to check it in the browser</strong> and show you a screenshot before you review.</li>
                   <li><strong>Try it at phone and tablet widths,</strong> and in dark mode from the top bar.</li>
                   <li><strong>Click through it:</strong> menus open, dialogs close with Escape, forms show errors, buttons do what they say.</li>
@@ -196,6 +210,7 @@ export default function Prompting() {
                   <li>Said which button is the strong brand one, and which states to show.</li>
                   <li>Said which widths matter.</li>
                   <li>Asked for a plan first on anything bigger than one screen.</li>
+                  <li>Wrote the spec first and ran <code>validate_spec</code> before any code.</li>
                   <li>Ran <code>npm run review</code> on the screen and fixed the errors.</li>
                   <li>Checked it in the browser at every width before calling it done.</li>
                 </ul>

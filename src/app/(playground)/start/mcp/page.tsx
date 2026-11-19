@@ -34,6 +34,7 @@ const TOOLS: { name: string; args: string; returns: string }[] = [
   { name: "search", args: "query", returns: "Pieces that match every word of the query" },
   { name: "get_tokens", args: "category, theme", returns: "Semantic colour roles and their values" },
   { name: "get_rules", args: "none", returns: "The kit rules, CLAUDE.md and AGENTS.md" },
+  { name: "validate_spec", args: "spec, or path", returns: "What is wrong with a screen spec, before any code is written" },
   { name: "review_ui", args: "path, or code and filename, or url", returns: "What a screen gets wrong against the contracts, in its code or running" },
 ];
 
@@ -101,7 +102,7 @@ export default function McpServer() {
                   Each editor starts the server itself, so it takes one setting and nothing to run. Put the real path
                   to your clone in, and use an absolute one — the server reads the repository it was started from, so
                   it does not matter which folder you are in. Restart the editor after adding it; the server then shows
-                  up as <code>agentic-bp-ds-kit</code> with the six tools below.
+                  up as <code>agentic-bp-ds-kit</code> with the seven tools below.
                 </p>
               </div>
               <Section title="Claude Code" line="thin">
@@ -131,7 +132,7 @@ export default function McpServer() {
             <Section title="Tools">
               <div className={docs.prose}>
                 <p>
-                  Six read-only tools. <code>list</code>, <code>get</code> and <code>search</code> serve{" "}
+                  Seven read-only tools. <code>list</code>, <code>get</code> and <code>search</code> serve{" "}
                   <strong>components and screen patterns together</strong>, each row labelled with its{" "}
                   <code>kind</code>: the kit&apos;s first rule for a screen is to use the pattern that covers it, and an
                   assistant that cannot see the patterns cannot follow it.
@@ -148,7 +149,15 @@ export default function McpServer() {
                   takes two optional filters: <code>category</code> — background, border, icon, link, outline, surface
                   or text — and <code>theme</code>: light, dark or both.
                 </p>
-                <Table size="sm" columns={TOOL_COLUMNS} rows={toolRows} caption="The six MCP tools" />
+                <p>
+                  A screen is written as a spec first: <code>validate_spec</code> reads it against the contracts and
+                  answers with every error and its fix, so a screen that could not be built fails before a line of it
+                  exists. Then <code>npm run build-screen -- &lt;spec.json&gt;</code> writes the page and{" "}
+                  <code>npm run loop -- &lt;spec.json&gt;</code> renders, reviews and photographs it until{" "}
+                  <code>review_ui</code> passes. Nine worked specs are in <code>docs/references/</code>, one per screen
+                  pattern.
+                </p>
+                <Table size="sm" columns={TOOL_COLUMNS} rows={toolRows} caption="The seven MCP tools" />
                 <p>
                   Ask for something the kit does not have and you get a plain answer, not an invention:{" "}
                   <code>get</code> with <code>{'{ "name": "Nope" }'}</code> replies{" "}
