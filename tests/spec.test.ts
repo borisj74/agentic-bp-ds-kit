@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { regionsOf, navIds, takenRoutes, validateSpec } from "../scripts/spec/schema.mjs";
 import { checkItem, parseItemShape } from "../scripts/spec/shape.mjs";
 import { renderScreen, screenFiles } from "../scripts/spec/render.mjs";
-import { fixSpec } from "../scripts/spec/fix.mjs";
+import { fixSpec, repairRawValue } from "../scripts/spec/fix.mjs";
 import { piece } from "../scripts/review/catalog.mjs";
 import { reviewSource } from "../scripts/review/index.mjs";
 
@@ -15,8 +15,9 @@ type Checked = { ok: boolean; errors: Issue[]; warnings: Issue[]; pattern?: stri
 type Draft = Record<string, any>;
 
 const check = (draft: Draft): Checked => validateSpec(draft) as unknown as Checked;
+type Fix = { rule: string; what: string };
 const repair = (draft: Draft) =>
-  fixSpec(draft) as unknown as { spec: Draft; fixes: { rule: string; what: string }[] };
+  fixSpec(draft) as unknown as { spec: Draft; fixes: Fix[]; report: Fix[] };
 const render = (draft: Draft): string => renderScreen(draft) as unknown as string;
 const screens = (draft: Draft) => screenFiles(draft) as unknown as { file: string; code: string; route: string }[];
 const review = (code: string, file: string) => reviewSource(code, file) as unknown as { severity: string }[];
@@ -433,5 +434,82 @@ describe("the MCP server", () => {
     const source = readFileSync(join(REPO, "bin", "mcp.mjs"), "utf8");
     expect(source).toContain('"validate_spec"');
     expect(source).toContain("validateSpecFile");
+  });
+});
+
+// A shorthand holds more than one value, so the repair replaces the raw parts of it and nothing else:
+// `8px 16px` comes back with two parts, not with one token where both used to be.
+describe("the raw parts of one value", () => {
+  type Repair = { value: string; tokens: string[]; unresolved: string[]; whole: boolean } | null;
+  const repairValue = (property: string, value: string) => repairRawValue({ property, value }) as unknown as Repair;
+
+  it("replaces each px amount in a shorthand and keeps its shape", () => {
+    expect(repairValue("padding", "8px 16px")).toMatchObject({
+      value: "var(--space-xsmall) var(--space-medium)",
+      unresolved: [],
+    });
+    expect(repairValue("margin", "0 auto 12px")).toMatchObject({
+      value: "0 auto var(--space-small)",
+      unresolved: [],
+    });
+  });
+
+  it("replaces the colour in a border and leaves the width it has no token for", () => {
+    const hit = repairValue("border", "1px solid #ccc");
+    expect(hit?.value).toMatch(/^1px solid var\(--border-/);
+    expect(hit?.value.split(" ")).toHaveLength(3);
+    expect(hit?.unresolved).toEqual(["1px"]);
+  });
+
+  it("leaves a shadow whole, since its parts mean nothing on their own", () => {
+    expect(repairValue("box-shadow", "0 2px 4px rgba(0,0,0,.2)")).toEqual({
+      value: "0 2px 4px rgba(0,0,0,.2)",
+      tokens: [],
+      unresolved: ["0 2px 4px rgba(0,0,0,.2)"],
+      whole: true,
+    });
+  });
+
+  it("still answers for one raw value, and says nothing about a value that is already a token", () => {
+    expect(repairValue("padding", "13px")?.value).toBe("var(--space-small)");
+    expect(repairValue("border-radius", "5px")?.value).toBe("var(--radius-medium)");
+    expect(repairValue("margin-top", "var(--space-medium)")).toBeNull();
+    expect(repairValue("width", "calc(100% - 13px)")).toBeNull();
+    expect(repairValue("padding", "0")).toBeNull();
+  });
+});
+
+describe("the shorthands a style prop holds", () => {
+  const styled = (style: Record<string, string | number>) => {
+    const draft = spec();
+    draft.regions.content[0].props.style = style;
+    return repair(draft);
+  };
+  const styleOf = (fixed: Draft) => fixed.regions.content[0].props.style;
+
+  it("keeps the shape of every shorthand it repairs", () => {
+    const { spec: fixed } = styled({
+      padding: "8px 16px",
+      margin: "0 auto 12px",
+      border: "1px solid #ccc",
+      boxShadow: "0 2px 4px rgba(0,0,0,.2)",
+    });
+    const style = styleOf(fixed);
+    expect(style.padding).toBe("var(--space-xsmall) var(--space-medium)");
+    expect(style.margin).toBe("0 auto var(--space-small)");
+    expect(style.border).toMatch(/^1px solid var\(--border-/);
+    expect(style.boxShadow).toBe("0 2px 4px rgba(0,0,0,.2)");
+  });
+
+  it("reads a bare number as px, the way React does", () => {
+    expect(styleOf(styled({ borderRadius: 5 }).spec).borderRadius).toBe("var(--radius-medium)");
+  });
+
+  it("reports the shadow and the border width for a person, rather than guessing at them", () => {
+    const { report } = styled({ border: "1px solid #ccc", boxShadow: "0 2px 4px rgba(0,0,0,.2)" });
+    expect(report.map((item) => item.rule)).toEqual(["bp/raw-value", "bp/raw-value"]);
+    expect(report[0].what).toContain('still holds "1px"');
+    expect(report[1].what).toContain("A shadow is one token or nothing");
+    expect(report[1].what).toContain("var(--shadow-raised)");
   });
 });

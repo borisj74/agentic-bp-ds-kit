@@ -21,6 +21,7 @@ Result: **pass**
 | bp/no-tags | pass | 0 | 0 |
 | bp/landmark | pass | 0 | 0 |
 | bp/no-pattern | pass | 0 | 0 |
+| bp/typecheck | pass | 0 | 0 |
 
 ## Attempts
 
@@ -43,5 +44,9 @@ Nothing to fix.
 ## Repairs written back to the spec
 
 The spec was built as it was written: `docs/references/usage-overview.json` is unchanged.
+
+## Left for a person
+
+Nothing: every raw value the loop met had a token it could write.
 
 Served by next dev with `NEXT_PUBLIC_BP_INSPECT=1`.

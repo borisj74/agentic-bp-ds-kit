@@ -43,6 +43,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# the project the loop writes to type-check the pages it just built, removed when it is done
+.tsconfig.loop-*.json
 
 # token audit report (npm run audit:tokens)
 token-audit.json
