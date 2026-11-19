@@ -14,7 +14,8 @@
 import { piece, repoRoot } from "../review/catalog.mjs";
 import { CONTENT_REGION, ABOVE_REGION, resolveCopy } from "./schema.mjs";
 
-const isNodeProp = (prop) => prop?.type === "ReactNode";
+const isNodeProp = (prop) => prop?.type === "ReactNode" || prop?.type === "ReactNode[]";
+const isNodeListProp = (prop) => prop?.type === "ReactNode[]";
 const isHandlerProp = (prop) => prop?.type === "function" || /=>/.test(String(prop?.type ?? ""));
 
 /** Where the frame's own nav constants come from. Every screen passes the whole side nav. */
@@ -65,7 +66,14 @@ function attribute(name, prop, value, pad) {
  * A slot as a JSX attribute: one child inline, several wrapped in a fragment.
  * `render` draws one child at the padding it is given.
  */
-function slotAttribute(name, nodes, pad, render) {
+function slotAttribute(name, nodes, pad, render, { list = false } = {}) {
+  // A prop typed ReactNode[] takes an array, and each item in an array needs its own key.
+  if (list) {
+    const items = nodes
+      .map((node, i) => place(render(node, pad + "      "), pad + "      ").replace(/^(\s*<[A-Za-z]+)/, `$1 key="${name}-${i}"`))
+      .join(",\n");
+    return `${name}={[\n${items},\n${pad}  ]}`;
+  }
   if (nodes.length === 1) return `${name}={\n${place(render(nodes[0], pad + "    "), pad + "    ")}\n${pad}  }`;
   const inner = nodes.map((node) => place(render(node, pad + "      "), pad + "      ")).join("\n");
   return `${name}={\n${pad}    <>\n${inner}\n${pad}    </>\n${pad}  }`;
@@ -145,8 +153,13 @@ export function renderScreen(spec, { state = "ready", specPath = null, root = re
   if (!pattern || pattern.kind !== "pattern") throw new Error(`"${spec.pattern}" is not a pattern in this kit.`);
 
   const copy = spec.copy ?? {};
-  const used = new Set(["AppShell", "AppHeader", "AppNav", "PageHeader", pattern.name]);
-  // PageHeader is always used: either the frame draws it, or the pattern's own header region does.
+  const regionsGiven = spec.regions ?? {};
+  // A pattern with a filled header region draws the page's own header — a PageHeader on FormPage, the
+  // GuidedProcess header on a guided process — so the frame does not draw a second one: a screen has
+  // one h1, and it only imports PageHeader when it draws one itself.
+  const ownsHeader = (regionsGiven.header ?? []).length > 0 && isNodeProp((pattern.props ?? {}).header);
+  const used = new Set(["AppShell", "AppHeader", "AppNav", pattern.name]);
+  if (!ownsHeader) used.add("PageHeader");
   const regions = spec.regions ?? {};
   const pad = "        ";
   const draw = (node, nodePad) => renderNode(node, { copy, used, pad: nodePad, root });
@@ -159,27 +172,22 @@ export function renderScreen(spec, { state = "ready", specPath = null, root = re
   for (const [name, prop] of Object.entries(pattern.props ?? {})) {
     if (name === "children" || !isNodeProp(prop)) continue;
     const nodes = regions[name] ?? [];
-    if (nodes.length > 0) attrs.push(slotAttribute(name, nodes, pad, draw));
+    if (nodes.length > 0) attrs.push(slotAttribute(name, nodes, pad, draw, { list: isNodeListProp(prop) }));
   }
 
   const content = (regions[CONTENT_REGION] ?? []).map((node) => place(draw(node, pad + "  "), pad + "  "));
   const above = (regions[ABOVE_REGION] ?? []).map((node) => place(draw(node, pad), pad));
-
-  // A pattern that draws its own PageHeader (FormPage does) owns the page title, so the frame does not
-  // draw a second one: a screen has one h1.
-  const ownsHeader = (regions.header ?? []).some((node) => node.component === "PageHeader");
 
   const crumbs = [
     '{ label: "Home", href: "#" }',
     ...(spec.breadcrumbs ?? []).map((label) => `{ label: ${JSON.stringify(label)}, href: "#" }`),
   ];
 
+  // A pattern that takes no children (ListDetail) closes itself: everything it draws is in a region.
   const patternJsx = [
     `${pad}<${pattern.name}`,
     ...attrs.map((a) => `${pad}  ${a}`),
-    `${pad}>`,
-    ...content,
-    `${pad}</${pattern.name}>`,
+    ...(content.length === 0 ? [`${pad}/>`] : [`${pad}>`, ...content, `${pad}</${pattern.name}>`]),
   ].join("\n");
 
   const source = specPath ? ` from ${specPath}` : "";

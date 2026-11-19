@@ -112,7 +112,8 @@ export function navIds(root = repoRoot) {
 
 // ---- the contracts -------------------------------------------------------------------------------
 
-const isNodeProp = (prop) => prop?.type === "ReactNode";
+// A prop that takes components: one node, or a list of them (GuidedProcessPage intro).
+const isNodeProp = (prop) => prop?.type === "ReactNode" || prop?.type === "ReactNode[]";
 
 /**
  * The closed set a field of an itemShape allows, when the contract writes one.
@@ -129,12 +130,18 @@ export function shapeEnum(description) {
 }
 const isHandlerProp = (prop) => prop?.type === "function" || /=>/.test(String(prop?.type ?? ""));
 
-/** The regions a pattern has: its ReactNode props, plus content for its children and above for the frame. */
+/**
+ * The regions a pattern has: its props that take components, plus above for the frame and, when the
+ * pattern takes children, content for them. A pattern with no children (ListDetail) has no content
+ * region: everything it draws goes in a named one.
+ */
 export function regionsOf(pattern) {
-  const nodes = Object.entries(pattern.props ?? {})
+  const props = pattern.props ?? {};
+  const nodes = Object.entries(props)
     .filter(([name, prop]) => name !== "children" && isNodeProp(prop))
     .map(([name]) => name);
-  return [ABOVE_REGION, CONTENT_REGION, ...nodes.sort()];
+  const content = isNodeProp(props.children) ? [CONTENT_REGION] : [];
+  return [ABOVE_REGION, ...content, ...nodes.sort()];
 }
 
 function copyLimit(key) {
@@ -345,12 +352,18 @@ export function validateSpec(input, { root = repoRoot } = {}) {
     nodes.forEach((node, i) => checkNode(node, `regions.${region}[${i}]`));
   }
 
-  if (!spec.regions?.[CONTENT_REGION]?.length)
+  const takesChildren = isNodeProp(patternProps.children);
+  if (takesChildren && !spec.regions?.[CONTENT_REGION]?.length)
     fail(`regions.${CONTENT_REGION}`, "The pattern has nothing in it.", `Put the screen's rows, groups or form under regions.${CONTENT_REGION}.`);
+  if (!takesChildren && Object.values(spec.regions ?? {}).every((nodes) => nodes.length === 0))
+    fail("regions", "The pattern has nothing in it.", `Fill its regions: ${regions.join(", ")}.`);
 
   if (primaries > 1)
     fail("regions", `${primaries} strong brand Buttons on one screen.`, "Keep one; make the rest subtle neutral, or minimal.");
-  if (primaries === 0) warn("regions", "No strong brand Button on the screen.", "Give the screen its one main action, if it has one.");
+  // A pattern whose own parts include a Button is expected to carry the screen's main action. A home
+  // of tiles (SettingsPage) is not, so it is not asked for one.
+  if (primaries === 0 && (pattern.composes ?? []).includes("Button"))
+    warn("regions", "No strong brand Button on the screen.", "Give the screen its one main action, if it has one.");
 
   for (const state of states) {
     if (state === "ready") continue;

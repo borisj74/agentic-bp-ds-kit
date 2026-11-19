@@ -21,6 +21,7 @@ const specFiles = readdirSync(REFERENCES).filter((name) => name.endsWith(".json"
 
 type Spec = {
   name: string;
+  pattern?: string;
   state?: string;
   states?: string[];
   [key: string]: unknown;
@@ -29,15 +30,30 @@ type Spec = {
 const read = (file: string): Spec => JSON.parse(readFileSync(join(REFERENCES, file), "utf8"));
 
 describe("the reference specs", () => {
-  it("are there, one per screen the kit is asked for most", () => {
+  it("are there, one per screen pattern a spec can build", () => {
     expect(specFiles).toEqual([
       "account-create.json",
       "account-record.json",
+      "approvals-queue.json",
       "billing-dashboard.json",
       "invoices-list.json",
       "payments-empty.json",
+      "settings-home.json",
+      "usage-import.json",
       "usage-overview.json",
     ]);
+  });
+
+  it("cover every screen pattern the kit has", () => {
+    // AppShell is the frame every screen already uses, AccountFlow is a flow of screens rather than one,
+    // and ChatWindow is the assistant panel, not a page.
+    const framesAndFlows = ["AppShell", "AccountFlow", "ChatWindow"];
+    const index = JSON.parse(readFileSync(join(REPO, "contracts", "index.json"), "utf8")) as {
+      patterns: { name: string }[];
+    };
+    const wanted = index.patterns.map((row) => row.name).filter((name) => !framesAndFlows.includes(name));
+    const covered = [...new Set(specFiles.map((file) => read(file).pattern as string))];
+    expect(wanted.filter((name) => !covered.includes(name))).toEqual([]);
   });
 
   it.each(specFiles)("%s only names things the contracts have", (file) => {

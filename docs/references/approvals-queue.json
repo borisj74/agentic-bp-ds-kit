@@ -1,0 +1,101 @@
+{
+  "name": "approvals-queue",
+  "title": "Approvals",
+  "about": "The reference list-and-detail screen: a queue people work through one record at a time, with the open record beside the list and an empty pane before one is picked.",
+  "pattern": "ListDetail",
+  "section": "home-approval-management",
+  "props": { "layout": "side", "open": true, "title": "CR-2291 · Apex Digital Services", "backLabel": "Back to approvals", "onBack": true },
+  "copy": {
+    "emptyTitle": "Pick a request",
+    "emptyDescription": "Choose a request from the queue to see what changes and who asked for it.",
+    "detailTitle": "Request details",
+    "linesTitle": "What changes"
+  },
+  "regions": {
+    "list": [
+      {
+        "component": "ListView",
+        "props": {
+          "label": "Approval queue",
+          "selection": "single",
+          "interaction": "drill",
+          "selected": ["cr-2291"],
+          "onOpen": true,
+          "onSelectedChange": true,
+          "groups": [
+            { "id": "today", "title": "Today" },
+            { "id": "earlier", "title": "Earlier" }
+          ],
+          "items": [
+            { "id": "cr-2291", "group": "today", "primary": "CR-2291", "secondary": "Apex Digital Services · $12,400 credit", "icon": "request_quote", "badge": "Waiting", "badgeIntent": "warning" },
+            { "id": "cr-2290", "group": "today", "primary": "CR-2290", "secondary": "Helios Cloud · Rate change", "icon": "price_change", "badge": "Waiting", "badgeIntent": "warning" },
+            { "id": "cr-2288", "group": "today", "primary": "CR-2288", "secondary": "Globex Corporation · $3,100 refund", "icon": "undo", "badge": "Waiting", "badgeIntent": "warning" },
+            { "id": "cr-2284", "group": "earlier", "primary": "CR-2284", "secondary": "Northwind Holdings · Contract renewal", "icon": "contract", "badge": "Approved", "badgeIntent": "success" },
+            { "id": "cr-2279", "group": "earlier", "primary": "CR-2279", "secondary": "Initech Group · $840 credit", "icon": "request_quote", "badge": "Rejected", "badgeIntent": "danger" }
+          ]
+        }
+      }
+    ],
+    "actions": [
+      { "component": "Button", "props": { "size": "sm", "emphasis": "minimal", "intent": "danger", "iconStart": "close" }, "text": "Reject" },
+      { "component": "Button", "props": { "size": "sm", "emphasis": "strong", "intent": "brand", "iconStart": "check" }, "text": "Approve" }
+    ],
+    "detail": [
+      {
+        "component": "Section",
+        "props": { "title": "$copy.detailTitle", "columns": 2, "collapsible": true },
+        "slots": {
+          "children": [
+            { "component": "FormDisplay", "props": { "label": "Request", "value": "CR-2291", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Type", "value": "Credit memo", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Account", "value": "Apex Digital Services", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Amount", "value": "$12,400.00", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Raised by", "value": "Jordan Ellis", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Raised on", "value": "17 November 2026", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Reason", "value": "Service credit agreed after the October outage.", "labelPosition": "start" } },
+            { "component": "FormDisplay", "props": { "label": "Policy", "value": "Within the $25,000 approval limit", "labelPosition": "start" } }
+          ]
+        }
+      },
+      {
+        "component": "Section",
+        "props": { "title": "$copy.linesTitle", "collapsible": true },
+        "slots": {
+          "children": [
+            {
+              "component": "Table",
+              "props": {
+                "caption": "The invoice lines this credit applies to.",
+                "rowLabel": "line",
+                "size": "sm",
+                "columns": [
+                  { "key": "line", "header": "Line", "emphasis": true },
+                  { "key": "invoice", "header": "Invoice" },
+                  { "key": "product", "header": "Product" },
+                  { "key": "amount", "header": "Credit", "numeric": true }
+                ],
+                "rows": [
+                  { "id": "l1", "line": "L-1", "invoice": "INV-10482", "product": "Platform API", "amount": "$8,400.00" },
+                  { "id": "l2", "line": "L-2", "invoice": "INV-10482", "product": "Support hours", "amount": "$2,600.00" },
+                  { "id": "l3", "line": "L-3", "invoice": "INV-10466", "product": "Storage", "amount": "$1,400.00" }
+                ],
+                "footer": { "label": "Total credit", "value": "$12,400.00" }
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "empty": [
+      {
+        "component": "EmptyState",
+        "props": {
+          "icon": "fact_check",
+          "iconStyle": "well",
+          "title": "$copy.emptyTitle",
+          "description": "$copy.emptyDescription"
+        }
+      }
+    ]
+  }
+}

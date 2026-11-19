@@ -1,7 +1,11 @@
 # Reference screens
 
-Six screen specs, the screens they build, and the screenshot each one is measured against. They are
-the examples to copy from when you write a spec of your own.
+Nine screen specs — one for every screen pattern in the kit — the screens they build, and the
+screenshot each one is measured against. They are the examples to copy from when you write a spec of
+your own.
+
+AppShell is left out because it is the frame every screen already uses, AccountFlow because it is a
+flow of screens rather than one, and ChatWindow because it is the assistant panel, not a page.
 
 | Spec | Pattern | What it shows |
 | --- | --- | --- |
@@ -11,6 +15,9 @@ the examples to copy from when you write a spec of your own.
 | `usage-overview.json` | ListPage | Metrics over a table: a Scoreboard in a Section, usage by account, and the empty state |
 | `account-record.json` | RecordPage | One account: its own header with a status Badge, the tabs of what belongs to it, a notice, the numbers, and the details in sections |
 | `billing-dashboard.json` | Dashboard | Groups of numbers with the charts and lists that explain them, a saved-view toolbar, and the empty state |
+| `approvals-queue.json` | ListDetail | A queue worked through one record at a time: a grouped ListView beside the open request, its actions in the pane header, and the empty pane |
+| `settings-home.json` | SettingsPage | A home of NavTiles, each in its own colour, under a notice that needs acting on |
+| `usage-import.json` | GuidedProcessPage | One step of a four-step import: the process header, the step drawer with its tasks, the step's form, and the footer that saves and moves on |
 
 ## The loop
 
@@ -37,7 +44,8 @@ it can repair mechanically, and writes `reports/loop/<name>.md`. It gives up aft
   "state": "ready",                  // the state the screen itself opens in
   "states": ["ready", "empty"],      // every state it answers; each gets a route
   "copy": { "emptyTitle": "…" },     // words, with a length limit per kind
-  "regions": {                       // the pattern's own regions, plus above and content
+  "regions": {                       // the pattern's own regions, plus above and (where it takes
+                                     // children) content
     "above": [],                     // Sections between the page header and the pattern
     "toolbar": [],                   // a ReactNode prop of the pattern
     "content": [],                   // the pattern's children
@@ -45,6 +53,10 @@ it can repair mechanically, and writes `reports/loop/<name>.md`. It gives up aft
   }
 }
 ```
+
+A pattern that draws its own header (FormPage, GuidedProcessPage) fills a `header` region, and the
+frame then draws no page header of its own: a screen has one `h1`. A pattern that takes no children
+(ListDetail) has no `content` region — everything it draws sits in a named one.
 
 A node is `{ component, props, slots, text }`: `component` is a contract name, `props` carries values
 only, `slots` carries the components that go into a ReactNode prop (`children` included), and `text`
