@@ -21,8 +21,15 @@ supposed to surface and which a person has to make. Said plainly rather than hid
 `bp/figma-example-content` changed under this spec afterwards. It now reads every word showing in
 the frame, not only a slot's own children, passing over the shell's own chrome and the words a
 component draws that no spec can set (`audit.exampleContent` in `contracts/figma-map.json`). So the
-artboard's trends, badges, chips, total and pagination line below are findings rather than a
-paragraph in this report, and a run today would not come back clean.
+artboard's own figures below are findings rather than a paragraph in this report.
+
+Re-rendered and re-audited on 20 November 2026, the same four frames, same ids. The render took 31s
+and the audit 2.5s. It is not clean any more: 26 words are showing in `ready/light` that the spec
+never wrote — the `Month` badge, the four trends (`12% MoM`, `4.1%`, `0%`, `8.2% YoY`), the five
+filter chips (`Status`, `Pending`, `Account Name`, `Account ID`, `Period`), the table's `Total`
+and `$2,250.00`, the pagination (`1`–`7`, `Showing 1 to 10 of 59 rows`, `10`, `rows per page`), and
+the Toolbar's `Search in list` and `Reset`. Every one of them is already in "Left for a person"
+below. settings-home, audited the same way, came back clean.
 
 ## Rules × attempts
 

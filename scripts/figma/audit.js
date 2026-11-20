@@ -196,6 +196,18 @@ const SKIP = new Set(EXPECT.skip || []);
 const LABELS = EXPECT.labels || {};
 // What a node is called, however it got there: its layer name, its main component, and the set the
 // main component belongs to — a swapped instance keeps the name of the layer it was put in.
+// Every node under this one, walked child by child.
+//
+// findAll and findAllWithCriteria on the frame do not cross into an instance until something has
+// read that instance, so a sweep that trusted them found nothing on a frame whose only child is the
+// AppShell. Reading children does cross, so the walk is written out here.
+const descend = (node, pred, out = []) => {
+  for (const child of node.children || []) {
+    if (pred(child)) out.push(child);
+    if (child.children) descend(child, pred, out);
+  }
+  return out;
+};
 const names = (node) => {
   const out = [node.name];
   if (node.type === "INSTANCE" && node.mainComponent) {
@@ -469,7 +481,7 @@ for (const want of EXPECT.frames) {
 
   // A slot holds the screen and nothing else. An artboard ships its slots full of example content,
   // and a render that only appends leaves that content showing above or below the screen.
-  const slots = frame.findAllWithCriteria({ types: ["SLOT"] });
+  const slots = descend(frame, (n) => n.type === "SLOT");
   for (const slot of slots) {
     const planned = slotNames(want, slot.name);
     if (planned === null) continue;
@@ -491,7 +503,7 @@ for (const want of EXPECT.frames) {
   const mine = new Set(want.words || []);
   const said = new Set();
   const spare = [];
-  for (const text of frame.findAllWithCriteria({ types: ["TEXT"] })) {
+  for (const text of descend(frame, (n) => n.type === "TEXT")) {
     if (!text.visible || !text.characters) continue;
     let up = text.parent;
     let hidden = false;
@@ -532,7 +544,13 @@ for (const want of EXPECT.frames) {
       JSON.stringify(String(found.node.characters).slice(0, 40)) + " is showing and the spec never wrote it, inside " + found.within.join(" < "),
     );
   if (spare.length > 12)
-    add("bp/figma-example-content", want.name, frame.name, frame.id, spare.length - 12 + " more words are showing that the spec never wrote");
+    add(
+      "bp/figma-example-content",
+      want.name,
+      frame.name,
+      frame.id,
+      spare.length - 12 + " more words are showing that the spec never wrote: " + spare.slice(12).map((one) => JSON.stringify(String(one.node.characters).slice(0, 40))).join(", "),
+    );
 
   // The screen starts where its title starts. A wrapper that carries an inset of its own pushes the
   // content in from the page header it belongs to, which no other rule can see.
@@ -541,8 +559,8 @@ for (const want of EXPECT.frames) {
   // page header is the breadcrumb trail, which starts somewhere else — and the content is the first
   // visible child of the page slot, not whatever child happens to be first.
   if (want.align) {
-    const header = frame.findAll((n) => n.type === "INSTANCE" && n.name === "PageHeader")[0];
-    const texts = header ? header.findAll((n) => n.type === "TEXT" && n.visible && n.characters) : [];
+    const header = descend(frame, (n) => n.type === "INSTANCE" && n.name === "PageHeader")[0];
+    const texts = header ? descend(header, (n) => n.type === "TEXT" && n.visible && n.characters) : [];
     const layer = want.align.layer ? String(want.align.layer).toLowerCase() : null;
     const titled = want.align.title ? String(want.align.title).trim() : null;
     const title =
