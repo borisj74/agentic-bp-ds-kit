@@ -56,3 +56,6 @@ docs/figma/*
 
 # loop screenshots (npm run loop); the report beside them is committed
 /reports/loop/*/
+
+# Figma loop screenshots (the spec-to-figma skill); the report beside them is committed
+/reports/figma-loop/*/
