@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { DEFAULT_BRAND, everyToggle, figmaVarName, LAYOUT_TOKENS, layerPath, planFile, planRender, readMap, regionOrderOf, showToggles, textFamily, toggleAsked } from "../scripts/figma/plan.mjs";
+import { DEFAULT_BRAND, everyToggle, figmaVarName, LAYOUT_TOKENS, layerPath, planFile, planRender, readMap, regionOrderOf, showToggles, swapMismatch, textFamily, toggleAsked } from "../scripts/figma/plan.mjs";
 import { piece } from "../scripts/review/catalog.mjs";
 import { auditScript, expectations, RULES } from "../scripts/figma/audit.js";
 import { emitScript, MAX_SCRIPT, PAGE_AFTER, TARGET_PAGE } from "../scripts/figma/emit.mjs";
@@ -190,6 +190,50 @@ describe("the render plan", () => {
     });
     expect(plan.ok).toBe(false);
     expect(plan.errors.some((error: Issue) => /Table size cannot be "lg" in Figma/.test(error.message))).toBe(true);
+  });
+
+  it("says which of a form's own fields the artboard has no slot for", () => {
+    // Read in the Figma file: the Form's content slot swaps in .Form fields, and that component
+    // draws a fixed roster — three Inputs, a Select, a Lookup, a Textarea and a Checkbox — whatever
+    // the spec asks for. account-create asks for three Selects and a DatePicker.
+    expect(map.components.Form.props.children.swap.roster).toEqual([
+      "Input",
+      "Input",
+      "Input",
+      "Select",
+      "Lookup",
+      "Textarea",
+      "Checkbox",
+    ]);
+    const plan = readPlan("account-create.json");
+    expect(plan.ok).toBe(false);
+    const [error] = plan.errors;
+    expect(error.path).toBe("regions.content[0].slots.children");
+    expect(error.message).toMatch(/\.Form fields draws a fixed roster: Input, Input, Input, Select, Lookup, Textarea, Checkbox/);
+    expect(error.message).toMatch(/asks for Select ×2, DatePicker, which the roster has no slot for/);
+    expect(error.fix).toMatch(/Give \.Form fields a slot per field/);
+  });
+
+  it("says a blank slot takes one component and no more", () => {
+    // .Section slot draws nothing of its own, so a Section's content is one component or none.
+    expect(map.components.Section.props.children.swap.roster).toEqual([]);
+    const plan = readPlan("approvals-queue.json");
+    expect(plan.ok).toBe(false);
+    expect(plan.errors[0].message).toMatch(/\.Section slot draws nothing of its own, so the slot takes exactly one component and the spec puts 8 in it/);
+    expect(plan.errors[0].fix).toMatch(/Draw the 8 as one Figma component/);
+  });
+
+  it("says when the fields fit the roster by type but the rest of it would still show", () => {
+    const prop = map.components.Form.props.children;
+    const [message, fix] = swapMismatch("Form", "children", prop, [{ component: "Input" }, { component: "Checkbox" }]);
+    expect(message).toMatch(/fit by type but the roster has no flag to hide the Input ×2, Select, Lookup, Textarea it would leave showing/);
+    expect(fix).toMatch(/a form of Input ×3, Select, Lookup, Textarea, Checkbox fits/);
+  });
+
+  it("falls back to the plain message where the map records no roster", () => {
+    const [message, fix] = swapMismatch("Modal", "children", { figma: "content#124:48", kind: "instanceSwap" }, [{ component: "Input" }, { component: "Input" }]);
+    expect(message).toMatch(/the spec puts 2 components in it/);
+    expect(fix).toMatch(/Put one component in the slot/);
   });
 
   it("fails when a list is longer than the rows Figma draws", () => {

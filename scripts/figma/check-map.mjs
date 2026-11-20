@@ -106,6 +106,17 @@ export function checkMap(map = readMap(), contracts = readContracts()) {
         add(contract.name, `slots.${prop}.layers is listed but slots.${prop}.child reaches for no column`);
     }
 
+    // What an instanceSwap slot ships with: the component set it swaps in and the parts it draws.
+    for (const [prop, mapping] of Object.entries(entry.props ?? {})) {
+      const swap = mapping?.swap;
+      if (!swap) continue;
+      if (mapping.kind !== "instanceSwap") add(contract.name, `props.${prop}.swap is on a ${mapping.kind} property`);
+      if (typeof swap.key !== "string" || swap.key.length !== 40) add(contract.name, `props.${prop}.swap.key is not a component key`);
+      // An empty roster is a real answer: the slot ships blank and takes exactly one component.
+      if (!Array.isArray(swap.roster) || swap.roster.some((name) => typeof name !== "string"))
+        add(contract.name, `props.${prop}.swap.roster is not a list of component names`);
+    }
+
     // A part of the frame itself, by the path it sits at in the file.
     for (const [part, path] of Object.entries(entry.frameLayers ?? {})) {
       if (typeof path !== "string" || path.trim() === "") add(contract.name, `frameLayers.${part} is not a path`);

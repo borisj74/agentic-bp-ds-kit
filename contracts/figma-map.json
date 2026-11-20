@@ -2,7 +2,7 @@
   "fileKey": "ELFJs16lnRVQaOrxhMVrVf",
   "readAt": "2026-11-20",
   "readWith": "Figma MCP, read only (componentPropertyDefinitions, getPublishStatusAsync, getLocalVariableCollectionsAsync)",
-  "note": "Contract to Figma map for the Agentic DS file. Property keys are exact, including the #id suffix. Nothing here was guessed: a contract value with no Figma value is listed under noFigma. slots.childProps names the contract whose properties each array item sets on the exposed child instance; slots.show lists the Figma boolean per extra index. slots.child is a path to the layer a row sets: segments split on >, where @N is the Nth child, $column is the column's own layer name from slots.columns.layers, and N and R in a name are the column and row numbers. partLayers is the path to the instance Figma exposes inside an artboard part. frameLayers is the path to a part of the shell itself, such as the page header it draws over the page slot.",
+  "note": "Contract to Figma map for the Agentic DS file. Property keys are exact, including the #id suffix. Nothing here was guessed: a contract value with no Figma value is listed under noFigma. slots.childProps names the contract whose properties each array item sets on the exposed child instance; slots.show lists the Figma boolean per extra index. slots.child is a path to the layer a row sets: segments split on >, where @N is the Nth child, $column is the column's own layer name from slots.columns.layers, and N and R in a name are the column and row numbers. partLayers is the path to the instance Figma exposes inside an artboard part. frameLayers is the path to a part of the shell itself, such as the page header it draws over the page slot. A props.<name>.swap block says what an instanceSwap slot ships with: the component set it swaps in, and the roster of parts that component draws.",
   "themes": {
     "Ref": {
       "collectionKey": "533c7147ac15819736c36ea7c41641cce263965d",
@@ -2337,7 +2337,40 @@
         "children": {
           "figma": "content#174:15",
           "kind": "instanceSwap",
-          "note": "The artboard holds this as example copy."
+          "note": "The artboard swaps one component in here, and the one it ships with draws a fixed roster of fields rather than a list. Read in the Figma file on 2026-11-20 with get_metadata and a read-only use_figma call.",
+          "swap": {
+            "set": ".Form fields",
+            "key": "3fe018f8d074edbfb65fb78c0dc75c8989ba729b",
+            "nodeId": "680:73922",
+            "publish": "UNPUBLISHED",
+            "roster": [
+              "Input",
+              "Input",
+              "Input",
+              "Select",
+              "Lookup",
+              "Textarea",
+              "Checkbox"
+            ],
+            "props": {
+              "columns": [
+                "1",
+                "2",
+                "3"
+              ],
+              "labelPosition": [
+                "top",
+                "start"
+              ],
+              "labelWidth": [
+                "md",
+                "sm",
+                "lg"
+              ],
+              "showCheckbox": "showCheckbox#697:0"
+            },
+            "note": "The roster is the same in every variant; columns and labelPosition only change how the seven are arranged. There is no show flag per field, so a form with fewer fields than the roster leaves the rest of the roster showing."
+          }
         },
         "actions": {
           "figma": "showActions#174:18",
@@ -2363,9 +2396,9 @@
         "showButton1#174:21": "Artboard toggle for an example part. In code the part appears when its prop is given."
       },
       "noFigma": {
-        "labelPosition": "No Figma equivalent on the component.",
-        "labelWidth": "Written up for Figma but not a component property.",
-        "columns": "Written up for Figma but not a component property.",
+        "labelPosition": "Not a property of Form. It is a variant of the component the content slot swaps in, props.children.swap.props.",
+        "labelWidth": "Not a property of Form. It is a variant of the component the content slot swaps in, props.children.swap.props.",
+        "columns": "Not a property of Form. It is a variant of the component the content slot swaps in, props.children.swap.props.",
         "sections": "Sections are drawn by swapping the one content instance; the artboard has no per-section property.",
         "error": "Runtime string with no Figma property on this component set.",
         "onSubmit": "Callback. Figma components carry no event handlers.",
@@ -4492,7 +4525,14 @@
         },
         "children": {
           "figma": "content#119:91",
-          "kind": "instanceSwap"
+          "kind": "instanceSwap",
+          "swap": {
+            "set": ".Section slot",
+            "key": "7b3dd3e356d85deb2539c8ceda7c8302c444d259",
+            "nodeId": "119:2",
+            "roster": [],
+            "note": "The slot ships blank: .Section slot draws nothing of its own, so the slot takes exactly one component and the file offers eight to swap in. Read in the Figma file on 2026-11-20 with a read-only use_figma call."
+          }
         },
         "line": {
           "figma": "line",

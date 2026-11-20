@@ -205,6 +205,55 @@ export function showToggles(entry, slotName, prop) {
   return single ? [single] : [];
 }
 
+/**
+ * Why a group of components cannot go in a slot that takes one.
+ *
+ * A swap slot takes a single component, and the one the artboard ships with draws a fixed roster of
+ * parts rather than a list — a Form's content is three Inputs, a Select, a Lookup, a Textarea and a
+ * Checkbox, in that order, whatever the spec asks for. Where the map records that roster, the
+ * message says which of the spec's own pieces have nowhere to go, which is the thing a person
+ * actually has to decide about.
+ *
+ * @returns {[string, string]} The message and the fix.
+ */
+export function swapMismatch(component, name, prop, list) {
+  const roster = prop.swap?.roster;
+  const asked = list.map((child) => child.component);
+  if (!Array.isArray(roster)) {
+    return [
+      `${component} ${name} is one swappable instance in Figma (${prop.figma}); the spec puts ${list.length} components in it.`,
+      "Put one component in the slot, or give Figma a component that draws the group.",
+    ];
+  }
+  // A roster of none: the slot ships blank, so it takes exactly one component and nothing else.
+  if (roster.length === 0) {
+    const set = prop.swap.set ?? "the component it swaps in";
+    return [
+      `${component} ${name} is one swappable instance in Figma (${prop.figma}): ${set} draws nothing of its own, so the slot takes exactly one component and the spec puts ${list.length} in it.`,
+      `Draw the ${list.length} as one Figma component and swap that in, or give each its own ${component}.`,
+    ];
+  }
+  const left = [...roster];
+  const homeless = [];
+  for (const piece of asked) {
+    const at = left.indexOf(piece);
+    if (at >= 0) left.splice(at, 1);
+    else homeless.push(piece);
+  }
+  const count = (names) => {
+    const tally = new Map();
+    for (const one of names) tally.set(one, (tally.get(one) ?? 0) + 1);
+    return [...tally].map(([one, n]) => (n > 1 ? `${one} ×${n}` : one)).join(", ");
+  };
+  const set = prop.swap.set ?? "the component it swaps in";
+  const message =
+    homeless.length > 0
+      ? `${component} ${name} is one swappable instance in Figma (${prop.figma}), and ${set} draws a fixed roster: ${roster.join(", ")}. The spec asks for ${count(homeless)}, which the roster has no slot for.`
+      : `${component} ${name} is one swappable instance in Figma (${prop.figma}), and ${set} draws a fixed roster of ${roster.length}: ${roster.join(", ")}. The spec's ${asked.length} fit by type but the roster has no flag to hide the ${count(left)} it would leave showing.`;
+  const fix = `Give ${set} a slot per ${name === "children" ? "field" : name}, or draw this ${component.toLowerCase()} as its own Figma component. As it is, a ${component.toLowerCase()} of ${count(roster)} fits.`;
+  return [message, fix];
+}
+
 /** Every `show…` boolean a component has, whether the map lists it as a prop or as Figma's own. */
 export function everyToggle(entry) {
   const keys = new Set();
@@ -661,11 +710,7 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
       }
       if (prop?.kind === "instanceSwap" && prop.figma) {
         if (list.length > 1) {
-          fail(
-            at,
-            `${node.component} ${name} is one swappable instance in Figma (${prop.figma}); the spec puts ${list.length} components in it.`,
-            "Put one component in the slot, or give Figma a component that draws the group.",
-          );
+          fail(at, ...swapMismatch(node.component, name, prop, list));
           continue;
         }
         out.swaps[prop.figma] = list[0];
