@@ -21,10 +21,17 @@
  *                       table and the label on an exposed action button
  *   bp/figma-modes      each frame sets its own explicit mode for every collection the plan named
  *   bp/figma-overflow   nothing sticks out of the frame it was put in
- *   bp/figma-align      the screen starts at the page header title's own left edge
+ *   bp/figma-align      the screen's first visible content starts at the page header title's own
+ *                       left edge — the title layer, not the first text in the header, which is the
+ *                       breadcrumb trail
  *   bp/figma-example-content
- *                       a slot holds the screen and nothing else: none of the example content the
- *                       artboard ships with is still showing
+ *                       a slot holds the screen and nothing else, and every word showing anywhere
+ *                       inside the frame is a word the spec wrote: a trend, a badge, a chip, a total
+ *                       and a pagination line the artboard ships with are all caught here
+ *
+ * A finding that a render can mend node by node carries `set`: the node's id and the properties the
+ * plan wants on it. scripts/figma/emit.mjs turns those into a repair that touches only those nodes,
+ * rather than drawing the whole frame again.
  */
 import { TARGET_PAGE } from "./plan.mjs";
 
@@ -95,6 +102,44 @@ function expectInstance(node) {
   return out;
 }
 
+/**
+ * Every word the plan writes into a tree: the screen's own copy, and nothing else.
+ *
+ * `bp/figma-example-content` reads the words showing in the file against this set, so a figure the
+ * artboard draws of its own — a trend, a total, a page count — is told apart from the spec's.
+ */
+export function wordsOf(node, out = new Set()) {
+  if (node === null || typeof node !== "object") return out;
+  const take = (texts) => {
+    for (const value of Object.values(texts ?? {})) if (typeof value === "string" || typeof value === "number") out.add(String(value).trim());
+  };
+  if (node.kind === "layout") {
+    for (const child of node.children ?? []) wordsOf(child, out);
+    return out;
+  }
+  take(node.texts);
+  for (const item of Object.values(node.items ?? {})) {
+    for (const row of item.rows ?? []) {
+      take(row.texts);
+      for (const cell of row.cells ?? []) take(cell.texts);
+    }
+  }
+  for (const part of node.parts ?? []) {
+    take(part.texts);
+    for (const inner of part.parts ?? []) take(inner.texts);
+  }
+  for (const child of Object.values(node.swaps ?? {})) wordsOf(child, out);
+  for (const list of Object.values(node.slots ?? {})) for (const child of list) wordsOf(child, out);
+  return out;
+}
+
+/** What the align rule measures against: the title the shell's page header holds, and its layer. */
+function alignOf(frame) {
+  if (!frame.align) return null;
+  if (typeof frame.align === "object") return { title: frame.align.title ?? null, layer: frame.align.layer ?? null };
+  return { title: frame.title ?? null, layer: null };
+}
+
 function expectNode(node) {
   if (node.kind === "layout")
     return {
@@ -115,20 +160,35 @@ export function expectations(plan, { page = TARGET_PAGE, frames = null } = {}) {
   return {
     page,
     screen: plan.name,
-    frames: wanted.map((frame) => ({
-      name: frame.name,
-      modes: frame.modes,
-      align: Boolean(frame.align),
-      tree: frame.fallback
-        ? [frame.parts.header, frame.parts.nav, frame.parts.content].filter(Boolean).map(expectNode)
-        : [expectNode(frame.root)],
-    })),
+    frames: wanted.map((frame) => {
+      const roots = frame.fallback ? [frame.parts.header, frame.parts.nav, frame.parts.content].filter(Boolean) : [frame.root];
+      const words = new Set();
+      for (const root of roots) wordsOf(root, words);
+      return {
+        name: frame.name,
+        modes: frame.modes,
+        align: alignOf(frame),
+        words: [...words].filter(Boolean),
+        tree: roots.map(expectNode),
+      };
+    }),
   };
 }
 
 const BODY = `
+const started = Date.now();
 const out = [];
-const add = (rule, frame, node, id, what) => out.push({ rule, frame, node, id, what });
+// A finding, and — where a render can mend it node by node — the node's id and the properties the
+// plan wants on it. Everything else is left for the judge and for a person.
+const add = (rule, frame, node, id, what, set) => out.push(set ? { rule, frame, node, id, what, set } : { rule, frame, node, id, what });
+// Words the artboard draws of its own are read against the spec's, and an icon glyph is a character
+// in a symbol font rather than a word, so it is left out of that reading.
+const ICON = /material symbols/i;
+const glyphy = (text) => {
+  const font = text.fontName;
+  const family = font && typeof font === "object" ? font.family : null;
+  return typeof family === "string" && ICON.test(family);
+};
 
 const LAYOUT = /^layout\\//;
 // A layer down a path, read exactly the way the render wrote it: "columns" then "@2" then "Row 3".
@@ -195,7 +255,8 @@ const checkInstance = async (node, want, frameName) => {
       continue;
     }
     const got = entry && typeof entry === "object" ? entry.value : entry;
-    if (String(got) !== String(value)) add("bp/figma-props", frameName, node.name, node.id, key + " is " + JSON.stringify(got) + ", the plan says " + JSON.stringify(value));
+    if (String(got) !== String(value))
+      add("bp/figma-props", frameName, node.name, node.id, key + " is " + JSON.stringify(got) + ", the plan says " + JSON.stringify(value), { id: node.id, props: { [key]: value } });
   }
   // A paint override inside an instance only matters when the paint is a colour somebody wrote
   // down. Swapping a component — an icon's glyph — records an override on the layer it brings with
@@ -236,7 +297,14 @@ const checkInstance = async (node, want, frameName) => {
       const entry = nestedHave[key];
       const got = entry && typeof entry === "object" ? entry.value : entry;
       if (entry === undefined || String(got) !== String(value))
-        add("bp/figma-props", frameName, found.name, found.id, key + " on " + layer.path.join(" > ") + " is " + JSON.stringify(got === undefined ? null : got) + ", the plan says " + JSON.stringify(value));
+        add(
+          "bp/figma-props",
+          frameName,
+          found.name,
+          found.id,
+          key + " on " + layer.path.join(" > ") + " is " + JSON.stringify(got === undefined ? null : got) + ", the plan says " + JSON.stringify(value),
+          entry === undefined ? null : { id: found.id, props: { [key]: value } },
+        );
     }
   }
   // The line between one child and the next, read in the file. The contract says every child but
@@ -263,6 +331,7 @@ const checkInstance = async (node, want, frameName) => {
           card.name,
           card.id,
           card.name + " is " + (wants ? "not the last of " : "the last of ") + showing.length + " showing and its line is " + (has ? "on" : "off"),
+          { id: card.id, props: { [want.divider.key]: wants } },
         );
     }
   }
@@ -323,12 +392,17 @@ async function checkNode(node, want, frameName) {
 
 // A screen's frames sit in a section named after the spec, so the frame is looked for there first.
 const holder = page.children.find((c) => c.type === "SECTION" && c.name === EXPECT.screen) || page;
+// The one read-back an attempt gets: the ids the report links to come back with the findings, so a
+// clean audit needs no second call to find out what was drawn where.
+const drawn = [];
 for (const want of EXPECT.frames) {
   const frame = holder.children.find((c) => c.name === want.name) || page.findAll((c) => c.name === want.name && c.type === "FRAME")[0];
   if (!frame) {
     add("bp/figma-instance", want.name, want.name, null, "the frame is not on the page");
+    drawn.push({ frame: want.name, id: null });
     continue;
   }
+  drawn.push({ frame: want.name, id: frame.id });
   const modes = frame.explicitVariableModes || {};
   const collections = await figma.variables.getLocalVariableCollectionsAsync();
   for (const [name, mode] of Object.entries(want.modes || {})) {
@@ -388,23 +462,67 @@ for (const want of EXPECT.frames) {
     }
   }
 
+  // Every word showing in the frame, against the words the spec wrote. A slot's own children are
+  // only where the artboard's example content is easiest to see: a trend inside a card, a badge, a
+  // chip's label, a table's total and a pagination line are all inside instances the render keeps,
+  // and a render that sets only what the spec names leaves every one of them reading as the
+  // screen's own figure.
+  const mine = new Set(want.words || []);
+  const said = new Set();
+  const spare = [];
+  for (const text of frame.findAllWithCriteria({ types: ["TEXT"] })) {
+    if (!text.visible || !text.characters) continue;
+    let up = text.parent;
+    let hidden = false;
+    while (up && up.id !== frame.id) {
+      if (up.visible === false) { hidden = true; break; }
+      up = up.parent;
+    }
+    if (hidden) continue;
+    if (glyphy(text)) continue;
+    const words = String(text.characters).trim();
+    if (!words || !/[A-Za-z0-9]/.test(words)) continue;
+    if (mine.has(words)) continue;
+    if (said.has(words)) continue;
+    said.add(words);
+    spare.push(text);
+  }
+  for (const text of spare.slice(0, 12))
+    add("bp/figma-example-content", want.name, text.name, text.id, JSON.stringify(String(text.characters).slice(0, 40)) + " is showing and the spec never wrote it");
+  if (spare.length > 12)
+    add("bp/figma-example-content", want.name, frame.name, frame.id, spare.length - 12 + " more words are showing that the spec never wrote");
+
   // The screen starts where its title starts. A wrapper that carries an inset of its own pushes the
   // content in from the page header it belongs to, which no other rule can see.
+  //
+  // Both edges are read for what they are. The title is the title layer — the first text in the
+  // page header is the breadcrumb trail, which starts somewhere else — and the content is the first
+  // visible child of the page slot, not whatever child happens to be first.
   if (want.align) {
     const header = frame.findAll((n) => n.type === "INSTANCE" && n.name === "PageHeader")[0];
-    const title = header ? header.findAll((n) => n.type === "TEXT" && n.visible && n.characters)[0] : null;
-    const stack = slots.map((slot) => slot.children[0]).find(Boolean);
+    const texts = header ? header.findAll((n) => n.type === "TEXT" && n.visible && n.characters) : [];
+    const layer = want.align.layer ? String(want.align.layer).toLowerCase() : null;
+    const titled = want.align.title ? String(want.align.title).trim() : null;
+    const title =
+      (titled ? texts.find((t) => String(t.characters).trim() === titled) : null) ||
+      (layer ? texts.find((t) => String(t.name).toLowerCase() === layer) : null) ||
+      texts.find((t) => String(t.name).toLowerCase().indexOf("title") >= 0) ||
+      null;
+    const stack = slots.map((slot) => (slot.children || []).find((child) => child.visible !== false && child.absoluteBoundingBox)).find(Boolean);
     const titleAt = title && title.absoluteBoundingBox ? title.absoluteBoundingBox.x : null;
     const contentAt = stack && stack.absoluteBoundingBox ? stack.absoluteBoundingBox.x : null;
-    if (titleAt === null || contentAt === null) {
-      add("bp/figma-align", want.name, frame.name, frame.id, "there is no page header title or no content to line it up with");
+    if (titleAt === null) {
+      add("bp/figma-align", want.name, header ? header.name : frame.name, header ? header.id : frame.id, "there is no page header title layer to line the screen up with");
+    } else if (contentAt === null) {
+      add("bp/figma-align", want.name, frame.name, frame.id, "there is no visible content in the page slot to line up with the title");
     } else if (Math.abs(titleAt - contentAt) > 1) {
       add("bp/figma-align", want.name, stack.name, stack.id, "the screen starts at " + Math.round(contentAt) + " and its title at " + Math.round(titleAt) + ", " + Math.round(Math.abs(contentAt - titleAt)) + "px apart");
     }
   }
 }
 
-return out.length === 0 ? { ok: true } : { ok: false, findings: out };
+const answer = { page: page.id, section: holder.type === "SECTION" ? holder.id : null, frames: drawn, ms: Date.now() - started };
+return out.length === 0 ? { ok: true, ...answer } : { ok: false, findings: out, ...answer };
 `;
 
 /**
@@ -416,4 +534,26 @@ return out.length === 0 ? { ok: true } : { ok: false, findings: out };
 export function auditScript(plan, options = {}) {
   const expect = expectations(plan, options);
   return `// Audit for ${plan.name}. Read-only; returns JSON, failures only.\nconst EXPECT = ${JSON.stringify(expect)};\n${BODY}`;
+}
+
+const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
+
+/**
+ * The audit body as a function of `(figma, EXPECT)`.
+ *
+ * It is the same text the script sends, so a test runs the rules themselves rather than a copy of
+ * them: give it a fake Plugin API over a fake tree and it answers exactly as Figma would.
+ * @returns {(figma: object, expect: object) => Promise<object>}
+ */
+export function auditFunction() {
+  return new AsyncFunction("figma", "EXPECT", BODY);
+}
+
+/**
+ * Run the audit here, against a fake Figma.
+ * @param {object} plan What planRender gave back.
+ * @param {{ figma: object, page?: string, frames?: string[] }} options
+ */
+export async function runAudit(plan, { figma, ...options } = {}) {
+  return auditFunction()(figma, expectations(plan, options));
 }

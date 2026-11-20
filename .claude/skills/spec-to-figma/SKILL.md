@@ -14,6 +14,22 @@ is **one** `use_figma` call, and an audit is **one** more that returns JSON only
 
 Invoke with `/spec-to-figma <spec.json>`.
 
+## Only a screen that holds up in code is rendered
+
+A render is the expensive half of this, so nothing is sent to Figma until `npm run loop` passes on
+the spec in code. One spec at a time, run the code loop first. Several at once, run the batch:
+
+```bash
+npm run figma:batch -- <spec.json> <spec.json> ...      # or --dir specs
+```
+
+It runs the code loop on every spec — one dev server for all of them — and writes the render and the
+audit script only for the ones that pass. Everything lands under `reports/figma-loop/batch/` as
+`<name>.render.js` and `<name>.audit.js`, and one summary, `reports/figma-loop/batch.md`, spells out
+the failures and does no more than name the passes with their times. Send each passing render as one
+`use_figma` call and its audit as one more; a spec in the Failed section is not rendered at all —
+fix the spec and run the batch again.
+
 ## The loop
 
 Three attempts, at most. Each attempt is two `use_figma` calls: the render and the audit.
@@ -29,7 +45,10 @@ Three attempts, at most. Each attempt is two `use_figma` calls: the render and t
    prerequisite of every `use_figma` call. If the emitter says the script will not fit one call,
    render one state or one theme at a time with `--frames`.
 4. **Audit.** Build the audit script the same way (see below) and send it as one more `use_figma`
-   call. It is read-only and returns `{ "ok": true }` or the failures and nothing else.
+   call. It is read-only, and it is the **one read-back an attempt gets**: it comes back with the
+   findings, the node id of every frame, the page and the section, and `ms`, its own time. Never send
+   a second read call in the same attempt to find out what was drawn where — it is already in the
+   answer.
 
    The render call answers with the node id of each frame, and with `missing` when the plan named a
    layer the file does not have. Put every one of those in the report: what the plan would have
@@ -38,7 +57,18 @@ Three attempts, at most. Each attempt is two `use_figma` calls: the render and t
 5. **Judge.** `npm run figma:judge -- <spec.json> --audit <scratch>/audit.json`. It makes the repairs
    `scripts/spec/fix.mjs` makes, writes them back into the **spec**, and says whether to render
    again. Never patch Figma by hand and never edit the generated page: the spec is the source.
-6. **Repeat** from step 2 while the judge says `render`, up to three attempts in all.
+6. **Repair, not re-render.** A finding a render can mend node by node carries `set`: the node's id
+   and the properties the plan wants on it. Write that repair with
+
+   ```bash
+   node -e 'const e=await import("./scripts/figma/emit.mjs");const r=e.repairScript(JSON.parse(require("node:fs").readFileSync(process.argv[1],"utf8")).findings);if(r)require("node:fs").writeFileSync(process.argv[2],r.code)' <scratch>/audit.json <scratch>/repair.js
+   ```
+
+   and send it as one `use_figma` call. It touches those nodes and nothing else, draws nothing, and
+   returns `{ repaired, failed, ms }`. Then audit again. Emit the whole frame again only when the
+   repair comes back empty (`repairScript` answers `null`) or when the findings are about the shape
+   of the frame — `bp/figma-instance`, `bp/figma-detached`, `bp/figma-modes`, `bp/figma-align`.
+7. **Repeat** from step 2 while the judge says `render`, up to three attempts in all.
 
 To build the audit script (it reads the same page the emitter writes to, so pass `--page` to both or
 to neither):
@@ -78,6 +108,7 @@ Save them under `reports/figma-loop/<name>/` as `<state>-<theme>.png`.
 Write `reports/figma-loop/<name>.md` when the loop stops, whatever the outcome:
 
 - the spec, the pattern, the brand, the themes, and how many attempts it took
+- the time each call took, from the `ms` every script returns: one row per render, repair and audit
 - a table of rules × attempts: one row per rule (`bp/figma-instance`, `bp/figma-detached`,
   `bp/figma-bound`, `bp/figma-props`, `bp/figma-modes`, `bp/figma-overflow`, `bp/figma-align`,
   `bp/figma-example-content`, `bp/figma-dividers`), one column per attempt
@@ -106,3 +137,10 @@ Write `reports/figma-loop/<name>.md` when the loop stops, whatever the outcome:
   the same gap, no padding, no surface. `bp/figma-align` measures it.
 - **One strong brand Button per screen**, as everywhere else in the kit.
 - **Do not hand back a screen whose audit fails.** Read the report, fix the spec, run it again.
+- **A slot is found by name.** `$fig.slot` throws when the component has no slot by the name the map
+  gives, rather than putting the screen in whichever slot came first. That is a fault in
+  `contracts/figma-map.json`: read the component in Figma and record the real slot.
+- **A list shorter than what the artboard always draws fails the plan.** A Scoreboard draws three
+  cards before any switch, so a screen with two of them would be drawn out to three with the
+  library's own card. The plan refuses it and says how many the component always draws; give it that
+  many, or draw the shorter piece as its own Figma component.

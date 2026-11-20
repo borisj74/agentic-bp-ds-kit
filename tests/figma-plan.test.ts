@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { DEFAULT_BRAND, everyToggle, figmaVarName, LAYOUT_TOKENS, layerPath, planFile, planRender, readMap, regionOrderOf, showToggles, swapMismatch, textFamily, toggleAsked } from "../scripts/figma/plan.mjs";
 import { piece } from "../scripts/review/catalog.mjs";
 import { auditScript, expectations, RULES } from "../scripts/figma/audit.js";
-import { emitScript, MAX_SCRIPT, PAGE_AFTER, TARGET_PAGE } from "../scripts/figma/emit.mjs";
+import { emitScript, MAX_SCRIPT, PAGE_AFTER, repairScript, TARGET_PAGE } from "../scripts/figma/emit.mjs";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- a plan, a map and a spec are plain JSON under test
 type Json = Record<string, any>;
@@ -26,7 +26,7 @@ const readPlan = (file: string, options: Json = {}): Json => planFile(join("docs
 /** A plan error that says a slot or a drawn list cannot hold what the spec puts in it. */
 const isSlotError = (error: Issue) =>
   /\.slots\.[A-Za-z]+$/.test(error.path) || /\.props\.[A-Za-z]+$/.test(error.path)
-    ? /swappable instance in Figma|no Figma slot for|draws at most/.test(error.message)
+    ? /swappable instance in Figma|no Figma slot for|draws at most|always draws/.test(error.message)
     : false;
 
 /** Walk every node in a plan tree. */
@@ -181,6 +181,85 @@ describe("the render plan", () => {
     expect(button.texts).toEqual({ "label#110:0": "Save" });
   });
 
+  it("refuses a list shorter than what the artboard always draws", () => {
+    // The Scoreboard draws six cards and switches the last three, so three are always there. A
+    // screen with two would be drawn out to three with the library's own card, and a reader would
+    // take that card's figures for the screen's.
+    expect(map.components.Scoreboard.slots.items.max).toBe(6);
+    expect(map.components.Scoreboard.slots.items.show).toHaveLength(3);
+    const plan = makePlan({
+      name: "two-cards",
+      title: "Two cards",
+      pattern: "SettingsPage",
+      regions: {
+        content: [
+          {
+            component: "Scoreboard",
+            props: {
+              label: "Usage totals",
+              items: [
+                { id: "rated", title: "Rated usage", metric: "$482,900" },
+                { id: "billed", title: "Billed usage", metric: "$311,400" },
+              ],
+            },
+          },
+        ],
+      },
+    });
+    expect(plan.ok).toBe(false);
+    const error = plan.errors.find((one: Issue) => one.path === "regions.content[0].props.items") as Issue;
+    expect(error.message).toBe(
+      "Scoreboard always draws 3 items in Figma and the spec has 2; the other 1 would keep the artboard's own example content.",
+    );
+    expect(error.fix).toBe("Give it 3 items, or draw a shorter scoreboard as its own Figma component.");
+  });
+
+  it("takes a list as long as the artboard always draws", () => {
+    const plan = makePlan({
+      name: "three-cards",
+      title: "Three cards",
+      pattern: "SettingsPage",
+      regions: {
+        content: [
+          {
+            component: "Scoreboard",
+            props: {
+              label: "Usage totals",
+              items: [
+                { id: "rated", title: "Rated usage", metric: "$482,900" },
+                { id: "billed", title: "Billed usage", metric: "$311,400" },
+                { id: "due", title: "Due", metric: "$18,220" },
+              ],
+            },
+          },
+        ],
+      },
+    });
+    expect(plan.ok).toBe(true);
+  });
+
+  it("refuses a table with fewer rows or columns than the artboard always draws", () => {
+    const plan = makePlan({
+      name: "small-grid",
+      title: "Small grid",
+      pattern: "SettingsPage",
+      regions: {
+        content: [
+          {
+            component: "DataGrid",
+            props: {
+              caption: "Accounts",
+              columns: [{ key: "name", header: "Name" }],
+              rows: [{ id: "1", name: "Northwind" }],
+            },
+          },
+        ],
+      },
+    });
+    expect(plan.ok).toBe(false);
+    expect(plan.errors.some((error: Issue) => /DataGrid always draws \d+ columns in Figma and the spec has 1/.test(error.message))).toBe(true);
+  });
+
   it("refuses a value the Figma component set does not draw", () => {
     const plan = makePlan({
       name: "bad-size",
@@ -207,7 +286,7 @@ describe("the render plan", () => {
     ]);
     const plan = readPlan("account-create.json");
     expect(plan.ok).toBe(false);
-    const [error] = plan.errors;
+    const error = plan.errors.find((one: Issue) => one.path === "regions.content[0].slots.children") as Issue;
     expect(error.path).toBe("regions.content[0].slots.children");
     expect(error.message).toMatch(/\.Form fields draws a fixed roster: Input, Input, Input, Select, Lookup, Textarea, Checkbox/);
     expect(error.message).toMatch(/asks for Select ×2, DatePicker, which the roster has no slot for/);
@@ -367,8 +446,9 @@ describe("the render plan", () => {
   it("keeps the screen on the page header's own left edge", () => {
     const plan = makePlan(read("payments-empty.json"));
     for (const frame of plan.frames) {
-      // The shell draws this screen's header, so the audit measures the two left edges.
-      expect(frame.align).toBe(true);
+      // The shell draws this screen's header, so the audit measures the two left edges — against the
+      // title layer itself, which is what the plan names here.
+      expect(frame.align).toEqual({ title: plan.title, layer: "title" });
       const stack = frame.root.slots[map.components.AppShell.props.children.figma][0];
       // Nothing between the page and the screen carries an inset of its own.
       expect(stack.padding).toBe(null);
@@ -622,6 +702,15 @@ describe("the use_figma script", () => {
     }
   });
 
+  it("puts a screen in the slot the plan named, and in no other", () => {
+    const code = emitScript(readPlan("usage-overview.json")).code;
+    // A slot the component does not have is a fault in the map, said out loud. Putting the screen in
+    // whatever slot happened to be first drew it in the wrong place and read as if that was asked for.
+    expect(code).not.toContain("|| slots[0]");
+    expect(code).toContain('throw new Error(node.name + " has no slot named " + named');
+    expect(code).toContain('; its slots: "');
+  });
+
   it("touches the Plugin API only in the $fig helper", () => {
     const body = emitScript(readPlan("usage-overview.json")).code.split("// ---- render")[1];
     expect(body).not.toMatch(/\bfigma\./);
@@ -725,12 +814,51 @@ describe("the use_figma script", () => {
   });
 });
 
+describe("the repair script", () => {
+  const finding = (node: string, id: string, props: Json): Json => ({ rule: "bp/figma-props", frame: "demo/ready/light", node, id, what: "x", set: { id, props } });
+
+  it("touches only the nodes the audit named, by id", () => {
+    const repair = repairScript([finding("Card 2", "1:2", { "showLine#176:35": true })]) as unknown as Json;
+    expect(repair.nodes).toBe(1);
+    expect(repair.frames).toEqual(["demo/ready/light"]);
+    expect(repair.code).toContain('"id":"1:2"');
+    expect(repair.code).toContain("figma.getNodeByIdAsync(one.id)");
+    // A repair draws nothing: no frame, no instance, no removal.
+    expect(repair.code).not.toMatch(/figma\.create|\.remove\(|createInstance/);
+    expect(repair.size).toBeLessThanOrEqual(MAX_SCRIPT);
+  });
+
+  it("gathers every property of one node into one set", () => {
+    const repair = repairScript([
+      finding("Card 2", "1:2", { "showLine#176:35": true }),
+      finding("Card 2", "1:2", { "title#176:0": "Rated usage" }),
+      finding("Card 3", "1:3", { "showLine#176:35": false }),
+    ]) as unknown as Json;
+    expect(repair.nodes).toBe(2);
+    expect(repair.code).toContain('{"showLine#176:35":true,"title#176:0":"Rated usage"}');
+  });
+
+  it("says there is nothing to repair node by node when no finding carries a set", () => {
+    expect(repairScript([{ rule: "bp/figma-align", frame: "demo/ready/light", node: "layout/stack", id: "1:9", what: "24px apart" }])).toBe(null);
+    expect(repairScript([])).toBe(null);
+    expect(repairScript(undefined as unknown as Json[])).toBe(null);
+  });
+
+  it("parses as the body of one async call, and times itself", () => {
+    const repair = repairScript([finding("Card 2", "1:2", { "showLine#176:35": true })]) as unknown as Json;
+    expect(() => new AsyncFunction("figma", repair.code)).not.toThrow();
+    expect(repair.code).toContain("ms: Date.now() - started");
+  });
+});
+
 describe("the audit script", () => {
   it("parses, is read-only, and returns JSON only", () => {
     const code = auditScript(readPlan("usage-overview.json"));
     expect(() => new AsyncFunction("figma", code)).not.toThrow();
     expect(code).not.toMatch(/figma\.create|\.remove\(|appendChild|setProperties|setBoundVariable/);
-    expect(code).toMatch(/return out\.length === 0 \? \{ ok: true \}/);
+    expect(code).toMatch(/return out\.length === 0 \? \{ ok: true, \.\.\.answer \} : \{ ok: false, findings: out, \.\.\.answer \}/);
+    // One call per attempt: the ids the report links to come back with the findings.
+    expect(code).toContain("const answer = { page: page.id, section:");
   });
 
   it("expects the modes and the tree the plan planned", () => {
@@ -761,13 +889,20 @@ describe("the audit script", () => {
 
   it("says what each slot holds, and which frames are measured for alignment", () => {
     const want = expectations(readPlan("payments-empty.json")) as unknown as Json;
-    expect(want.frames.every((frame: Json) => frame.align === true)).toBe(true);
+    expect(want.frames.every((frame: Json) => frame.align.title === "Payments and refunds" && frame.align.layer === "title")).toBe(true);
+    // The words the spec wrote, so the example-content rule can tell them from the artboard's.
+    expect(want.frames[0].words).toContain("Payments and refunds");
     expect(want.frames[0].tree[0].slots).toEqual({ page: ["layout/stack"] });
     const code = auditScript(readPlan("payments-empty.json"));
     expect(code).toContain("bp/figma-example-content");
     expect(code).toContain("bp/figma-align");
     // Both rules read the file and change nothing.
     expect(code).not.toMatch(/appendChild|setProperties|\.remove\(/);
+  });
+
+  it("times itself, so the report can say what a render and an audit cost", () => {
+    expect(auditScript(readPlan("usage-overview.json"))).toContain("ms: Date.now() - started");
+    expect(emitScript(readPlan("usage-overview.json")).code).toContain("ms: Date.now() - started");
   });
 
   it("finds a swapped instance by the component behind it, not by the layer's name", () => {

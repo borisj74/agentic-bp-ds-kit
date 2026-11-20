@@ -85,7 +85,9 @@
                 "items": [
                   { "id": "api", "label": "Platform API", "selected": true },
                   { "id": "storage", "label": "Storage" },
-                  { "id": "support", "label": "Support hours" }
+                  { "id": "support", "label": "Support hours" },
+                  { "id": "egress", "label": "Data egress" },
+                  { "id": "seats", "label": "Seats" }
                 ]
               }
             },
@@ -99,7 +101,9 @@
                 "items": [
                   { "id": "enterprise", "label": "Enterprise" },
                   { "id": "growth", "label": "Growth" },
-                  { "id": "starter", "label": "Starter" }
+                  { "id": "starter", "label": "Starter" },
+                  { "id": "trial", "label": "Trial" },
+                  { "id": "custom", "label": "Custom" }
                 ]
               }
             }

@@ -45,13 +45,75 @@ export { TARGET_PAGE, PAGE_AFTER };
 /** Where the first frame sits inside its section, and how far apart frames are laid out in a row. */
 export const GRID = { x: 0, y: 0, gap: 160 };
 
+/**
+ * Loading the fonts behind a node's text, and setting the properties the component actually has.
+ *
+ * A render needs these and so does a repair, and a repair must not be able to draw anything at all,
+ * so the two are written here once and the repair's helper holds nothing else.
+ */
+const TOUCH = `
+  const fonts = new Set();
+
+  // Figma will not set a text property while the font behind that text is unloaded, so every font a
+  // node's text uses is loaded first. Each family and style is loaded once for the whole script.
+  const loadFonts = async (node) => {
+    const wanted = [];
+    const texts = node.type === "TEXT" ? [node] : (node.findAll ? node.findAll((n) => n.type === "TEXT") : []);
+    for (const text of texts) {
+      let names = [];
+      if (text.fontName === figma.mixed) {
+        try {
+          names = text.getRangeAllFontNames(0, text.characters.length);
+        } catch (error) {
+          names = [];
+        }
+      } else if (text.fontName) {
+        names = [text.fontName];
+      }
+      for (const name of names) {
+        const id = name.family + "|" + name.style;
+        if (fonts.has(id)) continue;
+        fonts.add(id);
+        wanted.push(name);
+      }
+    }
+    for (const name of wanted) {
+      try {
+        await figma.loadFontAsync(name);
+      } catch (error) {
+        // a font the file cannot load is reported by the audit as the text it could not set
+      }
+    }
+  };
+
+  // Only the properties the component has: a key it does not take would throw and lose the rest.
+  const apply = async (node, props) => {
+    const given = Object.entries(props || {});
+    if (given.length === 0) return;
+    const definitions = node.componentProperties || {};
+    const take = {};
+    for (const [key, value] of given) if (key in definitions) take[key] = value;
+    if (Object.keys(take).length === 0) return;
+    await loadFonts(node);
+    node.setProperties(take);
+  };
+`;
+
+/** A repair's whole helper: what it takes to set a property, and nothing that can draw. */
+const REPAIR_PRELUDE = `
+// ---- $fig: only the two things a repair needs ----
+const $fig = (() => {
+${TOUCH}
+  return { apply, loadFonts };
+})();
+`;
+
 const PRELUDE = `
 // ---- $fig: the only place this script touches the Plugin API ----
 const $fig = (() => {
   let vars = null;
   let collections = null;
   const components = new Map();
-  const fonts = new Set();
 
   const loadVars = async () => {
     if (!vars) {
@@ -85,37 +147,7 @@ const $fig = (() => {
     }
   };
 
-  // Figma will not set a text property while the font behind that text is unloaded, so every font a
-  // node's text uses is loaded first. Each family and style is loaded once for the whole render.
-  const loadFonts = async (node) => {
-    const wanted = [];
-    const texts = node.type === "TEXT" ? [node] : (node.findAll ? node.findAll((n) => n.type === "TEXT") : []);
-    for (const text of texts) {
-      let names = [];
-      if (text.fontName === figma.mixed) {
-        try {
-          names = text.getRangeAllFontNames(0, text.characters.length);
-        } catch (error) {
-          names = [];
-        }
-      } else if (text.fontName) {
-        names = [text.fontName];
-      }
-      for (const name of names) {
-        const id = name.family + "|" + name.style;
-        if (fonts.has(id)) continue;
-        fonts.add(id);
-        wanted.push(name);
-      }
-    }
-    for (const name of wanted) {
-      try {
-        await figma.loadFontAsync(name);
-      } catch (error) {
-        // a font the file cannot load is reported by the audit as the text it could not set
-      }
-    }
-  };
+${TOUCH}
 
   const bindFill = async (node, name) => {
     const variable = await getVar(name);
@@ -240,17 +272,6 @@ const $fig = (() => {
     return target;
   };
 
-  const apply = async (node, props) => {
-    const given = Object.entries(props || {});
-    if (given.length === 0) return;
-    const definitions = node.componentProperties || {};
-    const take = {};
-    for (const [key, value] of given) if (key in definitions) take[key] = value;
-    if (Object.keys(take).length === 0) return;
-    await loadFonts(node);
-    node.setProperties(take);
-  };
-
   // A layer down a path: "Column 2" then "Row 3". A step that names no layer falls back to the nth
   // instance of a component by that name, which is how an exposed action button is reached.
   const nested = (node, path, hint) => {
@@ -287,10 +308,16 @@ const $fig = (() => {
     return node;
   };
 
+  // A slot by its own name. A slot the component does not have is a fault in the map, so it is
+  // thrown: putting the screen in whatever slot happened to be first drew it in the wrong place and
+  // read, afterwards, as if the plan had asked for that.
   const slot = (node, key) => {
     const slots = node.findAllWithCriteria({ types: ["SLOT"] });
     const named = key.split("#")[0];
-    return slots.find((n) => n.name === named) || slots.find((n) => n.name.toLowerCase() === named.toLowerCase()) || slots[0] || null;
+    const found = slots.find((n) => n.name === named) || slots.find((n) => n.name.toLowerCase() === named.toLowerCase());
+    if (found) return found;
+    const had = slots.map((n) => n.name).join(", ");
+    throw new Error(node.name + " has no slot named " + named + (had ? "; its slots: " + had : "; it has no slots at all"));
   };
 
   return { page, section, fit, frame, clear, layout, instance, slot, nested, apply, getVar, setModes, component, loadFonts };
@@ -299,6 +326,7 @@ const $fig = (() => {
 
 const DRIVER = `
 // ---- render: walks PLAN and calls $fig only ----
+const started = Date.now();
 const made = [];
 // A layer the plan names and the file does not have. It is reported rather than passed over: what
 // the plan said would be drawn there is not drawn at all.
@@ -360,8 +388,8 @@ const fillInstance = async (node, spec) => {
     }
   }
   for (const [key, children] of Object.entries(spec.slots || {})) {
+    // $fig.slot throws when the component has no slot by that name, which is a fault in the map.
     const target = $fig.slot(node, key);
-    if (!target) throw new Error(node.name + " has no slot for " + key);
     // A slot comes with the artboard's own example content in it. The screen goes in its place, not
     // under it, so what is already there is taken out first.
     $fig.clear(target);
@@ -412,10 +440,63 @@ for (const frame of PLAN.frames) {
   made.push({ frame: frame.name, id: board.id });
 }
 $fig.fit(section, PLAN.padding);
-return missing.length === 0
-  ? { page: page.id, section: section.id, frames: made }
-  : { page: page.id, section: section.id, frames: made, missing: missing };
+const answer = { page: page.id, section: section.id, frames: made, ms: Date.now() - started };
+return missing.length === 0 ? answer : { ...answer, missing: missing };
 `;
+
+const REPAIR = `
+// ---- repair: the nodes the audit named, and nothing else ----
+const started = Date.now();
+const done = [];
+const failed = [];
+for (const one of FIX) {
+  let node = null;
+  try {
+    node = await figma.getNodeByIdAsync(one.id);
+  } catch (error) {
+    node = null;
+  }
+  if (!node) {
+    failed.push({ id: one.id, node: one.node, why: "there is no node by that id any more" });
+    continue;
+  }
+  try {
+    await $fig.apply(node, one.props);
+    done.push({ id: one.id, node: node.name, set: Object.keys(one.props) });
+  } catch (error) {
+    failed.push({ id: one.id, node: node.name, why: error && error.message ? error.message : String(error) });
+  }
+}
+return { repaired: done, failed: failed, ms: Date.now() - started };
+`;
+
+/**
+ * The repair as one use_figma script: the nodes the audit named, set to what the plan says.
+ *
+ * A second attempt that drew the frames again would spend a whole render on a property or two, and
+ * would take every id in the frame with it. The audit says which node is wrong and what the plan
+ * wants on it (`set`), so the repair reaches those nodes by id and touches nothing else.
+ *
+ * @param {Array<object>} findings The `findings` of one audit.
+ * @param {{ max?: number }} [options]
+ * @returns {{ code: string, size: number, nodes: number, frames: string[] } | null} null when no
+ *   finding can be mended node by node: the frame has to be rendered again instead.
+ */
+export function repairScript(findings, { max = MAX_SCRIPT } = {}) {
+  const byId = new Map();
+  for (const finding of findings ?? []) {
+    const set = finding?.set;
+    if (!set || !set.id || !set.props) continue;
+    const at = byId.get(set.id) ?? { id: set.id, node: finding.node ?? null, frame: finding.frame ?? null, props: {} };
+    Object.assign(at.props, set.props);
+    byId.set(set.id, at);
+  }
+  const fixes = [...byId.values()];
+  if (fixes.length === 0) return null;
+  const code = `// Generated by scripts/figma/emit.mjs. Repairs ${fixes.length} node(s); creates nothing.\nconst FIX = ${JSON.stringify(fixes)};\n${REPAIR_PRELUDE}\n${REPAIR}`;
+  if (code.length > max) throw new Error(`The repair is ${code.length} characters and one use_figma call takes ${max}. Render the frames again instead.`);
+  return { code, size: code.length, nodes: fixes.length, frames: [...new Set(fixes.map((fix) => fix.frame).filter(Boolean))] };
+}
 
 /**
  * Only what the script reads.

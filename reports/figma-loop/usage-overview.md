@@ -10,16 +10,25 @@
 | Page | **Spec renders**, section `usage-overview` |
 | Renders | 6 |
 | Audits | 3 |
-| Outcome | clean — all eight rules pass |
+| Outcome | clean — all nine rules pass |
 
-Five renders is more than the skill's three attempts. The cap is for repairing a **spec**; the spec
+Six renders is more than the skill's three attempts. The cap is for repairing a **spec**; the spec
 never changed here. Each extra render followed a fix to the map or the renderer, which the loop is
 supposed to surface and which a person has to make. Said plainly rather than hidden in a count.
 
+## Since this run
+
+Two things changed under this spec afterwards. `bp/figma-example-content` now reads every word
+showing in the frame, not only a slot's own children, so the artboard's trends, badges, chips,
+totals and pagination line are findings rather than a paragraph in this report. And a list shorter
+than what the artboard always draws now fails the plan: this spec's two filter Dropdowns had three
+items each against five always drawn, so each gained two. A run today would not come back clean.
+
 ## Rules × attempts
 
-The audit ran twice: once the render stopped reporting missing layers, and once more after a rule
-was corrected. Renders 1 to 4 were judged by what the render call reported and by the screenshots.
+The audit ran three times: once the render stopped reporting missing layers, and twice more after a
+rule was corrected. Renders 1 to 3 were judged by what the render call reported and by the
+screenshots.
 
 | Rule | Audit 1 | Audit 2 | Audit 3 |
 |---|---|---|---|
@@ -66,7 +75,7 @@ Render 1 and render 2 each reported two:
 | 1 | ready/light, ready/dark | `Dropdown 1` — the map did not say where the Toolbar draws its filters, so the plan guessed a name |
 | 2 | ready/light, ready/dark | `filters > chips > Chip 1` — the right path, but the chips are only in the `filtersOpen=true` variant |
 
-Renders 3 to 5 reported none. Nothing `fellBack`: the AppShell page slot took the screen in every
+Renders 3 to 6 reported none. Nothing `fellBack`: the AppShell page slot took the screen in every
 frame.
 
 ## Not in Figma
@@ -90,8 +99,8 @@ state with its `speed` glyph and `open_in_new` button.
 
 ## What the audit could not see
 
-Four faults were found by eye against `docs/references/screenshots/usage-overview.png` and the
-prototype at `vercel-bp-prototype.vercel.app/prototypes/billing-dashboard`, not by a rule. All four
+Five faults were found by eye against `docs/references/screenshots/usage-overview.png` and the
+prototype at `vercel-bp-prototype.vercel.app/prototypes/billing-dashboard`, not by a rule. All five
 are fixed, each with a test:
 
 1. **The Toolbar's filters went nowhere.** The map had no path for them. Read in the file:

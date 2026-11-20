@@ -485,6 +485,18 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
       const family = textFamily(entry, name);
       const show = slot.show ?? [];
       const baseline = Math.max(1, max - show.length);
+      // The parts the artboard always draws have no switch to turn them off, so a list shorter than
+      // that would be drawn out to the baseline with the library's own example content — numbers
+      // and words a reader would take for the screen's. That is not a render of this spec, so the
+      // plan refuses it here, before anything is sent to Figma.
+      if (max > 0 && value.length < baseline) {
+        fail(
+          at,
+          `${node.component} always draws ${baseline} ${name} in Figma and the spec has ${value.length}; the other ${baseline - value.length} would keep the artboard's own example content.`,
+          `Give it ${baseline} ${name}, or draw a shorter ${node.component.toLowerCase()} as its own Figma component.`,
+        );
+        return;
+      }
       const childEntry = slot.childProps ? entryFor(slot.childProps) : null;
       const childShape = typeof slot.child === "string" ? slot.child : null;
       const rows = [];
@@ -563,6 +575,21 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
       const rowShow = rowSlot.show ?? [];
       const columnBaseline = Math.max(1, columnMax - columnShow.length);
       const rowBaseline = Math.max(1, rowMax - rowShow.length);
+      // As with any other list: the columns and the rows the artboard always draws cannot be turned
+      // off, so a table with fewer than that would show the library's own headers and figures.
+      for (const [what, count, baseline, max_, where] of [
+        ["columns", columns.length, columnBaseline, columnMax, `${at}.props.columns`],
+        ["rows", rows.length, rowBaseline, rowMax, `${at}.props.rows`],
+      ]) {
+        if (max_ > 0 && count < baseline) {
+          fail(
+            where,
+            `${node.component} always draws ${baseline} ${what} in Figma and the spec has ${count}; the other ${baseline - count} would keep the artboard's own example content.`,
+            `Give it ${baseline} ${what}, or draw a smaller table as its own Figma component.`,
+          );
+          return;
+        }
+      }
 
       const headers = columns.map((column, c) => {
         const n = c + 1;
@@ -944,8 +971,11 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
     const shape = shell.frameLayers?.pageHeader ?? null;
     const header = entryFor("PageHeader");
     const toggle = Object.keys(shell.figmaOnly ?? {}).find((key) => /^showPageHeader#/i.test(key)) ?? null;
-    if (ownsHeader || !shape || !header) return { toggle, on: false, part: null };
+    if (ownsHeader || !shape || !header) return { toggle, on: false, titleLayer: null, part: null };
     const title = header.props?.title?.figma ?? null;
+    // The layer the title is written on, so the audit measures that one rather than the first text
+    // in the header — which is the breadcrumb trail, and starts somewhere else.
+    const titleLayer = typeof title === "string" ? title.split("#")[0] : null;
     // The shell's header is the page title and nothing else: the spec gives it no actions, no icon
     // and no badge, and its crumbs are the artboard's example trail rather than this screen's. So
     // every part of it is switched off and only the title is written.
@@ -954,6 +984,7 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
     return {
       toggle,
       on: true,
+      titleLayer,
       part: { path: layerPath(shape), component: "PageHeader", index: 1, props, texts: title ? { [title]: spec.title } : {} },
     };
   };
@@ -1025,8 +1056,9 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
         patternState: patternStateFor(state),
         fallback,
         slot: pageSlot,
-        // The screen's content shares the page header's left edge, so the audit can measure it.
-        align: !fallback && header.on,
+        // The screen's content shares the page header's left edge, so the audit can measure it —
+        // against the title itself, by the words on it and the layer it is written on.
+        align: !fallback && header.on ? { title: spec.title, layer: header.titleLayer } : false,
         root: root_,
         // The second shape, always planned: the header, the nav and the content frame beside them.
         // The script uses it when the map has no page slot, and when a slot refuses children.

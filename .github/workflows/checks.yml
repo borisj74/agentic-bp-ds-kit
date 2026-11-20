@@ -1,0 +1,33 @@
+# The checks every change has to pass: the tests, the types, and the contracts-to-Figma map.
+# Unlike Kit review, this one fails the pull request.
+name: Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Tests
+        run: npm test
+
+      - name: Types
+        run: npx tsc --noEmit
+
+      - name: The Figma map agrees with the contracts
+        run: npm run figma:check

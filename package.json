@@ -35,6 +35,7 @@
     "figma:guidelines": "node scripts/figma-guidelines.mjs",
     "figma:check": "node scripts/figma/check-map.mjs",
     "figma:plan": "node scripts/figma/plan.mjs",
+    "figma:batch": "node scripts/figma/batch.mjs",
     "figma:emit": "node scripts/figma/emit.mjs",
     "figma:judge": "node scripts/figma/judge.mjs",
     "sync:index": "node scripts/sync-index.mjs",
