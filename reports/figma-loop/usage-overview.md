@@ -18,11 +18,11 @@ supposed to surface and which a person has to make. Said plainly rather than hid
 
 ## Since this run
 
-Two things changed under this spec afterwards. `bp/figma-example-content` now reads every word
-showing in the frame, not only a slot's own children, so the artboard's trends, badges, chips,
-totals and pagination line are findings rather than a paragraph in this report. And a list shorter
-than what the artboard always draws now fails the plan: this spec's two filter Dropdowns had three
-items each against five always drawn, so each gained two. A run today would not come back clean.
+`bp/figma-example-content` changed under this spec afterwards. It now reads every word showing in
+the frame, not only a slot's own children, passing over the shell's own chrome and the words a
+component draws that no spec can set (`audit.exampleContent` in `contracts/figma-map.json`). So the
+artboard's trends, badges, chips, total and pagination line below are findings rather than a
+paragraph in this report, and a run today would not come back clean.
 
 ## Rules × attempts
 

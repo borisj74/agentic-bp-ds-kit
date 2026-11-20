@@ -157,9 +157,15 @@ function expectNode(node) {
 /** What the audit expects of one plan: the frames, their modes and their trees. */
 export function expectations(plan, { page = TARGET_PAGE, frames = null } = {}) {
   const wanted = frames ? plan.frames.filter((frame) => frames.includes(frame.name) || frames.includes(frame.state) || frames.includes(frame.theme)) : plan.frames;
+  const allow = plan.exampleContent ?? {};
   return {
     page,
     screen: plan.name,
+    // What the example-content rule passes over, from contracts/figma-map.json: the layers and
+    // components that are the shell's own chrome, and the words a component draws that no spec can
+    // set. Recorded in the map so the rule itself stays about the screen.
+    skip: [...(allow.skip ?? [])],
+    labels: { ...(allow.labels ?? {}) },
     frames: wanted.map((frame) => {
       const roots = frame.fallback ? [frame.parts.header, frame.parts.nav, frame.parts.content].filter(Boolean) : [frame.root];
       const words = new Set();
@@ -184,6 +190,21 @@ const add = (rule, frame, node, id, what, set) => out.push(set ? { rule, frame, 
 // Words the artboard draws of its own are read against the spec's, and an icon glyph is a character
 // in a symbol font rather than a word, so it is left out of that reading.
 const ICON = /material symbols/i;
+// The layers and components whose words are nobody's screen, and the words a component draws that no
+// spec can set. Both come from the map, through EXPECT.
+const SKIP = new Set(EXPECT.skip || []);
+const LABELS = EXPECT.labels || {};
+// What a node is called, however it got there: its layer name, its main component, and the set the
+// main component belongs to — a swapped instance keeps the name of the layer it was put in.
+const names = (node) => {
+  const out = [node.name];
+  if (node.type === "INSTANCE" && node.mainComponent) {
+    out.push(node.mainComponent.name);
+    const set = node.mainComponent.parent;
+    if (set && set.type === "COMPONENT_SET") out.push(set.name);
+  }
+  return out.filter(Boolean);
+};
 const glyphy = (text) => {
   const font = text.fontName;
   const family = font && typeof font === "object" ? font.family : null;
@@ -483,12 +504,33 @@ for (const want of EXPECT.frames) {
     const words = String(text.characters).trim();
     if (!words || !/[A-Za-z0-9]/.test(words)) continue;
     if (mine.has(words)) continue;
+    // Where the words sit: the layers and instances between the text and the frame. It is what says
+    // whether they are the screen's at all, and it goes in the finding so a person can see it.
+    const within = [];
+    let at = text;
+    let passed = false;
+    while (at && at.id !== frame.id) {
+      for (const name of names(at)) {
+        if (within.indexOf(name) < 0) within.push(name);
+        if (SKIP.has(name)) passed = true;
+        if ((LABELS[name] || []).indexOf(words) >= 0) passed = true;
+      }
+      if (passed) break;
+      at = at.parent;
+    }
+    if (passed) continue;
     if (said.has(words)) continue;
     said.add(words);
-    spare.push(text);
+    spare.push({ node: text, within: within.slice(0, 4) });
   }
-  for (const text of spare.slice(0, 12))
-    add("bp/figma-example-content", want.name, text.name, text.id, JSON.stringify(String(text.characters).slice(0, 40)) + " is showing and the spec never wrote it");
+  for (const found of spare.slice(0, 12))
+    add(
+      "bp/figma-example-content",
+      want.name,
+      found.node.name,
+      found.node.id,
+      JSON.stringify(String(found.node.characters).slice(0, 40)) + " is showing and the spec never wrote it, inside " + found.within.join(" < "),
+    );
   if (spare.length > 12)
     add("bp/figma-example-content", want.name, frame.name, frame.id, spare.length - 12 + " more words are showing that the spec never wrote");
 

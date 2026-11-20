@@ -35,6 +35,7 @@
  *   emitScript(plan, options) — { code, size, frames, warnings }
  */
 import { repoRoot } from "../review/catalog.mjs";
+import { readLoopStatus } from "../spec/loop-status.mjs";
 import { planFile, PAGE_AFTER, TARGET_PAGE } from "./plan.mjs";
 
 /** What one use_figma call may carry. A script over this is split by state or by theme. */
@@ -598,7 +599,28 @@ export function emitScript(plan, { page = TARGET_PAGE, frames = null, max = MAX_
 
 // ---- the command line ----------------------------------------------------------------------------
 
-/** `npm run figma:emit -- <spec.json> [--frames ready] [--brand cobalt] [--out file.js]` */
+/**
+ * Why this spec may not be sent to Figma yet, or null when it may.
+ *
+ * A render is the expensive half of the loop, so only a screen that holds up in code is rendered.
+ * `npm run loop` leaves a stamp beside its report and this reads it: no stamp means nobody has run
+ * the screen, a stale one means the spec changed since, and a failing one means the screen is still
+ * broken in code. `--force` says so out loud instead.
+ *
+ * @param {string} specFile
+ * @param {{ root?: string }} [options]
+ * @returns {string | null}
+ */
+export function loopGate(specFile, { root = repoRoot } = {}) {
+  const status = readLoopStatus({ root, specFile });
+  const run = `Run npm run loop -- ${specFile} first, or pass --force to send it anyway.`;
+  if (!status) return `The code loop has not run on ${specFile}, so there is nothing to say the screen holds up in code. ${run}`;
+  if (status.stale) return `${specFile} has changed since the code loop passed on it (${status.file}), so what the loop passed is not this screen. ${run}`;
+  if (!status.ok) return `The code loop still had errors the last time it ran on ${specFile} (${status.file}). Fix those first: a screen that is broken in code is broken in Figma too. ${run}`;
+  return null;
+}
+
+/** `npm run figma:emit -- <spec.json> [--frames ready] [--brand cobalt] [--out file.js] [--force]` */
 async function main(argv) {
   const { parseArgs } = await import("node:util");
   const { writeFileSync } = await import("node:fs");
@@ -611,11 +633,21 @@ async function main(argv) {
       frames: { type: "string" },
       page: { type: "string" },
       out: { type: "string" },
+      force: { type: "boolean", default: false },
     },
   });
   if (positionals.length !== 1) {
-    console.error("\n  npm run figma:emit -- <spec.json> [--frames ready|Light|<frame name>] [--brand cobalt] [--out file.js]\n");
+    console.error("\n  npm run figma:emit -- <spec.json> [--frames ready|Light|<frame name>] [--brand cobalt] [--out file.js] [--force]\n");
     process.exit(1);
+  }
+
+  // Code first: a screen the loop has not passed is not rendered.
+  if (!values.force) {
+    const why = loopGate(positionals[0]);
+    if (why) {
+      console.error(`\n  ${why}\n`);
+      process.exit(1);
+    }
   }
 
   let plan;

@@ -111,8 +111,6 @@ export default function UsageOverviewEmptyScreen() {
                       { id: "api", label: "Platform API", selected: true },
                       { id: "storage", label: "Storage" },
                       { id: "support", label: "Support hours" },
-                      { id: "egress", label: "Data egress" },
-                      { id: "seats", label: "Seats" },
                     ]}
                   />
                   <Dropdown
@@ -124,8 +122,6 @@ export default function UsageOverviewEmptyScreen() {
                       { id: "enterprise", label: "Enterprise" },
                       { id: "growth", label: "Growth" },
                       { id: "starter", label: "Starter" },
-                      { id: "trial", label: "Trial" },
-                      { id: "custom", label: "Custom" },
                     ]}
                   />
                 </>

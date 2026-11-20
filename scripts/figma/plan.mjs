@@ -485,11 +485,21 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
       const family = textFamily(entry, name);
       const show = slot.show ?? [];
       const baseline = Math.max(1, max - show.length);
+      const childEntry = slot.childProps ? entryFor(slot.childProps) : null;
+      const childShape = typeof slot.child === "string" ? slot.child : null;
+      // Whether the spec's own words reach this list at all: a numbered text family to write them
+      // into, or a path to the child that holds them. Without either, the component draws the list
+      // as its own example copy whatever the spec says, and every row is reported as dropped below.
+      const drawsText = Boolean(family) || Boolean(childShape);
       // The parts the artboard always draws have no switch to turn them off, so a list shorter than
       // that would be drawn out to the baseline with the library's own example content — numbers
       // and words a reader would take for the screen's. That is not a render of this spec, so the
       // plan refuses it here, before anything is sent to Figma.
-      if (max > 0 && value.length < baseline) {
+      //
+      // Only where the list is the spec's own words, though. A list Figma draws as example copy
+      // either way says nothing about this screen, however long it is, so the count is not a fault
+      // to be fixed by padding the spec: it is already reported, row by row, as not in Figma.
+      if (max > 0 && drawsText && value.length < baseline) {
         fail(
           at,
           `${node.component} always draws ${baseline} ${name} in Figma and the spec has ${value.length}; the other ${baseline - value.length} would keep the artboard's own example content.`,
@@ -497,8 +507,6 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
         );
         return;
       }
-      const childEntry = slot.childProps ? entryFor(slot.childProps) : null;
-      const childShape = typeof slot.child === "string" ? slot.child : null;
       const rows = [];
       value.forEach((item, i) => {
         const n = i + 1;
@@ -1076,6 +1084,9 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
     section: spec.section ?? null,
     breadcrumbs: spec.breadcrumbs ?? [],
     fileKey: sheet.fileKey ?? null,
+    // What the example-content rule passes over, read from the map rather than written into the
+    // audit: the shell's own chrome and the words a component draws that no spec can set.
+    exampleContent: sheet.audit?.exampleContent ?? null,
     brand,
     themes: [...themes],
     states,

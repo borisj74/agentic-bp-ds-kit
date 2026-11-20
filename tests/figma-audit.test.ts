@@ -54,7 +54,13 @@ const TITLE_KEY = "title#1:1";
 const CARD_LINE = "showLine#176:35";
 
 /** A plan with one frame: an AppShell whose page slot holds a stack with one Scoreboard in it. */
-function planOf({ cards = 3, align = true as unknown, words = {} as Record<string, string> } = {}) {
+function planOf({
+  cards = 3,
+  align = true as unknown,
+  words = {} as Record<string, string>,
+  skip = ["AppHeader", "AppNav", "assistant"],
+  labels = {} as Record<string, string[]>,
+} = {}) {
   const scoreboard: Node = {
     kind: "instance",
     component: "Scoreboard",
@@ -81,6 +87,7 @@ function planOf({ cards = 3, align = true as unknown, words = {} as Record<strin
   return {
     ok: true,
     name: "demo",
+    exampleContent: { skip, labels },
     frames: [
       {
         name: "demo/ready/light",
@@ -107,6 +114,7 @@ function fileOf({
   title = "Usage overview" as string | null,
   extraText = [] as { name: string; chars: string; family?: string }[],
   slotExtra = null as Raw | null,
+  shellChrome = [] as Raw[],
 } = {}) {
   const cardNodes: Raw[] = cards.map((line, i) => ({
     id: `card:${i + 1}`,
@@ -172,7 +180,7 @@ function fileOf({
                 mainComponent: { name: "AppShell" },
                 componentProperties: {},
                 absoluteBoundingBox: { x: 0, y: 0, width: 1440, height: 900 },
-                children: [header, { id: "slot:page", name: "page", type: "SLOT", children: slotChildren }],
+                children: [...shellChrome, header, { id: "slot:page", name: "page", type: "SLOT", children: slotChildren }],
               },
             ],
           },
@@ -274,7 +282,7 @@ describe("the audit, against a fake Figma tree", () => {
       });
       const findings = content(await runAudit(plan, { figma: fakeFigma(file) }));
       expect(findings.map((f: Any) => f.node)).toEqual(["Trend", "Badge", "Chip", "Total", "Pagination"]);
-      expect(findings[0].what).toBe('"12% MoM" is showing and the spec never wrote it');
+      expect(findings[0].what).toContain('"12% MoM" is showing and the spec never wrote it');
       expect(findings[0].id).toBe("extra:0");
     });
 
@@ -284,12 +292,67 @@ describe("the audit, against a fake Figma tree", () => {
       expect(content(await runAudit(plan, { figma: fakeFigma(file) }))).toEqual([]);
     });
 
+    it("passes over the shell's own chrome: the app header, the nav and the assistant", async () => {
+      // The shell draws a search field, a signed-in name, a nav and an assistant panel. None of it
+      // is the screen, and no spec can set any of it, so the map's skip list names those layers.
+      const plan = planOf({ words: { "title#176:0": "Rated usage" } });
+      const file = fileOf({
+        cards: [true, true, false],
+        shellChrome: [
+          {
+            id: "chrome:header",
+            name: "AppHeader",
+            type: "INSTANCE",
+            mainComponent: { name: "AppHeader" },
+            componentProperties: {},
+            children: [
+              { id: "chrome:search", name: "Search", type: "TEXT", characters: "Search accounts", fontName: { family: "Inter", style: "Regular" } },
+              { id: "chrome:user", name: "User", type: "TEXT", characters: "Dana Whitfield", fontName: { family: "Inter", style: "Medium" } },
+            ],
+          },
+          {
+            id: "chrome:nav",
+            name: "AppNav",
+            type: "INSTANCE",
+            mainComponent: { name: "AppNav" },
+            componentProperties: {},
+            children: [{ id: "chrome:nav:1", name: "Item 1", type: "TEXT", characters: "Mediation", fontName: { family: "Inter", style: "Regular" } }],
+          },
+          {
+            id: "chrome:assistant",
+            name: "assistant",
+            type: "FRAME",
+            children: [{ id: "chrome:assistant:1", name: "Greeting", type: "TEXT", characters: "How can I help?", fontName: { family: "Inter", style: "Regular" } }],
+          },
+        ],
+      });
+      expect(content(await runAudit(plan, { figma: fakeFigma(file) }))).toEqual([]);
+    });
+
+    it("passes over a word a component draws that no spec can set, where the map says so", async () => {
+      const file = fileOf({ cards: [true, true, false], extraText: [{ name: "Search", chars: "Search in list" }] });
+      const loose = planOf({ words: { "title#176:0": "Rated usage" } });
+      expect(content(await runAudit(loose, { figma: fakeFigma(file) }))).toHaveLength(1);
+      const allowed = planOf({ words: { "title#176:0": "Rated usage" }, labels: { Scoreboard: ["Search in list"] } });
+      expect(content(await runAudit(allowed, { figma: fakeFigma(fileOf({ cards: [true, true, false], extraText: [{ name: "Search", chars: "Search in list" }] })) }))).toEqual([]);
+      // Only that word, and only in that component: the allowlist is a list, not a licence.
+      const other = fileOf({ cards: [true, true, false], extraText: [{ name: "Trend", chars: "12% MoM" }] });
+      expect(content(await runAudit(allowed, { figma: fakeFigma(other) }))).toHaveLength(1);
+    });
+
+    it("says where the words it flags are sitting", async () => {
+      const plan = planOf({ words: { "title#176:0": "Rated usage" } });
+      const file = fileOf({ cards: [true, true, false], extraText: [{ name: "Trend", chars: "12% MoM" }] });
+      const findings = content(await runAudit(plan, { figma: fakeFigma(file) }));
+      expect(findings[0].what).toBe('"12% MoM" is showing and the spec never wrote it, inside Trend < Scoreboard < layout/stack < page');
+    });
+
     it("flags the breadcrumb trail the shell draws of its own", async () => {
       const plan = planOf({ words: { "title#176:0": "Rated usage" } });
       const findings = of(await runAudit(plan, { figma: fakeFigma(fileOf({ cards: [true, true, false] })) }), "bp/figma-example-content");
       expect(findings).toHaveLength(1);
       expect(findings[0].node).toBe("Breadcrumb");
-      expect(findings[0].what).toBe('"Home › Usage" is showing and the spec never wrote it');
+      expect(findings[0].what).toContain('"Home › Usage" is showing and the spec never wrote it');
     });
 
     it("leaves an icon glyph alone: a symbol font is not a word", async () => {

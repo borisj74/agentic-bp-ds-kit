@@ -238,6 +238,36 @@ describe("the render plan", () => {
     expect(plan.ok).toBe(true);
   });
 
+  it("takes a short list the Figma component draws as its own copy either way", () => {
+    // The Dropdown always draws five items and the map has no layer for their words, so the spec's
+    // own labels never reach them however many there are. Padding the spec would change nothing, so
+    // the count is not a fault; every row is reported as not in Figma instead.
+    expect(map.components.Dropdown.slots.items.child).toBe(undefined);
+    expect(textFamily(map.components.Dropdown, "items")).toBe(null);
+    const plan = makePlan({
+      name: "short-dropdown",
+      title: "Short dropdown",
+      pattern: "SettingsPage",
+      regions: {
+        content: [
+          {
+            component: "Dropdown",
+            props: {
+              label: "Product",
+              trigger: "filter",
+              items: [
+                { id: "api", label: "Platform API" },
+                { id: "storage", label: "Storage" },
+              ],
+            },
+          },
+        ],
+      },
+    });
+    expect(plan.ok).toBe(true);
+    expect(plan.dropped.some((item: Json) => /example copy/.test(item.why))).toBe(true);
+  });
+
   it("refuses a table with fewer rows or columns than the artboard always draws", () => {
     const plan = makePlan({
       name: "small-grid",

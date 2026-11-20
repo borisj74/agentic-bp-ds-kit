@@ -121,6 +121,7 @@ export async function runBatch(
     brand = DEFAULT_BRAND,
     themes = THEMES,
     page = TARGET_PAGE,
+    report: reportPath = BATCH_REPORT,
     log = () => {},
     server: openServer = startServer,
   } = {},
@@ -203,7 +204,7 @@ export async function runBatch(
   }
 
   const report = formatBatch(runs, { out, page });
-  const reportFile = resolve(root, BATCH_REPORT);
+  const reportFile = resolve(root, reportPath);
   mkdirSync(dirname(reportFile), { recursive: true });
   writeFileSync(reportFile, report);
   return { ok: runs.every((run) => run.ok), runs, report, reportFile: relative(root, reportFile).replace(/\\/g, "/"), out };
@@ -247,6 +248,7 @@ async function main(argv) {
       brand: values.brand ?? DEFAULT_BRAND,
       themes: values.themes ? values.themes.split(",").map((t) => t.trim()).filter(Boolean) : THEMES,
       page: values.page ?? TARGET_PAGE,
+      report: values.report ?? BATCH_REPORT,
       log,
     });
   } catch (error) {
@@ -254,8 +256,6 @@ async function main(argv) {
     else console.error(`\n  ${error instanceof Error ? error.message : String(error)}\n`);
     process.exit(1);
   }
-  if (values.report && values.report !== BATCH_REPORT) writeFileSync(resolve(repoRoot, values.report), result.report);
-
   if (values.json) {
     console.log(JSON.stringify(result, null, 2));
     process.exit(result.ok ? 0 : 1);

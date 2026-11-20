@@ -59,3 +59,9 @@ docs/figma/*
 
 # Figma loop screenshots (the spec-to-figma skill); the report beside them is committed
 /reports/figma-loop/*/
+
+# the code loop's own stamp, read by npm run figma:emit; machine state, not a report
+/reports/loop/*.status.json
+
+# the spec batch's summary and the scripts beside it (npm run figma:batch)
+/reports/figma-loop/batch.md

@@ -25,10 +25,15 @@ npm run figma:batch -- <spec.json> <spec.json> ...      # or --dir specs
 
 It runs the code loop on every spec — one dev server for all of them — and writes the render and the
 audit script only for the ones that pass. Everything lands under `reports/figma-loop/batch/` as
-`<name>.render.js` and `<name>.audit.js`, and one summary, `reports/figma-loop/batch.md`, spells out
-the failures and does no more than name the passes with their times. Send each passing render as one
-`use_figma` call and its audit as one more; a spec in the Failed section is not rendered at all —
-fix the spec and run the batch again.
+`<name>.render.js` and `<name>.audit.js`, and one summary, `reports/figma-loop/batch.md` or wherever
+`--report` says, spells out the failures and does no more than name the passes with their times.
+Send each passing render as one `use_figma` call and its audit as one more; a spec in the Failed
+section is not rendered at all — fix the spec and run the batch again.
+
+One spec on its own is the same rule, enforced by the emitter: `npm run figma:emit` reads the stamp
+`npm run loop` leaves beside its report and refuses a spec the loop has not passed, or one that has
+changed since it did. Run the loop first. `--force` sends it anyway, and says in the report that it
+was forced.
 
 ## The loop
 
@@ -143,4 +148,12 @@ Write `reports/figma-loop/<name>.md` when the loop stops, whatever the outcome:
 - **A list shorter than what the artboard always draws fails the plan.** A Scoreboard draws three
   cards before any switch, so a screen with two of them would be drawn out to three with the
   library's own card. The plan refuses it and says how many the component always draws; give it that
-  many, or draw the shorter piece as its own Figma component.
+  many, or draw the shorter piece as its own Figma component. A list Figma draws as its own example
+  copy whatever the spec says — a Dropdown's items, which no map layer holds — is exempt: the count
+  changes nothing there, and every row is reported as not in Figma instead.
+- **What `bp/figma-example-content` passes over is in the map, not in the rule.**
+  `audit.exampleContent` in `contracts/figma-map.json` holds `skip`, the layers and components that
+  are the shell's own chrome (AppHeader, AppNav, the assistant), and `labels`, the words a named
+  component draws that no spec can set. Everything else showing in the frame is read against the
+  words the spec wrote. Add to those lists only what no spec could ever set; a figure a reader would
+  take for the screen's own belongs in the report, not in the allowlist.
