@@ -35,11 +35,29 @@ Three attempts, at most. Each attempt is two `use_figma` calls: the render and t
    again. Never patch Figma by hand and never edit the generated page: the spec is the source.
 6. **Repeat** from step 2 while the judge says `render`, up to three attempts in all.
 
-To build the audit script:
+To build the audit script (it reads the same page the emitter writes to, so pass `--page` to both or
+to neither):
 
 ```bash
-node -e 'const p=await import("./scripts/figma/plan.mjs"),a=await import("./scripts/figma/audit.js");const plan=p.planFile(process.argv[1]);process.stdout.write(a.auditScript(plan))' <spec.json> > <scratch>/audit.js
+node -e 'const p=await import("./scripts/figma/plan.mjs"),a=await import("./scripts/figma/audit.js");const plan=p.planFile(process.argv[1]);process.stdout.write(a.auditScript(plan,{page:process.argv[2]||undefined}))' <spec.json> > <scratch>/audit.js
 ```
+
+## Where it lands
+
+Everything goes on the **`Spec renders`** page, created right after `Patterns` the first time. Each
+spec's frames sit in a Section named after the spec, laid out in a row:
+
+```
+Spec renders
+└── payments-empty            (section)
+    ├── payments-empty/empty/light
+    ├── payments-empty/empty/dark
+    ├── payments-empty/ready/light
+    └── payments-empty/ready/dark
+```
+
+A re-render reuses that section and those frames, so their ids, links and comments survive. Pass
+`--page` to `figma:emit` to write somewhere else, and the same name to the audit.
 
 ## Screenshots
 
@@ -67,7 +85,8 @@ Write `reports/figma-loop/<name>.md` when the loop stops, whatever the outcome:
 
 ## Rules
 
-- **Read-only outside the target page.** The renderer writes to the `Screens` page and nowhere else.
+- **Read-only outside the target page.** The renderer writes to the `Spec renders` page and nowhere
+  else.
   Never touch the Components page, the Foundations page, the variables or the component sets.
 - **Never delete a node the loop did not create.** Re-rendering replaces a frame's own children and
   keeps the frame's id; that is the only removal allowed.

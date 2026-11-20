@@ -7,9 +7,9 @@
  * The script has three parts:
  *
  *   1. `$fig`, a small helper over the Plugin API. It is the only place the script touches `figma.*`,
- *      and the only place that creates a node at all: `$fig.frame` makes the state × theme frame and
- *      `$fig.layout` makes a `layout/<region>` frame. Nothing else is ever created — no rectangle, no
- *      text, no shape. Every visible leaf comes from a library instance.
+ *      and the only place that creates a node at all: the page, the section a screen's frames sit in,
+ *      the state × theme frame and the `layout/<region>` frames. Nothing else is ever created — no
+ *      rectangle, no text, no shape. Every visible leaf comes from a library instance.
  *   2. `PLAN`, the plan as a literal. The plan is data, so it goes in as data: a per-node pile of
  *      statements would say the same thing several times over and spend the script's size budget on
  *      repetition.
@@ -20,21 +20,29 @@
  * no colour is ever written down. Each frame sets its own explicit mode for Ref, Scheme, Semantic,
  * Dimension and Density, so a frame never inherits a mode from the page.
  *
- * Re-rendering keeps a frame's id: a frame already named `<screen>/<state>/<theme>` has its children
- * removed and filled again, so links, comments and anything pointing at that frame survive.
+ * Fonts are loaded before anything is said. Figma refuses to set a text property while the font behind
+ * that text is unloaded, so every instance has the fonts of its own text nodes loaded first, cached by
+ * family and style across the whole render.
+ *
+ * Re-rendering keeps ids. A screen's frames live in a section named after the spec; a section and a
+ * frame already by that name are reused, and a frame's children are replaced rather than the frame, so
+ * links, comments and anything pointing at that frame survive.
+ *
+ * If a page slot refuses children at run time — a slot the API will not append to — the frame is drawn
+ * the other way instead: an AppHeader and an AppNav instance beside a layout/content frame. The plan
+ * carries both shapes for exactly that.
  *
  *   emitScript(plan, options) — { code, size, frames, warnings }
  */
 import { repoRoot } from "../review/catalog.mjs";
-import { planFile } from "./plan.mjs";
+import { planFile, PAGE_AFTER, TARGET_PAGE } from "./plan.mjs";
 
 /** What one use_figma call may carry. A script over this is split by state or by theme. */
 export const MAX_SCRIPT = 50_000;
 
-/** The page the renderer writes to. Everything outside it is left alone. */
-export const TARGET_PAGE = "Screens";
+export { TARGET_PAGE, PAGE_AFTER };
 
-/** Where the first frame sits, and how far apart frames are laid out. */
+/** Where the first frame sits inside its section, and how far apart frames are laid out in a row. */
 export const GRID = { x: 0, y: 0, gap: 160 };
 
 const PRELUDE = `
@@ -43,6 +51,7 @@ const $fig = (() => {
   let vars = null;
   let collections = null;
   const components = new Map();
+  const fonts = new Set();
 
   const loadVars = async () => {
     if (!vars) {
@@ -76,13 +85,46 @@ const $fig = (() => {
     }
   };
 
+  // Figma will not set a text property while the font behind that text is unloaded, so every font a
+  // node's text uses is loaded first. Each family and style is loaded once for the whole render.
+  const loadFonts = async (node) => {
+    const wanted = [];
+    const texts = node.type === "TEXT" ? [node] : (node.findAll ? node.findAll((n) => n.type === "TEXT") : []);
+    for (const text of texts) {
+      let names = [];
+      if (text.fontName === figma.mixed) {
+        try {
+          names = text.getRangeAllFontNames(0, text.characters.length);
+        } catch (error) {
+          names = [];
+        }
+      } else if (text.fontName) {
+        names = [text.fontName];
+      }
+      for (const name of names) {
+        const id = name.family + "|" + name.style;
+        if (fonts.has(id)) continue;
+        fonts.add(id);
+        wanted.push(name);
+      }
+    }
+    for (const name of wanted) {
+      try {
+        await figma.loadFontAsync(name);
+      } catch (error) {
+        // a font the file cannot load is reported by the audit as the text it could not set
+      }
+    }
+  };
+
   const bindFill = async (node, name) => {
     const variable = await getVar(name);
     const paint = figma.variables.setBoundVariableForPaint({ type: "SOLID", color: { r: 0, g: 0, b: 0 }, opacity: 1 }, "color", variable);
     node.fills = [paint];
   };
 
-  const page = async (name) => {
+  // The page the renderer writes to, made after the page the plan names when it is not there yet.
+  const page = async (name, after) => {
     const found = figma.root.children.find((p) => p.name === name);
     if (found) {
       await found.loadAsync();
@@ -90,6 +132,18 @@ const $fig = (() => {
     }
     const made = figma.createPage();
     made.name = name;
+    const at = figma.root.children.findIndex((p) => p.name === after);
+    if (at >= 0) figma.root.insertChild(at + 1, made);
+    return made;
+  };
+
+  // One section per screen, so a spec's frames stay together and keep their ids across renders.
+  const section = (parent, name) => {
+    const found = parent.children.find((c) => c.type === "SECTION" && c.name === name);
+    if (found) return found;
+    const made = figma.createSection();
+    made.name = name;
+    parent.appendChild(made);
     return made;
   };
 
@@ -113,12 +167,20 @@ const $fig = (() => {
     return node;
   };
 
+  const clear = (node) => {
+    for (const child of [...node.children]) child.remove();
+  };
+
   const layout = async (parent, spec) => {
     const node = figma.createAutoLayout(spec.direction === "HORIZONTAL" ? "HORIZONTAL" : "VERTICAL");
     node.name = spec.name;
     parent.appendChild(node);
-    node.layoutSizingHorizontal = "FILL";
-    node.layoutSizingVertical = "HUG";
+    try {
+      node.layoutSizingHorizontal = "FILL";
+      node.layoutSizingVertical = "HUG";
+    } catch (error) {
+      // a parent that is not an auto layout leaves the frame at its own size
+    }
     if (spec.gap) node.setBoundVariable("itemSpacing", await getVar(spec.gap));
     if (spec.padding) {
       const variable = await getVar(spec.padding);
@@ -157,33 +219,48 @@ const $fig = (() => {
     return target;
   };
 
-  const apply = (node, props) => {
+  const apply = async (node, props) => {
     const given = Object.entries(props || {});
     if (given.length === 0) return;
     const definitions = node.componentProperties || {};
     const take = {};
     for (const [key, value] of given) if (key in definitions) take[key] = value;
-    if (Object.keys(take).length > 0) node.setProperties(take);
+    if (Object.keys(take).length === 0) return;
+    await loadFonts(node);
+    node.setProperties(take);
   };
 
-  const child = (node, layer) => {
-    const found = node.findAll((n) => n.name === layer && n.type === "INSTANCE")[0] || node.findAll((n) => n.name === layer)[0];
-    if (!found) throw new Error("no layer named " + layer + " in " + node.name);
-    return found;
+  // A layer down a path: "Column 2" then "Row 3". A step that names no layer falls back to the nth
+  // instance of a component by that name, which is how an exposed action button is reached.
+  const nested = (node, path, hint) => {
+    let at = node;
+    for (const step of path || []) {
+      const next =
+        at.findAll((n) => n.name === step)[0] ||
+        at.findAll((n) => n.type === "INSTANCE" && n.mainComponent && n.mainComponent.name === step)[0] ||
+        null;
+      if (!next) {
+        if (!hint) return null;
+        const all = at.findAll((n) => n.type === "INSTANCE" && (n.name === hint.component || (n.mainComponent && n.mainComponent.name === hint.component)));
+        return all[(hint.index || 1) - 1] || null;
+      }
+      at = next;
+    }
+    return at;
   };
 
   const instance = async (parent, spec) => {
     const node = (await component(spec)).createInstance();
     node.name = spec.component;
     parent.appendChild(node);
-    if (node.layoutSizingHorizontal !== undefined && parent.layoutMode) {
+    if (parent.layoutMode) {
       try {
         node.layoutSizingHorizontal = "FILL";
       } catch (error) {
         // a component that cannot fill its row keeps its own width
       }
     }
-    apply(node, Object.assign({}, spec.props, spec.texts));
+    await apply(node, Object.assign({}, spec.props, spec.texts));
     return node;
   };
 
@@ -193,7 +270,7 @@ const $fig = (() => {
     return slots.find((n) => n.name === named) || slots.find((n) => n.name.toLowerCase() === named.toLowerCase()) || slots[0] || null;
   };
 
-  return { page, frame, layout, instance, slot, child, apply, getVar, setModes, component };
+  return { page, section, frame, clear, layout, instance, slot, nested, apply, getVar, setModes, component, loadFonts };
 })();
 `;
 
@@ -201,24 +278,32 @@ const DRIVER = `
 // ---- render: walks PLAN and calls $fig only ----
 const made = [];
 
+const fillRow = async (node, row) => {
+  if (row.show) await $fig.apply(node, { [row.show]: true });
+  const own = Object.assign({}, row.props, row.texts);
+  if (Object.keys(own).length > 0) {
+    const target = (row.path && row.path.length > 0) ? $fig.nested(node, row.path) : node;
+    if (target) await $fig.apply(target, own);
+  }
+  for (const cell of row.cells || []) {
+    const target = $fig.nested(node, cell.path);
+    if (target) await $fig.apply(target, Object.assign({}, cell.props, cell.texts));
+  }
+};
+
 const fillInstance = async (node, spec) => {
-  for (const [name, item] of Object.entries(spec.items || {})) {
-    for (const row of item.rows) {
-      if (row.show) $fig.apply(node, { [row.show]: true });
-      if (Object.keys(row.texts).length > 0) $fig.apply(node, row.texts);
-      if (row.layer && (Object.keys(row.props).length > 0 || Object.keys(row.texts).length > 0)) {
-        const nested = $fig.child(node, row.layer);
-        $fig.apply(nested, Object.assign({}, row.props, row.texts));
-      }
-    }
+  for (const row of spec.rows || []) await fillRow(node, row);
+  for (const part of spec.parts || []) {
+    const target = $fig.nested(node, part.path, { component: part.component, index: part.index });
+    if (target) await $fig.apply(target, Object.assign({}, part.props, part.texts));
   }
   for (const [key, swap] of Object.entries(spec.swaps || {})) {
     const target = await $fig.component(swap);
-    $fig.apply(node, { [key]: target.id });
-    const nested = node.findAll((n) => n.type === "INSTANCE" && n.mainComponent && n.mainComponent.id === target.id)[0];
-    if (nested) {
-      $fig.apply(nested, Object.assign({}, swap.props, swap.texts));
-      await fillInstance(nested, swap);
+    await $fig.apply(node, { [key]: target.id });
+    const inner = node.findAll((n) => n.type === "INSTANCE" && n.mainComponent && n.mainComponent.id === target.id)[0];
+    if (inner) {
+      await $fig.apply(inner, Object.assign({}, swap.props, swap.texts));
+      await fillInstance(inner, swap);
     }
   }
   for (const [key, children] of Object.entries(spec.slots || {})) {
@@ -239,35 +324,89 @@ const place = async (parent, spec) => {
   return node;
 };
 
-const page = await $fig.page(PLAN.page);
+// The header, the nav and the content beside each other: the shape a frame takes when the AppShell
+// has no page slot, or when the slot it has refuses children.
+const beside = async (board, parts) => {
+  if (parts.header) await place(board, parts.header);
+  if (parts.nav) await place(board, parts.nav);
+  await place(board, parts.content);
+};
+
+const page = await $fig.page(PLAN.page, PLAN.after);
+const section = $fig.section(page, PLAN.screen);
 for (const frame of PLAN.frames) {
-  const board = await $fig.frame(page, frame);
+  const tree = PLAN.trees[frame.tree];
+  const board = await $fig.frame(section, frame);
   if (frame.fallback) {
-    if (frame.parts.header) await place(board, frame.parts.header);
-    if (frame.parts.nav) await place(board, frame.parts.nav);
-    await place(board, frame.parts.content);
+    await beside(board, tree.parts);
   } else {
-    await place(board, frame.root);
+    try {
+      await place(board, tree.root);
+    } catch (error) {
+      // A slot the API will not append to: draw the frame the other way rather than give up.
+      $fig.clear(board);
+      await beside(board, tree.parts);
+      made.push({ frame: frame.name, id: board.id, fellBack: String(error && error.message ? error.message : error) });
+      continue;
+    }
   }
   made.push({ frame: frame.name, id: board.id });
 }
-return { page: page.id, frames: made };
+return { page: page.id, section: section.id, frames: made };
 `;
 
-/** Only what the script needs: the tree, the modes, the frame box. */
-function frameData(frame, at) {
+/**
+ * Only what the script reads.
+ *
+ * The plan carries more than the render needs — what a part is called, how many rows the artboard
+ * draws, which switch belongs to which slot — because the report and the audit read those. The
+ * script does not, and a use_figma call has a size budget, so everything else is left out and every
+ * empty list and empty object with it.
+ */
+function thin(node) {
+  if (node.kind === "layout") {
+    const out = { kind: "layout", name: node.name, direction: node.direction, children: node.children.map(thin) };
+    for (const field of ["gap", "padding", "radius", "fill"]) if (node[field]) out[field] = node[field];
+    return out;
+  }
+  const out = { component: node.component, nodeId: node.nodeId, key: node.key, keyKind: node.keyKind };
+  if (Object.keys(node.props ?? {}).length > 0) out.props = node.props;
+  if (Object.keys(node.texts ?? {}).length > 0) out.texts = node.texts;
+  for (const [key, child] of Object.entries(node.swaps ?? {})) (out.swaps ??= {})[key] = thin(child);
+  for (const [key, list] of Object.entries(node.slots ?? {})) (out.slots ??= {})[key] = list.map(thin);
+  for (const item of Object.values(node.items ?? {})) {
+    for (const row of item.rows) {
+      const kept = {};
+      if (row.show) kept.show = row.show;
+      if (row.path?.length > 0 && (Object.keys(row.props).length > 0 || Object.keys(row.texts).length > 0)) kept.path = row.path;
+      if (Object.keys(row.props ?? {}).length > 0) kept.props = row.props;
+      if (Object.keys(row.texts ?? {}).length > 0) kept.texts = row.texts;
+      const cells = (row.cells ?? []).map((cell) => {
+        const one = { path: cell.path, texts: cell.texts };
+        if (Object.keys(cell.props ?? {}).length > 0) one.props = cell.props;
+        return one;
+      });
+      if (cells.length > 0) kept.cells = cells;
+      if (Object.keys(kept).length > 0) (out.rows ??= []).push(kept);
+    }
+  }
+  for (const part of node.parts ?? []) {
+    (out.parts ??= []).push({ path: part.path, component: part.component, index: part.index, props: part.props, texts: part.texts });
+  }
+  return out;
+}
+
+/** The frame box and its modes; the tree it holds is named rather than written out again. */
+function frameData(frame, at, tree) {
   return {
     name: frame.name,
-    state: frame.state,
-    theme: frame.theme,
     width: frame.width,
     height: frame.height,
     x: at.x,
     y: at.y,
     modes: frame.modes,
     fallback: frame.fallback,
-    root: frame.fallback ? null : frame.root,
-    parts: frame.fallback ? frame.parts : null,
+    tree,
   };
 }
 
@@ -282,8 +421,18 @@ export function emitScript(plan, { page = TARGET_PAGE, frames = null, max = MAX_
   const wanted = frames ? plan.frames.filter((frame) => frames.includes(frame.name) || frames.includes(frame.state) || frames.includes(frame.theme)) : plan.frames;
   if (wanted.length === 0) throw new Error("No frame in the plan matches what was asked for.");
 
-  const laid = wanted.map((frame, i) => frameData(frame, { x: GRID.x + i * (frame.width + GRID.gap), y: GRID.y }));
-  const data = { page, screen: plan.name, title: plan.title, pattern: plan.pattern, brand: plan.brand, frames: laid };
+  // Two frames of the same state hold the same tree: only the modes tell them apart. So a state's
+  // tree is written once and the frames name it, which is most of what a render costs.
+  const trees = {};
+  for (const frame of wanted) {
+    if (trees[frame.state]) continue;
+    trees[frame.state] = {
+      root: frame.fallback ? null : thin(frame.root),
+      parts: { header: frame.parts.header ? thin(frame.parts.header) : null, nav: frame.parts.nav ? thin(frame.parts.nav) : null, content: thin(frame.parts.content) },
+    };
+  }
+  const laid = wanted.map((frame, i) => frameData(frame, { x: GRID.x + i * (frame.width + GRID.gap), y: GRID.y }, frame.state));
+  const data = { page, after: PAGE_AFTER, screen: plan.name, trees, frames: laid };
   const code = `// Generated by scripts/figma/emit.mjs for ${plan.name}. Do not edit by hand.\n${PRELUDE}\nconst PLAN = ${JSON.stringify(data)};\n${DRIVER}`;
 
   const warnings = [];

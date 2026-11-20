@@ -1,9 +1,10 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { DEFAULT_BRAND, figmaVarName, LAYOUT_TOKENS, planFile, planRender, readMap, showToggles, textFamily } from "../scripts/figma/plan.mjs";
+import { DEFAULT_BRAND, everyToggle, figmaVarName, LAYOUT_TOKENS, planFile, planRender, readMap, regionOrderOf, showToggles, textFamily, toggleAsked } from "../scripts/figma/plan.mjs";
+import { piece } from "../scripts/review/catalog.mjs";
 import { auditScript, expectations, RULES } from "../scripts/figma/audit.js";
-import { emitScript, MAX_SCRIPT, TARGET_PAGE } from "../scripts/figma/emit.mjs";
+import { emitScript, MAX_SCRIPT, PAGE_AFTER, TARGET_PAGE } from "../scripts/figma/emit.mjs";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- a plan, a map and a spec are plain JSON under test
 type Json = Record<string, any>;
@@ -36,8 +37,14 @@ function* nodes(node: Json): Generator<Json> {
   for (const child of Object.values(node.swaps ?? {}) as Json[]) yield* nodes(child);
 }
 
-/** Every node of every frame in a plan, flat. */
-const treeOf = (plan: Json): Json[] => plan.frames.flatMap((frame: Json) => [...nodes(frame.fallback ? frame.parts.content : frame.root)]);
+/**
+ * Every node of a plan's first frame, flat. One frame is enough: the frames of a screen hold the
+ * same tree and differ only in their modes, so walking all of them would count every node twice.
+ */
+const treeOf = (plan: Json, state?: string): Json[] => {
+  const frame = state ? plan.frames.find((one: Json) => one.state === state) : plan.frames[0];
+  return [...nodes(frame.fallback ? frame.parts.content : frame.root)];
+};
 
 describe("the render plan", () => {
   it("turns a CSS custom property into a Figma variable name", () => {
@@ -104,7 +111,20 @@ describe("the render plan", () => {
     expect(frame.parts.content.name).toBe("layout/content");
   });
 
-  it("lays the regions out in contract order, each as its own layout frame", () => {
+  it("draws the regions in the order the pattern draws them, not in the order of the alphabet", () => {
+    expect(regionOrderOf(piece("ListPage"))).toEqual(["above", "bulk", "toolbar", "content", "empty", "pagination"]);
+    expect(regionOrderOf(piece("RecordPage"))).toEqual(["above", "header", "tabs", "notice", "toolbar", "summary", "content"]);
+    const plan = makePlan(read("payments-empty.json"));
+    const ready = plan.frames.find((frame: Json) => frame.state === "ready") as Json;
+    // The bar over the rows, then the rows: a Toolbar before a Table.
+    expect(ready.regions).toEqual(["toolbar", "content"]);
+    const content = ready.root.slots[map.components.AppShell.props.children.figma][0];
+    expect(content.children.map((child: Json) => child.name)).toEqual(["layout/toolbar", "layout/content"]);
+    expect(content.children[0].children[0].component).toBe("Toolbar");
+    expect(content.children[1].children[0].component).toBe("Table");
+  });
+
+  it("lays the regions out in that order, each as its own layout frame", () => {
     const plan = makePlan(read("usage-overview.json"));
     const [frame] = plan.frames;
     const content = frame.root.slots[map.components.AppShell.props.children.figma][0];
@@ -215,12 +235,132 @@ describe("the render plan", () => {
     expect(plan.dropped.some((item: Json) => /example copy/.test(item.why))).toBe(true);
   });
 
-  it("turns an artboard toggle on where Figma draws the slot as an example part", () => {
+  it("turns an artboard toggle on and says the action's own words on the instance inside it", () => {
     const plan = makePlan(read("payments-empty.json"));
     expect(plan.ok).toBe(true);
     const empty = treeOf(plan).find((node) => node.component === "EmptyState") as Json;
-    expect(Object.values(empty.props)).toContain(true);
-    expect(plan.dropped.some((item: Json) => /cannot go in/.test(item.why))).toBe(true);
+    expect(empty.props["showActions#114:0"]).toBe(true);
+    expect(empty.parts).toEqual([
+      {
+        toggle: "showActions#114:0",
+        index: 1,
+        slot: "actions",
+        component: "Button",
+        path: ["Button 1"],
+        props: { size: "sm", "iconStart#110:97": true },
+        texts: { "label#110:0": "Import bank file" },
+      },
+    ]);
+    // The second drawn button is off: the spec asked for one.
+    expect(empty.props["showButton2#114:9"]).toBe(false);
+  });
+
+  it("sets a numbered action part through the layer that toggle stands for", () => {
+    const plan = makePlan(read("payments-empty.json"));
+    const toolbar = treeOf(plan, "ready").find((node) => node.component === "Toolbar") as Json;
+    expect(toolbar.parts).toHaveLength(1);
+    expect(toolbar.parts[0].path).toEqual(["Action 1"]);
+    expect(toolbar.parts[0].texts).toEqual({ "label#110:0": "Record payment" });
+    expect(toolbar.parts[0].props.emphasis).toBe("strong");
+    expect(toolbar.parts[0].props.intent).toBe("brand");
+  });
+
+  it("keeps one strong brand Button, and draws the rest subtle neutral", () => {
+    const plan = makePlan({
+      name: "two-primaries",
+      title: "Two primaries",
+      pattern: "SettingsPage",
+      regions: {
+        content: [
+          { component: "Button", props: { emphasis: "strong", intent: "brand" }, text: "Save" },
+          { component: "Button", props: { emphasis: "strong", intent: "brand" }, text: "Publish" },
+        ],
+      },
+    });
+    const buttons = treeOf(plan).filter((node) => node.component === "Button");
+    expect(buttons.map((button) => [button.props.emphasis, button.props.intent])).toEqual([
+      ["strong", "brand"],
+      ["subtle", "neutral"],
+    ]);
+    expect(plan.dropped.some((item: Json) => /one strong brand Button/.test(item.why))).toBe(true);
+  });
+
+  it("turns every part the spec did not ask for off, so no Figma default shows through", () => {
+    const plan = makePlan(read("payments-empty.json"));
+    const toolbar = treeOf(plan, "ready").find((node) => node.component === "Toolbar") as Json;
+    // Every toggle the component has is said one way or the other.
+    expect(Object.keys(toolbar.props).filter((key) => key.startsWith("show")).sort()).toEqual(everyToggle(map.components.Toolbar).sort());
+    // The spec gives a search placeholder, an onRefresh and one action, and nothing else.
+    expect(Object.entries(toolbar.props).filter(([, value]) => value === true).map(([key]) => key).sort()).toEqual([
+      "showAction1#232:30",
+      "showRefresh#232:20",
+      "showSearch#232:5",
+    ]);
+    expect(toolbar.props["showAction2#232:35"]).toBe(false);
+    expect(toolbar.props["showFilters#232:0"]).toBe(false);
+    expect(toolbar.props["showView#232:15"]).toBe(false);
+    expect(toolbar.props["showHelp#232:50"]).toBe(false);
+    // A part the spec did ask for by another name stays on: the description under an empty state.
+    const empty = treeOf(plan).find((node) => node.component === "EmptyState") as Json;
+    expect(empty.props["showDescription#71:18"]).toBe(true);
+  });
+
+  it("leaves a label alone where the toggle reads the other way round", () => {
+    const plan = makePlan({
+      name: "labelled",
+      title: "Labelled",
+      pattern: "SettingsPage",
+      regions: { content: [{ component: "Input", props: { label: "Name" } }] },
+    });
+    const input = treeOf(plan).find((node) => node.component === "Input") as Json;
+    expect(input.props["showLabel#154:1015"]).toBeUndefined();
+    expect(input.props["showPrefix#154:1595"]).toBe(false);
+  });
+
+  it("matches a toggle to the prop that asks for it", () => {
+    expect(toggleAsked("showSearch#232:5", ["searchPlaceholder"])).toBe(true);
+    expect(toggleAsked("showRefresh#232:20", ["onRefresh"])).toBe(true);
+    expect(toggleAsked("showDescription#71:18", ["description"])).toBe(true);
+    expect(toggleAsked("showView#232:15", ["searchPlaceholder", "onRefresh", "label"])).toBe(false);
+    expect(toggleAsked("showHelp#232:50", ["label"])).toBe(false);
+  });
+
+  it("switches off every row the list does not fill, and on every one past the baseline", () => {
+    const plan = makePlan(read("payments-empty.json"));
+    const table = treeOf(plan, "ready").find((node) => node.component === "Table") as Json;
+    // Three records: the three rows Figma always draws, and every switched row off.
+    expect(table.items.rows.rows).toHaveLength(3);
+    expect(table.items.rows.baseline).toBe(3);
+    expect(table.items.rows.hidden).toHaveLength(7);
+    for (const key of table.items.rows.hidden) expect(table.props[key]).toBe(false);
+    // Five columns: the fifth is past the four always drawn, so its switch goes on.
+    expect(table.props["showColumn5#252:51"]).toBe(true);
+    expect(table.props["showColumn6#252:68"]).toBe(false);
+  });
+
+  it("reads a table down its columns: a header in each column, a cell per record under it", () => {
+    const plan = makePlan(read("payments-empty.json"));
+    const table = treeOf(plan, "ready").find((node) => node.component === "Table") as Json;
+    expect(table.items.columns.rows.map((header: Json) => header.path)).toEqual([
+      ["Column 1", "HeaderCell"],
+      ["Column 2", "HeaderCell"],
+      ["Column 3", "HeaderCell"],
+      ["Column 4", "HeaderCell"],
+      ["Column 5", "HeaderCell"],
+    ]);
+    expect(table.items.columns.rows[0].texts).toEqual({ "label#116:0": "Payment" });
+    const third = table.items.rows.rows[2];
+    expect(third.cells.map((cell: Json) => cell.path)).toEqual([
+      ["Column 1", "Row 3"],
+      ["Column 2", "Row 3"],
+      ["Column 3", "Row 3"],
+      ["Column 4", "Row 3"],
+      ["Column 5", "Row 3"],
+    ]);
+    expect(third.cells[0].texts).toEqual({ "label#237:230": "PAY-2043" });
+    // A numeric column ends its cells and its header.
+    expect(third.cells[4].props).toEqual({ alignment: "end" });
+    expect(table.items.columns.rows[4].props).toEqual({ alignment: "end" });
   });
 
   it("refuses a brand or a scheme the file has no mode for", () => {
@@ -281,14 +421,64 @@ describe("the use_figma script", () => {
   it("creates nothing but the page, the frame and the layout frames", () => {
     const code = emitScript(readPlan("usage-overview.json")).code;
     const created = [...code.matchAll(/figma\.create(\w+)/g)].map((hit) => hit[1]);
-    expect([...new Set(created)].sort()).toEqual(["AutoLayout", "Frame", "Page"]);
+    expect([...new Set(created)].sort()).toEqual(["AutoLayout", "Frame", "Page", "Section"]);
     expect(code).not.toMatch(/createRectangle|createText|createEllipse|createVector/);
   });
 
   it("writes to one page and names each frame by screen, state and theme", () => {
     const code = emitScript(readPlan("usage-overview.json")).code;
+    expect(TARGET_PAGE).toBe("Spec renders");
     expect(code).toContain(`"page":"${TARGET_PAGE}"`);
+    expect(code).toContain(`"after":"${PAGE_AFTER}"`);
     expect(code).toContain('"name":"usage-overview/ready/light"');
+  });
+
+  it("puts a screen's frames in a section named after the spec, and reuses it", () => {
+    const code = emitScript(readPlan("usage-overview.json")).code;
+    expect(code).toContain('"screen":"usage-overview"');
+    expect(code).toContain("$fig.section(page, PLAN.screen)");
+    // A section and a frame already by that name are found rather than made again.
+    expect(code).toMatch(/const section = \(parent, name\) => \{\s*const found = parent\.children\.find/);
+    expect(code).toMatch(/let node = parent\.children\.find\(\(c\) => c\.name === spec\.name && c\.type === "FRAME"\)/);
+  });
+
+  it("loads the fonts of an instance before it says anything about its text", () => {
+    const code = emitScript(readPlan("usage-overview.json")).code;
+    const apply = code.slice(code.indexOf("const apply = async"));
+    const body = apply.slice(0, apply.indexOf("\n  };"));
+    expect(body).toContain("await loadFonts(node)");
+    expect(body.indexOf("await loadFonts(node)")).toBeLessThan(body.indexOf("node.setProperties("));
+    // Every font is loaded through the Plugin API, once per family and style.
+    expect(code).toContain("await figma.loadFontAsync(name)");
+    expect(code).toContain("const id = name.family + \"|\" + name.style;");
+    expect(code).toContain("if (fonts.has(id)) continue;");
+    // Nothing sets a property anywhere else, so nothing can set text with its font unloaded.
+    expect([...code.matchAll(/setProperties\(/g)]).toHaveLength(1);
+  });
+
+  it("writes to another page when it is asked to", () => {
+    const code = emitScript(readPlan("usage-overview.json"), { page: "Scratch" }).code;
+    expect(code).toContain('"page":"Scratch"');
+  });
+
+  it("falls back to the header, the nav and a content frame when a page slot refuses children", () => {
+    const code = emitScript(readPlan("usage-overview.json")).code;
+    // Every frame carries both shapes, so the run time has somewhere to go.
+    expect(code).toContain('"parts":{"header"');
+    expect(code).toMatch(/try \{\s*await place\(board, tree\.root\);\s*\} catch \(error\) \{/);
+    expect(code).toContain("$fig.clear(board)");
+    expect(code).toContain("await beside(board, tree.parts)");
+    expect(code).toContain("fellBack");
+  });
+
+  it("plans the second shape even when the map has a page slot", () => {
+    const plan = readPlan("usage-overview.json");
+    expect(plan.fallback).toBe(false);
+    for (const frame of plan.frames) {
+      expect(frame.parts.header.component).toBe("AppHeader");
+      expect(frame.parts.nav.component).toBe("AppNav");
+      expect(frame.parts.content.name).toBe("layout/content");
+    }
   });
 
   it("renders a subset when asked for one state or one theme", () => {
@@ -322,6 +512,22 @@ describe("the audit script", () => {
     expect(want.frames.map((frame: Json) => frame.name)).toEqual(plan.frames.map((frame: Json) => frame.name));
     expect(want.frames[0].modes).toEqual(plan.frames[0].modes);
     expect(want.frames[0].tree[0].component).toBe("AppShell");
+  });
+
+  it("reads the same page the emitter writes to, and looks in the screen's section", () => {
+    const plan = readPlan("usage-overview.json");
+    expect((expectations(plan) as unknown as Json).page).toBe(TARGET_PAGE);
+    expect((expectations(plan, { page: "Scratch" }) as unknown as Json).page).toBe("Scratch");
+    const code = auditScript(plan);
+    expect(code).toContain('c.type === "SECTION" && c.name === EXPECT.screen');
+  });
+
+  it("expects the cells of a table and the words on an action part", () => {
+    const want = expectations(readPlan("payments-empty.json")) as unknown as Json;
+    const flat = JSON.stringify(want);
+    expect(flat).toContain('"path":["Column 5","Row 3"]');
+    expect(flat).toContain('"path":["Column 1","HeaderCell"]');
+    expect(flat).toContain('"path":["Action 1"]');
   });
 
   it("names every rule it can report", () => {

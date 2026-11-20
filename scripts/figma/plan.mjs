@@ -10,18 +10,21 @@
  *   planFile(specFile, options)                    — read a spec file, validate it, plan it
  *
  * One frame per state × theme. A frame's root is an AppShell instance with the screen inside its
- * page slot; inside that sit `layout/<region>` frames, one per region the pattern has, in contract
- * order, each holding the region's component instances.
+ * page slot; inside that sit `layout/<region>` frames, one per region the pattern has, in the order
+ * the pattern draws them, each holding the region's component instances.
  *
- * What the plan may say about a layout frame is deliberately narrow: a gap, a padding, a radius, a
- * fill — each named as a Figma variable, never as a number or a colour. A layout frame is the only
+ * What the plan may say about a layout frame is deliberately narrow: a gap, a padding, a radius and
+ * a fill — each named as a Figma variable, never as a number or a colour. A layout frame is the only
  * node in the plan that is not a library instance.
  *
  * What a pattern is, here. The kit's patterns are drawn in Figma as artboards, not as containers:
  * their map entries carry variants (state, columns, loading) and no slot properties, so a pattern
  * instance has nowhere to put a screen's content. So the plan takes the pattern for what it can
- * give — the list of regions and their order — and lays those regions out as frames. The pattern's
- * own variant for the state is kept on the frame as `patternState` so the report can name it.
+ * give — which regions it has and the order it draws them in — and lays those regions out as frames.
+ *
+ * Nothing is left at a Figma default. Every `show…` toggle a component has is set: on for the parts
+ * the spec asks for, off for the rest. A list shorter than the rows the artboard draws turns the
+ * rows it does not fill off, one by one.
  *
  * What a state means to the plan:
  *   ready, error   every region the spec fills, except `empty`
@@ -58,6 +61,13 @@ export const LAYOUT_TOKENS = {
   fill: "bg/neutral-min",
 };
 
+/** The page the renderer writes to, and the page it is created after when it is not there yet. */
+export const TARGET_PAGE = "Spec renders";
+export const PAGE_AFTER = "Patterns";
+
+/** What a column frame and a row inside it are called when the map does not name them. */
+export const GRID_LAYERS = { column: "Column N", row: "Row N" };
+
 /** A CSS custom property as a Figma variable name: the first dash becomes a slash. */
 export function figmaVarName(cssVar) {
   const bare = String(cssVar).replace(/^--/, "");
@@ -69,6 +79,55 @@ export function readMap(root = repoRoot) {
   const file = join(root, MAP_FILE);
   if (!existsSync(file)) throw new Error(`There is no map at ${MAP_FILE}. Run the contracts to Figma map first.`);
   return JSON.parse(readFileSync(file, "utf8"));
+}
+
+// ---- the order a pattern draws its regions in ----------------------------------------------------
+
+/**
+ * The regions of a pattern, top to bottom.
+ *
+ * `regionsOf` answers with the regions a pattern has, sorted by name, which is the order a reader of
+ * the contract meets them and not the order the screen draws them. A screen drawn in that order
+ * would put its table over its toolbar. So the order is read off the pattern itself: where each
+ * region prop first appears in what the component returns. `children` is the content region, and
+ * `above` is always first, since it sits over the pattern.
+ *
+ * A region the source never names keeps its place from `regionsOf`, after the ones that were found.
+ */
+export function regionOrderOf(pattern, root = repoRoot) {
+  const all = regionsOf(pattern);
+  const named = all.filter((region) => region !== ABOVE_REGION);
+  const contractFile = join(root, pattern.contract ?? "");
+  let source = null;
+  try {
+    const contract = JSON.parse(readFileSync(contractFile, "utf8"));
+    const file = join(root, contract.path ?? "");
+    const text = readFileSync(file, "utf8");
+    // Only what the component returns: a region named in a hook call above it says nothing about
+    // where the screen draws it.
+    const at = text.indexOf("return (");
+    // Comments are prose: a note about the tabs over the header must not put the tabs first.
+    source = (at >= 0 ? text.slice(at) : text).replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+  } catch {
+    return all;
+  }
+
+  const seen = new Map();
+  for (const region of named) {
+    const prop = region === CONTENT_REGION ? "children" : region;
+    // The prop where it is drawn, or — for a pattern that draws a region through a local of its own,
+    // as ListDetail draws `list` as `listSide` — the class name of the box it is drawn in.
+    const hit = new RegExp(`[{&?|\\s(]${prop}\\b|styles\\.${prop}\\b`).exec(source);
+    if (hit) seen.set(region, hit.index);
+  }
+  const found = [...seen.entries()].sort((a, b) => a[1] - b[1]).map(([region]) => region);
+  // A region the source never names keeps the order the contract declares it in, which is at least
+  // the order somebody wrote it down in, rather than its place in the alphabet.
+  const declared = Object.keys(pattern.props ?? {});
+  const rest = named
+    .filter((region) => !seen.has(region))
+    .sort((a, b) => declared.indexOf(a === CONTENT_REGION ? "children" : a) - declared.indexOf(b === CONTENT_REGION ? "children" : b));
+  return [ABOVE_REGION, ...found, ...rest];
 }
 
 // ---- the map, read one component at a time -------------------------------------------------------
@@ -89,25 +148,6 @@ export function textFamily(entry, slotName) {
   }
   return Object.keys(family).length > 1 ? family : null;
 }
-
-/** The first words in an item: what a numbered text family holds for that row. */
-const itemWords = (item) => {
-  if (typeof item === "string" || typeof item === "number") return String(item);
-  for (const field of ["label", "title", "text", "name", "value"]) {
-    const value = item?.[field];
-    if (typeof value === "string" || typeof value === "number") return String(value);
-  }
-  return null;
-};
-
-/** The field an item's words came from, so it is not mapped a second time. */
-const wordsField = (item) => {
-  if (item === null || typeof item !== "object") return null;
-  for (const field of ["label", "title", "text", "name", "value"]) {
-    if (typeof item[field] === "string" || typeof item[field] === "number") return field;
-  }
-  return null;
-};
 
 /**
  * The artboard toggles behind a slot a Figma component draws as example content: the slot's own
@@ -130,8 +170,95 @@ export function showToggles(entry, slotName, prop) {
   return single ? [single] : [];
 }
 
+/** Every `show…` boolean a component has, whether the map lists it as a prop or as Figma's own. */
+export function everyToggle(entry) {
+  const keys = new Set();
+  for (const prop of Object.values(entry.props ?? {})) {
+    if (prop?.kind === "boolean" && typeof prop.figma === "string" && /^show[A-Z]/.test(prop.figma) && !prop.inverted) keys.add(prop.figma);
+  }
+  for (const slot of Object.values(entry.slots ?? {})) for (const key of slot.show ?? []) keys.add(key);
+  for (const key of Object.keys(entry.figmaOnly ?? {})) if (/^show[A-Z]/.test(key)) keys.add(key);
+  return [...keys];
+}
+
+/** The bare name a `show…` key is about: showSelectedCount → selectedcount. */
+const toggleStem = (key) => key.replace(/^show/, "").split("#")[0].replace(/\d+$/, "").toLowerCase();
+
+/** What a prop name could be called on an artboard: onRefresh is refresh, columns is column. */
+const propAliases = (name) => {
+  const bare = String(name);
+  const noOn = /^on[A-Z]/.test(bare) ? bare.slice(2) : bare;
+  const out = new Set([bare.toLowerCase(), noOn.toLowerCase()]);
+  for (const one of [...out]) {
+    if (one.endsWith("s")) out.add(one.slice(0, -1));
+    else out.add(`${one}s`);
+  }
+  return [...out];
+};
+
+/**
+ * The toggles that have to go on because the spec asked for the part, by name rather than by a
+ * property the map carries: a Callout's `showTitle` for its title, a Toolbar's `showSearch` for its
+ * search placeholder, `showRefresh` for its onRefresh.
+ */
+export function toggleAsked(key, asked) {
+  const stem = toggleStem(key);
+  if (!stem) return false;
+  for (const name of asked) {
+    for (const alias of propAliases(name)) {
+      if (alias === stem) return true;
+      if (alias.length > stem.length && alias.startsWith(stem)) return true;
+      if (stem.length > alias.length && stem.startsWith(alias)) return true;
+    }
+  }
+  return false;
+};
+
+/** The first words in an item: what a numbered text family holds for that row. */
+const itemWords = (item) => {
+  if (typeof item === "string" || typeof item === "number") return String(item);
+  for (const field of ["label", "title", "text", "name", "value"]) {
+    const value = item?.[field];
+    if (typeof value === "string" || typeof value === "number") return String(value);
+  }
+  return null;
+};
+
+/** The field an item's words came from, so it is not mapped a second time. */
+const wordsField = (item) => {
+  if (item === null || typeof item !== "object") return null;
+  for (const field of ["label", "title", "text", "name", "value"]) {
+    if (typeof item[field] === "string" || typeof item[field] === "number") return field;
+  }
+  return null;
+};
+
+/**
+ * A column as the Figma column reads it: its `key` is how a record finds its cell and draws nothing,
+ * and `numeric` is an alignment both the header cell and the cells carry.
+ */
+const gridColumn = (column) => {
+  if (column === null || typeof column !== "object") return column;
+  const rest = { ...column };
+  delete rest.key;
+  delete rest.numeric;
+  return column.numeric ? { ...rest, alignment: "end" } : rest;
+};
+
+/** A layer name with its number filled in: "Row N" and 3 is "Row 3". */
+const layerName = (shape, n) => String(shape).replace(/\bN\b/, String(n));
+
 /** A variant value as Figma holds it: a string, and booleans as "true" / "false". */
 const variantValue = (value) => (typeof value === "boolean" ? String(value) : String(value));
+
+/** The layer a numbered toggle stands for: showAction1 is "Action 1", showActions is "Actions". */
+const toggleLayer = (key) => {
+  const bare = key.replace(/^show/, "").split("#")[0];
+  const hit = /^([A-Za-z]+?)(\d+)$/.exec(bare);
+  const name = hit ? hit[1] : bare;
+  const label = name.charAt(0).toUpperCase() + name.slice(1);
+  return hit ? `${label} ${hit[2]}` : label;
+};
 
 // ---- the plan ------------------------------------------------------------------------------------
 
@@ -172,15 +299,26 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
     return { ok: false, errors, dropped, frames: [], name: spec.name, pattern: pattern.name, brand, themes };
   }
   const pageSlot = shell.props?.children?.kind === "slot" ? shell.props.children.figma : null;
-  // A page slot that the API cannot take children through is the one case the plan has a second
-  // shape for: the frame then draws the header and the nav as their own instances beside a
-  // layout/content frame, which is a frame and can hold the screen.
+  // A page slot the map does not have is the one case the plan has a second shape for: the frame then
+  // draws the header and the nav as their own instances beside a layout/content frame, which is a
+  // frame and can hold the screen. The render carries both shapes, because a slot can also refuse
+  // children at run time, and the script falls back there rather than giving up.
   const fallback = pageSlot === null;
-  if (fallback) {
-    for (const name of ["AppHeader", "AppNav"]) {
-      if (!entryFor(name)) fail(name, `AppShell has no page slot and the map has no ${name} entry either.`);
-    }
+  for (const name of ["AppHeader", "AppNav"]) {
+    if (!entryFor(name) && fallback) fail(name, `AppShell has no page slot and the map has no ${name} entry either.`);
   }
+
+  // One strong brand Button on a screen, in Figma as everywhere else. The spec check counts them too;
+  // this is the render's own guard, because an action the artboard draws comes in here as well.
+  let primaries = 0;
+  const keepOnePrimary = (node, props, at) => {
+    if (node.component !== "Button") return props;
+    if (props.emphasis !== "strong" || props.intent !== "brand") return props;
+    primaries += 1;
+    if (primaries === 1) return props;
+    drop(at, "the screen already has its one strong brand Button, so this one is drawn subtle neutral.");
+    return { ...props, emphasis: "subtle", intent: "neutral" };
+  };
 
   /** One component node, with its props, its words and whatever sits inside it. */
   const planNode = (node, path) => {
@@ -201,67 +339,194 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
       swaps: {},
       slots: {},
       items: {},
+      parts: [],
+      hidden: [],
     };
     const mapped = entry.props ?? {};
     const slots = entry.slots ?? {};
+    // Every prop and slot the spec names on this node: what the artboard has to show.
+    const asked = [...Object.keys(node.props ?? {}), ...Object.keys(node.slots ?? {})];
+    if (node.text !== undefined) asked.push("children", "label", "text");
+
+    /** A child contract's props, mapped onto one Figma layer. */
+    const childValues = (childEntry, item, at, { skip = null, as = null } = {}) => {
+      const texts = {};
+      const props = {};
+      if (as && itemWords(item) !== null) texts[as] = itemWords(item);
+      if (item === null || typeof item !== "object") return { props, texts };
+      for (const [field, value] of Object.entries(item)) {
+        if (field === skip) continue;
+        const childProp = childEntry?.props?.[field];
+        if (!childProp || !childProp.figma) {
+          drop(`${at}.${field}`, `${childEntry?.contract ?? "the row"} has no Figma property for "${field}".`);
+          continue;
+        }
+        if (childProp.kind === "text") texts[childProp.figma] = String(value);
+        else if (childProp.kind === "boolean") props[childProp.figma] = childProp.inverted ? !value : Boolean(value);
+        else if (childProp.kind === "variant") {
+          const allowed = childProp.values ?? [];
+          if (allowed.length > 0 && !allowed.includes(variantValue(value)))
+            fail(`${at}.${field}`, `${childEntry.contract} ${field} cannot be ${JSON.stringify(value)} in Figma.`, `It draws: ${allowed.join(", ")}.`);
+          else props[childProp.figma] = variantValue(value);
+        } else drop(`${at}.${field}`, `${childEntry.contract} ${field} is a ${childProp.kind} property; the plan does not set those on a row.`);
+      }
+      return { props, texts };
+    };
+
+    /**
+     * A list the Figma component draws as numbered parts.
+     *
+     * The map says how many parts the artboard draws (`max`) and which boolean turns each extra one
+     * on (`show`), so the first `max - show.length` are always there and the rest are switched. The
+     * ones the spec does not fill are switched off, which is the whole point: a Figma default must
+     * never show through a render.
+     */
+    const planList = (name, value, at) => {
+      const slot = slots[name];
+      const max = Number(slot.max ?? 0);
+      if (max > 0 && value.length > max) {
+        fail(
+          at,
+          `${node.component} draws at most ${max} ${name}; the spec has ${value.length}.`,
+          `Cut the list to ${max}, or draw the extra rows as their own component.`,
+        );
+        return;
+      }
+      const family = textFamily(entry, name);
+      const show = slot.show ?? [];
+      const baseline = Math.max(1, max - show.length);
+      const childEntry = slot.childProps ? entryFor(slot.childProps) : null;
+      const childShape = typeof slot.child === "string" ? slot.child : null;
+      const rows = [];
+      value.forEach((item, i) => {
+        const n = i + 1;
+        const row = { index: n, show: n > baseline ? (show[n - baseline - 1] ?? null) : null, texts: {}, props: {}, path: [] };
+        const words = itemWords(item);
+        if (family?.[n] && words !== null) row.texts[family[n]] = words;
+        else if (words !== null && !childShape) drop(`${at}[${i}]`, `${node.component} draws ${name} ${n} as example copy; "${words}" is not a Figma property.`);
+        if (childShape) {
+          row.path = [layerName(childShape, n)];
+          const { props, texts } = childValues(childEntry, item, `${at}[${i}]`, { skip: family?.[n] ? wordsField(item) : null });
+          Object.assign(row.props, props);
+          Object.assign(row.texts, texts);
+        } else if (item !== null && typeof item === "object") {
+          for (const field of Object.keys(item)) {
+            if (family?.[n] && field === wordsField(item)) continue;
+            drop(`${at}[${i}].${field}`, `${node.component} exposes no child layer for ${name}, so "${field}" cannot be set.`);
+          }
+        }
+        rows.push(row);
+      });
+      // Every switched part is said out loud: on for the ones the list fills, off for the rest. A
+      // part left unsaid would come back as whatever the artboard happens to draw.
+      const shown = show.slice(0, Math.max(0, value.length - baseline));
+      const hidden = show.slice(Math.max(0, value.length - baseline));
+      for (const key of shown) out.props[key] = true;
+      for (const key of hidden) out.props[key] = false;
+      out.items[name] = { figmaSlot: name, child: childShape, childProps: slot.childProps ?? null, max, baseline, rows, hidden };
+    };
+
+    /**
+     * A table, which Figma draws as columns rather than as rows: a column frame per column, with its
+     * header cell and one row cell per record inside it. So a cell is addressed down the column —
+     * `Column 2 > Row 3` — and the column's own name is its header cell's label.
+     */
+    const planGrid = (columns, rows, at) => {
+      const columnSlot = slots.columns;
+      const rowSlot = slots.rows;
+      const columnMax = Number(columnSlot.max ?? 0);
+      const rowMax = Number(rowSlot.max ?? 0);
+      if (columnMax > 0 && columns.length > columnMax) {
+        fail(`${at}.props.columns`, `${node.component} draws at most ${columnMax} columns; the spec has ${columns.length}.`, `Cut the list to ${columnMax}, or draw the extra columns as their own component.`);
+        return;
+      }
+      if (rowMax > 0 && rows.length > rowMax) {
+        fail(`${at}.props.rows`, `${node.component} draws at most ${rowMax} rows; the spec has ${rows.length}.`, `Cut the list to ${rowMax}, or draw the extra rows as their own component.`);
+        return;
+      }
+      const columnShape = typeof columnSlot.child === "string" ? columnSlot.child : GRID_LAYERS.column;
+      const rowShape = typeof rowSlot.child === "string" ? rowSlot.child : GRID_LAYERS.row;
+      const headerEntry = columnSlot.childProps ? entryFor(columnSlot.childProps) : null;
+      const cellEntry = rowSlot.childProps ? entryFor(rowSlot.childProps) : null;
+      const headerText = headerEntry?.props?.label?.figma ?? null;
+      const cellText = cellEntry?.props?.label?.figma ?? null;
+
+      const columnShow = columnSlot.show ?? [];
+      const rowShow = rowSlot.show ?? [];
+      const columnBaseline = Math.max(1, columnMax - columnShow.length);
+      const rowBaseline = Math.max(1, rowMax - rowShow.length);
+
+      const headers = columns.map((column, c) => {
+        const n = c + 1;
+        const at_ = `${at}.props.columns[${c}]`;
+        // The header cell sits inside its own column frame, under the column's name.
+        const header = {
+          index: n,
+          show: n > columnBaseline ? (columnShow[n - columnBaseline - 1] ?? null) : null,
+          path: [layerName(columnShape, n), columnSlot.childProps ?? "HeaderCell"],
+          props: {},
+          texts: {},
+        };
+        const { props, texts } = childValues(headerEntry, gridColumn(column), at_, { skip: "header" });
+        Object.assign(header.props, props);
+        Object.assign(header.texts, texts);
+        if (headerText && typeof column?.header === "string") header.texts[headerText] = column.header;
+        else if (typeof column?.header === "string") drop(at_, `${columnSlot.childProps ?? "the column"} has no Figma label for "${column.header}".`);
+        return header;
+      });
+
+      // A record is one row of cells, each addressed down its own column: Column 2 > Row 3.
+      const records = rows.map((record, r) => {
+        const row = r + 1;
+        const cells = [];
+        columns.forEach((column, c) => {
+          const key = column?.key;
+          const value = key === undefined ? undefined : record?.[key];
+          if (value === undefined || typeof value === "object") return;
+          const alignment = column?.numeric ? cellEntry?.props?.alignment : null;
+          if (!cellText) {
+            drop(`${at}.props.rows[${r}].${key}`, `${rowSlot.childProps ?? "the cell"} has no Figma label, so "${value}" cannot be set.`);
+            return;
+          }
+          cells.push({
+            column: c + 1,
+            path: [layerName(columnShape, c + 1), layerName(rowShape, row)],
+            props: alignment?.figma ? { [alignment.figma]: "end" } : {},
+            texts: { [cellText]: String(value) },
+          });
+        });
+        return { index: row, show: row > rowBaseline ? (rowShow[row - rowBaseline - 1] ?? null) : null, cells, props: {}, texts: {}, path: [] };
+      });
+
+      for (const field of new Set(rows.flatMap((record) => Object.keys(record ?? {})))) {
+        if (field === "id" || columns.some((column) => column?.key === field)) continue;
+        drop(`${at}.props.rows.${field}`, `no column has the key "${field}", so Figma draws nothing for it.`);
+      }
+
+      const shownColumns = columnShow.slice(0, Math.max(0, columns.length - columnBaseline));
+      const shownRows = rowShow.slice(0, Math.max(0, rows.length - rowBaseline));
+      const hiddenColumns = columnShow.slice(Math.max(0, columns.length - columnBaseline));
+      const hiddenRows = rowShow.slice(Math.max(0, rows.length - rowBaseline));
+      for (const key of [...shownColumns, ...shownRows]) out.props[key] = true;
+      for (const key of [...hiddenColumns, ...hiddenRows]) out.props[key] = false;
+      out.items.columns = { figmaSlot: "columns", child: columnShape, childProps: columnSlot.childProps ?? null, max: columnMax, baseline: columnBaseline, rows: headers, hidden: hiddenColumns };
+      out.items.rows = { figmaSlot: "rows", child: rowShape, childProps: rowSlot.childProps ?? null, max: rowMax, baseline: rowBaseline, rows: records, hidden: hiddenRows };
+    };
+
+    // A table is read as a grid, so its columns and its rows are planned together rather than one
+    // list at a time: a cell's address needs both.
+    const gridly =
+      slots.columns && slots.rows && Array.isArray(node.props?.columns) && Array.isArray(node.props?.rows) && slots.rows.childProps === "Cell";
+    if (gridly) planGrid(node.props.columns, node.props.rows, path);
 
     for (const [name, raw] of Object.entries(node.props ?? {})) {
       const at = `${path}.props.${name}`;
+      if (gridly && (name === "columns" || name === "rows")) continue;
       const value = resolveCopy(raw, copy);
       const prop = mapped[name];
 
-      // A list that the Figma component draws as numbered rows: its own slot entry says how many
-      // rows are drawn and which boolean turns each extra one on.
       if (Array.isArray(value) && slots[name]) {
-        const slot = slots[name];
-        const max = Number(slot.max ?? 0);
-        if (max > 0 && value.length > max) {
-          fail(
-            at,
-            `${node.component} draws at most ${max} ${name}; the spec has ${value.length}.`,
-            `Cut the list to ${max}, or draw the extra rows as their own component.`,
-          );
-          continue;
-        }
-        const family = textFamily(entry, name);
-        const show = slot.show ?? [];
-        const baseline = Math.max(1, max - show.length);
-        const childLayer = typeof slot.child === "string" ? slot.child : null;
-        const childEntry = slot.childProps ? entryFor(slot.childProps) : null;
-        const rows = [];
-        value.forEach((item, i) => {
-          const n = i + 1;
-          const row = { index: n, show: n > baseline ? (show[n - baseline - 1] ?? null) : null, texts: {}, props: {}, layer: null };
-          const words = itemWords(item);
-          if (family?.[n] && words !== null) row.texts[family[n]] = words;
-          else if (words !== null && !childEntry) drop(`${at}[${i}]`, `${node.component} draws row ${n} as example copy; "${words}" is not a Figma property.`);
-          if (childLayer) row.layer = childLayer.replace(/\bN\b/, String(n));
-          if (item !== null && typeof item === "object") {
-            const skip = family?.[n] ? wordsField(item) : null;
-            for (const [field, fieldValue] of Object.entries(item)) {
-              if (field === skip) continue;
-              const childProp = childEntry?.props?.[field];
-              if (!childProp || !childProp.figma) {
-                drop(`${at}[${i}].${field}`, `${slot.childProps ?? node.component} has no Figma property for "${field}".`);
-                continue;
-              }
-              if (!row.layer) {
-                drop(`${at}[${i}].${field}`, `${node.component} exposes no child layer for ${name}, so "${field}" cannot be set.`);
-                continue;
-              }
-              if (childProp.kind === "text") row.texts[childProp.figma] = String(fieldValue);
-              else if (childProp.kind === "boolean") row.props[childProp.figma] = Boolean(fieldValue);
-              else if (childProp.kind === "variant") {
-                const allowed = childProp.values ?? [];
-                if (allowed.length > 0 && !allowed.includes(variantValue(fieldValue)))
-                  fail(`${at}[${i}].${field}`, `${slot.childProps} ${field} cannot be ${JSON.stringify(fieldValue)} in Figma.`, `It draws: ${allowed.join(", ")}.`);
-                else row.props[childProp.figma] = variantValue(fieldValue);
-              } else drop(`${at}[${i}].${field}`, `${slot.childProps} ${field} is a ${childProp.kind} property; the plan does not set those on a row.`);
-            }
-          }
-          rows.push(row);
-        });
-        out.items[name] = { figmaSlot: name, child: childLayer, childProps: slot.childProps ?? null, max, baseline, rows };
+        planList(name, value, at);
         continue;
       }
 
@@ -332,13 +597,26 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
         out.swaps[prop.figma] = list[0];
         continue;
       }
-      // An artboard toggle: in Figma the part is drawn as example content and a boolean turns it on.
-      // The spec's own components cannot go in, so the toggles go on and the content is reported.
+      // An artboard part: Figma draws the thing already and a boolean turns it on. The spec's own
+      // component cannot go in, but what it says and how it looks can be set on the instance Figma
+      // exposes inside, so the part reads as the screen's own action rather than as example copy.
       const toggles = showToggles(entry, name, prop);
       if (toggles.length > 0) {
-        for (const toggle of toggles.slice(0, list.length)) out.props[toggle] = true;
-        const shown = Math.min(toggles.length, list.length);
-        drop(at, `${node.component} draws ${name} as ${shown === 1 ? "an example part" : `${shown} example parts`}; the spec's ${list.map((child) => child.component).join(", ")} cannot go in.`);
+        const wanted = Math.min(toggles.length, list.length);
+        for (const toggle of toggles.slice(0, wanted)) out.props[toggle] = true;
+        for (const [i, child] of list.slice(0, wanted).entries()) {
+          const toggle = toggles[i];
+          const layer = toggles.length === 1 ? `${child.component} ${i + 1}` : toggleLayer(toggle);
+          out.parts.push({
+            toggle,
+            index: i + 1,
+            slot: name,
+            component: child.component,
+            path: [layer],
+            props: child.props,
+            texts: child.texts,
+          });
+        }
         if (list.length > toggles.length)
           drop(at, `${node.component} draws at most ${toggles.length} ${name}; the spec has ${list.length}.`);
         continue;
@@ -348,6 +626,24 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
         `${node.component} has no Figma slot for ${name}.`,
         prop ? `In Figma ${name} is a ${prop.kind} property, which takes no children.` : `Its Figma properties: ${Object.keys(mapped).join(", ") || "none"}.`,
       );
+    }
+
+    Object.assign(out, { props: keepOnePrimary(node, out.props, path) });
+
+    // Every switch a slot owns, whether the spec filled that slot or not: a slot says for itself
+    // which of its parts are on, so any of its switches left unsaid is off.
+    const owned = new Set();
+    for (const name of new Set([...Object.keys(slots), ...Object.keys(node.slots ?? {})])) {
+      for (const key of showToggles(entry, name, mapped[name])) owned.add(key);
+    }
+
+    // Whatever is left: every toggle the component has that nothing above set. A part the spec did
+    // not ask for is off, so what Figma happens to draw on its artboard never shows through.
+    for (const key of everyToggle(entry)) {
+      if (key in out.props) continue;
+      const on = owned.has(key) ? false : toggleAsked(key, asked);
+      out.props[key] = on;
+      if (!on) out.hidden.push(key);
     }
 
     return out;
@@ -366,7 +662,7 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
     children: nodes.map((node, i) => planNode(node, `${path}[${i}]`)).filter(Boolean),
   });
 
-  const order = regionsOf(pattern);
+  const order = regionOrderOf(pattern, root);
   const given = spec.regions ?? {};
   const filled = order.filter((region) => (given[region] ?? []).length > 0);
   const main = spec.state ?? "ready";
@@ -383,6 +679,26 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
     if (props.state?.kind === "variant" && (props.state.values ?? []).includes(state)) return { figma: props.state.figma, value: state };
     if (state === "loading" && props.loading?.kind === "variant") return { figma: props.loading.figma, value: "true" };
     return null;
+  };
+
+  const bare = (name) => {
+    const entry = entryFor(name);
+    if (!entry) return null;
+    return {
+      kind: "instance",
+      component: name,
+      contract: entry.contract,
+      key: entry.key ?? null,
+      keyKind: entry.keyKind ?? null,
+      nodeId: entry.nodeId ?? null,
+      props: {},
+      texts: {},
+      swaps: {},
+      slots: {},
+      items: {},
+      parts: [],
+      hidden: [],
+    };
   };
 
   const frames = [];
@@ -405,19 +721,7 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
     };
 
     for (const theme of themes) {
-      const root_ = {
-        kind: "instance",
-        component: "AppShell",
-        contract: shell.contract,
-        key: shell.key ?? null,
-        keyKind: shell.keyKind ?? null,
-        nodeId: shell.nodeId ?? null,
-        props: {},
-        texts: {},
-        swaps: {},
-        slots: {},
-        items: {},
-      };
+      const root_ = bare("AppShell");
       const loadingProp = shell.props?.loading;
       if (state === "loading" && loadingProp?.kind === "variant") root_.props[loadingProp.figma] = "true";
       if (!fallback) root_.slots[pageSlot] = [content];
@@ -435,15 +739,11 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
         regions: inside,
         patternState: patternStateFor(state),
         fallback,
+        slot: pageSlot,
         root: root_,
-        // Only read when `fallback` is true: the header, the nav and the content frame beside them.
-        parts: fallback
-          ? {
-              header: entryFor("AppHeader") ? { kind: "instance", component: "AppHeader", key: entryFor("AppHeader").key, keyKind: entryFor("AppHeader").keyKind, nodeId: entryFor("AppHeader").nodeId, props: {}, texts: {}, swaps: {}, slots: {}, items: {} } : null,
-              nav: entryFor("AppNav") ? { kind: "instance", component: "AppNav", key: entryFor("AppNav").key, keyKind: entryFor("AppNav").keyKind, nodeId: entryFor("AppNav").nodeId, props: {}, texts: {}, swaps: {}, slots: {}, items: {} } : null,
-              content,
-            }
-          : null,
+        // The second shape, always planned: the header, the nav and the content frame beside them.
+        // The script uses it when the map has no page slot, and when a slot refuses children.
+        parts: { header: bare("AppHeader"), nav: bare("AppNav"), content },
         content,
       });
     }
@@ -537,7 +837,7 @@ async function main(argv) {
   }
 
   console.log(`\n  ${plan.name}: ${plan.frames.length} frame(s), brand ${plan.brand}, ${plan.themes.join(" + ")}.`);
-  console.log(`  Pattern ${plan.pattern}; regions ${plan.frames[0]?.regions.join(", ") || "none"}.`);
+  console.log(`  Pattern ${plan.pattern}; ${plan.frames[0]?.state ?? "ready"} regions ${plan.frames[0]?.regions.join(", ") || "none"}.`);
   if (plan.fallback) console.log("  AppShell has no page slot in the map: the frame draws AppHeader, AppNav and a layout/content frame.");
   for (const frame of plan.frames) console.log(`    ${frame.name}`);
   for (const item of plan.dropped) console.log(`  not in Figma  ${item.path}: ${item.why}`);

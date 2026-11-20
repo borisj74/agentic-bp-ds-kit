@@ -17,10 +17,12 @@
  *                       component is a plain frame or group
  *   bp/figma-bound      a layout frame's gap, padding, radius and fill are bound to variables, and no
  *                       instance carries a fill or stroke override
- *   bp/figma-props      componentProperties and texts are what the plan said
+ *   bp/figma-props      componentProperties and texts are what the plan said, down to the cells of a
+ *                       table and the label on an exposed action button
  *   bp/figma-modes      each frame sets its own explicit mode for every collection the plan named
  *   bp/figma-overflow   nothing sticks out of the frame it was put in
  */
+import { TARGET_PAGE } from "./plan.mjs";
 
 /** The rules the audit can report, in the order a report lists them. */
 export const RULES = [
@@ -32,26 +34,29 @@ export const RULES = [
   "bp/figma-overflow",
 ];
 
-/** The one kit component name per plan node, and the props and texts the plan set on it. */
+/** The one kit component name per plan node, and the props, words and layers the plan set on it. */
 function expectInstance(node) {
-  const children = [];
+  const layers = [];
+  const add = (path, props, texts) => {
+    const all = { ...props, ...texts };
+    if (path?.length > 0 && Object.keys(all).length > 0) layers.push({ path, props: all });
+  };
   for (const item of Object.values(node.items ?? {})) {
     for (const row of item.rows) {
-      if (row.layer && (Object.keys(row.props).length > 0 || Object.keys(row.texts).length > 0))
-        children.push({ layer: row.layer, props: { ...row.props, ...row.texts } });
+      add(row.path, row.props, row.texts);
+      for (const cell of row.cells ?? []) add(cell.path, cell.props, cell.texts);
     }
   }
+  for (const part of node.parts ?? []) add(part.path, part.props, part.texts);
+
   const props = { ...node.props, ...node.texts };
   for (const item of Object.values(node.items ?? {})) {
-    for (const row of item.rows) {
-      if (row.show) props[row.show] = true;
-      Object.assign(props, row.texts);
-    }
+    for (const row of item.rows) if (row.show) props[row.show] = true;
   }
   const nested = [];
   for (const child of Object.values(node.swaps ?? {})) nested.push(expectInstance(child));
   for (const list of Object.values(node.slots ?? {})) for (const child of list) nested.push(expectNode(child));
-  return { kind: "instance", component: node.component, props, children, nested };
+  return { kind: "instance", component: node.component, props, layers, nested };
 }
 
 function expectNode(node) {
@@ -69,7 +74,7 @@ function expectNode(node) {
 }
 
 /** What the audit expects of one plan: the frames, their modes and their trees. */
-export function expectations(plan, { page = "Screens", frames = null } = {}) {
+export function expectations(plan, { page = TARGET_PAGE, frames = null } = {}) {
   const wanted = frames ? plan.frames.filter((frame) => frames.includes(frame.name) || frames.includes(frame.state) || frames.includes(frame.theme)) : plan.frames;
   return {
     page,
@@ -89,6 +94,16 @@ const out = [];
 const add = (rule, frame, node, id, what) => out.push({ rule, frame, node, id, what });
 
 const LAYOUT = /^layout\\//;
+// A layer down a path: "Column 2" then "Row 3".
+const down = (node, path) => {
+  let at = node;
+  for (const step of path || []) {
+    const next = at.findAll((n) => n.name === step)[0] || at.findAll((n) => n.type === "INSTANCE" && n.mainComponent && n.mainComponent.name === step)[0];
+    if (!next) return null;
+    at = next;
+  }
+  return at;
+};
 const bound = (node, field) => Boolean((node.boundVariables || {})[field]);
 const boundPaint = (list) => Array.isArray(list) && list.length > 0 && list.every((p) => p.boundVariables && p.boundVariables.color);
 
@@ -119,18 +134,18 @@ const checkInstance = (node, want, frameName) => {
     const overridden = (node.overrides || []).some((o) => (o.overriddenFields || []).includes(field));
     if (overridden) add("bp/figma-bound", frameName, node.name, node.id, field + " are overridden on an instance");
   }
-  for (const child of want.children || []) {
-    const found = node.findAll((n) => n.name === child.layer)[0];
+  for (const layer of want.layers || []) {
+    const found = down(node, layer.path);
     if (!found) {
-      add("bp/figma-props", frameName, node.name, node.id, "no layer named " + child.layer);
+      add("bp/figma-props", frameName, node.name, node.id, "no layer at " + layer.path.join(" > "));
       continue;
     }
     const nestedHave = found.componentProperties || {};
-    for (const [key, value] of Object.entries(child.props || {})) {
+    for (const [key, value] of Object.entries(layer.props || {})) {
       const entry = nestedHave[key];
       const got = entry && typeof entry === "object" ? entry.value : entry;
       if (entry === undefined || String(got) !== String(value))
-        add("bp/figma-props", frameName, found.name, found.id, key + " on " + child.layer + " is " + JSON.stringify(got === undefined ? null : got) + ", the plan says " + JSON.stringify(value));
+        add("bp/figma-props", frameName, found.name, found.id, key + " on " + layer.path.join(" > ") + " is " + JSON.stringify(got === undefined ? null : got) + ", the plan says " + JSON.stringify(value));
     }
   }
   for (const nested of want.nested || []) {
@@ -178,8 +193,10 @@ function checkNode(node, want, frameName) {
   else checkInstance(node, want, frameName);
 }
 
+// A screen's frames sit in a section named after the spec, so the frame is looked for there first.
+const holder = page.children.find((c) => c.type === "SECTION" && c.name === EXPECT.screen) || page;
 for (const want of EXPECT.frames) {
-  const frame = page.children.find((c) => c.name === want.name);
+  const frame = holder.children.find((c) => c.name === want.name) || page.findAll((c) => c.name === want.name && c.type === "FRAME")[0];
   if (!frame) {
     add("bp/figma-instance", want.name, want.name, null, "the frame is not on the page");
     continue;
