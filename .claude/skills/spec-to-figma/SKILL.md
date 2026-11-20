@@ -80,7 +80,7 @@ Write `reports/figma-loop/<name>.md` when the loop stops, whatever the outcome:
 - the spec, the pattern, the brand, the themes, and how many attempts it took
 - a table of rules × attempts: one row per rule (`bp/figma-instance`, `bp/figma-detached`,
   `bp/figma-bound`, `bp/figma-props`, `bp/figma-modes`, `bp/figma-overflow`, `bp/figma-align`,
-  `bp/figma-example-content`), one column per attempt
+  `bp/figma-example-content`, `bp/figma-dividers`), one column per attempt
 - every frame by name with its Figma node id, as a link to
   `https://www.figma.com/design/<fileKey>/?node-id=<id>`
 - the screenshot paths

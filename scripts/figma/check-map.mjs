@@ -108,6 +108,13 @@ export function checkMap(map = readMap(), contracts = readContracts()) {
         else if (slot.max !== undefined && slot.layers.length !== slot.max)
           add(contract.name, `slots.${prop}.layers has ${slot.layers.length} names and max is ${slot.max}`);
       }
+      // The boolean that draws the line between one child and the next.
+      if (slot.childDivider !== undefined) {
+        if (typeof slot.childDivider !== "string" || !slot.childDivider.includes("#"))
+          add(contract.name, `slots.${prop}.childDivider is not a property key`);
+        if (typeof slot.child !== "string" || slot.child.trim() === "")
+          add(contract.name, `slots.${prop}.childDivider needs slots.${prop}.child to find the children by`);
+      }
       // Layers are only of use to a path that reaches for a column, by name or by place.
       if (slot.layers && !/@N|\$column/.test(String(slot.child ?? "")))
         add(contract.name, `slots.${prop}.layers is listed but slots.${prop}.child reaches for no column`);

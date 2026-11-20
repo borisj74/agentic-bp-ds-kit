@@ -783,6 +783,53 @@ describe("the audit script", () => {
     for (const rule of RULES) expect(code).toContain(rule);
   });
 
+  it("draws the line down every card but the last, for any number of cards", () => {
+    // The kit's rule, from contracts/scoreboard.json: cards run side by side with no gap and every
+    // card but the last has a thin line down its right side. In Figma that line is the card's own
+    // showLine, so which card is last has to be written down — the artboard has it on the card that
+    // was last there, not the one that is last now.
+    expect(map.components.Scoreboard.slots.items.childDivider).toBe("showLine#176:35");
+
+    const board = (count: number): Json => {
+      const items = Array.from({ length: count }, (_, i) => ({ id: `m${i + 1}`, title: `Metric ${i + 1}`, metric: `${i + 1}` }));
+      const spec = {
+        name: "cards",
+        title: "Cards",
+        pattern: "SettingsPage",
+        regions: { content: [{ component: "Scoreboard", props: { items } }] },
+      };
+      const plan = makePlan(spec);
+      expect(plan.ok).toBe(true);
+      return treeOf(plan).find((node) => node.component === "Scoreboard") as Json;
+    };
+
+    for (const count of [3, 4, 6]) {
+      const rows = board(count).items.items.rows;
+      expect(rows).toHaveLength(count);
+      expect(rows.map((row: Json) => row.props["showLine#176:35"])).toEqual(
+        Array.from({ length: count }, (_, i) => i < count - 1),
+      );
+    }
+
+    // Four cards is the case the pilot got wrong: card 3 kept the artboard's line off while it was
+    // no longer last, and card 4 kept one on while it was.
+    const four = board(4).items.items.rows;
+    expect(four[2].props["showLine#176:35"]).toBe(true);
+    expect(four[3].props["showLine#176:35"]).toBe(false);
+  });
+
+  it("checks the cards' lines in the file, not against what the plan wrote", () => {
+    const want = expectations(readPlan("usage-overview.json")) as unknown as Json;
+    const flat = JSON.stringify(want);
+    expect(flat).toContain('"divider":{"key":"showLine#176:35","cards":["Card 1","Card 2","Card 3","Card 4","Card 5","Card 6"]}');
+    const code = auditScript(readPlan("usage-overview.json"));
+    expect(code).toContain("bp/figma-dividers");
+    // The rule reads which cards are showing rather than trusting the plan's own count.
+    expect(code).toContain("if (card && card.visible) showing.push(card);");
+    expect(code).toContain("const wants = i < showing.length - 1;");
+    expect(RULES).toContain("bp/figma-dividers");
+  });
+
   it("writes a row with the keys the parent exposes, not the child's own", () => {
     // Read in the file: a Card inside a Scoreboard takes title#176:0, not the Card's own
     // title#189:21, so the map holds the Scoreboard's keys for its cards.

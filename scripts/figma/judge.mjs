@@ -37,6 +37,7 @@ export const REPAIRABLE = {
   "bp/figma-overflow": [],
   "bp/figma-align": [],
   "bp/figma-example-content": [],
+  "bp/figma-dividers": [],
 };
 
 /** What a person has to decide about each rule, said once. */
@@ -49,6 +50,7 @@ export const FOR_PERSON = {
   "bp/figma-overflow": "The screen does not fit its frame. Give the screen less, or split the section.",
   "bp/figma-align": "The screen does not start where its title starts. Something between the page and the screen carries an inset of its own; render again, and if it comes back the wrapper is padded twice.",
   "bp/figma-example-content": "A slot still holds the artboard's own example content. Render again: the render empties a slot before it fills it.",
+  "bp/figma-dividers": "The line between the children is drawn on the wrong one. Every child but the last shown carries it; render again, and if it comes back the map's childDivider is not the key the file uses.",
 };
 
 /** The audit, however it arrived: an object, a JSON string, or a file to read. */

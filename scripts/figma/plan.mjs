@@ -509,13 +509,20 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
         }
         rows.push(row);
       });
+      // The line between one child and the next. The kit draws it down the right of every child but
+      // the last — `.card:last-child { border-inline-end: 0 }` — so which child is last decides it,
+      // and that changes with how many the spec fills. Left to the artboard, the card that was last
+      // there keeps no line and the one that is last now keeps one.
+      if (slot.childDivider && rows.length > 0) {
+        for (const [i, row] of rows.entries()) row.props[slot.childDivider] = i < rows.length - 1;
+      }
       // Every switched part is said out loud: on for the ones the list fills, off for the rest. A
       // part left unsaid would come back as whatever the artboard happens to draw.
       const shown = show.slice(0, Math.max(0, value.length - baseline));
       const hidden = show.slice(Math.max(0, value.length - baseline));
       for (const key of shown) out.props[key] = true;
       for (const key of hidden) out.props[key] = false;
-      out.items[name] = { figmaSlot: name, child: childShape, childProps: slot.childProps ?? null, max, baseline, rows, hidden };
+      out.items[name] = { figmaSlot: name, child: childShape, childProps: slot.childProps ?? null, max, baseline, rows, hidden, divider: slot.childDivider ?? null };
     };
 
     /**

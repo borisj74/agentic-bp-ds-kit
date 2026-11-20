@@ -38,6 +38,7 @@ export const RULES = [
   "bp/figma-overflow",
   "bp/figma-align",
   "bp/figma-example-content",
+  "bp/figma-dividers",
 ];
 
 /** The one kit component name per plan node, and the props, words and layers the plan set on it. */
@@ -66,6 +67,17 @@ function expectInstance(node) {
       add([...part.path, ...inner.path], inner.props, inner.texts, { component: inner.component, index: inner.index }, inner.swaps);
   }
 
+  // The line between one child and the next, checked against the contract rather than against what
+  // the plan wrote: the children that are showing are read in the file, and every one but the last
+  // has to carry the line.
+  let divider = null;
+  for (const item of Object.values(node.items ?? {})) {
+    if (!item.divider || typeof item.child !== "string") continue;
+    const names = [];
+    for (let n = 1; n <= Number(item.max ?? 0); n += 1) names.push(item.child.replace(/\bN\b/g, String(n)));
+    if (names.length > 0) divider = { key: item.divider, cards: names };
+  }
+
   const props = { ...node.props, ...node.texts };
   for (const item of Object.values(node.items ?? {})) {
     for (const row of item.rows) if (row.show) props[row.show] = true;
@@ -78,6 +90,7 @@ function expectInstance(node) {
     for (const child of list) nested.push(expectNode(child));
   }
   const out = { kind: "instance", component: node.component, props, layers, nested };
+  if (divider) out.divider = divider;
   if (Object.keys(slots).length > 0) out.slots = slots;
   return out;
 }
@@ -224,6 +237,33 @@ const checkInstance = async (node, want, frameName) => {
       const got = entry && typeof entry === "object" ? entry.value : entry;
       if (entry === undefined || String(got) !== String(value))
         add("bp/figma-props", frameName, found.name, found.id, key + " on " + layer.path.join(" > ") + " is " + JSON.stringify(got === undefined ? null : got) + ", the plan says " + JSON.stringify(value));
+    }
+  }
+  // The line between one child and the next, read in the file. The contract says every child but
+  // the last shown one carries it, so which children are showing decides it — and that is what a
+  // render gets wrong when it turns a card on and leaves the lines as the artboard drew them.
+  if (want.divider) {
+    const showing = [];
+    for (const name of want.divider.cards) {
+      const card = node.findAll((n) => n.name === name)[0];
+      if (card && card.visible) showing.push(card);
+    }
+    for (const [i, card] of showing.entries()) {
+      const entry = (card.componentProperties || {})[want.divider.key];
+      if (entry === undefined) {
+        add("bp/figma-dividers", frameName, card.name, card.id, want.divider.key + " is not a property of this card");
+        continue;
+      }
+      const has = String(entry && typeof entry === "object" ? entry.value : entry) === "true";
+      const wants = i < showing.length - 1;
+      if (has !== wants)
+        add(
+          "bp/figma-dividers",
+          frameName,
+          card.name,
+          card.id,
+          card.name + " is " + (wants ? "not the last of " : "the last of ") + showing.length + " showing and its line is " + (has ? "on" : "off"),
+        );
     }
   }
   for (const nested of want.nested || []) {

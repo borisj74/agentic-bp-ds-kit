@@ -8,8 +8,8 @@
 | Themes | Light, Dark |
 | States | ready, empty |
 | Page | **Spec renders**, section `usage-overview` |
-| Renders | 5 |
-| Audits | 2 |
+| Renders | 6 |
+| Audits | 3 |
 | Outcome | clean — all eight rules pass |
 
 Five renders is more than the skill's three attempts. The cap is for repairing a **spec**; the spec
@@ -21,16 +21,19 @@ supposed to surface and which a person has to make. Said plainly rather than hid
 The audit ran twice: once the render stopped reporting missing layers, and once more after a rule
 was corrected. Renders 1 to 4 were judged by what the render call reported and by the screenshots.
 
-| Rule | Audit 1 | Audit 2 |
-|---|---|---|
-| `bp/figma-instance` | **4** | pass |
-| `bp/figma-detached` | pass | pass |
-| `bp/figma-bound` | pass | pass |
-| `bp/figma-props` | pass | pass |
-| `bp/figma-modes` | pass | pass |
-| `bp/figma-overflow` | pass | pass |
-| `bp/figma-align` | pass | pass |
-| `bp/figma-example-content` | pass | pass |
+| Rule | Audit 1 | Audit 2 | Audit 3 |
+|---|---|---|---|
+| `bp/figma-instance` | **4** | pass | pass |
+| `bp/figma-detached` | pass | pass | pass |
+| `bp/figma-bound` | pass | pass | pass |
+| `bp/figma-props` | pass | pass | pass |
+| `bp/figma-modes` | pass | pass | pass |
+| `bp/figma-overflow` | pass | pass | pass |
+| `bp/figma-align` | pass | pass | pass |
+| `bp/figma-example-content` | pass | pass | pass |
+| `bp/figma-dividers` | — | — | pass |
+
+`bp/figma-dividers` did not exist for the first two audits. It was added with render 6.
 
 The four `bp/figma-instance` findings were the rule's fault: a swapped instance keeps the name of the
 layer it was put in, so the Scoreboard in the Section's content slot is called `content` in the file.
@@ -107,8 +110,20 @@ are fixed, each with a test:
    `slots.<name>.childKeys` for a parent that re-keys what it exposes.
    Test: *writes a row with the keys the parent exposes, not the child's own*.
 
-The audit rule that was wrong is fixed too: *finds a swapped instance by the component behind it,
-not by the layer's name*.
+5. **The third card had no line down its right side.** The Scoreboard's divider is each card's own
+   `showLine#176:35`, drawn by a `line` rectangle inside the card, and the kit's rule is
+   `.card:last-child { border-inline-end: 0 }` — every card but the last shown one carries it. The
+   artboard ships three cards with the line off on Card 3, because Card 3 was last there. Turning
+   Card 4 on made Card 3 no longer last and left it bare, and gave Card 4 a line it should not have.
+   The map now holds `slots.items.childDivider`, and the plan writes the flag on every row: true for
+   all but the last, false for the last, whatever the count.
+   Tests: *draws the line down every card but the last, for any number of cards* (3, 4 and 6), and
+   *checks the cards' lines in the file, not against what the plan wrote*.
+
+Two audit rules were wrong and are fixed: *finds a swapped instance by the component behind it, not
+by the layer's name*, and the new **`bp/figma-dividers`**, which reads which cards are showing in
+the file and checks each one's line against the contract rather than against the plan — so a divider
+drawn on the wrong card is caught even when the plan and the render agree with each other.
 
 ## Left for a person
 
