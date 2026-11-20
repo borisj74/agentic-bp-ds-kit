@@ -555,6 +555,24 @@ describe("the use_figma script", () => {
     expect([...code.matchAll(/setProperties\(/g)]).toHaveLength(1);
   });
 
+  it("writes a regex that still matches an @N step after the template is written out", () => {
+    // The helper is written inside a template literal, so a lost backslash turns \d into a plain d
+    // and every column step stops matching. The test reads the regex back out and tries it.
+    const nth = (code: string) => {
+      const hit = /const nth = (\/.*?\/)\.exec/.exec(code);
+      expect(hit).not.toBe(null);
+      const body = String(hit?.[1]);
+      return new RegExp(body.slice(1, -1));
+    };
+    const render = nth(emitScript(readPlan("payments-empty.json")).code);
+    expect(render.test("@2")).toBe(true);
+    expect(render.test("@12")).toBe(true);
+    expect(render.test("Row 2")).toBe(false);
+    const audit = nth(auditScript(readPlan("payments-empty.json")));
+    expect(audit.test("@5")).toBe(true);
+    expect(audit.test("columns")).toBe(false);
+  });
+
   it("writes to another page when it is asked to", () => {
     const code = emitScript(readPlan("usage-overview.json"), { page: "Scratch" }).code;
     expect(code).toContain('"page":"Scratch"');

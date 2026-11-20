@@ -779,6 +779,33 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
     };
   };
 
+  /**
+   * The page header the shell itself draws.
+   *
+   * A pattern that fills its own header region draws the screen's one h1; every other screen gets
+   * the shell's, with the page title in it, exactly as the web frame does. The shell's own crumbs
+   * are the artboard's example trail, and the renderer cannot yet write a screen's own, so the
+   * breadcrumb is switched off rather than left saying something that is not true.
+   */
+  const shellHeader = () => {
+    const ownsHeader = (given.header ?? []).length > 0;
+    const shape = shell.frameLayers?.pageHeader ?? null;
+    const header = entryFor("PageHeader");
+    const toggle = Object.keys(shell.figmaOnly ?? {}).find((key) => /^showPageHeader#/i.test(key)) ?? null;
+    if (ownsHeader || !shape || !header) return { toggle, on: false, part: null };
+    const title = header.props?.title?.figma ?? null;
+    // The shell's header is the page title and nothing else: the spec gives it no actions, no icon
+    // and no badge, and its crumbs are the artboard's example trail rather than this screen's. So
+    // every part of it is switched off and only the title is written.
+    const props = {};
+    for (const key of everyToggle(header)) props[key] = false;
+    return {
+      toggle,
+      on: true,
+      part: { path: layerPath(shape), component: "PageHeader", index: 1, props, texts: title ? { [title]: spec.title } : {} },
+    };
+  };
+
   const frames = [];
   for (const state of states) {
     const inside =
@@ -803,6 +830,13 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
       const loadingProp = shell.props?.loading;
       if (state === "loading" && loadingProp?.kind === "variant") root_.props[loadingProp.figma] = "true";
       if (!fallback) root_.slots[pageSlot] = [content];
+
+      // The shell's own switches, said out loud like every other component's: the page on, the
+      // assistant off, and the page header on only when the pattern does not draw one itself.
+      const header = shellHeader();
+      for (const key of everyToggle(shell)) root_.props[key] = /^showPage#/i.test(key);
+      if (header.toggle) root_.props[header.toggle] = header.on;
+      if (header.part) root_.parts = [header.part];
 
       frames.push({
         name: `${spec.name}/${state}/${theme.toLowerCase()}`,

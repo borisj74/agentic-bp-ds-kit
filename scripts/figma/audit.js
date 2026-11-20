@@ -100,7 +100,7 @@ const LAYOUT = /^layout\\//;
 const down = (node, path, hint) => {
   let at = node;
   for (const step of path || []) {
-    const nth = /^@(\d+)$/.exec(step);
+    const nth = /^@(\\d+)$/.exec(step);
     const next = nth
       ? (at.children || [])[Number(nth[1]) - 1] || null
       : at.findAll((n) => n.name === step)[0] || at.findAll((n) => n.type === "INSTANCE" && n.mainComponent && n.mainComponent.name === step)[0] || null;

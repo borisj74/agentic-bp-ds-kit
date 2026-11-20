@@ -2,7 +2,7 @@
   "fileKey": "ELFJs16lnRVQaOrxhMVrVf",
   "readAt": "2026-11-20",
   "readWith": "Figma MCP, read only (componentPropertyDefinitions, getPublishStatusAsync, getLocalVariableCollectionsAsync)",
-  "note": "Contract to Figma map for the Agentic DS file. Property keys are exact, including the #id suffix. Nothing here was guessed: a contract value with no Figma value is listed under noFigma. slots.childProps names the contract whose properties each array item sets on the exposed child instance; slots.show lists the Figma boolean per extra index. slots.child is a path to the layer a row sets: segments split on >, where @N is the Nth child, $column is the column's own layer name from slots.columns.layers, and N and R in a name are the column and row numbers. partLayers is the path to the instance Figma exposes inside an artboard part.",
+  "note": "Contract to Figma map for the Agentic DS file. Property keys are exact, including the #id suffix. Nothing here was guessed: a contract value with no Figma value is listed under noFigma. slots.childProps names the contract whose properties each array item sets on the exposed child instance; slots.show lists the Figma boolean per extra index. slots.child is a path to the layer a row sets: segments split on >, where @N is the Nth child, $column is the column's own layer name from slots.columns.layers, and N and R in a name are the column and row numbers. partLayers is the path to the instance Figma exposes inside an artboard part. frameLayers is the path to a part of the shell itself, such as the page header it draws over the page slot.",
   "themes": {
     "Ref": {
       "collectionKey": "533c7147ac15819736c36ea7c41641cce263965d",
@@ -399,7 +399,11 @@
         "width": "Written up for Figma but not a component property.",
         "loadingLabel": "Runtime string with no Figma property on this component set.",
         "bootTiming": "No Figma equivalent on the component."
-      }
+      },
+      "frameLayers": {
+        "pageHeader": "stage > page > PageHeader"
+      },
+      "frameLayersNote": "The page header the shell draws over the page slot, for a screen whose pattern has no header region. Read in the Figma file on 2026-11-20 with get_metadata, read only."
     },
     "Avatar": {
       "contract": "Avatar",

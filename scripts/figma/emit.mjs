@@ -256,7 +256,7 @@ const $fig = (() => {
   const nested = (node, path, hint) => {
     let at = node;
     for (const step of path || []) {
-      const nth = /^@(\d+)$/.exec(step);
+      const nth = /^@(\\d+)$/.exec(step);
       const next = nth
         ? (at.children || [])[Number(nth[1]) - 1] || null
         : at.findAll((n) => n.name === step)[0] ||
@@ -343,6 +343,9 @@ const fillInstance = async (node, spec) => {
   for (const [key, children] of Object.entries(spec.slots || {})) {
     const target = $fig.slot(node, key);
     if (!target) throw new Error(node.name + " has no slot for " + key);
+    // A slot comes with the artboard's own example content in it. The screen goes in its place, not
+    // under it, so what is already there is taken out first.
+    $fig.clear(target);
     for (const child of children) await place(target, child);
   }
 };

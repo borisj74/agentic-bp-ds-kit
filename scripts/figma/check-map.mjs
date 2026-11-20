@@ -106,6 +106,11 @@ export function checkMap(map = readMap(), contracts = readContracts()) {
         add(contract.name, `slots.${prop}.layers is listed but slots.${prop}.child reaches for no column`);
     }
 
+    // A part of the frame itself, by the path it sits at in the file.
+    for (const [part, path] of Object.entries(entry.frameLayers ?? {})) {
+      if (typeof path !== "string" || path.trim() === "") add(contract.name, `frameLayers.${part} is not a path`);
+    }
+
     // The instance Figma exposes inside an artboard part, by the path it sits at in the file.
     for (const [prop, path] of Object.entries(entry.partLayers ?? {})) {
       if (!own.has(prop)) add(contract.name, `partLayers.${prop} is not a prop in ${contract.file}`);
