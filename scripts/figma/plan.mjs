@@ -258,7 +258,10 @@ export function swapMismatch(component, name, prop, list) {
 export function everyToggle(entry) {
   const keys = new Set();
   for (const prop of Object.values(entry.props ?? {})) {
-    if (prop?.kind === "boolean" && typeof prop.figma === "string" && /^show[A-Z]/.test(prop.figma) && !prop.inverted) keys.add(prop.figma);
+    // A glyph carries its own toggle too, where the component has one: showIcon is still a switch
+    // the plan has to state, or Figma's own default shows through.
+    const toggling = prop?.kind === "boolean" ? !prop.inverted : prop?.kind === "glyph";
+    if (toggling && typeof prop.figma === "string" && /^show[A-Z]/.test(prop.figma)) keys.add(prop.figma);
   }
   for (const slot of Object.values(entry.slots ?? {})) for (const key of slot.show ?? []) keys.add(key);
   for (const key of Object.keys(entry.figmaOnly ?? {})) if (/^show[A-Z]/.test(key)) keys.add(key);
@@ -357,6 +360,8 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
 
   const copy = spec.copy ?? {};
   const components = sheet.components ?? {};
+  /** The glyphs the file's Icon set offers, by Material Symbols name. */
+  const glyphs = sheet.glyphs ?? {};
   const entryFor = (name) => components[name] ?? null;
 
   const brands = sheet.themes?.Ref?.modes ?? [];
@@ -430,14 +435,18 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
     if (node.text !== undefined) asked.push("children", "label", "text");
 
     /** A child contract's props, mapped onto one Figma layer. */
-    const childValues = (childEntry, item, at, { skip = null, as = null } = {}) => {
+    const childValues = (childEntry, item, at, { skip = null, as = null, keys = null } = {}) => {
       const texts = {};
       const props = {};
       if (as && itemWords(item) !== null) texts[as] = itemWords(item);
       if (item === null || typeof item !== "object") return { props, texts };
       for (const [field, value] of Object.entries(item)) {
         if (field === skip) continue;
-        const childProp = childEntry?.props?.[field];
+        // A component that draws a list of another component re-keys what it exposes: a Card on its
+        // own says title#189:21, the same Card inside a Scoreboard says title#176:0. Where the map
+        // read those keys they win, because they are the ones the instance actually takes.
+        const own = keys?.[field];
+        const childProp = own ? { ...(childEntry?.props?.[field] ?? { kind: "text" }), figma: own } : childEntry?.props?.[field];
         if (!childProp || !childProp.figma) {
           drop(`${at}.${field}`, `${childEntry?.contract ?? "the row"} has no Figma property for "${field}".`);
           continue;
@@ -489,7 +498,7 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
           row.path = layerPath(childShape, { n, r: n, layers: slot.layers ?? null });
           if (value.length > 1 && !pathNumbers(childShape))
             drop(`${at}[${i}]`, `the map's path for ${name} ("${childShape}") names one layer, so row ${n} cannot be told from the others.`);
-          const { props, texts } = childValues(childEntry, item, `${at}[${i}]`, { skip: family?.[n] ? wordsField(item) : null });
+          const { props, texts } = childValues(childEntry, item, `${at}[${i}]`, { skip: family?.[n] ? wordsField(item) : null, keys: slot.childKeys ?? null });
           Object.assign(row.props, props);
           Object.assign(row.texts, texts);
         } else if (item !== null && typeof item === "object") {
@@ -622,7 +631,9 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
         continue;
       }
 
-      if (!prop || !prop.figma) {
+      // A glyph is the one kind that may carry no key of its own: the component always draws the
+      // icon and only the nested Icon instance is swapped.
+      if (!prop || (!prop.figma && prop.kind !== "glyph")) {
         const why = entry.noFigma?.[name] ?? entry.figmaOnly?.[name] ?? `${node.component} has no Figma property for "${name}".`;
         drop(at, why);
         continue;
@@ -644,7 +655,42 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
         fail(at, `${node.component} ${name} cannot be ${JSON.stringify(value)} in Figma.`, `It draws: ${allowed.join(", ")}.`);
         continue;
       }
+      // An icon is a name in the spec and a swapped Icon instance in Figma. The toggle, where the
+      // component has one, turns the icon on; the glyph itself is swapped on the nested instance
+      // the map points at. A name the file's roster does not hold is said out loud: the icon shows,
+      // drawn with whatever glyph the component ships with, and the report names it.
+      if (prop.kind === "glyph") {
+        if (typeof value !== "string" || value === "") {
+          if (prop.figma) out.props[prop.figma] = Boolean(value);
+          else drop(at, `${name} names a glyph in Figma and the spec gives ${typeof value}.`);
+          continue;
+        }
+        if (prop.figma) out.props[prop.figma] = true;
+        const glyph = glyphs[value];
+        if (!glyph) {
+          drop(at, `the file's icon set has no glyph named "${value}", so ${node.component} draws its own.`);
+          continue;
+        }
+        out.parts.push({
+          index: 1,
+          slot: name,
+          component: "Icon",
+          path: layerPath(prop.layer),
+          props: {},
+          texts: {},
+          swaps: { [prop.prop]: { component: `Icon ${value}`, key: glyph.key, keyKind: glyph.keyKind } },
+        });
+        continue;
+      }
       if (prop.kind === "boolean") {
+        // A boolean given a name is an icon on a component whose glyph layer the map has not read
+        // yet: the icon is turned on and the glyph stays the component's own, which is said rather
+        // than passed over.
+        if (typeof value === "string" && value !== "") {
+          out.props[prop.figma] = true;
+          drop(at, `${node.component} only switches ${name} on in Figma; the glyph "${value}" is the component's own.`);
+          continue;
+        }
         // An inverted boolean reads the other way round in Figma: hideLabel is showLabel off.
         out.props[prop.figma] = prop.inverted ? !value : Boolean(value);
         continue;
@@ -721,16 +767,22 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
       // exposes inside, so the part reads as the screen's own action rather than as example copy.
       const toggles = showToggles(entry, name, prop);
       if (toggles.length > 0) {
-        const wanted = Math.min(toggles.length, list.length);
-        for (const toggle of toggles.slice(0, wanted)) out.props[toggle] = true;
+        // Some parts are not switched on one at a time: the artboard draws a whole row of them in
+        // one variant. The map says which variant and how many it draws, so the plan asks for that
+        // variant and fills as many of the drawn parts as the spec has.
+        const variant = entry.partVariants?.[name] ?? null;
+        const drawn = Number(variant?.count ?? toggles.length);
+        const wanted = Math.min(drawn, list.length);
+        for (const toggle of toggles.slice(0, Math.min(toggles.length, wanted))) out.props[toggle] = true;
+        if (variant?.prop) out.props[variant.prop] = variant.value;
         const shape = entry.partLayers?.[name] ?? null;
         for (const [i, child] of list.slice(0, wanted).entries()) {
-          const toggle = toggles[i];
+          const toggle = toggles[i] ?? toggles[0] ?? null;
           // The path the map read in the file. Without one, the part is reached by the name the
           // toggle stands for, and the script falls back to the nth instance of that component.
           const path = shape ? layerPath(shape, { n: i + 1, r: i + 1 }) : [toggles.length === 1 ? `${child.component} ${i + 1}` : toggleLayer(toggle)];
           if (!shape) drop(`${at}[${i}]`, `the map does not say where ${node.component} draws its ${name}; the render looks for "${path.join(" > ")}".`);
-          out.parts.push({
+          const part = {
             toggle,
             index: i + 1,
             slot: name,
@@ -738,10 +790,17 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
             path,
             props: child.props,
             texts: child.texts,
-          });
+          };
+          // What the child sets on itself — an icon's glyph, say — goes with it, addressed from
+          // the part rather than from the instance the part sits in.
+          if (child.parts?.length > 0) part.parts = child.parts;
+          out.parts.push(part);
         }
-        if (list.length > toggles.length)
-          drop(at, `${node.component} draws at most ${toggles.length} ${name}; the spec has ${list.length}.`);
+        if (list.length > drawn) drop(at, `${node.component} draws at most ${drawn} ${name}; the spec has ${list.length}.`);
+        // A row the artboard draws whole has no switch per part, so the ones the spec does not fill
+        // stay as the library drew them. Said here rather than left to be found in the picture.
+        if (variant && drawn > list.length)
+          drop(at, `${node.component} always draws ${drawn} ${name} and the spec fills ${list.length}; the rest keep the artboard's own example copy.`);
         continue;
       }
       fail(
@@ -760,11 +819,17 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
       for (const key of showToggles(entry, name, mapped[name])) owned.add(key);
     }
 
+    // A slot or a swap the spec filled has a switch of its own, named after the layer it holds:
+    // content#119:91 is turned on by showContent. Filling it and leaving the switch off would put
+    // the screen's own content behind a hidden layer.
+    const filled = new Set();
+    for (const key of [...Object.keys(out.slots), ...Object.keys(out.swaps)]) filled.add(key.split("#")[0].toLowerCase());
+
     // Whatever is left: every toggle the component has that nothing above set. A part the spec did
     // not ask for is off, so what Figma happens to draw on its artboard never shows through.
     for (const key of everyToggle(entry)) {
       if (key in out.props) continue;
-      const on = owned.has(key) ? false : toggleAsked(key, asked);
+      const on = filled.has(toggleStem(key)) ? true : owned.has(key) ? false : toggleAsked(key, asked);
       out.props[key] = on;
       if (!on) out.hidden.push(key);
     }
@@ -772,18 +837,53 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
     return out;
   };
 
-  /** A region as a layout frame: a frame is the only non-instance node the plan allows. */
-  const planRegion = (region, nodes, path) => ({
-    kind: "layout",
-    name: `layout/${region}`,
-    region,
-    direction: "VERTICAL",
-    gap: LAYOUT_TOKENS.gap,
-    padding: null,
-    radius: null,
-    fill: null,
-    children: nodes.map((node, i) => planNode(node, `${path}[${i}]`)).filter(Boolean),
-  });
+  /**
+   * A region as a layout frame: a frame is the only non-instance node the plan allows.
+   *
+   * Most regions are one column. A pattern that lays a region out several across says so in the
+   * map (`patterns.<Pattern>.regions.<region>.columns`), and the region becomes a column of rows:
+   * each row a horizontal frame of that many children, every child filling its share, the last row
+   * padded with empty `layout/gap` frames so the tiles in it keep the width of the ones above
+   * rather than stretching across the gaps. Figma has no grid; rows of equal children are the same
+   * picture, made of the one node type the plan is allowed to create.
+   */
+  const planRegion = (region, nodes, path) => {
+    const children = nodes.map((node, i) => planNode(node, `${path}[${i}]`)).filter(Boolean);
+    const across = sheet.patterns?.[pattern.name]?.regions?.[region] ?? null;
+    const columns = Number(across?.columns ?? 0);
+    const frame = {
+      kind: "layout",
+      name: `layout/${region}`,
+      region,
+      direction: "VERTICAL",
+      gap: columns > 1 ? (across.gap ?? LAYOUT_TOKENS.gap) : LAYOUT_TOKENS.gap,
+      padding: null,
+      radius: null,
+      fill: null,
+      children,
+    };
+    if (columns < 2 || children.length <= 1) return frame;
+
+    const rows = [];
+    for (let at = 0; at < children.length; at += columns) {
+      const row = children.slice(at, at + columns);
+      // The last row is short: it is filled out with empty frames, so its tiles stay a column wide.
+      for (let pad = row.length; pad < columns; pad += 1)
+        row.push({ kind: "layout", name: "layout/gap", region, direction: "VERTICAL", gap: null, padding: null, radius: null, fill: null, children: [] });
+      rows.push({
+        kind: "layout",
+        name: `layout/${region}-row`,
+        region,
+        direction: "HORIZONTAL",
+        gap: frame.gap,
+        padding: null,
+        radius: null,
+        fill: null,
+        children: row,
+      });
+    }
+    return { ...frame, children: rows };
+  };
 
   const order = regionOrderOf(pattern, root);
   const given = spec.regions ?? {};

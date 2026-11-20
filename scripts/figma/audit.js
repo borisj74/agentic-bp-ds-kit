@@ -43,9 +43,15 @@ export const RULES = [
 /** The one kit component name per plan node, and the props, words and layers the plan set on it. */
 function expectInstance(node) {
   const layers = [];
-  const add = (path, props, texts, hint = null) => {
+  const add = (path, props, texts, hint = null, swaps = null) => {
     const all = { ...props, ...texts };
-    if (path?.length > 0 && Object.keys(all).length > 0) layers.push(hint ? { path, props: all, hint } : { path, props: all });
+    const named = swaps && Object.keys(swaps).length > 0 ? Object.fromEntries(Object.entries(swaps).map(([key, swap]) => [key, swap.component])) : null;
+    if (path?.length > 0 && (Object.keys(all).length > 0 || named)) {
+      const layer = { path, props: all };
+      if (hint) layer.hint = hint;
+      if (named) layer.swaps = named;
+      layers.push(layer);
+    }
   };
   for (const item of Object.values(node.items ?? {})) {
     for (const row of item.rows) {
@@ -53,7 +59,12 @@ function expectInstance(node) {
       for (const cell of row.cells ?? []) add(cell.path, cell.props, cell.texts);
     }
   }
-  for (const part of node.parts ?? []) add(part.path, part.props, part.texts, { component: part.component, index: part.index });
+  for (const part of node.parts ?? []) {
+    add(part.path, part.props, part.texts, { component: part.component, index: part.index }, part.swaps);
+    // A part's own parts are read from the part, so their path starts where the part's ends.
+    for (const inner of part.parts ?? [])
+      add([...part.path, ...inner.path], inner.props, inner.texts, { component: inner.component, index: inner.index }, inner.swaps);
+  }
 
   const props = { ...node.props, ...node.texts };
   for (const item of Object.values(node.items ?? {})) {
@@ -154,7 +165,7 @@ const page = figma.root.children.find((p) => p.name === EXPECT.page);
 if (!page) return { ok: false, findings: [{ rule: "bp/figma-instance", frame: EXPECT.page, node: EXPECT.page, id: null, what: "there is no page by that name" }] };
 await page.loadAsync();
 
-const checkInstance = (node, want, frameName) => {
+const checkInstance = async (node, want, frameName) => {
   if (node.type !== "INSTANCE") {
     add("bp/figma-detached", frameName, node.name, node.id, want.component + " is a " + node.type + ", not an instance");
     return;
@@ -173,9 +184,20 @@ const checkInstance = (node, want, frameName) => {
     const got = entry && typeof entry === "object" ? entry.value : entry;
     if (String(got) !== String(value)) add("bp/figma-props", frameName, node.name, node.id, key + " is " + JSON.stringify(got) + ", the plan says " + JSON.stringify(value));
   }
-  for (const field of ["fills", "strokes"]) {
-    const overridden = (node.overrides || []).some((o) => (o.overriddenFields || []).includes(field));
-    if (overridden) add("bp/figma-bound", frameName, node.name, node.id, field + " are overridden on an instance");
+  // A paint override inside an instance only matters when the paint is a colour somebody wrote
+  // down. Swapping a component — an icon's glyph — records an override on the layer it brings with
+  // it, and that layer's paint is still bound to a variable, so it is left alone.
+  for (const over of node.overrides || []) {
+    const fields = (over.overriddenFields || []).filter((field) => field === "fills" || field === "strokes");
+    if (fields.length === 0) continue;
+    const painted = await figma.getNodeByIdAsync(over.id);
+    if (!painted) continue;
+    for (const field of fields) {
+      const paints = painted[field];
+      if (!Array.isArray(paints) || paints.length === 0) continue;
+      if (boundPaint(paints)) continue;
+      add("bp/figma-bound", frameName, painted.name, painted.id, field + " on " + painted.name + " are a colour, not a variable");
+    }
   }
   for (const layer of want.layers || []) {
     const found = down(node, layer.path, layer.hint);
@@ -184,6 +206,19 @@ const checkInstance = (node, want, frameName) => {
       continue;
     }
     const nestedHave = found.componentProperties || {};
+    // A swap holds a component id. What it is meant to be is a component name, so the id is read
+    // back and the component behind it named, which is how a glyph is checked.
+    for (const [key, want_] of Object.entries(layer.swaps || {})) {
+      const entry = nestedHave[key];
+      const id = entry && typeof entry === "object" ? entry.value : entry;
+      let name = null;
+      if (id) {
+        const swapped = await figma.getNodeByIdAsync(String(id));
+        name = swapped ? (swapped.parent && swapped.parent.type === "COMPONENT_SET" ? swapped.parent.name : swapped.name) : null;
+      }
+      if (!name || want_.indexOf(name) < 0)
+        add("bp/figma-props", frameName, found.name, found.id, key + " on " + layer.path.join(" > ") + " holds " + JSON.stringify(name) + ", the plan says " + JSON.stringify(want_));
+    }
     for (const [key, value] of Object.entries(layer.props || {})) {
       const entry = nestedHave[key];
       const got = entry && typeof entry === "object" ? entry.value : entry;
@@ -195,16 +230,26 @@ const checkInstance = (node, want, frameName) => {
     if (nested.kind === "layout") {
       const slotChild = node.findAll((n) => n.name === nested.name)[0];
       if (!slotChild) add("bp/figma-instance", frameName, node.name, node.id, "no " + nested.name + " frame inside the instance");
-      else checkNode(slotChild, nested, frameName);
+      else await checkNode(slotChild, nested, frameName);
       continue;
     }
-    const found = node.findAll((n) => n.type === "INSTANCE" && n.name === nested.component)[0];
+    // A swapped instance keeps the name of the layer it was put in — a Scoreboard in a Section's
+    // content slot is called "content" — so it is found by the component behind it as well.
+    const isOne = (n) => {
+      if (n.type !== "INSTANCE") return false;
+      if (n.name === nested.component) return true;
+      const main = n.mainComponent;
+      if (!main) return false;
+      if (main.name === nested.component) return true;
+      return Boolean(main.parent && main.parent.type === "COMPONENT_SET" && main.parent.name === nested.component);
+    };
+    const found = node.findAll(isOne)[0];
     if (!found) add("bp/figma-instance", frameName, node.name, node.id, "no " + nested.component + " instance inside it");
-    else checkInstance(found, nested, frameName);
+    else await checkInstance(found, nested, frameName);
   }
 };
 
-const checkLayout = (node, want, frameName) => {
+const checkLayout = async (node, want, frameName) => {
   if (node.type !== "FRAME" || !LAYOUT.test(node.name)) {
     add("bp/figma-instance", frameName, node.name, node.id, "expected the layout frame " + want.name);
     return;
@@ -227,13 +272,13 @@ const checkLayout = (node, want, frameName) => {
       add("bp/figma-instance", frameName, node.name, node.id, "child " + (i + 1) + " is missing: " + (child.kind === "layout" ? child.name : child.component));
       continue;
     }
-    checkNode(have, child, frameName);
+    await checkNode(have, child, frameName);
   }
 };
 
-function checkNode(node, want, frameName) {
-  if (want.kind === "layout") checkLayout(node, want, frameName);
-  else checkInstance(node, want, frameName);
+async function checkNode(node, want, frameName) {
+  if (want.kind === "layout") await checkLayout(node, want, frameName);
+  else await checkInstance(node, want, frameName);
 }
 
 // A screen's frames sit in a section named after the spec, so the frame is looked for there first.
@@ -263,7 +308,7 @@ for (const want of EXPECT.frames) {
       add("bp/figma-instance", want.name, frame.name, frame.id, "the frame is empty where the plan puts " + (child.kind === "layout" ? child.name : child.component));
       continue;
     }
-    checkNode(have, child, want.name);
+    await checkNode(have, child, want.name);
   }
 
   const inside = frame.findAll(() => true);

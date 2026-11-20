@@ -2,7 +2,7 @@
   "fileKey": "ELFJs16lnRVQaOrxhMVrVf",
   "readAt": "2026-11-20",
   "readWith": "Figma MCP, read only (componentPropertyDefinitions, getPublishStatusAsync, getLocalVariableCollectionsAsync)",
-  "note": "Contract to Figma map for the Agentic DS file. Property keys are exact, including the #id suffix. Nothing here was guessed: a contract value with no Figma value is listed under noFigma. slots.childProps names the contract whose properties each array item sets on the exposed child instance; slots.show lists the Figma boolean per extra index. slots.child is a path to the layer a row sets: segments split on >, where @N is the Nth child, $column is the column's own layer name from slots.columns.layers, and N and R in a name are the column and row numbers. partLayers is the path to the instance Figma exposes inside an artboard part. frameLayers is the path to a part of the shell itself, such as the page header it draws over the page slot. A props.<name>.swap block says what an instanceSwap slot ships with: the component set it swaps in, and the roster of parts that component draws.",
+  "note": "Contract to Figma map for the Agentic DS file. Property keys are exact, including the #id suffix. Nothing here was guessed: a contract value with no Figma value is listed under noFigma. slots.childProps names the contract whose properties each array item sets on the exposed child instance; slots.show lists the Figma boolean per extra index. slots.child is a path to the layer a row sets: segments split on >, where @N is the Nth child, $column is the column's own layer name from slots.columns.layers, and N and R in a name are the column and row numbers. partLayers is the path to the instance Figma exposes inside an artboard part. frameLayers is the path to a part of the shell itself, such as the page header it draws over the page slot. A props.<name>.swap block says what an instanceSwap slot ships with: the component set it swaps in, and the roster of parts that component draws. A props.<name> of kind glyph names the layer holding the nested Icon instance and the swap property on it; the glyph itself comes from the top-level glyphs roster, read from the Icon set's preferred values. patterns.<Pattern>.regions.<region> says how that pattern lays a region out when it is not one column: columns is how many across, gap the variable between them. partVariants.<slot> is for a row of parts the artboard draws in one variant rather than one switch at a time: prop and value are the variant to ask for, count how many parts that variant draws. slots.<name>.childKeys holds the keys the parent exposes for each child, where they differ from the child's own: a Card says title#189:21 on its own and title#176:0 inside a Scoreboard.",
   "themes": {
     "Ref": {
       "collectionKey": "533c7147ac15819736c36ea7c41641cce263965d",
@@ -535,9 +535,11 @@
           ]
         },
         "icon": {
+          "kind": "glyph",
           "figma": "showIcon#66:281",
-          "kind": "boolean",
-          "note": "Figma toggles the icon; the glyph is swapped on the nested Icon instance."
+          "layer": "Leading icon",
+          "prop": "glyph#29:0",
+          "note": "Figma draws the glyph as a swapped Icon instance; the name is looked up in the file's glyph roster."
         },
         "iconOnly": {
           "figma": "iconOnly",
@@ -766,12 +768,18 @@
           ]
         },
         "iconStart": {
+          "kind": "glyph",
           "figma": "iconStart#110:97",
-          "kind": "boolean"
+          "layer": "content > Icon start",
+          "prop": "glyph#29:0",
+          "note": "Figma draws the glyph as a swapped Icon instance; the name is looked up in the file's glyph roster."
         },
         "iconEnd": {
+          "kind": "glyph",
           "figma": "iconEnd#110:194",
-          "kind": "boolean"
+          "layer": "content > Icon end",
+          "prop": "glyph#29:0",
+          "note": "Figma draws the glyph as a swapped Icon instance; the name is looked up in the file's glyph roster."
         },
         "iconOnly": {
           "figma": "iconOnly",
@@ -2216,6 +2224,12 @@
             "false",
             "true"
           ]
+        },
+        "icon": {
+          "kind": "glyph",
+          "layer": "well > Icon",
+          "prop": "glyph#29:0",
+          "note": "Figma draws the glyph as a swapped Icon instance; the name is looked up in the file's glyph roster."
         }
       },
       "figmaOnly": {
@@ -2223,7 +2237,6 @@
         "showButton2#114:9": "Artboard toggle for an example part. In code the part appears when its prop is given."
       },
       "noFigma": {
-        "icon": "Runtime string with no Figma property on this component set.",
         "iconStyle": "No Figma equivalent on the component.",
         "headingLevel": "No Figma equivalent on the component."
       },
@@ -3906,9 +3919,11 @@
           "kind": "text"
         },
         "icon": {
+          "kind": "glyph",
           "figma": "showIcon#124:18",
-          "kind": "boolean",
-          "note": "Figma toggles the icon; the glyph is swapped on the nested Icon instance."
+          "layer": "header > icon > Icon",
+          "prop": "glyph#29:0",
+          "note": "Figma draws the glyph as a swapped Icon instance; the name is looked up in the file's glyph roster."
         },
         "size": {
           "figma": "size",
@@ -3963,9 +3978,11 @@
           "kind": "text"
         },
         "icon": {
+          "kind": "glyph",
           "figma": "showIcon#73:69",
-          "kind": "boolean",
-          "note": "Figma toggles the icon; the glyph is swapped on the nested Icon instance."
+          "layer": "square > Icon",
+          "prop": "glyph#29:0",
+          "note": "Figma draws the glyph as a swapped Icon instance; the name is looked up in the file's glyph roster."
         },
         "intent": {
           "figma": "intent",
@@ -4015,9 +4032,11 @@
           "kind": "text"
         },
         "icon": {
+          "kind": "glyph",
           "figma": "showIcon#194:8",
-          "kind": "boolean",
-          "note": "Figma toggles the icon; the glyph is swapped on the nested Icon instance."
+          "layer": "bar > title > title row > Icon",
+          "prop": "glyph#29:0",
+          "note": "Figma draws the glyph as a swapped Icon instance; the name is looked up in the file's glyph roster."
         },
         "badge": {
           "figma": "showBadge#194:12",
@@ -4493,7 +4512,12 @@
           ],
           "child": "Card N",
           "childProps": "Card",
-          "max": 6
+          "max": 6,
+          "childKeys": {
+            "title": "title#176:0",
+            "metric": "metric#176:5",
+            "metadata": "metadata#176:10"
+          }
         }
       },
       "noFigma": {
@@ -5566,9 +5590,18 @@
         "label": "Accessible name. Nothing to draw in Figma."
       },
       "partLayers": {
-        "actions": "bar > end > Action N"
+        "actions": "bar > end > Action N",
+        "filters": "filters > chips > Chip N"
       },
-      "partLayersNote": "Read in the Figma file on 2026-11-20 with get_metadata, read only."
+      "partLayersNote": "Read in the Figma file on 2026-11-20 with get_metadata, read only.",
+      "partVariants": {
+        "filters": {
+          "prop": "filtersOpen",
+          "value": "true",
+          "count": 4,
+          "note": "The chips row is a variant, not a switch per chip: filtersOpen=true draws Chip 1 to Chip 4."
+        }
+      }
     },
     "Tooltip": {
       "contract": "Tooltip",
@@ -5764,6 +5797,567 @@
         "currency": "Runtime string with no Figma property on this component set.",
         "height": "Runtime number. Not drawn as a Figma property.",
         "emptyLabel": "Runtime string with no Figma property on this component set."
+      }
+    }
+  },
+  "glyphs": {
+    "home": {
+      "key": "a868a5e8f58cb10433b5060011fef7bbf887dd23",
+      "keyKind": "componentSetKey"
+    },
+    "search": {
+      "key": "d5f6af640fbec6ab3cea0c64d8c04a02a358cba6",
+      "keyKind": "componentSetKey"
+    },
+    "menu": {
+      "key": "b7012edd837ff2c105d412efbbd5e62355d2d0a3",
+      "keyKind": "componentSetKey"
+    },
+    "settings": {
+      "key": "daeed0a88558ffa1e52fa04e68c8f5a70eb78bce",
+      "keyKind": "componentSetKey"
+    },
+    "person": {
+      "key": "2545633e244abd373eae2bed0f3c97544a22804c",
+      "keyKind": "componentSetKey"
+    },
+    "notifications": {
+      "key": "ccda929a95f894892004e065a2a5aa6ec212c546",
+      "keyKind": "componentSetKey"
+    },
+    "calendar_month": {
+      "key": "f16034296dfe4eb9ded9e5fc849d284f609b0676",
+      "keyKind": "componentSetKey"
+    },
+    "close": {
+      "key": "8e4168c91698a4026b1ce579c0991b5f52dbbb74",
+      "keyKind": "componentSetKey"
+    },
+    "add": {
+      "key": "488625d149425ed89bfa8df324733f08609fa611",
+      "keyKind": "componentSetKey"
+    },
+    "remove": {
+      "key": "84841ef1dc801017fc6fb3c1b89d2d8f40690cb4",
+      "keyKind": "componentSetKey"
+    },
+    "arrow_forward": {
+      "key": "0ec1bd18a31a232a7e7f7473b2623faff46d06b0",
+      "keyKind": "componentSetKey"
+    },
+    "download": {
+      "key": "94fb6e8cd5a98ce2bbb5d7ac405f00d193dff6d3",
+      "keyKind": "componentSetKey"
+    },
+    "upload": {
+      "key": "983c88b92ba6984ae5c23f36dcffb11597c15136",
+      "keyKind": "componentSetKey"
+    },
+    "edit": {
+      "key": "afb7a9711068c31e835526b208bb710c20b3d69a",
+      "keyKind": "componentSetKey"
+    },
+    "content_copy": {
+      "key": "2653f3c20b65c0da00386a8fb21385feb0c2c4be",
+      "keyKind": "componentSetKey"
+    },
+    "delete": {
+      "key": "b8c06e3285ae2e052e95aaaa53e28aa128d12159",
+      "keyKind": "componentSetKey"
+    },
+    "more_horiz": {
+      "key": "6550ed89ee8a28b878e64eee7f9dddc808b56d16",
+      "keyKind": "componentSetKey"
+    },
+    "info": {
+      "key": "0fe2907a8d0e47ffd86f07e96bfc8f9cad7f9469",
+      "keyKind": "componentSetKey"
+    },
+    "warning": {
+      "key": "b1fd3d12fdd959272f11195cc2d857279b1c0aae",
+      "keyKind": "componentSetKey"
+    },
+    "help": {
+      "key": "dde8e2ecdc734160fc67f131661c03da6302b748",
+      "keyKind": "componentSetKey"
+    },
+    "visibility": {
+      "key": "ef63a7a76b4d8a51824747b115e9aa1c81184db3",
+      "keyKind": "componentSetKey"
+    },
+    "visibility_off": {
+      "key": "288c8f40def3d0f8f8d69ff552104708f074b484",
+      "keyKind": "componentSetKey"
+    },
+    "lock": {
+      "key": "2fdd4d24e24819d709db325cf9764f6cd802305e",
+      "keyKind": "componentSetKey"
+    },
+    "lock_open": {
+      "key": "610894bf553f967f4dba9fe5d6e2fbb264e2451f",
+      "keyKind": "componentSetKey"
+    },
+    "mail": {
+      "key": "04e948d18f0cb2c137493541d8f29c0497670230",
+      "keyKind": "componentSetKey"
+    },
+    "call": {
+      "key": "7e2f29213fa517bebde4165ecd9aae4712d9b619",
+      "keyKind": "componentSetKey"
+    },
+    "chat_bubble": {
+      "key": "58275302cb7e442a6426d8e1eedecae4bbaa38b8",
+      "keyKind": "componentSetKey"
+    },
+    "inventory_2": {
+      "key": "8d454415ccae1c53c60b643b150ba27955e8e834",
+      "keyKind": "componentSetKey"
+    },
+    "refresh": {
+      "key": "3f2bf5bb62d05734875337695bfe03ef9960285b",
+      "keyKind": "componentSetKey"
+    },
+    "undo": {
+      "key": "8b57627bc9c452c27f38cf85140f7f9e1e60ff5d",
+      "keyKind": "componentSetKey"
+    },
+    "filter_list": {
+      "key": "3c9961c52388ed1c3e03192ed1e0146055ac5f74",
+      "keyKind": "componentSetKey"
+    },
+    "add_circle": {
+      "key": "d84c24b7379e0806a0c439d45cf6fb6de1b1576b",
+      "keyKind": "componentSetKey"
+    },
+    "open_in_new": {
+      "key": "d3b8786c48992cc9e50450d08d06ce35f60a4cdc",
+      "keyKind": "componentSetKey"
+    },
+    "link": {
+      "key": "6191c10f0905b1b5a61171dacc43d1471fb2d1e0",
+      "keyKind": "componentSetKey"
+    },
+    "share": {
+      "key": "69aeb05cb5f460498dd244e2ddee28450f572f96",
+      "keyKind": "componentSetKey"
+    },
+    "schedule": {
+      "key": "5de730d100d2a6a00202987d01ccf8f6e487603d",
+      "keyKind": "componentSetKey"
+    },
+    "language": {
+      "key": "cc63d515c30ad785fe6237c8da5d6cb809673ee7",
+      "keyKind": "componentSetKey"
+    },
+    "favorite": {
+      "key": "2d787b2ee836d021c75207c196bebdcc1f6c4fb1",
+      "keyKind": "componentSetKey"
+    },
+    "star": {
+      "key": "0396b7df03b71a4db4e5ae582e8d9134c0288129",
+      "keyKind": "componentSetKey"
+    },
+    "shopping_cart": {
+      "key": "fa414c1e00ed139b635d8f0217b0e9861e5ab894",
+      "keyKind": "componentSetKey"
+    },
+    "credit_card": {
+      "key": "0fe7406561b5cf7b0fdc0c054b1e45dc630ca4a5",
+      "keyKind": "componentSetKey"
+    },
+    "bar_chart": {
+      "key": "1a090eb9c61b68665fa06c5af9ff2c31dd14c2cd",
+      "keyKind": "componentSetKey"
+    },
+    "database": {
+      "key": "78d0685940d05bbb0abf327b3a19a84fc8074195",
+      "keyKind": "componentSetKey"
+    },
+    "login": {
+      "key": "8467b1708e148d3de3e66550088388f1b67185b8",
+      "keyKind": "componentSetKey"
+    },
+    "logout": {
+      "key": "fb48ec602a2de668d71e240a0de677661c8f8d3c",
+      "keyKind": "componentSetKey"
+    },
+    "receipt_long": {
+      "key": "1c67385957015de65ea85e0b35898030c45f53d5",
+      "keyKind": "componentSetKey"
+    },
+    "request_quote": {
+      "key": "621f680fd4e55ad33cbe4625cacf453db7700cf4",
+      "keyKind": "componentSetKey"
+    },
+    "account_balance": {
+      "key": "5f8f4398e67c8393476eb32b08762e371324e9e2",
+      "keyKind": "componentSetKey"
+    },
+    "payments": {
+      "key": "d5527bd20d121de2d65f27271abdf5c6758053ad",
+      "keyKind": "componentSetKey"
+    },
+    "sync": {
+      "key": "a6871966e9662c8087cd37d2c325199a4eb5fc0d",
+      "keyKind": "componentSetKey"
+    },
+    "history": {
+      "key": "0f947b0118ee450e518dc35df3b807468cec0d33",
+      "keyKind": "componentSetKey"
+    },
+    "star-filled": {
+      "key": "37b022abf79c5b47f1729754954cfffd65c059e8",
+      "keyKind": "componentSetKey"
+    },
+    "bookmark-filled": {
+      "key": "439c00ab48ab9e91205d395530914967ac88f6f2",
+      "keyKind": "componentSetKey"
+    },
+    "check": {
+      "key": "d4c6cd05e5ba0cd30b2b5e8eac7cb6e807d7297d",
+      "keyKind": "componentKey"
+    },
+    "check_circle": {
+      "key": "f4826caf2c553e7592e8ed896277d0512023b4ef",
+      "keyKind": "componentKey"
+    },
+    "error": {
+      "key": "4433d7da289892731c367daa0e3e6af51abf9fa0",
+      "keyKind": "componentKey"
+    },
+    "save": {
+      "key": "51fcff3e382faef708f0e9200d02b43371875f7c",
+      "keyKind": "componentKey"
+    },
+    "priority_high": {
+      "key": "d309b5f4868a2006aa4572f63a38fefe7098375a",
+      "keyKind": "componentSetKey"
+    },
+    "doc-1": {
+      "key": "b746fded6ea8cad16706245afd0766d201cd0094",
+      "keyKind": "componentKey"
+    },
+    "manage_search": {
+      "key": "6a5f163aa34646d8093a88683eb84cfab7d8ab31",
+      "keyKind": "componentSetKey"
+    },
+    "backup": {
+      "key": "da47bf889205fb32df6b8244ad9962464ae842fa",
+      "keyKind": "componentSetKey"
+    },
+    "build": {
+      "key": "f831e03fa55b1dd537426a86d201190a82b3bce6",
+      "keyKind": "componentSetKey"
+    },
+    "account_tree": {
+      "key": "f99536528e4d005ccf6295ffc79a49276295b04b",
+      "keyKind": "componentSetKey"
+    },
+    "shield_person": {
+      "key": "871f8619e7c287728737fac5dc8934a8ee544453",
+      "keyKind": "componentSetKey"
+    },
+    "acute": {
+      "key": "6fb13cc5992d0e6999b4dd75da9cf22619660125",
+      "keyKind": "componentSetKey"
+    },
+    "chevron_forward": {
+      "key": "7b892ec16527785379726d60fe26fd29850e02ae",
+      "keyKind": "componentSetKey"
+    },
+    "keyboard_arrow_down": {
+      "key": "2853764b22cd0ddc8807bbfa096d83da55766a56",
+      "keyKind": "componentSetKey"
+    },
+    "keyboard_arrow_up": {
+      "key": "50324337d5b4ac601bcda8c5e77fd2652af2c63f",
+      "keyKind": "componentSetKey"
+    },
+    "arrow_right": {
+      "key": "87ad57b71699b5b43b4bd0f81d9730a619245280",
+      "keyKind": "componentSetKey"
+    },
+    "inbox": {
+      "key": "37901f8e9934ea7721258cea728d6f1161c5be2b",
+      "keyKind": "componentSetKey"
+    },
+    "progress_activity": {
+      "key": "fd4e6593aa20b550f885e0b249e703b1139f88a4",
+      "keyKind": "componentKey"
+    },
+    "help_center": {
+      "key": "a92900a19cb394c57e995f1d494007ad9041dd7d",
+      "keyKind": "componentSetKey"
+    },
+    "sort": {
+      "key": "0bb537a617ef459bc2b934632eff33f5d825e261",
+      "keyKind": "componentSetKey"
+    },
+    "unfold_more": {
+      "key": "eff386d915c8150f0f3213b13c85b60c463948d5",
+      "keyKind": "componentSetKey"
+    },
+    "arrow_upward": {
+      "key": "04dffd6571a41df44ce94bd2c9dbc7677b8e35b9",
+      "keyKind": "componentSetKey"
+    },
+    "arrow_downward": {
+      "key": "6ad5f69810309b79eb815b327d4f7afd692668de",
+      "keyKind": "componentSetKey"
+    },
+    "group": {
+      "key": "0403ef00626777031130d4b61ed1aafa254ba0ea",
+      "keyKind": "componentSetKey"
+    },
+    "paid": {
+      "key": "6e9e0db01c7878034c62f41c1477d4c5f44db183",
+      "keyKind": "componentSetKey"
+    },
+    "recycling": {
+      "key": "393762334239908299884f43cb0a575409d3b545",
+      "keyKind": "componentSetKey"
+    },
+    "sliders": {
+      "key": "22c198cea570c3ebe16a3586251b90212ee31f37",
+      "keyKind": "componentSetKey"
+    },
+    "keep": {
+      "key": "344612e61f96233e7c8d0af24ba3562e95c651a5",
+      "keyKind": "componentSetKey"
+    },
+    "notes": {
+      "key": "658fa88bb096852929e4770f8e5db91e22265a2a",
+      "keyKind": "componentKey"
+    },
+    "chevron_backward": {
+      "key": "085da480f7aa57f0d9e8c770f1796350c0a83c70",
+      "keyKind": "componentSetKey"
+    },
+    "view_kanban": {
+      "key": "743204715fc3fc26b65f81baea9d1eab6ada2336",
+      "keyKind": "componentSetKey"
+    },
+    "lists": {
+      "key": "e7b16d8ca722f1aaff010d7c6122a385d8d97c3f",
+      "keyKind": "componentSetKey"
+    },
+    "more_vert": {
+      "key": "525b58e2869dce1e1fc3ce5eb79e11b87c58fc07",
+      "keyKind": "componentSetKey"
+    },
+    "add_box": {
+      "key": "4734b04a32a0ada7a602a823f27fa81382000bc2",
+      "keyKind": "componentSetKey"
+    },
+    "keyboard_double_arrow_right": {
+      "key": "02331ef4426a8d7db0331a1d382b0f5c7dbf9966",
+      "keyKind": "componentSetKey"
+    },
+    "send": {
+      "key": "166f23e10ba2ac36b9b21345dcd52b015d7a42ba",
+      "keyKind": "componentSetKey"
+    },
+    "left_click": {
+      "key": "4be3d35a4a4e376a75042d410630351d830290e7",
+      "keyKind": "componentSetKey"
+    },
+    "keyboard_command_key": {
+      "key": "3d54cd71f7a1edf494adaf69e3ca1f33b9be20fe",
+      "keyKind": "componentSetKey"
+    },
+    "shelf_auto_hide": {
+      "key": "de232fd366bfd591f0078eb3367977b126605049",
+      "keyKind": "componentSetKey"
+    },
+    "block": {
+      "key": "414868ddc17abe845dd558aac1991bd6da3133be",
+      "keyKind": "componentKey"
+    },
+    "file_open": {
+      "key": "d6949b01683f9cbb112892c81147af4a88f13a59",
+      "keyKind": "componentSetKey"
+    },
+    "drag_indicator": {
+      "key": "ebecb62753e81ce49fa0da60b3e3f5524eb82e1a",
+      "keyKind": "componentSetKey"
+    },
+    "edit_square": {
+      "key": "18f523be988aa780ec0c347a010e134bee6beaa6",
+      "keyKind": "componentSetKey"
+    },
+    "add_business": {
+      "key": "4f1fb5525757a54c07935244b943fe03528d9714",
+      "keyKind": "componentSetKey"
+    },
+    "arrow_back": {
+      "key": "2a815f2d7f6ccb29d24706a63b563360fd9389b8",
+      "keyKind": "componentSetKey"
+    },
+    "event": {
+      "key": "97ed0a0562ee9d8624b61750d02b223cd0bbbe4b",
+      "keyKind": "componentSetKey"
+    },
+    "folder": {
+      "key": "5cc8a506f54f127d5a83647d96af2e95a579c5c1",
+      "keyKind": "componentKey"
+    },
+    "play_circle_24": {
+      "key": "a852845a83187423e4b58d6419a968f4fef5bb5f",
+      "keyKind": "componentKey"
+    },
+    "stop_circle_24": {
+      "key": "6b03ceebb5b6f027d30e66ff83c35bfd16497f75",
+      "keyKind": "componentKey"
+    },
+    "forum": {
+      "key": "caed3a6146c596453e0ab936ee8c30daf5e65c30",
+      "keyKind": "componentSetKey"
+    },
+    "close_fullscreen": {
+      "key": "5d93ac20225f47c049f251e157feedd72fd69f02",
+      "keyKind": "componentSetKey"
+    },
+    "heart_minus": {
+      "key": "3dee2ea011d352c7e78dd230b4a3776462dee919",
+      "keyKind": "componentSetKey"
+    },
+    "heart_plus": {
+      "key": "12a3bda1e68a98669ccd3af588de0a6ec1324336",
+      "keyKind": "componentSetKey"
+    },
+    "last_page": {
+      "key": "3bfe3a04315ab49cc6512ae9c9963078adfcb157",
+      "keyKind": "componentSetKey"
+    },
+    "open_in_full": {
+      "key": "19d9aa96f564f6638e15e7a2fbb29a7cd609045e",
+      "keyKind": "componentSetKey"
+    },
+    "radio_button_unchecked": {
+      "key": "5ee33f57af1cbd6285a6c858f0330039b93e27d6",
+      "keyKind": "componentSetKey"
+    },
+    "switch_access_shortcut": {
+      "key": "956e1bf4206ecbe6d8589f056ca0b967b1d4d530",
+      "keyKind": "componentSetKey"
+    },
+    "lightbulb": {
+      "key": "60d93fb74897d5f42d66314f36d326164d0e6a9b",
+      "keyKind": "componentSetKey"
+    },
+    "record_voice_over": {
+      "key": "a259dda6651b3cec007c9cff7040774b131bd45a",
+      "keyKind": "componentSetKey"
+    },
+    "add_comment": {
+      "key": "72caf67d4d39d3f9cf5e6ae781f8d1a27e429cf4",
+      "keyKind": "componentSetKey"
+    },
+    "voice_chat": {
+      "key": "4dcffc7166aea5fc835b6ad670320dd6ee1cfa09",
+      "keyKind": "componentSetKey"
+    },
+    "domain": {
+      "key": "a4e20d48c76ba8002623ffa6a9729bc6ca1fd2fc",
+      "keyKind": "componentSetKey"
+    },
+    "equal": {
+      "key": "0c0b16ad11d92f109cefae4b3b14db9d4bd1d361",
+      "keyKind": "componentSetKey"
+    },
+    "assistant_navigation": {
+      "key": "a6e82255b2312f80993214f745fde109c8e0c404",
+      "keyKind": "componentSetKey"
+    },
+    "store": {
+      "key": "69123ee0017bee5fc7cde09b419e44aa83523079",
+      "keyKind": "componentSetKey"
+    },
+    "campaign": {
+      "key": "e1681806ffbd738c05673f58db7046b1a2dfc739",
+      "keyKind": "componentSetKey"
+    },
+    "chat_info": {
+      "key": "c612e6aa68e02d2d1cef3c012b0ee3ce7fc22092",
+      "keyKind": "componentSetKey"
+    },
+    "category_search": {
+      "key": "d6024f5c789609e34fd88f2f29923238adb4f623",
+      "keyKind": "componentSetKey"
+    },
+    "library_add": {
+      "key": "7ceb78e471a84e417f7de001052f6fcd2886c2ab",
+      "keyKind": "componentSetKey"
+    },
+    "lucide-sparkles": {
+      "key": "d064398494d6e133051e4021d56e255bbe5b336f",
+      "keyKind": "componentKey"
+    },
+    "browse_activity": {
+      "key": "ff7c3f93b7efd898f4bec0aaab6b7d251de90a75",
+      "keyKind": "componentSetKey"
+    },
+    "empty_dashboard": {
+      "key": "cc3ae180f2872c5d4b645814b532ea3c370cd906",
+      "keyKind": "componentSetKey"
+    },
+    "settings_applications": {
+      "key": "55fd6db07266ba26efba118b04c1ca617f281875",
+      "keyKind": "componentSetKey"
+    },
+    "backspace": {
+      "key": "2776d11a590e0379e3f47b96d926759bc12eeb7c",
+      "keyKind": "componentSetKey"
+    },
+    "event_available": {
+      "key": "00b0e0b6f9ca00f2e3b3238ae678983225f54326",
+      "keyKind": "componentSetKey"
+    },
+    "label": {
+      "key": "a4c8785abaeab21a175d36bd3f74676b3d1fb4d8",
+      "keyKind": "componentSetKey"
+    },
+    "subdirectory_arrow_left": {
+      "key": "7550c3c010afee0efc7cb4f0317f8b6f308db336",
+      "keyKind": "componentSetKey"
+    },
+    "subdirectory_arrow_right": {
+      "key": "2b8a6f4c55780a4688c35001e3bcc3863e961eb4",
+      "keyKind": "componentSetKey"
+    },
+    "vertical_align_bottom": {
+      "key": "fb660143f0df4890ffb8c34106558276d9db4216",
+      "keyKind": "componentSetKey"
+    },
+    "publish": {
+      "key": "af310c876798085ebca7ead8b36886f4288ba0cd",
+      "keyKind": "componentSetKey"
+    },
+    "tune": {
+      "key": "5be2b20caf9cb85e3151272a53974a07c9958e0a",
+      "keyKind": "componentSetKey"
+    },
+    "speed": {
+      "key": "7beec2951b47d40acffbac932f231485c81655b6",
+      "keyKind": "componentSetKey"
+    },
+    "summarize": {
+      "key": "dbad6c63598b91f8332b998a59127ccf2ee5c361",
+      "keyKind": "componentSetKey"
+    },
+    "monetization_on": {
+      "key": "60e5e85ceb0cc472b0bb660c14bad10a3a93e8d2",
+      "keyKind": "componentSetKey"
+    }
+  },
+  "patterns": {
+    "SettingsPage": {
+      "regions": {
+        "content": {
+          "columns": 3,
+          "gap": "layout/gutter-md",
+          "note": "SettingsPage draws its tiles in .layout-metrics with --layout-metrics-min 320px: three across at 1440."
+        }
       }
     }
   }

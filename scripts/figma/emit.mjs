@@ -329,7 +329,26 @@ const fillInstance = async (node, spec) => {
   for (const part of spec.parts || []) {
     const own = Object.assign({}, part.props, part.texts);
     const target = await want(node, part.path, { component: part.component, index: part.index }, own);
-    if (target) await $fig.apply(target, own);
+    if (!target) continue;
+    await $fig.apply(target, own);
+    // A swap on the part itself: an icon's glyph is another component put in the Icon instance the
+    // part points at, so the component is resolved here and set by its id.
+    for (const [key, swap] of Object.entries(part.swaps || {})) {
+      const comp = await $fig.component(swap);
+      await $fig.apply(target, { [key]: comp.id });
+    }
+    // A part that is itself a component has parts of its own: the glyph inside an action button
+    // is found from the button, not from the toolbar around it.
+    for (const inner of part.parts || []) {
+      const own2 = Object.assign({}, inner.props, inner.texts);
+      const at = await want(target, inner.path, { component: inner.component, index: inner.index }, own2);
+      if (!at) continue;
+      await $fig.apply(at, own2);
+      for (const [key, swap] of Object.entries(inner.swaps || {})) {
+        const comp = await $fig.component(swap);
+        await $fig.apply(at, { [key]: comp.id });
+      }
+    }
   }
   for (const [key, swap] of Object.entries(spec.swaps || {})) {
     const target = await $fig.component(swap);
@@ -434,7 +453,15 @@ function thin(node) {
     }
   }
   for (const part of node.parts ?? []) {
-    (out.parts ??= []).push({ path: part.path, component: part.component, index: part.index, props: part.props, texts: part.texts });
+    const kept = { path: part.path, component: part.component, index: part.index, props: part.props, texts: part.texts };
+    if (Object.keys(part.swaps ?? {}).length > 0) kept.swaps = part.swaps;
+    if (part.parts?.length > 0)
+      kept.parts = part.parts.map((inner) => {
+        const one = { path: inner.path, component: inner.component, index: inner.index, props: inner.props, texts: inner.texts };
+        if (Object.keys(inner.swaps ?? {}).length > 0) one.swaps = inner.swaps;
+        return one;
+      });
+    (out.parts ??= []).push(kept);
   }
   return out;
 }

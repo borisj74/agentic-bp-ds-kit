@@ -78,11 +78,18 @@ export function checkMap(map = readMap(), contracts = readContracts()) {
 
     for (const [prop, mapping] of Object.entries(entry.props ?? {})) {
       if (!own.has(prop)) add(contract.name, `props.${prop} is not a prop in ${contract.file}`);
-      if (!mapping.figma) add(contract.name, `props.${prop} has no figma key`);
-      else claim(mapping.figma, `props.${prop}`);
+      // A glyph is the one kind that may have no key of its own: the component draws the icon
+      // always and only the nested Icon instance is swapped.
+      if (!mapping.figma && mapping.kind !== "glyph") add(contract.name, `props.${prop} has no figma key`);
+      else if (mapping.figma) claim(mapping.figma, `props.${prop}`);
       if (!mapping.kind) add(contract.name, `props.${prop} has no kind`);
       else if (mapping.figma && !keyKindFits(mapping.kind, mapping.figma)) {
         add(contract.name, `props.${prop} is ${mapping.kind} but its key is ${mapping.figma}`);
+      }
+      // The layer the glyph is swapped on, and the swap property on it, both read in the file.
+      if (mapping.kind === "glyph") {
+        if (typeof mapping.layer !== "string" || mapping.layer.trim() === "") add(contract.name, `props.${prop}.layer is not a path to the Icon instance`);
+        if (typeof mapping.prop !== "string" || !mapping.prop.includes("#")) add(contract.name, `props.${prop}.prop is not a swap property key`);
       }
     }
 
@@ -115,6 +122,14 @@ export function checkMap(map = readMap(), contracts = readContracts()) {
       // An empty roster is a real answer: the slot ships blank and takes exactly one component.
       if (!Array.isArray(swap.roster) || swap.roster.some((name) => typeof name !== "string"))
         add(contract.name, `props.${prop}.swap.roster is not a list of component names`);
+    }
+
+    // A row of parts the artboard draws in one variant rather than one switch at a time.
+    for (const [part, shape] of Object.entries(entry.partVariants ?? {})) {
+      if (typeof shape?.prop !== "string" || shape.prop === "") add(contract.name, `partVariants.${part}.prop is not a variant property`);
+      if (typeof shape?.value !== "string" || shape.value === "") add(contract.name, `partVariants.${part}.value is not a variant value`);
+      if (!Number.isInteger(shape?.count) || shape.count < 1) add(contract.name, `partVariants.${part}.count is not how many the artboard draws`);
+      if (!entry.partLayers?.[part]) add(contract.name, `partVariants.${part} has no partLayers.${part} to find them by`);
     }
 
     // A part of the frame itself, by the path it sits at in the file.
@@ -162,6 +177,30 @@ export function checkMap(map = readMap(), contracts = readContracts()) {
   }
 
   for (const name of mapped) add(name, "entry has no contract with that name");
+
+  // The glyph roster: every name the file's Icon set offers, with the key that imports it.
+  for (const [name, glyph] of Object.entries(map.glyphs ?? {})) {
+    if (typeof glyph?.key !== "string" || glyph.key.length !== 40) add("glyphs", `${name} has no component key`);
+    if (glyph?.keyKind !== "componentKey" && glyph?.keyKind !== "componentSetKey") add("glyphs", `${name} has no keyKind`);
+  }
+  // Every glyph prop needs a roster to look a name up in.
+  if (Object.keys(map.glyphs ?? {}).length === 0) {
+    for (const [name, entry] of Object.entries(map.components ?? {})) {
+      for (const [prop, mapping] of Object.entries(entry.props ?? {})) {
+        if (mapping?.kind === "glyph") add(name, `props.${prop} is a glyph and the map has no glyphs roster`);
+      }
+    }
+  }
+
+  // How a pattern lays a region out when it is not one column.
+  for (const [name, pattern] of Object.entries(map.patterns ?? {})) {
+    for (const [region, shape] of Object.entries(pattern?.regions ?? {})) {
+      const columns = shape?.columns;
+      if (!Number.isInteger(columns) || columns < 2 || columns > 6) add(name, `patterns regions.${region}.columns is not 2 to 6`);
+      if (shape?.gap !== undefined && (typeof shape.gap !== "string" || !shape.gap.includes("/")))
+        add(name, `patterns regions.${region}.gap is not a variable name`);
+    }
+  }
 
   const noNode = contracts.filter((c) => !c.figma?.nodeId).map((c) => c.name);
   for (const name of noNode) {

@@ -293,7 +293,8 @@ describe("the render plan", () => {
     expect(plan.ok).toBe(true);
     const empty = treeOf(plan).find((node) => node.component === "EmptyState") as Json;
     expect(empty.props["showActions#114:0"]).toBe(true);
-    expect(empty.parts).toEqual([
+    // The empty state's own icon is a part too, so the action is picked out by the slot it fills.
+    expect(empty.parts.filter((part: Json) => part.slot === "actions")).toEqual([
       {
         toggle: "showActions#114:0",
         index: 1,
@@ -304,6 +305,13 @@ describe("the render plan", () => {
         texts: { "label#110:0": "Import bank file" },
       },
     ]);
+    // Its glyph is one the file's icon set does not hold, so the icon is on and the drop is said.
+    expect(map.glyphs.upload_file).toBeUndefined();
+    expect(plan.dropped.some((one: Json) => /no glyph named "upload_file"/.test(one.why))).toBe(true);
+    // The empty state's own icon is one it does hold, swapped on the Icon the map points at.
+    const icon = empty.parts.find((part: Json) => part.slot === "icon");
+    expect(icon.path).toEqual(["well", "Icon"]);
+    expect(icon.swaps["glyph#29:0"].component).toBe("Icon payments");
     // The second drawn button is off: the spec asked for one.
     expect(empty.props["showButton2#114:9"]).toBe(false);
   });
@@ -311,11 +319,12 @@ describe("the render plan", () => {
   it("sets a numbered action part through the layer the file keeps it in", () => {
     const plan = makePlan(read("payments-empty.json"));
     const toolbar = treeOf(plan, "ready").find((node) => node.component === "Toolbar") as Json;
-    expect(toolbar.parts).toHaveLength(1);
-    expect(toolbar.parts[0].path).toEqual(["bar", "end", "Action 1"]);
+    expect(toolbar.parts.filter((part: Json) => part.slot === "actions")).toHaveLength(1);
+    expect(toolbar.parts.find((part: Json) => part.slot === "actions").path).toEqual(["bar", "end", "Action 1"]);
     expect(toolbar.parts[0].texts).toEqual({ "label#110:0": "Record payment" });
-    expect(toolbar.parts[0].props.emphasis).toBe("strong");
-    expect(toolbar.parts[0].props.intent).toBe("brand");
+    const primary = toolbar.parts.find((part: Json) => part.slot === "actions");
+    expect(primary.props.emphasis).toBe("strong");
+    expect(primary.props.intent).toBe("brand");
   });
 
   it("fills a page header's own actions through the layers the file keeps them in", () => {
@@ -502,13 +511,14 @@ describe("the render plan", () => {
   it("reaches an action part by the path the file has, not by a name it made up", () => {
     // Read in the file: a Toolbar's actions are bar > end > Action 1 and Action 2; an EmptyState's
     // are actions > Button 1 and Button 2; a PageHeader's are bar > controls > Action 1 and 2.
-    expect(map.components.Toolbar.partLayers).toEqual({ actions: "bar > end > Action N" });
+    expect(map.components.Toolbar.partLayers).toEqual({ actions: "bar > end > Action N", filters: "filters > chips > Chip N" });
     expect(map.components.EmptyState.partLayers).toEqual({ actions: "actions > Button N" });
     expect(map.components.PageHeader.partLayers).toEqual({ actions: "bar > controls > Action N" });
 
     const plan = makePlan(read("payments-empty.json"));
-    expect((treeOf(plan, "ready").find((node) => node.component === "Toolbar") as Json).parts[0].path).toEqual(["bar", "end", "Action 1"]);
-    expect((treeOf(plan).find((node) => node.component === "EmptyState") as Json).parts[0].path).toEqual(["actions", "Button 1"]);
+    expect((treeOf(plan, "ready").find((node) => node.component === "Toolbar") as Json).parts.find((part: Json) => part.slot === "actions").path).toEqual(["bar", "end", "Action 1"]);
+    const emptyParts = (treeOf(plan).find((node) => node.component === "EmptyState") as Json).parts;
+    expect(emptyParts.find((part: Json) => part.slot === "actions").path).toEqual(["actions", "Button 1"]);
   });
 
   it("fails when the map does not say where a component draws its columns and cells", () => {
@@ -542,7 +552,7 @@ describe("the render plan", () => {
   it("gives a nested action button its defaults too, and counts the primaries after that", () => {
     const plan = makePlan(read("payments-empty.json"));
     const empty = treeOf(plan).find((node) => node.component === "EmptyState") as Json;
-    const [secondary] = empty.parts;
+    const secondary = empty.parts.find((part: Json) => part.slot === "actions");
     // "Import bank file" says nothing about how it looks, so it is drawn subtle neutral.
     expect(secondary.texts).toEqual({ "label#110:0": "Import bank file" });
     expect(secondary.props.emphasis).toBe("subtle");
@@ -760,8 +770,125 @@ describe("the audit script", () => {
     expect(code).not.toMatch(/appendChild|setProperties|\.remove\(/);
   });
 
+  it("finds a swapped instance by the component behind it, not by the layer's name", () => {
+    // A Scoreboard put in a Section's content slot is called "content" in the file, so the audit
+    // reads the main component as well as the layer name before it says the instance is missing.
+    const code = auditScript(readPlan("usage-overview.json"));
+    expect(code).toContain("const isOne = (n) => {");
+    expect(code).toContain("main.parent.name === nested.component");
+  });
+
   it("names every rule it can report", () => {
     const code = auditScript(readPlan("usage-overview.json"));
     for (const rule of RULES) expect(code).toContain(rule);
+  });
+
+  it("writes a row with the keys the parent exposes, not the child's own", () => {
+    // Read in the file: a Card inside a Scoreboard takes title#176:0, not the Card's own
+    // title#189:21, so the map holds the Scoreboard's keys for its cards.
+    expect(map.components.Scoreboard.slots.items.childKeys).toEqual({
+      title: "title#176:0",
+      metric: "metric#176:5",
+      metadata: "metadata#176:10",
+    });
+    const plan = readPlan("usage-overview.json");
+    const board = treeOf(plan, "ready").find((node) => node.component === "Scoreboard") as Json;
+    expect(board.items.items.rows[0].texts).toEqual({
+      "title#176:0": "Rated usage",
+      "metric#176:5": "$482,900",
+      "metadata#176:10": "128 accounts",
+    });
+    // The fourth card is the one the spec switches on, and it carries its own words too.
+    expect(board.items.items.rows[3].show).toBe("showCard4#176:40");
+    expect(board.items.items.rows[3].texts["metric#176:5"]).toBe("$24,180");
+  });
+
+  it("turns on the switch that belongs to a slot the spec filled", () => {
+    const plan = readPlan("usage-overview.json");
+    const section = treeOf(plan, "ready").find((node) => node.component === "Section") as Json;
+    // The Scoreboard goes in content#119:91; showContent is the switch that draws that layer.
+    expect(Object.keys(section.swaps)).toEqual(["content#119:91"]);
+    expect(section.props["showContent#119:78"]).toBe(true);
+    // A part of the Section the spec did not ask for is still off.
+    expect(section.props["showActions#119:52"]).toBe(false);
+  });
+
+  it("asks for the variant that draws a whole row of parts, and says what it cannot fill", () => {
+    // Read in the file: the Toolbar's chips are filters > chips > Chip 1 to Chip 4, and they are
+    // there only in the filtersOpen=true variant — there is no switch per chip.
+    expect(map.components.Toolbar.partLayers.filters).toBe("filters > chips > Chip N");
+    expect(map.components.Toolbar.partVariants.filters).toMatchObject({ prop: "filtersOpen", value: "true", count: 4 });
+
+    const plan = readPlan("usage-overview.json");
+    const toolbar = treeOf(plan, "ready").find((node) => node.component === "Toolbar") as Json;
+    expect(toolbar.props.filtersOpen).toBe("true");
+    const chips = toolbar.parts.filter((part: Json) => part.slot === "filters");
+    expect(chips.map((part: Json) => part.path)).toEqual([
+      ["filters", "chips", "Chip 1"],
+      ["filters", "chips", "Chip 2"],
+    ]);
+    expect(plan.dropped.some((one: Json) => /always draws 4 filters and the spec fills 2/.test(one.why))).toBe(true);
+  });
+
+  it("calls a paint override a problem only when the paint is not a variable", () => {
+    const code = auditScript(readPlan("settings-home.json"));
+    // Swapping an icon's glyph records a fills override on the layer the glyph brings with it.
+    // That paint is still bound, so the rule reads the node before it says anything.
+    expect(code).toContain("are a colour, not a variable");
+    expect(code).toContain("if (boundPaint(paints)) continue;");
+    expect(code).not.toContain("are overridden on an instance");
+  });
+
+  it("swaps the glyph the spec names onto the nested Icon instance", () => {
+    const plan = readPlan("settings-home.json");
+    const tiles = treeOf(plan).filter((node) => node.component === "NavTile");
+    expect(tiles.length).toBe(8);
+    const first = tiles[0].parts.find((part: Json) => part.slot === "icon");
+    // The path and the swap property were both read in the file, not guessed.
+    expect(first.path).toEqual(["square", "Icon"]);
+    expect(first.swaps["glyph#29:0"].component).toBe("Icon shield_person");
+    expect(first.swaps["glyph#29:0"].key).toHaveLength(40);
+    // The toggle goes on with it, so the icon the glyph sits in is drawn.
+    expect(tiles[0].props["showIcon#73:69"]).toBe(true);
+  });
+
+  it("says which glyphs the file's icon set does not hold", () => {
+    const plan = readPlan("settings-home.json");
+    const said = plan.dropped.filter((one: Json) => one.path.endsWith(".props.icon"));
+    expect(said.map((one: Json) => one.why)).toEqual([
+      'the file\'s icon set has no glyph named "savings", so NavTile draws its own.',
+      'the file\'s icon set has no glyph named "sync_alt", so NavTile draws its own.',
+    ]);
+    // The two tiles whose glyph is not there still draw an icon, and swap nothing.
+    const tiles = treeOf(plan).filter((node) => node.component === "NavTile");
+    for (const at of [3, 4]) {
+      expect(tiles[at].props["showIcon#73:69"]).toBe(true);
+      expect(tiles[at].parts.some((part: Json) => part.slot === "icon")).toBe(false);
+    }
+  });
+
+  it("lays a region out across as many columns as the pattern draws", () => {
+    const plan = readPlan("settings-home.json");
+    const content = treeOf(plan).find((node) => node.name === "layout/content" && node.region === "content") as Json;
+    expect(content.gap).toBe("layout/gutter-md");
+    expect(content.children.map((row: Json) => row.name)).toEqual(["layout/content-row", "layout/content-row", "layout/content-row"]);
+    expect(content.children.every((row: Json) => row.direction === "HORIZONTAL" && row.children.length === 3)).toBe(true);
+    // The short last row is filled out, so its tiles keep the width of the ones above.
+    expect(content.children[2].children.map((one: Json) => one.component ?? one.name)).toEqual(["NavTile", "NavTile", "layout/gap"]);
+    // A region the map says nothing about is still one column.
+    const intro = treeOf(plan).find((node) => node.name === "layout/intro") as Json;
+    expect(intro.direction).toBe("VERTICAL");
+    expect(intro.gap).toBe(LAYOUT_TOKENS.gap);
+  });
+
+  it("carries the glyph swap into the emitted script and into the audit", () => {
+    const plan = readPlan("settings-home.json");
+    const code = emitScript(plan).code;
+    expect(code).toContain('"glyph#29:0"');
+    expect(code).toContain("871f8619e7c287728737fac5dc8934a8ee544453");
+    // The script resolves the component and sets it by id; it never writes a key as a value.
+    expect(code).toContain("await $fig.component(swap)");
+    const want = expectations(plan) as unknown as Json;
+    expect(JSON.stringify(want)).toContain('"swaps":{"glyph#29:0":"Icon shield_person"}');
   });
 });
