@@ -297,3 +297,197 @@ Known cousins the review rejects by name: `EmptyHeader`, `Dialog`, `Sheet`, `Sli
 4. **Column cap.** 554px (`--layout-column-max`) is the live number: it is a token and `form.json` names it. 480px is still written in three contracts — `formpage.json` (`props.columns.note`), `form.json` (a `doNot` line) and `recordpage.json` (`props.columns.note` and one example's `usage`). Those four lines are stale prose, not a second rule. **[code]** that they differ; **[guess]** that 480 is simply out of date. Fixing them is a contract change, out of scope here.
 5. **The "not built yet" list.** `.claude/skills/prototype-from-kit/SKILL.md` lists pieces to stop and ask about; `Table` and `Scoreboard` were already shipped and had to be corrected inline. The list drifts; `contracts/index.json` is the truth. **[code]**
 6. **Font-size literals.** Rules say "no raw values", but `bp/raw-value` only checks colour, spacing, radius and shadow. Type literals pass review. **[code]**
+
+---
+
+## 10. Organisms
+
+An organism is a component (`src/ui/`, a row in `index.components`) that assembles kit pieces or draws one whole block of a screen: 29 of them today — `AlertDialog`, `AppHeader`, `AppNav`, `Calendar`, `ChatList`, `DataGrid`, `Drawer`, `Form`, `FormDisplay`, `FormulaEditor`, `GlobalSearch`, `GuidedProcess`, `Heatmap`, `ListView`, `Modal`, `PageHeader`, `Scoreboard`, `Section`, `Table`, `Timeline`, `Toolbar`, `TreeView` and the seven charts. **[code]**
+
+### 10.1 Same files, same rules as a molecule **[code]**
+
+`src/ui/<Name>/<Name>.tsx` + `<Name>.module.css`, named export, `contracts/<name>.json`, `inspect("<Name>")` on the root, colour and space from semantic roles only. Everything in §3, §4 and §5 holds unchanged. An organism is not a new file layout; it is a bigger piece in the same one.
+
+An organism may read another organism's module rather than copy its rules: `Select` imports `../Input/Input.module.css`, `Toolbar` imports it for the search trigger (`src/ui/Toolbar/Toolbar.tsx:19`). **[code]**
+
+### 10.2 What an organism is built from **[code]**
+
+Fourteen of the 29 carry `composes`; fifteen do not, and the split is not arbitrary:
+
+- **Assembled** — `Toolbar` (6 parts), `AppHeader` (9), `ListView` (5), `PageHeader` (4), `Table` (4), `Form`, `Scoreboard`, `Section`, `Timeline`, `Drawer`, `Modal`, `AlertDialog`, `AppNav`, `FormDisplay`. These name their parts in `composes`, and the review uses that list to say "use this piece" when a screen hand-rolls ≥60% of it, minimum 3 parts (`scripts/review/rules.mjs:13-16`).
+- **Primitive** — the seven charts, `Heatmap`, `Calendar`, `DataGrid`, `TreeView`, `GlobalSearch`, `GuidedProcess`, `ChatList`, `FormulaEditor`. They draw their own rows, cells and marks, so there is no kit piece to list. **[code]** that they carry none; **[guess]** that drawing its own grid is the reason, rather than an omission.
+
+So: list `composes` when the piece is an assembly of named kit pieces. A piece that renders its own grid of cells carries none, and still gets a contract, a level and examples.
+
+### 10.3 Slots and data **[code]**
+
+An organism takes the parts a screen owns as `ReactNode` props named after their role, and the rest as arrays of item objects:
+
+- Slots: `Toolbar` `filters` / `field` / `actions`; `Section` `actions` / `children`; `Modal` and `Drawer` `children` / `footer`; `Form` `children` / `footer`; `PageHeader` `actions`; `AppHeader` `children`; `ListView` and `FormDisplay` one each.
+- Data: `items`, `columns`, `rows`, `options`, each with an `itemShape` in the contract (§4.2). Never a child component per row: there is one `ListView`, not `ListViewRow`.
+- 19 of the 29 take a `label` string that names the region for screen readers.
+
+An organism with menus or panels that float (`Toolbar`, `GlobalSearch`, `Dropdown` inside it) portals them and keeps them inside `[data-frame]`, the AppShell's own box, so nothing hangs outside a docked frame (`AppShell.tsx:94`). **[code]**
+
+### 10.4 Boot inside an organism **[code]**
+
+Five organisms take a `loading` of their own: `AppHeader`, `AppNav`, `PageHeader`, `Section`, `Toolbar`. The recipe is the same in each:
+
+```tsx
+const { skeleton: own } = useBootSkeleton(loading);   // on its own: draws at once
+const inPage = useFieldSkeleton();                    // inside a booting page or frame
+const booting = own || inPage;
+```
+
+So a screen says loading **once**, at the top, and every piece under it draws its own bars in its own place (§5.3). An organism that draws its children's blocks — `Toolbar`, `Section`, `Card`, `Timeline` — never reaches the leaf.
+
+### 10.5 Reflow by the box, not the window **[code]**
+
+An organism that changes shape when there is less room measures **its own box**, not the viewport: `container-type: inline-size` on the root, then `@container` rules. In use on `AppHeader`, `PageHeader`, `Section` (`.columns`), `Table` (`.wrap`), `Form`, `Calendar`, `Drawer`, `ChatHeader`, `UsageBar` and the shared chart module. A kit piece can sit in a phone-width frame inside a wide window, so the window says nothing about the room it has.
+
+### 10.6 Columns come from the page **[code]**
+
+`Section` reads `FormLayoutContext` and takes the page's `columns` and `labelPosition` unless it sets its own (`src/ui/Section/Section.tsx`). Only `FormDisplay` rows and fields go into columns; a `Section` holding a `Table` keeps the full width (`src/ui/Form/columns.module.css`). An organism never sets a page width or a page inset.
+
+---
+
+## 11. Page templates (patterns)
+
+Ten today: `AccountFlow`, `AppShell`, `ChatWindow`, `Dashboard`, `FormPage`, `GuidedProcessPage`, `ListDetail`, `ListPage`, `RecordPage`, `SettingsPage`. **[code]**
+
+### 11.1 Level and place are enforced **[code]** (`tests/contract-levels.test.ts`)
+
+- A pattern's contract `level` **must** be `"template"`, and a component's **must not** be. The test asserts both directions.
+- A pattern's row goes in `index.patterns`, with `name`, `contract`, `level`, `tags[]` and **no `category`** (§3.4).
+- Files: `src/patterns/<Name>/<Name>.tsx` + `<Name>.module.css`; import path `@/patterns/<Name>/<Name>`; contract `contracts/<name>.json`, same lower-case rule.
+- All ten start with `"use client"`. **[code]**
+- All ten spread `inspect("<Name>")` on the root.
+- Shared plumbing between patterns lives as a plain module in `src/patterns/`, with no contract of its own: `band.ts` (`useStickyBand`) and `stick.ts` (`useStickMark`). **[code]**
+
+### 11.2 A page template is a blueprint, not a component **[code]**
+
+Every one of the ten says it in its `intent` and its `doNot`: "it composes kit pieces and keeps no state of its own". The screen holds the tab, the open section, the picked rows, the sticky boolean. The pattern only reports a crossing (`onStickyChange`, `onPageHeaderStick`).
+
+Two more lines are in every page pattern's `doNot`:
+
+- "Do not build the header, the tabs or the bar inside it. Pass the kit pieces."
+- "Do not put page padding around it. It sits in the AppShell page, which owns that."
+
+A pattern may compose another pattern: `AccountFlow` imports `ListPage` (`AccountFlow.tsx:3`). **[code]**
+
+### 11.3 Regions and slots **[code]**
+
+A page pattern's props are its regions, each a `ReactNode`, each named after what the screen puts there. The vocabulary across the ten:
+
+| Slot | Takes | On |
+| --- | --- | --- |
+| `header` | a kit `PageHeader` | FormPage, RecordPage, GuidedProcessPage |
+| `pageHeader` | a kit `PageHeader` | AppShell (the frame holds it) |
+| `nav` / `header` / `assistant` | `AppNav` / `AppHeader` / `ChatWindow` | AppShell |
+| `tabs` | a kit `Tabs` | RecordPage |
+| `notice` / `intro` | a kit `Callout` | RecordPage, FormPage, SettingsPage |
+| `toolbar` | a kit `Toolbar` | ListPage, RecordPage, Dashboard |
+| `summary` | a kit `Scoreboard` | RecordPage |
+| `bulk` | the bar that replaces the toolbar while rows are ticked | ListPage |
+| `pagination` | a kit `Pagination` | ListPage |
+| `empty` | a kit `EmptyState` | ListPage, Dashboard, ListDetail, ChatWindow |
+| `children` | the page's own Sections, Form or rows | all but ListDetail and AccountFlow |
+| `list` / `detail` | the two sides | ListDetail |
+| `footer` / `steps` | the step actions, the step list | GuidedProcessPage |
+
+Root element: `<section aria-label={label ?? "<Noun>"}>` for a page inside the frame (ListPage, RecordPage, FormPage, SettingsPage, Dashboard); a `<div>` for a frame or a two-sided shell (AppShell with `data-frame=""`, ListDetail, GuidedProcessPage, ChatWindow, AccountFlow). **[code]**
+
+### 11.4 Layout: the page owns the rhythm, the frame owns the inset **[code]**
+
+- `AppShell` renders the scrolling page as `<main className="layout-content">`, which carries the 24px edge inset (`--layout-margin-md`) and the 24px gap between stacked children (`--layout-gutter-lg`). Only the page scrolls, so a sticky bar sticks and the frame stays put (`AppShell.tsx`).
+- A page pattern's own root is `display: flex; flex-direction: column; gap: var(--layout-gutter-lg)` and **no padding** (`RecordPage.module.css:3`, `FormPage.module.css:3`).
+- A column of Sections inside another layout uses `.layout-stack`: same gap, no inset.
+- One column of a record or form view stops at `--layout-column-max` **554px** (a 234 start label + a 12 gap + a 308 field, `src/tokens/source/layout.txt`). The boot skeleton takes the same cap so nothing moves when the fields land (`FormPage.module.css`).
+- `columns` is `1 | 2 | 3`, default `2`. Never more than 3, even at 2560px and wider — it is a `doNot` line on both FormPage and RecordPage.
+- Side-by-side blocks use `.layout-split`, `--thirds` (3) or `--quarters` (4). Four is the most a form or record view holds.
+- A row of numbers uses `.layout-metrics`; `--fixed-5` is the most a dashboard row holds.
+- A reading column uses `.layout-container-sm…2xl` — `AppShell` `width` picks one.
+- Never a hand-written page grid: `display: grid` in a screen is a `bp/screen-frame` warning (`scripts/review/rules.mjs`).
+- Sticky offsets are written from the real token heights, not numbers: `--page-header-height-sticky` (52px) less `--layout-margin-md` puts a band right under the compact bar, and the stacking order comes from the `--stick-*` roles (`frozen-cell` 1 → `page-head` 6).
+
+### 11.5 Loading **[code]**
+
+Two shapes, and a page template uses one of them:
+
+- `loading: boolean` + `loadingShape: "content" | "rows"` (default `content`) + a count (`loadingRows`, `loadingColumns`, `loadingTiles`) — FormPage, RecordPage, SettingsPage, ListDetail, AccountFlow.
+- `state: "ready" | "loading" | "empty" | "error"` — ListPage; Dashboard drops `error`.
+
+`content` renders the **real children** and lets every Section, row, Scoreboard, chart and Table inside draw its own bars where it will stand, so nothing moves when the data lands. `rows` is the fallback fixed grid for a page whose content has not arrived yet.
+
+While it boots, in every page pattern:
+
+- the real tree stays mounted, marked `inert` and `aria-hidden`;
+- one `<span role="status">Loading {label}</span>` says it once;
+- a `notice` holds its own height — the real block is in the tree, `visibility: hidden`, with one `Skeleton` absolutely over it — so the content below does not move whether the notice runs to one line or three;
+- `AppShell` owns the sequence (`useBootPhase`: the line alone for 200ms, the skeleton for at least 400ms, a 150ms settle) and publishes it on `BootContext`, plus `FormLayoutContext { loading: true }`. A page pattern inside it ORs the frame's boot with its own (`own || inFrame`), so a screen sets `loading` in **one** place, at the top. A page that lands inside the first 200ms shows no skeleton at all.
+
+Each page pattern's boot shape is tested: `tests/pattern-skeletons.test.tsx`, plus `form-page-skeleton`, `list-detail-skeleton`, `settings-page-skeleton`, `appshell-boot-page`, `boot-sequence`, `account-flow-boot`. **[code]**
+
+### 11.6 Empty and error **[code]**
+
+- Empty is a slot, not a drawn-in block: the page takes `empty` and the screen passes a kit `EmptyState`. The pattern decides **where** it stands, never what it says.
+- `ListPage` draws the error itself, as the one exception: `state="error"` renders `<Callout intent="danger" actionLabel="Try again" onAction={onRetry}>` (`ListPage.tsx`). Nothing else in the ten owns copy.
+- Pagination and the rows go while something stands in for them; the "when read" `meta` line goes while the bulk bar is up.
+- `--list-blank-min` (240px) keeps the list's height while a stand-in is showing.
+
+### 11.7 Responsive **[code]**
+
+No page pattern writes a breakpoint of its own. The two steps live once, in `src/tokens/layout.css`, and are written **twice** — as `@media` against the window and as `@container` against the box:
+
+- **1024px** — the page rail goes, `--fixed-4` drops to 2, `--fixed-5` to 3, `--quarters` to halves.
+- **640px** — no nav column (AppShell slides the nav over the page and draws a scrim), every split goes to one column, every metrics row to one.
+- **1279px** — form and record fields go to one column, whatever room the box has (`src/ui/Form/columns.module.css`); the boot skeleton repeats that break so the two never disagree.
+- `.layout-cards` is a container at **860px** for a pair of cards that answers to its content rather than the window.
+
+`AppShell` sets `container-type: inline-size` on the frame, so a frame docked in a preview, a split view or a phone-width stage reflows on its own width. `ListDetail` and `GuidedProcessPage` do the same on their own frames. **[code]**
+
+### 11.8 Density **[code]**
+
+No page pattern reads `Density` and none takes a density prop. Density is a token-layer switch: `[data-density="compact" | "comfortable"]` re-declares the values, so heights, spacing, icon and font sizes move and no enum changes (§5.4, §1.5). A screen holds the value — `AppHeader` keeps it in the account menu and reports it with `onDensityChange` — and puts it on the frame's wrapper beside `data-theme`. The one translation is `AppHeader`'s own: compact / default / comfortable → control `sm` / `md` / `lg` (`AppHeader.tsx:69`).
+
+### 11.9 How a page contract differs from a component's **[code]**
+
+Same required fields (§4.1), with these differences:
+
+| | Component | Page template |
+| --- | --- | --- |
+| `level` | `atom` / `molecule` / `organism` | `template`, enforced |
+| row | `index.components`, with `category` | `index.patterns`, no `category` |
+| `figma` | required on every component | present on all ten |
+| `composes` | on 14 of 29 organisms | on **all ten**, 3–29 parts each |
+| `props` | enums, sizes, booleans | mostly `ReactNode` regions, plus `loading` / `state`, `columns`, `label` |
+| `usage` | what the piece decides for the builder | which kit piece goes in each slot, what the screen keeps, what owns the padding |
+| `examples` | the states: sizes, disabled, error, loading | the page's own shapes: 1–3 items (ListDetail 10), typically "A record", "Three columns", "Booting" |
+| `snippet` | one element with props | the pattern with its slots filled by kit pieces |
+
+`usage` on a page contract reads like a brief: it names the kit piece for every slot, says the pattern keeps no state, and says the AppShell page owns the padding. `RecordPage`'s is the model (`contracts/recordpage.json`).
+
+`doNot` still needs its "when not to use" line naming the alternative — `recordpage.json` has "Do not use it for a list of records. Use ListPage." **[code]**
+
+### 11.10 The playground entry for a page template **[code]**
+
+A template is stateless, so the catalog cannot render it bare. The registry entry points at a demo that holds the state:
+
+- `src/playground/demos.tsx` exports `<NameDemo>` — the pattern driven the way a screen drives it, with `shell` (in the AppShell frame) and `stage` (`desktop` … `3008`) of its own, and `data-theme` / `data-density` on the frame wrapper.
+- `src/playground/registry.tsx` keys the entry by the contract `name` with `render`, `preview`, `card`, **`page`** (the whole screen at page size, scaled into the gallery card — patterns only), `block: true`, `wide: true`, a `hide[]` listing every `ReactNode` slot, and usually `toggles` (`shell`, `sticky`) and `extras` (`stage`, `boot`).
+- No route file. `/patterns/[slug]` is generated from `contracts/index.json`.
+
+### 11.11 The starter **[code]**
+
+Seven of the ten ship a starter screen: `starters/<id>/page.tsx`, a row in `starters/index.json` (`id`, `template: "<Name>"`, `title`, `about`), and an import plus a row in `tests/starters.test.tsx`, which renders every starter through axe. `AppShell` has none of its own (the `blank` starter is the frame); `ChatWindow` and `AccountFlow` have none. **[code]**
+
+The review names the starter in its fix: `bp/use-pattern` prints `npm run new-screen -- --template <id>` when the pattern has one (`scripts/review/catalog.mjs`). So a page template without a starter row gets a weaker review message. **[guess]** that every new page template should ship one; nothing fails without it.
+
+### 11.12 The frame rules a screen must keep **[code]** (`bp/screen-frame`)
+
+On `src/app/**/page.tsx`, outside the playground:
+
+- `AppShell` around the screen, with `items={APP_NAV}` and `endItems={APP_NAV_END}` from `@/patterns/AppShell/appNav`. Never trim or invent nav links.
+- Breadcrumbs start with `Home`; `PageHeader` appends the page title itself.
+- One template per screen: once a pattern is in the file, `bp/use-pattern` goes quiet.
+- No hand-written page grid.
