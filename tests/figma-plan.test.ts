@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { DEFAULT_BRAND, everyToggle, figmaVarName, LAYOUT_TOKENS, planFile, planRender, readMap, regionOrderOf, showToggles, textFamily, toggleAsked } from "../scripts/figma/plan.mjs";
+import { DEFAULT_BRAND, everyToggle, figmaVarName, LAYOUT_TOKENS, layerPath, planFile, planRender, readMap, regionOrderOf, showToggles, textFamily, toggleAsked } from "../scripts/figma/plan.mjs";
 import { piece } from "../scripts/review/catalog.mjs";
 import { auditScript, expectations, RULES } from "../scripts/figma/audit.js";
 import { emitScript, MAX_SCRIPT, PAGE_AFTER, TARGET_PAGE } from "../scripts/figma/emit.mjs";
@@ -168,7 +168,8 @@ describe("the render plan", () => {
     });
     expect(plan.ok).toBe(true);
     const button = treeOf(plan).find((node) => node.component === "Button") as Json;
-    expect(button.props).toEqual({ emphasis: "strong", intent: "brand", size: "sm" });
+    // What the spec says, and the contract's own defaults for what it does not.
+    expect(button.props).toEqual({ emphasis: "strong", intent: "brand", size: "sm", iconOnly: "false", loading: "false" });
     expect(button.texts).toEqual({ "label#110:0": "Save" });
   });
 
@@ -246,8 +247,8 @@ describe("the render plan", () => {
         index: 1,
         slot: "actions",
         component: "Button",
-        path: ["Button 1"],
-        props: { size: "sm", "iconStart#110:97": true },
+        path: ["actions", "Button 1"],
+        props: { size: "sm", "iconStart#110:97": true, emphasis: "subtle", intent: "neutral", iconOnly: "false", loading: "false" },
         texts: { "label#110:0": "Import bank file" },
       },
     ]);
@@ -255,11 +256,11 @@ describe("the render plan", () => {
     expect(empty.props["showButton2#114:9"]).toBe(false);
   });
 
-  it("sets a numbered action part through the layer that toggle stands for", () => {
+  it("sets a numbered action part through the layer the file keeps it in", () => {
     const plan = makePlan(read("payments-empty.json"));
     const toolbar = treeOf(plan, "ready").find((node) => node.component === "Toolbar") as Json;
     expect(toolbar.parts).toHaveLength(1);
-    expect(toolbar.parts[0].path).toEqual(["Action 1"]);
+    expect(toolbar.parts[0].path).toEqual(["bar", "end", "Action 1"]);
     expect(toolbar.parts[0].texts).toEqual({ "label#110:0": "Record payment" });
     expect(toolbar.parts[0].props.emphasis).toBe("strong");
     expect(toolbar.parts[0].props.intent).toBe("brand");
@@ -305,7 +306,7 @@ describe("the render plan", () => {
     expect(empty.props["showDescription#71:18"]).toBe(true);
   });
 
-  it("leaves a label alone where the toggle reads the other way round", () => {
+  it("reads an inverted toggle the right way round, and still switches the rest off", () => {
     const plan = makePlan({
       name: "labelled",
       title: "Labelled",
@@ -313,7 +314,8 @@ describe("the render plan", () => {
       regions: { content: [{ component: "Input", props: { label: "Name" } }] },
     });
     const input = treeOf(plan).find((node) => node.component === "Input") as Json;
-    expect(input.props["showLabel#154:1015"]).toBeUndefined();
+    // hideLabel is false by its contract, and showLabel is its opposite, so the label is on.
+    expect(input.props["showLabel#154:1015"]).toBe(true);
     expect(input.props["showPrefix#154:1595"]).toBe(false);
   });
 
@@ -338,29 +340,126 @@ describe("the render plan", () => {
     expect(table.props["showColumn6#252:68"]).toBe(false);
   });
 
-  it("reads a table down its columns: a header in each column, a cell per record under it", () => {
+  it("reads a table down its columns, by the layer names the Figma file has", () => {
+    // Read in the Agentic DS file: the Table holds a frame named columns, whose children are the
+    // column frames Invoice, Status, Method, Amount, Column 5 to Column 8 and Actions, each with a
+    // Header instance and Row 1 to Row 10 under it. A column is reached by its place, so a screen's
+    // own columns do not have to be called what the artboard calls them.
+    expect(map.components.Table.slots.columns.child).toBe("columns > @N > Header");
+    expect(map.components.Table.slots.columns.layers).toEqual([
+      "Invoice",
+      "Status",
+      "Method",
+      "Amount",
+      "Column 5",
+      "Column 6",
+      "Column 7",
+      "Column 8",
+    ]);
+    expect(map.components.Table.slots.rows.child).toBe("columns > @N > Row R");
+
     const plan = makePlan(read("payments-empty.json"));
     const table = treeOf(plan, "ready").find((node) => node.component === "Table") as Json;
     expect(table.items.columns.rows.map((header: Json) => header.path)).toEqual([
-      ["Column 1", "HeaderCell"],
-      ["Column 2", "HeaderCell"],
-      ["Column 3", "HeaderCell"],
-      ["Column 4", "HeaderCell"],
-      ["Column 5", "HeaderCell"],
+      ["columns", "@1", "Header"],
+      ["columns", "@2", "Header"],
+      ["columns", "@3", "Header"],
+      ["columns", "@4", "Header"],
+      ["columns", "@5", "Header"],
     ]);
     expect(table.items.columns.rows[0].texts).toEqual({ "label#116:0": "Payment" });
     const third = table.items.rows.rows[2];
     expect(third.cells.map((cell: Json) => cell.path)).toEqual([
-      ["Column 1", "Row 3"],
-      ["Column 2", "Row 3"],
-      ["Column 3", "Row 3"],
-      ["Column 4", "Row 3"],
-      ["Column 5", "Row 3"],
+      ["columns", "@1", "Row 3"],
+      ["columns", "@2", "Row 3"],
+      ["columns", "@3", "Row 3"],
+      ["columns", "@4", "Row 3"],
+      ["columns", "@5", "Row 3"],
     ]);
     expect(third.cells[0].texts).toEqual({ "label#237:230": "PAY-2043" });
     // A numeric column ends its cells and its header.
     expect(third.cells[4].props).toEqual({ alignment: "end" });
     expect(table.items.columns.rows[4].props).toEqual({ alignment: "end" });
+  });
+
+  it("reads a DataGrid across its rows instead, because that is how the file draws it", () => {
+    // Read in the same file: the DataGrid holds a frame named grid, with head and Row 1 to Row 4,
+    // and each of those holds one cell per column — Field, Condition, Value, Column 4, Column 5.
+    expect(map.components.DataGrid.slots.columns.child).toBe("grid > head > $column");
+    expect(map.components.DataGrid.slots.columns.layers).toEqual(["Field", "Condition", "Value", "Column 4", "Column 5"]);
+    expect(map.components.DataGrid.slots.rows.child).toBe("grid > Row R > $column");
+  });
+
+  it("walks a path the way the map writes one", () => {
+    expect(layerPath("columns > @N > Row R", { n: 2, r: 3 })).toEqual(["columns", "@2", "Row 3"]);
+    expect(layerPath("grid > head > $column", { n: 3, layers: ["Field", "Condition", "Value"] })).toEqual(["grid", "head", "Value"]);
+    expect(layerPath("grid > Row R > $column", { n: 1, r: 4, layers: ["Field"] })).toEqual(["grid", "Row 4", "Field"]);
+    expect(layerPath("actions > Button N", { n: 2 })).toEqual(["actions", "Button 2"]);
+    expect(layerPath("Breadcrumb", { n: 1 })).toEqual(["Breadcrumb"]);
+    expect(layerPath(null)).toEqual([]);
+  });
+
+  it("reaches an action part by the path the file has, not by a name it made up", () => {
+    // Read in the file: a Toolbar's actions are bar > end > Action 1 and Action 2; an EmptyState's
+    // are actions > Button 1 and Button 2; a PageHeader's are bar > controls > Action 1 and 2.
+    expect(map.components.Toolbar.partLayers).toEqual({ actions: "bar > end > Action N" });
+    expect(map.components.EmptyState.partLayers).toEqual({ actions: "actions > Button N" });
+    expect(map.components.PageHeader.partLayers).toEqual({ actions: "bar > controls > Action N" });
+
+    const plan = makePlan(read("payments-empty.json"));
+    expect((treeOf(plan, "ready").find((node) => node.component === "Toolbar") as Json).parts[0].path).toEqual(["bar", "end", "Action 1"]);
+    expect((treeOf(plan).find((node) => node.component === "EmptyState") as Json).parts[0].path).toEqual(["actions", "Button 1"]);
+  });
+
+  it("fails when the map does not say where a component draws its columns and cells", () => {
+    const bent = structuredClone(map);
+    delete bent.components.Table.slots.columns.child;
+    const plan = makePlan(read("payments-empty.json"), { map: bent });
+    expect(plan.ok).toBe(false);
+    expect(plan.errors[0].message).toMatch(/does not say where Table draws its columns and its cells/);
+    expect(plan.errors[0].fix).toMatch(/Read the component in Figma/);
+  });
+
+  it("writes the contract's default for every prop the spec leaves out", () => {
+    const plan = makePlan({
+      name: "bare-button",
+      title: "Bare button",
+      pattern: "SettingsPage",
+      regions: { content: [{ component: "Button" }, { component: "Input", props: { label: "Name" } }] },
+    });
+    const button = treeOf(plan).find((node) => node.component === "Button") as Json;
+    // Button is subtle neutral md by its contract, so that is what Figma is told.
+    expect(button.props.emphasis).toBe("subtle");
+    expect(button.props.intent).toBe("neutral");
+    expect(button.props.size).toBe("md");
+    expect(button.props.loading).toBe("false");
+    const input = treeOf(plan).find((node) => node.component === "Input") as Json;
+    expect(input.props.size).toBe("md");
+    // hideLabel is false by default and the toggle reads the other way round, so the label is on.
+    expect(input.props["showLabel#154:1015"]).toBe(true);
+  });
+
+  it("gives a nested action button its defaults too, and counts the primaries after that", () => {
+    const plan = makePlan(read("payments-empty.json"));
+    const empty = treeOf(plan).find((node) => node.component === "EmptyState") as Json;
+    const [secondary] = empty.parts;
+    // "Import bank file" says nothing about how it looks, so it is drawn subtle neutral.
+    expect(secondary.texts).toEqual({ "label#110:0": "Import bank file" });
+    expect(secondary.props.emphasis).toBe("subtle");
+    expect(secondary.props.intent).toBe("neutral");
+    // The screen's one strong brand Button is the Toolbar's, and it stays that way.
+    const toolbar = treeOf(plan, "ready").find((node) => node.component === "Toolbar") as Json;
+    expect(toolbar.parts[0].props.emphasis).toBe("strong");
+    expect(toolbar.parts[0].props.intent).toBe("brand");
+    expect(plan.dropped.some((item: Json) => /one strong brand Button/.test(item.why))).toBe(false);
+  });
+
+  it("reports a default the Figma component set does not draw rather than forcing it", () => {
+    const bent = structuredClone(map);
+    bent.components.Button.props.emphasis.values = ["strong", "minimal"];
+    const plan = makePlan({ name: "odd", title: "Odd", pattern: "SettingsPage", regions: { content: [{ component: "Button" }] } }, { map: bent });
+    expect(plan.ok).toBe(true);
+    expect(plan.dropped.some((item: Json) => /default emphasis="subtle" is not one Figma draws/.test(item.why))).toBe(true);
   });
 
   it("refuses a brand or a scheme the file has no mode for", () => {
@@ -525,9 +624,11 @@ describe("the audit script", () => {
   it("expects the cells of a table and the words on an action part", () => {
     const want = expectations(readPlan("payments-empty.json")) as unknown as Json;
     const flat = JSON.stringify(want);
-    expect(flat).toContain('"path":["Column 5","Row 3"]');
-    expect(flat).toContain('"path":["Column 1","HeaderCell"]');
-    expect(flat).toContain('"path":["Action 1"]');
+    expect(flat).toContain('"path":["columns","@5","Row 3"]');
+    expect(flat).toContain('"path":["columns","@1","Header"]');
+    expect(flat).toContain('"path":["bar","end","Action 1"]');
+    // An action part also carries how to find it when the layer is not where the plan looked.
+    expect(flat).toContain('"hint":{"component":"Button","index":1}');
   });
 
   it("names every rule it can report", () => {

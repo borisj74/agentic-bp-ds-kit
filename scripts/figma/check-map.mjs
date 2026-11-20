@@ -90,6 +90,26 @@ export function checkMap(map = readMap(), contracts = readContracts()) {
       if (!own.has(prop)) add(contract.name, `slots.${prop} is not a prop in ${contract.file}`);
       if (!Array.isArray(slot.show)) add(contract.name, `slots.${prop}.show is not a list`);
       else slot.show.forEach((key) => claim(key, `slots.${prop}.show`));
+      // The path to the layer a row sets, as it was read in the file: names split on >, with @N for
+      // the Nth child, $column for the column's own layer name, and N and R for the column and the
+      // row number. A path that names no row and no column could only ever set one layer.
+      if (slot.child !== undefined && (typeof slot.child !== "string" || slot.child.trim() === ""))
+        add(contract.name, `slots.${prop}.child is not a path`);
+      if (slot.layers !== undefined) {
+        if (!Array.isArray(slot.layers) || slot.layers.some((name) => typeof name !== "string"))
+          add(contract.name, `slots.${prop}.layers is not a list of layer names`);
+        else if (slot.max !== undefined && slot.layers.length !== slot.max)
+          add(contract.name, `slots.${prop}.layers has ${slot.layers.length} names and max is ${slot.max}`);
+      }
+      // Layers are only of use to a path that reaches for a column, by name or by place.
+      if (slot.layers && !/@N|\$column/.test(String(slot.child ?? "")))
+        add(contract.name, `slots.${prop}.layers is listed but slots.${prop}.child reaches for no column`);
+    }
+
+    // The instance Figma exposes inside an artboard part, by the path it sits at in the file.
+    for (const [prop, path] of Object.entries(entry.partLayers ?? {})) {
+      if (!own.has(prop)) add(contract.name, `partLayers.${prop} is not a prop in ${contract.file}`);
+      if (typeof path !== "string" || !/\bN\b/.test(path)) add(contract.name, `partLayers.${prop} "${path}" does not number its parts with N`);
     }
 
     for (const prop of Object.keys(entry.stateMap ?? {})) {

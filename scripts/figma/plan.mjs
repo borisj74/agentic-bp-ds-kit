@@ -65,8 +65,43 @@ export const LAYOUT_TOKENS = {
 export const TARGET_PAGE = "Spec renders";
 export const PAGE_AFTER = "Patterns";
 
-/** What a column frame and a row inside it are called when the map does not name them. */
-export const GRID_LAYERS = { column: "Column N", row: "Row N" };
+/**
+ * A layer path, as the map records it.
+ *
+ * The map's `slots.<name>.child` and `partLayers.<name>` hold the path to the layer a row or a part
+ * sets, read in the Figma file rather than guessed: names split on `>`, and in a name
+ *
+ *   @N        the Nth child of the layer before it, counting from 1 — the Nth column frame
+ *   $column   the column's own layer name, from `slots.columns.layers`
+ *   N         the column number
+ *   R         the row number
+ *
+ * So the Table's `columns > @N > Row R` is the Rth row of the Nth column frame, and the DataGrid's
+ * `grid > Row R > $column` is that column's own cell inside row R.
+ *
+ * @param {string | null} shape The path as the map records it.
+ * @param {{ n?: number | null, r?: number | null, layers?: string[] | null }} [where] The column
+ *   number, the row number, and the column layer names the map read in the file.
+ * @returns {string[]} One step per layer, `@2` where a step is the second child.
+ */
+export function layerPath(shape, { n = null, r = null, layers = null } = {}) {
+  if (typeof shape !== "string" || shape.trim() === "") return [];
+  return shape
+    .split(">")
+    .map((step) => step.trim())
+    .filter(Boolean)
+    .map((step) => {
+      if (/^@N$/.test(step)) return n === null ? step : `@${n}`;
+      if (step === "$column") return n !== null && layers?.[n - 1] ? layers[n - 1] : step;
+      let out = step;
+      if (n !== null) out = out.replace(/\bN\b/g, String(n));
+      if (r !== null) out = out.replace(/\bR\b/g, String(r));
+      return out;
+    });
+}
+
+/** Whether a path can tell one row from another: without that, it names the same layer every time. */
+export const pathNumbers = (shape) => /@N|\$column|\bN\b|\bR\b/.test(String(shape ?? ""));
 
 /** A CSS custom property as a Figma variable name: the first dash becomes a slash. */
 export function figmaVarName(cssVar) {
@@ -245,9 +280,6 @@ const gridColumn = (column) => {
   return column.numeric ? { ...rest, alignment: "end" } : rest;
 };
 
-/** A layer name with its number filled in: "Row N" and 3 is "Row 3". */
-const layerName = (shape, n) => String(shape).replace(/\bN\b/, String(n));
-
 /** A variant value as Figma holds it: a string, and booleans as "true" / "false". */
 const variantValue = (value) => (typeof value === "boolean" ? String(value) : String(value));
 
@@ -405,7 +437,9 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
         if (family?.[n] && words !== null) row.texts[family[n]] = words;
         else if (words !== null && !childShape) drop(`${at}[${i}]`, `${node.component} draws ${name} ${n} as example copy; "${words}" is not a Figma property.`);
         if (childShape) {
-          row.path = [layerName(childShape, n)];
+          row.path = layerPath(childShape, { n, r: n, layers: slot.layers ?? null });
+          if (value.length > 1 && !pathNumbers(childShape))
+            drop(`${at}[${i}]`, `the map's path for ${name} ("${childShape}") names one layer, so row ${n} cannot be told from the others.`);
           const { props, texts } = childValues(childEntry, item, `${at}[${i}]`, { skip: family?.[n] ? wordsField(item) : null });
           Object.assign(row.props, props);
           Object.assign(row.texts, texts);
@@ -444,8 +478,17 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
         fail(`${at}.props.rows`, `${node.component} draws at most ${rowMax} rows; the spec has ${rows.length}.`, `Cut the list to ${rowMax}, or draw the extra rows as their own component.`);
         return;
       }
-      const columnShape = typeof columnSlot.child === "string" ? columnSlot.child : GRID_LAYERS.column;
-      const rowShape = typeof rowSlot.child === "string" ? rowSlot.child : GRID_LAYERS.row;
+      const columnShape = typeof columnSlot.child === "string" ? columnSlot.child : null;
+      const rowShape = typeof rowSlot.child === "string" ? rowSlot.child : null;
+      const layers = columnSlot.layers ?? null;
+      if (!columnShape || !rowShape) {
+        fail(
+          `${at}.props.columns`,
+          `The map does not say where ${node.component} draws its columns and its cells.`,
+          "Read the component in Figma and record slots.columns.child and slots.rows.child in contracts/figma-map.json.",
+        );
+        return;
+      }
       const headerEntry = columnSlot.childProps ? entryFor(columnSlot.childProps) : null;
       const cellEntry = rowSlot.childProps ? entryFor(rowSlot.childProps) : null;
       const headerText = headerEntry?.props?.label?.figma ?? null;
@@ -463,7 +506,7 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
         const header = {
           index: n,
           show: n > columnBaseline ? (columnShow[n - columnBaseline - 1] ?? null) : null,
-          path: [layerName(columnShape, n), columnSlot.childProps ?? "HeaderCell"],
+          path: layerPath(columnShape, { n, layers }),
           props: {},
           texts: {},
         };
@@ -490,7 +533,7 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
           }
           cells.push({
             column: c + 1,
-            path: [layerName(columnShape, c + 1), layerName(rowShape, row)],
+            path: layerPath(rowShape, { n: c + 1, r: row, layers }),
             props: alignment?.figma ? { [alignment.figma]: "end" } : {},
             texts: { [cellText]: String(value) },
           });
@@ -569,6 +612,37 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
       drop(at, `${name} is a ${prop.kind} property; the plan does not set those.`);
     }
 
+    /**
+     * The contract's own defaults, for every prop the spec leaves out.
+     *
+     * A prop nobody set is not a prop Figma gets to decide. The contract says what the component is
+     * without it — a Button is subtle neutral, an Input is md — so that is written down, and the
+     * artboard's own variant never stands in for it. A default the Figma component set does not draw
+     * is reported rather than forced.
+     */
+    const contract = piece(node.component, root);
+    for (const [name, prop] of Object.entries(contract?.props ?? {})) {
+      if (prop.default === undefined) continue;
+      if (node.props && name in node.props) continue;
+      if (node.slots && name in node.slots) continue;
+      const mapping = mapped[name];
+      if (!mapping?.figma) continue;
+      const at = `${path}.props.${name}`;
+      if (mapping.kind === "variant") {
+        const allowed = mapping.values ?? [];
+        const value = variantValue(prop.default);
+        if (allowed.length === 0 || allowed.includes(value)) out.props[mapping.figma] = value;
+        else drop(at, `the contract's default ${name}=${JSON.stringify(prop.default)} is not one Figma draws (${allowed.join(", ")}).`);
+        continue;
+      }
+      if (mapping.kind === "boolean") {
+        out.props[mapping.figma] = mapping.inverted ? !prop.default : Boolean(prop.default);
+        continue;
+      }
+      if (mapping.kind === "text" && (typeof prop.default === "string" || typeof prop.default === "number"))
+        out.texts[mapping.figma] = String(prop.default);
+    }
+
     if (node.text !== undefined) {
       const words = String(resolveCopy(node.text, copy));
       const prop = mapped.children;
@@ -604,15 +678,19 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
       if (toggles.length > 0) {
         const wanted = Math.min(toggles.length, list.length);
         for (const toggle of toggles.slice(0, wanted)) out.props[toggle] = true;
+        const shape = entry.partLayers?.[name] ?? null;
         for (const [i, child] of list.slice(0, wanted).entries()) {
           const toggle = toggles[i];
-          const layer = toggles.length === 1 ? `${child.component} ${i + 1}` : toggleLayer(toggle);
+          // The path the map read in the file. Without one, the part is reached by the name the
+          // toggle stands for, and the script falls back to the nth instance of that component.
+          const path = shape ? layerPath(shape, { n: i + 1, r: i + 1 }) : [toggles.length === 1 ? `${child.component} ${i + 1}` : toggleLayer(toggle)];
+          if (!shape) drop(`${at}[${i}]`, `the map does not say where ${node.component} draws its ${name}; the render looks for "${path.join(" > ")}".`);
           out.parts.push({
             toggle,
             index: i + 1,
             slot: name,
             component: child.component,
-            path: [layer],
+            path,
             props: child.props,
             texts: child.texts,
           });

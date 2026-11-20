@@ -30,6 +30,11 @@ Three attempts, at most. Each attempt is two `use_figma` calls: the render and t
    render one state or one theme at a time with `--frames`.
 4. **Audit.** Build the audit script the same way (see below) and send it as one more `use_figma`
    call. It is read-only and returns `{ "ok": true }` or the failures and nothing else.
+
+   The render call answers with the node id of each frame, and with `missing` when the plan named a
+   layer the file does not have. Put every one of those in the report: what the plan would have
+   drawn there was not drawn at all, and the map is what has to be fixed — read the component in
+   Figma and record the real path in `contracts/figma-map.json`.
 5. **Judge.** `npm run figma:judge -- <spec.json> --audit <scratch>/audit.json`. It makes the repairs
    `scripts/spec/fix.mjs` makes, writes them back into the **spec**, and says whether to render
    again. Never patch Figma by hand and never edit the generated page: the spec is the source.
@@ -79,7 +84,7 @@ Write `reports/figma-loop/<name>.md` when the loop stops, whatever the outcome:
   `https://www.figma.com/design/<fileKey>/?node-id=<id>`
 - the screenshot paths
 - what the judge repaired, and what it left for a person, in its own words
-- what the plan reported as not in Figma (`dropped`): the props and the content the library draws as
+- every layer the render reported as `missing`, and what the plan reported as not in Figma (`dropped`): the props and the content the library draws as
   its own example. This is the honest part of the render — say it rather than let somebody think the
   frame holds the spec's own copy.
 

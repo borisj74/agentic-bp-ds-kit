@@ -2,7 +2,7 @@
   "fileKey": "ELFJs16lnRVQaOrxhMVrVf",
   "readAt": "2026-11-20",
   "readWith": "Figma MCP, read only (componentPropertyDefinitions, getPublishStatusAsync, getLocalVariableCollectionsAsync)",
-  "note": "Contract to Figma map for the Agentic DS file. Property keys are exact, including the #id suffix. Nothing here was guessed: a contract value with no Figma value is listed under noFigma. slots.childProps names the contract whose properties each array item sets on the exposed child instance; slots.show lists the Figma boolean per extra index.",
+  "note": "Contract to Figma map for the Agentic DS file. Property keys are exact, including the #id suffix. Nothing here was guessed: a contract value with no Figma value is listed under noFigma. slots.childProps names the contract whose properties each array item sets on the exposed child instance; slots.show lists the Figma boolean per extra index. slots.child is a path to the layer a row sets: segments split on >, where @N is the Nth child, $column is the column's own layer name from slots.columns.layers, and N and R in a name are the column and row numbers. partLayers is the path to the instance Figma exposes inside an artboard part.",
   "themes": {
     "Ref": {
       "collectionKey": "533c7147ac15819736c36ea7c41641cce263965d",
@@ -1856,9 +1856,17 @@
             "showColumn4#250:27",
             "showColumn5#1232:154"
           ],
-          "child": "Column N",
+          "child": "grid > head > $column",
           "childProps": "HeaderCell",
-          "max": 5
+          "max": 5,
+          "layers": [
+            "Field",
+            "Condition",
+            "Value",
+            "Column 4",
+            "Column 5"
+          ],
+          "note": "The DataGrid is drawn across its rows: a frame named grid holds head and Row 1 to Row 4, and each of those holds one cell per column, named. Read in the Figma file on 2026-11-20 with get_metadata, read only."
         },
         "rows": {
           "show": [
@@ -1866,7 +1874,9 @@
             "showRow4#250:54"
           ],
           "childProps": "Cell",
-          "max": 4
+          "max": 4,
+          "child": "grid > Row R > $column",
+          "note": "A cell is the column's own layer inside Row R. Read in the Figma file on 2026-11-20 with get_metadata, read only."
         }
       },
       "modes": {
@@ -2212,7 +2222,11 @@
         "icon": "Runtime string with no Figma property on this component set.",
         "iconStyle": "No Figma equivalent on the component.",
         "headingLevel": "No Figma equivalent on the component."
-      }
+      },
+      "partLayers": {
+        "actions": "actions > Button N"
+      },
+      "partLayersNote": "Read in the Figma file on 2026-11-20 with get_metadata, read only."
     },
     "FilterButton": {
       "contract": "FilterButton",
@@ -4026,7 +4040,11 @@
         "actions": "React content slot. The artboard draws example content instead.",
         "moreActions": "Data array. The artboard draws a fixed set of example rows.",
         "onMoreSelect": "Callback. Figma components carry no event handlers."
-      }
+      },
+      "partLayers": {
+        "actions": "bar > controls > Action N"
+      },
+      "partLayersNote": "Read in the Figma file on 2026-11-20 with get_metadata, read only."
     },
     "Pagination": {
       "contract": "Pagination",
@@ -5068,9 +5086,10 @@
             "showRow9#252:17",
             "showRow10#252:34"
           ],
-          "child": "Row N",
+          "child": "columns > @N > Row R",
           "childProps": "Cell",
-          "max": 10
+          "max": 10,
+          "note": "A cell is the Rth row of the Nth column frame. Read in the Figma file on 2026-11-20 with get_metadata, read only."
         },
         "columns": {
           "show": [
@@ -5080,7 +5099,19 @@
             "showColumn8#252:102"
           ],
           "childProps": "HeaderCell",
-          "max": 8
+          "max": 8,
+          "child": "columns > @N > Header",
+          "layers": [
+            "Invoice",
+            "Status",
+            "Method",
+            "Amount",
+            "Column 5",
+            "Column 6",
+            "Column 7",
+            "Column 8"
+          ],
+          "note": "The Table is drawn down its columns: a frame named columns holds one frame per column, in order, each with a Header instance and Row 1 to Row 10 under it. Read in the Figma file on 2026-11-20 with get_metadata, read only. A trailing column frame named Actions sits after Column 8 and is switched by showActionsColumn."
         }
       },
       "modes": {
@@ -5489,7 +5520,11 @@
         "onMoreSelect": "Callback. Figma components carry no event handlers.",
         "actions": "React content slot. The artboard draws example content instead.",
         "label": "Accessible name. Nothing to draw in Figma."
-      }
+      },
+      "partLayers": {
+        "actions": "bar > end > Action N"
+      },
+      "partLayersNote": "Read in the Figma file on 2026-11-20 with get_metadata, read only."
     },
     "Tooltip": {
       "contract": "Tooltip",

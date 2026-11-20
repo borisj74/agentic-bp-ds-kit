@@ -37,9 +37,9 @@ export const RULES = [
 /** The one kit component name per plan node, and the props, words and layers the plan set on it. */
 function expectInstance(node) {
   const layers = [];
-  const add = (path, props, texts) => {
+  const add = (path, props, texts, hint = null) => {
     const all = { ...props, ...texts };
-    if (path?.length > 0 && Object.keys(all).length > 0) layers.push({ path, props: all });
+    if (path?.length > 0 && Object.keys(all).length > 0) layers.push(hint ? { path, props: all, hint } : { path, props: all });
   };
   for (const item of Object.values(node.items ?? {})) {
     for (const row of item.rows) {
@@ -47,7 +47,7 @@ function expectInstance(node) {
       for (const cell of row.cells ?? []) add(cell.path, cell.props, cell.texts);
     }
   }
-  for (const part of node.parts ?? []) add(part.path, part.props, part.texts);
+  for (const part of node.parts ?? []) add(part.path, part.props, part.texts, { component: part.component, index: part.index });
 
   const props = { ...node.props, ...node.texts };
   for (const item of Object.values(node.items ?? {})) {
@@ -94,12 +94,21 @@ const out = [];
 const add = (rule, frame, node, id, what) => out.push({ rule, frame, node, id, what });
 
 const LAYOUT = /^layout\\//;
-// A layer down a path: "Column 2" then "Row 3".
-const down = (node, path) => {
+// A layer down a path, read exactly the way the render wrote it: "columns" then "@2" then "Row 3".
+// "@N" is the Nth child; a name that is not there falls back to the nth instance of the component
+// the plan named, which is how an exposed action button is reached.
+const down = (node, path, hint) => {
   let at = node;
   for (const step of path || []) {
-    const next = at.findAll((n) => n.name === step)[0] || at.findAll((n) => n.type === "INSTANCE" && n.mainComponent && n.mainComponent.name === step)[0];
-    if (!next) return null;
+    const nth = /^@(\d+)$/.exec(step);
+    const next = nth
+      ? (at.children || [])[Number(nth[1]) - 1] || null
+      : at.findAll((n) => n.name === step)[0] || at.findAll((n) => n.type === "INSTANCE" && n.mainComponent && n.mainComponent.name === step)[0] || null;
+    if (!next) {
+      if (!hint) return null;
+      const all = at.findAll((n) => n.type === "INSTANCE" && (n.name === hint.component || (n.mainComponent && n.mainComponent.name === hint.component)));
+      return all[(hint.index || 1) - 1] || null;
+    }
     at = next;
   }
   return at;
@@ -135,7 +144,7 @@ const checkInstance = (node, want, frameName) => {
     if (overridden) add("bp/figma-bound", frameName, node.name, node.id, field + " are overridden on an instance");
   }
   for (const layer of want.layers || []) {
-    const found = down(node, layer.path);
+    const found = down(node, layer.path, layer.hint);
     if (!found) {
       add("bp/figma-props", frameName, node.name, node.id, "no layer at " + layer.path.join(" > "));
       continue;

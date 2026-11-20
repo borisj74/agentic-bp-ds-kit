@@ -147,6 +147,15 @@ const $fig = (() => {
     return made;
   };
 
+  // A section is a box, not a layout: it has to be told how big the frames inside it are.
+  const fit = (node, padding) => {
+    const boxes = node.children.filter((c) => c.width > 0 && c.height > 0);
+    if (boxes.length === 0) return;
+    const right = Math.max(...boxes.map((c) => c.x + c.width));
+    const bottom = Math.max(...boxes.map((c) => c.y + c.height));
+    node.resizeWithoutConstraints(right + padding, bottom + padding);
+  };
+
   // A frame already named this keeps its id: its children go and it is filled again.
   const frame = async (parent, spec) => {
     let node = parent.children.find((c) => c.name === spec.name && c.type === "FRAME");
@@ -171,10 +180,22 @@ const $fig = (() => {
     for (const child of [...node.children]) child.remove();
   };
 
+  // An append a slot refuses is the one failure the render has a second shape for, so it is marked
+  // as such. Every other failure — a font, an import, a missing component — is left as it is.
+  const put = (parent, node) => {
+    try {
+      parent.appendChild(node);
+    } catch (error) {
+      const why = error && error.message ? error.message : String(error);
+      if (parent.type === "SLOT") throw Object.assign(new Error("the page slot refused children: " + why), { slotRefused: true });
+      throw error;
+    }
+  };
+
   const layout = async (parent, spec) => {
     const node = figma.createAutoLayout(spec.direction === "HORIZONTAL" ? "HORIZONTAL" : "VERTICAL");
     node.name = spec.name;
-    parent.appendChild(node);
+    put(parent, node);
     try {
       node.layoutSizingHorizontal = "FILL";
       node.layoutSizingVertical = "HUG";
@@ -235,10 +256,12 @@ const $fig = (() => {
   const nested = (node, path, hint) => {
     let at = node;
     for (const step of path || []) {
-      const next =
-        at.findAll((n) => n.name === step)[0] ||
-        at.findAll((n) => n.type === "INSTANCE" && n.mainComponent && n.mainComponent.name === step)[0] ||
-        null;
+      const nth = /^@(\d+)$/.exec(step);
+      const next = nth
+        ? (at.children || [])[Number(nth[1]) - 1] || null
+        : at.findAll((n) => n.name === step)[0] ||
+          at.findAll((n) => n.type === "INSTANCE" && n.mainComponent && n.mainComponent.name === step)[0] ||
+          null;
       if (!next) {
         if (!hint) return null;
         const all = at.findAll((n) => n.type === "INSTANCE" && (n.name === hint.component || (n.mainComponent && n.mainComponent.name === hint.component)));
@@ -252,7 +275,7 @@ const $fig = (() => {
   const instance = async (parent, spec) => {
     const node = (await component(spec)).createInstance();
     node.name = spec.component;
-    parent.appendChild(node);
+    put(parent, node);
     if (parent.layoutMode) {
       try {
         node.layoutSizingHorizontal = "FILL";
@@ -270,32 +293,43 @@ const $fig = (() => {
     return slots.find((n) => n.name === named) || slots.find((n) => n.name.toLowerCase() === named.toLowerCase()) || slots[0] || null;
   };
 
-  return { page, section, frame, clear, layout, instance, slot, nested, apply, getVar, setModes, component, loadFonts };
+  return { page, section, fit, frame, clear, layout, instance, slot, nested, apply, getVar, setModes, component, loadFonts };
 })();
 `;
 
 const DRIVER = `
 // ---- render: walks PLAN and calls $fig only ----
 const made = [];
+// A layer the plan names and the file does not have. It is reported rather than passed over: what
+// the plan said would be drawn there is not drawn at all.
+const missing = [];
+let frameNow = null;
+const want = async (node, path, hint, what) => {
+  const target = $fig.nested(node, path, hint);
+  if (!target) missing.push({ frame: frameNow, node: node.name, path: path, set: Object.keys(what || {}) });
+  return target;
+};
 
 const fillRow = async (node, row) => {
   if (row.show) await $fig.apply(node, { [row.show]: true });
   const own = Object.assign({}, row.props, row.texts);
   if (Object.keys(own).length > 0) {
-    const target = (row.path && row.path.length > 0) ? $fig.nested(node, row.path) : node;
+    const target = (row.path && row.path.length > 0) ? await want(node, row.path, null, own) : node;
     if (target) await $fig.apply(target, own);
   }
   for (const cell of row.cells || []) {
-    const target = $fig.nested(node, cell.path);
-    if (target) await $fig.apply(target, Object.assign({}, cell.props, cell.texts));
+    const own2 = Object.assign({}, cell.props, cell.texts);
+    const target = await want(node, cell.path, null, own2);
+    if (target) await $fig.apply(target, own2);
   }
 };
 
 const fillInstance = async (node, spec) => {
   for (const row of spec.rows || []) await fillRow(node, row);
   for (const part of spec.parts || []) {
-    const target = $fig.nested(node, part.path, { component: part.component, index: part.index });
-    if (target) await $fig.apply(target, Object.assign({}, part.props, part.texts));
+    const own = Object.assign({}, part.props, part.texts);
+    const target = await want(node, part.path, { component: part.component, index: part.index }, own);
+    if (target) await $fig.apply(target, own);
   }
   for (const [key, swap] of Object.entries(spec.swaps || {})) {
     const target = await $fig.component(swap);
@@ -336,6 +370,7 @@ const page = await $fig.page(PLAN.page, PLAN.after);
 const section = $fig.section(page, PLAN.screen);
 for (const frame of PLAN.frames) {
   const tree = PLAN.trees[frame.tree];
+  frameNow = frame.name;
   const board = await $fig.frame(section, frame);
   if (frame.fallback) {
     await beside(board, tree.parts);
@@ -343,16 +378,21 @@ for (const frame of PLAN.frames) {
     try {
       await place(board, tree.root);
     } catch (error) {
-      // A slot the API will not append to: draw the frame the other way rather than give up.
+      // Only a slot that refuses children: a font, an import or a missing component is a real
+      // failure and is thrown on, because drawing the frame another way would not mend it.
+      if (!error || !error.slotRefused) throw error;
       $fig.clear(board);
       await beside(board, tree.parts);
-      made.push({ frame: frame.name, id: board.id, fellBack: String(error && error.message ? error.message : error) });
+      made.push({ frame: frame.name, id: board.id, fellBack: error.message });
       continue;
     }
   }
   made.push({ frame: frame.name, id: board.id });
 }
-return { page: page.id, section: section.id, frames: made };
+$fig.fit(section, PLAN.padding);
+return missing.length === 0
+  ? { page: page.id, section: section.id, frames: made }
+  : { page: page.id, section: section.id, frames: made, missing: missing };
 `;
 
 /**
@@ -432,7 +472,7 @@ export function emitScript(plan, { page = TARGET_PAGE, frames = null, max = MAX_
     };
   }
   const laid = wanted.map((frame, i) => frameData(frame, { x: GRID.x + i * (frame.width + GRID.gap), y: GRID.y }, frame.state));
-  const data = { page, after: PAGE_AFTER, screen: plan.name, trees, frames: laid };
+  const data = { page, after: PAGE_AFTER, screen: plan.name, padding: GRID.gap, trees, frames: laid };
   const code = `// Generated by scripts/figma/emit.mjs for ${plan.name}. Do not edit by hand.\n${PRELUDE}\nconst PLAN = ${JSON.stringify(data)};\n${DRIVER}`;
 
   const warnings = [];
