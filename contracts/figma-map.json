@@ -56,6 +56,15 @@
       "note": "Width of a start-positioned form label. Matches the labelWidth prop."
     }
   },
+  "audit": {
+    "note": "What bp/figma-example-content passes over. Everything else showing in a frame is read against the words the spec wrote, so a trend, a badge, a chip, a total or a pagination line the artboard draws of its own is a finding. These two lists are the parts that are nobody's screen: the shell's own chrome, and the words a kit component draws that no spec can set.",
+    "exampleContent": {
+      "skip": ["AppHeader", "AppNav", "Assistant", "assistant", "topbar", "sidebar"],
+      "labels": {
+        "Toolbar": ["Filters"]
+      }
+    }
+  },
   "components": {
     "Accordion": {
       "contract": "Accordion",

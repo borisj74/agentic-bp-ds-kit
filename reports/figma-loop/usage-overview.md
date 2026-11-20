@@ -10,16 +10,32 @@
 | Page | **Spec renders**, section `usage-overview` |
 | Renders | 6 |
 | Audits | 3 |
-| Outcome | clean — all eight rules pass |
+| Outcome | clean — all nine rules pass |
 
-Five renders is more than the skill's three attempts. The cap is for repairing a **spec**; the spec
+Six renders is more than the skill's three attempts. The cap is for repairing a **spec**; the spec
 never changed here. Each extra render followed a fix to the map or the renderer, which the loop is
 supposed to surface and which a person has to make. Said plainly rather than hidden in a count.
 
+## Since this run
+
+`bp/figma-example-content` changed under this spec afterwards. It now reads every word showing in
+the frame, not only a slot's own children, passing over the shell's own chrome and the words a
+component draws that no spec can set (`audit.exampleContent` in `contracts/figma-map.json`). So the
+artboard's own figures below are findings rather than a paragraph in this report.
+
+Re-rendered and re-audited on 20 November 2026, the same four frames, same ids. The render took 31s
+and the audit 2.5s. It is not clean any more: 26 words are showing in `ready/light` that the spec
+never wrote — the `Month` badge, the four trends (`12% MoM`, `4.1%`, `0%`, `8.2% YoY`), the five
+filter chips (`Status`, `Pending`, `Account Name`, `Account ID`, `Period`), the table's `Total`
+and `$2,250.00`, the pagination (`1`–`7`, `Showing 1 to 10 of 59 rows`, `10`, `rows per page`), and
+the Toolbar's `Search in list` and `Reset`. Every one of them is already in "Left for a person"
+below. settings-home, audited the same way, came back clean.
+
 ## Rules × attempts
 
-The audit ran twice: once the render stopped reporting missing layers, and once more after a rule
-was corrected. Renders 1 to 4 were judged by what the render call reported and by the screenshots.
+The audit ran three times: once the render stopped reporting missing layers, and twice more after a
+rule was corrected. Renders 1 to 3 were judged by what the render call reported and by the
+screenshots.
 
 | Rule | Audit 1 | Audit 2 | Audit 3 |
 |---|---|---|---|
@@ -66,7 +82,7 @@ Render 1 and render 2 each reported two:
 | 1 | ready/light, ready/dark | `Dropdown 1` — the map did not say where the Toolbar draws its filters, so the plan guessed a name |
 | 2 | ready/light, ready/dark | `filters > chips > Chip 1` — the right path, but the chips are only in the `filtersOpen=true` variant |
 
-Renders 3 to 5 reported none. Nothing `fellBack`: the AppShell page slot took the screen in every
+Renders 3 to 6 reported none. Nothing `fellBack`: the AppShell page slot took the screen in every
 frame.
 
 ## Not in Figma
@@ -90,8 +106,8 @@ state with its `speed` glyph and `open_in_new` button.
 
 ## What the audit could not see
 
-Four faults were found by eye against `docs/references/screenshots/usage-overview.png` and the
-prototype at `vercel-bp-prototype.vercel.app/prototypes/billing-dashboard`, not by a rule. All four
+Five faults were found by eye against `docs/references/screenshots/usage-overview.png` and the
+prototype at `vercel-bp-prototype.vercel.app/prototypes/billing-dashboard`, not by a rule. All five
 are fixed, each with a test:
 
 1. **The Toolbar's filters went nowhere.** The map had no path for them. Read in the file:

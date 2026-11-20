@@ -27,6 +27,7 @@ import { screenFiles } from "./spec/render.mjs";
 import { fixSpec } from "./spec/fix.mjs";
 import { TYPE_RULE, typecheckPages } from "./spec/typecheck.mjs";
 import { editSpecText, specFormat, specText } from "./spec/write.mjs";
+import { writeLoopStatus } from "./spec/loop-status.mjs";
 
 export const LOOP_HELP = `Usage: npm run loop -- <spec.json> [options]
 
@@ -488,6 +489,9 @@ export async function runLoop(
   const reportFile = join(root, REPORT_DIR, `${spec.name}.md`);
   mkdirSync(dirname(reportFile), { recursive: true });
   writeFileSync(reportFile, report);
+  // The stamp beside the report: what npm run figma:emit reads before it sends a screen to Figma.
+  // It carries the spec's own hash, so a spec edited afterwards is a screen the loop has not seen.
+  const status = writeLoopStatus({ root, name: spec.name, specFile: specPath, ok, attempts: history.length });
 
   return {
     ok,
@@ -498,6 +502,7 @@ export async function runLoop(
     forPerson,
     report,
     reportFile: relative(root, reportFile).replace(/\\/g, "/"),
+    status,
     spec,
     specPath,
   };

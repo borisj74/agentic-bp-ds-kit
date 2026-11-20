@@ -388,10 +388,14 @@ describe("the spec file's own formatting", () => {
     const before = broken.split("\n");
     expect(after).toHaveLength(before.length);
     const touched = after.map((line, i) => [i, line, before[i]]).filter(([, line, was]) => line !== was);
-    expect(touched.map(([i]) => i)).toEqual([6, 109]);
+    // The crumbs and the raw value, and no other line in the file. Which lines those are is read
+    // from the file rather than written down, so a spec that grows a field does not break this.
+    const crumbs = before.findIndex((line) => line.includes('"breadcrumbs"'));
+    const props = before.findIndex((line) => line.includes('"padding": "13px"'));
+    expect(touched.map(([i]) => i)).toEqual([crumbs, props]);
     // The inline array stays inline, and the file is the reference again but for the repaired value.
-    expect(after[6]).toBe('  "breadcrumbs": ["Mediation"],');
-    expect(after[109]).toContain('"style": { "padding": "var(--space-small)" }');
-    expect(after[109].trimStart().startsWith('"props": { "size": "sm"')).toBe(true);
+    expect(after[crumbs]).toBe('  "breadcrumbs": ["Mediation"],');
+    expect(after[props]).toContain('"style": { "padding": "var(--space-small)" }');
+    expect(after[props].trimStart().startsWith('"props": { "size": "sm"')).toBe(true);
   });
 });
