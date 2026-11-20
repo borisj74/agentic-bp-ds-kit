@@ -1,0 +1,5691 @@
+{
+  "fileKey": "ELFJs16lnRVQaOrxhMVrVf",
+  "readAt": "2026-11-20",
+  "readWith": "Figma MCP, read only (componentPropertyDefinitions, getPublishStatusAsync, getLocalVariableCollectionsAsync)",
+  "note": "Contract to Figma map for the Agentic DS file. Property keys are exact, including the #id suffix. Nothing here was guessed: a contract value with no Figma value is listed under noFigma. slots.childProps names the contract whose properties each array item sets on the exposed child instance; slots.show lists the Figma boolean per extra index.",
+  "themes": {
+    "Ref": {
+      "collectionKey": "533c7147ac15819736c36ea7c41641cce263965d",
+      "modes": [
+        "cobalt",
+        "sunset",
+        "olive",
+        "bp-legacy"
+      ],
+      "note": "Brand ramp. cobalt is the default."
+    },
+    "Scheme": {
+      "collectionKey": "e0f5ad53687e16e510c3574091a65f48b9d1a97f",
+      "modes": [
+        "Light",
+        "Dark"
+      ],
+      "note": "Light and dark scheme, matched by Semantic."
+    },
+    "Semantic": {
+      "collectionKey": "65b21087eb0d7cf1c42516d6bd0616d55bcf19ae",
+      "modes": [
+        "Light",
+        "Dark"
+      ],
+      "note": "Semantic roles, the ones components bind to. Mirrors src/tokens/semantic.css."
+    },
+    "Dimension": {
+      "collectionKey": "6830a2f2b1f735a0e954078ded9886d1a0ea1cc9",
+      "modes": [
+        "Value"
+      ],
+      "note": "Spacing, radius and type scale. One mode."
+    },
+    "Density": {
+      "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+      "modes": [
+        "default",
+        "compact",
+        "comfortable"
+      ],
+      "note": "Control heights and paddings. Matches the Density contract."
+    },
+    "Label width": {
+      "collectionKey": "f6eba1050377e4d2cd0de07fe4882a238242cd78",
+      "modes": [
+        "md",
+        "sm",
+        "lg"
+      ],
+      "note": "Width of a start-positioned form label. Matches the labelWidth prop."
+    }
+  },
+  "components": {
+    "Accordion": {
+      "contract": "Accordion",
+      "contractFile": "contracts/accordion.json",
+      "level": "molecule",
+      "nodeId": "81:22",
+      "key": "db0502cea814f9d25900a1f901cc5ddfaee20512",
+      "keyKind": "componentKey",
+      "publish": "CURRENT",
+      "props": {},
+      "slots": {
+        "items": {
+          "show": [
+            "showItem3#81:6",
+            "showItem4#81:7"
+          ],
+          "child": "item N",
+          "childProps": "Accordion",
+          "max": 4,
+          "note": "Items 1 and 2 are always drawn; 3 and 4 have toggles."
+        }
+      },
+      "noFigma": {
+        "defaultExpanded": "Uncontrolled initial value. A Figma variant shows one state at a time."
+      }
+    },
+    "AccountFlow": {
+      "contract": "AccountFlow",
+      "contractFile": "contracts/accountflow.json",
+      "level": "template",
+      "nodeId": "284:73814",
+      "key": "4a9256e7b07a2d91b095622ffaba03361304da18",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "view": {
+          "figma": "view",
+          "kind": "variant",
+          "values": [
+            "list",
+            "account",
+            "newAccount",
+            "newProduct"
+          ]
+        },
+        "loading": {
+          "figma": "loading",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        }
+      },
+      "stateMap": {
+        "loading": {
+          "figma": "loading",
+          "value": "true"
+        }
+      },
+      "noFigma": {
+        "view.provisionProduct": "No Figma variant value; the artboard covers list, account, newAccount and newProduct only.",
+        "view.bulkProducts": "No Figma variant value; the artboard covers list, account, newAccount and newProduct only.",
+        "list": "React content slot. The artboard draws example content instead.",
+        "account": "React content slot. The artboard draws example content instead.",
+        "newAccount": "React content slot. The artboard draws example content instead.",
+        "newProduct": "React content slot. The artboard draws example content instead.",
+        "provisionProduct": "React content slot. The artboard draws example content instead.",
+        "bulkProducts": "React content slot. The artboard draws example content instead.",
+        "loadingLabel": "Runtime string with no Figma property on this component set.",
+        "bootTiming": "No Figma equivalent on the component."
+      }
+    },
+    "AlertDialog": {
+      "contract": "AlertDialog",
+      "contractFile": "contracts/alertdialog.json",
+      "level": "organism",
+      "nodeId": "123:200",
+      "key": "bcbdd8862c2a554281cd7f9687da2e1572064589",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#123:20",
+          "kind": "text"
+        },
+        "description": {
+          "figma": "description#123:25",
+          "kind": "text"
+        },
+        "actionIntent": {
+          "figma": "actionIntent",
+          "kind": "variant",
+          "values": [
+            "brand",
+            "danger"
+          ]
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "md",
+            "sm"
+          ]
+        }
+      },
+      "noFigma": {
+        "open": "Runtime flag with no Figma property on this component set.",
+        "cancelLabel": "Runtime string with no Figma property on this component set.",
+        "actionLabel": "Runtime string with no Figma property on this component set.",
+        "onCancel": "Callback. Figma components carry no event handlers.",
+        "onAction": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "AnchorNav": {
+      "contract": "AnchorNav",
+      "contractFile": "contracts/anchornav.json",
+      "level": "molecule",
+      "nodeId": "83:110",
+      "key": "3f364ac87cf6cfb22984dc635bfb39acf9db9482",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "variant": {
+          "figma": "variant",
+          "kind": "variant",
+          "values": [
+            "rail",
+            "menu"
+          ]
+        }
+      },
+      "slots": {
+        "items": {
+          "show": [
+            "showRow5#83:5",
+            "showRow6#83:8"
+          ],
+          "child": "row N",
+          "childProps": "AnchorNav",
+          "max": 6
+        }
+      },
+      "noFigma": {
+        "active": "Runtime string with no Figma property on this component set.",
+        "defaultActive": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onActiveChange": "Callback. Figma components carry no event handlers.",
+        "spy": "Runtime flag with no Figma property on this component set.",
+        "offset": "Runtime number. Not drawn as a Figma property.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "AppHeader": {
+      "contract": "AppHeader",
+      "contractFile": "contracts/appheader.json",
+      "level": "organism",
+      "nodeId": "246:36157",
+      "key": "969bc1f00ae5b1e299e406d9fa3ac32845ea7306",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "actions": {
+          "figma": "showActions#246:19",
+          "kind": "boolean",
+          "note": "Figma toggles the action row; the buttons are exposed instances."
+        },
+        "company": {
+          "figma": "company#246:152",
+          "kind": "text"
+        },
+        "density": {
+          "figma": "density",
+          "kind": "variant",
+          "values": [
+            "compact",
+            "default",
+            "comfortable"
+          ]
+        },
+        "loading": {
+          "figma": "loading",
+          "kind": "variant",
+          "values": [
+            "true",
+            "false"
+          ]
+        }
+      },
+      "stateMap": {
+        "loading": {
+          "figma": "loading",
+          "value": "true"
+        }
+      },
+      "modes": {
+        "density": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "modes": [
+            "default",
+            "compact",
+            "comfortable"
+          ]
+        }
+      },
+      "figmaOnly": {
+        "showEnvironment#246:0": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showAction2#246:38": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showAction3#246:57": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showDivider#246:76": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showUser#246:95": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showCompany#246:114": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showSearch#246:133": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showAssistant#1406:0": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "width": "Figma-only property.",
+        "menu": "Figma-only property."
+      },
+      "noFigma": {
+        "onNavToggle": "Callback. Figma components carry no event handlers.",
+        "navOpen": "Runtime flag with no Figma property on this component set.",
+        "logo": "React content slot. The artboard draws example content instead.",
+        "homeHref": "Runtime string with no Figma property on this component set.",
+        "environment": "Runtime string with no Figma property on this component set.",
+        "environmentIntent": "No Figma equivalent on the component.",
+        "search": "Runtime flag with no Figma property on this component set.",
+        "searchPlaceholder": "Runtime string with no Figma property on this component set.",
+        "searchShortcut": "Written up for Figma but not a component property.",
+        "onSearch": "Callback. Figma components carry no event handlers.",
+        "searchGroups": "Data array. The artboard draws a fixed set of example rows.",
+        "searchVariant": "No Figma equivalent on the component.",
+        "searchIconStyle": "No Figma equivalent on the component.",
+        "onSearchSelect": "Callback. Figma components carry no event handlers.",
+        "searchScopes": "Data array. The artboard draws a fixed set of example rows.",
+        "searchScope": "Runtime string with no Figma property on this component set.",
+        "onSearchScopeChange": "Callback. Figma components carry no event handlers.",
+        "assistant": "Written up for Figma but not a component property.",
+        "onAction": "Callback. Figma components carry no event handlers.",
+        "user": "No Figma equivalent on the component.",
+        "onUserSettings": "Callback. Figma components carry no event handlers.",
+        "darkMode": "Runtime flag with no Figma property on this component set.",
+        "onDarkModeChange": "Callback. Figma components carry no event handlers.",
+        "onDensityChange": "Callback. Figma components carry no event handlers.",
+        "onLogout": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "AppNav": {
+      "contract": "AppNav",
+      "contractFile": "contracts/appnav.json",
+      "level": "organism",
+      "nodeId": "122:1144",
+      "key": "d58a716e3a07a1caa1b239f26067adefcfe72812",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "expanded": {
+          "figma": "expanded",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "loading": {
+          "figma": "loading",
+          "kind": "variant",
+          "values": [
+            "true",
+            "false"
+          ]
+        }
+      },
+      "stateMap": {
+        "loading": {
+          "figma": "loading",
+          "value": "true"
+        }
+      },
+      "figmaOnly": {
+        "menu": "Figma-only property."
+      },
+      "noFigma": {
+        "items": "Data array. The artboard draws a fixed set of example rows.",
+        "endItems": "Data array. The artboard draws a fixed set of example rows.",
+        "current": "Runtime number. Not drawn as a Figma property.",
+        "defaultCurrent": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onNavigate": "Callback. Figma components carry no event handlers.",
+        "pinned": "Runtime flag with no Figma property on this component set.",
+        "defaultPinned": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onPinnedChange": "Callback. Figma components carry no event handlers.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "AppShell": {
+      "contract": "AppShell",
+      "contractFile": "contracts/appshell.json",
+      "level": "template",
+      "nodeId": "1623:6741",
+      "key": "9d7e11db43cf9f028034d963bcb77e8bc96e6bd1",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "children": {
+          "figma": "page#1623:51",
+          "kind": "slot"
+        },
+        "assistant": {
+          "figma": "assistant#1623:52",
+          "kind": "slot"
+        },
+        "loading": {
+          "figma": "loading",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        }
+      },
+      "stateMap": {
+        "loading": {
+          "figma": "loading",
+          "value": "true"
+        }
+      },
+      "figmaOnly": {
+        "showPageHeader#1623:53": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showPage#1623:54": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showAssistant#1623:55": "Artboard toggle for an example part. In code the part appears when its prop is given."
+      },
+      "noFigma": {
+        "header": "React content slot. The artboard draws example content instead.",
+        "nav": "React content slot. The artboard draws example content instead.",
+        "navOpen": "Runtime flag with no Figma property on this component set.",
+        "onNavClose": "Callback. Figma components carry no event handlers.",
+        "pageHeader": "React content slot. The artboard draws example content instead.",
+        "stickyPageHeader": "Runtime flag with no Figma property on this component set.",
+        "onPageHeaderStick": "Callback. Figma components carry no event handlers.",
+        "assistantOpen": "Runtime flag with no Figma property on this component set.",
+        "assistantSize": "No Figma equivalent on the component.",
+        "width": "Written up for Figma but not a component property.",
+        "loadingLabel": "Runtime string with no Figma property on this component set.",
+        "bootTiming": "No Figma equivalent on the component."
+      }
+    },
+    "Avatar": {
+      "contract": "Avatar",
+      "contractFile": "contracts/avatar.json",
+      "level": "atom",
+      "nodeId": "61:53",
+      "key": "4ece3451206181d00371fd21ce60c3f98e165d45",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "initials": {
+          "figma": "initials#61:0",
+          "kind": "text"
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg",
+            "xs"
+          ]
+        },
+        "shape": {
+          "figma": "shape",
+          "kind": "variant",
+          "values": [
+            "circle",
+            "square"
+          ]
+        }
+      },
+      "figmaOnly": {
+        "content": "Picks which example content the artboard shows."
+      },
+      "noFigma": {
+        "name": "DOM attribute. Nothing to draw in Figma.",
+        "src": "Runtime string with no Figma property on this component set.",
+        "decorative": "Runtime flag with no Figma property on this component set."
+      }
+    },
+    "AvatarGroup": {
+      "contract": "AvatarGroup",
+      "contractFile": "contracts/avatargroup.json",
+      "level": "molecule",
+      "nodeId": "115:5108",
+      "key": "76b7c997b897f601b099243bdd48e99bb967dcdb",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "md",
+            "sm",
+            "lg",
+            "xs"
+          ]
+        },
+        "shape": {
+          "figma": "shape",
+          "kind": "variant",
+          "values": [
+            "circle",
+            "square"
+          ]
+        }
+      },
+      "slots": {
+        "items": {
+          "show": [
+            "showAvatar4#115:192",
+            "showAvatar5#115:199"
+          ],
+          "child": "Avatar N",
+          "childProps": "Avatar",
+          "max": 5
+        }
+      },
+      "figmaOnly": {
+        "showCount#115:206": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "count#115:213": "Example copy on the artboard. In code it comes from data."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "max": "No Figma equivalent on the component."
+      }
+    },
+    "Badge": {
+      "contract": "Badge",
+      "contractFile": "contracts/badge.json",
+      "level": "atom",
+      "nodeId": "66:3601",
+      "key": "25811f21b30763345762d51afcf92ff0971177d0",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "intent": {
+          "figma": "intent",
+          "kind": "variant",
+          "values": [
+            "neutral",
+            "hollow",
+            "info",
+            "success",
+            "warning",
+            "danger",
+            "highlight"
+          ]
+        },
+        "emphasis": {
+          "figma": "emphasis",
+          "kind": "variant",
+          "values": [
+            "subtle",
+            "strong",
+            "faint"
+          ]
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "icon": {
+          "figma": "showIcon#66:281",
+          "kind": "boolean",
+          "note": "Figma toggles the icon; the glyph is swapped on the nested Icon instance."
+        },
+        "iconOnly": {
+          "figma": "iconOnly",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "removable": {
+          "figma": "removable#66:534",
+          "kind": "boolean"
+        },
+        "children": {
+          "figma": "label#66:28",
+          "kind": "text",
+          "note": "The artboard holds this as example copy."
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        }
+      },
+      "figmaOnly": {
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "onRemove": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "BadgeAlt": {
+      "contract": "BadgeAlt",
+      "contractFile": "contracts/badgealt.json",
+      "level": "atom",
+      "nodeId": "67:675",
+      "key": "718eb2b1f333e4b3d79e1d399f60c719d129480a",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "intent": {
+          "figma": "intent",
+          "kind": "variant",
+          "values": [
+            "neutral",
+            "brand",
+            "success",
+            "warning",
+            "danger",
+            "info"
+          ]
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "removable": {
+          "figma": "removable#67:37",
+          "kind": "boolean"
+        },
+        "children": {
+          "figma": "label#67:0",
+          "kind": "text",
+          "note": "The artboard holds this as example copy."
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        }
+      },
+      "figmaOnly": {
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "onRemove": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "BarChart": {
+      "contract": "BarChart",
+      "contractFile": "contracts/barchart.json",
+      "level": "organism",
+      "nodeId": "63:136",
+      "key": "50041bc530868d2917ee8276cb8b74a67946f3f4",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#63:5",
+          "kind": "text"
+        },
+        "subtitle": {
+          "figma": "subtitle#63:10",
+          "kind": "text"
+        },
+        "showHeader": {
+          "figma": "showHeader#63:0",
+          "kind": "boolean"
+        },
+        "showLegend": {
+          "figma": "showLegend#63:15",
+          "kind": "boolean"
+        }
+      },
+      "figmaOnly": {
+        "example": "Picks which worked chart example the artboard shows.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "categories": "Data array. The artboard draws a fixed set of example rows.",
+        "series": "Data array. The artboard draws a fixed set of example rows.",
+        "orientation": "No Figma equivalent on the component.",
+        "highlight": "Data array. The artboard draws a fixed set of example rows.",
+        "highlightIntent": "No Figma equivalent on the component.",
+        "stacked": "Runtime flag with no Figma property on this component set.",
+        "barWidth": "Written up for Figma but not a component property.",
+        "showValues": "Runtime flag with no Figma property on this component set.",
+        "showGrid": "Runtime flag with no Figma property on this component set.",
+        "legendPosition": "No Figma equivalent on the component.",
+        "animate": "Runtime flag with no Figma property on this component set.",
+        "format": "No Figma equivalent on the component.",
+        "currency": "Runtime string with no Figma property on this component set.",
+        "height": "Runtime number. Not drawn as a Figma property.",
+        "emptyLabel": "Runtime string with no Figma property on this component set.",
+        "referenceLines": "Data array. The artboard draws a fixed set of example rows.",
+        "marker": "Written up for Figma but not a component property.",
+        "selected": "No Figma equivalent on the component.",
+        "onSelectedChange": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "Breadcrumb": {
+      "contract": "Breadcrumb",
+      "contractFile": "contracts/breadcrumb.json",
+      "level": "molecule",
+      "nodeId": "82:175",
+      "key": "96fadc9a8a149d762415260d9e0e87d967f0db1f",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "separator": {
+          "figma": "separator",
+          "kind": "variant",
+          "values": [
+            "slash",
+            "chevron"
+          ]
+        },
+        "items": {
+          "figma": "crumb1#82:0",
+          "kind": "text"
+        },
+        "current": {
+          "figma": "current",
+          "kind": "variant",
+          "values": [
+            "true",
+            "false"
+          ]
+        }
+      },
+      "slots": {
+        "items": {
+          "show": [
+            "showCrumb3#82:45",
+            "showCrumb4#82:54"
+          ],
+          "childProps": "Breadcrumb",
+          "max": 4,
+          "note": "Crumb copy is text properties crumb1 to crumb4; the last crumb is currentPage."
+        }
+      },
+      "figmaOnly": {
+        "crumb2#82:9": "Example copy on the artboard. In code it comes from data.",
+        "crumb3#82:18": "Example copy on the artboard. In code it comes from data.",
+        "crumb4#82:27": "Example copy on the artboard. In code it comes from data.",
+        "currentPage#82:36": "Example copy on the artboard. In code it comes from data.",
+        "collapsed": "Figma-only property.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "maxItems": "Runtime number. Not drawn as a Figma property."
+      }
+    },
+    "Button": {
+      "contract": "Button",
+      "contractFile": "contracts/button.json",
+      "level": "atom",
+      "nodeId": "110:4947",
+      "key": "4e0a2d8af8f75e18f1ffc8f5193da876d93673e1",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "emphasis": {
+          "figma": "emphasis",
+          "kind": "variant",
+          "values": [
+            "subtle",
+            "strong",
+            "minimal"
+          ]
+        },
+        "intent": {
+          "figma": "intent",
+          "kind": "variant",
+          "values": [
+            "neutral",
+            "brand",
+            "danger"
+          ]
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "md",
+            "sm",
+            "lg"
+          ]
+        },
+        "iconStart": {
+          "figma": "iconStart#110:97",
+          "kind": "boolean"
+        },
+        "iconEnd": {
+          "figma": "iconEnd#110:194",
+          "kind": "boolean"
+        },
+        "iconOnly": {
+          "figma": "iconOnly",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "loading": {
+          "figma": "loading",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "toggle": {
+          "figma": "toggle",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "children": {
+          "figma": "label#110:0",
+          "kind": "text",
+          "note": "The artboard holds this as example copy."
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        },
+        "loading": {
+          "figma": "loading",
+          "value": "true"
+        }
+      },
+      "modes": {
+        "size": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "note": "size stays a Figma variant; a Density mode changes the heights behind it."
+        }
+      },
+      "figmaOnly": {
+        "state": "Interaction states are drawn as variants. In code they are CSS states.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "iconSize": "Written up for Figma but not a component property.",
+        "fullWidth": "Runtime flag with no Figma property on this component set.",
+        "type": "No Figma equivalent on the component."
+      }
+    },
+    "ButtonGroup": {
+      "contract": "ButtonGroup",
+      "contractFile": "contracts/buttongroup.json",
+      "level": "molecule",
+      "nodeId": "113:539",
+      "key": "aec1419d217c1f2e1a9aba3e46ff8e558a049bce",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "md",
+            "sm",
+            "lg"
+          ]
+        }
+      },
+      "slots": {
+        "children": {
+          "show": [],
+          "child": "Button N",
+          "childProps": "Button",
+          "max": 4,
+          "note": "The count variant picks how many buttons are drawn."
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        }
+      },
+      "modes": {
+        "size": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "note": "size stays a Figma variant; a Density mode changes the heights behind it."
+        }
+      },
+      "figmaOnly": {
+        "count": "Example copy on the artboard. In code it comes from data.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "Calendar": {
+      "contract": "Calendar",
+      "contractFile": "contracts/calendar.json",
+      "level": "organism",
+      "nodeId": "243:33790",
+      "key": "ac13fdfbe35067dfca8bf4a072715e37e4f8ca20",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "view": {
+          "figma": "view",
+          "kind": "variant",
+          "values": [
+            "month",
+            "week",
+            "day",
+            "list"
+          ]
+        },
+        "weekStart": {
+          "figma": "weekStart",
+          "kind": "variant",
+          "values": [
+            "sunday",
+            "monday"
+          ]
+        }
+      },
+      "figmaOnly": {
+        "showNewEvent#243:0": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showCalendars#243:5": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showViews#243:10": "Artboard toggle for an example part. In code the part appears when its prop is given."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "events": "Data array. The artboard draws a fixed set of example rows.",
+        "defaultEvents": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onEventsChange": "Callback. Figma components carry no event handlers.",
+        "onEventClick": "Callback. Figma components carry no event handlers.",
+        "calendars": "Data array. The artboard draws a fixed set of example rows.",
+        "defaultView": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onViewChange": "Callback. Figma components carry no event handlers.",
+        "views": "Data array. The artboard draws a fixed set of example rows.",
+        "date": "Runtime string with no Figma property on this component set.",
+        "defaultDate": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onDateChange": "Callback. Figma components carry no event handlers.",
+        "startHour": "Runtime number. Not drawn as a Figma property.",
+        "readOnly": "Runtime flag with no Figma property on this component set."
+      }
+    },
+    "Callout": {
+      "contract": "Callout",
+      "contractFile": "contracts/callout.json",
+      "level": "molecule",
+      "nodeId": "117:8139",
+      "key": "e7abf928552efbdf51dc8f7aad1e269c74ddb854",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "intent": {
+          "figma": "intent",
+          "kind": "variant",
+          "values": [
+            "info",
+            "success",
+            "warning",
+            "danger"
+          ]
+        },
+        "title": {
+          "figma": "title#117:581",
+          "kind": "text"
+        },
+        "actionLabel": {
+          "figma": "actionLabel#117:596",
+          "kind": "text"
+        },
+        "closeButton": {
+          "figma": "closeButton#117:606",
+          "kind": "boolean"
+        },
+        "children": {
+          "figma": "message#117:591",
+          "kind": "text",
+          "note": "The artboard holds this as example copy."
+        }
+      },
+      "figmaOnly": {
+        "showTitle#117:586": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showAction#117:601": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "onAction": "Callback. Figma components carry no event handlers.",
+        "onDismiss": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "Card": {
+      "contract": "Card",
+      "contractFile": "contracts/card.json",
+      "level": "molecule",
+      "nodeId": "189:17302",
+      "key": "1538e22154cfea84cabc0c2a34ce688ee5395051",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#189:21",
+          "kind": "text"
+        },
+        "overline": {
+          "figma": "overline#189:0",
+          "kind": "text"
+        },
+        "badge": {
+          "figma": "showBadge#189:126",
+          "kind": "boolean",
+          "note": "Figma toggles the badge; the text is set on the nested Badge instance."
+        },
+        "description": {
+          "figma": "description#189:42",
+          "kind": "text"
+        },
+        "amount": {
+          "figma": "amount#189:63",
+          "kind": "text"
+        },
+        "message": {
+          "figma": "message#189:84",
+          "kind": "text"
+        },
+        "messageIntent": {
+          "figma": "messageIntent",
+          "kind": "variant",
+          "values": [
+            "success",
+            "warning",
+            "danger",
+            "info"
+          ]
+        },
+        "selectable": {
+          "figma": "selectable#189:294",
+          "kind": "boolean"
+        },
+        "selected": {
+          "figma": "selected",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        }
+      },
+      "slots": {
+        "actions": {
+          "show": [
+            "showActions#189:315",
+            "showAction2#189:336"
+          ],
+          "child": "Action N",
+          "childProps": "Button",
+          "max": 2
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        }
+      },
+      "figmaOnly": {
+        "showHeader#189:105": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showOverline#189:147": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showTitle#189:168": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showDescription#189:189": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showAmount#189:210": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showMessage#189:231": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showTile#189:252": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showFooter#189:273": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showMore#189:357": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "badgeIntent": "No Figma equivalent on the component.",
+        "image": "Runtime string with no Figma property on this component set.",
+        "imageAlt": "Runtime string with no Figma property on this component set.",
+        "icon": "Runtime string with no Figma property on this component set.",
+        "defaultSelected": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onSelectedChange": "Callback. Figma components carry no event handlers.",
+        "href": "Runtime string with no Figma property on this component set.",
+        "onClick": "Callback. Figma components carry no event handlers.",
+        "menu": "Data array. The artboard draws a fixed set of example rows.",
+        "onAction": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "Carousel": {
+      "contract": "Carousel",
+      "contractFile": "contracts/carousel.json",
+      "level": "molecule",
+      "nodeId": "126:463",
+      "key": "1ef54c3f46ea559e2c5996cdb2f4b2551a185020",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "orientation": {
+          "figma": "orientation",
+          "kind": "variant",
+          "values": [
+            "horizontal",
+            "vertical"
+          ]
+        },
+        "slidesPerView": {
+          "figma": "slidesPerView",
+          "kind": "variant",
+          "values": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ]
+        },
+        "showControls": {
+          "figma": "showControls#126:1",
+          "kind": "boolean"
+        },
+        "showIndex": {
+          "figma": "showIndex#126:17",
+          "kind": "boolean"
+        }
+      },
+      "figmaOnly": {
+        "index#126:33": "Example copy on the artboard. In code it comes from data.",
+        "page": "Figma-only property.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "items": "React content slot. The artboard draws example content instead.",
+        "alignment": "No Figma equivalent on the component.",
+        "loop": "Runtime flag with no Figma property on this component set.",
+        "onIndexChange": "Callback. Figma components carry no event handlers.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "Cascader": {
+      "contract": "Cascader",
+      "contractFile": "contracts/cascader.json",
+      "level": "molecule",
+      "nodeId": "168:1340",
+      "key": "394895a0dd09bb64e156dea685729d92710840e8",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "variant": {
+          "figma": "variant",
+          "kind": "variant",
+          "values": [
+            "field",
+            "panel"
+          ]
+        },
+        "searchable": {
+          "figma": "searchable#168:6",
+          "kind": "boolean"
+        },
+        "hasLegend": {
+          "figma": "hasLegend#168:10",
+          "kind": "boolean"
+        }
+      },
+      "modes": {
+        "labelWidth": {
+          "collection": "Label width",
+          "collectionKey": "f6eba1050377e4d2cd0de07fe4882a238242cd78",
+          "modes": [
+            "md",
+            "sm",
+            "lg"
+          ]
+        }
+      },
+      "figmaOnly": {
+        "open": "Figma-only property.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "options": "Data array. The artboard draws a fixed set of example rows.",
+        "value": "Data array. The artboard draws a fixed set of example rows.",
+        "defaultValue": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onChange": "Callback. Figma components carry no event handlers.",
+        "changeOnSelect": "Runtime flag with no Figma property on this component set.",
+        "placeholder": "Runtime string with no Figma property on this component set.",
+        "size": "No Figma equivalent on the component.",
+        "labelPosition": "No Figma equivalent on the component.",
+        "labelWidth": "No Figma equivalent on the component.",
+        "hideLabel": "Runtime flag with no Figma property on this component set.",
+        "name": "DOM attribute. Nothing to draw in Figma.",
+        "required": "Runtime flag with no Figma property on this component set.",
+        "disabled": "Runtime flag with no Figma property on this component set.",
+        "invalid": "Runtime flag with no Figma property on this component set.",
+        "error": "Runtime string with no Figma property on this component set.",
+        "hint": "Runtime string with no Figma property on this component set.",
+        "help": "Runtime string with no Figma property on this component set.",
+        "emptyLabel": "Runtime string with no Figma property on this component set."
+      }
+    },
+    "Cell": {
+      "contract": "Cell",
+      "contractFile": "contracts/cell.json",
+      "level": "molecule",
+      "nodeId": "237:33096",
+      "key": "d3da07f40c762eee04b27c518a95914442729bf6",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "type": {
+          "figma": "type",
+          "kind": "variant",
+          "values": [
+            "text",
+            "link",
+            "avatar",
+            "avatarGroup",
+            "file",
+            "payment",
+            "badge",
+            "badges",
+            "trendPositive",
+            "trendNegative",
+            "actions",
+            "actionIcons",
+            "actionMenu",
+            "checkbox",
+            "progress",
+            "tree",
+            "number",
+            "date",
+            "status",
+            "switch",
+            "popupTrigger",
+            "textBlock",
+            "redirect"
+          ]
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md"
+          ]
+        },
+        "alignment": {
+          "figma": "alignment",
+          "kind": "variant",
+          "values": [
+            "start",
+            "center",
+            "end"
+          ]
+        },
+        "checkbox": {
+          "figma": "checkbox#237:0",
+          "kind": "boolean"
+        },
+        "label": {
+          "figma": "label#237:230",
+          "kind": "text"
+        },
+        "icon": {
+          "figma": "showIcon#237:690",
+          "kind": "boolean",
+          "note": "Figma toggles the icon; the glyph is swapped on the nested Icon instance."
+        }
+      },
+      "slots": {
+        "badges": {
+          "show": [
+            "showBadge3#237:460"
+          ],
+          "childProps": "Badge",
+          "max": 3
+        }
+      },
+      "modes": {
+        "size": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "note": "size stays a Figma variant; a Density mode changes the heights behind it."
+        }
+      },
+      "figmaOnly": {
+        "showText#237:115": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showSecondary#237:345": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showMore#237:575": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "text": "Runtime flag with no Figma property on this component set.",
+        "href": "Runtime string with no Figma property on this component set.",
+        "onClick": "Callback. Figma components carry no event handlers.",
+        "name": "DOM attribute. Nothing to draw in Figma.",
+        "src": "Runtime string with no Figma property on this component set.",
+        "people": "Data array. The artboard draws a fixed set of example rows.",
+        "intent": "No Figma equivalent on the component.",
+        "value": "No Figma equivalent on the component.",
+        "actions": "Data array. The artboard draws a fixed set of example rows.",
+        "menu": "Data array. The artboard draws a fixed set of example rows.",
+        "checked": "Runtime flag with no Figma property on this component set.",
+        "defaultChecked": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onCheckedChange": "Callback. Figma components carry no event handlers.",
+        "level": "No Figma equivalent on the component.",
+        "expanded": "Runtime flag with no Figma property on this component set.",
+        "onExpandedChange": "Callback. Figma components carry no event handlers.",
+        "showLines": "Runtime flag with no Figma property on this component set.",
+        "treeToggle": "No Figma equivalent on the component."
+      }
+    },
+    "ChatComposer": {
+      "contract": "ChatComposer",
+      "contractFile": "contracts/chatcomposer.json",
+      "level": "molecule",
+      "nodeId": "216:25767",
+      "key": "cc5a6979594eefd4e473bce814fd538e8885f4a0",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "value": {
+          "figma": "content",
+          "kind": "variant",
+          "values": [
+            "placeholder",
+            "value"
+          ],
+          "note": "Figma picks placeholder or value with the content variant."
+        }
+      },
+      "slots": {
+        "attachments": {
+          "show": [
+            "showAttachments#216:21",
+            "showAttachment2#216:28"
+          ],
+          "child": "Attachment N",
+          "childProps": "Badge",
+          "max": 2
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        }
+      },
+      "figmaOnly": {
+        "text#216:0": "Example copy on the artboard. In code it comes from data.",
+        "showScope#216:7": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "scopeClose#216:14": "Figma-only property.",
+        "deepThought#216:35": "Figma-only property.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "defaultValue": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onChange": "Callback. Figma components carry no event handlers.",
+        "onSend": "Callback. Figma components carry no event handlers.",
+        "placeholder": "Runtime string with no Figma property on this component set.",
+        "hints": "Data array. The artboard draws a fixed set of example rows.",
+        "scopeLabel": "Written up for Figma but not a component property.",
+        "scoped": "Runtime flag with no Figma property on this component set.",
+        "defaultScoped": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onScopedChange": "Callback. Figma components carry no event handlers.",
+        "onScopeClose": "Callback. Figma components carry no event handlers.",
+        "onAttachmentRemove": "Callback. Figma components carry no event handlers.",
+        "addMenu": "Data array. The artboard draws a fixed set of example rows.",
+        "onAdd": "Callback. Figma components carry no event handlers.",
+        "selecting": "Runtime flag with no Figma property on this component set.",
+        "onSelectingChange": "Callback. Figma components carry no event handlers.",
+        "dictating": "Runtime flag with no Figma property on this component set.",
+        "onDictatingChange": "Callback. Figma components carry no event handlers.",
+        "mode": "Written up for Figma but not a component property.",
+        "onModeChange": "Callback. Figma components carry no event handlers.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "ChatHeader": {
+      "contract": "ChatHeader",
+      "contractFile": "contracts/chatheader.json",
+      "level": "molecule",
+      "nodeId": "211:524",
+      "key": "97acdcab0d17ad5f0e27e94ae124addcd02a8d75",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#211:0",
+          "kind": "text"
+        },
+        "expanded": {
+          "figma": "expanded",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "planMode": {
+          "figma": "planMode",
+          "kind": "variant",
+          "values": [
+            "off",
+            "on",
+            "icon only"
+          ]
+        },
+        "menu": {
+          "figma": "menu",
+          "kind": "variant",
+          "values": [
+            "closed",
+            "open"
+          ]
+        }
+      },
+      "figmaOnly": {
+        "newChat#211:13": "Figma-only property.",
+        "fullscreen#211:26": "Figma-only property.",
+        "close#211:39": "Figma-only property."
+      },
+      "noFigma": {
+        "onNewChat": "Callback. Figma components carry no event handlers.",
+        "onExpandedChange": "Callback. Figma components carry no event handlers.",
+        "onClose": "Callback. Figma components carry no event handlers.",
+        "chatsCount": "No Figma equivalent on the component.",
+        "playbooksCount": "No Figma equivalent on the component.",
+        "onPlanModeChange": "Callback. Figma components carry no event handlers.",
+        "onMenuSelect": "Callback. Figma components carry no event handlers.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "ChatList": {
+      "contract": "ChatList",
+      "contractFile": "contracts/chatlist.json",
+      "level": "organism",
+      "nodeId": "212:24679",
+      "key": "3ff17f18c19adc3c8305bba6cf4041919e65d2fd",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#212:19",
+          "kind": "text"
+        },
+        "searchable": {
+          "figma": "searchable#212:28",
+          "kind": "boolean"
+        }
+      },
+      "slots": {
+        "items": {
+          "show": [
+            "showRow5#212:31",
+            "showRow6#212:34",
+            "showRow7#212:37"
+          ],
+          "child": "Row N",
+          "childProps": "ChatList",
+          "max": 7
+        }
+      },
+      "figmaOnly": {
+        "showClose#212:22": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showCreate#212:25": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showMore#212:40": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "content": "Picks which example content the artboard shows."
+      },
+      "noFigma": {
+        "groups": "Data array. The artboard draws a fixed set of example rows.",
+        "selected": "Runtime string with no Figma property on this component set.",
+        "onSelect": "Callback. Figma components carry no event handlers.",
+        "searchPlaceholder": "Runtime string with no Figma property on this component set.",
+        "query": "Runtime string with no Figma property on this component set.",
+        "onQueryChange": "Callback. Figma components carry no event handlers.",
+        "createLabel": "Runtime string with no Figma property on this component set.",
+        "onCreate": "Callback. Figma components carry no event handlers.",
+        "closeLabel": "Runtime string with no Figma property on this component set.",
+        "onClose": "Callback. Figma components carry no event handlers.",
+        "more": "Callback. Figma components carry no event handlers.",
+        "onItemMenuSelect": "Callback. Figma components carry no event handlers.",
+        "emptyLabel": "Runtime string with no Figma property on this component set."
+      }
+    },
+    "ChatMessage": {
+      "contract": "ChatMessage",
+      "contractFile": "contracts/chatmessage.json",
+      "level": "molecule",
+      "nodeId": "214:793",
+      "key": "8b7c5d8ac71731960d421cd05b72df1b79bdd4c3",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "author": {
+          "figma": "author",
+          "kind": "variant",
+          "values": [
+            "assistant",
+            "user"
+          ]
+        },
+        "text": {
+          "figma": "text#214:28",
+          "kind": "text"
+        },
+        "children": {
+          "figma": "body",
+          "kind": "variant",
+          "values": [
+            "bubble",
+            "plain",
+            "working"
+          ],
+          "note": "The artboard holds this as example copy."
+        },
+        "actions": {
+          "figma": "showActions#214:64",
+          "kind": "boolean",
+          "note": "Figma toggles the action row; the buttons are exposed instances."
+        },
+        "apply": {
+          "figma": "apply#1232:146",
+          "kind": "boolean"
+        }
+      },
+      "slots": {
+        "sections": {
+          "show": [
+            "showSections#214:34",
+            "showSection2#214:40"
+          ],
+          "child": "Section N",
+          "childProps": "ChatMessage",
+          "max": 2
+        },
+        "suggestions": {
+          "show": [
+            "showSuggestions#214:46",
+            "showSuggestion2#214:52",
+            "showSuggestion3#214:58"
+          ],
+          "child": "Suggestion N",
+          "childProps": "Button",
+          "max": 3
+        }
+      },
+      "figmaOnly": {
+        "showMenu#214:70": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "bubble": "Runtime flag with no Figma property on this component set.",
+        "status": "Runtime string with no Figma property on this component set.",
+        "pressed": "Data array. The artboard draws a fixed set of example rows.",
+        "onAction": "Callback. Figma components carry no event handlers.",
+        "onSuggestion": "Callback. Figma components carry no event handlers.",
+        "menu": "Data array. The artboard draws a fixed set of example rows.",
+        "onMenuSelect": "Callback. Figma components carry no event handlers.",
+        "person": "No Figma equivalent on the component.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "ChatWindow": {
+      "contract": "ChatWindow",
+      "contractFile": "contracts/chatwindow.json",
+      "level": "template",
+      "nodeId": "287:943",
+      "key": "3f9c910f836796c20af038aceea1d0893da8672d",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "children": {
+          "figma": "content",
+          "kind": "variant",
+          "values": [
+            "start",
+            "turns"
+          ],
+          "note": "The artboard holds this as example copy."
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "panel",
+            "full"
+          ]
+        }
+      },
+      "noFigma": {
+        "composer": "React content slot. The artboard draws example content instead.",
+        "empty": "React content slot. The artboard draws example content instead.",
+        "starters": "Data array. The artboard draws a fixed set of example rows.",
+        "onStarter": "Callback. Figma components carry no event handlers.",
+        "art": "No Figma equivalent on the component.",
+        "artAnimated": "Runtime flag with no Figma property on this component set.",
+        "autoFocus": "Runtime flag with no Figma property on this component set.",
+        "panel": "React content slot. The artboard draws example content instead.",
+        "panelOpen": "Runtime flag with no Figma property on this component set.",
+        "title": "Runtime string with no Figma property on this component set.",
+        "notice": "Runtime string with no Figma property on this component set.",
+        "onNoticeDismiss": "Callback. Figma components carry no event handlers.",
+        "onNewChat": "Callback. Figma components carry no event handlers.",
+        "expanded": "Runtime flag with no Figma property on this component set.",
+        "onExpandedChange": "Callback. Figma components carry no event handlers.",
+        "onClose": "Callback. Figma components carry no event handlers.",
+        "chatsCount": "No Figma equivalent on the component.",
+        "playbooksCount": "No Figma equivalent on the component.",
+        "planMode": "Runtime flag with no Figma property on this component set.",
+        "onPlanModeChange": "Callback. Figma components carry no event handlers.",
+        "menu": "Data array. The artboard draws a fixed set of example rows.",
+        "onMenuSelect": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "Checkbox": {
+      "contract": "Checkbox",
+      "contractFile": "contracts/checkbox.json",
+      "level": "atom",
+      "nodeId": "68:219",
+      "key": "85bc59716815f42d9c8be6ae428f0afd8cefb09c",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "checked": {
+          "figma": "checked",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "indeterminate": {
+          "figma": "indeterminate",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "error": {
+          "figma": "error",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "hideLabel": {
+          "figma": "showLabel#68:37",
+          "kind": "boolean",
+          "inverted": true,
+          "note": "Inverted: Figma shows the label when showLabel is on."
+        },
+        "label": {
+          "figma": "label#68:0",
+          "kind": "text"
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        }
+      },
+      "modes": {
+        "size": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "note": "size stays a Figma variant; a Density mode changes the heights behind it."
+        }
+      },
+      "figmaOnly": {
+        "state": "Interaction states are drawn as variants. In code they are CSS states.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "defaultChecked": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "name": "DOM attribute. Nothing to draw in Figma.",
+        "id": "DOM attribute. Nothing to draw in Figma.",
+        "onChange": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "Conveyor": {
+      "contract": "Conveyor",
+      "contractFile": "contracts/conveyor.json",
+      "level": "molecule",
+      "nodeId": "127:1289",
+      "key": "4ebe392bb77f2851fd9a57bdf203fd94450b006f",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "orientation": {
+          "figma": "orientation",
+          "kind": "variant",
+          "values": [
+            "horizontal",
+            "vertical"
+          ]
+        }
+      },
+      "figmaOnly": {
+        "position": "Figma-only property.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "children": "React content slot. The artboard draws example content instead.",
+        "step": "Runtime number. Not drawn as a Figma property.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "Count": {
+      "contract": "Count",
+      "contractFile": "contracts/count.json",
+      "level": "atom",
+      "nodeId": "42:77",
+      "key": "35a73b081b586e2c001380bae701eab66ec574e0",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "intent": {
+          "figma": "intent",
+          "kind": "variant",
+          "values": [
+            "info",
+            "danger",
+            "neutral"
+          ]
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "subtle": {
+          "figma": "subtle",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "count": {
+          "figma": "count#42:0",
+          "kind": "text"
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        }
+      },
+      "figmaOnly": {
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "max": "No Figma equivalent on the component.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "Dashboard": {
+      "contract": "Dashboard",
+      "contractFile": "contracts/dashboard.json",
+      "level": "template",
+      "nodeId": "281:7644",
+      "key": "628746b52913852d2c3583e992fd041aa22b0f16",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "state": {
+          "figma": "state",
+          "kind": "variant",
+          "values": [
+            "ready",
+            "loading",
+            "empty"
+          ]
+        },
+        "loadingShape": {
+          "figma": "loadingShape",
+          "kind": "variant",
+          "values": [
+            "content",
+            "rows"
+          ]
+        }
+      },
+      "noFigma": {
+        "children": "React content slot. The artboard draws example content instead.",
+        "toolbar": "React content slot. The artboard draws example content instead.",
+        "meta": "Written up for Figma but not a component property.",
+        "name": "DOM attribute. Nothing to draw in Figma.",
+        "stickyToolbar": "Runtime flag with no Figma property on this component set.",
+        "empty": "React content slot. The artboard draws example content instead.",
+        "loadingRows": "No Figma equivalent on the component.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "DataGrid": {
+      "contract": "DataGrid",
+      "contractFile": "contracts/datagrid.json",
+      "level": "organism",
+      "nodeId": "250:39364",
+      "key": "0648c62be6cea09350aa3b06ec8e1f96e1ff4fec",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md"
+          ]
+        },
+        "line": {
+          "figma": "line",
+          "kind": "variant",
+          "values": [
+            "medium",
+            "thin"
+          ]
+        },
+        "rowNumbers": {
+          "figma": "rowNumbers#250:18",
+          "kind": "boolean"
+        },
+        "canAddRows": {
+          "figma": "canAddRows#250:72",
+          "kind": "boolean"
+        },
+        "canRemoveRows": {
+          "figma": "canRemoveRows#250:36",
+          "kind": "boolean"
+        },
+        "canDeleteRows": {
+          "figma": "canDeleteRows#1178:0",
+          "kind": "boolean"
+        },
+        "canInsertRows": {
+          "figma": "canInsertRows#250:0",
+          "kind": "boolean"
+        },
+        "selectable": {
+          "figma": "selectable#1277:0",
+          "kind": "boolean"
+        },
+        "detail": {
+          "figma": "detail#250:81",
+          "kind": "instanceSwap"
+        }
+      },
+      "slots": {
+        "columns": {
+          "show": [
+            "showColumn4#250:27",
+            "showColumn5#1232:154"
+          ],
+          "child": "Column N",
+          "childProps": "HeaderCell",
+          "max": 5
+        },
+        "rows": {
+          "show": [
+            "showRow3#250:45",
+            "showRow4#250:54"
+          ],
+          "childProps": "Cell",
+          "max": 4
+        }
+      },
+      "modes": {
+        "size": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "note": "size stays a Figma variant; a Density mode changes the heights behind it."
+        }
+      },
+      "figmaOnly": {
+        "showDetails#250:9": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showDetail1#250:63": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "moreMenu#1178:9": "Figma-only property.",
+        "showGroups#1293:0": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showTotalRow#1293:9": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showLegend#1293:18": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "content": "Picks which example content the artboard shows.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "defaultRows": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onRowsChange": "Callback. Figma components carry no event handlers.",
+        "onDeleteRow": "Callback. Figma components carry no event handlers.",
+        "deleteConfirm": "Callback. Figma components carry no event handlers.",
+        "insertLabel": "Runtime string with no Figma property on this component set.",
+        "actionsFor": "Callback. Figma components carry no event handlers.",
+        "selected": "Data array. The artboard draws a fixed set of example rows.",
+        "defaultSelected": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onSelectionChange": "Callback. Figma components carry no event handlers.",
+        "rowLabel": "Runtime string with no Figma property on this component set.",
+        "emptyLabel": "Runtime string with no Figma property on this component set.",
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "stickyFirstColumn": "Runtime flag with no Figma property on this component set.",
+        "detailCount": "Callback. Figma components carry no event handlers.",
+        "expanded": "Data array. The artboard draws a fixed set of example rows.",
+        "defaultExpanded": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onExpandedChange": "Callback. Figma components carry no event handlers.",
+        "rowParent": "Callback. Figma components carry no event handlers.",
+        "collapsed": "Data array. The artboard draws a fixed set of example rows.",
+        "defaultCollapsed": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onCollapsedChange": "Callback. Figma components carry no event handlers.",
+        "cellStatus": "Callback. Figma components carry no event handlers.",
+        "cellReadOnly": "Callback. Figma components carry no event handlers.",
+        "cellLink": "Callback. Figma components carry no event handlers.",
+        "onCellLink": "Callback. Figma components carry no event handlers.",
+        "totalRow": "Written up for Figma but not a component property.",
+        "legend": "Data array. The artboard draws a fixed set of example rows."
+      }
+    },
+    "DatePicker": {
+      "contract": "DatePicker",
+      "contractFile": "contracts/datepicker.json",
+      "level": "molecule",
+      "nodeId": "204:37843",
+      "key": "d5e1c47a6950f0246b1f220891921505f991b98c",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "label": {
+          "figma": "label#204:0",
+          "kind": "text"
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "labelPosition": {
+          "figma": "labelPosition",
+          "kind": "variant",
+          "values": [
+            "top",
+            "start"
+          ]
+        },
+        "hideLabel": {
+          "figma": "showLabel#204:291",
+          "kind": "boolean",
+          "inverted": true,
+          "note": "Inverted: Figma shows the label when showLabel is on."
+        },
+        "placeholder": {
+          "figma": "content",
+          "kind": "variant",
+          "values": [
+            "placeholder",
+            "value"
+          ],
+          "note": "Figma picks placeholder or value with the content variant."
+        },
+        "value": {
+          "figma": "value#204:97",
+          "kind": "text"
+        },
+        "required": {
+          "figma": "required#204:388",
+          "kind": "boolean"
+        },
+        "invalid": {
+          "figma": "invalid",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "error": {
+          "figma": "message#204:194",
+          "kind": "text",
+          "note": "Figma has one message text; the invalid variant marks it as an error."
+        },
+        "help": {
+          "figma": "help#204:485",
+          "kind": "boolean"
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        },
+        "invalid": {
+          "figma": "invalid",
+          "value": "true"
+        }
+      },
+      "modes": {
+        "labelWidth": {
+          "collection": "Label width",
+          "collectionKey": "f6eba1050377e4d2cd0de07fe4882a238242cd78",
+          "modes": [
+            "md",
+            "sm",
+            "lg"
+          ]
+        },
+        "size": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "note": "size stays a Figma variant; a Density mode changes the heights behind it."
+        }
+      },
+      "figmaOnly": {
+        "showMessage#204:582": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "open#204:679": "Figma-only property.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "type": "No Figma equivalent on the component.",
+        "labelWidth": "No Figma equivalent on the component.",
+        "defaultValue": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onChange": "Callback. Figma components carry no event handlers.",
+        "minDate": "Runtime number. Not drawn as a Figma property.",
+        "maxDate": "Runtime number. Not drawn as a Figma property.",
+        "presets": "Written up for Figma but not a component property.",
+        "monthYear": "No Figma equivalent on the component.",
+        "name": "DOM attribute. Nothing to draw in Figma.",
+        "id": "DOM attribute. Nothing to draw in Figma.",
+        "hint": "Runtime string with no Figma property on this component set."
+      }
+    },
+    "Drawer": {
+      "contract": "Drawer",
+      "contractFile": "contracts/drawer.json",
+      "level": "organism",
+      "nodeId": "171:311",
+      "key": "abd24de52ce056776ba206798dad8a85412dcd51",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#171:0",
+          "kind": "text"
+        },
+        "description": {
+          "figma": "description#171:5",
+          "kind": "text"
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "narrow",
+            "medium",
+            "wide",
+            "extended"
+          ]
+        },
+        "showClose": {
+          "figma": "showClose#171:15",
+          "kind": "boolean"
+        },
+        "children": {
+          "figma": "content#171:20",
+          "kind": "instanceSwap"
+        },
+        "footer": {
+          "figma": "showFooter#171:25",
+          "kind": "boolean"
+        }
+      },
+      "figmaOnly": {
+        "showDescription#171:10": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showButton2#171:30": "Artboard toggle for an example part. In code the part appears when its prop is given."
+      },
+      "noFigma": {
+        "open": "Runtime flag with no Figma property on this component set.",
+        "onClose": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "Dropdown": {
+      "contract": "Dropdown",
+      "contractFile": "contracts/dropdown.json",
+      "level": "molecule",
+      "nodeId": "164:1298",
+      "key": "51a876e4e96ebc874e79cdda3ebbdab2cbb677cc",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "trigger": {
+          "figma": "trigger",
+          "kind": "variant",
+          "values": [
+            "button",
+            "icon only",
+            "filter",
+            "field"
+          ],
+          "figmaOnlyValues": [
+            "icon only"
+          ]
+        },
+        "alignment": {
+          "figma": "alignment",
+          "kind": "variant",
+          "values": [
+            "left",
+            "right"
+          ]
+        },
+        "open": {
+          "figma": "open",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "searchable": {
+          "figma": "searchable#164:0",
+          "kind": "boolean"
+        }
+      },
+      "slots": {
+        "items": {
+          "show": [
+            "showItem6#164:13",
+            "showItem7#164:26",
+            "showItem8#164:39"
+          ],
+          "childProps": "Dropdown",
+          "max": 8
+        }
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "emphasis": "Written up for Figma but not a component property.",
+        "intent": "Written up for Figma but not a component property.",
+        "iconStyle": "No Figma equivalent on the component.",
+        "size": "No Figma equivalent on the component.",
+        "icon": "Written up for Figma but not a component property.",
+        "iconOnly": "Written up for Figma but not a component property.",
+        "count": "Runtime number. Not drawn as a Figma property.",
+        "disabled": "Runtime flag with no Figma property on this component set.",
+        "closeOnSelect": "Runtime flag with no Figma property on this component set.",
+        "onOpenChange": "Callback. Figma components carry no event handlers.",
+        "onSelect": "Callback. Figma components carry no event handlers.",
+        "multiple": "Runtime flag with no Figma property on this component set.",
+        "id": "DOM attribute. Nothing to draw in Figma.",
+        "text": "Runtime string with no Figma property on this component set.",
+        "muted": "Runtime flag with no Figma property on this component set.",
+        "badge": "Runtime string with no Figma property on this component set.",
+        "toggle": "Written up for Figma but not a component property.",
+        "onToggle": "Callback. Figma components carry no event handlers.",
+        "labelledBy": "DOM attribute. Nothing to draw in Figma.",
+        "describedBy": "DOM attribute. Nothing to draw in Figma.",
+        "searchPlaceholder": "Runtime string with no Figma property on this component set.",
+        "empty": "Runtime string with no Figma property on this component set.",
+        "menuWidth": "Written up for Figma but not a component property."
+      }
+    },
+    "EmptyState": {
+      "contract": "EmptyState",
+      "contractFile": "contracts/emptystate.json",
+      "level": "molecule",
+      "nodeId": "71:58",
+      "key": "092734165d7dee8bd524cadb422d72e960e56ac4",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#71:0",
+          "kind": "text"
+        },
+        "description": {
+          "figma": "description#71:9",
+          "kind": "text"
+        },
+        "media": {
+          "figma": "media",
+          "kind": "variant",
+          "values": [
+            "well",
+            "plain",
+            "avatar",
+            "none"
+          ]
+        },
+        "actions": {
+          "figma": "showActions#114:0",
+          "kind": "boolean",
+          "note": "Figma toggles the action row; the buttons are exposed instances."
+        },
+        "outlined": {
+          "figma": "outlined",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        }
+      },
+      "figmaOnly": {
+        "showDescription#71:18": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showButton2#114:9": "Artboard toggle for an example part. In code the part appears when its prop is given."
+      },
+      "noFigma": {
+        "icon": "Runtime string with no Figma property on this component set.",
+        "iconStyle": "No Figma equivalent on the component.",
+        "headingLevel": "No Figma equivalent on the component."
+      }
+    },
+    "FilterButton": {
+      "contract": "FilterButton",
+      "contractFile": "contracts/filterbutton.json",
+      "level": "molecule",
+      "nodeId": "87:832",
+      "key": "06b680c285d52eb63b8832a328498c2feba67fe9",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "open": {
+          "figma": "open",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "value": {
+          "figma": "value#87:73",
+          "kind": "text"
+        },
+        "toggle": {
+          "figma": "toggle",
+          "kind": "variant",
+          "values": [
+            "none",
+            "on",
+            "off"
+          ],
+          "figmaOnlyValues": [
+            "none"
+          ]
+        },
+        "hasDropdown": {
+          "figma": "hasDropdown#87:219",
+          "kind": "boolean"
+        },
+        "children": {
+          "figma": "label#87:0",
+          "kind": "text",
+          "note": "The artboard holds this as example copy."
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        }
+      },
+      "modes": {
+        "size": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "note": "size stays a Figma variant; a Density mode changes the heights behind it."
+        }
+      },
+      "figmaOnly": {
+        "showCount#87:146": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "hasValue": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "split": "Figma-only property.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "count": "Runtime number. Not drawn as a Figma property.",
+        "onToggle": "Callback. Figma components carry no event handlers.",
+        "onClick": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "Form": {
+      "contract": "Form",
+      "contractFile": "contracts/form.json",
+      "level": "organism",
+      "nodeId": "174:952",
+      "key": "7999d749dfa6606a00981bc4b8af80163c8dada4",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#174:0",
+          "kind": "text"
+        },
+        "description": {
+          "figma": "description#174:6",
+          "kind": "text"
+        },
+        "variant": {
+          "figma": "variant",
+          "kind": "variant",
+          "values": [
+            "plain",
+            "card"
+          ]
+        },
+        "children": {
+          "figma": "content#174:15",
+          "kind": "instanceSwap",
+          "note": "The artboard holds this as example copy."
+        },
+        "actions": {
+          "figma": "showActions#174:18",
+          "kind": "boolean",
+          "note": "Figma toggles the action row; the buttons are exposed instances."
+        }
+      },
+      "modes": {
+        "labelWidth": {
+          "collection": "Label width",
+          "collectionKey": "f6eba1050377e4d2cd0de07fe4882a238242cd78",
+          "modes": [
+            "md",
+            "sm",
+            "lg"
+          ]
+        }
+      },
+      "figmaOnly": {
+        "showHeader#174:3": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showDescription#174:9": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showError#174:12": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showButton1#174:21": "Artboard toggle for an example part. In code the part appears when its prop is given."
+      },
+      "noFigma": {
+        "labelPosition": "No Figma equivalent on the component.",
+        "labelWidth": "Written up for Figma but not a component property.",
+        "columns": "Written up for Figma but not a component property.",
+        "sections": "Sections are drawn by swapping the one content instance; the artboard has no per-section property.",
+        "error": "Runtime string with no Figma property on this component set.",
+        "onSubmit": "Callback. Figma components carry no event handlers.",
+        "id": "DOM attribute. Nothing to draw in Figma."
+      }
+    },
+    "FormDisplay": {
+      "contract": "FormDisplay",
+      "contractFile": "contracts/formdisplay.json",
+      "level": "organism",
+      "nodeId": "158:42",
+      "key": "d32210b5cb721c69d9da19c5381047a371c61a3d",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "label": {
+          "figma": "label#158:0",
+          "kind": "text"
+        },
+        "value": {
+          "figma": "value#158:5",
+          "kind": "text"
+        },
+        "labelPosition": {
+          "figma": "labelPosition",
+          "kind": "variant",
+          "values": [
+            "top",
+            "start"
+          ]
+        },
+        "help": {
+          "figma": "help#158:10",
+          "kind": "boolean"
+        },
+        "empty": {
+          "figma": "empty",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        }
+      },
+      "modes": {
+        "labelWidth": {
+          "collection": "Label width",
+          "collectionKey": "f6eba1050377e4d2cd0de07fe4882a238242cd78",
+          "modes": [
+            "md",
+            "sm",
+            "lg"
+          ]
+        }
+      },
+      "figmaOnly": {
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "labelWidth": "No Figma equivalent on the component."
+      }
+    },
+    "FormPage": {
+      "contract": "FormPage",
+      "contractFile": "contracts/formpage.json",
+      "level": "template",
+      "nodeId": "843:81450",
+      "key": "ec31aebf357cac616123c83151c9b4b086996ca6",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "columns": {
+          "figma": "columns",
+          "kind": "variant",
+          "values": [
+            "2",
+            "3",
+            "1"
+          ]
+        },
+        "loading": {
+          "figma": "loading",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "loadingShape": {
+          "figma": "loadingShape",
+          "kind": "variant",
+          "values": [
+            "content",
+            "rows"
+          ]
+        }
+      },
+      "stateMap": {
+        "loading": {
+          "figma": "loading",
+          "value": "true"
+        }
+      },
+      "noFigma": {
+        "children": "React content slot. The artboard draws example content instead.",
+        "header": "React content slot. The artboard draws example content instead.",
+        "notice": "React content slot. The artboard draws example content instead.",
+        "sticky": "Runtime flag with no Figma property on this component set.",
+        "stickyNotice": "Runtime flag with no Figma property on this component set.",
+        "onStickyChange": "Callback. Figma components carry no event handlers.",
+        "loadingRows": "No Figma equivalent on the component.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "FormulaEditor": {
+      "contract": "FormulaEditor",
+      "contractFile": "contracts/formulaeditor.json",
+      "level": "organism",
+      "nodeId": "220:32488",
+      "key": "7011f1ad05a8843db1ea87f27c2bf476cb94b44d",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "label": {
+          "figma": "label#220:0",
+          "kind": "text"
+        },
+        "hideLabel": {
+          "figma": "showLabel#220:292",
+          "kind": "boolean",
+          "inverted": true,
+          "note": "Inverted: Figma shows the label when showLabel is on."
+        },
+        "labelPosition": {
+          "figma": "labelPosition",
+          "kind": "variant",
+          "values": [
+            "top",
+            "start"
+          ]
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "placeholder": {
+          "figma": "content",
+          "kind": "variant",
+          "values": [
+            "placeholder",
+            "value"
+          ],
+          "note": "Figma picks placeholder or value with the content variant."
+        },
+        "onAiAssist": {
+          "figma": "onAiAssist#1232:73",
+          "kind": "boolean"
+        },
+        "required": {
+          "figma": "required#220:365",
+          "kind": "boolean"
+        },
+        "invalid": {
+          "figma": "invalid",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "error": {
+          "figma": "message#220:146",
+          "kind": "text",
+          "note": "Figma has one message text; the invalid variant marks it as an error."
+        },
+        "help": {
+          "figma": "help#220:438",
+          "kind": "boolean"
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        },
+        "invalid": {
+          "figma": "invalid",
+          "value": "true"
+        }
+      },
+      "modes": {
+        "labelWidth": {
+          "collection": "Label width",
+          "collectionKey": "f6eba1050377e4d2cd0de07fe4882a238242cd78",
+          "modes": [
+            "md",
+            "sm",
+            "lg"
+          ]
+        }
+      },
+      "figmaOnly": {
+        "formula#220:73": "Example copy on the artboard. In code it comes from data.",
+        "result#220:219": "Example copy on the artboard. In code it comes from data.",
+        "showMessage#220:511": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showHint#220:584": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showResult#220:657": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "insertField#220:730": "Figma-only property.",
+        "calculate#220:803": "Figma-only property.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "labelWidth": "No Figma equivalent on the component.",
+        "value": "Runtime string with no Figma property on this component set.",
+        "defaultValue": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onChange": "Callback. Figma components carry no event handlers.",
+        "fields": "Data array. The artboard draws a fixed set of example rows.",
+        "functions": "Data array. The artboard draws a fixed set of example rows.",
+        "onCheckSyntax": "Callback. Figma components carry no event handlers.",
+        "onCalculate": "Callback. Figma components carry no event handlers.",
+        "aiActive": "Written up for Figma but not a component property.",
+        "name": "DOM attribute. Nothing to draw in Figma.",
+        "id": "DOM attribute. Nothing to draw in Figma.",
+        "readOnly": "Runtime flag with no Figma property on this component set.",
+        "hint": "Runtime string with no Figma property on this component set."
+      }
+    },
+    "FunnelChart": {
+      "contract": "FunnelChart",
+      "contractFile": "contracts/funnelchart.json",
+      "level": "organism",
+      "nodeId": "1653:245",
+      "key": "067fb7b3f4b7e4ed73e84738c979a385015149f5",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#1653:6",
+          "kind": "text"
+        },
+        "subtitle": {
+          "figma": "subtitle#1653:12",
+          "kind": "text"
+        },
+        "showHeader": {
+          "figma": "showHeader#1653:0",
+          "kind": "boolean"
+        },
+        "showLegend": {
+          "figma": "showLegend#1653:18",
+          "kind": "boolean"
+        }
+      },
+      "figmaOnly": {
+        "example": "Picks which worked chart example the artboard shows.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "steps": "Data array. The artboard draws a fixed set of example rows.",
+        "direction": "No Figma equivalent on the component.",
+        "labels": "No Figma equivalent on the component.",
+        "showValues": "Runtime flag with no Figma property on this component set.",
+        "rate": "No Figma equivalent on the component.",
+        "legendPosition": "No Figma equivalent on the component.",
+        "animate": "Runtime flag with no Figma property on this component set.",
+        "format": "No Figma equivalent on the component.",
+        "currency": "Runtime string with no Figma property on this component set.",
+        "height": "Runtime number. Not drawn as a Figma property.",
+        "emptyLabel": "Runtime string with no Figma property on this component set."
+      }
+    },
+    "GlobalSearch": {
+      "contract": "GlobalSearch",
+      "contractFile": "contracts/globalsearch.json",
+      "level": "organism",
+      "nodeId": "218:29507",
+      "key": "b1d16cda5333eb0304579d74fc4398a22df1b2b4",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "variant": {
+          "figma": "variant",
+          "kind": "variant",
+          "values": [
+            "list",
+            "tabs"
+          ]
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "md",
+            "sm"
+          ]
+        },
+        "placeholder": {
+          "figma": "content",
+          "kind": "variant",
+          "values": [
+            "placeholder",
+            "query",
+            "empty"
+          ],
+          "note": "Figma picks placeholder or value with the content variant."
+        }
+      },
+      "slots": {
+        "groups": {
+          "show": [
+            "showGroup2#218:125",
+            "showGroup3#218:150",
+            "showGroup1Item3#218:250",
+            "showGroup2Item3#218:275",
+            "showGroup3Item3#218:300"
+          ],
+          "child": "Item g.i",
+          "childProps": "GlobalSearch",
+          "max": 3,
+          "note": "Three groups of three items; headings are heading1 to heading3."
+        }
+      },
+      "figmaOnly": {
+        "searchText#218:0": "Example copy on the artboard. In code it comes from data.",
+        "heading1#218:25": "Example copy on the artboard. In code it comes from data.",
+        "heading2#218:50": "Example copy on the artboard. In code it comes from data.",
+        "heading3#218:75": "Example copy on the artboard. In code it comes from data.",
+        "showHeadings#218:100": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "emptyText#218:175": "Example copy on the artboard. In code it comes from data.",
+        "showScope#218:200": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showHints#218:225": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "iconStyle": "No Figma equivalent on the component.",
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "empty": "Runtime string with no Figma property on this component set.",
+        "defaultQuery": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "hints": "Runtime flag with no Figma property on this component set.",
+        "scopes": "Data array. The artboard draws a fixed set of example rows.",
+        "scope": "Runtime string with no Figma property on this component set.",
+        "defaultScope": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onScopeChange": "Callback. Figma components carry no event handlers.",
+        "autoFocus": "Runtime flag with no Figma property on this component set.",
+        "onSelect": "Callback. Figma components carry no event handlers.",
+        "onViewAll": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "GuidedProcess": {
+      "contract": "GuidedProcess",
+      "contractFile": "contracts/guidedprocess.json",
+      "level": "organism",
+      "nodeId": "225:31321",
+      "key": "3a07cb4cb01c820d138b6a572a03cf4ffa24ae82",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "part": {
+          "figma": "part",
+          "kind": "variant",
+          "values": [
+            "panel",
+            "steps",
+            "header",
+            "footer"
+          ]
+        },
+        "title": {
+          "figma": "title#225:15",
+          "kind": "text"
+        },
+        "subtitle": {
+          "figma": "subtitle#225:47",
+          "kind": "text"
+        },
+        "current": {
+          "figma": "current#225:207",
+          "kind": "text"
+        },
+        "started": {
+          "figma": "started",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "placement": {
+          "figma": "placement",
+          "kind": "variant",
+          "values": [
+            "side",
+            "band"
+          ]
+        },
+        "shade": {
+          "figma": "shade",
+          "kind": "variant",
+          "values": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ]
+        },
+        "side": {
+          "figma": "side",
+          "kind": "variant",
+          "values": [
+            "end",
+            "start"
+          ]
+        },
+        "stepTitle": {
+          "figma": "stepTitle#225:143",
+          "kind": "text"
+        },
+        "total": {
+          "figma": "total#225:239",
+          "kind": "text"
+        },
+        "updated": {
+          "figma": "updated#225:271",
+          "kind": "text"
+        }
+      },
+      "figmaOnly": {
+        "showTitle#225:79": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "number#225:111": "Figma-only property.",
+        "showStatus#225:175": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showUpdated#225:303": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showAction2#225:335": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showAction3#225:367": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "width": "Figma-only property.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "steps": "Data array. The artboard draws a fixed set of example rows.",
+        "placement.auto": "auto is resolved at runtime; Figma draws the resolved side and band placements.",
+        "startLabel": "Runtime string with no Figma property on this component set.",
+        "onStart": "Callback. Figma components carry no event handlers.",
+        "onCancel": "Callback. Figma components carry no event handlers.",
+        "onClose": "Callback. Figma components carry no event handlers.",
+        "onStepsOpen": "Callback. Figma components carry no event handlers.",
+        "actions": "Data array. The artboard draws a fixed set of example rows.",
+        "onAction": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "GuidedProcessPage": {
+      "contract": "GuidedProcessPage",
+      "contractFile": "contracts/guidedprocesspage.json",
+      "level": "template",
+      "nodeId": "286:71689",
+      "key": "ad37b2dd12e0f1df810cc574da695d9c0fc9fb97",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "view": {
+          "figma": "view",
+          "kind": "variant",
+          "values": [
+            "intro",
+            "step"
+          ]
+        },
+        "side": {
+          "figma": "side",
+          "kind": "variant",
+          "values": [
+            "end",
+            "start"
+          ]
+        }
+      },
+      "noFigma": {
+        "intro": "React content slot. The artboard draws example content instead.",
+        "header": "React content slot. The artboard draws example content instead.",
+        "children": "React content slot. The artboard draws example content instead.",
+        "footer": "React content slot. The artboard draws example content instead.",
+        "steps": "React content slot. The artboard draws example content instead.",
+        "stepsOpen": "Written up for Figma but not a component property.",
+        "onStepsClose": "Callback. Figma components carry no event handlers.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "HeaderCell": {
+      "contract": "HeaderCell",
+      "contractFile": "contracts/headercell.json",
+      "level": "molecule",
+      "nodeId": "116:4977",
+      "key": "04d3b500c2a5c04252655d3a1ff583fa67f65af6",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "label": {
+          "figma": "label#116:0",
+          "kind": "text"
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "md",
+            "sm"
+          ]
+        },
+        "alignment": {
+          "figma": "alignment",
+          "kind": "variant",
+          "values": [
+            "start",
+            "center",
+            "end"
+          ]
+        },
+        "line": {
+          "figma": "line",
+          "kind": "variant",
+          "values": [
+            "medium",
+            "thin"
+          ]
+        },
+        "checkbox": {
+          "figma": "checkbox#116:74",
+          "kind": "boolean"
+        },
+        "sortable": {
+          "figma": "sortable#116:111",
+          "kind": "boolean"
+        },
+        "sort": {
+          "figma": "sort",
+          "kind": "variant",
+          "values": [
+            "none",
+            "asc",
+            "desc"
+          ]
+        }
+      },
+      "modes": {
+        "size": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "note": "size stays a Figma variant; a Density mode changes the heights behind it."
+        }
+      },
+      "figmaOnly": {
+        "showLabel#116:37": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "checked": "Runtime flag with no Figma property on this component set.",
+        "defaultChecked": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "indeterminate": "Runtime flag with no Figma property on this component set.",
+        "onCheckedChange": "Callback. Figma components carry no event handlers.",
+        "onSort": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "Heatmap": {
+      "contract": "Heatmap",
+      "contractFile": "contracts/heatmap.json",
+      "level": "organism",
+      "nodeId": "1659:250",
+      "key": "7520c2ea1c7a13a79530d231644f2df7b96aacc1",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#1659:5",
+          "kind": "text"
+        },
+        "subtitle": {
+          "figma": "subtitle#1659:10",
+          "kind": "text"
+        },
+        "showHeader": {
+          "figma": "showHeader#1659:0",
+          "kind": "boolean"
+        },
+        "showLegend": {
+          "figma": "showLegend#1659:15",
+          "kind": "boolean"
+        },
+        "lowLabel": {
+          "figma": "lowLabel#1659:20",
+          "kind": "text"
+        },
+        "highLabel": {
+          "figma": "highLabel#1659:25",
+          "kind": "text"
+        }
+      },
+      "figmaOnly": {
+        "example": "Picks which worked chart example the artboard shows.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "rows": "Data array. The artboard draws a fixed set of example rows.",
+        "columns": "Data array. The artboard draws a fixed set of example rows.",
+        "values": "Data array. The artboard draws a fixed set of example rows.",
+        "intent": "No Figma equivalent on the component.",
+        "size": "No Figma equivalent on the component.",
+        "showValues": "Runtime flag with no Figma property on this component set.",
+        "format": "No Figma equivalent on the component.",
+        "currency": "Runtime string with no Figma property on this component set.",
+        "emptyLabel": "Runtime string with no Figma property on this component set."
+      }
+    },
+    "HelpPopover": {
+      "contract": "HelpPopover",
+      "contractFile": "contracts/helppopover.json",
+      "level": "molecule",
+      "nodeId": "88:35",
+      "key": "1518ccef639d2c38593427bb09b2d5695882ee04",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#88:0",
+          "kind": "text"
+        },
+        "content": {
+          "figma": "content#88:5",
+          "kind": "text"
+        },
+        "position": {
+          "figma": "position",
+          "kind": "variant",
+          "values": [
+            "below",
+            "above",
+            "left",
+            "right"
+          ]
+        }
+      },
+      "figmaOnly": {
+        "showTitle#88:10": "Artboard toggle for an example part. In code the part appears when its prop is given."
+      },
+      "noFigma": {
+        "delay": "Runtime number. Not drawn as a Figma property.",
+        "open": "Runtime flag with no Figma property on this component set.",
+        "disabled": "Runtime flag with no Figma property on this component set.",
+        "children": "React content slot. The artboard draws example content instead."
+      }
+    },
+    "Icon": {
+      "contract": "Icon",
+      "contractFile": "contracts/icon.json",
+      "level": "atom",
+      "nodeId": "29:122",
+      "key": "1db8a18740daee52af57434c1e8c3243afa318fa",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ]
+        },
+        "intent": {
+          "figma": "intent",
+          "kind": "variant",
+          "values": [
+            "inherit",
+            "neutral",
+            "subtle",
+            "brand",
+            "info",
+            "success",
+            "warning",
+            "danger"
+          ]
+        }
+      },
+      "figmaOnly": {
+        "glyph#29:0": "Figma-only property."
+      },
+      "noFigma": {
+        "name": "DOM attribute. Nothing to draw in Figma.",
+        "filled": "Runtime flag with no Figma property on this component set.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "Illustration": {
+      "contract": "Illustration",
+      "contractFile": "contracts/illustration.json",
+      "level": "atom",
+      "nodeId": "52:125",
+      "key": "d147f839a25e1b284c2d01b8fdb92f593f0e45ed",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "name": {
+          "figma": "name",
+          "kind": "variant",
+          "values": [
+            "ai-chip",
+            "chat-search"
+          ]
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        }
+      },
+      "noFigma": {
+        "animated": "Runtime flag with no Figma property on this component set.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "Input": {
+      "contract": "Input",
+      "contractFile": "contracts/input.json",
+      "level": "atom",
+      "nodeId": "154:14239",
+      "key": "515f63dce7d329b364ccb9fa0d070cc03f82b499",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "label": {
+          "figma": "label#154:0",
+          "kind": "text"
+        },
+        "hideLabel": {
+          "figma": "showLabel#154:1015",
+          "kind": "boolean",
+          "inverted": true,
+          "note": "Inverted: Figma shows the label when showLabel is on."
+        },
+        "labelPosition": {
+          "figma": "labelPosition",
+          "kind": "variant",
+          "values": [
+            "top",
+            "start"
+          ]
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "placeholder": {
+          "figma": "content",
+          "kind": "variant",
+          "values": [
+            "placeholder",
+            "value",
+            "file"
+          ],
+          "note": "Figma picks placeholder or value with the content variant."
+        },
+        "value": {
+          "figma": "value#154:145",
+          "kind": "text"
+        },
+        "required": {
+          "figma": "required#154:1160",
+          "kind": "boolean"
+        },
+        "invalid": {
+          "figma": "invalid",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "error": {
+          "figma": "message#154:870",
+          "kind": "text",
+          "note": "Figma has one message text; the invalid variant marks it as an error."
+        },
+        "help": {
+          "figma": "help#154:1305",
+          "kind": "boolean"
+        },
+        "prefix": {
+          "figma": "prefix#154:435",
+          "kind": "text"
+        },
+        "suffix": {
+          "figma": "suffix#154:580",
+          "kind": "text"
+        },
+        "iconStart": {
+          "figma": "iconStart#154:1450",
+          "kind": "boolean"
+        },
+        "iconEnd": {
+          "figma": "iconEnd#154:2030",
+          "kind": "boolean"
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        },
+        "invalid": {
+          "figma": "invalid",
+          "value": "true"
+        }
+      },
+      "modes": {
+        "labelWidth": {
+          "collection": "Label width",
+          "collectionKey": "f6eba1050377e4d2cd0de07fe4882a238242cd78",
+          "modes": [
+            "md",
+            "sm",
+            "lg"
+          ]
+        },
+        "size": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "note": "size stays a Figma variant; a Density mode changes the heights behind it."
+        }
+      },
+      "figmaOnly": {
+        "fileName#154:290": "Example copy on the artboard. In code it comes from data.",
+        "count#154:725": "Example copy on the artboard. In code it comes from data.",
+        "showPrefix#154:1595": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showSuffix#154:1740": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showCount#154:1885": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "stepper#154:2175": "Figma-only property.",
+        "showMessage#154:2320": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "labelWidth": "No Figma equivalent on the component.",
+        "type": "Written up for Figma but not a component property.",
+        "defaultValue": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onChange": "Callback. Figma components carry no event handlers.",
+        "accept": "DOM attribute. Nothing to draw in Figma.",
+        "multiple": "Runtime flag with no Figma property on this component set.",
+        "onFilesChange": "Callback. Figma components carry no event handlers.",
+        "name": "DOM attribute. Nothing to draw in Figma.",
+        "id": "DOM attribute. Nothing to draw in Figma.",
+        "autoComplete": "DOM attribute. Nothing to draw in Figma.",
+        "readOnly": "Runtime flag with no Figma property on this component set.",
+        "hint": "Runtime string with no Figma property on this component set.",
+        "maxLength": "Runtime number. Not drawn as a Figma property."
+      }
+    },
+    "Legend": {
+      "contract": "Legend",
+      "contractFile": "contracts/legend.json",
+      "level": "molecule",
+      "nodeId": "57:795",
+      "key": "7a2dbbe94dd6c65ab8d4346c2a7015b6bb7ad10d",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "orientation": {
+          "figma": "orientation",
+          "kind": "variant",
+          "values": [
+            "horizontal",
+            "vertical"
+          ]
+        },
+        "shape": {
+          "figma": "shape",
+          "kind": "variant",
+          "values": [
+            "square",
+            "line",
+            "dot",
+            "outline"
+          ]
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md"
+          ]
+        }
+      },
+      "slots": {
+        "items": {
+          "show": [
+            "key4#57:363",
+            "key5#57:376",
+            "key6#57:389"
+          ],
+          "child": "Key N",
+          "childProps": "Legend",
+          "max": 6
+        }
+      },
+      "noFigma": {
+        "alignment": "No Figma equivalent on the component.",
+        "hidden": "Data array. The artboard draws a fixed set of example rows.",
+        "defaultHidden": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onHiddenChange": "Callback. Figma components carry no event handlers.",
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "decorative": "Runtime flag with no Figma property on this component set."
+      }
+    },
+    "LineChart": {
+      "contract": "LineChart",
+      "contractFile": "contracts/linechart.json",
+      "level": "organism",
+      "nodeId": "65:1712",
+      "key": "defcdf974adbc512a25cc4f365cb4e65b3368387",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#65:5",
+          "kind": "text"
+        },
+        "subtitle": {
+          "figma": "subtitle#65:10",
+          "kind": "text"
+        },
+        "showHeader": {
+          "figma": "showHeader#65:0",
+          "kind": "boolean"
+        },
+        "showLegend": {
+          "figma": "showLegend#65:15",
+          "kind": "boolean"
+        }
+      },
+      "figmaOnly": {
+        "example": "Picks which worked chart example the artboard shows.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "categories": "Data array. The artboard draws a fixed set of example rows.",
+        "series": "Data array. The artboard draws a fixed set of example rows.",
+        "area": "Runtime flag with no Figma property on this component set.",
+        "stacked": "Runtime flag with no Figma property on this component set.",
+        "showPoints": "Runtime flag with no Figma property on this component set.",
+        "showValues": "Runtime flag with no Figma property on this component set.",
+        "showGrid": "Runtime flag with no Figma property on this component set.",
+        "legendPosition": "No Figma equivalent on the component.",
+        "animate": "Runtime flag with no Figma property on this component set.",
+        "format": "No Figma equivalent on the component.",
+        "currency": "Runtime string with no Figma property on this component set.",
+        "height": "Runtime number. Not drawn as a Figma property.",
+        "emptyLabel": "Runtime string with no Figma property on this component set.",
+        "referenceLines": "Data array. The artboard draws a fixed set of example rows.",
+        "marker": "No Figma equivalent on the component."
+      }
+    },
+    "Link": {
+      "contract": "Link",
+      "contractFile": "contracts/link.json",
+      "level": "atom",
+      "nodeId": "70:27",
+      "key": "2fd2287c9c7fdcdee532020487132cdad62e9ae2",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "children": {
+          "figma": "text#70:0",
+          "kind": "text",
+          "note": "The artboard holds this as example copy."
+        },
+        "intent": {
+          "figma": "intent",
+          "kind": "variant",
+          "values": [
+            "brand",
+            "neutral"
+          ]
+        },
+        "external": {
+          "figma": "external#70:5",
+          "kind": "boolean"
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        }
+      },
+      "figmaOnly": {
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "href": "Runtime string with no Figma property on this component set.",
+        "onClick": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "LinkList": {
+      "contract": "LinkList",
+      "contractFile": "contracts/linklist.json",
+      "level": "molecule",
+      "nodeId": "84:28",
+      "key": "749fa4924f991a3f70a57e8cc9922f5ce357440c",
+      "keyKind": "componentKey",
+      "publish": "CURRENT",
+      "props": {},
+      "slots": {
+        "items": {
+          "show": [
+            "showRow3#84:12",
+            "showRow4#84:13",
+            "showRow5#84:14",
+            "showRow6#84:15"
+          ],
+          "child": "row N",
+          "childProps": "Link",
+          "max": 6
+        }
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "ListDetail": {
+      "contract": "ListDetail",
+      "contractFile": "contracts/listdetail.json",
+      "level": "template",
+      "nodeId": "282:63936",
+      "key": "e9a96dcd598d700c849e3dfa8e7344425fae8dea",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "open": {
+          "figma": "open",
+          "kind": "variant",
+          "values": [
+            "true",
+            "false"
+          ]
+        },
+        "layout": {
+          "figma": "layout",
+          "kind": "variant",
+          "values": [
+            "side",
+            "stacked",
+            "inline"
+          ]
+        },
+        "loading": {
+          "figma": "loading",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "loadingShape": {
+          "figma": "loadingShape",
+          "kind": "variant",
+          "values": [
+            "content",
+            "rows"
+          ]
+        }
+      },
+      "stateMap": {
+        "loading": {
+          "figma": "loading",
+          "value": "true"
+        }
+      },
+      "noFigma": {
+        "list": "React content slot. The artboard draws example content instead.",
+        "detail": "React content slot. The artboard draws example content instead.",
+        "title": "Runtime string with no Figma property on this component set.",
+        "actions": "React content slot. The artboard draws example content instead.",
+        "empty": "React content slot. The artboard draws example content instead.",
+        "onBack": "Callback. Figma components carry no event handlers.",
+        "backLabel": "Runtime string with no Figma property on this component set.",
+        "loadingRows": "No Figma equivalent on the component.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "ListPage": {
+      "contract": "ListPage",
+      "contractFile": "contracts/listpage.json",
+      "level": "template",
+      "nodeId": "277:58709",
+      "key": "e1eaef3d2f92d566d29338a4a5136c2159a46c26",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "bulk": {
+          "figma": "bulk",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "state": {
+          "figma": "state",
+          "kind": "variant",
+          "values": [
+            "ready",
+            "loading",
+            "empty",
+            "error"
+          ]
+        },
+        "loadingShape": {
+          "figma": "loadingShape",
+          "kind": "variant",
+          "values": [
+            "content",
+            "rows"
+          ]
+        }
+      },
+      "noFigma": {
+        "children": "React content slot. The artboard draws example content instead.",
+        "toolbar": "React content slot. The artboard draws example content instead.",
+        "meta": "Written up for Figma but not a component property.",
+        "pagination": "React content slot. The artboard draws example content instead.",
+        "empty": "React content slot. The artboard draws example content instead.",
+        "error": "Runtime string with no Figma property on this component set.",
+        "onRetry": "Callback. Figma components carry no event handlers.",
+        "loadingRows": "No Figma equivalent on the component.",
+        "loadingColumns": "No Figma equivalent on the component.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "ListView": {
+      "contract": "ListView",
+      "contractFile": "contracts/listview.json",
+      "level": "organism",
+      "nodeId": "199:21187",
+      "key": "497dcbbda6068f382e3f2ef0fa008c9727659bed",
+      "keyKind": "componentKey",
+      "publish": "CURRENT",
+      "props": {},
+      "slots": {
+        "items": {
+          "show": [
+            "showRow3#199:473",
+            "showRow4#199:474",
+            "showRow5#199:475",
+            "showRow6#199:476",
+            "showRow7#199:477",
+            "showRow8#199:478"
+          ],
+          "child": "Row N",
+          "childProps": "ListView",
+          "max": 8
+        },
+        "groups": {
+          "show": [
+            "showHeader1#199:471",
+            "showHeader2#199:472"
+          ],
+          "child": "Header N",
+          "childProps": "ListView",
+          "max": 2
+        }
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "onItemsChange": "Callback. Figma components carry no event handlers.",
+        "size": "No Figma equivalent on the component.",
+        "collapsible": "Runtime flag with no Figma property on this component set.",
+        "stickyGroups": "Runtime flag with no Figma property on this component set.",
+        "collapsed": "Data array. The artboard draws a fixed set of example rows.",
+        "defaultCollapsed": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onCollapsedChange": "Callback. Figma components carry no event handlers.",
+        "selection": "Written up for Figma but not a component property.",
+        "selected": "Data array. The artboard draws a fixed set of example rows.",
+        "defaultSelected": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onSelectedChange": "Callback. Figma components carry no event handlers.",
+        "interaction": "No Figma equivalent on the component.",
+        "onOpen": "Callback. Figma components carry no event handlers.",
+        "onAction": "Callback. Figma components carry no event handlers.",
+        "path": "Data array. The artboard draws a fixed set of example rows.",
+        "defaultPath": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onPathChange": "Callback. Figma components carry no event handlers.",
+        "nesting": "No Figma equivalent on the component.",
+        "expanded": "Data array. The artboard draws a fixed set of example rows.",
+        "defaultExpanded": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onExpandedChange": "Callback. Figma components carry no event handlers.",
+        "detail": "React content slot. The artboard draws example content instead."
+      }
+    },
+    "LoadingLine": {
+      "contract": "LoadingLine",
+      "contractFile": "contracts/loadingline.json",
+      "level": "atom",
+      "nodeId": "1604:27",
+      "key": "d295bef93bc685998ec2b88a816adac067af7aea",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "track": {
+          "figma": "track",
+          "kind": "variant",
+          "values": [
+            "line",
+            "none"
+          ]
+        }
+      },
+      "noFigma": {
+        "loading": "Runtime flag with no Figma property on this component set.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "Logo": {
+      "contract": "Logo",
+      "contractFile": "contracts/logo.json",
+      "level": "atom",
+      "nodeId": "50:32",
+      "key": "6c5ab7b3d2149a2cafeb088f22f132d8ce8150a6",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "type": {
+          "figma": "type",
+          "kind": "variant",
+          "values": [
+            "default",
+            "symbol"
+          ]
+        }
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "LogoAI": {
+      "contract": "LogoAI",
+      "contractFile": "contracts/logoai.json",
+      "level": "atom",
+      "nodeId": "51:63",
+      "key": "72202257326eef335894c4e0279b5d1308f3e42a",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "type": {
+          "figma": "type",
+          "kind": "variant",
+          "values": [
+            "default",
+            "symbol"
+          ]
+        },
+        "intent": {
+          "figma": "intent",
+          "kind": "variant",
+          "values": [
+            "color",
+            "monochrome",
+            "white",
+            "filled"
+          ]
+        }
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "Lookup": {
+      "contract": "Lookup",
+      "contractFile": "contracts/lookup.json",
+      "level": "molecule",
+      "nodeId": "253:41187",
+      "key": "e4a8a0c9f3dbaeab388164319489fcb8a7017fd8",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "label": {
+          "figma": "label#253:0",
+          "kind": "text"
+        },
+        "value": {
+          "figma": "value#253:97",
+          "kind": "text"
+        },
+        "clearable": {
+          "figma": "clearable#253:679",
+          "kind": "boolean"
+        },
+        "placeholder": {
+          "figma": "placeholder#253:776",
+          "kind": "text"
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "labelPosition": {
+          "figma": "labelPosition",
+          "kind": "variant",
+          "values": [
+            "top",
+            "start"
+          ]
+        },
+        "hideLabel": {
+          "figma": "showLabel#253:291",
+          "kind": "boolean",
+          "inverted": true,
+          "note": "Inverted: Figma shows the label when showLabel is on."
+        },
+        "required": {
+          "figma": "required#253:388",
+          "kind": "boolean"
+        },
+        "invalid": {
+          "figma": "invalid",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "error": {
+          "figma": "message#253:194",
+          "kind": "text",
+          "note": "Figma has one message text; the invalid variant marks it as an error."
+        },
+        "help": {
+          "figma": "help#253:485",
+          "kind": "boolean"
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        },
+        "invalid": {
+          "figma": "invalid",
+          "value": "true"
+        }
+      },
+      "modes": {
+        "labelWidth": {
+          "collection": "Label width",
+          "collectionKey": "f6eba1050377e4d2cd0de07fe4882a238242cd78",
+          "modes": [
+            "md",
+            "sm",
+            "lg"
+          ]
+        },
+        "size": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "note": "size stays a Figma variant; a Density mode changes the heights behind it."
+        }
+      },
+      "figmaOnly": {
+        "showMessage#253:582": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "content": "Picks which example content the artboard shows.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "columns": "Data array. The artboard draws a fixed set of example rows.",
+        "rows": "Data array. The artboard draws a fixed set of example rows.",
+        "defaultValue": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onChange": "Callback. Figma components carry no event handlers.",
+        "labelKey": "Runtime string with no Figma property on this component set.",
+        "title": "Runtime string with no Figma property on this component set.",
+        "icon": "Runtime string with no Figma property on this component set.",
+        "searchPlaceholder": "Runtime string with no Figma property on this component set.",
+        "pageSize": "Runtime number. Not drawn as a Figma property.",
+        "emptyLabel": "Runtime string with no Figma property on this component set.",
+        "labelWidth": "No Figma equivalent on the component.",
+        "name": "DOM attribute. Nothing to draw in Figma.",
+        "hint": "Runtime string with no Figma property on this component set.",
+        "multiple": "Runtime flag with no Figma property on this component set.",
+        "trigger": "No Figma equivalent on the component.",
+        "buttonIcon": "Runtime string with no Figma property on this component set.",
+        "confirmLabel": "Runtime string with no Figma property on this component set.",
+        "onConfirm": "Callback. Figma components carry no event handlers.",
+        "detail": "Callback. Figma components carry no event handlers.",
+        "detailCount": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "Meter": {
+      "contract": "Meter",
+      "contractFile": "contracts/meter.json",
+      "level": "atom",
+      "nodeId": "48:3143",
+      "key": "d7b043d76b1aa3026a08183e42a4e4e516a52f57",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "value": {
+          "figma": "value",
+          "kind": "variant",
+          "values": [
+            "0",
+            "20",
+            "40",
+            "60",
+            "80",
+            "100",
+            "indeterminate"
+          ]
+        },
+        "shape": {
+          "figma": "shape",
+          "kind": "variant",
+          "values": [
+            "bar",
+            "circle",
+            "semicircle"
+          ]
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "thresholds": {
+          "figma": "thresholds",
+          "kind": "variant",
+          "values": [
+            "none",
+            "bar",
+            "plotArea",
+            "all"
+          ]
+        },
+        "referenceLines": {
+          "figma": "referenceLines#48:217",
+          "kind": "boolean"
+        },
+        "showValue": {
+          "figma": "showValue#48:0",
+          "kind": "boolean"
+        },
+        "datatip": {
+          "figma": "datatip#48:434",
+          "kind": "boolean"
+        }
+      },
+      "figmaOnly": {
+        "datatipText#48:651": "Example copy on the artboard. In code it comes from data."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "intent": "No Figma equivalent on the component."
+      }
+    },
+    "Modal": {
+      "contract": "Modal",
+      "contractFile": "contracts/modal.json",
+      "level": "organism",
+      "nodeId": "124:238",
+      "key": "b9122c4c041aa427fd629e5192a66ce536339106",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#124:0",
+          "kind": "text"
+        },
+        "description": {
+          "figma": "description#124:12",
+          "kind": "text"
+        },
+        "icon": {
+          "figma": "showIcon#124:18",
+          "kind": "boolean",
+          "note": "Figma toggles the icon; the glyph is swapped on the nested Icon instance."
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg",
+            "xl",
+            "fullscreen"
+          ]
+        },
+        "showClose": {
+          "figma": "showClose#124:24",
+          "kind": "boolean"
+        },
+        "children": {
+          "figma": "content#124:48",
+          "kind": "instanceSwap"
+        },
+        "footer": {
+          "figma": "showFooter#124:54",
+          "kind": "boolean"
+        }
+      },
+      "figmaOnly": {
+        "showDescription#124:6": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "body#124:30": "Example copy on the artboard. In code it comes from data.",
+        "showBodyText#124:36": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showContent#124:42": "Artboard toggle for an example part. In code the part appears when its prop is given."
+      },
+      "noFigma": {
+        "open": "Runtime flag with no Figma property on this component set.",
+        "onClose": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "NavTile": {
+      "contract": "NavTile",
+      "contractFile": "contracts/navtile.json",
+      "level": "molecule",
+      "nodeId": "73:209",
+      "key": "259909cb3cca5f5870a975f4a32733540580a118",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#73:0",
+          "kind": "text"
+        },
+        "description": {
+          "figma": "description#73:23",
+          "kind": "text"
+        },
+        "icon": {
+          "figma": "showIcon#73:69",
+          "kind": "boolean",
+          "note": "Figma toggles the icon; the glyph is swapped on the nested Icon instance."
+        },
+        "intent": {
+          "figma": "intent",
+          "kind": "variant",
+          "values": [
+            "brand",
+            "green",
+            "olive",
+            "cyan",
+            "orange",
+            "pink",
+            "gray",
+            "purple",
+            "yellow",
+            "red",
+            "mint"
+          ]
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        }
+      },
+      "figmaOnly": {
+        "showDescription#73:46": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "href": "Runtime string with no Figma property on this component set.",
+        "onClick": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "PageHeader": {
+      "contract": "PageHeader",
+      "contractFile": "contracts/pageheader.json",
+      "level": "organism",
+      "nodeId": "194:116",
+      "key": "c0bc19ed027357acc60bc04f33336653a09ddfdd",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#194:0",
+          "kind": "text"
+        },
+        "icon": {
+          "figma": "showIcon#194:8",
+          "kind": "boolean",
+          "note": "Figma toggles the icon; the glyph is swapped on the nested Icon instance."
+        },
+        "badge": {
+          "figma": "showBadge#194:12",
+          "kind": "boolean",
+          "note": "Figma toggles the badge; the text is set on the nested Badge instance."
+        },
+        "sticky": {
+          "figma": "sticky",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "shadow": {
+          "figma": "shadow",
+          "kind": "variant",
+          "values": [
+            "true",
+            "false"
+          ]
+        },
+        "loading": {
+          "figma": "loading",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        }
+      },
+      "slots": {
+        "breadcrumbs": {
+          "show": [
+            "showBreadcrumb#194:4"
+          ],
+          "child": "Breadcrumb",
+          "childProps": "Breadcrumb",
+          "max": 4
+        }
+      },
+      "stateMap": {
+        "loading": {
+          "figma": "loading",
+          "value": "true"
+        }
+      },
+      "figmaOnly": {
+        "showMore#194:16": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showAction2#194:20": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showAction1#194:24": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showBack#1303:0": "Artboard toggle for an example part. In code the part appears when its prop is given."
+      },
+      "noFigma": {
+        "back": "Written up for Figma but not a component property.",
+        "badgeIntent": "No Figma equivalent on the component.",
+        "actions": "React content slot. The artboard draws example content instead.",
+        "moreActions": "Data array. The artboard draws a fixed set of example rows.",
+        "onMoreSelect": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "Pagination": {
+      "contract": "Pagination",
+      "contractFile": "contracts/pagination.json",
+      "level": "molecule",
+      "nodeId": "230:18",
+      "key": "6c5e5459893d71d1613163a9c3d0021cb8902463",
+      "keyKind": "componentKey",
+      "publish": "CURRENT",
+      "props": {
+        "showRange": {
+          "figma": "showRange#230:9",
+          "kind": "boolean"
+        },
+        "showPageSize": {
+          "figma": "showPageSize#230:10",
+          "kind": "boolean"
+        }
+      },
+      "figmaOnly": {
+        "range#230:8": "Example copy on the artboard. In code it comes from data.",
+        "showPage7#230:11": "Artboard toggle for an example part. In code the part appears when its prop is given."
+      },
+      "noFigma": {
+        "total": "Runtime number. Not drawn as a Figma property.",
+        "page": "Runtime number. Not drawn as a Figma property.",
+        "defaultPage": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onPageChange": "Callback. Figma components carry no event handlers.",
+        "pageSize": "Runtime number. Not drawn as a Figma property.",
+        "defaultPageSize": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onPageSizeChange": "Callback. Figma components carry no event handlers.",
+        "pageSizes": "Data array. The artboard draws a fixed set of example rows.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "PieChart": {
+      "contract": "PieChart",
+      "contractFile": "contracts/piechart.json",
+      "level": "organism",
+      "nodeId": "66:3497",
+      "key": "b07500918026a060695ff21eae3442a56976a368",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#66:4",
+          "kind": "text"
+        },
+        "subtitle": {
+          "figma": "subtitle#66:8",
+          "kind": "text"
+        },
+        "showHeader": {
+          "figma": "showHeader#66:0",
+          "kind": "boolean"
+        },
+        "showTotal": {
+          "figma": "showTotal#66:24",
+          "kind": "boolean"
+        },
+        "totalLabel": {
+          "figma": "totalLabel#66:20",
+          "kind": "text"
+        },
+        "showLegend": {
+          "figma": "showLegend#66:12",
+          "kind": "boolean"
+        }
+      },
+      "figmaOnly": {
+        "total#66:16": "Example copy on the artboard. In code it comes from data.",
+        "example": "Picks which worked chart example the artboard shows.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "data": "Data array. The artboard draws a fixed set of example rows.",
+        "donut": "Runtime flag with no Figma property on this component set.",
+        "size": "No Figma equivalent on the component.",
+        "legendPosition": "No Figma equivalent on the component.",
+        "alignment": "No Figma equivalent on the component.",
+        "maxSlices": "Runtime number. Not drawn as a Figma property.",
+        "otherLabel": "Runtime string with no Figma property on this component set.",
+        "animate": "Runtime flag with no Figma property on this component set.",
+        "format": "No Figma equivalent on the component.",
+        "currency": "Runtime string with no Figma property on this component set.",
+        "emptyLabel": "Runtime string with no Figma property on this component set."
+      }
+    },
+    "ProgressBar": {
+      "contract": "ProgressBar",
+      "contractFile": "contracts/progressbar.json",
+      "level": "atom",
+      "nodeId": "47:63",
+      "key": "e180fa02e2ab1179fa31765db421ca56164b0c3d",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "value": {
+          "figma": "value",
+          "kind": "variant",
+          "values": [
+            "0",
+            "25",
+            "50",
+            "75",
+            "100"
+          ]
+        },
+        "valueLabel": {
+          "figma": "valueLabel#47:0",
+          "kind": "text"
+        },
+        "showLabel": {
+          "figma": "showLabel#47:11",
+          "kind": "boolean"
+        },
+        "labelPosition": {
+          "figma": "labelPosition",
+          "kind": "variant",
+          "values": [
+            "center",
+            "right"
+          ]
+        }
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "RadarChart": {
+      "contract": "RadarChart",
+      "contractFile": "contracts/radarchart.json",
+      "level": "organism",
+      "nodeId": "1655:278",
+      "key": "2689784b3371ec89e10de1954ea09164df0ce346",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#1655:6",
+          "kind": "text"
+        },
+        "subtitle": {
+          "figma": "subtitle#1655:12",
+          "kind": "text"
+        },
+        "showHeader": {
+          "figma": "showHeader#1655:0",
+          "kind": "boolean"
+        },
+        "showLegend": {
+          "figma": "showLegend#1655:18",
+          "kind": "boolean"
+        }
+      },
+      "figmaOnly": {
+        "example": "Picks which worked chart example the artboard shows.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "axes": "Data array. The artboard draws a fixed set of example rows.",
+        "series": "Data array. The artboard draws a fixed set of example rows.",
+        "levels": "Runtime number. Not drawn as a Figma property.",
+        "max": "No Figma equivalent on the component.",
+        "fill": "Runtime flag with no Figma property on this component set.",
+        "showScale": "Runtime flag with no Figma property on this component set.",
+        "legendPosition": "No Figma equivalent on the component.",
+        "animate": "Runtime flag with no Figma property on this component set.",
+        "format": "No Figma equivalent on the component.",
+        "currency": "Runtime string with no Figma property on this component set.",
+        "height": "Runtime number. Not drawn as a Figma property.",
+        "emptyLabel": "Runtime string with no Figma property on this component set."
+      }
+    },
+    "RadioGroup": {
+      "contract": "RadioGroup",
+      "contractFile": "contracts/radiogroup.json",
+      "level": "molecule",
+      "nodeId": "117:3077",
+      "key": "ed2965162eb9d55bfb81cd536455ad51aa8e6385",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "layout": {
+          "figma": "layout",
+          "kind": "variant",
+          "values": [
+            "vertical",
+            "horizontal",
+            "card"
+          ],
+          "figmaOnlyValues": [
+            "vertical",
+            "horizontal"
+          ]
+        },
+        "hideLegend": {
+          "figma": "showLegend#117:251",
+          "kind": "boolean",
+          "inverted": true,
+          "note": "Inverted: Figma shows the legend when showLegend is on."
+        },
+        "labelPosition": {
+          "figma": "labelPosition",
+          "kind": "variant",
+          "values": [
+            "top",
+            "start"
+          ]
+        },
+        "legend": {
+          "figma": "legend#117:196",
+          "kind": "text"
+        },
+        "error": {
+          "figma": "message",
+          "kind": "variant",
+          "values": [
+            "none",
+            "hint",
+            "error"
+          ],
+          "note": "Figma has one message text; the invalid variant marks it as an error."
+        }
+      },
+      "slots": {
+        "options": {
+          "show": [
+            "showOption3#117:361",
+            "showOption4#117:416",
+            "showOption5#117:471",
+            "showOption6#117:526"
+          ],
+          "child": "Option N",
+          "childProps": "RadioGroup",
+          "max": 6
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        }
+      },
+      "modes": {
+        "labelWidth": {
+          "collection": "Label width",
+          "collectionKey": "f6eba1050377e4d2cd0de07fe4882a238242cd78",
+          "modes": [
+            "md",
+            "sm",
+            "lg"
+          ]
+        },
+        "size": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "note": "size stays a Figma variant; a Density mode changes the heights behind it."
+        }
+      },
+      "figmaOnly": {
+        "messageText#117:306": "Example copy on the artboard. In code it comes from data.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "orientation": "Written up for Figma but not a component property.",
+        "layout.list": "Figma draws vertical, horizontal and card only; list is a code-only layout.",
+        "labelWidth": "No Figma equivalent on the component.",
+        "name": "DOM attribute. Nothing to draw in Figma.",
+        "value": "Runtime string with no Figma property on this component set.",
+        "defaultValue": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "hint": "Runtime string with no Figma property on this component set.",
+        "onChange": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "RecordPage": {
+      "contract": "RecordPage",
+      "contractFile": "contracts/recordpage.json",
+      "level": "template",
+      "nodeId": "842:83098",
+      "key": "a03b88565e8dc882b0fe5c933c33be97d5ce8cfe",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "columns": {
+          "figma": "columns",
+          "kind": "variant",
+          "values": [
+            "2",
+            "3",
+            "1"
+          ]
+        },
+        "labelPosition": {
+          "figma": "labelPosition",
+          "kind": "variant",
+          "values": [
+            "start",
+            "top"
+          ]
+        },
+        "loading": {
+          "figma": "loading",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "loadingShape": {
+          "figma": "loadingShape",
+          "kind": "variant",
+          "values": [
+            "content",
+            "rows"
+          ]
+        }
+      },
+      "stateMap": {
+        "loading": {
+          "figma": "loading",
+          "value": "true"
+        }
+      },
+      "noFigma": {
+        "children": "React content slot. The artboard draws example content instead.",
+        "header": "React content slot. The artboard draws example content instead.",
+        "tabs": "React content slot. The artboard draws example content instead.",
+        "notice": "React content slot. The artboard draws example content instead.",
+        "toolbar": "React content slot. The artboard draws example content instead.",
+        "summary": "React content slot. The artboard draws example content instead.",
+        "sticky": "Runtime flag with no Figma property on this component set.",
+        "onStickyChange": "Callback. Figma components carry no event handlers.",
+        "loadingRows": "No Figma equivalent on the component.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "ScatterChart": {
+      "contract": "ScatterChart",
+      "contractFile": "contracts/scatterchart.json",
+      "level": "organism",
+      "nodeId": "1657:192",
+      "key": "04465c99f2e46d1d91fe6b0475a8024603ffd3fa",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#1657:4",
+          "kind": "text"
+        },
+        "subtitle": {
+          "figma": "subtitle#1657:8",
+          "kind": "text"
+        },
+        "showHeader": {
+          "figma": "showHeader#1657:0",
+          "kind": "boolean"
+        },
+        "showLegend": {
+          "figma": "showLegend#1657:12",
+          "kind": "boolean"
+        }
+      },
+      "figmaOnly": {
+        "example": "Picks which worked chart example the artboard shows.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "series": "Data array. The artboard draws a fixed set of example rows.",
+        "xName": "Runtime string with no Figma property on this component set.",
+        "yName": "Runtime string with no Figma property on this component set.",
+        "xFormat": "No Figma equivalent on the component.",
+        "yFormat": "No Figma equivalent on the component.",
+        "currency": "Runtime string with no Figma property on this component set.",
+        "showGrid": "Runtime flag with no Figma property on this component set.",
+        "animate": "Runtime flag with no Figma property on this component set.",
+        "height": "Runtime number. Not drawn as a Figma property.",
+        "emptyLabel": "Runtime string with no Figma property on this component set."
+      }
+    },
+    "Scoreboard": {
+      "contract": "Scoreboard",
+      "contractFile": "contracts/scoreboard.json",
+      "level": "organism",
+      "nodeId": "176:133",
+      "key": "b346a925c798523ed0e33d8c986adcaae07b02a5",
+      "keyKind": "componentKey",
+      "publish": "CURRENT",
+      "props": {},
+      "slots": {
+        "items": {
+          "show": [
+            "showCard4#176:40",
+            "showCard5#176:41",
+            "showCard6#176:42"
+          ],
+          "child": "Card N",
+          "childProps": "Card",
+          "max": 6
+        }
+      },
+      "noFigma": {
+        "selectable": "Runtime flag with no Figma property on this component set.",
+        "selected": "No Figma equivalent on the component.",
+        "defaultSelected": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onSelectedChange": "Callback. Figma components carry no event handlers.",
+        "scroll": "Runtime flag with no Figma property on this component set.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "Section": {
+      "contract": "Section",
+      "contractFile": "contracts/section.json",
+      "level": "organism",
+      "nodeId": "119:466",
+      "key": "c859a782ce7c3dff97dd80201c9c553729539361",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#119:0",
+          "kind": "text"
+        },
+        "actions": {
+          "figma": "showActions#119:52",
+          "kind": "boolean",
+          "note": "Figma toggles the action row; the buttons are exposed instances."
+        },
+        "children": {
+          "figma": "content#119:91",
+          "kind": "instanceSwap"
+        },
+        "line": {
+          "figma": "line",
+          "kind": "variant",
+          "values": [
+            "medium",
+            "thin",
+            "none"
+          ]
+        },
+        "columns": {
+          "figma": "columns",
+          "kind": "variant",
+          "values": [
+            "1",
+            "2",
+            "3"
+          ]
+        },
+        "collapsible": {
+          "figma": "collapsible",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "expanded": {
+          "figma": "expanded",
+          "kind": "variant",
+          "values": [
+            "true",
+            "false"
+          ]
+        },
+        "heading": {
+          "figma": "heading",
+          "kind": "variant",
+          "values": [
+            "md",
+            "xs",
+            "sm"
+          ]
+        },
+        "spacing": {
+          "figma": "spacing",
+          "kind": "variant",
+          "values": [
+            "default",
+            "tight"
+          ]
+        },
+        "loading": {
+          "figma": "loading",
+          "kind": "variant",
+          "values": [
+            "true",
+            "false"
+          ]
+        }
+      },
+      "stateMap": {
+        "loading": {
+          "figma": "loading",
+          "value": "true"
+        }
+      },
+      "figmaOnly": {
+        "showHelp#119:39": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showAction2#119:65": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showContent#119:78": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "nested": "Figma-only property.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "help": "Runtime string with no Figma property on this component set.",
+        "defaultExpanded": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onExpandedChange": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "Segmented": {
+      "contract": "Segmented",
+      "contractFile": "contracts/segmented.json",
+      "level": "molecule",
+      "nodeId": "160:896",
+      "key": "39ba3cd15b68e41043e4783c70f2caff7bf8db4f",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "label": {
+          "figma": "label#160:0",
+          "kind": "text"
+        },
+        "hideLabel": {
+          "figma": "showLabel#160:13",
+          "kind": "boolean",
+          "inverted": true,
+          "note": "Inverted: Figma shows the label when showLabel is on."
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "fullWidth": {
+          "figma": "fullWidth",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        }
+      },
+      "slots": {
+        "options": {
+          "show": [
+            "showOption3#160:26",
+            "showOption4#160:39",
+            "showOption5#160:52"
+          ],
+          "child": "Option N",
+          "childProps": "Button",
+          "max": 5
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        }
+      },
+      "modes": {
+        "size": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "note": "size stays a Figma variant; a Density mode changes the heights behind it."
+        }
+      },
+      "figmaOnly": {
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "value": "Runtime string with no Figma property on this component set.",
+        "defaultValue": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onChange": "Callback. Figma components carry no event handlers.",
+        "iconOnly": "Written up for Figma but not a component property.",
+        "name": "DOM attribute. Nothing to draw in Figma."
+      }
+    },
+    "Select": {
+      "contract": "Select",
+      "contractFile": "contracts/select.json",
+      "level": "molecule",
+      "nodeId": "181:17648",
+      "key": "57fd3ec11d6d10410960e566de86bd031c30b2ce",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "label": {
+          "figma": "label#181:106",
+          "kind": "text"
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "labelPosition": {
+          "figma": "labelPosition",
+          "kind": "variant",
+          "values": [
+            "top",
+            "start"
+          ]
+        },
+        "hideLabel": {
+          "figma": "showLabel#181:204",
+          "kind": "boolean",
+          "inverted": true,
+          "note": "Inverted: Figma shows the label when showLabel is on."
+        },
+        "placeholder": {
+          "figma": "content",
+          "kind": "variant",
+          "values": [
+            "placeholder",
+            "value"
+          ],
+          "note": "Figma picks placeholder or value with the content variant."
+        },
+        "required": {
+          "figma": "required#181:253",
+          "kind": "boolean"
+        },
+        "invalid": {
+          "figma": "invalid",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "error": {
+          "figma": "message#181:155",
+          "kind": "text",
+          "note": "Figma has one message text; the invalid variant marks it as an error."
+        },
+        "help": {
+          "figma": "help#181:302",
+          "kind": "boolean"
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        },
+        "invalid": {
+          "figma": "invalid",
+          "value": "true"
+        }
+      },
+      "modes": {
+        "labelWidth": {
+          "collection": "Label width",
+          "collectionKey": "f6eba1050377e4d2cd0de07fe4882a238242cd78",
+          "modes": [
+            "md",
+            "sm",
+            "lg"
+          ]
+        },
+        "size": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "note": "size stays a Figma variant; a Density mode changes the heights behind it."
+        }
+      },
+      "figmaOnly": {
+        "showMessage#181:351": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "options": "Data array. The artboard draws a fixed set of example rows.",
+        "labelWidth": "No Figma equivalent on the component.",
+        "itemCheck": "No Figma equivalent on the component.",
+        "multiple": "Runtime flag with no Figma property on this component set.",
+        "value": "Data array. The artboard draws a fixed set of example rows.",
+        "defaultValue": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onChange": "Callback. Figma components carry no event handlers.",
+        "maxVisible": "Runtime number. Not drawn as a Figma property.",
+        "searchable": "Runtime flag with no Figma property on this component set.",
+        "searchPlaceholder": "Runtime string with no Figma property on this component set.",
+        "name": "DOM attribute. Nothing to draw in Figma.",
+        "id": "DOM attribute. Nothing to draw in Figma.",
+        "hint": "Runtime string with no Figma property on this component set.",
+        "menuWidth": "Written up for Figma but not a component property."
+      }
+    },
+    "SettingsPage": {
+      "contract": "SettingsPage",
+      "contractFile": "contracts/settingspage.json",
+      "level": "template",
+      "nodeId": "1640:70641",
+      "key": "30f8650237a4146bae9c05ddfcef7798aabe5641",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "loading": {
+          "figma": "loading",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "loadingShape": {
+          "figma": "loadingShape",
+          "kind": "variant",
+          "values": [
+            "content",
+            "rows"
+          ]
+        }
+      },
+      "stateMap": {
+        "loading": {
+          "figma": "loading",
+          "value": "true"
+        }
+      },
+      "noFigma": {
+        "children": "React content slot. The artboard draws example content instead.",
+        "intro": "React content slot. The artboard draws example content instead.",
+        "loadingTiles": "No Figma equivalent on the component.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "Skeleton": {
+      "contract": "Skeleton",
+      "contractFile": "contracts/skeleton.json",
+      "level": "atom",
+      "nodeId": "45:59",
+      "key": "799c72c5aefcafa543f112d76519b9350751b726",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "shape": {
+          "figma": "shape",
+          "kind": "variant",
+          "values": [
+            "text",
+            "circle",
+            "rect"
+          ]
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "animation": {
+          "figma": "animation",
+          "kind": "variant",
+          "values": [
+            "shimmer",
+            "pulse",
+            "none"
+          ]
+        },
+        "tone": {
+          "figma": "tone",
+          "kind": "variant",
+          "values": [
+            "band",
+            "default",
+            "brand"
+          ]
+        }
+      },
+      "noFigma": {
+        "lines": "Runtime number. Not drawn as a Figma property.",
+        "width": "No Figma equivalent on the component.",
+        "height": "Runtime number. Not drawn as a Figma property.",
+        "loading": "Runtime flag with no Figma property on this component set.",
+        "children": "React content slot. The artboard draws example content instead.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "Sparkline": {
+      "contract": "Sparkline",
+      "contractFile": "contracts/sparkline.json",
+      "level": "atom",
+      "nodeId": "1660:125",
+      "key": "4abe6ce845bfaf3011204d08c35491890c80516f",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "kind": {
+          "figma": "kind",
+          "kind": "variant",
+          "values": [
+            "line",
+            "area",
+            "bar"
+          ]
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "showLast": {
+          "figma": "showLast",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "showBaseline": {
+          "figma": "showBaseline#1660:0",
+          "kind": "boolean"
+        }
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "values": "Data array. The artboard draws a fixed set of example rows.",
+        "intent": "No Figma equivalent on the component.",
+        "format": "No Figma equivalent on the component.",
+        "currency": "Runtime string with no Figma property on this component set.",
+        "emptyLabel": "Runtime string with no Figma property on this component set."
+      }
+    },
+    "Spinner": {
+      "contract": "Spinner",
+      "contractFile": "contracts/spinner.json",
+      "level": "atom",
+      "nodeId": "44:50",
+      "key": "464814f128f123dd9032e81ae8e85196a6f8a3a5",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "label": {
+          "figma": "label#44:0",
+          "kind": "text"
+        },
+        "showLabel": {
+          "figma": "showLabel#44:4",
+          "kind": "boolean"
+        }
+      }
+    },
+    "Steps": {
+      "contract": "Steps",
+      "contractFile": "contracts/steps.json",
+      "level": "molecule",
+      "nodeId": "85:121",
+      "key": "f06f843dd6d3cd5ae7f7dbed592fee45f96613f3",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md"
+          ]
+        }
+      },
+      "slots": {
+        "steps": {
+          "show": [
+            "showStep3#85:21",
+            "showStep4#85:24",
+            "showStep5#85:27",
+            "showStep6#85:30",
+            "showStep7#85:33"
+          ],
+          "child": "step N",
+          "childProps": "Steps",
+          "max": 7
+        }
+      },
+      "noFigma": {
+        "current": "Runtime number. Not drawn as a Figma property.",
+        "fill": "Runtime flag with no Figma property on this component set.",
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "onStepClick": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "Switch": {
+      "contract": "Switch",
+      "contractFile": "contracts/switch.json",
+      "level": "atom",
+      "nodeId": "69:209",
+      "key": "d7a4464ed2263e1772a13fed4eb9be39ba64c130",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "label": {
+          "figma": "label#69:0",
+          "kind": "text"
+        },
+        "hideLabel": {
+          "figma": "showLabel#69:13",
+          "kind": "boolean",
+          "inverted": true,
+          "note": "Inverted: Figma shows the label when showLabel is on."
+        },
+        "description": {
+          "figma": "description#69:26",
+          "kind": "text"
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "checked": {
+          "figma": "checked",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        }
+      },
+      "modes": {
+        "size": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "note": "size stays a Figma variant; a Density mode changes the heights behind it."
+        }
+      },
+      "figmaOnly": {
+        "showDescription#69:39": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "defaultChecked": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onChange": "Callback. Figma components carry no event handlers.",
+        "name": "DOM attribute. Nothing to draw in Figma.",
+        "id": "DOM attribute. Nothing to draw in Figma."
+      }
+    },
+    "Table": {
+      "contract": "Table",
+      "contractFile": "contracts/table.json",
+      "level": "organism",
+      "nodeId": "247:38012",
+      "key": "2733bd86d8d050eba72367ac199d9da00f73bb4f",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md"
+          ]
+        },
+        "line": {
+          "figma": "line",
+          "kind": "variant",
+          "values": [
+            "medium",
+            "thin"
+          ]
+        },
+        "caption": {
+          "figma": "caption#247:102",
+          "kind": "text"
+        },
+        "footer": {
+          "figma": "showFooter#247:68",
+          "kind": "boolean"
+        },
+        "selectable": {
+          "figma": "selectable",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        }
+      },
+      "slots": {
+        "rows": {
+          "show": [
+            "showRow4#247:0",
+            "showRow5#247:17",
+            "showRow6#247:34",
+            "showRow7#247:51",
+            "showRow8#252:0",
+            "showRow9#252:17",
+            "showRow10#252:34"
+          ],
+          "child": "Row N",
+          "childProps": "Cell",
+          "max": 10
+        },
+        "columns": {
+          "show": [
+            "showColumn5#252:51",
+            "showColumn6#252:68",
+            "showColumn7#252:85",
+            "showColumn8#252:102"
+          ],
+          "childProps": "HeaderCell",
+          "max": 8
+        }
+      },
+      "modes": {
+        "size": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "note": "size stays a Figma variant; a Density mode changes the heights behind it."
+        }
+      },
+      "figmaOnly": {
+        "showCaption#247:85": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showActionsColumn#247:119": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "content": "Picks which example content the artboard shows.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "emptyLabel": "Runtime string with no Figma property on this component set.",
+        "selected": "Data array. The artboard draws a fixed set of example rows.",
+        "defaultSelected": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onSelectionChange": "Callback. Figma components carry no event handlers.",
+        "rowLabel": "Runtime string with no Figma property on this component set.",
+        "onRowClick": "Callback. Figma components carry no event handlers.",
+        "detail": "Callback. Figma components carry no event handlers.",
+        "detailCount": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "Tabs": {
+      "contract": "Tabs",
+      "contractFile": "contracts/tabs.json",
+      "level": "molecule",
+      "nodeId": "86:403",
+      "key": "16f35366a2d04dddbb2249aeb7fa142442c8481f",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "expand": {
+          "figma": "expand",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "border": {
+          "figma": "border#86:30",
+          "kind": "boolean"
+        }
+      },
+      "slots": {
+        "items": {
+          "show": [
+            "showTab3#86:65",
+            "showTab4#86:37",
+            "showTab5#86:44",
+            "showTab6#991:0",
+            "showTab7#991:7"
+          ],
+          "child": "tab N",
+          "childProps": "Tabs",
+          "max": 7
+        }
+      },
+      "figmaOnly": {
+        "showPanel#86:51": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "panel#86:58": "Example copy on the artboard. In code it comes from data."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "value": "Runtime string with no Figma property on this component set.",
+        "defaultValue": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onChange": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "Textarea": {
+      "contract": "Textarea",
+      "contractFile": "contracts/textarea.json",
+      "level": "atom",
+      "nodeId": "157:12786",
+      "key": "a1f2c4a70537c7a6e2fa025816088f3e96add122",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "label": {
+          "figma": "label#157:0",
+          "kind": "text"
+        },
+        "hideLabel": {
+          "figma": "showLabel#157:772",
+          "kind": "boolean",
+          "inverted": true,
+          "note": "Inverted: Figma shows the label when showLabel is on."
+        },
+        "labelPosition": {
+          "figma": "labelPosition",
+          "kind": "variant",
+          "values": [
+            "top",
+            "start"
+          ]
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "type": {
+          "figma": "type",
+          "kind": "variant",
+          "values": [
+            "text",
+            "code"
+          ]
+        },
+        "placeholder": {
+          "figma": "content",
+          "kind": "variant",
+          "values": [
+            "placeholder",
+            "value"
+          ],
+          "note": "Figma picks placeholder or value with the content variant."
+        },
+        "value": {
+          "figma": "value#157:193",
+          "kind": "text"
+        },
+        "required": {
+          "figma": "required#157:965",
+          "kind": "boolean"
+        },
+        "invalid": {
+          "figma": "invalid",
+          "kind": "variant",
+          "values": [
+            "false",
+            "true"
+          ]
+        },
+        "error": {
+          "figma": "message#157:386",
+          "kind": "text",
+          "note": "Figma has one message text; the invalid variant marks it as an error."
+        },
+        "help": {
+          "figma": "help#157:1158",
+          "kind": "boolean"
+        }
+      },
+      "stateMap": {
+        "disabled": {
+          "figma": "state",
+          "value": "disabled"
+        },
+        "invalid": {
+          "figma": "invalid",
+          "value": "true"
+        }
+      },
+      "modes": {
+        "labelWidth": {
+          "collection": "Label width",
+          "collectionKey": "f6eba1050377e4d2cd0de07fe4882a238242cd78",
+          "modes": [
+            "md",
+            "sm",
+            "lg"
+          ]
+        }
+      },
+      "figmaOnly": {
+        "count#157:579": "Example copy on the artboard. In code it comes from data.",
+        "showMessage#157:1351": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showCount#157:1544": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "labelWidth": "No Figma equivalent on the component.",
+        "defaultValue": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onChange": "Callback. Figma components carry no event handlers.",
+        "name": "DOM attribute. Nothing to draw in Figma.",
+        "id": "DOM attribute. Nothing to draw in Figma.",
+        "readOnly": "Runtime flag with no Figma property on this component set.",
+        "hint": "Runtime string with no Figma property on this component set.",
+        "maxLength": "Runtime number. Not drawn as a Figma property."
+      }
+    },
+    "TextLoader": {
+      "contract": "TextLoader",
+      "contractFile": "contracts/textloader.json",
+      "level": "atom",
+      "nodeId": "46:78",
+      "key": "1c14d1405e38689b808dcd62098ba361183caa76",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "children": {
+          "figma": "text#46:0",
+          "kind": "text",
+          "note": "The artboard holds this as example copy."
+        },
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "speed": {
+          "figma": "speed",
+          "kind": "variant",
+          "values": [
+            "slow",
+            "normal",
+            "fast"
+          ]
+        }
+      }
+    },
+    "Timeline": {
+      "contract": "Timeline",
+      "contractFile": "contracts/timeline.json",
+      "level": "organism",
+      "nodeId": "195:938",
+      "key": "20228bec12916a510a6efd53a83d54bf6e1d82b0",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "md",
+            "sm"
+          ]
+        }
+      },
+      "slots": {
+        "items": {
+          "show": [
+            "showItem4#195:187",
+            "showItem5#195:190"
+          ],
+          "child": "Item N",
+          "childProps": "Timeline",
+          "max": 5
+        }
+      },
+      "figmaOnly": {
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "onMenuSelect": "Callback. Figma components carry no event handlers."
+      }
+    },
+    "Toast": {
+      "contract": "Toast",
+      "contractFile": "contracts/toast.json",
+      "level": "molecule",
+      "nodeId": "118:114",
+      "key": "2c200e7f6cc14496390688cadc02ff9663aea288",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#118:0",
+          "kind": "text"
+        },
+        "description": {
+          "figma": "description#118:5",
+          "kind": "text"
+        },
+        "intent": {
+          "figma": "intent",
+          "kind": "variant",
+          "values": [
+            "info",
+            "success",
+            "warning",
+            "danger"
+          ]
+        },
+        "actionLabel": {
+          "figma": "actionLabel#118:15",
+          "kind": "text"
+        },
+        "progress": {
+          "figma": "progress",
+          "kind": "variant",
+          "values": [
+            "off",
+            "indeterminate",
+            "value"
+          ]
+        }
+      },
+      "figmaOnly": {
+        "showDescription#118:10": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showAction#118:20": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "countdown#118:25": "Figma-only property.",
+        "state": "Interaction states are drawn as variants. In code they are CSS states."
+      },
+      "noFigma": {
+        "open": "Runtime flag with no Figma property on this component set.",
+        "onClose": "Callback. Figma components carry no event handlers.",
+        "onAction": "Callback. Figma components carry no event handlers.",
+        "duration": "Runtime number. Not drawn as a Figma property."
+      }
+    },
+    "Toolbar": {
+      "contract": "Toolbar",
+      "contractFile": "contracts/toolbar.json",
+      "level": "organism",
+      "nodeId": "232:672",
+      "key": "882b92cf3b6c1132a41587835272bfe173c17f6a",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "filtersOpen": {
+          "figma": "filtersOpen",
+          "kind": "variant",
+          "values": [
+            "true",
+            "false"
+          ]
+        },
+        "selectedCount": {
+          "figma": "selectedCount#1278:10",
+          "kind": "text"
+        },
+        "buttons": {
+          "figma": "buttons",
+          "kind": "variant",
+          "values": [
+            "raised",
+            "subtle"
+          ]
+        },
+        "loading": {
+          "figma": "loading",
+          "kind": "variant",
+          "values": [
+            "true",
+            "false"
+          ]
+        }
+      },
+      "stateMap": {
+        "loading": {
+          "figma": "loading",
+          "value": "true"
+        }
+      },
+      "figmaOnly": {
+        "showFilters#232:0": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showSearch#232:5": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showDivider#232:10": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showView#232:15": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showRefresh#232:20": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showMore#232:25": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showAction1#232:30": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showAction2#232:35": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showReset#232:40": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showApply#232:45": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showHelp#232:50": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showField#1278:0": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showSelectedCount#1278:5": "Artboard toggle for an example part. In code the part appears when its prop is given.",
+        "showSecondControl#1310:0": "Artboard toggle for an example part. In code the part appears when its prop is given."
+      },
+      "noFigma": {
+        "filters": "React content slot. The artboard draws example content instead.",
+        "filterCount": "No Figma equivalent on the component.",
+        "defaultFiltersOpen": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onFiltersOpenChange": "Callback. Figma components carry no event handlers.",
+        "onReset": "Callback. Figma components carry no event handlers.",
+        "onApply": "Callback. Figma components carry no event handlers.",
+        "filterHelp": "Runtime string with no Figma property on this component set.",
+        "searchValue": "Runtime string with no Figma property on this component set.",
+        "onSearchChange": "Callback. Figma components carry no event handlers.",
+        "searchPlaceholder": "Runtime string with no Figma property on this component set.",
+        "searchGroups": "Data array. The artboard draws a fixed set of example rows.",
+        "onSearchSelect": "Callback. Figma components carry no event handlers.",
+        "onSearchViewAll": "Callback. Figma components carry no event handlers.",
+        "field": "React content slot. The artboard draws example content instead.",
+        "views": "Data array. The artboard draws a fixed set of example rows.",
+        "view": "Runtime string with no Figma property on this component set.",
+        "onViewChange": "Callback. Figma components carry no event handlers.",
+        "onRefresh": "Callback. Figma components carry no event handlers.",
+        "moreActions": "Data array. The artboard draws a fixed set of example rows.",
+        "onMoreSelect": "Callback. Figma components carry no event handlers.",
+        "actions": "React content slot. The artboard draws example content instead.",
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "Tooltip": {
+      "contract": "Tooltip",
+      "contractFile": "contracts/tooltip.json",
+      "level": "atom",
+      "nodeId": "49:17",
+      "key": "6b605b083366c1fe7d3075d48eb3e6fe441d7f7a",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "content": {
+          "figma": "content#49:0",
+          "kind": "text"
+        },
+        "position": {
+          "figma": "position",
+          "kind": "variant",
+          "values": [
+            "above",
+            "below",
+            "left",
+            "right"
+          ]
+        }
+      },
+      "noFigma": {
+        "delay": "Runtime number. Not drawn as a Figma property.",
+        "open": "Runtime flag with no Figma property on this component set.",
+        "disabled": "Runtime flag with no Figma property on this component set.",
+        "children": "React content slot. The artboard draws example content instead."
+      }
+    },
+    "TreeView": {
+      "contract": "TreeView",
+      "contractFile": "contracts/treeview.json",
+      "level": "organism",
+      "nodeId": "197:7321",
+      "key": "d54b7f81f09a1c002e49960b940d5a434c526284",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "size": {
+          "figma": "size",
+          "kind": "variant",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        }
+      },
+      "slots": {
+        "items": {
+          "show": [],
+          "child": "Row N",
+          "childProps": "TreeView",
+          "max": 18,
+          "note": "Rows are drawn fixed; the look variant picks simple or advanced."
+        }
+      },
+      "modes": {
+        "size": {
+          "collection": "Density",
+          "collectionKey": "34150d733c68c21e19d7d955316173a75b5faab6",
+          "note": "size stays a Figma variant; a Density mode changes the heights behind it."
+        }
+      },
+      "figmaOnly": {
+        "look": "Figma-only property."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "defaultItems": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onItemsChange": "Callback. Figma components carry no event handlers.",
+        "selection": "Written up for Figma but not a component property.",
+        "selected": "Data array. The artboard draws a fixed set of example rows.",
+        "defaultSelected": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onSelectedChange": "Callback. Figma components carry no event handlers.",
+        "expanded": "Data array. The artboard draws a fixed set of example rows.",
+        "defaultExpanded": "Uncontrolled initial value. A Figma variant shows one state at a time.",
+        "onExpandedChange": "Callback. Figma components carry no event handlers.",
+        "showIcons": "Runtime flag with no Figma property on this component set.",
+        "showLines": "Runtime flag with no Figma property on this component set.",
+        "reorderable": "Runtime flag with no Figma property on this component set."
+      }
+    },
+    "UsageBar": {
+      "contract": "UsageBar",
+      "contractFile": "contracts/usagebar.json",
+      "level": "molecule",
+      "nodeId": "1322:502",
+      "key": "aa474e0bae5ef82b66a808aaa04f41b940ac5707",
+      "keyKind": "componentKey",
+      "publish": "CURRENT",
+      "props": {
+        "figures": {
+          "figma": "figures#1322:112",
+          "kind": "slot"
+        },
+        "showLegend": {
+          "figma": "showLegend#1322:115",
+          "kind": "boolean"
+        }
+      },
+      "slots": {
+        "figures": {
+          "show": [
+            "showFigures#1322:114"
+          ],
+          "childProps": "UsageBar",
+          "max": 4,
+          "note": "figures is a Figma slot property (figures#1322:112)."
+        },
+        "segments": {
+          "show": [],
+          "childProps": "UsageBar",
+          "max": 4,
+          "note": "Drawn into the parts slot (parts#1322:113)."
+        }
+      },
+      "figmaOnly": {
+        "parts#1322:113": "Figma-only property."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "UsageList": {
+      "contract": "UsageList",
+      "contractFile": "contracts/usagelist.json",
+      "level": "molecule",
+      "nodeId": "75:51",
+      "key": "3fb752fd808e4a49ea65e1beace4242cd19f05f1",
+      "keyKind": "componentKey",
+      "publish": "CURRENT",
+      "props": {},
+      "slots": {
+        "items": {
+          "show": [
+            "showRow2#75:0",
+            "showRow3#75:1"
+          ],
+          "child": "Row N",
+          "childProps": "UsageList",
+          "max": 3
+        }
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma."
+      }
+    },
+    "WaterfallChart": {
+      "contract": "WaterfallChart",
+      "contractFile": "contracts/waterfallchart.json",
+      "level": "organism",
+      "nodeId": "1658:249",
+      "key": "86854ee104698a4ab6f79a7f3c57cbf2b7edaaa4",
+      "keyKind": "componentSetKey",
+      "publish": "CURRENT",
+      "props": {
+        "title": {
+          "figma": "title#1658:5",
+          "kind": "text"
+        },
+        "subtitle": {
+          "figma": "subtitle#1658:10",
+          "kind": "text"
+        },
+        "showHeader": {
+          "figma": "showHeader#1658:0",
+          "kind": "boolean"
+        },
+        "showLegend": {
+          "figma": "showLegend#1658:15",
+          "kind": "boolean"
+        }
+      },
+      "figmaOnly": {
+        "example": "Picks which worked chart example the artboard shows.",
+        "booting": "Boot animation drawn as a variant. In code it is the loading prop with bootTiming."
+      },
+      "noFigma": {
+        "label": "Accessible name. Nothing to draw in Figma.",
+        "items": "Data array. The artboard draws a fixed set of example rows.",
+        "riseIntent": "No Figma equivalent on the component.",
+        "fallIntent": "No Figma equivalent on the component.",
+        "totalIntent": "No Figma equivalent on the component.",
+        "showValues": "Runtime flag with no Figma property on this component set.",
+        "showConnectors": "Runtime flag with no Figma property on this component set.",
+        "showGrid": "Runtime flag with no Figma property on this component set.",
+        "animate": "Runtime flag with no Figma property on this component set.",
+        "format": "No Figma equivalent on the component.",
+        "currency": "Runtime string with no Figma property on this component set.",
+        "height": "Runtime number. Not drawn as a Figma property.",
+        "emptyLabel": "Runtime string with no Figma property on this component set."
+      }
+    }
+  }
+}

@@ -8,7 +8,9 @@ import { components } from "@/playground/nav";
 import type { Contract } from "@/playground/Master";
 
 const read = (file: string) => JSON.parse(readFileSync(`contracts/${file}`, "utf8")) as Contract;
-const all = readdirSync("contracts").filter((f) => f.endsWith(".json") && f !== "index.json");
+// figma-map.json is the contract to Figma map, not a contract. tests/figma-map.test.ts checks it.
+const NOT_CONTRACTS = new Set(["index.json", "figma-map.json"]);
+const all = readdirSync("contracts").filter((f) => f.endsWith(".json") && !NOT_CONTRACTS.has(f));
 
 describe("splitDoNot", () => {
   it("puts a wrong-tool rule on the page", () => {

@@ -7,6 +7,8 @@ const repoRoot = resolve(import.meta.dirname, "..");
 const FILE_KEY = "ELFJs16lnRVQaOrxhMVrVf";
 // The index and the two foundation contracts are not components, so they carry no Figma component.
 const NOT_COMPONENTS = new Set(["density.json", "index.json", "layout.json"]);
+// figma-map.json is the contract to Figma map, not a contract. tests/figma-map.test.ts checks it.
+const NOT_CONTRACTS = new Set(["figma-map.json"]);
 
 type Contract = { name: string; figma?: { fileKey?: string; nodeId?: string } };
 
@@ -14,7 +16,7 @@ function readJson(relativePath: string) {
   return JSON.parse(readFileSync(resolve(repoRoot, relativePath), "utf8"));
 }
 
-const files = readdirSync(resolve(repoRoot, "contracts")).filter((f) => f.endsWith(".json") && !NOT_COMPONENTS.has(f));
+const files = readdirSync(resolve(repoRoot, "contracts")).filter((f) => f.endsWith(".json") && !NOT_COMPONENTS.has(f) && !NOT_CONTRACTS.has(f));
 
 describe("figma links", () => {
   it("has contracts to check", () => {
