@@ -35,6 +35,8 @@ export const REPAIRABLE = {
   "bp/figma-bound": ["bp/raw-value"],
   "bp/figma-modes": [],
   "bp/figma-overflow": [],
+  "bp/figma-align": [],
+  "bp/figma-example-content": [],
 };
 
 /** What a person has to decide about each rule, said once. */
@@ -45,6 +47,8 @@ export const FOR_PERSON = {
   "bp/figma-props": "A property is not what the plan said. Render again; if it comes back, the map and the file disagree.",
   "bp/figma-modes": "A frame does not set its own modes. Render again; if it comes back, the collection or the mode is not in the file.",
   "bp/figma-overflow": "The screen does not fit its frame. Give the screen less, or split the section.",
+  "bp/figma-align": "The screen does not start where its title starts. Something between the page and the screen carries an inset of its own; render again, and if it comes back the wrapper is padded twice.",
+  "bp/figma-example-content": "A slot still holds the artboard's own example content. Render again: the render empties a slot before it fills it.",
 };
 
 /** The audit, however it arrived: an object, a JSON string, or a file to read. */

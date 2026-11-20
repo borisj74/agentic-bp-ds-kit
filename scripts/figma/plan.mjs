@@ -813,6 +813,26 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
         ? filled.filter((region) => region === ABOVE_REGION || region === "header" || region === "empty")
         : filled.filter((region) => region !== "empty");
     const children = inside.map((region) => planned.get(region));
+    // Two shapes for the same column, because what is around it differs.
+    //
+    // In the shell's page slot the page is already a padded box: its own frame carries the content
+    // inset and the gap under the page header, so a second inset here would push the screen in from
+    // the title it belongs to. That is `.layout-stack` in the kit — the same gap, no padding of its
+    // own and no surface of its own.
+    //
+    // Without a page slot the frame has no padded box at all, so the column is the page itself and
+    // carries the inset and the background: `.layout-content`.
+    const stack = {
+      kind: "layout",
+      name: "layout/stack",
+      region: CONTENT_REGION,
+      direction: "VERTICAL",
+      gap: LAYOUT_TOKENS.gap,
+      padding: null,
+      radius: null,
+      fill: null,
+      children,
+    };
     const content = {
       kind: "layout",
       name: "layout/content",
@@ -829,11 +849,12 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
       const root_ = bare("AppShell");
       const loadingProp = shell.props?.loading;
       if (state === "loading" && loadingProp?.kind === "variant") root_.props[loadingProp.figma] = "true";
-      if (!fallback) root_.slots[pageSlot] = [content];
+      if (!fallback) root_.slots[pageSlot] = [stack];
 
       // The shell's own switches, said out loud like every other component's: the page on, the
       // assistant off, and the page header on only when the pattern does not draw one itself.
       const header = shellHeader();
+      root_.hidden = Object.keys(header.part?.props ?? {}).filter((key) => header.part.props[key] === false);
       for (const key of everyToggle(shell)) root_.props[key] = /^showPage#/i.test(key);
       if (header.toggle) root_.props[header.toggle] = header.on;
       if (header.part) root_.parts = [header.part];
@@ -852,11 +873,13 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
         patternState: patternStateFor(state),
         fallback,
         slot: pageSlot,
+        // The screen's content shares the page header's left edge, so the audit can measure it.
+        align: !fallback && header.on,
         root: root_,
         // The second shape, always planned: the header, the nav and the content frame beside them.
         // The script uses it when the map has no page slot, and when a slot refuses children.
         parts: { header: bare("AppHeader"), nav: bare("AppNav"), content },
-        content,
+        content: stack,
       });
     }
   }

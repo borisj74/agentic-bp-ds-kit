@@ -21,6 +21,10 @@
  *                       table and the label on an exposed action button
  *   bp/figma-modes      each frame sets its own explicit mode for every collection the plan named
  *   bp/figma-overflow   nothing sticks out of the frame it was put in
+ *   bp/figma-align      the screen starts at the page header title's own left edge
+ *   bp/figma-example-content
+ *                       a slot holds the screen and nothing else: none of the example content the
+ *                       artboard ships with is still showing
  */
 import { TARGET_PAGE } from "./plan.mjs";
 
@@ -32,6 +36,8 @@ export const RULES = [
   "bp/figma-props",
   "bp/figma-modes",
   "bp/figma-overflow",
+  "bp/figma-align",
+  "bp/figma-example-content",
 ];
 
 /** The one kit component name per plan node, and the props, words and layers the plan set on it. */
@@ -54,9 +60,15 @@ function expectInstance(node) {
     for (const row of item.rows) if (row.show) props[row.show] = true;
   }
   const nested = [];
+  const slots = {};
   for (const child of Object.values(node.swaps ?? {})) nested.push(expectInstance(child));
-  for (const list of Object.values(node.slots ?? {})) for (const child of list) nested.push(expectNode(child));
-  return { kind: "instance", component: node.component, props, layers, nested };
+  for (const [key, list] of Object.entries(node.slots ?? {})) {
+    slots[key.split("#")[0]] = list.map((child) => (child.kind === "layout" ? child.name : child.component));
+    for (const child of list) nested.push(expectNode(child));
+  }
+  const out = { kind: "instance", component: node.component, props, layers, nested };
+  if (Object.keys(slots).length > 0) out.slots = slots;
+  return out;
 }
 
 function expectNode(node) {
@@ -82,6 +94,7 @@ export function expectations(plan, { page = TARGET_PAGE, frames = null } = {}) {
     frames: wanted.map((frame) => ({
       name: frame.name,
       modes: frame.modes,
+      align: Boolean(frame.align),
       tree: frame.fallback
         ? [frame.parts.header, frame.parts.nav, frame.parts.content].filter(Boolean).map(expectNode)
         : [expectNode(frame.root)],
@@ -114,6 +127,27 @@ const down = (node, path, hint) => {
   return at;
 };
 const bound = (node, field) => Boolean((node.boundVariables || {})[field]);
+// What the plan put in a slot of this frame, by the slot's own name, or null when it planned none.
+const slotNames = (want, name) => {
+  let found = null;
+  const look = (node) => {
+    if (found) return;
+    if (node.kind === "instance") {
+      if (node.slots && node.slots[name]) { found = node.slots[name]; return; }
+      for (const child of node.nested || []) look(child);
+      return;
+    }
+    for (const child of node.children || []) look(child);
+  };
+  for (const child of want.tree) look(child);
+  return found;
+};
+// The first words showing inside a node, to name what is there in a finding.
+const firstWords = (node) => {
+  if (node.type === "TEXT" && node.visible && node.characters) return node.characters.slice(0, 40);
+  const text = node.findAll ? node.findAll((n) => n.type === "TEXT" && n.visible && n.characters)[0] : null;
+  return text ? text.characters.slice(0, 40) : null;
+};
 const boundPaint = (list) => Array.isArray(list) && list.length > 0 && list.every((p) => p.boundVariables && p.boundVariables.color);
 
 const page = figma.root.children.find((p) => p.name === EXPECT.page);
@@ -251,6 +285,37 @@ for (const want of EXPECT.frames) {
     if (!box || !own) continue;
     if (box.y + box.height > own.y + own.height + 1 || box.x + box.width > own.x + own.width + 1)
       add("bp/figma-overflow", want.name, child.name, child.id, "it sticks out of the frame");
+  }
+
+  // A slot holds the screen and nothing else. An artboard ships its slots full of example content,
+  // and a render that only appends leaves that content showing above or below the screen.
+  const slots = frame.findAllWithCriteria({ types: ["SLOT"] });
+  for (const slot of slots) {
+    const planned = slotNames(want, slot.name);
+    if (planned === null) continue;
+    for (const child of slot.children) {
+      if (planned.includes(child.name)) continue;
+      const words = firstWords(child);
+      add("bp/figma-example-content", want.name, child.name, child.id, "the " + slot.name + " slot still holds " + (words ? JSON.stringify(words) : "a " + child.type) + ", which the spec never asked for");
+    }
+    for (const name of planned) {
+      if (!slot.children.some((child) => child.name === name)) add("bp/figma-example-content", want.name, slot.name, slot.id, "the slot does not hold " + name);
+    }
+  }
+
+  // The screen starts where its title starts. A wrapper that carries an inset of its own pushes the
+  // content in from the page header it belongs to, which no other rule can see.
+  if (want.align) {
+    const header = frame.findAll((n) => n.type === "INSTANCE" && n.name === "PageHeader")[0];
+    const title = header ? header.findAll((n) => n.type === "TEXT" && n.visible && n.characters)[0] : null;
+    const stack = slots.map((slot) => slot.children[0]).find(Boolean);
+    const titleAt = title && title.absoluteBoundingBox ? title.absoluteBoundingBox.x : null;
+    const contentAt = stack && stack.absoluteBoundingBox ? stack.absoluteBoundingBox.x : null;
+    if (titleAt === null || contentAt === null) {
+      add("bp/figma-align", want.name, frame.name, frame.id, "there is no page header title or no content to line it up with");
+    } else if (Math.abs(titleAt - contentAt) > 1) {
+      add("bp/figma-align", want.name, stack.name, stack.id, "the screen starts at " + Math.round(contentAt) + " and its title at " + Math.round(titleAt) + ", " + Math.round(Math.abs(contentAt - titleAt)) + "px apart");
+    }
   }
 }
 

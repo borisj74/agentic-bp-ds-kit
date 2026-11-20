@@ -79,7 +79,8 @@ Write `reports/figma-loop/<name>.md` when the loop stops, whatever the outcome:
 
 - the spec, the pattern, the brand, the themes, and how many attempts it took
 - a table of rules × attempts: one row per rule (`bp/figma-instance`, `bp/figma-detached`,
-  `bp/figma-bound`, `bp/figma-props`, `bp/figma-modes`, `bp/figma-overflow`), one column per attempt
+  `bp/figma-bound`, `bp/figma-props`, `bp/figma-modes`, `bp/figma-overflow`, `bp/figma-align`,
+  `bp/figma-example-content`), one column per attempt
 - every frame by name with its Figma node id, as a link to
   `https://www.figma.com/design/<fileKey>/?node-id=<id>`
 - the screenshot paths
@@ -100,5 +101,8 @@ Write `reports/figma-loop/<name>.md` when the loop stops, whatever the outcome:
   it by hand.
 - **Never write a number or a colour.** Gaps, paddings, radii and fills name a Dimension or Semantic
   variable and are bound to it.
+- **Never inset the screen twice.** In the shell's page slot the page frame already carries the
+  content inset and the gap under the page header, so the screen's own column is a `layout/stack`:
+  the same gap, no padding, no surface. `bp/figma-align` measures it.
 - **One strong brand Button per screen**, as everywhere else in the kit.
 - **Do not hand back a screen whose audit fails.** Read the report, fix the spec, run it again.

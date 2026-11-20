@@ -97,7 +97,7 @@ describe("the render plan", () => {
     expect(frame.root.component).toBe("AppShell");
     const slot = Object.keys(frame.root.slots)[0];
     expect(slot).toBe(map.components.AppShell.props.children.figma);
-    expect(frame.root.slots[slot][0].name).toBe("layout/content");
+    expect(frame.root.slots[slot][0].name).toBe("layout/stack");
   });
 
   it("falls back to AppHeader, AppNav and a content frame when AppShell has no page slot", () => {
@@ -119,6 +119,7 @@ describe("the render plan", () => {
     // The bar over the rows, then the rows: a Toolbar before a Table.
     expect(ready.regions).toEqual(["toolbar", "content"]);
     const content = ready.root.slots[map.components.AppShell.props.children.figma][0];
+    expect(content.name).toBe("layout/stack");
     expect(content.children.map((child: Json) => child.name)).toEqual(["layout/toolbar", "layout/content"]);
     expect(content.children[0].children[0].component).toBe("Toolbar");
     expect(content.children[1].children[0].component).toBe("Table");
@@ -141,10 +142,17 @@ describe("the render plan", () => {
         expect(node[field]).toMatch(/^[a-z]+\/[a-z0-9-]+$/);
       }
     }
-    const content = treeOf(plan).find((node) => node.name === "layout/content") as Json;
-    expect(content.gap).toBe(LAYOUT_TOKENS.gap);
-    expect(content.padding).toBe(LAYOUT_TOKENS.padding);
-    expect(content.fill).toBe(LAYOUT_TOKENS.fill);
+    // In the page slot the column is a stack: the shell's page frame already carries the inset.
+    const stack = treeOf(plan).find((node) => node.name === "layout/stack") as Json;
+    expect(stack.gap).toBe(LAYOUT_TOKENS.gap);
+    expect(stack.padding).toBe(null);
+    expect(stack.fill).toBe(null);
+    // Without a page slot the column is the page, so it carries the inset and the background.
+    const page = plan.frames[0].parts.content;
+    expect(page.name).toBe("layout/content");
+    expect(page.gap).toBe(LAYOUT_TOKENS.gap);
+    expect(page.padding).toBe(LAYOUT_TOKENS.padding);
+    expect(page.fill).toBe(LAYOUT_TOKENS.fill);
   });
 
   it("makes every node but a layout frame a library instance with a key", () => {
@@ -264,6 +272,54 @@ describe("the render plan", () => {
     expect(toolbar.parts[0].texts).toEqual({ "label#110:0": "Record payment" });
     expect(toolbar.parts[0].props.emphasis).toBe("strong");
     expect(toolbar.parts[0].props.intent).toBe("brand");
+  });
+
+  it("fills a page header's own actions through the layers the file keeps them in", () => {
+    // A pattern that draws its own header gets the screen's page-level actions: the spec puts them
+    // in that PageHeader, and Figma draws them as the two exposed buttons beside the title.
+    const plan = makePlan({
+      name: "with-actions",
+      title: "With actions",
+      pattern: "FormPage",
+      regions: {
+        header: [
+          {
+            component: "PageHeader",
+            props: { title: "With actions" },
+            slots: {
+              actions: [
+                { component: "Button", props: { size: "sm" }, text: "Cancel" },
+                { component: "Button", props: { size: "sm", emphasis: "strong", intent: "brand" }, text: "Save" },
+              ],
+            },
+          },
+        ],
+        content: [{ component: "Callout", props: { intent: "info" }, text: "A note." }],
+      },
+    });
+    expect(plan.ok).toBe(true);
+    const header = treeOf(plan).find((node) => node.component === "PageHeader") as Json;
+    expect(header.props["showAction1#194:24"]).toBe(true);
+    expect(header.props["showAction2#194:20"]).toBe(true);
+    expect(header.parts.map((part: Json) => part.path)).toEqual([
+      ["bar", "controls", "Action 1"],
+      ["bar", "controls", "Action 2"],
+    ]);
+    expect(header.parts[0].texts).toEqual({ "label#110:0": "Cancel" });
+    expect(header.parts[1].texts).toEqual({ "label#110:0": "Save" });
+    expect(header.parts[1].props.emphasis).toBe("strong");
+    expect(header.parts[1].props.intent).toBe("brand");
+  });
+
+  it("keeps the screen on the page header's own left edge", () => {
+    const plan = makePlan(read("payments-empty.json"));
+    for (const frame of plan.frames) {
+      // The shell draws this screen's header, so the audit measures the two left edges.
+      expect(frame.align).toBe(true);
+      const stack = frame.root.slots[map.components.AppShell.props.children.figma][0];
+      // Nothing between the page and the screen carries an inset of its own.
+      expect(stack.padding).toBe(null);
+    }
   });
 
   it("keeps one strong brand Button, and draws the rest subtle neutral", () => {
@@ -647,6 +703,17 @@ describe("the audit script", () => {
     expect(flat).toContain('"path":["bar","end","Action 1"]');
     // An action part also carries how to find it when the layer is not where the plan looked.
     expect(flat).toContain('"hint":{"component":"Button","index":1}');
+  });
+
+  it("says what each slot holds, and which frames are measured for alignment", () => {
+    const want = expectations(readPlan("payments-empty.json")) as unknown as Json;
+    expect(want.frames.every((frame: Json) => frame.align === true)).toBe(true);
+    expect(want.frames[0].tree[0].slots).toEqual({ page: ["layout/stack"] });
+    const code = auditScript(readPlan("payments-empty.json"));
+    expect(code).toContain("bp/figma-example-content");
+    expect(code).toContain("bp/figma-align");
+    // Both rules read the file and change nothing.
+    expect(code).not.toMatch(/appendChild|setProperties|\.remove\(/);
   });
 
   it("names every rule it can report", () => {

@@ -4,7 +4,7 @@ Spec `docs/references/payments-empty.json` · pattern `ListPage` · brand `cobal
 Rendered 2026-11-20 into [Agentic DS](https://www.figma.com/design/ELFJs16lnRVQaOrxhMVrVf/), page
 **Spec renders**, section **payments-empty**.
 
-**Pass**, on the third attempt.
+**Pass.** Eight rules, four frames, nothing left for the loop to repair.
 
 ## Frames
 
@@ -27,36 +27,61 @@ Page `1746:22`, section `1746:23`. Re-rendering keeps all of these ids.
 | bp/figma-props | pass | pass | pass |
 | bp/figma-modes | pass | pass | pass |
 | bp/figma-overflow | pass | pass | pass |
+| bp/figma-align | — | — | pass |
+| bp/figma-example-content | — | — | pass |
 
-The audit passed on every attempt. The two defects that made attempts 1 and 2 wrong were **visual**,
-and no rule caught either of them — the screenshot did. Both are fixed in the renderer:
+Three defects got through attempts 1 and 2 with every rule passing. The screenshot caught all three;
+the last two rules in the table were written so none of them can pass silently again.
 
-1. **The page slot kept the artboard's own example content.** The screen went in under the AppShell's
-   example Sections (Summary, Invoices, Billing settings), so the frame read as somebody else's
-   screen with this one below it. `$fig` now empties a slot before it fills it.
-2. **The shell's own parts were left at the artboard's defaults.** The frame root was built without
-   the switch pass every other instance gets, so the example page header ("Invoices", a Home / Billing
-   / Invoices trail, "Ask the assistant" and "New invoice") stayed on. The shell now says its own
-   switches out loud — page on, assistant off — and writes the screen's title into the page header
-   with the header's own example parts switched off.
+1. **The page slot kept the artboard's own example content** — the screen was appended under the
+   AppShell's example Sections. A slot is emptied before it is filled, and **bp/figma-example-content**
+   now reads every slot in the frame and reports anything in it the plan did not put there, quoting
+   the words it found.
+2. **The shell's own parts were left at the artboard's defaults** — its example page header stayed on
+   with the wrong title, somebody else's breadcrumb trail and two example actions. The shell now says
+   its own switches out loud, and **bp/figma-props** covers them because they are in the plan.
+3. **The screen sat 24px in from its own title.** The shell's `page` frame already carries the content
+   inset (`layout/margin-md`) and the 16px gap under the page header, and the renderer's own column
+   carried a second inset on top of it. In the kit that column is `.layout-stack`, not
+   `.layout-content`, so that is what it is now: the same gap, no padding and no surface of its own.
+   `.layout-content` is still what the fallback frame uses, where there is no padded page around it.
+   **bp/figma-align** measures the page header title's left edge against the screen's first child and
+   fails at more than 1px.
 
-The audit now checks both: the shell's switches and its page header are in the plan, so a render that
-loses either fails `bp/figma-props`.
+Measured after this render, in every one of the four frames: title and content both at the page's own
+left edge, 0px apart, and 16px between the page header and the first thing under it — the same two
+numbers as [the billing-dashboard prototype](https://vercel-bp-prototype.vercel.app/prototypes/billing-dashboard)
+at 1440 (title and sections both at x 192, header bottom 136, first section 152).
+
+## Page-level actions
+
+**This screen has none, so the page header carries only its title.**
+
+The spec names one action, `Record payment`, and puts it in the `Toolbar`'s `actions` slot. The
+contracts keep those two places apart: `Toolbar actions` is what can be done to the list under it,
+and `PageHeader actions` is what can be done to the page. A list's own primary action belongs to the
+bar over the rows — it is where every other list screen in `docs/references/` puts it — so it stays
+in the toolbar, and the page header's two example buttons are switched off rather than filled with
+something the spec never asked for.
+
+The renderer fills a page header's actions wherever a spec does name them: a pattern that draws its
+own header (FormPage, RecordPage) gets them through `bar > controls > Action 1` and `Action 2`, the
+layers read in the file. A ListPage's header is drawn by the shell, and the spec has no way to put
+actions in it — if this screen should have one, that is a change to the kit's spec schema, not to
+this render.
 
 ## What the render does not carry
 
-- **No breadcrumb trail.** The web frame draws Home › Accounts receivable › Payments and refunds.
-  The Figma page header's crumbs are the artboard's example trail, and the renderer cannot yet write
-  a screen's own, so the breadcrumb is switched off rather than left saying something untrue.
-  Left for a person.
+- **No breadcrumb trail.** The web frame draws Home › Accounts receivable › Payments and refunds. The
+  Figma page header's crumbs are the artboard's example trail and the renderer cannot yet write a
+  screen's own, so the breadcrumb is switched off rather than left saying something untrue.
 - **Not in Figma** (the plan's own report):
   - `Toolbar label`, `searchPlaceholder`, `onSearchChange`, `onRefresh` — an accessible name, a
     runtime string and two callbacks. Figma draws the search and the refresh; their words are the
     artboard's.
   - `Table rowLabel`, `emptyLabel` — runtime strings.
   - `columns[0].emphasis` — HeaderCell has no Figma property for it.
-  - `EmptyState headingLevel`, `icon`, `iconStyle` — the icon glyph is the artboard's; the kit sets
-    it in code.
+  - `EmptyState headingLevel`, `icon`, `iconStyle` — the icon glyph is the artboard's.
 
 ## What the screen does carry
 
