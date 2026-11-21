@@ -536,6 +536,45 @@ describe("the audit, against a fake Figma tree", () => {
       expect(content(result)).toEqual([]);
     });
 
+    it("rewrites only the showing page size, never the hidden menu option that reads the same", async () => {
+      // A Pagination: the Select shows "10", and its closed menu holds an option "10" that is hidden.
+      const bar = tree({
+        id: "bar",
+        name: "Pagination",
+        type: "INSTANCE",
+        children: [
+          { id: "size", name: "Value", type: "TEXT", characters: "10", fontName: { family: "Inter", style: "Regular" } },
+          {
+            id: "menu",
+            name: "Menu",
+            type: "FRAME",
+            visible: false,
+            children: [{ id: "option", name: "Option 1", type: "TEXT", characters: "10", fontName: { family: "Inter", style: "Regular" } }],
+          },
+          { id: "hidden", name: "Spare", type: "TEXT", visible: false, characters: "10", fontName: { family: "Inter", style: "Regular" } },
+        ],
+      });
+      const fig = await renderHelpers(fakeFigma(tree({ id: "p", name: "Spec renders", type: "PAGE", children: [] })));
+      expect(await fig.write(bar, "10", "25")).toBe(1);
+      expect(byName(bar, "Value").characters).toBe("25");
+      expect(byName(bar, "Option 1").characters).toBe("10");
+      expect(byName(bar, "Spare").characters).toBe("10");
+    });
+
+    it("writes nothing when more than one showing layer reads the words", async () => {
+      const file = fileOf({
+        cards: [true, true, false],
+        extraText: [
+          { name: "Label 1", chars: "Total" },
+          { name: "Label 2", chars: "Total" },
+        ],
+      });
+      const fig = await renderHelpers(fakeFigma(file));
+      expect(await fig.write(byName(file, "Scoreboard"), "Total", "Total rated")).toBe(2);
+      expect(byName(file, "Label 1").characters).toBe("Total");
+      expect(byName(file, "Label 2").characters).toBe("Total");
+    });
+
     it("writes nothing and says so when the artboard's words are not there", async () => {
       const fig = await renderHelpers(fakeFigma(fileWords()));
       expect(await fig.write(byName(fileWords(), "Scoreboard"), "Grand total", "x")).toBe(0);

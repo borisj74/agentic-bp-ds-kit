@@ -324,13 +324,21 @@ ${TOUCH}
   // Words the artboard draws with no property behind them — a table's total, a page size — found
   // inside the instance by what they say and written over with the spec's. Nothing is created: the
   // text layers are the library's own, and only what they say changes.
+  //
+  // Only a layer that is showing counts, and only one: a Pagination's "10" is also an option in the
+  // hidden menu of its Select, and two showing matches mean the plan cannot tell which one it meant.
+  // So the write happens only when exactly one visible layer reads those words; otherwise nothing is
+  // written, and the count goes back so the render can report it.
+  const showing = (text, within) => {
+    for (let at = text; at && at !== within; at = at.parent) if (at.visible === false) return false;
+    return within.visible !== false;
+  };
   const write = async (node, was, text) => {
-    const hits = node.findAll((n) => n.type === "TEXT" && String(n.characters).trim() === was);
-    for (const hit of hits) {
-      await loadFonts(hit);
-      hit.characters = text;
-    }
-    return hits.length;
+    const hits = node.findAll((n) => n.type === "TEXT" && String(n.characters).trim() === was && showing(n, node));
+    if (hits.length !== 1) return hits.length;
+    await loadFonts(hits[0]);
+    hits[0].characters = text;
+    return 1;
   };
 
   return { page, section, fit, frame, clear, layout, instance, slot, nested, apply, write, getVar, setModes, component, loadFonts };
@@ -370,7 +378,7 @@ const fillInstance = async (node, spec) => {
   // the spec writes afterwards can never be mistaken for one of them.
   for (const one of spec.words || []) {
     const n = await $fig.write(node, one.was, one.text);
-    if (n === 0) missing.push({ frame: frameNow, node: node.name, path: ["text " + JSON.stringify(one.was)], set: ["characters"] });
+    if (n !== 1) missing.push({ frame: frameNow, node: node.name, path: ["text " + JSON.stringify(one.was)], set: ["characters"], showing: n });
   }
   for (const row of spec.rows || []) await fillRow(node, row);
   for (const part of spec.parts || []) {

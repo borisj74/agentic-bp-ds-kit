@@ -1170,6 +1170,8 @@ describe("the words a component draws with no property of its own", () => {
     const script = emitScript(plan);
     expect(script.code).toContain('"words":[{"was":"Total","text":"Total rated"},{"was":"$2,250.00","text":"$308,977"}]');
     expect(script.code).toContain("$fig.write(");
+    // Anything but exactly one showing match is written nowhere and reported as missing.
+    expect(script.code).toContain("if (n !== 1) missing.push(");
     const expected = expectations(plan);
     expect(expected.frames[0].words).toEqual(expect.arrayContaining(["Total rated", "$308,977", "25", "Showing 1 to 25 of 128 rows"]));
   });
