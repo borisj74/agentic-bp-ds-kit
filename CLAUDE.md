@@ -85,6 +85,10 @@ What the loop can repair on its own, between attempts, always by changing the sp
 
 Everything else the report names for you to decide: pick the bigger piece, write the words, change the layout. Fix the spec and run the loop again.
 
+## Widgets come from a template
+
+A dashboard tile is a widget spec (`"kind": "widget"`): one template from `templates/widgets/`, one size from `contracts/widget-sizes.json`, its params, data, copy and actions. Check it with `npm run widget -- check <spec | folder | batch.jsonl>`, build it with `npm run widget -- build`, and run `npm run widget -- loop` until it passes. Never lay a tile out by hand; if no template fits, propose a new one. The skill `widget-from-template` walks through it.
+
 ## Build order
 
 Every contract carries a `level`: `atom`, `molecule`, `organism` or `template`. Read it in `contracts/index.json`.

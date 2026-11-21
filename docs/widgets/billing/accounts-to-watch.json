@@ -1,0 +1,98 @@
+{
+  "kind": "widget",
+  "name": "accounts-to-watch",
+  "template": "table",
+  "size": "6x3",
+  "copy": {
+    "title": "Accounts to watch",
+    "emptyTitle": "Every large account is on track",
+    "error": "The accounts to watch did not load."
+  },
+  "data": {
+    "columns": [
+      {
+        "key": "account",
+        "header": "Account",
+        "type": "link"
+      },
+      {
+        "key": "invoices",
+        "header": "Invoices",
+        "numeric": true
+      },
+      {
+        "key": "amount",
+        "header": "Invoice amount",
+        "numeric": true
+      },
+      {
+        "key": "approved",
+        "header": "Approved",
+        "type": "status"
+      }
+    ],
+    "rows": [
+      {
+        "id": "apex",
+        "account": "Apex Digital Services",
+        "invoices": "412",
+        "amount": "$1,780,000",
+        "approved": {
+          "label": "Under 20%",
+          "intent": "danger"
+        }
+      },
+      {
+        "id": "ironwood",
+        "account": "Ironwood Energy",
+        "invoices": "58",
+        "amount": "$1,390,000",
+        "approved": {
+          "label": "Under 20%",
+          "intent": "danger"
+        }
+      },
+      {
+        "id": "kestrel",
+        "account": "Kestrel Air",
+        "invoices": "64",
+        "amount": "$380,000",
+        "approved": {
+          "label": "Under 20%",
+          "intent": "danger"
+        }
+      },
+      {
+        "id": "catalyst",
+        "account": "Catalyst Group",
+        "invoices": "301",
+        "amount": "$1,690,000",
+        "approved": {
+          "label": "20 to 49%",
+          "intent": "warning"
+        }
+      },
+      {
+        "id": "delta",
+        "account": "Delta Tools",
+        "invoices": "388",
+        "amount": "$1,660,000",
+        "approved": {
+          "label": "20 to 49%",
+          "intent": "warning"
+        }
+      }
+    ]
+  },
+  "actions": [
+    {
+      "id": "open-row",
+      "type": "open"
+    },
+    {
+      "id": "view-watch-report",
+      "type": "footer",
+      "label": "View accounts to watch report"
+    }
+  ]
+}

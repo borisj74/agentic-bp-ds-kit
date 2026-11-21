@@ -1,0 +1,36 @@
+{
+  "kind": "widget",
+  "name": "payments-by-method",
+  "about": "From the billing reference screen: how the month's payments split by method.",
+  "template": "donut",
+  "size": "4x2",
+  "params": {
+    "format": "currency"
+  },
+  "copy": {
+    "title": "Payments by method",
+    "emptyTitle": "No payments received yet",
+    "error": "The payment split did not load."
+  },
+  "data": {
+    "totalLabel": "Received",
+    "slices": [
+      {
+        "label": "ACH",
+        "value": 2180400
+      },
+      {
+        "label": "Card",
+        "value": 1284600
+      },
+      {
+        "label": "Wire",
+        "value": 612300
+      },
+      {
+        "label": "Check",
+        "value": 128900
+      }
+    ]
+  }
+}

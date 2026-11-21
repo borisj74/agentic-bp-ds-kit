@@ -66,6 +66,7 @@ describe("review rules", () => {
     ["bp/local-cousin", "bad/local-cousin.tsx", "error"],
     ["bp/closed-enum", "bad/closed-enum.tsx", "error"],
     ["bp/one-primary", "bad/one-primary.tsx", "error"],
+    ["bp/one-strong-action", "bad/one-strong-action.tsx", "error"],
     ["bp/use-pattern", "bad/use-pattern.tsx", "warn"],
     ["bp/use-bigger-piece", "bad/use-bigger-piece.tsx", "warn"],
   ])("%s is found in %s, and nothing else is", (rule, relative, severity) => {
@@ -76,6 +77,26 @@ describe("review rules", () => {
     expect(findings[0].severity).toBe(severity);
     expect(findings[0].line).toBe(markedLine(file, rule));
     expect(findings[0].fix.length).toBeGreaterThan(10);
+  });
+
+  it("bp/one-strong-action counts each Section on its own", () => {
+    const code = [
+      'import { Button } from "@/ui/Button/Button";',
+      'import { Section } from "@/ui/Section/Section";',
+      "export function Tiles() {",
+      "  return (",
+      "    <>",
+      '      <Section title="Unapplied cash" actions={<Button emphasis="strong" intent="danger">Write off</Button>}>x</Section>',
+      '      <Section title="Disputes"><Button emphasis="strong" intent="danger">Close all</Button></Section>',
+      "    </>",
+      "  );",
+      "}",
+    ].join("\n");
+    expect((reviewSource(code, "src/app/x/Tiles.tsx") as Finding[]).filter((f) => f.rule === "bp/one-strong-action")).toEqual([]);
+    const both = code.replace('<Section title="Disputes">', '<Section title="Disputes"><Button emphasis="strong" intent="brand">Resolve</Button>');
+    const found = (reviewSource(both, "src/app/x/Tiles.tsx") as Finding[]).filter((f) => f.rule === "bp/one-strong-action");
+    expect(found).toHaveLength(1);
+    expect(found[0].line).toBe(7);
   });
 
   it("bp/screen-frame is found on a full screen with no AppShell", () => {

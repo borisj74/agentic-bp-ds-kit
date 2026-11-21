@@ -1,0 +1,53 @@
+{
+  "kind": "widget",
+  "name": "needs-attention",
+  "template": "table",
+  "size": "6x2",
+  "copy": {
+    "title": "Needs attention",
+    "emptyTitle": "Every collector ran cleanly",
+    "error": "The failed runs did not load."
+  },
+  "data": {
+    "columns": [
+      {
+        "key": "collector",
+        "header": "Collector",
+        "type": "link"
+      },
+      {
+        "key": "issue",
+        "header": "What needs a look"
+      },
+      {
+        "key": "lastRun",
+        "header": "Last run"
+      }
+    ],
+    "rows": [
+      {
+        "id": "cedar",
+        "collector": "Cedar Peak shipments",
+        "issue": "Could not sign in to the FTP server",
+        "lastRun": "09/15/2026 05:30"
+      },
+      {
+        "id": "kestrel",
+        "collector": "Kestrel device check-ins",
+        "issue": "1 billing identifier has no account",
+        "lastRun": "09/15/2026 07:45"
+      }
+    ]
+  },
+  "actions": [
+    {
+      "id": "open-row",
+      "type": "open"
+    },
+    {
+      "id": "view-collectors",
+      "type": "footer",
+      "label": "View usage collectors"
+    }
+  ]
+}

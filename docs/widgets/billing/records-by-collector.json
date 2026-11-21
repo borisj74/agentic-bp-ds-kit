@@ -1,0 +1,58 @@
+{
+  "kind": "widget",
+  "name": "records-by-collector",
+  "template": "bar-chart",
+  "size": "6x3",
+  "params": {
+    "orientation": "horizontal",
+    "stacked": true
+  },
+  "copy": {
+    "title": "Records by collector",
+    "emptyTitle": "No records collected today",
+    "error": "The collector chart did not load."
+  },
+  "data": {
+    "categories": [
+      "Marken usage collector",
+      "IDT API calls",
+      "Lumen Solar meter reads",
+      "Cedar Peak shipments",
+      "Nimbus storage",
+      "Fairwind flight hours"
+    ],
+    "series": [
+      {
+        "name": "Processed",
+        "values": [
+          18240,
+          14108,
+          12400,
+          4866,
+          3120,
+          2210
+        ],
+        "intent": "cyan"
+      },
+      {
+        "name": "Errors",
+        "values": [
+          0,
+          12,
+          0,
+          214,
+          0,
+          0
+        ],
+        "intent": "red"
+      }
+    ]
+  },
+  "actions": [
+    {
+      "id": "view-collector-report",
+      "type": "footer",
+      "label": "View records by collector report"
+    }
+  ]
+}

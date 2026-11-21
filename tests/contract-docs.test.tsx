@@ -9,7 +9,8 @@ import type { Contract } from "@/playground/Master";
 
 const read = (file: string) => JSON.parse(readFileSync(`contracts/${file}`, "utf8")) as Contract;
 // figma-map.json is the contract to Figma map, not a contract. tests/figma-map.test.ts checks it.
-const NOT_CONTRACTS = new Set(["index.json", "figma-map.json"]);
+// widget-sizes.json is the tile size table derived from the layout tokens. tests/widget.test.ts checks it.
+const NOT_CONTRACTS = new Set(["index.json", "figma-map.json", "widget-sizes.json"]);
 const all = readdirSync("contracts").filter((f) => f.endsWith(".json") && !NOT_CONTRACTS.has(f));
 
 describe("splitDoNot", () => {

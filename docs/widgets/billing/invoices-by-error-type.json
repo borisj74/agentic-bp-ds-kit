@@ -1,0 +1,108 @@
+{
+  "kind": "widget",
+  "name": "invoices-by-error-type",
+  "template": "table",
+  "size": "12x2",
+  "copy": {
+    "title": "Invoices by error type",
+    "emptyTitle": "No errors to sort",
+    "emptyDescription": "Invoices held up by an error show here by type.",
+    "error": "The error list did not load."
+  },
+  "data": {
+    "columns": [
+      {
+        "key": "type",
+        "header": "Error type",
+        "type": "link"
+      },
+      {
+        "key": "severity",
+        "header": "Severity",
+        "type": "status"
+      },
+      {
+        "key": "invoices",
+        "header": "Invoices",
+        "numeric": true
+      },
+      {
+        "key": "amount",
+        "header": "Amount",
+        "numeric": true
+      },
+      {
+        "key": "system",
+        "header": "System"
+      }
+    ],
+    "rows": [
+      {
+        "id": "einvoice",
+        "type": "E-invoice submission failed",
+        "severity": {
+          "label": "Blocking",
+          "intent": "danger"
+        },
+        "invoices": "12",
+        "amount": "$725.25",
+        "system": "E-Invoice"
+      },
+      {
+        "id": "bounced",
+        "type": "Bounced emails",
+        "severity": {
+          "label": "Blocking",
+          "intent": "danger"
+        },
+        "invoices": "9",
+        "amount": "$1,578.99",
+        "system": "Email send"
+      },
+      {
+        "id": "tax",
+        "type": "Tax calculation failed",
+        "severity": {
+          "label": "Blocking",
+          "intent": "danger"
+        },
+        "invoices": "8",
+        "amount": "$1,000.00",
+        "system": "Avalara"
+      },
+      {
+        "id": "pdf",
+        "type": "PDF generation failed",
+        "severity": {
+          "label": "Warning",
+          "intent": "warning"
+        },
+        "invoices": "9",
+        "amount": "$25,345.75",
+        "system": "PDF engine"
+      },
+      {
+        "id": "approval",
+        "type": "Approval disapproved",
+        "severity": {
+          "label": "Warning",
+          "intent": "warning"
+        },
+        "invoices": "8",
+        "amount": "$876.40",
+        "system": "Approvals"
+      }
+    ]
+  },
+  "actions": [
+    {
+      "id": "open-row",
+      "type": "open"
+    },
+    {
+      "id": "view-error-report",
+      "type": "footer",
+      "label": "View invoices by error type report"
+    }
+  ]
+}

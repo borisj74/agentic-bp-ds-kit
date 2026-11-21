@@ -1,0 +1,60 @@
+{
+  "kind": "widget",
+  "name": "approved-by-account",
+  "template": "bar-chart",
+  "size": "6x3",
+  "params": {
+    "orientation": "horizontal",
+    "stacked": true,
+    "format": "currency"
+  },
+  "copy": {
+    "title": "Approved by account",
+    "help": "How much of each large account's invoicing is approved this period.",
+    "emptyTitle": "No large accounts invoiced yet",
+    "error": "The account chart did not load."
+  },
+  "data": {
+    "categories": [
+      "Apex Digital Services",
+      "Harbor Health",
+      "Catalyst Group",
+      "Delta Tools",
+      "Summit Retail",
+      "Northwind Traders"
+    ],
+    "series": [
+      {
+        "name": "Approved",
+        "values": [
+          178000,
+          1111500,
+          591500,
+          581000,
+          1431000,
+          1368000
+        ],
+        "intent": "cyan"
+      },
+      {
+        "name": "Not yet approved",
+        "values": [
+          1602000,
+          598500,
+          1098500,
+          1079000,
+          159000,
+          152000
+        ],
+        "intent": "orange"
+      }
+    ]
+  },
+  "actions": [
+    {
+      "id": "view-volume-report",
+      "type": "footer",
+      "label": "View accounts by invoice volume report"
+    }
+  ]
+}

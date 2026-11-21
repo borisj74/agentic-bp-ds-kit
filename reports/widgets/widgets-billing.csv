@@ -1,0 +1,141 @@
+name,template,size,states,attempts,repairs,actions_fired,screenshots,spec
+kpi-strip-01,kpi-strip,12x1,ready loading empty error,1,1,retry,8,widgets/billing.jsonl:1
+kpi-strip-02,kpi-strip,12x1,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:2
+kpi-strip-03,kpi-strip,12x1,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:3
+kpi-strip-04,kpi-strip,6x1,ready loading error,1,0,retry,6,widgets/billing.jsonl:4
+kpi-strip-05,kpi-strip,12x1,ready loading empty error,1,1,view-report retry,8,widgets/billing.jsonl:5
+kpi-strip-06,kpi-strip,12x1,ready empty,1,1,,4,widgets/billing.jsonl:6
+kpi-strip-07,kpi-strip,6x1,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:7
+kpi-strip-08,kpi-strip,12x1,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:8
+kpi-strip-09,kpi-strip,12x1,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:9
+kpi-strip-10,kpi-strip,6x1,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:10
+kpi-strip-11,kpi-strip,12x1,ready loading error,1,1,view-report retry,6,widgets/billing.jsonl:11
+kpi-strip-12,kpi-strip,12x1,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:12
+kpi-strip-13,kpi-strip,12x1,ready loading empty error,1,1,retry,8,widgets/billing.jsonl:13
+kpi-strip-14,kpi-strip,12x1,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:14
+kpi-strip-15,kpi-strip,12x1,ready empty,1,0,,4,widgets/billing.jsonl:15
+kpi-strip-16,kpi-strip,6x1,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:16
+kpi-strip-17,kpi-strip,12x1,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:17
+kpi-strip-18,kpi-strip,12x1,ready loading error,1,0,retry,6,widgets/billing.jsonl:18
+kpi-strip-19,kpi-strip,6x1,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:19
+kpi-strip-20,kpi-strip,12x1,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:20
+task-list-01,task-list,4x2,ready loading empty error,1,0,open-task export retry,8,widgets/billing.jsonl:21
+task-list-02,task-list,6x2,ready loading empty error,1,0,view-report export refresh retry,8,widgets/billing.jsonl:22
+task-list-03,task-list,6x3,ready loading empty error,1,0,open-task view-report retry,8,widgets/billing.jsonl:23
+task-list-04,task-list,4x2,ready loading error,1,0,retry,6,widgets/billing.jsonl:24
+task-list-05,task-list,6x2,ready loading empty error,1,0,open-task view-report retry,8,widgets/billing.jsonl:25
+task-list-06,task-list,6x3,ready empty,1,0,view-report export,4,widgets/billing.jsonl:26
+task-list-07,task-list,4x2,ready loading empty error,1,0,open-task export refresh retry,8,widgets/billing.jsonl:27
+task-list-08,task-list,6x3,ready loading empty error,1,1,view-report retry,8,widgets/billing.jsonl:28
+task-list-09,task-list,6x3,ready loading empty error,1,0,open-task view-report retry,8,widgets/billing.jsonl:29
+task-list-10,task-list,4x2,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:30
+task-list-11,task-list,6x2,ready loading error,1,0,open-task view-report export retry,6,widgets/billing.jsonl:31
+task-list-12,task-list,6x3,ready loading empty error,1,0,view-report export refresh retry,8,widgets/billing.jsonl:32
+task-list-13,task-list,4x2,ready loading empty error,1,0,open-task retry,8,widgets/billing.jsonl:33
+task-list-14,task-list,6x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:34
+task-list-15,task-list,6x3,ready empty,1,0,open-task view-report,4,widgets/billing.jsonl:35
+task-list-16,task-list,4x2,ready loading empty error,1,0,export retry,8,widgets/billing.jsonl:36
+task-list-17,task-list,6x2,ready loading empty error,1,0,open-task view-report export refresh retry,8,widgets/billing.jsonl:37
+task-list-18,task-list,6x3,ready loading error,1,0,view-report retry,6,widgets/billing.jsonl:38
+task-list-19,task-list,4x2,ready loading empty error,1,0,open-task retry,8,widgets/billing.jsonl:39
+task-list-20,task-list,6x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:40
+line-chart-01,line-chart,4x2,ready loading empty error,1,0,export retry,8,widgets/billing.jsonl:41
+line-chart-02,line-chart,6x2,ready loading empty error,1,0,view-report export refresh retry,8,widgets/billing.jsonl:42
+line-chart-03,line-chart,12x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:43
+line-chart-04,line-chart,6x3,ready loading error,1,0,retry,6,widgets/billing.jsonl:44
+line-chart-05,line-chart,12x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:45
+line-chart-06,line-chart,4x2,ready empty,1,0,view-report export,4,widgets/billing.jsonl:46
+line-chart-07,line-chart,6x2,ready loading empty error,1,0,export refresh retry,8,widgets/billing.jsonl:47
+line-chart-08,line-chart,12x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:48
+line-chart-09,line-chart,6x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:49
+line-chart-10,line-chart,12x3,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:50
+line-chart-11,line-chart,4x2,ready loading error,1,0,view-report export retry,6,widgets/billing.jsonl:51
+line-chart-12,line-chart,6x2,ready loading empty error,1,0,view-report export refresh retry,8,widgets/billing.jsonl:52
+line-chart-13,line-chart,12x2,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:53
+line-chart-14,line-chart,6x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:54
+line-chart-15,line-chart,12x3,ready empty,1,0,view-report,4,widgets/billing.jsonl:55
+line-chart-16,line-chart,4x2,ready loading empty error,1,0,export retry,8,widgets/billing.jsonl:56
+line-chart-17,line-chart,6x2,ready loading empty error,1,0,view-report export refresh retry,8,widgets/billing.jsonl:57
+line-chart-18,line-chart,12x2,ready loading error,1,0,view-report retry,6,widgets/billing.jsonl:58
+line-chart-19,line-chart,6x3,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:59
+line-chart-20,line-chart,12x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:60
+bar-chart-01,bar-chart,4x2,ready loading empty error,1,0,export retry,8,widgets/billing.jsonl:61
+bar-chart-02,bar-chart,6x2,ready loading empty error,1,0,view-report export refresh retry,8,widgets/billing.jsonl:62
+bar-chart-03,bar-chart,12x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:63
+bar-chart-04,bar-chart,6x3,ready loading error,1,0,retry,6,widgets/billing.jsonl:64
+bar-chart-05,bar-chart,12x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:65
+bar-chart-06,bar-chart,4x2,ready empty,1,0,view-report export,4,widgets/billing.jsonl:66
+bar-chart-07,bar-chart,6x2,ready loading empty error,1,0,export refresh retry,8,widgets/billing.jsonl:67
+bar-chart-08,bar-chart,12x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:68
+bar-chart-09,bar-chart,6x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:69
+bar-chart-10,bar-chart,12x3,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:70
+bar-chart-11,bar-chart,4x2,ready loading error,1,0,view-report export retry,6,widgets/billing.jsonl:71
+bar-chart-12,bar-chart,6x2,ready loading empty error,1,0,view-report export refresh retry,8,widgets/billing.jsonl:72
+bar-chart-13,bar-chart,12x2,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:73
+bar-chart-14,bar-chart,6x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:74
+bar-chart-15,bar-chart,12x3,ready empty,1,0,view-report,4,widgets/billing.jsonl:75
+bar-chart-16,bar-chart,4x2,ready loading empty error,1,0,export retry,8,widgets/billing.jsonl:76
+bar-chart-17,bar-chart,6x2,ready loading empty error,1,0,view-report export refresh retry,8,widgets/billing.jsonl:77
+bar-chart-18,bar-chart,12x2,ready loading error,1,0,view-report retry,6,widgets/billing.jsonl:78
+bar-chart-19,bar-chart,6x3,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:79
+bar-chart-20,bar-chart,12x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:80
+donut-01,donut,4x2,ready loading empty error,1,0,export retry,8,widgets/billing.jsonl:81
+donut-02,donut,6x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:82
+donut-03,donut,6x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:83
+donut-04,donut,4x2,ready loading error,1,0,retry,6,widgets/billing.jsonl:84
+donut-05,donut,6x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:85
+donut-06,donut,6x3,ready empty,1,0,view-report export,4,widgets/billing.jsonl:86
+donut-07,donut,4x2,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:87
+donut-08,donut,6x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:88
+donut-09,donut,6x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:89
+donut-10,donut,4x2,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:90
+donut-11,donut,6x2,ready loading error,1,0,view-report export retry,6,widgets/billing.jsonl:91
+donut-12,donut,6x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:92
+donut-13,donut,4x2,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:93
+donut-14,donut,6x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:94
+donut-15,donut,6x3,ready empty,1,0,view-report,4,widgets/billing.jsonl:95
+donut-16,donut,4x2,ready loading empty error,1,0,export retry,8,widgets/billing.jsonl:96
+donut-17,donut,6x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:97
+donut-18,donut,6x3,ready loading error,1,0,view-report retry,6,widgets/billing.jsonl:98
+donut-19,donut,4x2,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:99
+donut-20,donut,6x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:100
+table-01,table,6x2,ready loading empty error,1,0,open-account export retry,8,widgets/billing.jsonl:101
+table-02,table,12x2,ready loading empty error,1,0,open-account view-report retry,8,widgets/billing.jsonl:102
+table-03,table,6x3,ready loading empty error,1,0,open-account view-report retry,8,widgets/billing.jsonl:103
+table-04,table,12x3,ready loading error,1,0,retry,6,widgets/billing.jsonl:104
+table-05,table,6x2,ready loading empty error,1,0,open-account view-report retry,8,widgets/billing.jsonl:105
+table-06,table,12x2,ready empty,1,0,open-account view-report,4,widgets/billing.jsonl:106
+table-07,table,6x3,ready loading empty error,1,0,open-account retry,8,widgets/billing.jsonl:107
+table-08,table,12x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:108
+table-09,table,6x2,ready loading empty error,1,0,open-account view-report retry,8,widgets/billing.jsonl:109
+table-10,table,12x2,ready loading empty error,1,0,open-account retry,8,widgets/billing.jsonl:110
+table-11,table,6x3,ready loading error,1,0,open-account view-report retry,6,widgets/billing.jsonl:111
+table-12,table,12x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:112
+table-13,table,6x2,ready loading empty error,1,0,open-account retry,8,widgets/billing.jsonl:113
+table-14,table,12x2,ready loading empty error,1,0,open-account view-report retry,8,widgets/billing.jsonl:114
+table-15,table,6x3,ready empty,1,0,open-account view-report,4,widgets/billing.jsonl:115
+table-16,table,12x3,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:116
+table-17,table,6x2,ready loading empty error,1,0,open-account view-report export refresh retry,8,widgets/billing.jsonl:117
+table-18,table,12x2,ready loading error,1,0,open-account view-report retry,6,widgets/billing.jsonl:118
+table-19,table,6x3,ready loading empty error,1,0,open-account retry,8,widgets/billing.jsonl:119
+table-20,table,12x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:120
+checklist-01,checklist,4x2,ready loading empty error,1,0,export retry,8,widgets/billing.jsonl:121
+checklist-02,checklist,6x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:122
+checklist-03,checklist,6x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:123
+checklist-04,checklist,4x2,ready loading error,1,0,retry,6,widgets/billing.jsonl:124
+checklist-05,checklist,6x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:125
+checklist-06,checklist,6x3,ready empty,1,0,view-report export,4,widgets/billing.jsonl:126
+checklist-07,checklist,4x2,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:127
+checklist-08,checklist,6x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:128
+checklist-09,checklist,6x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:129
+checklist-10,checklist,4x2,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:130
+checklist-11,checklist,6x2,ready loading error,1,0,view-report export retry,6,widgets/billing.jsonl:131
+checklist-12,checklist,6x3,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:132
+checklist-13,checklist,4x2,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:133
+checklist-14,checklist,6x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:134
+checklist-15,checklist,6x3,ready empty,1,0,view-report,4,widgets/billing.jsonl:135
+checklist-16,checklist,4x2,ready loading empty error,1,0,export retry,8,widgets/billing.jsonl:136
+checklist-17,checklist,6x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:137
+checklist-18,checklist,6x3,ready loading error,1,0,view-report retry,6,widgets/billing.jsonl:138
+checklist-19,checklist,4x2,ready loading empty error,1,0,retry,8,widgets/billing.jsonl:139
+checklist-20,checklist,6x2,ready loading empty error,1,0,view-report retry,8,widgets/billing.jsonl:140

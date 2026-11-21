@@ -58,6 +58,13 @@ const RULES = [
     good: '<Button emphasis="strong" intent="brand">Save</Button>\n<Button emphasis="minimal" intent="brand">Send</Button>',
   },
   {
+    rule: "bp/one-strong-action",
+    severity: "error",
+    says: "Two strong Buttons in one Section (or a file with no Section) when one of them is danger. A block has one strong action.",
+    bad: '<Section title="Unapplied cash" actions={<Button emphasis="strong" intent="brand">Apply</Button>}>\n  <Button emphasis="strong" intent="danger">Write off</Button>\n</Section>',
+    good: '<Section title="Unapplied cash" actions={<Button emphasis="strong" intent="brand">Apply</Button>}>\n  <Button emphasis="minimal" intent="danger">Write off</Button>\n</Section>',
+  },
+  {
     rule: "bp/use-pattern",
     severity: "warn",
     says: "The screen lays out by hand what a pattern already draws.",

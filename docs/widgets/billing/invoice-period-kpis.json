@@ -1,0 +1,59 @@
+{
+  "kind": "widget",
+  "name": "invoice-period-kpis",
+  "about": "The prototype's Invoice Period strip: where the 30-day period stands.",
+  "template": "kpi-strip",
+  "size": "12x1",
+  "copy": {
+    "title": "Invoice period",
+    "help": "Where this 30-day billing period is in the invoice close, with every invoice type counted together.",
+    "emptyTitle": "No invoices in this period yet",
+    "error": "The invoice period numbers did not load."
+  },
+  "data": {
+    "items": [
+      {
+        "id": "open",
+        "title": "Open invoices",
+        "metric": "2,618",
+        "trend": {
+          "value": "4.1",
+          "unit": "% 30D",
+          "direction": "up",
+          "status": "neutral"
+        },
+        "metadata": "$612K current"
+      },
+      {
+        "id": "volume",
+        "title": "Total volume",
+        "metric": "14,820",
+        "trend": {
+          "value": "6.2",
+          "unit": "% 30D",
+          "direction": "up",
+          "status": "success"
+        },
+        "metadata": "$4.5M billed"
+      },
+      {
+        "id": "month",
+        "title": "Invoices this month",
+        "metric": "4,906",
+        "trend": {
+          "value": "2.3",
+          "unit": "% vs last month",
+          "direction": "up",
+          "status": "neutral"
+        },
+        "metadata": "Month to date"
+      },
+      {
+        "id": "tasks",
+        "title": "Close tasks done",
+        "metric": "2 of 6",
+        "metadata": "Period ends Nov 30"
+      }
+    ]
+  }
+}

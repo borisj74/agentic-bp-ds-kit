@@ -1,0 +1,15 @@
+name,template,size,states,attempts,repairs,actions_fired,screenshots,spec
+accounts-to-watch,table,6x3,ready loading empty error,1,0,open-row view-watch-report retry,8,docs/widgets/billing/accounts-to-watch.json
+approved-by-account,bar-chart,6x3,ready loading empty error,1,0,view-volume-report retry,8,docs/widgets/billing/approved-by-account.json
+close-checklist,checklist,6x3,ready loading empty error,1,0,retry,8,docs/widgets/billing/close-checklist.json
+close-tasks,task-list,6x3,ready loading empty error,1,0,open-row view-period-report retry,8,docs/widgets/billing/close-tasks.json
+invoice-errors-kpis,kpi-strip,12x1,ready loading empty error,1,0,retry,8,docs/widgets/billing/invoice-errors-kpis.json
+invoice-period-kpis,kpi-strip,12x1,ready loading empty error,1,0,retry,8,docs/widgets/billing/invoice-period-kpis.json
+invoices-approved-by-time,line-chart,6x3,ready loading empty error,1,0,view-approved-report retry,8,docs/widgets/billing/invoices-approved-by-time.json
+invoices-by-error-type,table,12x2,ready loading empty error,1,0,open-row view-error-report retry,8,docs/widgets/billing/invoices-by-error-type.json
+largest-ending-balances,table,12x2,ready loading empty error,1,0,open-row view-statements retry,8,docs/widgets/billing/largest-ending-balances.json
+needs-attention,table,6x2,ready loading empty error,1,0,open-row view-collectors retry,8,docs/widgets/billing/needs-attention.json
+payments-by-method,donut,4x2,ready loading empty error,1,0,retry,8,docs/widgets/billing/payments-by-method.json
+records-by-collector,bar-chart,6x3,ready loading empty error,1,0,view-collector-report retry,8,docs/widgets/billing/records-by-collector.json
+statements-kpis,kpi-strip,12x1,ready loading empty error,1,0,retry,8,docs/widgets/billing/statements-kpis.json
+usage-collectors-kpis,kpi-strip,12x1,ready loading empty error,1,0,retry,8,docs/widgets/billing/usage-collectors-kpis.json

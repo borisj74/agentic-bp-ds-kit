@@ -1,0 +1,68 @@
+{
+  "kind": "widget",
+  "name": "invoices-approved-by-time",
+  "about": "Invoices still to approve, by day, against the monthly average.",
+  "template": "line-chart",
+  "size": "6x3",
+  "copy": {
+    "title": "Invoices approved by time",
+    "emptyTitle": "Nothing to approve yet this month",
+    "emptyDescription": "The line starts once the first invoices are waiting.",
+    "error": "The approvals chart did not load."
+  },
+  "data": {
+    "categories": [
+      "Nov 1",
+      "Nov 2",
+      "Nov 3",
+      "Nov 4",
+      "Nov 5",
+      "Nov 6",
+      "Nov 7",
+      "Nov 8",
+      "Nov 9",
+      "Nov 10"
+    ],
+    "series": [
+      {
+        "name": "November 2026",
+        "values": [
+          6000,
+          5600,
+          5300,
+          5100,
+          3700,
+          2300,
+          2100,
+          1600,
+          1000,
+          600
+        ],
+        "intent": "cyan"
+      },
+      {
+        "name": "Monthly average",
+        "values": [
+          5800,
+          5400,
+          5000,
+          4700,
+          2900,
+          2500,
+          2100,
+          1300,
+          900,
+          500
+        ],
+        "intent": "orange"
+      }
+    ]
+  },
+  "actions": [
+    {
+      "id": "view-approved-report",
+      "type": "footer",
+      "label": "View invoices approved by time report"
+    }
+  ]
+}

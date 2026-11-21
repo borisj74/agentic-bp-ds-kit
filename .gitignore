@@ -65,3 +65,9 @@ docs/figma/*
 
 # the spec batch's summary and the scripts beside it (npm run figma:batch)
 /reports/figma-loop/batch.md
+
+# widget tiles and their harness (npm run widget -- build): generated from the widget specs, never edited
+/src/app/(widgets)/
+# widget loop screenshots (npm run widget -- loop); the report and the CSV beside them are committed
+/reports/widgets/*/
+/reports/widgets/*.only.*

@@ -55,7 +55,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "mcp": "node bin/mcp.mjs"
+    "mcp": "node bin/mcp.mjs",
+    "widget": "node scripts/widget/cli.mjs"
   },
   "dependencies": {
     "next": "16.4.6"
