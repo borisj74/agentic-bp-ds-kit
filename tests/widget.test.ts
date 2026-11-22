@@ -255,7 +255,7 @@ describe("widget tiles", () => {
 describe("widget batches", () => {
   it("reads a .jsonl batch a spec a line, and names the batch after its path", () => {
     const items = loadWidgetSpecs("widgets/billing.jsonl", repoRoot) as Json[];
-    expect(items).toHaveLength(140);
+    expect(items).toHaveLength(160);
     expect(items[0].line).toBe(1);
     expect(batchId("widgets/billing.jsonl", repoRoot)).toBe("widgets-billing");
     expect(batchId("docs/widgets/billing", repoRoot)).toBe("docs-widgets-billing");
@@ -354,5 +354,135 @@ describe("widget loop write-back", () => {
     expect(write(["loop", "a.jsonl"])).toBe(false);
     expect(write(["loop", "a.jsonl", "--write"])).toBe(true);
     expect(write(["loop", "a.jsonl", "--no-write"])).toBe(false);
+  });
+});
+
+describe("status-breakdown template", () => {
+  const SB: Json = TEMPLATES["status-breakdown"];
+  const item = (status: string, count: number, tone = "neutral", label = status[0].toUpperCase() + status.slice(1)) => ({ status, label, count, tone });
+  const sb = (over: Json = {}) => ({
+    kind: "widget",
+    name: "uploads-by-status",
+    template: "status-breakdown",
+    size: "6x1",
+    copy: { title: "Usage collectors uploads by status", emptyTitle: "No records yet", error: "The uploads did not load." },
+    data: { totalLabel: "uploads", items: [item("processed", 1180, "success"), item("pending", 42, "warning"), item("failed", 18, "danger")] },
+    ...over,
+  });
+  const withItems = (items: Json[], over: Json = {}) => sb({ data: { items }, ...over });
+
+  it("checks a spec and fills in its defaults", () => {
+    const spec = checked(sb());
+    expect(spec.params).toEqual({ showPercent: true, total: "show" });
+  });
+
+  it("refuses what it cannot draw", () => {
+    expect(paths(withItems([item("paid", 3)]))).toEqual(["data.items"]);
+    expect(paths(withItems([item("paid", 3), item("late", 1, "amber")]))).toEqual(["data.items[1].tone"]);
+    expect(paths(withItems([item("paid", 3), item("late", -1)]))).toEqual(["data.items[1].count"]);
+    expect(paths(withItems([item("paid", 3), item("late", 1.5)]))).toEqual(["data.items[1].count"]);
+    expect(paths(withItems([item("paid", 3), item("paid", 1)]))).toEqual(["data.items[1].status"]);
+    expect(paths(withItems([item("Paid now", 3), item("late", 1)]))).toEqual(["data.items[0].status"]);
+    expect(paths(withItems([item("paid", 0), item("late", 0)]))).toEqual(["data.items"]);
+    expect(paths(withItems([item("paid", 3), item("late", 1, "danger", "x".repeat(41))]))).toEqual(["data.items[1].label"]);
+    expect(paths(sb({ params: { showPercent: "yes" } }))).toEqual(["params.showPercent"]);
+    expect(paths(sb({ size: "12x2" }))).toEqual(["size"]);
+    expect(paths(sb({ actions: [{ id: "open-row", type: "open" }] }))).toEqual(["actions[0]"]);
+  });
+
+  it("comes in 4x1, 6x1, 6x2 and 12x1, and holds 2 to 6 statuses", () => {
+    expect(SB.sizes).toEqual(["4x1", "6x1", "6x2", "12x1"]);
+    const max = (size: string, footer = false) => SB.capacity(size, {}, { size, actions: footer ? [{ type: "footer" }] : [] }).items.max;
+    expect(SB.sizes.map((size: string) => max(size))).toEqual([4, 6, 6, 6]);
+    // A one-row tile has no room for a footer at all (refused on its own), so it never lowers what fits.
+    expect(SB.sizes.map((size: string) => max(size, true))).toEqual([4, 6, 6, 6]);
+    for (const size of SB.sizes) expect(SB.capacity(size, {}, { size, actions: [] }).items.min).toBe(2);
+  });
+
+  it("refuses a footer link on a one-row tile, and repairs it into a header button", () => {
+    const footer = { id: "view-report", type: "footer", label: "View uploads report" };
+    for (const size of ["4x1", "6x1", "12x1"]) {
+      const result = validateWidgetSpec(sb({ size, actions: [footer] })) as Json;
+      expect(result.errors.map((e: Json) => e.code)).toEqual(["no-footer"]);
+      expect(result.errors[0].fix).toContain("Use size 6x2");
+    }
+    expect(paths(sb({ size: "6x2", actions: [footer] }))).toEqual([]);
+    const raw = sb({ actions: [footer] });
+    const { raw: fixed } = repairWidget(raw, (validateWidgetSpec(raw) as Json).errors) as Json;
+    expect(fixed.actions).toEqual([{ id: "view-report", type: "button", label: "View uploads report", emphasis: "minimal" }]);
+    expect(paths(fixed)).toEqual([]);
+  });
+
+  it("over capacity names the size that holds it", () => {
+    const five = ["a", "b", "c", "d", "e"].map((s) => item(s, 1));
+    const result = validateWidgetSpec(withItems(five, { size: "4x1" })) as Json;
+    expect(result.errors.map((e: Json) => e.path)).toEqual(["data.items"]);
+    expect(result.errors[0].fix).toBe("Use size 6x1, or keep the first 4.");
+    const seven = ["a", "b", "c", "d", "e", "f", "g"].map((s) => item(s, 1));
+    expect((validateWidgetSpec(withItems(seven, { size: "12x1" })) as Json).errors[0].fix).toBe("Keep the first 6; no status-breakdown size holds 7.");
+    const { raw } = repairWidget(withItems(five, { size: "4x1" }), result.errors) as Json;
+    expect(raw.size).toBe("6x1");
+  });
+
+  it("draws one UsageBar split by status and a Legend with each count and share", () => {
+    const tile = expand(checked(withItems([item("valid", 98241, "success"), item("duplicate", 120, "warning"), item("rejected", 0, "danger"), item("queued", 1639, "info")])));
+    const [bar, legend] = tile.slots.children;
+    expect(bar).toMatchObject({ component: "UsageBar", props: { showLegend: false, label: "Usage collectors uploads by status" } });
+    // A status with a count of 0 draws no part, but keeps its key.
+    expect(bar.props.segments).toEqual([
+      { id: "valid", value: 98241, intent: "green" },
+      { id: "duplicate", value: 120, intent: "yellow" },
+      { id: "queued", value: 1639, intent: "cyan" },
+    ]);
+    expect(legend.component).toBe("Legend");
+    expect(legend.props.items.map((k: Json) => [k.id, k.intent, k.value])).toEqual([
+      ["valid", "green", "98,241 · 98%"],
+      ["duplicate", "yellow", "120 · <1%"],
+      ["rejected", "red", "0 · 0%"],
+      ["queued", "cyan", "1,639 · 2%"],
+    ]);
+    const plain = expand(checked(sb({ params: { showPercent: false } }))).slots.children[1];
+    expect(plain.props.items.map((k: Json) => k.value)).toEqual(["1,180", "42", "18"]);
+  });
+
+  it("maps every status tone onto an existing chart colour", () => {
+    expect(SB.TONE_INTENT).toEqual({ success: "green", warning: "yellow", danger: "red", info: "cyan", neutral: "gray" });
+  });
+
+  it("puts the total in the header as a neutral Count, before any button, only once the tile is ready", () => {
+    const spec = checked(sb({ actions: [{ id: "export", type: "button", label: "Export", icon: "download" }] }));
+    const [count, button] = expand(spec).slots.actions;
+    expect(count).toEqual({ component: "Count", props: { intent: "neutral", count: 1240, max: 1240, label: "uploads" } });
+    expect(button.component).toBe("Button");
+    expect(expand(checked(sb({ params: { total: "hide" } }))).slots.actions).toBeUndefined();
+    for (const state of ["loading", "empty", "error"]) expect(expand(spec, { state }).slots.actions).toBeUndefined();
+  });
+
+  it("answers every state in a Section with a thin line", () => {
+    const spec = checked(sb({ size: "6x2", copy: { ...sb().copy, emptyDescription: "Uploads show here once a collector sends a file." }, actions: [{ id: "view-report", type: "footer", label: "View uploads report" }] }));
+    const ready = expand(spec);
+    expect(ready.props).toMatchObject({ title: spec.copy.title, line: "thin" });
+    expect(ready.slots.children.map((n: Json) => n.component)).toEqual(["UsageBar", "Legend", "Link"]);
+    expect(ready.slots.children[2]).toMatchObject({ props: { onClick: { $action: "view-report" } } });
+    const loading = expand(spec, { state: "loading" });
+    expect(loading.props.loading).toBe(true);
+    expect(loading.slots.children.map((n: Json) => n.component)).toEqual(["Skeleton"]);
+    expect(expand(spec, { state: "empty" }).slots.children[0]).toMatchObject({ component: "EmptyState", props: { title: "No records yet", icon: "stacked_bar_chart" } });
+    // A one-row tile's empty state is the title alone.
+    expect(expand(checked(sb()), { state: "empty" }).slots.children[0].props.icon).toBeUndefined();
+    expect(expand(spec, { state: "error" }).slots.children[0]).toMatchObject({ component: "Callout", props: { intent: "danger", onAction: { $action: "retry" } }, text: "The uploads did not load." });
+  });
+
+  it("a generated tile draws kit pieces only and passes the review", () => {
+    const items = (loadWidgetSpecs("widgets/billing.jsonl", repoRoot) as Json[]).filter((i) => i.raw?.template === "status-breakdown");
+    expect(items).toHaveLength(20);
+    for (const entry of items) {
+      const spec = checked(entry.raw);
+      const code = renderTile(spec);
+      expect(code).not.toMatch(/style=|className=|<div/);
+      expect(code).toContain("<UsageBar");
+      const errors = (reviewSource(code, `src/app/(widgets)/widgets/test/tiles/${spec.name}.tsx`) as Json[]).filter((f) => f.severity === "error");
+      expect(errors, spec.name).toEqual([]);
+    }
   });
 });

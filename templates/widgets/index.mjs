@@ -7,11 +7,12 @@ import * as checklist from "./checklist.mjs";
 import * as donut from "./donut.mjs";
 import * as kpiStrip from "./kpi-strip.mjs";
 import * as lineChart from "./line-chart.mjs";
+import * as statusBreakdown from "./status-breakdown.mjs";
 import * as table from "./table.mjs";
 import * as taskList from "./task-list.mjs";
 
 export const TEMPLATES = Object.fromEntries(
-  [kpiStrip, taskList, lineChart, barChart, donut, table, checklist].map((t) => [t.id, t]),
+  [kpiStrip, taskList, lineChart, barChart, donut, table, checklist, statusBreakdown].map((t) => [t.id, t]),
 );
 
 export const TEMPLATE_IDS = Object.keys(TEMPLATES);

@@ -240,7 +240,8 @@ export function frame(spec, template, state = "ready") {
   } else if (state === "error") {
     slots.children = errorBody(spec);
   } else {
-    const buttons = headerButtons(spec);
+    // A template may put something of its own at the end of the header before the buttons, like a total.
+    const buttons = [...(template.headerEnd ? template.headerEnd(spec) : []), ...headerButtons(spec)];
     if (buttons.length > 0) slots.actions = buttons;
     slots.children = [...template.body(spec), ...footerLink(spec)];
   }
