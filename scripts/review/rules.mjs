@@ -258,6 +258,52 @@ function onePrimary(kitEls, file) {
   );
 }
 
+// ---- 5b. bp/one-strong-action ------------------------------------------------------------------
+
+const tagOf = (node) => (ts.isIdentifier(node.tagName) ? node.tagName.text : node.tagName.getText());
+
+/**
+ * The Section a JSX element sits in: the nearest Section around it, whether it is a child of the Section or
+ * passed in one of its props (actions). Null when there is none, and then the file is the block.
+ */
+export function enclosingSection(node) {
+  for (let at = node.parent; at; at = at.parent) {
+    if (ts.isJsxElement(at) && at.openingElement !== node && tagOf(at.openingElement) === "Section") return at.openingElement;
+    if ((ts.isJsxOpeningElement(at) || ts.isJsxSelfClosingElement(at)) && at !== node && tagOf(at) === "Section") return at;
+  }
+  return null;
+}
+
+/**
+ * One strong action per block. In one Section (a tile, a group) — or in a file with no Section — at most one
+ * Button is emphasis strong, whatever its intent: a strong danger beside a strong brand, or two strong
+ * dangers, are two loud actions fighting for the same click. Two strong brand Buttons are bp/one-primary's.
+ */
+function oneStrongAction(kitEls, file) {
+  const blocks = new Map();
+  for (const el of kitEls) {
+    if (el.piece.name !== "Button") continue;
+    if (el.attrs.find((a) => a.name === "emphasis")?.value !== "strong") continue;
+    const block = enclosingSection(el.node) ?? "file";
+    blocks.set(block, [...(blocks.get(block) ?? []), el]);
+  }
+  const out = [];
+  for (const [block, els] of blocks) {
+    if (els.length < 2) continue;
+    const intents = els.map((el) => el.attrs.find((a) => a.name === "intent")?.value);
+    if (intents.every((intent) => intent === "brand")) continue;
+    const where = block === "file" ? "this file" : "one Section";
+    for (const el of els.slice(1))
+      out.push(finding(
+        "bp/one-strong-action", "error", file, el.line,
+        `${els.length} strong Buttons in ${where} (${intents.map((i) => i ?? "no intent").join(", ")}). A block has one strong action.`,
+        "Keep the one action that matters strong; make the rest subtle neutral or minimal. Work that cannot be undone stays danger, as minimal.",
+        "contracts/button.json",
+      ));
+  }
+  return out;
+}
+
 // ---- 6 and 7. bp/use-pattern and bp/use-bigger-piece -------------------------------------------
 
 /** How much of one piece's `composes` list a file already uses, and where the first part sits. */
@@ -395,6 +441,7 @@ export function tsxFindings({ facts, file, root }) {
   out.push(...localCousin(facts, file, root));
   for (const el of kitEls) out.push(...closedEnum(el, file));
   out.push(...onePrimary(kitEls, file));
+  out.push(...oneStrongAction(kitEls, file));
   out.push(...biggerPieces(facts, file, root));
   if (SCREEN_PATH.test(relative(file))) out.push(...screenFrame(facts, file));
   return out;

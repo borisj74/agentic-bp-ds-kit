@@ -18,6 +18,14 @@ import { z } from "zod";
 import { catalog, isFreeProp, piece, repoRoot } from "../review/catalog.mjs";
 import { BUTTON_PAIRS } from "../review/rules.mjs";
 import { checkItem, parseItemShape } from "./shape.mjs";
+import { SIZE_IDS } from "../widget/sizes.mjs";
+import { TEMPLATE_IDS as WIDGET_TEMPLATE_IDS, template as widgetTemplate } from "../../templates/widgets/index.mjs";
+import {
+  WIDGET_STATES,
+  actionSchema as widgetActionSchema,
+  commonIssues as widgetCommonIssues,
+  copySchema as widgetCopySchema,
+} from "../../templates/widgets/_shared.mjs";
 
 /** A route and file name: lowercase words joined by single dashes. */
 export const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -434,4 +442,78 @@ export function resolveCopy(value, copy = {}) {
     return out;
   }
   return value;
+}
+
+// ---- widget specs --------------------------------------------------------------------------------
+//
+// A widget spec is a tile, not a screen: `kind: "widget"`, one template from templates/widgets, one size from
+// contracts/widget-sizes.json, the template's params and data, the copy and the actions. Screen specs are not
+// touched by any of this: a spec without `kind` is a screen, read by specSchema above.
+
+/** The kind a widget spec carries. A screen spec has no kind. */
+export const WIDGET_KIND = "widget";
+
+export const widgetSpecSchema = z
+  .object({
+    kind: z.literal(WIDGET_KIND),
+    name: z.string().regex(SLUG, "Use a slug: lowercase words joined by single dashes."),
+    template: z.string().min(1, "Name the template."),
+    size: z.enum(SIZE_IDS, { errorMap: () => ({ message: `Use one of the widget sizes: ${SIZE_IDS.join(", ")}.` }) }),
+    about: z.string().max(240).optional(),
+    params: z.record(jsonValue).optional(),
+    copy: z.record(z.string()),
+    data: z.record(jsonValue),
+    actions: z.array(z.record(jsonValue)).optional(),
+    states: z.array(z.enum(STATES)).optional(),
+  })
+  .strict();
+
+/** True when a parsed JSON value is a widget spec rather than a screen spec. */
+export const isWidgetSpec = (input) => Boolean(input) && typeof input === "object" && input.kind === WIDGET_KIND;
+
+const zodIssues = (error, prefix) =>
+  error.issues.map((issue) => ({ path: [prefix, ...issue.path].filter((p) => p !== "").join(".").replace(/\.(\d+)(?=\.|$)/g, "[$1]") || "(spec)", message: issue.message }));
+
+/**
+ * A widget spec against its template: the shape, the template, the size, the params and data (zod, closed
+ * enums), the copy each declared state needs, the actions, and whether the data fits the size.
+ *
+ * Returns the spec with every default filled in (params, actions, states), which is what a template expands.
+ * @returns {{ ok: boolean, spec: object | null, errors: object[], warnings: object[], template: string | null }}
+ */
+export function validateWidgetSpec(input) {
+  const shape = widgetSpecSchema.safeParse(input);
+  if (!shape.success) return { ok: false, spec: null, errors: zodIssues(shape.error, ""), warnings: [], template: null };
+  const raw = shape.data;
+  const t = widgetTemplate(raw.template);
+  if (!t)
+    return {
+      ok: false,
+      spec: null,
+      warnings: [],
+      template: null,
+      errors: [{ path: "template", message: `There is no widget template "${raw.template}".`, fix: `Use one of: ${WIDGET_TEMPLATE_IDS.join(", ")}. If none fits, propose a new template; never lay a tile out by hand.` }],
+    };
+
+  const errors = [];
+  const parts = {
+    copy: widgetCopySchema.safeParse(raw.copy),
+    params: t.params.safeParse(raw.params ?? {}),
+    data: t.data.safeParse(raw.data),
+    actions: z.array(widgetActionSchema).safeParse(raw.actions ?? []),
+  };
+  for (const [key, result] of Object.entries(parts)) if (!result.success) errors.push(...zodIssues(result.error, key));
+  if (errors.length > 0) return { ok: false, spec: null, errors, warnings: [], template: t.id };
+
+  const spec = {
+    ...raw,
+    copy: parts.copy.data,
+    params: parts.params.data,
+    data: parts.data.data,
+    actions: parts.actions.data,
+    states: [...new Set(["ready", ...(raw.states ?? WIDGET_STATES)])],
+  };
+  errors.push(...widgetCommonIssues(spec, t));
+  if (t.sizes.includes(spec.size)) errors.push(...t.issues(spec));
+  return { ok: errors.length === 0, spec, errors, warnings: [], template: t.id };
 }

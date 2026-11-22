@@ -280,7 +280,7 @@ Every kit piece spreads `inspect("<Name>")` onto its root element, so `npm run r
 1. `npm run tokens` — only if a token changed; regenerates the two CSS files.
 2. `npm run sync:index` — copies levels into the index (`--check` in CI-style use).
 3. `npm test` — `contracts.test.tsx` (every example renders + axe), `contract-levels.test.ts`, `contract-docs.test.tsx`, `figma-links.test.ts`, plus the piece's own test.
-4. `npm run review -- <file>` — rules `bp/raw-value`, `bp/primitive-token`, `bp/local-cousin`, `bp/closed-enum`, `bp/one-primary`, `bp/use-pattern`, `bp/use-bigger-piece`, `bp/screen-frame`. The review skips the kit's own folders (`src/ui`, `src/patterns`, `src/tokens`, playground, tests) — it is for screens, not for the kit.
+4. `npm run review -- <file>` — rules `bp/raw-value`, `bp/primitive-token`, `bp/local-cousin`, `bp/closed-enum`, `bp/one-primary`, `bp/one-strong-action`, `bp/use-pattern`, `bp/use-bigger-piece`, `bp/screen-frame`. The review skips the kit's own folders (`src/ui`, `src/patterns`, `src/tokens`, playground, tests) — it is for screens, not for the kit.
 5. `npm run build` / `npm run lint`.
 
 The playground needs **no new route**: `/components/[slug]` and `/patterns/[slug]` are generated from `contracts/index.json`, and the piece is rendered by its `registry` entry (`src/playground/registry.tsx`, keyed by contract `name`, with `render`, `preview`, optional `hide[]` and `normalize()`).

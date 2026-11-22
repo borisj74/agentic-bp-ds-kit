@@ -1,0 +1,40 @@
+{
+  "kind": "widget",
+  "name": "usage-collectors-kpis",
+  "template": "kpi-strip",
+  "size": "12x1",
+  "copy": {
+    "title": "Usage collectors",
+    "help": "Uploads by status since midnight, the busiest collectors, and the ones whose last run failed.",
+    "emptyTitle": "No uploads since midnight",
+    "error": "The upload counts did not load."
+  },
+  "data": {
+    "items": [
+      {
+        "id": "pending",
+        "title": "Pending",
+        "metric": "2 uploads",
+        "metadata": "1,240 records"
+      },
+      {
+        "id": "progress",
+        "title": "In progress",
+        "metric": "2 uploads",
+        "metadata": "16,330 records"
+      },
+      {
+        "id": "errors",
+        "title": "Errors",
+        "metric": "2 uploads",
+        "metadata": "6,060 records"
+      },
+      {
+        "id": "processed",
+        "title": "Processed",
+        "metric": "5 uploads",
+        "metadata": "34,950 records"
+      }
+    ]
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "kind": "widget",
+  "name": "invoice-errors-kpis",
+  "about": "The prototype's Invoice Errors strip.",
+  "template": "kpi-strip",
+  "size": "12x1",
+  "copy": {
+    "title": "Invoice errors",
+    "help": "Invoices held up by errors this period, by severity.",
+    "emptyTitle": "No invoice errors this period",
+    "error": "The error counts did not load."
+  },
+  "data": {
+    "items": [
+      {
+        "id": "blocking",
+        "title": "Blocking errors",
+        "metric": "29",
+        "trend": {
+          "value": "4.3",
+          "unit": "% 30D",
+          "direction": "up",
+          "status": "danger"
+        },
+        "metadata": "$19K"
+      },
+      {
+        "id": "warning",
+        "title": "Warning errors",
+        "metric": "25",
+        "trend": {
+          "value": "12.2",
+          "unit": "% 30D",
+          "direction": "down",
+          "status": "success"
+        },
+        "metadata": "$17K"
+      },
+      {
+        "id": "info",
+        "title": "Informational errors",
+        "metric": "37",
+        "trend": {
+          "value": "2.8",
+          "unit": "% 30D",
+          "direction": "up",
+          "status": "neutral"
+        },
+        "metadata": "$29K"
+      }
+    ]
+  }
+}

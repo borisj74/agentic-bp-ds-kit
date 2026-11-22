@@ -196,6 +196,7 @@ Paths can be files or folders; a folder is walked for `.tsx` and `.css`. The rev
 | `bp/local-cousin` | A kit piece rebuilt in the file, imported from somewhere other than `@/ui` and `@/patterns`, or UI taken from another screen's folder. The screen's own folder is fine |
 | `bp/closed-enum` | A prop or a value a piece's contract does not allow (`tone=`, Button `variant=`, an `emphasis` x `intent` pair that is not allowed) |
 | `bp/one-primary` | More than one `emphasis="strong" intent="brand"` Button in one file |
+| `bp/one-strong-action` | More than one `emphasis="strong"` Button in one Section (or in a file with no Section) when they are not all brand: a strong danger beside another strong action |
 | `bp/use-pattern` | A screen that builds most of a pattern by hand, with the pattern and the starter to use instead |
 | `bp/use-bigger-piece` | A screen that builds an organism out of its own parts, with the organism to use instead |
 | `bp/screen-frame` | A full screen with no `AppShell` and side nav, breadcrumbs that do not start with Home, or a page grid written by hand |

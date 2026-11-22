@@ -1,0 +1,45 @@
+{
+  "kind": "widget",
+  "name": "close-checklist",
+  "about": "From the billing reference screen: what is left before the month closes.",
+  "template": "checklist",
+  "size": "6x3",
+  "copy": {
+    "title": "Close checklist",
+    "emptyTitle": "Nothing to close yet",
+    "error": "The checklist did not load."
+  },
+  "data": {
+    "items": [
+      {
+        "id": "t1",
+        "title": "Review and approve invoices",
+        "done": true,
+        "owner": "Jordan Ellis",
+        "due": "Nov 4"
+      },
+      {
+        "id": "t2",
+        "title": "Post recurring charges",
+        "done": true,
+        "owner": "Priya Raman",
+        "due": "Nov 6"
+      },
+      {
+        "id": "t3",
+        "title": "Reconcile unapplied cash",
+        "done": false,
+        "late": true,
+        "owner": "Billing Operations",
+        "due": "Due Nov 28"
+      },
+      {
+        "id": "t4",
+        "title": "Run revenue recognition",
+        "done": false,
+        "owner": "Finance",
+        "due": "Due Nov 30"
+      }
+    ]
+  }
+}

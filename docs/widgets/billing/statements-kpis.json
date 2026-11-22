@@ -1,0 +1,82 @@
+{
+  "kind": "widget",
+  "name": "statements-kpis",
+  "template": "kpi-strip",
+  "size": "12x1",
+  "copy": {
+    "title": "Statements",
+    "help": "Statement totals for the period, and the largest ending balances.",
+    "emptyTitle": "No statements this period",
+    "error": "The statement totals did not load."
+  },
+  "data": {
+    "items": [
+      {
+        "id": "count",
+        "title": "Number of statements",
+        "metric": "2,478",
+        "trend": {
+          "value": "1.3",
+          "unit": "% 30D",
+          "direction": "up",
+          "status": "neutral"
+        }
+      },
+      {
+        "id": "start",
+        "title": "Starting balance",
+        "metric": "$3.8M",
+        "trend": {
+          "value": "12.2",
+          "unit": "% 30D",
+          "direction": "down",
+          "status": "neutral"
+        }
+      },
+      {
+        "id": "charges",
+        "title": "New charges",
+        "metric": "$3.8M",
+        "trend": {
+          "value": "12.2",
+          "unit": "% 30D",
+          "direction": "down",
+          "status": "neutral"
+        }
+      },
+      {
+        "id": "taxes",
+        "title": "New taxes",
+        "metric": "$0.3M",
+        "trend": {
+          "value": "1.9",
+          "unit": "% 30D",
+          "direction": "down",
+          "status": "neutral"
+        }
+      },
+      {
+        "id": "total",
+        "title": "Total new",
+        "metric": "$4.1M",
+        "trend": {
+          "value": "11.4",
+          "unit": "% 30D",
+          "direction": "down",
+          "status": "neutral"
+        }
+      },
+      {
+        "id": "ending",
+        "title": "Ending balance",
+        "metric": "$3.8M",
+        "trend": {
+          "value": "12.2",
+          "unit": "% 30D",
+          "direction": "down",
+          "status": "neutral"
+        }
+      }
+    ]
+  }
+}

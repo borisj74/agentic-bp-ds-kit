@@ -1,0 +1,103 @@
+{
+  "kind": "widget",
+  "name": "largest-ending-balances",
+  "template": "table",
+  "size": "12x2",
+  "copy": {
+    "title": "Largest ending balances",
+    "emptyTitle": "No statements to rank",
+    "error": "The balances did not load."
+  },
+  "data": {
+    "columns": [
+      {
+        "key": "account",
+        "header": "Account",
+        "type": "link"
+      },
+      {
+        "key": "statement",
+        "header": "Statement"
+      },
+      {
+        "key": "starting",
+        "header": "Starting",
+        "numeric": true
+      },
+      {
+        "key": "charges",
+        "header": "New charges",
+        "numeric": true
+      },
+      {
+        "key": "payments",
+        "header": "Payments",
+        "numeric": true
+      },
+      {
+        "key": "ending",
+        "header": "Ending",
+        "numeric": true,
+        "emphasis": true
+      }
+    ],
+    "rows": [
+      {
+        "id": "apex",
+        "account": "Apex Digital Services",
+        "statement": "Oct 1 \u2013 Oct 31, 2026",
+        "starting": "$48,200.00",
+        "charges": "$21,900.00",
+        "payments": "$40,000.00",
+        "ending": "$30,100.00"
+      },
+      {
+        "id": "delta",
+        "account": "Delta Tools",
+        "statement": "Oct 1 \u2013 Oct 31, 2026",
+        "starting": "$31,000.00",
+        "charges": "$12,400.00",
+        "payments": "$18,000.00",
+        "ending": "$25,400.00"
+      },
+      {
+        "id": "catalyst",
+        "account": "Catalyst Group",
+        "statement": "Oct 1 \u2013 Oct 31, 2026",
+        "starting": "$22,750.00",
+        "charges": "$6,300.00",
+        "payments": "$9,000.00",
+        "ending": "$20,050.00"
+      },
+      {
+        "id": "northwind",
+        "account": "Northwind Traders",
+        "statement": "Oct 1 \u2013 Oct 31, 2026",
+        "starting": "$15,990.00",
+        "charges": "$9,870.00",
+        "payments": "$15,990.00",
+        "ending": "$9,870.00"
+      },
+      {
+        "id": "fjord",
+        "account": "Fjord Logistics",
+        "statement": "Oct 1 \u2013 Oct 31, 2026",
+        "starting": "$12,600.00",
+        "charges": "$17,600.00",
+        "payments": "$12,600.00",
+        "ending": "$17,600.00"
+      }
+    ]
+  },
+  "actions": [
+    {
+      "id": "open-row",
+      "type": "open"
+    },
+    {
+      "id": "view-statements",
+      "type": "footer",
+      "label": "View statements"
+    }
+  ]
+}

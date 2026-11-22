@@ -32,6 +32,7 @@ export const RULES = [
   "bp/local-cousin",
   "bp/closed-enum",
   "bp/one-primary",
+  "bp/one-strong-action",
   "bp/use-pattern",
   "bp/use-bigger-piece",
   "bp/screen-frame",

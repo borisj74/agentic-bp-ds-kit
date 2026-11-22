@@ -1,0 +1,73 @@
+{
+  "kind": "widget",
+  "name": "close-tasks",
+  "about": "The prototype's Tasks tile: the five steps of the invoice close.",
+  "template": "task-list",
+  "size": "6x3",
+  "copy": {
+    "title": "Tasks",
+    "emptyTitle": "No close tasks for this period",
+    "emptyDescription": "Tasks appear here once the period opens.",
+    "error": "The close tasks did not load."
+  },
+  "data": {
+    "items": [
+      {
+        "id": "close",
+        "title": "Close invoices",
+        "detail": "12 pending ($1.2K) \u00b7 2 failed ($4K)",
+        "status": {
+          "label": "Completed",
+          "intent": "success"
+        }
+      },
+      {
+        "id": "pdfs",
+        "title": "Generate PDFs and e-invoices",
+        "detail": "132 pending ($15K) \u00b7 16 failed ($4K)",
+        "status": {
+          "label": "Completed",
+          "intent": "success"
+        }
+      },
+      {
+        "id": "approve",
+        "title": "Approve invoices",
+        "detail": "19 pending ($4K) \u00b7 32 failed ($4K)",
+        "status": {
+          "label": "Pending",
+          "intent": "warning"
+        }
+      },
+      {
+        "id": "send",
+        "title": "Send invoices",
+        "detail": "Email 2,104 \u00b7 Mail 38 \u00b7 Portal 210 \u00b7 119 bounced ($4K)",
+        "status": {
+          "label": "Pending",
+          "intent": "warning"
+        }
+      },
+      {
+        "id": "collect",
+        "title": "Collect payments",
+        "detail": "Auto pay 1,860 ($312K) \u00b7 Other 540 ($139K) \u00b7 100 paid ($4K)",
+        "status": {
+          "label": "Pending",
+          "intent": "warning"
+        }
+      }
+    ]
+  },
+  "actions": [
+    {
+      "id": "open-row",
+      "type": "open"
+    },
+    {
+      "id": "view-period-report",
+      "type": "footer",
+      "label": "View invoice period report"
+    }
+  ]
+}

@@ -18,7 +18,7 @@ export function readMap(file = MAP_FILE) {
 export function readContracts(dir = CONTRACTS) {
   return fs
     .readdirSync(dir)
-    .filter((f) => f.endsWith(".json") && f !== "index.json" && f !== "figma-map.json")
+    .filter((f) => f.endsWith(".json") && f !== "index.json" && f !== "figma-map.json" && f !== "widget-sizes.json")
     .sort()
     .map((f) => ({ file: `contracts/${f}`, ...JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")) }));
 }

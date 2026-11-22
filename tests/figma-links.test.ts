@@ -8,7 +8,8 @@ const FILE_KEY = "ELFJs16lnRVQaOrxhMVrVf";
 // The index and the two foundation contracts are not components, so they carry no Figma component.
 const NOT_COMPONENTS = new Set(["density.json", "index.json", "layout.json"]);
 // figma-map.json is the contract to Figma map, not a contract. tests/figma-map.test.ts checks it.
-const NOT_CONTRACTS = new Set(["figma-map.json"]);
+// widget-sizes.json is the tile size table derived from the layout tokens. tests/widget.test.ts checks it.
+const NOT_CONTRACTS = new Set(["figma-map.json", "widget-sizes.json"]);
 
 type Contract = { name: string; figma?: { fileKey?: string; nodeId?: string } };
 
