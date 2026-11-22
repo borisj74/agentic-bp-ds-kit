@@ -13,7 +13,7 @@
     "size": { "enum": ["sm", "md", "lg"], "default": "md", "note": "Heights 16 / 20 / 24. sm and md are the standard counts; lg is for larger controls." },
     "subtle": { "type": "boolean", "default": false, "note": "Lighter fill. Defined for info, neutral and danger." },
     "disabled": { "type": "boolean", "default": false, "note": "Gray with faint text." },
-    "count": { "type": "number", "required": true },
+    "count": { "type": "number", "required": true, "note": "Written with thousands separators, like 7,989." },
     "max": { "type": "number", "default": 99, "note": "Above max the Count shows max+." },
     "label": { "type": "string", "note": "What is counted, for screen readers, like unread messages." }
   },

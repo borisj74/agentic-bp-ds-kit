@@ -300,6 +300,14 @@ describe("widget batches", () => {
     expect(action.left).toEqual([{ rule: "widget/action", what: "nothing reported" }]);
   });
 
+  it("never resizes for content wider than the tile: only a tile drawn too tall gets a taller size", () => {
+    const raw = structuredClone(billing["approved-by-account"]);
+    const wide = repair(raw, [{ rule: "widget/overflow-x", severity: "error", message: "ready light: the content is 602px wide in a 599px tile." }]) as Json;
+    expect(wide.raw.size).toBe(raw.size);
+    expect(wide.fixes).toEqual([]);
+    expect(wide.left).toEqual([{ rule: "widget/overflow-x", what: "ready light: the content is 602px wide in a 599px tile." }]);
+  });
+
   it("the report lists only failures, and the CSV only passes", () => {
     const spec = checked(billing["needs-attention"]);
     const rows = [
@@ -393,35 +401,32 @@ describe("status-breakdown template", () => {
   it("comes in 4x1, 6x1, 6x2 and 12x1, and holds 2 to 6 statuses", () => {
     expect(SB.sizes).toEqual(["4x1", "6x1", "6x2", "12x1"]);
     const max = (size: string, footer = false) => SB.capacity(size, {}, { size, actions: footer ? [{ type: "footer" }] : [] }).items.max;
-    expect(SB.sizes.map((size: string) => max(size))).toEqual([4, 6, 6, 6]);
-    // A one-row tile has no room for a footer at all (refused on its own), so it never lowers what fits.
-    expect(SB.sizes.map((size: string) => max(size, true))).toEqual([4, 6, 6, 6]);
+    expect(SB.sizes.map((size: string) => max(size))).toEqual([6, 6, 6, 6]);
+    // A footer link takes two of a one-row tile's three legend rows, and nothing a 6x2 needs.
+    expect(SB.sizes.map((size: string) => max(size, true))).toEqual([2, 3, 6, 6]);
     for (const size of SB.sizes) expect(SB.capacity(size, {}, { size, actions: [] }).items.min).toBe(2);
   });
 
-  it("refuses a footer link on a one-row tile, and repairs it into a header button", () => {
+  it("a footer link on a one-row tile leaves room for one legend row", () => {
     const footer = { id: "view-report", type: "footer", label: "View uploads report" };
-    for (const size of ["4x1", "6x1", "12x1"]) {
-      const result = validateWidgetSpec(sb({ size, actions: [footer] })) as Json;
-      expect(result.errors.map((e: Json) => e.code)).toEqual(["no-footer"]);
-      expect(result.errors[0].fix).toContain("Use size 6x2");
-    }
-    expect(paths(sb({ size: "6x2", actions: [footer] }))).toEqual([]);
-    const raw = sb({ actions: [footer] });
-    const { raw: fixed } = repairWidget(raw, (validateWidgetSpec(raw) as Json).errors) as Json;
-    expect(fixed.actions).toEqual([{ id: "view-report", type: "button", label: "View uploads report", emphasis: "minimal" }]);
-    expect(paths(fixed)).toEqual([]);
+    expect(paths(sb({ actions: [footer] }))).toEqual([]);
+    const four = withItems(["a", "b", "c", "d"].map((s) => item(s, 1)), { actions: [footer] });
+    const result = validateWidgetSpec(four) as Json;
+    expect(result.errors.map((e: Json) => e.path)).toEqual(["data.items"]);
+    expect(result.errors[0].fix).toBe("Use size 6x2, or keep the first 3.");
+    expect(paths({ ...four, size: "6x2" })).toEqual([]);
   });
 
   it("over capacity names the size that holds it", () => {
+    const footer = { id: "view-report", type: "footer", label: "View uploads report" };
     const five = ["a", "b", "c", "d", "e"].map((s) => item(s, 1));
-    const result = validateWidgetSpec(withItems(five, { size: "4x1" })) as Json;
+    const result = validateWidgetSpec(withItems(five, { size: "4x1", actions: [footer] })) as Json;
     expect(result.errors.map((e: Json) => e.path)).toEqual(["data.items"]);
-    expect(result.errors[0].fix).toBe("Use size 6x1, or keep the first 4.");
+    expect(result.errors[0].fix).toBe("Use size 6x2, or keep the first 2.");
     const seven = ["a", "b", "c", "d", "e", "f", "g"].map((s) => item(s, 1));
     expect((validateWidgetSpec(withItems(seven, { size: "12x1" })) as Json).errors[0].fix).toBe("Keep the first 6; no status-breakdown size holds 7.");
-    const { raw } = repairWidget(withItems(five, { size: "4x1" }), result.errors) as Json;
-    expect(raw.size).toBe("6x1");
+    const { raw } = repairWidget(withItems(five, { size: "4x1", actions: [footer] }), result.errors) as Json;
+    expect(raw.size).toBe("6x2");
   });
 
   it("draws one UsageBar split by status and a Legend with each count and share", () => {

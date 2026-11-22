@@ -79,10 +79,15 @@ export function UsageBar({ segments, figures, showLegend = true, label = "Usage"
   const offset = leftAt < 0 ? 0 : drawn.slice(0, leftAt).reduce((sum, s) => sum + s.width, 0);
   const figureAt = (place: UsageBarFigurePlace) => figures?.find((f) => f.at === place);
 
-  // A part is its share of the track less its share of the gaps between the parts, so however many there are they
-  // add up to the track rather than spilling past its end. The caption row takes the same widths.
+  // Every part keeps a minimum width of one gap, so a part of almost nothing still shows. A part is that minimum plus
+  // its share of what is left once the gaps between the parts and every part's minimum are taken out, so however
+  // many there are, and however small, they add up to the track rather than spilling past its end. The caption row
+  // takes the same widths.
   const gaps = Math.max(drawn.length - 1, 0);
-  const widthOf = (width: number) => `calc(${width * 100}% - ${width} * var(--usage-bar-gap) * ${gaps})`;
+  const reserved = gaps + drawn.length;
+  const widthOf = (width: number) => `calc(var(--usage-bar-gap) + ${width} * (100% - ${reserved} * var(--usage-bar-gap)))`;
+  // The caption row is only drawn when some part has a caption: an empty row would still take its gap.
+  const captioned = drawn.some((s) => s.label);
 
   // One key per used colour, then the empty track and, where there is one, the overspend. Parts of one colour
   // share a key. A recent sliver is the strong step of its part's colour, so it only takes a key of its own
@@ -155,18 +160,20 @@ export function UsageBar({ segments, figures, showLegend = true, label = "Usage"
         ))}
       </div>
 
-      <div className={styles.captions} aria-hidden="true">
-        {drawn.map((s) => (
-          <div key={s.id} className={styles.caption} style={{ width: widthOf(s.width) }}>
-            {s.width >= CAPTION_MIN && s.label && (
-              <>
-                <span className={[styles.captionLabel, s.kind === "outside" ? styles.danger : ""].join(" ")}>{s.label}</span>
-                {s.note && <span className={styles.captionNote}>{s.note}</span>}
-              </>
-            )}
-          </div>
-        ))}
-      </div>
+      {captioned && (
+        <div className={styles.captions} aria-hidden="true">
+          {drawn.map((s) => (
+            <div key={s.id} className={styles.caption} style={{ width: widthOf(s.width) }}>
+              {s.width >= CAPTION_MIN && s.label && (
+                <>
+                  <span className={[styles.captionLabel, s.kind === "outside" ? styles.danger : ""].join(" ")}>{s.label}</span>
+                  {s.note && <span className={styles.captionNote}>{s.note}</span>}
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* The captions are hidden from screen readers above, since they are laid out by width rather than read in
           order; this says the same thing as one sentence. */}

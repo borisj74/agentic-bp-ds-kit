@@ -21,9 +21,8 @@ export const emptyIcon = "stacked_bar_chart";
  */
 export const TONE_INTENT = { success: "green", warning: "yellow", danger: "red", info: "cyan", neutral: "gray" };
 
-/** The UsageBar as drawn with no figures and no captions: its 28px track (--control-small) and the gaps and
- * empty caption row under it, 52px in all (measured in the widget loop). */
-export const BAR = 52;
+/** The UsageBar as drawn with no figures and no captions: its 28px track (--control-small) and nothing else. */
+export const BAR = 28;
 /** One legend row: 12px caption text at 1.5 line height. */
 export const LEGEND_ROW = 18;
 /** The gap between wrapped legend rows (--space-xsmall). */
@@ -82,33 +81,14 @@ export function keysPerRow(size) {
   return Math.max(1, Math.floor((sizeOf(size).width + KEY_GAP) / (KEY_WIDTH + KEY_GAP)));
 }
 
-const hasFooter = (spec) => (spec.actions ?? []).some((a) => a.type === "footer");
-
-/** True when a footer link leaves no room for even one legend row: every one-row size. */
-export function footerCrowds(spec) {
-  return hasFooter(spec) && legendRows(spec) === 0;
-}
-
 export function capacity(size, p = {}, spec = { size, actions: [], params: p }) {
-  let sized = { ...spec, size };
-  // A footer that leaves no room is refused on its own (see issues), so count the legend without it.
-  if (footerCrowds(sized)) sized = { ...sized, actions: sized.actions.filter((a) => a.type !== "footer") };
+  const sized = { ...spec, size };
   const max = Math.min(MAX, keysPerRow(size) * legendRows(sized));
   return { items: { min: MIN, max: Math.max(MIN, max), what: "statuses", path: "data.items" } };
 }
 
 export function issues(spec) {
-  const out = [];
-  if (footerCrowds(spec)) {
-    const roomy = sizes.find((size) => !footerCrowds({ ...spec, size }));
-    out.push({
-      path: "actions",
-      message: `A ${spec.size} ${id} has no room for a footer link under its bar and legend.`,
-      fix: `Use size ${roomy}, or make it a header button: { "type": "button", "emphasis": "minimal" } with the same id and label.`,
-      code: "no-footer",
-    });
-  }
-  return out.concat(capacityIssues(spec, { id, sizes, capacity }, capacity(spec.size, spec.params, spec), { items: spec.data.items.length }));
+  return capacityIssues(spec, { id, sizes, capacity }, capacity(spec.size, spec.params, spec), { items: spec.data.items.length });
 }
 
 const num = (n) => n.toLocaleString("en-US");

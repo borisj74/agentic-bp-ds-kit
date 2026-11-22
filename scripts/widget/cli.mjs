@@ -165,7 +165,8 @@ export function biggerSize(templateId, size) {
 /**
  * Repair what a widget can repair on its own, always in the spec:
  *   - data over capacity: the smallest allowed size that holds it
- *   - a tile drawn taller than its size (widget/fit): the next taller size of the template
+ *   - a tile drawn taller than its size (widget/fit): the next taller size of the template. Content wider than
+ *     the tile (widget/overflow-x) is never resized for: a taller size is no wider, so it is left for a person.
  *   - more than one strong Button (bp/one-strong-action, bp/one-primary): the rest become minimal
  * Everything else is left for a person. Returns { raw, fixes, left }.
  */
@@ -304,7 +305,7 @@ async function renderOne(page, { base, batch, spec, root, shots: wantShots }) {
         if (box.height > size.height + 1)
           say("widget/fit", `${state} ${theme}: the tile is ${box.height}px tall; a ${spec.size} tile is ${size.height}px.`, "Use a taller size, or give it less data.", { state, theme });
         if (box.scrollWidth > box.width + 1)
-          say("widget/fit", `${state} ${theme}: the content is ${box.scrollWidth}px wide in a ${box.width}px tile.`, "Use a wider size, or fewer columns.", { state, theme });
+          say("widget/overflow-x", `${state} ${theme}: the content is ${box.scrollWidth}px wide in a ${box.width}px tile.`, "Use a wider size, or fewer columns.", { state, theme });
         if (box.kit === 0 && theme === "light")
           say("bp/no-tags", `${state}: no kit piece wears its name tag.`, "Serve the tile with NEXT_PUBLIC_BP_INSPECT=1, and draw it from kit pieces only.", { state, theme });
         if (wantShots) {

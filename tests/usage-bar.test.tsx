@@ -26,15 +26,33 @@ describe("UsageBar", () => {
     expect(bar()).toHaveAttribute("aria-valuetext", "480 used of 1,650");
   });
 
-  it("gives every part its share of the bar, less its share of the gaps", () => {
+  it("gives every part its minimum and its share of what is left once the gaps and minimums are out", () => {
     render(<UsageBar label="Credits this period" segments={SEGMENTS} />);
     const widths = parts().map((p) => (p as HTMLElement).style.width);
-    // 150, 330, 670 and 500 of 1,650, each less its share of the three gaps between the four parts.
-    expect(widths[0]).toContain("9.09");
-    expect(widths[1]).toContain("20");
-    expect(widths[2]).toContain("40.6");
-    expect(widths[3]).toContain("30.3");
-    for (const width of widths) expect(width).toContain("var(--usage-bar-gap) * 3");
+    // 150, 330, 670 and 500 of 1,650, each of the track less the three gaps and the four parts' minimums.
+    expect(widths[0]).toContain("0.0909");
+    expect(widths[1]).toContain("0.2");
+    expect(widths[2]).toContain("0.406");
+    expect(widths[3]).toContain("0.303");
+    for (const width of widths) expect(width).toMatch(/^calc\(var\(--usage-bar-gap\) \+ [\d.]+ \* \(100% - 7 \* var\(--usage-bar-gap\)\)\)$/);
+  });
+
+  it("keeps a part of almost nothing inside the bar, and draws no caption row when no part has a caption", () => {
+    const { container } = render(
+      <UsageBar
+        label="Credits this period"
+        showLegend={false}
+        segments={[
+          { id: "valid", value: 982410, intent: "green" },
+          { id: "duplicate", value: 1204, intent: "yellow" },
+          { id: "rejected", value: 3, intent: "red" },
+        ]}
+      />,
+    );
+    // Shares add up to the whole, so with every minimum reserved the parts add up to the track exactly.
+    const shares = parts().map((p) => parseFloat((p as HTMLElement).style.width.match(/\+ ([\d.e-]+) \*/)![1]));
+    expect(shares.reduce((a, b) => a + b, 0)).toBeCloseTo(1, 6);
+    expect(container.querySelector("[class*=captions]")).toBeNull();
   });
 
   it("writes a caption under each part and says the same thing once for screen readers", () => {
@@ -118,8 +136,8 @@ describe("UsageBar", () => {
     expect(bar()).toHaveAttribute("aria-valuemax", "1650");
     expect(bar()).toHaveAttribute("aria-valuetext", "1,000 used of 1,650, 104 over the allowance");
     // Every part fits inside the bar, so an overspend cannot push it out of the box it sits in.
-    const total = parts().reduce((sum, p) => sum + parseFloat((p as HTMLElement).style.width.match(/([\d.]+)%/)![1]), 0);
-    expect(total).toBeCloseTo(100, 1);
+    const total = parts().reduce((sum, p) => sum + parseFloat((p as HTMLElement).style.width.match(/\+ ([\d.e-]+) \*/)![1]), 0);
+    expect(total).toBeCloseTo(1, 6);
     // Its red, its caption and its legend key say it is past the end; no rule is drawn for it.
     expect(container.querySelector("[class*=allowanceEnd]")).toBeNull();
     expect(key("Over the allowance", container)).not.toBeNull();
