@@ -1,4 +1,5 @@
-import { readFileSync, readdirSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 // Plain Node ESM, so these come in untyped; the test states the shapes it reads.
@@ -7,7 +8,17 @@ import * as widgets from "../templates/widgets/index.mjs";
 import { HEADER, FOOTER, sizeOf } from "../templates/widgets/_shared.mjs";
 import { SIZE_IDS, SIZES_FILE, deriveSizes, readLayoutTokens } from "../scripts/widget/sizes.mjs";
 import { renderTile as renderTileUntyped } from "../scripts/widget/render.mjs";
-import { batchId, biggerSize, checkBatch, formatWidgetReport, loadWidgetSpecs, passCsv, repairWidget } from "../scripts/widget/cli.mjs";
+import {
+  batchId,
+  biggerSize,
+  checkBatch,
+  formatWidgetReport,
+  loadWidgetSpecs,
+  parseWidgetArgs,
+  passCsv,
+  repairWidget,
+  runWidgetLoop,
+} from "../scripts/widget/cli.mjs";
 import { reviewSource } from "../scripts/review/index.mjs";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -301,5 +312,47 @@ describe("widget batches", () => {
     const csv = passCsv(rows).trim().split("\n");
     expect(csv).toHaveLength(2);
     expect(csv[1]).toMatch(/^needs-attention,table,6x2,/);
+  });
+});
+
+describe("widget loop write-back", () => {
+  // A spec over capacity is repaired before anything is built; zero attempts and a stub server keep the
+  // browser out of it, so the test only sees what the loop does to the spec file.
+  const run = async (options: Json = {}) => {
+    const root = mkdtempSync(join(tmpdir(), "widget-loop-"));
+    const source = "batch.jsonl";
+    const text = JSON.stringify({ ...billing["close-tasks"], size: "6x2" }) + "\n";
+    writeFileSync(join(root, source), text);
+    // The kit's catalog is read from the root; the tiles are written under it, so only these are links.
+    mkdirSync(join(root, "src"));
+    for (const dir of ["contracts", "src/tokens", "src/ui", "src/patterns"]) symlinkSync(join(repoRoot, dir), join(root, dir), "dir");
+    const server = async () => ({ base: "http://127.0.0.1:0", stop: async () => {} });
+    try {
+      const result = (await runWidgetLoop(source, { root, attempts: 0, shots: false, server, ...options })) as Json;
+      return { before: text, after: readFileSync(join(root, source), "utf8"), report: readFileSync(join(root, result.reportFile), "utf8"), result };
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  };
+
+  it("does not write repairs back by default", async () => {
+    const { before, after, report, result } = await run();
+    expect(result.rows[0].fixes.map((f: Json) => f.rule)).toEqual(["widget/capacity"]);
+    expect(after).toBe(before);
+    expect(report).toContain("## Repairs for this run");
+    expect(report).toContain("--write");
+  });
+
+  it("writes repairs back with write: true", async () => {
+    const { after, report } = await run({ write: true });
+    expect(JSON.parse(after.trim()).size).toBe("6x3");
+    expect(report).toContain("## Repairs written back");
+  });
+
+  it("the command line keeps write off unless --write is given", () => {
+    const write = (argv: string[]) => (parseWidgetArgs(argv) as Json).values.write;
+    expect(write(["loop", "a.jsonl"])).toBe(false);
+    expect(write(["loop", "a.jsonl", "--write"])).toBe(true);
+    expect(write(["loop", "a.jsonl", "--no-write"])).toBe(false);
   });
 });

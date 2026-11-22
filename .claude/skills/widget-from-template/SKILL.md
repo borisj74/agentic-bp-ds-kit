@@ -67,8 +67,10 @@ Invoke with `/widget-from-template <the tile you want>`.
    reviews the code with the kit rules; type-checks it; measures it against its size; uses every declared action
    against a stub; screenshots each; repairs what it can in the spec (a bigger size, a footer moved to a header
    button, spark lines dropped, extra strong buttons made minimal) and retries, three attempts at most. It writes
-   `reports/widgets/<batch>.md` (failures only) and `reports/widgets/<batch>.csv` (passes). Fix what the report
-   leaves for you in the spec and run it again.
+   `reports/widgets/<batch>.md` (failures only) and `reports/widgets/<batch>.csv` (passes). The loop does not
+   change your spec files: its repairs are for that run only, and the report lists them under "Repairs for this
+   run". Copy them into the spec yourself, or run again with `--write` to save them. Fix what the report leaves
+   for you in the spec and run it again.
 
 ## Hard rules
 

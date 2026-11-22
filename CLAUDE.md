@@ -87,7 +87,7 @@ Everything else the report names for you to decide: pick the bigger piece, write
 
 ## Widgets come from a template
 
-A dashboard tile is a widget spec (`"kind": "widget"`): one template from `templates/widgets/`, one size from `contracts/widget-sizes.json`, its params, data, copy and actions. Check it with `npm run widget -- check <spec | folder | batch.jsonl>`, build it with `npm run widget -- build`, and run `npm run widget -- loop` until it passes. Never lay a tile out by hand; if no template fits, propose a new one. The skill `widget-from-template` walks through it.
+A dashboard tile is a widget spec (`"kind": "widget"`): one template from `templates/widgets/`, one size from `contracts/widget-sizes.json`, its params, data, copy and actions. Check it with `npm run widget -- check <spec | folder | batch.jsonl>`, build it with `npm run widget -- build`, and run `npm run widget -- loop` until it passes. The loop leaves the spec files alone; add `--write` to save its repairs into them. Never lay a tile out by hand; if no template fits, propose a new one. The skill `widget-from-template` walks through it.
 
 ## Build order
 

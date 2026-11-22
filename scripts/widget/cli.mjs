@@ -8,6 +8,7 @@
  *          existing rules, type-check it, measure that it fits its size, use every declared action against a
  *          stub, take a screenshot of each, repair what can be repaired and go round again — three attempts
  *          at most. Writes reports/widgets/<batch>.md (failures only) and reports/widgets/<batch>.csv (passes).
+ *          Repairs stay in this run unless --write saves them into the spec files.
  *   sizes  write contracts/widget-sizes.json from the layout tokens
  *
  * A batch is one .jsonl file (a spec a line), a folder of .json specs, or one spec. Its id is its path as a
@@ -33,13 +34,15 @@ export const WIDGET_HELP = `Usage: npm run widget -- <check|build|loop|sizes> <s
   build   Write the tiles and the harness that serves them at /widgets/<batch>/<name>.
   loop    Build, render each state light and dark, review, type-check, measure the fit, use every action
           against a stub, screenshot, repair and retry (3 attempts at most), then write the report.
+          Repairs apply to this run only; add --write to save them into the spec files.
   sizes   Write contracts/widget-sizes.json from the layout tokens.
 
 Options:
   --attempts <n>   loop: attempts at most (default 3)
   --port <n>       loop: port for next dev (default 3124)
   --only <names>   comma-separated spec names to run from the batch
-  --no-write       loop: do not write repairs back into the spec files
+  --write          loop: write repairs back into the spec files (off by default)
+  --no-write       loop: keep the spec files as they are (the default)
   --no-shots       loop: skip the screenshots
   --json           One JSON object instead of text
   -h, --help       Show this help
@@ -374,7 +377,7 @@ async function renderAll(items, { base, batch, root, shots, log, concurrency = 4
  */
 export async function runWidgetLoop(
   source,
-  { root = repoRoot, port = 3124, attempts: maxAttempts = 3, write = true, shots = true, only = null, log = () => {}, server: openServer = startServer } = {},
+  { root = repoRoot, port = 3124, attempts: maxAttempts = 3, write = false, shots = true, only = null, log = () => {}, server: openServer = startServer } = {},
 ) {
   const checked = checkBatch(source, { root, only });
   const batch = checked.batch;
@@ -480,7 +483,7 @@ export async function runWidgetLoop(
 const cellText = (s) => String(s).replace(/\|/g, "\\|").replace(/\n/g, " ");
 
 /** The report: a summary, then only the tiles that still fail, with what failed and what was tried. */
-export function formatWidgetReport({ batch, source, rows, wrote = true }) {
+export function formatWidgetReport({ batch, source, rows, wrote = false }) {
   const passed = rows.filter((r) => r.ok);
   const failed = rows.filter((r) => !r.ok);
   const repaired = rows.filter((r) => r.fixes.length);
@@ -523,11 +526,15 @@ export function formatWidgetReport({ batch, source, rows, wrote = true }) {
     }
     lines.push("");
   }
-  lines.push("## Repairs written back");
+  lines.push(wrote ? "## Repairs written back" : "## Repairs for this run");
   lines.push("");
   if (repaired.length === 0) lines.push("None: every spec was built as written.");
   else {
-    lines.push(wrote ? "These were written back into the spec, so the next run starts from them:" : "These were made for this run only (--no-write):");
+    lines.push(
+      wrote
+        ? "These were written back into the spec (--write), so the next run starts from them:"
+        : "These were made for this run only; the spec files are unchanged. Copy them into the spec, or run again with --write to save them:",
+    );
     lines.push("");
     for (const r of repaired) for (const fix of r.fixes) lines.push(`- \`${where(r.item)}\` ${r.spec?.name}: \`${fix.rule}\` ${fix.what}`);
   }
@@ -562,8 +569,9 @@ function printIssues(items) {
   }
 }
 
-async function main(argv) {
-  const { values, positionals } = parseArgs({
+/** Parse the command line. `write` is off unless --write is given. */
+export function parseWidgetArgs(argv) {
+  return parseArgs({
     args: argv,
     allowNegative: true,
     allowPositionals: true,
@@ -571,12 +579,16 @@ async function main(argv) {
       attempts: { type: "string" },
       port: { type: "string" },
       only: { type: "string" },
-      write: { type: "boolean", default: true },
+      write: { type: "boolean", default: false },
       shots: { type: "boolean", default: true },
       json: { type: "boolean" },
       help: { type: "boolean", short: "h" },
     },
   });
+}
+
+async function main(argv) {
+  const { values, positionals } = parseWidgetArgs(argv);
   const [command, source] = positionals;
   if (values.help || !command) {
     console.log(WIDGET_HELP);
