@@ -8,6 +8,7 @@
  */
 import { describe, expect, it } from "vitest";
 import { runAudit } from "../scripts/figma/audit.js";
+import { renderHelpers } from "../scripts/figma/emit.mjs";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- a Figma node and a plan are plain JSON under test
 type Any = any;
@@ -47,6 +48,7 @@ function fakeFigma(page: Node) {
     root: { children: [page] },
     variables: { getLocalVariableCollectionsAsync: async () => [{ id: "c1", name: "Scheme", modes: [{ modeId: "m1", name: "Light" }] }] },
     getNodeByIdAsync: async (id: string) => byId.get(String(id)) ?? null,
+    loadFontAsync: async () => {},
   };
 }
 
@@ -189,6 +191,18 @@ function fileOf({
     ],
   });
 }
+
+/** Put a node, and everything under it, inside a node of a tree already built. */
+function attach(parent: Node, spec: Raw): Node {
+  const node = tree(spec);
+  node.parent = parent;
+  parent.children.push(node);
+  return node;
+}
+
+const byName = (file: Node, name: string) => file.findAll((n: Node) => n.name === name)[0];
+/** The Scoreboard node of the plan above, to give it what a test needs. */
+const scoreboardOf = (plan: Any) => plan.frames[0].root.slots["page#2:2"][0].children[0];
 
 const of = (result: Any, rule: string) => (result.findings ?? []).filter((finding: Any) => finding.rule === rule);
 // The shell's own breadcrumb trail is example content too, and it has a test of its own below. Every
@@ -388,6 +402,182 @@ describe("the audit, against a fake Figma tree", () => {
       });
       const findings = content(await runAudit(plan, { figma: fakeFigma(file) }));
       expect(findings.some((f: Any) => f.node === "Section" && f.what.includes("the page slot still holds"))).toBe(true);
+    });
+  });
+
+  describe("bp/figma-overflow, inside the page slot", () => {
+    /** The file above, with the page slot measured and the Scoreboard as tall as a test says. */
+    const tall = (height: number, { clip = false, hiddenCard = false } = {}) => {
+      const file = fileOf({ cards: [true, true, false] });
+      byName(file, "page").absoluteBoundingBox = { x: 200, y: 0, width: 1240, height: 900 };
+      byName(file, "layout/stack").clipsContent = clip;
+      byName(file, "Scoreboard").absoluteBoundingBox = { x: 248, y: 120, width: 1000, height: hiddenCard ? 200 : height };
+      if (hiddenCard) {
+        const card = byName(file, "Card 3");
+        card.visible = false;
+        card.absoluteBoundingBox = { x: 248, y: 120, width: 300, height };
+      }
+      return file;
+    };
+
+    it("says how far the screen runs past the frame when the shell itself fits", async () => {
+      // usage-overview/ready: the AppShell is 900 tall and fits, the screen in its slot ends at 937.
+      const result = await runAudit(planOf(), { figma: fakeFigma(tall(817)) });
+      const findings = of(result, "bp/figma-overflow");
+      expect(findings).toHaveLength(1);
+      expect(findings[0].node).toBe("layout/stack");
+      expect(findings[0].id).toBe("stack");
+      expect(findings[0].what).toBe("the screen in the page slot runs 37px past the bottom of the frame");
+    });
+
+    it("measures against the slot when the slot stops short of the frame", async () => {
+      const file = tall(700);
+      byName(file, "page").absoluteBoundingBox = { x: 200, y: 0, width: 1240, height: 800 };
+      const findings = of(await runAudit(planOf(), { figma: fakeFigma(file) }), "bp/figma-overflow");
+      expect(findings.map((f: Any) => f.what)).toEqual(["the screen in the page slot runs 20px past the bottom of the page slot"]);
+    });
+
+    it("says nothing when the screen fits", async () => {
+      expect(of(await runAudit(planOf(), { figma: fakeFigma(tall(700)) }), "bp/figma-overflow")).toEqual([]);
+    });
+
+    it("passes over a hidden layer and what a clipping frame cuts off", async () => {
+      expect(of(await runAudit(planOf(), { figma: fakeFigma(tall(900, { hiddenCard: true })) }), "bp/figma-overflow")).toEqual([]);
+      expect(of(await runAudit(planOf(), { figma: fakeFigma(tall(900, { clip: true })) }), "bp/figma-overflow")).toEqual([]);
+    });
+  });
+
+  describe("bp/figma-default-icon", () => {
+    const ICON = { prop: "icon", path: ["square", "Icon"], key: "glyph#29:0" };
+    /** The Scoreboard of the file above, with a tile's icon layer holding the library's shield. */
+    const withIcon = ({ hidden = false } = {}) => {
+      const file = fileOf({ cards: [true, true, false] });
+      attach(byName(file, "page:1") ?? file, { id: "glyph:shield", name: "Icon shield", type: "COMPONENT" });
+      attach(byName(file, "Scoreboard"), {
+        id: "square",
+        name: "square",
+        type: "FRAME",
+        visible: !hidden,
+        children: [{ id: "icon:1", name: "Icon", type: "INSTANCE", mainComponent: { name: "Icon" }, componentProperties: { [ICON.key]: { value: "glyph:shield", type: "INSTANCE_SWAP" } } }],
+      });
+      return file;
+    };
+    const planWith = (asked: string | null) => {
+      const plan = planOf();
+      scoreboardOf(plan).icons = [{ ...ICON, asked }];
+      return plan;
+    };
+
+    it("flags an icon the spec never set that still shows the library's glyph", async () => {
+      const findings = of(await runAudit(planWith(null), { figma: fakeFigma(withIcon()) }), "bp/figma-default-icon");
+      expect(findings).toHaveLength(1);
+      expect(findings[0].id).toBe("icon:1");
+      expect(findings[0].node).toBe("Scoreboard");
+      expect(findings[0].what).toBe('icon on Scoreboard shows the library\'s own "Icon shield": the spec sets no icon');
+    });
+
+    it("says which glyph the spec asked for when the file's icon set lacks it", async () => {
+      const findings = of(await runAudit(planWith("savings"), { figma: fakeFigma(withIcon()) }), "bp/figma-default-icon");
+      expect(findings).toHaveLength(1);
+      expect(findings[0].what).toContain('the spec asks for "savings", which the file\'s icon set does not hold');
+    });
+
+    it("leaves a hidden icon alone: nothing shows", async () => {
+      expect(of(await runAudit(planWith(null), { figma: fakeFigma(withIcon({ hidden: true })) }), "bp/figma-default-icon")).toEqual([]);
+    });
+
+    it("leaves an icon alone when the plan swapped its glyph", async () => {
+      // A swapped glyph is a part of the plan, so it carries no `icons` entry and is checked by props.
+      expect(of(await runAudit(planOf(), { figma: fakeFigma(withIcon()) }), "bp/figma-default-icon")).toEqual([]);
+    });
+  });
+
+  describe("the artboard's own words, written over", () => {
+    const WORDS = [
+      { was: "Total", text: "Total rated" },
+      { was: "$2,250.00", text: "$308,977" },
+    ];
+    // The fixture's Scoreboard takes no title key of its own, which bp/figma-props says about every
+    // plan here; these tests are about the words written over, so they read only those findings.
+    const written = (result: Any) => of(result, "bp/figma-props").filter((f: Any) => /plan writes/.test(f.what));
+    const planWords = () => {
+      const plan = planOf({ words: { "title#176:0": "Rated usage" } });
+      scoreboardOf(plan).words = WORDS;
+      return plan;
+    };
+    const fileWords = () =>
+      fileOf({
+        cards: [true, true, false],
+        extraText: [
+          { name: "Label", chars: "Total" },
+          { name: "Value", chars: "$2,250.00" },
+        ],
+      });
+
+    it("flags the artboard's total while it still shows", async () => {
+      const result = await runAudit(planWords(), { figma: fakeFigma(fileWords()) });
+      const props = written(result);
+      expect(props.map((f: Any) => f.what)).toEqual([
+        '"Total" inside Scoreboard is the artboard\'s, the plan writes "Total rated"',
+        '"$2,250.00" inside Scoreboard is the artboard\'s, the plan writes "$308,977"',
+      ]);
+    });
+
+    it("writes the spec's words over the artboard's, and the audit then passes them", async () => {
+      const file = fileWords();
+      const figma = fakeFigma(file);
+      const fig = await renderHelpers(figma);
+      const scoreboard = byName(file, "Scoreboard");
+      for (const one of WORDS) expect(await fig.write(scoreboard, one.was, one.text)).toBe(1);
+      expect(byName(file, "Label").characters).toBe("Total rated");
+      expect(byName(file, "Value").characters).toBe("$308,977");
+      const result = await runAudit(planWords(), { figma });
+      expect(written(result)).toEqual([]);
+      expect(content(result)).toEqual([]);
+    });
+
+    it("rewrites only the showing page size, never the hidden menu option that reads the same", async () => {
+      // A Pagination: the Select shows "10", and its closed menu holds an option "10" that is hidden.
+      const bar = tree({
+        id: "bar",
+        name: "Pagination",
+        type: "INSTANCE",
+        children: [
+          { id: "size", name: "Value", type: "TEXT", characters: "10", fontName: { family: "Inter", style: "Regular" } },
+          {
+            id: "menu",
+            name: "Menu",
+            type: "FRAME",
+            visible: false,
+            children: [{ id: "option", name: "Option 1", type: "TEXT", characters: "10", fontName: { family: "Inter", style: "Regular" } }],
+          },
+          { id: "hidden", name: "Spare", type: "TEXT", visible: false, characters: "10", fontName: { family: "Inter", style: "Regular" } },
+        ],
+      });
+      const fig = await renderHelpers(fakeFigma(tree({ id: "p", name: "Spec renders", type: "PAGE", children: [] })));
+      expect(await fig.write(bar, "10", "25")).toBe(1);
+      expect(byName(bar, "Value").characters).toBe("25");
+      expect(byName(bar, "Option 1").characters).toBe("10");
+      expect(byName(bar, "Spare").characters).toBe("10");
+    });
+
+    it("writes nothing when more than one showing layer reads the words", async () => {
+      const file = fileOf({
+        cards: [true, true, false],
+        extraText: [
+          { name: "Label 1", chars: "Total" },
+          { name: "Label 2", chars: "Total" },
+        ],
+      });
+      const fig = await renderHelpers(fakeFigma(file));
+      expect(await fig.write(byName(file, "Scoreboard"), "Total", "Total rated")).toBe(2);
+      expect(byName(file, "Label 1").characters).toBe("Total");
+      expect(byName(file, "Label 2").characters).toBe("Total");
+    });
+
+    it("writes nothing and says so when the artboard's words are not there", async () => {
+      const fig = await renderHelpers(fakeFigma(fileWords()));
+      expect(await fig.write(byName(fileWords(), "Scoreboard"), "Grand total", "x")).toBe(0);
     });
   });
 });

@@ -1104,3 +1104,97 @@ describe("the audit script", () => {
     expect(JSON.stringify(want)).toContain('"swaps":{"glyph#29:0":"Icon shield_person"}');
   });
 });
+
+describe("the words a component draws with no property of its own", () => {
+  const usage = () => readPlan("usage-overview.json", { map });
+  const one = (plan: Json, component: string) => treeOf(plan).find((node) => node.component === component) as Json;
+  const withProps = (component: string, props: Json) => {
+    const spec = read("usage-overview.json");
+    const region = component === "Table" ? spec.regions.content : spec.regions.pagination;
+    region[0].props = { ...region[0].props, ...props };
+    for (const key of Object.keys(props)) if (props[key] === undefined) delete region[0].props[key];
+    return makePlan(spec);
+  };
+
+  it("writes the spec's total over the artboard's footer, and turns the footer on", () => {
+    const table = one(usage(), "Table");
+    expect(table.props["showFooter#247:68"]).toBe(true);
+    expect(table.words).toEqual([
+      { was: "Total", text: "Total rated" },
+      { was: "$2,250.00", text: "$308,977" },
+    ]);
+  });
+
+  it("switches the footer off when the spec gives none, or gives it no words", () => {
+    const none = one(withProps("Table", { footer: undefined }), "Table");
+    expect(none.props["showFooter#247:68"]).toBe(false);
+    expect(none.words).toBeUndefined();
+    const empty = withProps("Table", { footer: {} });
+    expect(one(empty, "Table").props["showFooter#247:68"]).toBe(false);
+    expect(empty.dropped.some((d: Json) => /footer gives no words/.test(d.why))).toBe(true);
+  });
+
+  it("works the range line and the page size out of total, page and pageSize", () => {
+    const plan = usage();
+    const bar = one(plan, "Pagination");
+    expect(bar.texts["range#230:8"]).toBe("Showing 1 to 25 of 128 rows");
+    expect(bar.props["showRange#230:9"]).toBe(true);
+    expect(bar.words).toEqual([{ was: "10", text: "25" }]);
+    // 128 rows at 25 is six pages: the artboard's seventh button is switched off.
+    expect(bar.props["showPage7#230:11"]).toBe(false);
+    // total, page and pageSize are drawn now, so they are no longer reported as missing in Figma.
+    expect(plan.dropped.filter((d: Json) => /^regions\.pagination\[0\]\.props\.(total|page|pageSize)$/.test(d.path))).toEqual([]);
+  });
+
+  it("counts from the page the spec is on", () => {
+    const bar = one(withProps("Pagination", { page: 6 }), "Pagination");
+    expect(bar.texts["range#230:8"]).toBe("Showing 126 to 128 of 128 rows");
+  });
+
+  it("switches the range line off when the spec gives no total, and leaves the artboard's page size when it is the kit's", () => {
+    const plan = withProps("Pagination", { total: undefined, pageSize: undefined });
+    const bar = one(plan, "Pagination");
+    expect(bar.props["showRange#230:9"]).toBe(false);
+    expect(bar.texts["range#230:8"]).toBeUndefined();
+    expect(bar.words).toBeUndefined();
+  });
+
+  it("says so when the screen has a page count the artboard's buttons cannot show", () => {
+    const plan = withProps("Pagination", { total: 500 });
+    expect(one(plan, "Pagination").props["showPage7#230:11"]).toBe(true);
+    expect(plan.dropped.some((d: Json) => /the page buttons are the artboard's 1 to 7; this screen has 20 pages/.test(d.why))).toBe(true);
+  });
+
+  it("carries the words into the emitted script and the audit", () => {
+    const plan = usage();
+    const script = emitScript(plan);
+    expect(script.code).toContain('"words":[{"was":"Total","text":"Total rated"},{"was":"$2,250.00","text":"$308,977"}]');
+    expect(script.code).toContain("$fig.write(");
+    // Anything but exactly one showing match is written nowhere and reported as missing.
+    expect(script.code).toContain("if (n !== 1) missing.push(");
+    const expected = expectations(plan);
+    expect(expected.frames[0].words).toEqual(expect.arrayContaining(["Total rated", "$308,977", "25", "Showing 1 to 25 of 128 rows"]));
+  });
+});
+
+describe("icons the plan leaves to the library", () => {
+  it("names every icon it swapped no glyph onto, and the glyph the spec asked for", () => {
+    const plan = readPlan("settings-home.json", { map });
+    const tiles = treeOf(plan).filter((node) => node.component === "NavTile");
+    expect(tiles).toHaveLength(8);
+    const left = tiles.filter((tile) => tile.icons?.length > 0).map((tile) => tile.icons[0]);
+    expect(left).toEqual([
+      { prop: "icon", path: ["square", "Icon"], key: "glyph#29:0", asked: "savings" },
+      { prop: "icon", path: ["square", "Icon"], key: "glyph#29:0", asked: "sync_alt" },
+    ]);
+    const tree = expectations(plan).frames[0].tree;
+    expect(JSON.stringify(tree)).toContain('"icons":[{"prop":"icon","path":["square","Icon"],"key":"glyph#29:0","asked":"savings"}]');
+  });
+
+  it("names an icon the spec never set", () => {
+    const spec = read("settings-home.json");
+    delete spec.regions.content[0].props.icon;
+    const tile = treeOf(makePlan(spec)).find((node) => node.component === "NavTile") as Json;
+    expect(tile.icons).toEqual([{ prop: "icon", path: ["square", "Icon"], key: "glyph#29:0", asked: null }]);
+  });
+});

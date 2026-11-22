@@ -36,6 +36,21 @@ import { join, resolve } from "node:path";
 import { repoRoot, piece } from "../review/catalog.mjs";
 import { regionsOf, validateSpec, resolveCopy, ABOVE_REGION, CONTENT_REGION } from "../spec/schema.mjs";
 
+/**
+ * Words the library's artboards draw as example copy where Figma exposes no property, as they read
+ * on the rendered usage-overview frame of 20 November 2026. The plan finds these words inside the
+ * instance and writes the spec's own in their place, so a total or a page size the spec gives is the
+ * one that shows. They belong beside the components in contracts/figma-map.json; they sit here until
+ * the map can be changed with its own review.
+ */
+export const ARTBOARD_COPY = {
+  Table: { footer: { label: "Total", value: "$2,250.00" } },
+  Pagination: { pageSize: "10", pages: 7 },
+};
+
+/** The props a component's words are worked out from here, rather than mapped one to one. */
+const DERIVED = { Pagination: ["total", "page", "pageSize", "defaultPage", "defaultPageSize"] };
+
 /** Where the map lives, read from the repo and never from Figma. */
 export const MAP_FILE = "contracts/figma-map.json";
 
@@ -406,6 +421,83 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
     return { ...props, emphasis: "subtle", intent: "neutral" };
   };
 
+  /**
+   * The words a component draws with no Figma property of their own: the Table's total row and the
+   * Pagination bar. Each is either the spec's, or switched off. Left alone, the artboard's
+   * `Total $2,250.00` and `Showing 1 to 10 of 59 rows` read as the screen's own figures.
+   *
+   * Where there is a text property (Pagination's range line) it is written. Where there is none,
+   * the plan names the artboard's words and the spec's in their place (`words`), and the render
+   * finds those words inside the instance and writes over them.
+   */
+  const planDerived = (out, entry, node, path, contract) => {
+    const props = resolveCopy(node.props ?? {}, copy);
+    const said = (value) => typeof value === "string" || typeof value === "number";
+
+    if (node.component === "Table") {
+      const toggle = entry.props?.footer?.figma ?? null;
+      const was = ARTBOARD_COPY.Table.footer;
+      const footer = props.footer;
+      if (!toggle) return;
+      if (footer === undefined || footer === null || footer === false) {
+        out.props[toggle] = false;
+        return;
+      }
+      const label = footer && typeof footer === "object" ? footer.label : undefined;
+      const value = footer && typeof footer === "object" ? footer.value : footer;
+      if (!said(label) && !said(value)) {
+        out.props[toggle] = false;
+        drop(`${path}.props.footer`, "the footer gives no words Figma can draw, so the total row is switched off.");
+        return;
+      }
+      out.props[toggle] = true;
+      // A part the spec leaves out goes blank rather than keep the artboard's figure.
+      out.words = [
+        { was: was.label, text: said(label) ? String(label) : "" },
+        { was: was.value, text: said(value) ? String(value) : "" },
+      ];
+      return;
+    }
+
+    if (node.component === "Pagination") {
+      const defaults = contract?.props ?? {};
+      const rangeKey = Object.keys(entry.figmaOnly ?? {}).find((key) => /^range#/.test(key)) ?? null;
+      const showRange = entry.props?.showRange?.figma ?? null;
+      const showPageSize = entry.props?.showPageSize?.figma ?? null;
+      const total = Number(props.total);
+      const hasTotal = said(props.total) && Number.isFinite(total);
+      const size = Math.max(Number(props.pageSize ?? props.defaultPageSize ?? defaults.defaultPageSize?.default ?? 10) || 10, 1);
+      const count = Math.max(Math.ceil(Math.max(hasTotal ? total : 0, 0) / size), 1);
+      const page = Math.min(Math.max(Number(props.page ?? props.defaultPage ?? defaults.defaultPage?.default ?? 1) || 1, 1), count);
+
+      // The range line: the kit's own sentence, worked out the way the component works it out.
+      if (showRange) {
+        const wanted = props.showRange !== false;
+        if (wanted && hasTotal && rangeKey) {
+          const from = total === 0 ? 0 : (page - 1) * size + 1;
+          const to = Math.min(page * size, total);
+          out.props[showRange] = true;
+          out.texts[rangeKey] = `Showing ${from} to ${to} of ${total} rows`;
+        } else {
+          out.props[showRange] = false;
+          if (wanted && hasTotal) drop(`${path}.props.total`, "Pagination has no range text property in the map, so the range line is switched off.");
+        }
+      }
+      // The rows-per-page number, which has no property: the artboard's is written over.
+      if (showPageSize && out.props[showPageSize] !== false && props.showPageSize !== false) {
+        const was = ARTBOARD_COPY.Pagination.pageSize;
+        if (String(size) !== was) out.words = [{ was, text: String(size) }];
+      }
+      // The artboard draws its page buttons 1 to 7 and only the last has a switch, so a screen of one
+      // page fewer is drawn exactly by turning that one off. Any other count keeps the artboard's.
+      const pages = ARTBOARD_COPY.Pagination.pages;
+      const lastPage = Object.keys(entry.figmaOnly ?? {}).find((key) => key.startsWith(`showPage${pages}#`)) ?? null;
+      if (hasTotal && lastPage) out.props[lastPage] = count >= pages;
+      if (hasTotal && count !== pages && !(lastPage && count === pages - 1))
+        drop(`${path}.props.total`, `the page buttons are the artboard's 1 to ${ARTBOARD_COPY.Pagination.pages}; this screen has ${count} page${count === 1 ? "" : "s"}.`);
+    }
+  };
+
   /** One component node, with its props, its words and whatever sits inside it. */
   const planNode = (node, path) => {
     const entry = entryFor(node.component);
@@ -676,6 +768,7 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
       // A glyph is the one kind that may carry no key of its own: the component always draws the
       // icon and only the nested Icon instance is swapped.
       if (!prop || (!prop.figma && prop.kind !== "glyph")) {
+        if ((DERIVED[node.component] ?? []).includes(name)) continue;
         const why = entry.noFigma?.[name] ?? entry.figmaOnly?.[name] ?? `${node.component} has no Figma property for "${name}".`;
         drop(at, why);
         continue;
@@ -780,6 +873,8 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
         out.texts[mapping.figma] = String(prop.default);
     }
 
+    planDerived(out, entry, node, path, contract);
+
     if (node.text !== undefined) {
       const words = String(resolveCopy(node.text, copy));
       const prop = mapped.children;
@@ -853,6 +948,16 @@ export function planRender(spec, { map = null, brand = DEFAULT_BRAND, themes = T
     }
 
     Object.assign(out, { props: keepOnePrimary(node, out.props, path) });
+
+    // Every icon the component draws whose glyph the plan did not swap: the spec set none, or named
+    // one the file's icon set does not hold. Whatever shows there is the library's own glyph, which
+    // a reader takes for the screen's, so the audit looks at each of these in the file.
+    for (const [name, prop] of Object.entries(mapped)) {
+      if (prop?.kind !== "glyph" || typeof prop.layer !== "string" || typeof prop.prop !== "string") continue;
+      if (out.parts.some((part) => part.slot === name && part.swaps?.[prop.prop])) continue;
+      const raw = node.props?.[name];
+      (out.icons ??= []).push({ prop: name, path: layerPath(prop.layer), key: prop.prop, asked: typeof raw === "string" && raw !== "" ? raw : null });
+    }
 
     // Every switch a slot owns, whether the spec filled that slot or not: a slot says for itself
     // which of its parts are on, so any of its switches left unsaid is off.

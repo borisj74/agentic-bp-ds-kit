@@ -321,7 +321,27 @@ ${TOUCH}
     throw new Error(node.name + " has no slot named " + named + (had ? "; its slots: " + had : "; it has no slots at all"));
   };
 
-  return { page, section, fit, frame, clear, layout, instance, slot, nested, apply, getVar, setModes, component, loadFonts };
+  // Words the artboard draws with no property behind them — a table's total, a page size — found
+  // inside the instance by what they say and written over with the spec's. Nothing is created: the
+  // text layers are the library's own, and only what they say changes.
+  //
+  // Only a layer that is showing counts, and only one: a Pagination's "10" is also an option in the
+  // hidden menu of its Select, and two showing matches mean the plan cannot tell which one it meant.
+  // So the write happens only when exactly one visible layer reads those words; otherwise nothing is
+  // written, and the count goes back so the render can report it.
+  const showing = (text, within) => {
+    for (let at = text; at && at !== within; at = at.parent) if (at.visible === false) return false;
+    return within.visible !== false;
+  };
+  const write = async (node, was, text) => {
+    const hits = node.findAll((n) => n.type === "TEXT" && String(n.characters).trim() === was && showing(n, node));
+    if (hits.length !== 1) return hits.length;
+    await loadFonts(hits[0]);
+    hits[0].characters = text;
+    return 1;
+  };
+
+  return { page, section, fit, frame, clear, layout, instance, slot, nested, apply, write, getVar, setModes, component, loadFonts };
 })();
 `;
 
@@ -354,6 +374,12 @@ const fillRow = async (node, row) => {
 };
 
 const fillInstance = async (node, spec) => {
+  // The artboard's own words go first, while they still read as the artboard drew them, so a cell
+  // the spec writes afterwards can never be mistaken for one of them.
+  for (const one of spec.words || []) {
+    const n = await $fig.write(node, one.was, one.text);
+    if (n !== 1) missing.push({ frame: frameNow, node: node.name, path: ["text " + JSON.stringify(one.was)], set: ["characters"], showing: n });
+  }
   for (const row of spec.rows || []) await fillRow(node, row);
   for (const part of spec.parts || []) {
     const own = Object.assign({}, part.props, part.texts);
@@ -499,6 +525,20 @@ export function repairScript(findings, { max = MAX_SCRIPT } = {}) {
   return { code, size: code.length, nodes: fixes.length, frames: [...new Set(fixes.map((fix) => fix.frame).filter(Boolean))] };
 }
 
+const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
+
+/**
+ * The render's own `$fig` helper, over whatever `figma` it is given.
+ *
+ * It is the same text the script sends, so a test can run a helper — writing the artboard's words
+ * over, say — against a fake Plugin API rather than against a copy of it.
+ * @param {object} figma
+ * @returns {Promise<{ write: (node: object, was: string, text: string) => Promise<number>, [helper: string]: any }>}
+ */
+export function renderHelpers(figma) {
+  return new AsyncFunction("figma", `${PRELUDE}\nreturn $fig;`)(figma);
+}
+
 /**
  * Only what the script reads.
  *
@@ -516,6 +556,7 @@ function thin(node) {
   const out = { component: node.component, nodeId: node.nodeId, key: node.key, keyKind: node.keyKind };
   if (Object.keys(node.props ?? {}).length > 0) out.props = node.props;
   if (Object.keys(node.texts ?? {}).length > 0) out.texts = node.texts;
+  if (node.words?.length > 0) out.words = node.words.map((one) => ({ was: one.was, text: one.text }));
   for (const [key, child] of Object.entries(node.swaps ?? {})) (out.swaps ??= {})[key] = thin(child);
   for (const [key, list] of Object.entries(node.slots ?? {})) (out.slots ??= {})[key] = list.map(thin);
   for (const item of Object.values(node.items ?? {})) {

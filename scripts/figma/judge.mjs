@@ -38,6 +38,7 @@ export const REPAIRABLE = {
   "bp/figma-align": [],
   "bp/figma-example-content": [],
   "bp/figma-dividers": [],
+  "bp/figma-default-icon": [],
 };
 
 /** What a person has to decide about each rule, said once. */
@@ -51,6 +52,7 @@ export const FOR_PERSON = {
   "bp/figma-align": "The screen does not start where its title starts. Something between the page and the screen carries an inset of its own; render again, and if it comes back the wrapper is padded twice.",
   "bp/figma-example-content": "A slot still holds the artboard's own example content. Render again: the render empties a slot before it fills it.",
   "bp/figma-dividers": "The line between the children is drawn on the wrong one. Every child but the last shown carries it; render again, and if it comes back the map's childDivider is not the key the file uses.",
+  "bp/figma-default-icon": "An icon shows the library's own glyph, not one the spec chose. Give the spec an icon the file's icon set holds, add the glyph to the set, or turn the icon off.",
 };
 
 /** The audit, however it arrived: an object, a JSON string, or a file to read. */

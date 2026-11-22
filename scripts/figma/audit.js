@@ -20,7 +20,8 @@
  *   bp/figma-props      componentProperties and texts are what the plan said, down to the cells of a
  *                       table and the label on an exposed action button
  *   bp/figma-modes      each frame sets its own explicit mode for every collection the plan named
- *   bp/figma-overflow   nothing sticks out of the frame it was put in
+ *   bp/figma-overflow   nothing sticks out of the frame it was put in, and the screen inside the
+ *                       shell's page slot does not run past the slot or the frame either
  *   bp/figma-align      the screen's first visible content starts at the page header title's own
  *                       left edge — the title layer, not the first text in the header, which is the
  *                       breadcrumb trail
@@ -28,6 +29,10 @@
  *                       a slot holds the screen and nothing else, and every word showing anywhere
  *                       inside the frame is a word the spec wrote: a trend, a badge, a chip, a total
  *                       and a pagination line the artboard ships with are all caught here
+ *   bp/figma-dividers   the line between children is on every shown child but the last
+ *   bp/figma-default-icon
+ *                       an icon whose glyph the spec did not set, or named one the file's icon set
+ *                       lacks, is not showing the library's own glyph as if it were the screen's
  *
  * A finding that a render can mend node by node carries `set`: the node's id and the properties the
  * plan wants on it. scripts/figma/emit.mjs turns those into a repair that touches only those nodes,
@@ -46,6 +51,7 @@ export const RULES = [
   "bp/figma-align",
   "bp/figma-example-content",
   "bp/figma-dividers",
+  "bp/figma-default-icon",
 ];
 
 /** The one kit component name per plan node, and the props, words and layers the plan set on it. */
@@ -98,6 +104,8 @@ function expectInstance(node) {
   }
   const out = { kind: "instance", component: node.component, props, layers, nested };
   if (divider) out.divider = divider;
+  if (node.words?.length > 0) out.words = node.words.filter((one) => one.was !== one.text).map((one) => ({ was: one.was, text: one.text }));
+  if (node.icons?.length > 0) out.icons = node.icons.map((icon) => ({ prop: icon.prop, path: icon.path, key: icon.key, asked: icon.asked ?? null }));
   if (Object.keys(slots).length > 0) out.slots = slots;
   return out;
 }
@@ -118,6 +126,7 @@ export function wordsOf(node, out = new Set()) {
     return out;
   }
   take(node.texts);
+  for (const one of node.words ?? []) if (one.text) out.add(String(one.text).trim());
   for (const item of Object.values(node.items ?? {})) {
     for (const row of item.rows ?? []) {
       take(row.texts);
@@ -265,6 +274,21 @@ const firstWords = (node) => {
   const text = node.findAll ? node.findAll((n) => n.type === "TEXT" && n.visible && n.characters)[0] : null;
   return text ? text.characters.slice(0, 40) : null;
 };
+// How far down and across a node reaches, its visible children included: an auto-layout frame's own
+// box stops where it was sized, and what it holds can run on past it. A hidden node reaches nowhere,
+// and a node that clips its content stops at its own edge.
+const reach = (node) => {
+  if (node.visible === false) return null;
+  const box = node.absoluteBoundingBox;
+  let out = box ? { bottom: box.y + box.height, right: box.x + box.width } : null;
+  if (node.clipsContent && out) return out;
+  for (const child of node.children || []) {
+    const inner = reach(child);
+    if (!inner) continue;
+    out = out ? { bottom: Math.max(out.bottom, inner.bottom), right: Math.max(out.right, inner.right) } : inner;
+  }
+  return out;
+};
 const boundPaint = (list) => Array.isArray(list) && list.length > 0 && list.every((p) => p.boundVariables && p.boundVariables.color);
 
 const page = figma.root.children.find((p) => p.name === EXPECT.page);
@@ -367,6 +391,38 @@ const checkInstance = async (node, want, frameName) => {
           { id: card.id, props: { [want.divider.key]: wants } },
         );
     }
+  }
+  // The words the plan wrote over the artboard's own, where Figma has no property for them: none of
+  // the artboard's may still be showing, and the spec's must be.
+  for (const one of want.words || []) {
+    const texts = node.findAll((n) => n.type === "TEXT" && n.visible !== false);
+    const left = texts.find((n) => String(n.characters).trim() === one.was);
+    if (left) add("bp/figma-props", frameName, left.name, left.id, JSON.stringify(one.was) + " inside " + node.name + " is the artboard's, the plan writes " + JSON.stringify(one.text));
+    else if (one.text && !texts.some((n) => String(n.characters).trim() === one.text))
+      add("bp/figma-props", frameName, node.name, node.id, "no text inside " + node.name + " reads " + JSON.stringify(one.text) + ", which the plan writes");
+  }
+  // An icon the plan swapped no glyph onto. If it is showing, it shows the glyph the library drew
+  // there, and a reader takes that for the screen's own icon.
+  for (const icon of want.icons || []) {
+    const found = down(node, icon.path, null);
+    if (!found) continue;
+    let showing = true;
+    for (let at = found; at && at.id !== node.id; at = at.parent) {
+      if (at.visible === false) { showing = false; break; }
+    }
+    if (!showing) continue;
+    const entry = (found.componentProperties || {})[icon.key];
+    const id = entry && typeof entry === "object" ? entry.value : entry;
+    let glyph = null;
+    if (id) {
+      const swapped = await figma.getNodeByIdAsync(String(id));
+      glyph = swapped ? (swapped.parent && swapped.parent.type === "COMPONENT_SET" ? swapped.parent.name : swapped.name) : null;
+    }
+    const shows = glyph ? "the library's own " + JSON.stringify(glyph) : "the library's own glyph";
+    const why = icon.asked
+      ? "the spec asks for " + JSON.stringify(icon.asked) + ", which the file's icon set does not hold"
+      : "the spec sets no " + icon.prop;
+    add("bp/figma-default-icon", frameName, node.name, found.id, icon.prop + " on " + node.name + " shows " + shows + ": " + why);
   }
   for (const nested of want.nested || []) {
     if (nested.kind === "layout") {
@@ -479,9 +535,35 @@ for (const want of EXPECT.frames) {
       add("bp/figma-overflow", want.name, child.name, child.id, "it sticks out of the frame");
   }
 
+  const slots = descend(frame, (n) => n.type === "SLOT");
+
+  // The screen inside the shell's page slot. The AppShell is the frame's only child and it fits, so
+  // the check above passes while the screen inside its slot runs past the bottom of the frame and
+  // is clipped there. Each thing the slot holds is measured to its furthest visible edge, against
+  // the slot and the frame, whichever stops it first.
+  const own = frame.absoluteBoundingBox;
+  for (const slot of slots) {
+    const box = slot.absoluteBoundingBox;
+    if (!own || !box) continue;
+    const limit = {
+      bottom: Math.min(own.y + own.height, box.y + box.height),
+      right: Math.min(own.x + own.width, box.x + box.width),
+      by: { bottom: box.y + box.height < own.y + own.height ? "the " + slot.name + " slot" : "the frame", right: box.x + box.width < own.x + own.width ? "the " + slot.name + " slot" : "the frame" },
+    };
+    for (const child of slot.children || []) {
+      const edge = reach(child);
+      if (!edge) continue;
+      const past = [];
+      const down_ = Math.round(edge.bottom - limit.bottom);
+      const across = Math.round(edge.right - limit.right);
+      if (down_ > 1) past.push(down_ + "px past the bottom of " + limit.by.bottom);
+      if (across > 1) past.push(across + "px past the right of " + limit.by.right);
+      if (past.length > 0) add("bp/figma-overflow", want.name, child.name, child.id, "the screen in the " + slot.name + " slot runs " + past.join(" and "));
+    }
+  }
+
   // A slot holds the screen and nothing else. An artboard ships its slots full of example content,
   // and a render that only appends leaves that content showing above or below the screen.
-  const slots = descend(frame, (n) => n.type === "SLOT");
   for (const slot of slots) {
     const planned = slotNames(want, slot.name);
     if (planned === null) continue;
