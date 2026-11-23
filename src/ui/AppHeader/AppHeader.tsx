@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { Avatar } from "../Avatar/Avatar";
 import { Badge, type BadgeIntent } from "../Badge/Badge";
 import { Button } from "../Button/Button";
+import { Count, type CountIntent } from "../Count/Count";
 import { GlobalSearch, type GlobalSearchGroup, type GlobalSearchIconStyle, type GlobalSearchScope, type GlobalSearchVariant } from "../GlobalSearch/GlobalSearch";
 import { useDensity, type DensitySize } from "../Density/Density";
 import { Dropdown } from "../Dropdown/Dropdown";
@@ -20,7 +21,9 @@ import { inspect } from "../inspect";
 
 export type AppHeaderEnvironmentIntent = Exclude<BadgeIntent, "hollow">;
 export type AppHeaderDensity = "compact" | "default" | "comfortable";
-export interface AppHeaderAction { id: string; label: string; icon: string }
+// count: how many new or waiting things the action holds, like unread notifications. It shows as a kit Count on the
+// icon's corner and is added to the button's name ("Notifications, 3 new"). Nothing shows at 0.
+export interface AppHeaderAction { id: string; label: string; icon: string; count?: number; countIntent?: CountIntent; countLabel?: string }
 export interface AppHeaderUser { name: string; src?: string }
 export interface AppHeaderCompany { name: string; logo?: ReactNode }
 // The BP AI button: it opens and closes the AppShell assistant, and shows pressed while it is open.
@@ -258,11 +261,19 @@ export function AppHeader({
           )}
           {actions.length > 0 && (
             <div className={styles.actions}>
-              {actions.map((a) => (
-                <Tooltip key={a.id} content={a.label} position="below">
-                  <Button emphasis="minimal" size={ctl} iconOnly iconStart={a.icon} onClick={() => onAction?.(a.id)}>{a.label}</Button>
-                </Tooltip>
-              ))}
+              {actions.map((a) => {
+                const counted = (a.count ?? 0) > 0;
+                const name = counted ? `${a.label}, ${a.count} ${a.countLabel ?? "new"}` : a.label;
+                return (
+                  <Tooltip key={a.id} content={name} position="below">
+                    <span className={styles.action}>
+                      <Button emphasis="minimal" size={ctl} iconOnly iconStart={a.icon} onClick={() => onAction?.(a.id)}>{name}</Button>
+                      {/* The button's name already says the count, so the Count is only seen. */}
+                      {counted && <span className={styles.actionCount} aria-hidden="true"><Count count={a.count ?? 0} intent={a.countIntent ?? "danger"} size="sm" /></span>}
+                    </span>
+                  </Tooltip>
+                );
+              })}
             </div>
           )}
           {/* On a phone-width bar there is no room for a row of icons, so the same actions go behind one more
@@ -271,7 +282,7 @@ export function AppHeader({
             <div className={styles.actionsMenu}>
               <Dropdown
                 label="More actions" icon="more_vert" iconOnly emphasis="minimal" size={ctl} alignment="right"
-                items={actions.map((a) => ({ id: a.id, label: a.label, icon: a.icon }))}
+                items={actions.map((a) => ({ id: a.id, label: a.label, icon: a.icon, count: (a.count ?? 0) > 0 ? a.count : undefined }))}
                 onSelect={(id) => onAction?.(id)}
               />
             </div>

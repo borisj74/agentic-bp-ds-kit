@@ -65,6 +65,10 @@ a.home:focus-visible { outline: var(--border-width-medium) solid var(--outline-b
 /* End: 36px icon buttons 4px apart, a divider with 12px each side, then user and company 4px apart. */
 .end { display: flex; align-items: center; justify-content: flex-end; min-width: 0; }
 .actions { display: flex; align-items: center; gap: var(--space-xxsmall); }
+/* An action with a count: the kit Count (sm) sits on the icon button's top end corner, over its edge, so the icon
+   stays whole. It takes no pointer, so the whole button stays one target. */
+.action { position: relative; display: inline-flex; }
+.actionCount { position: absolute; top: calc(var(--space-xxxsmall) * -1); inset-inline-end: calc(var(--space-xxxsmall) * -1); display: flex; pointer-events: none; }
 /* The phone stand-in for the row of icons: one more button. Off until the bar is that narrow. */
 .actionsMenu { display: none; }
 /* BP AI (BP Components Global Header 7954:2382): a bold button in the AI brand blend, brand into success, with the
