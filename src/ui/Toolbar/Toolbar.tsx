@@ -40,6 +40,8 @@ export interface ToolbarProps {
   searchGroups?: GlobalSearchGroup[];
   onSearchSelect?: (id: string) => void;
   onSearchViewAll?: (query: string) => void;
+  // Shows the Enter key: a return icon at the end of the search field, and the key hints under the results.
+  searchHints?: boolean;
   field?: ReactNode;
   selectedCount?: number;
   views?: ToolbarView[];
@@ -93,7 +95,7 @@ function foldActions(actions: ReactNode): FoldedAction[] | null {
 // Figma toolbar 6057:15099 and filters-bar 3579:30240. Controls are size sm (28px) in a 44px bar.
 export function Toolbar({
   filters, filterCount = 0, filtersOpen: openProp, defaultFiltersOpen = false, onFiltersOpenChange, onReset, onApply, filterHelp,
-  searchValue, onSearchChange, searchPlaceholder = "Search in list", searchGroups, onSearchSelect, onSearchViewAll, field: control, selectedCount = 0,
+  searchValue, onSearchChange, searchPlaceholder = "Search in list", searchGroups, onSearchSelect, onSearchViewAll, searchHints = false, field: control, selectedCount = 0,
   views = [], view: viewProp, onViewChange, onRefresh, moreActions, onMoreSelect, actions, buttons = "raised", loading = false, label = "List tools",
 }: ToolbarProps) {
   // Inside a booting frame the bar waits its turn in the sequence; on its own it draws at once. A Toolbar inside
@@ -302,6 +304,8 @@ export function Toolbar({
               >
                 <Icon name="search" size="sm" className={styles.searchIcon} />
                 <span className={shown ? styles.searchText : styles.searchPlaceholder}>{shown || searchPlaceholder}</span>
+                {/* Type, then press Enter: the return key at the end says so before the results open. */}
+                {searchHints && <Icon name="keyboard_return" size="sm" className={styles.searchIcon} />}
               </button>
             </div>
           ) : onSearchChange && (
@@ -343,7 +347,7 @@ export function Toolbar({
       {dropdown && searchGroups && createPortal(
         <div ref={panelRef} data-density={density} role="dialog" aria-label={searchPlaceholder} className={styles.searchPanel} style={{ width: fit.width }} onKeyDown={onPanelKey}>
           <GlobalSearch
-            groups={searchGroups} size="sm" iconStyle="plain" hints={false} autoFocus
+            groups={searchGroups} size="sm" iconStyle="plain" hints={searchHints} autoFocus
             label={searchPlaceholder} placeholder={searchPlaceholder} defaultQuery={shown}
             onSelect={(id) => { closeSearch(true); onSearchSelect?.(id); }}
             onViewAll={onSearchViewAll ? (q) => { setLastQuery(q); onSearchChange?.(q); closeSearch(true); onSearchViewAll(q); } : undefined}

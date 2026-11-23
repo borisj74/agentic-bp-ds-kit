@@ -78,12 +78,13 @@
   text-align: center; font-size: var(--font-size-small); color: var(--text-neutral);
 }
 
+/* In a narrow panel, like the Toolbar search, each hint keeps its words together and the second one wraps to a new line. */
 .footer {
-  display: flex; align-items: center; justify-content: space-between; gap: var(--space-small);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-xxsmall) var(--space-small);
   padding: var(--space-small) var(--space-medium); border-top: var(--border-width-thin) solid var(--border-neutral-subtle);
   font-size: var(--font-size-xsmall); color: var(--text-neutral);
 }
-.hint { display: inline-flex; align-items: center; gap: var(--space-xxsmall); }
+.hint { display: inline-flex; align-items: center; gap: var(--space-xxsmall); white-space: nowrap; }
 
 
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
