@@ -4,6 +4,16 @@ What changed in each kit release, newest first. Each release is a git tag; `npm 
 
 Releases marked **Breaking** rename or remove something, or change how a piece behaves. Read their Breaking list before you move screens to that version. The rename scripts are listed in the README under "Getting updates".
 
+## v0.12.1 — 2026-11-23
+
+### Added
+
+- A header action in AppHeader can carry a count. Pass `count` on an item in `actions`, with `countIntent` (`info`, `danger` or `neutral`; `danger` by default) and `countLabel` (`new` by default). The kit Count sits on the icon button's top end corner and takes no clicks; the button's name and its Tooltip read the count too, as in "Notifications, 3 new". At phone width the More actions menu shows the same count. Nothing is drawn at 0.
+
+### Changed
+
+- The standard header icon set is now Notifications, Help and Feedback. The header holds three icons at most, so What's new steps aside. The AppHeader examples, the playground preview and the AppShell demos all lead with the Notifications bell.
+
 ## v0.12.0 — 2026-11-19
 
 A screen starts as a JSON spec. The spec is checked against the contracts before any code exists, the screen is written from it, and a loop renders, reviews, type-checks and repairs it until it passes.
