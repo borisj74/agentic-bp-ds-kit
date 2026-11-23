@@ -80,4 +80,17 @@ describe("Toolbar", () => {
     render(<Toolbar label="Rate tools" selectedCount={0} actions={<Button size="sm">Add pricing</Button>} />);
     expect(screen.queryByRole("status")).toBeNull();
   });
+
+  it("shows the Enter key on a quick search only when asked", async () => {
+    const user = userEvent.setup();
+    const groups = [{ heading: "Invoices", items: [{ id: "inv-1", label: "INV-20451" }] }];
+    const { rerender } = render(<Toolbar searchGroups={groups} searchPlaceholder="Invoice # or account" />);
+    const trigger = screen.getByRole("button", { name: /Invoice # or account/ });
+    expect(trigger).not.toHaveTextContent("keyboard_return");
+
+    rerender(<Toolbar searchGroups={groups} searchPlaceholder="Invoice # or account" searchHints />);
+    expect(trigger).toHaveTextContent("keyboard_return");
+    await user.click(trigger);
+    expect(screen.getByText("to select")).toBeInTheDocument();
+  });
 });

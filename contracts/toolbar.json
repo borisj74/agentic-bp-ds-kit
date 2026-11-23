@@ -77,6 +77,11 @@
       "type": "function",
       "note": "(query: string) => void. Adds View all results for <query> as the last row. The field then shows the query."
     },
+    "searchHints": {
+      "type": "boolean",
+      "default": false,
+      "note": "With searchGroups: shows the Enter key, a return icon at the end of the search field and the GlobalSearch key hints (arrows to browse, Enter to select) under the results. For a quick search people use by typing a number or name and pressing Enter."
+    },
     "field": {
       "type": "ReactNode",
       "noteForFigma": true,
@@ -268,6 +273,19 @@
             "loading": true
           },
           "caption": "loading"
+        }
+      ]
+    },
+    {
+      "title": "Quick search with Enter",
+      "usage": "A quick search people type into and finish with Enter: the return icon at the end of the field, and the key hints under the results. Click the search; type Sales, then press Enter.",
+      "items": [
+        {
+          "props": {
+            "searchGroups": "{quickLinks}",
+            "searchHints": true,
+            "onRefresh": "{reload}"
+          }
         }
       ]
     }

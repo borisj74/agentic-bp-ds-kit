@@ -8,9 +8,9 @@
       "organism": 29,
       "template": 10
     },
-    "examples": 427,
-    "exampleItems": 719,
-    "props": 1171,
+    "examples": 428,
+    "exampleItems": 720,
+    "props": 1172,
     "usageRules": 874,
     "piecesWithoutColourLiterals": 92,
     "piecesWithOwnStates": 73
@@ -1729,9 +1729,9 @@
       "level": "organism",
       "category": "navigation",
       "intent": "The bar above a list or table: find and filter on the left, view and actions on the right, with a filter bar that opens under it.",
-      "props": 26,
-      "examples": 7,
-      "exampleItems": 7,
+      "props": 27,
+      "examples": 8,
+      "exampleItems": 8,
       "composes": [
         "GlobalSearch",
         "Input",
