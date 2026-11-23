@@ -118,9 +118,9 @@
     },
     "actions": {
       "type": "AppHeaderAction[]",
-      "itemShape": "{ id: string; label: string; icon: string }",
+      "itemShape": "{ id: string; label: string; icon: string; count?: number; countIntent?: \"info\" | \"danger\" | \"neutral\"; countLabel?: string }",
       "noteForFigma": true,
-      "note": "Up to three icon buttons, each named by a Tooltip. On a phone-width bar they move behind one more button; only one of the two is shown, so neither is reached twice by the keyboard."
+      "note": "Up to three icon buttons, each named by a Tooltip. On a phone-width bar they move behind one more button; only one of the two is shown, so neither is reached twice by the keyboard. count puts a kit Count (sm) on the icon's top end corner, like unread notifications; nothing shows at 0. countIntent is danger by default (things waiting on the person); use info for news. The button's name and Tooltip add the count with countLabel (default new): \"Notifications, 3 new\". In the phone-width menu the item shows the same count. The standard set is Notifications (with its count), Help and Feedback."
     },
     "onAction": {
       "type": "function",
@@ -181,7 +181,8 @@
     "Do not put more than three icon actions in it.",
     "Do not recolor the logo. Use environmentIntent for the tag, not custom colors.",
     "Do not use raw hex.",
-    "Do not add a page-header Ask AI button to open the assistant. Pass assistant to the AppHeader; its button stays put when the panel opens."
+    "Do not add a page-header Ask AI button to open the assistant. Pass assistant to the AppHeader; its button stays put when the panel opens.",
+    "Do not draw your own dot or number over a header icon. Pass count."
   ],
   "a11y": [
     "A header landmark. The logo link is named Home.",
@@ -196,7 +197,7 @@
   "examples": [
     {
       "title": "Full header",
-      "usage": "Menu button, logo, environment, search with a Recent dropdown, BP AI, three utility icons, the user and their company.",
+      "usage": "Menu button, logo, environment, search with a Recent dropdown, BP AI, Notifications with its unread count, Help and Feedback, the user and their company.",
       "items": [
         {
           "props": {
@@ -209,14 +210,15 @@
             },
             "actions": [
               {
+                "id": "notifications",
+                "label": "Notifications",
+                "icon": "notifications",
+                "count": 3
+              },
+              {
                 "id": "help",
                 "label": "Help",
                 "icon": "help"
-              },
-              {
-                "id": "news",
-                "label": "What's new",
-                "icon": "campaign"
               },
               {
                 "id": "feedback",
@@ -291,14 +293,15 @@
             },
             "actions": [
               {
+                "id": "notifications",
+                "label": "Notifications",
+                "icon": "notifications",
+                "count": 3
+              },
+              {
                 "id": "help",
                 "label": "Help",
                 "icon": "help"
-              },
-              {
-                "id": "news",
-                "label": "What's new",
-                "icon": "campaign"
               },
               {
                 "id": "feedback",
@@ -448,6 +451,43 @@
             "loading": true
           },
           "caption": "loading"
+        }
+      ]
+    },
+    {
+      "title": "Notifications count",
+      "usage": "A Notifications bell with 3 unread, as a danger Count on its corner. Its name reads Notifications, 3 new.",
+      "items": [
+        {
+          "props": {
+            "environment": "UAT-2",
+            "searchShortcut": "Ctrl+K",
+            "actions": [
+              {
+                "id": "notifications",
+                "label": "Notifications",
+                "icon": "notifications",
+                "count": 3
+              },
+              {
+                "id": "help",
+                "label": "Help",
+                "icon": "help"
+              },
+              {
+                "id": "feedback",
+                "label": "Feedback",
+                "icon": "chat_info"
+              }
+            ],
+            "user": {
+              "name": "Maya Chen",
+              "src": "/faces/maya-chen.jpg"
+            },
+            "company": {
+              "name": "Acme Inc."
+            }
+          }
         }
       ]
     }

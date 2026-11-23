@@ -8,10 +8,10 @@
       "organism": 29,
       "template": 10
     },
-    "examples": 426,
-    "exampleItems": 718,
+    "examples": 427,
+    "exampleItems": 719,
     "props": 1171,
-    "usageRules": 873,
+    "usageRules": 874,
     "piecesWithoutColourLiterals": 92,
     "piecesWithOwnStates": 73
   },
@@ -93,8 +93,8 @@
       "category": "navigation",
       "intent": "The product's top bar: logo and environment on the start, global search in the centre, utility icons, the user and their company on the end. Not a page title.",
       "props": 29,
-      "examples": 7,
-      "exampleItems": 8,
+      "examples": 8,
+      "exampleItems": 9,
       "composes": [
         "Logo",
         "LogoAI",
@@ -107,7 +107,7 @@
         "RadioGroup"
       ],
       "playground": "https://agentic-bp-ds-kit.vercel.app/components/appheader",
-      "usageRules": 8,
+      "usageRules": 9,
       "colourLiterals": 0,
       "importPath": "@/ui/AppHeader/AppHeader",
       "contract": "https://github.com/borisj74/agentic-bp-ds-kit/blob/main/contracts/appheader.json",
