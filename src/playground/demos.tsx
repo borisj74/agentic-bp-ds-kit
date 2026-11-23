@@ -957,9 +957,10 @@ const SHELL_SEARCH_SCOPES = [
   { value: "accounts", label: "Accounts" },
   { value: "invoices", label: "Invoices" },
 ];
+// The kit header's standard icons: Notifications with its unread count, Help and Feedback (three at most).
 const SHELL_HEADER_ACTIONS = [
+  { id: "notifications", label: "Notifications", icon: "notifications", count: 3 },
   { id: "help", label: "Help", icon: "help" },
-  { id: "news", label: "What's new", icon: "campaign" },
   { id: "feedback", label: "Feedback", icon: "chat_info" },
 ];
 

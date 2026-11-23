@@ -1974,8 +1974,8 @@ export const registry: Record<string, Entry> = {
         },
       ],
       actions: [
+        { id: "notifications", label: "Notifications", icon: "notifications", count: 3 },
         { id: "help", label: "Help", icon: "help" },
-        { id: "news", label: "What's new", icon: "campaign" },
         { id: "feedback", label: "Feedback", icon: "chat_info" },
       ],
       user: { name: "Maya Chen", src: "/faces/maya-chen.jpg" },
