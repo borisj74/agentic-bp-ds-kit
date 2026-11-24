@@ -25,6 +25,7 @@ Invoke with `/widget-from-template <the tile you want>`.
    | `donut` | PieChart (donut) | a whole split into 2 to 6 parts |
    | `table` | Table + Cell | a few rows that explain a number; cells are `plain`, `status` or `link` |
    | `checklist` | Timeline | what has to be done before something closes: done, open or late |
+   | `status-breakdown` | UsageBar + Legend | how many records sit in each of 2 to 6 statuses, with each count and share; total as a Count in the header |
 
    If none fits, **stop and propose a new template** (what it draws, which kit pieces, its sizes and capacity).
    Do not draw the tile by hand, and do not stretch a template into something it is not.
